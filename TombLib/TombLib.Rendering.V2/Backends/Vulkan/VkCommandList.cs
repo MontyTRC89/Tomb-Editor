@@ -245,14 +245,15 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetViewport(int x, int y, int width, int height, float minDepth = 0f, float maxDepth = 1f)
     {
-        // Y-flip the viewport so HLSL's top-left origin matches what DX11
-        // does. With Vulkan's default origin at top-left of the framebuffer
-        // *and* Y pointing down in clip space, we'd otherwise render the
-        // scene upside-down vs the DX11 backend.
+        // Y-axis compensation is done at SPIR-V level via the DXC
+        // `-fvk-invert-y` build flag, so the viewport stays in standard
+        // Vulkan orientation (Y down, positive height). This keeps the
+        // triangle winding the same as DX11, so CullMode.Back +
+        // FrontFace.Clockwise work without inversion.
         var vp = new Viewport
         {
-            X = x, Y = y + height,
-            Width = width, Height = -height,
+            X = x, Y = y,
+            Width = width, Height = height,
             MinDepth = minDepth, MaxDepth = maxDepth,
         };
         _dev.Api.CmdSetViewport(_cmd, 0, 1, in vp);

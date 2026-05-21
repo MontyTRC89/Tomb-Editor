@@ -19,17 +19,17 @@ namespace TombEditor.Controls.Panel3D
             // null. OnPaint dispatches straight to LevelRenderer.
             // The 'device', 'antialias' and 'objectQuality' parameters are
             // ignored — the V2 device is created fresh from Silk.NET.
+
             _v2Renderer = new TombEditor.Rendering.V2.LevelRenderer(
                 Handle, ClientSize.Width, ClientSize.Height);
 
-            // Gizmo: we keep using the legacy BaseGizmo class for picking +
-            // drag math (DoPicking / MouseMoved / MouseUp) — V2 only swaps
-            // out the rendering. The constructor still allocates a few
-            // legacy GeometricPrimitive objects (cylinder / cube / cone) we
-            // never end up drawing, but they cost ~nothing and reusing the
-            // legacy class is cheaper than re-implementing 400 lines of
-            // axis-pick / plane-intersect math.
-            _gizmo = new Gizmo(DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
+            // Gizmo: we keep BaseGizmo for picking + drag math (DoPicking /
+            // MouseMoved / MouseUp). The headless ctor skips every legacy
+            // GraphicsDevice/Effect allocation so we don't drag the legacy
+            // DXGI device into a Vulkan process — Intel UHD's Vulkan WSI
+            // refuses to coexist with DXGI in the same process and would
+            // reject our swapchain.
+            _gizmo = new Gizmo();
 
             ResetCamera(true);
         }

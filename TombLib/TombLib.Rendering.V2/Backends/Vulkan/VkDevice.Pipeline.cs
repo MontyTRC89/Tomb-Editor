@@ -129,7 +129,11 @@ public unsafe sealed partial class VkDevice
         var vsModule = CreateShaderModule(vsBytes);
         var psModule = CreateShaderModule(psBytes);
 
-        byte* entryName = (byte*)Marshal.StringToHGlobalAnsi("main");
+        // The SPIR-V entry points keep their HLSL names ("vs_main" / "ps_main")
+        // because the build pipeline invokes DXC with `-E <name>`. The
+        // pipeline must reference each by the exact name in its SPIR-V.
+        byte* vsEntry = (byte*)Marshal.StringToHGlobalAnsi(desc.VertexShader.EntryPoint   ?? "vs_main");
+        byte* psEntry = (byte*)Marshal.StringToHGlobalAnsi(desc.FragmentShader.EntryPoint ?? "ps_main");
         var stages = stackalloc PipelineShaderStageCreateInfo[2]
         {
             new()
@@ -137,14 +141,14 @@ public unsafe sealed partial class VkDevice
                 SType  = StructureType.PipelineShaderStageCreateInfo,
                 Stage  = ShaderStageFlags.VertexBit,
                 Module = vsModule,
-                PName  = entryName,
+                PName  = vsEntry,
             },
             new()
             {
                 SType  = StructureType.PipelineShaderStageCreateInfo,
                 Stage  = ShaderStageFlags.FragmentBit,
                 Module = psModule,
-                PName  = entryName,
+                PName  = psEntry,
             },
         };
 
@@ -216,6 +220,11 @@ public unsafe sealed partial class VkDevice
             };
 
             var rs = desc.Rasterizer;
+            // With DXC -fvk-invert-y the SV_Position.y is negated in clip
+            // space, which after the standard Vulkan viewport transform
+            // produces the same SCREEN positions as DX11 — and the same
+            // winding from the rasterizer's POV. So the FrontFace
+            // declaration matches the RHI request 1:1 (no inversion).
             var rsCi = new PipelineRasterizationStateCreateInfo
             {
                 SType                   = StructureType.PipelineRasterizationStateCreateInfo,
@@ -223,8 +232,6 @@ public unsafe sealed partial class VkDevice
                 RasterizerDiscardEnable = false,
                 PolygonMode             = VkMapping.ToVk(rs.FillMode),
                 CullMode                = VkMapping.ToVk(rs.CullMode),
-                // Vulkan default front face is CCW; legacy HLSL convention is CW.
-                // FrontCounterClockwise = true keeps the CCW interpretation, false flips to CW.
                 FrontFace               = rs.FrontCounterClockwise ? FrontFace.CounterClockwise : FrontFace.Clockwise,
                 DepthBiasEnable         = rs.DepthBias != 0,
                 DepthBiasConstantFactor = rs.DepthBias,
@@ -319,12 +326,18 @@ public unsafe sealed partial class VkDevice
             };
 
             Pipeline pipeline;
-            if (Api.CreateGraphicsPipelines(Device, default, 1, in gpci, null, &pipeline) != Result.Success)
-                throw new InvalidOperationException("vkCreateGraphicsPipelines failed");
+            var res = Api.CreateGraphicsPipelines(Device, default, 1, in gpci, null, &pipeline);
+            if (res != Result.Success)
+                throw new InvalidOperationException(
+                    $"vkCreateGraphicsPipelines failed: {res} (debug='{desc.DebugName}'). " +
+                    "Common causes: SPIR-V entry-point name mismatch, vertex attribute " +
+                    "location not declared in the shader, push-constant size > device max, " +
+                    "or render-pass attachment count mismatch.");
 
             Api.DestroyShaderModule(Device, vsModule, null);
             Api.DestroyShaderModule(Device, psModule, null);
-            Marshal.FreeHGlobal((IntPtr)entryName);
+            Marshal.FreeHGlobal((IntPtr)vsEntry);
+            Marshal.FreeHGlobal((IntPtr)psEntry);
 
             int[] strides = new int[desc.VertexBufferLayouts.Length];
             for (int i = 0; i < strides.Length; i++) strides[i] = desc.VertexBufferLayouts[i].StrideBytes;

@@ -13,15 +13,26 @@ public unsafe sealed partial class VkDevice
 {
     public SwapchainHandle CreateSwapchain(in SwapchainDesc desc)
     {
-        // Win32 surface.
+        const int GWLP_HINSTANCE = -6;
+        IntPtr hinst = IntPtr.Size == 8
+                       ? GetWindowLongPtr(desc.WindowHandle, GWLP_HINSTANCE)
+                       : new IntPtr(GetWindowLong(desc.WindowHandle, GWLP_HINSTANCE));
+        if (hinst == IntPtr.Zero)
+            hinst = GetModuleHandle(null);
+
+        DebugLog($"CreateSwapchain: hwnd=0x{desc.WindowHandle.ToInt64():X}, hinst=0x{hinst.ToInt64():X}, " +
+                 $"size={desc.Width}x{desc.Height}, samples={desc.Samples}, vsync={desc.VSync}");
+
         var surfCi = new Win32SurfaceCreateInfoKHR
         {
             SType     = StructureType.Win32SurfaceCreateInfoKhr,
-            Hinstance = System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(VkDevice).Module),
+            Hinstance = hinst,
             Hwnd      = desc.WindowHandle,
         };
-        if (KhrWin32Surface.CreateWin32Surface(Instance, in surfCi, null, out var surface) != Result.Success)
-            throw new InvalidOperationException("vkCreateWin32SurfaceKHR failed");
+        var surfRes = KhrWin32Surface.CreateWin32Surface(Instance, in surfCi, null, out var surface);
+        if (surfRes != Result.Success)
+            throw new InvalidOperationException($"vkCreateWin32SurfaceKHR failed: {surfRes}");
+        DebugLog($"  surface created: 0x{surface.Handle:X}");
 
         // Confirm the graphics queue can present to this surface.
         Bool32 supported = false;
@@ -76,7 +87,52 @@ public unsafe sealed partial class VkDevice
         sc.Width  = (int)extent.Width;
         sc.Height = (int)extent.Height;
 
-        var present = sc.VSync ? PresentModeKHR.FifoKhr : PresentModeKHR.ImmediateKhr;
+        // Present-mode negotiation. FIFO is always supported; IMMEDIATE
+        // (vsync off) only sometimes — fall back to FIFO if missing so the
+        // editor still runs on a tearing-conservative driver.
+        var present = PresentModeKHR.FifoKhr; // safe default
+        if (!sc.VSync)
+        {
+            uint pmCount = 0;
+            KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, sc.Surface, ref pmCount, null);
+            var modes = new PresentModeKHR[pmCount];
+            fixed (PresentModeKHR* pp = modes)
+                KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, sc.Surface, ref pmCount, pp);
+            for (int i = 0; i < modes.Length; i++)
+                if (modes[i] == PresentModeKHR.MailboxKhr) { present = PresentModeKHR.MailboxKhr; break; }
+            if (present == PresentModeKHR.FifoKhr)
+                for (int i = 0; i < modes.Length; i++)
+                    if (modes[i] == PresentModeKHR.ImmediateKhr) { present = PresentModeKHR.ImmediateKhr; break; }
+        }
+
+        // Image usage: ColorAttachmentBit is always allowed; TransferDstBit is
+        // only allowed if the surface advertises it (most do, but not all).
+        var imgUsage = ImageUsageFlags.ColorAttachmentBit;
+        if ((caps.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) != 0)
+            imgUsage |= ImageUsageFlags.TransferDstBit;
+
+        // CompositeAlpha negotiation: pick the first supported mode. Opaque
+        // is the natural choice but some compositors only offer Inherit /
+        // PreMultiplied.
+        var compositeAlpha = CompositeAlphaFlagsKHR.OpaqueBitKhr;
+        if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.OpaqueBitKhr) == 0)
+        {
+            if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.InheritBitKhr) != 0)
+                compositeAlpha = CompositeAlphaFlagsKHR.InheritBitKhr;
+            else if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PreMultipliedBitKhr) != 0)
+                compositeAlpha = CompositeAlphaFlagsKHR.PreMultipliedBitKhr;
+            else if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PostMultipliedBitKhr) != 0)
+                compositeAlpha = CompositeAlphaFlagsKHR.PostMultipliedBitKhr;
+        }
+
+        // CRITICAL: pass the existing swapchain (if any) as OldSwapchain.
+        // Without this, Vulkan keeps the previous swapchain alive — the
+        // surface is "in use" by it, and the second CreateSwapchain on the
+        // same surface fails with ErrorNativeWindowInUseKhr. We destroy
+        // the old one only *after* the new one has been successfully
+        // created (so the driver can recycle resources).
+        var oldSwapchain = sc.SwapchainHandle;
+
         var sci = new SwapchainCreateInfoKHR
         {
             SType            = StructureType.SwapchainCreateInfoKhr,
@@ -86,16 +142,43 @@ public unsafe sealed partial class VkDevice
             ImageColorSpace  = chosen.ColorSpace,
             ImageExtent      = extent,
             ImageArrayLayers = 1,
-            ImageUsage       = ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransferDstBit,
+            ImageUsage       = imgUsage,
             ImageSharingMode = SharingMode.Exclusive,
-            PreTransform     = caps.CurrentTransform,
-            CompositeAlpha   = CompositeAlphaFlagsKHR.OpaqueBitKhr,
+            PreTransform     = (caps.SupportedTransforms & SurfaceTransformFlagsKHR.IdentityBitKhr) != 0
+                               ? SurfaceTransformFlagsKHR.IdentityBitKhr
+                               : caps.CurrentTransform,
+            CompositeAlpha   = compositeAlpha,
             PresentMode      = present,
             Clipped          = true,
-            OldSwapchain     = default,
+            OldSwapchain     = oldSwapchain,
         };
-        if (KhrSwapchain.CreateSwapchain(Device, in sci, null, out sc.SwapchainHandle) != Result.Success)
-            throw new InvalidOperationException("vkCreateSwapchainKHR failed");
+        DebugLog($"  attempting swapchain: minImg={imageCount}, format={chosen.Format}/{chosen.ColorSpace}, " +
+                 $"extent={extent.Width}x{extent.Height}, usage={imgUsage}, composite={compositeAlpha}, present={present}");
+        var scRes = KhrSwapchain.CreateSwapchain(Device, in sci, null, out sc.SwapchainHandle);
+        if (scRes != Result.Success)
+        {
+            DebugLog($"  swapchain failed: {scRes}");
+            DebugLog($"  surface caps: Min/Max={caps.MinImageCount}/{caps.MaxImageCount}, " +
+                     $"SupportedUsage={caps.SupportedUsageFlags}, SupportedComposite={caps.SupportedCompositeAlpha}, " +
+                     $"CurrentExtent={caps.CurrentExtent.Width}x{caps.CurrentExtent.Height}, " +
+                     $"SupportedTransforms={caps.SupportedTransforms}, CurrentTransform={caps.CurrentTransform}");
+            throw new InvalidOperationException(
+                $"vkCreateSwapchainKHR failed: {scRes}. " +
+                $"HWND=0x{sc.Hwnd.ToInt64():X}, Format={chosen.Format}, ColorSpace={chosen.ColorSpace}, Extent={extent.Width}x{extent.Height}, " +
+                $"MinImageCount={imageCount}, ImageUsage={imgUsage}, CompositeAlpha={compositeAlpha}, PresentMode={present}. " +
+                $"Surface caps: Min/Max={caps.MinImageCount}/{caps.MaxImageCount}, " +
+                $"SupportedUsage={caps.SupportedUsageFlags}, SupportedComposite={caps.SupportedCompositeAlpha}. " +
+                $"Full negotiation log at: {System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TombEditorVk.log")}");
+        }
+        DebugLog($"  swapchain OK: handle=0x{sc.SwapchainHandle.Handle:X}");
+
+        // Now safe to destroy the previous swapchain — the driver has
+        // migrated its surface ownership to the new one.
+        if (oldSwapchain.Handle != 0)
+        {
+            KhrSwapchain.DestroySwapchain(Device, oldSwapchain, null);
+            DebugLog($"  retired old swapchain: 0x{oldSwapchain.Handle:X}");
+        }
 
         uint n = 0;
         KhrSwapchain.GetSwapchainImages(Device, sc.SwapchainHandle, ref n, null);
@@ -204,6 +287,30 @@ public unsafe sealed partial class VkDevice
             KhrSwapchain.DestroySwapchain(Device, sc.SwapchainHandle, null);
         if (sc.Surface.Handle != 0)
             KhrSurface.DestroySurface(Instance, sc.Surface, null);
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
+    private static extern IntPtr GetWindowLongPtr(IntPtr hwnd, int nIndex);
+    [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetWindowLongW")]
+    private static extern int GetWindowLong(IntPtr hwnd, int nIndex);
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    private static extern IntPtr GetModuleHandle(string? lpModuleName);
+
+    // Diagnostic log into %TEMP%\TombEditorVk.log so we capture surface +
+    // swapchain negotiation regardless of whether stderr is attached.
+    private static readonly object _logLock = new();
+    internal static void DebugLog(string msg)
+    {
+        try
+        {
+            lock (_logLock)
+            {
+                var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TombEditorVk.log");
+                System.IO.File.AppendAllText(path,
+                    $"[{DateTime.Now:HH:mm:ss.fff}] {msg}\n");
+            }
+        }
+        catch { /* never fail because of logging */ }
     }
 
     private void DestroySwapchainViews(VkSwapchainRes sc)

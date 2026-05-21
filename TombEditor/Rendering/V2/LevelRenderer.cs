@@ -134,15 +134,27 @@ public sealed class LevelRenderer : IDisposable
     {
         _width  = Math.Max(1, width);
         _height = Math.Max(1, height);
-        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create();
 
-        // Share the D3D device with the preview panel + thumbnail renderer.
+        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create();
+        // Bind the swapchain directly to the Panel3D HWND. (An earlier
+        // experiment routed it through a private child window to work
+        // around ErrorNativeWindowInUseKhr, but that turned out to be a
+        // missing OldSwapchain on resize — fixed in VkDevice.Swapchain.
+        // The child window also stole all mouse events from the parent
+        // control, breaking camera rotation.)
+        _swap = CreateMainSwapchain(hwnd);
+
+        // Share the device with the preview panel + thumbnail renderer.
         // Without this, V2PreviewDevice would lazily allocate its own
-        // ID3D11Device on the first thumbnail tick (~50-200 ms cold-start hit
+        // device on the first thumbnail tick (~50-200 ms cold-start hit
         // that lands right when the user just finished loading a wad).
         V2PreviewDevice.RegisterSharedDevice(_device);
 
-        _swap = _device.CreateSwapchain(new SwapchainDesc(
+        InitRoomPipeline();
+    }
+
+    private SwapchainHandle CreateMainSwapchain(IntPtr hwnd)
+        => _device.CreateSwapchain(new SwapchainDesc(
             hwnd:    hwnd,
             width:   _width,
             height:  _height,
@@ -150,9 +162,6 @@ public sealed class LevelRenderer : IDisposable
             depth:   Format.D24_UNorm_S8_UInt,
             samples: 4,        // 4x MSAA — smooths sector grid lines and geometry edges
             vsync:   true));
-
-        InitRoomPipeline();
-    }
 
     private void InitRoomPipeline()
     {

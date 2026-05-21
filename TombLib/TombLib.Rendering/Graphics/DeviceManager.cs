@@ -9,10 +9,25 @@ namespace TombLib.Graphics
 {
     public class DeviceManager
     {
-        // to be removed
-        public static DeviceManager DefaultDeviceManager = new DeviceManager();
+        // Lazy-initialized so the static DX11 device + DXGI factory aren't
+        // created unless someone actually touches the legacy renderer. The
+        // V2 path (Vulkan / V2-DX11) can avoid this entirely. On Intel UHD
+        // this is critical: the Intel Vulkan WSI rejects swapchain creation
+        // (ErrorNativeWindowInUseKhr) in any process that has previously
+        // initialised a DXGI adapter — eager static init guarantees that
+        // condition.
+        private static DeviceManager? _default;
+        private static readonly object _defaultLock = new object();
+        public static DeviceManager DefaultDeviceManager
+        {
+            get
+            {
+                if (_default != null) return _default;
+                lock (_defaultLock) { return _default ??= new DeviceManager(); }
+            }
+        }
+        public static bool IsDefaultInitialized => _default != null;
 
-        //public RenderingDevice Device;
         public RenderingDevice Device;
         public GraphicsDevice ___LegacyDevice { get; set; }
         public Dictionary<string, Effect> ___LegacyEffects { get; } = new Dictionary<string, Effect>();

@@ -112,6 +112,23 @@ namespace TombLib.Graphics
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
         }
 
+        /// <summary>
+        /// Headless constructor for renderers that draw the gizmo themselves
+        /// (e.g. the V2 GizmoRenderer). Skips every legacy GraphicsDevice
+        /// allocation — no SolidVertex buffer, no GeometricPrimitive, no
+        /// rasterizer state. The pick + drag math (DoPicking, MouseMoved,
+        /// MouseUp, GizmoUpdateHoverEffect, GetPublicState) remains fully
+        /// functional. Calling the legacy <see cref="Draw"/> on an instance
+        /// constructed this way will NullReferenceException; the V2 renderer
+        /// must not.
+        /// </summary>
+        protected BaseGizmo()
+        {
+            // All legacy fields stay default-initialised (null). The class
+            // exists only to feed picking results and the PublicState
+            // snapshot to a non-legacy renderer.
+        }
+
         public void Dispose()
         {
             _rasterizerWireframe?.Dispose();

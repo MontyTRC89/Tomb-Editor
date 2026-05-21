@@ -96,8 +96,15 @@
     <!-- Vertex stage: DXBC via FXC. -->
     <Exec Command='&quot;$(FxcPath)&quot; /nologo /T vs_5_0 /E %(HlslShaderV2.EntryVs) /Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.dxbc&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
-    <!-- Vertex stage: SPIR-V via DXC. -D SPIRV activates Vulkan-only HLSL annotations. -->
-    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -D SPIRV=1 -T vs_6_0 -E %(HlslShaderV2.EntryVs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
+    <!-- Vertex stage: SPIR-V via DXC. -D SPIRV activates Vulkan-only HLSL annotations.
+         -fvk-invert-y negates SV_Position.y in the VS so HLSL's DX-style
+         "Y up in NDC" output renders correctly with Vulkan's default
+         "Y down in NDC" framebuffer mapping. Without it, the whole scene is
+         flipped vertically and triangle winding looks reversed to the rasterizer.
+         Doing the flip in the shader (this flag) instead of via a negative-height
+         viewport keeps front-face winding unchanged, so CullMode.Back and
+         FrontFace.Clockwise work the same as on DX11. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-invert-y -D SPIRV=1 -T vs_6_0 -E %(HlslShaderV2.EntryVs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
     <!-- Vertex stage: GLSL 430 via SPIRV-Cross. -->
     <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).vs.spv&quot;' />
@@ -105,8 +112,16 @@
     <!-- Pixel stage: DXBC via FXC. -->
     <Exec Command='&quot;$(FxcPath)&quot; /nologo /T ps_5_0 /E %(HlslShaderV2.EntryPs) /Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.dxbc&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
-    <!-- Pixel stage: SPIR-V via DXC. -->
-    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -D SPIRV=1 -T ps_6_0 -E %(HlslShaderV2.EntryPs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
+    <!-- Pixel stage: SPIR-V via DXC.
+         -fvk-use-dx-position-w makes SV_Position.w in the PS read back as
+         clip.w (DX semantics) instead of 1/clip.w (Vulkan default). The
+         grid pass in RoomGeometry.hlsl divides by input.PositionCS.w
+         assuming the DX convention; without this flag the value is the
+         reciprocal (tiny), the line-width term becomes ~10M, every fragment
+         gets multiplied by clamp(negative, 0, 1) = 0, and Geometry mode
+         renders pure black even though Texturing / Lighting (which skip
+         the grid pass) look fine. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-use-dx-position-w -D SPIRV=1 -T ps_6_0 -E %(HlslShaderV2.EntryPs) -Fo &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot; &quot;%(HlslShaderV2.FullPath)&quot;' />
 
     <!-- Pixel stage: GLSL 430 via SPIRV-Cross. -->
     <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --output &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.glsl&quot; &quot;$(ShaderOutputDirV2)%(HlslShaderV2.Filename).ps.spv&quot;' />

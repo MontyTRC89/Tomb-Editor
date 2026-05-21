@@ -191,6 +191,23 @@ namespace TombEditor.Controls.Panel3D
         private static extern IntPtr GetForegroundWindow();
         private IntPtr _lastWindow { get; set; }
 
+        // Force the underlying Win32 window class to have CS_OWNDC. Without
+        // it, the Vulkan WSI on several drivers (Nvidia in particular) treats
+        // the HWND as "shared with GDI/DWM" and refuses to create a swapchain
+        // for it, reporting ErrorNativeWindowInUseKhr. CS_OWNDC gives the
+        // window its own permanent device context, which is also what
+        // OpenGL / Direct3D contexts traditionally expect.
+        protected override System.Windows.Forms.CreateParams CreateParams
+        {
+            get
+            {
+                const int CS_OWNDC = 0x0020;
+                var cp = base.CreateParams;
+                cp.ClassStyle |= CS_OWNDC;
+                return cp;
+            }
+        }
+
         public Panel3D()
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);

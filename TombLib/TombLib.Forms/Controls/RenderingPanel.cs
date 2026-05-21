@@ -33,6 +33,14 @@ namespace TombLib.Controls
 
         public virtual void InitializeRendering(RenderingDevice device, bool antialias = false, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
         {
+            // A null device is a deliberate signal from the V2 init path
+            // that the legacy DX11 backend is not available in this process
+            // (e.g. running on Intel UHD where Vulkan WSI refuses to coexist
+            // with DXGI). Skip the legacy swapchain allocation so the panel
+            // simply stays blank — V2-aware derived classes own their own
+            // rendering pipeline and don't read Device / SwapChain anyway.
+            if (device == null) return;
+
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
                 Device = device;

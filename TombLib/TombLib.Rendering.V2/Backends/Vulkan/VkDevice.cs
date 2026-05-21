@@ -46,6 +46,11 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     internal KhrSurface     KhrSurface;
     internal KhrSwapchain   KhrSwapchain;
     internal KhrWin32Surface KhrWin32Surface;
+    internal Silk.NET.Vulkan.Extensions.EXT.ExtDebugUtils? DebugUtils;
+    internal DebugUtilsMessengerEXT DebugMessenger;
+    // Hold the callback delegate so the GC doesn't collect it while Vulkan
+    // still holds the function pointer.
+    internal DebugUtilsMessengerCallbackFunctionEXT? DebugCallback;
 
     // Memory properties cached after device creation — used by every
     // FindMemoryType call.
@@ -117,9 +122,12 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             ApiVersion   = Vk.Version11,
         };
 
-        // Extensions: VK_KHR_surface + VK_KHR_win32_surface for window
-        // presentation; VK_EXT_debug_utils when validation is requested.
-        bool wantValidation = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") == "1";
+        // Validation is opt-out (TOMBEDITOR_VK_VALIDATION=0 disables) when
+        // the Khronos validation layer is installed. Captured messages go to
+        // %TEMP%\TombEditorVk.log via a debug-utils messenger so we get the
+        // real driver / spec violation text when an API call fails.
+        bool wantValidation = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") != "0"
+                              && IsLayerAvailable("VK_LAYER_KHRONOS_validation");
         var extensions = new List<string>
         {
             KhrSurface.ExtensionName,
@@ -128,8 +136,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (wantValidation) extensions.Add("VK_EXT_debug_utils");
 
         var layers = new List<string>();
-        if (wantValidation && IsLayerAvailable("VK_LAYER_KHRONOS_validation"))
-            layers.Add("VK_LAYER_KHRONOS_validation");
+        if (wantValidation) layers.Add("VK_LAYER_KHRONOS_validation");
+        DebugLog($"VkDevice init: validation={(wantValidation ? "ON" : "off")}, layers={layers.Count}, extensions={extensions.Count}");
 
         var pExtNames = new byte*[extensions.Count];
         var pLayerNames = new byte*[layers.Count];
@@ -170,6 +178,42 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             throw new InvalidOperationException("VK_KHR_surface not present on instance");
         if (!Api.TryGetInstanceExtension(Instance, out KhrWin32Surface))
             throw new InvalidOperationException("VK_KHR_win32_surface not present on instance");
+
+        // Wire the debug-utils messenger so validation messages land in our
+        // log file alongside the surface / swapchain trace. Without this,
+        // validation output goes to the OutputDebugString channel and never
+        // reaches the user.
+        if (wantValidation && Api.TryGetInstanceExtension(Instance, out Silk.NET.Vulkan.Extensions.EXT.ExtDebugUtils du))
+        {
+            DebugUtils = du;
+            DebugCallback = DebugMessageCallback;
+            var dmci = new DebugUtilsMessengerCreateInfoEXT
+            {
+                SType           = StructureType.DebugUtilsMessengerCreateInfoExt,
+                MessageSeverity = DebugUtilsMessageSeverityFlagsEXT.WarningBitExt
+                                | DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt
+                                | DebugUtilsMessageSeverityFlagsEXT.InfoBitExt,
+                MessageType     = DebugUtilsMessageTypeFlagsEXT.GeneralBitExt
+                                | DebugUtilsMessageTypeFlagsEXT.ValidationBitExt
+                                | DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt,
+                PfnUserCallback = new PfnDebugUtilsMessengerCallbackEXT(DebugCallback),
+            };
+            DebugUtils.CreateDebugUtilsMessenger(Instance, in dmci, null, out DebugMessenger);
+            DebugLog("VkDevice debug messenger attached");
+        }
+    }
+
+    private static uint DebugMessageCallback(
+        DebugUtilsMessageSeverityFlagsEXT severity,
+        DebugUtilsMessageTypeFlagsEXT type,
+        DebugUtilsMessengerCallbackDataEXT* data,
+        void* userData)
+    {
+        string msg = data != null && data->PMessage != null
+                     ? Marshal.PtrToStringAnsi((IntPtr)data->PMessage) ?? "(no message)"
+                     : "(no data)";
+        DebugLog($"VK [{severity}] {msg}");
+        return 0u; // VK_FALSE: don't abort the call
     }
 
     private bool IsLayerAvailable(string name)
@@ -491,6 +535,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (SharedPipelineLayout.Handle != 0) Api.DestroyPipelineLayout(Device, SharedPipelineLayout, null);
         if (SharedDescLayout.Handle     != 0) Api.DestroyDescriptorSetLayout(Device, SharedDescLayout, null);
         if (Device.Handle               != 0) Api.DestroyDevice(Device, null);
+        if (DebugMessenger.Handle != 0 && DebugUtils != null)
+            DebugUtils.DestroyDebugUtilsMessenger(Instance, DebugMessenger, null);
         if (Instance.Handle             != 0) Api.DestroyInstance(Instance, null);
         Api.Dispose();
     }

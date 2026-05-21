@@ -74,24 +74,21 @@ VsOut vs_main(VsIn input)
 float4 ps_main(VsOut input) : SV_Target
 {
     float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
-    float4 result;
-    if (input.Color.a > 0.5)
-    {
-        // Sector overlay sprite (slope arrow / cross / slide / ...). Sprite
-        // is white-on-black; legacy composites it additively on dark sectors
-        // and subtractively on bright ones, so the symbol is always visible.
-        float bright = dot(input.Color.rgb, float3(0.299, 0.587, 0.114));
-        float3 rgb = bright > 0.8
-                   ? saturate(input.Color.rgb - sampled.rgb)
-                   : saturate(input.Color.rgb + sampled.rgb);
-        result = float4(rgb, 1.0);
-    }
-    else
-    {
-        // Regular path: sampled texture (or white pixel) modulated by the
-        // vertex tint. Texturing mode uses this for real room textures.
-        result = float4(sampled.rgb * input.Color.rgb, sampled.a);
-    }
+
+    // Branchless overlay/regular composite. Compute both paths and select
+    // via mix() — DXC translates HLSL `if/else` here into a divergent SPIR-V
+    // branch which mis-renders on Vulkan (the if-block's fragments don't
+    // see the same derivatives, breaking the grid pass that runs later).
+    float  bright     = dot(input.Color.rgb, float3(0.299, 0.587, 0.114));
+    float3 addRgb     = saturate(input.Color.rgb + sampled.rgb);
+    float3 subRgb     = saturate(input.Color.rgb - sampled.rgb);
+    float3 overlayRgb = lerp(addRgb, subRgb, step(0.8, bright));
+    float3 regularRgb = sampled.rgb * input.Color.rgb;
+
+    float  ovMask   = step(0.5, input.Color.a);
+    float3 finalRgb = lerp(regularRgb, overlayRgb, ovMask);
+    float  finalA   = lerp(sampled.a,  1.0,        ovMask);
+    float4 result   = float4(finalRgb, finalA);
 
     // Grid pass is skipped in texturing mode (GridEnabled == 0). Texturing
     // mode wants a clean view of the room textures without sector dividers.
