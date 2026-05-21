@@ -1374,7 +1374,7 @@ namespace WadTool
 			// cbRootPosX
 			// 
 			cbRootPosX.AutoSize = true;
-			cbRootPosX.Location = new System.Drawing.Point(33, 29);
+			cbRootPosX.Location = new System.Drawing.Point(36, 29);
 			cbRootPosX.Name = "cbRootPosX";
 			cbRootPosX.Size = new System.Drawing.Size(32, 17);
 			cbRootPosX.TabIndex = 107;
@@ -1384,7 +1384,7 @@ namespace WadTool
 			// cbRootPosZ
 			// 
 			cbRootPosZ.AutoSize = true;
-			cbRootPosZ.Location = new System.Drawing.Point(99, 29);
+			cbRootPosZ.Location = new System.Drawing.Point(102, 29);
 			cbRootPosZ.Name = "cbRootPosZ";
 			cbRootPosZ.Size = new System.Drawing.Size(32, 17);
 			cbRootPosZ.TabIndex = 101;
@@ -1404,7 +1404,7 @@ namespace WadTool
 			// cbRootPosY
 			// 
 			cbRootPosY.AutoSize = true;
-			cbRootPosY.Location = new System.Drawing.Point(66, 29);
+			cbRootPosY.Location = new System.Drawing.Point(69, 29);
 			cbRootPosY.Name = "cbRootPosY";
 			cbRootPosY.Size = new System.Drawing.Size(31, 17);
 			cbRootPosY.TabIndex = 100;
@@ -2310,7 +2310,7 @@ namespace WadTool
 			cbRootRotationZ.Name = "cbRootRotationZ";
 			cbRootRotationZ.Size = new System.Drawing.Size(32, 17);
 			cbRootRotationZ.TabIndex = 109;
-			cbRootRotationZ.Text = "X";
+			cbRootRotationZ.Text = "Z";
 			cbRootRotationZ.CheckedChanged += cbRootMotion_CheckedChanged;
 			// 
 			// cbRootRotationY
@@ -2318,9 +2318,9 @@ namespace WadTool
 			cbRootRotationY.AutoSize = true;
 			cbRootRotationY.Location = new System.Drawing.Point(210, 29);
 			cbRootRotationY.Name = "cbRootRotationY";
-			cbRootRotationY.Size = new System.Drawing.Size(32, 17);
+			cbRootRotationY.Size = new System.Drawing.Size(31, 17);
 			cbRootRotationY.TabIndex = 108;
-			cbRootRotationY.Text = "X";
+			cbRootRotationY.Text = "Y";
 			cbRootRotationY.CheckedChanged += cbRootMotion_CheckedChanged;
 			// 
 			// darkLabel16
