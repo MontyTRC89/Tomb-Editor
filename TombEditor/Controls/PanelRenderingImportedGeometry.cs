@@ -33,11 +33,18 @@ namespace TombEditor.Controls
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            // Update field of view
+            // Update field of view. Guard against transient null Configuration
+            // (e.g. during settings reload) and against a Camera that hasn't
+            // been initialised yet on the V2 panel base — same guard as
+            // PanelRenderingItem.
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                Camera.FieldOfView = _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180);
-                Invalidate();
+                var cfg = _editor?.Configuration;
+                if (cfg != null && Camera != null)
+                {
+                    Camera.FieldOfView = cfg.RenderingItem_FieldOfView * (float)(Math.PI / 180);
+                    Invalidate();
+                }
             }
 
             // Update currently viewed item.

@@ -35,15 +35,24 @@ public sealed class LevelRenderer : IDisposable
     private BufferHandle            _viewCb;
     private TextureAtlas?           _atlas;
     private Level?                  _atlasLevel;
-    private readonly Dictionary<Room, RoomMesh> _roomMeshes = new();
+    // Per-mode mesh cache. Geometry / Texturing / Lighting each bake
+    // completely different vertex streams, but a user toggling between two
+    // modes does so frequently — keeping a separate slot per (kind, white)
+    // means the second-visit-onward switch hits a warm cache and avoids the
+    // visible lag from rebuilding every visible room synchronously. Memory
+    // cost is bounded: 3 kinds × 2 white-flags × N rooms × ~24 KB / room,
+    // well under a megabyte on typical levels.
+    private readonly Dictionary<RoomMeshKey, RoomMesh> _roomMeshes = new();
     private readonly Frustum                    _frustum    = new();
     private readonly List<Room>                 _visibleRooms = new();
-    // Mesh content depends on the editor mode (Geometry vs Texturing).
-    // When the mode changes we invalidate every cached room so it gets
-    // rebuilt with the right vertex strategy.
-    private bool                                _meshesAreTexturing;
+
+    private readonly record struct RoomMeshKey(Room Room, RenderScene.RoomDrawKind Kind, bool WhiteOnly);
     // Moveables / statics / imported geometry pass.
     private ObjectRenderer?                     _objects;
+    // Service objects (lights, cameras, sinks, sound sources, memos, placeholders).
+    private ServiceObjectRenderer?              _services;
+    // Gizmo overlay (translate / rotate / scale handles for the selected object).
+    private GizmoRenderer?                      _gizmo;
 
     // Reusable per-frame scratch arrays. Keeping these as fields avoids
     // a fresh managed allocation on every Bindings / SetVertexBuffers /
@@ -180,7 +189,9 @@ public sealed class LevelRenderer : IDisposable
                 debugName: "RoomViewParams"),
             ReadOnlySpan<byte>.Empty);
 
-        _objects = new ObjectRenderer(_device);
+        _objects  = new ObjectRenderer(_device);
+        _services = new ServiceObjectRenderer(_device);
+        _gizmo    = new GizmoRenderer(_device);
     }
 
     public void Resize(int width, int height)
@@ -209,7 +220,11 @@ public sealed class LevelRenderer : IDisposable
         {
             ViewProjection = scene.ViewProjection,
             GridLineWidth  = scene.GridLineWidth,
-            GridEnabled    = scene.TexturingMode ? 0f : 1f,
+            // Grid is only drawn over the sector-classification fill (the
+            // Geometry-mode mesh). Texturing and Lighting modes bake real
+            // texture UVs and skip the grid overlay entirely — matches the
+            // legacy "RoomGridForce" gating.
+            GridEnabled    = scene.DrawKind == RenderScene.RoomDrawKind.Geometry ? 1f : 0f,
         };
         unsafe
         {
@@ -236,12 +251,10 @@ public sealed class LevelRenderer : IDisposable
         {
             EnsureAtlas(scene.Level);
 
-            if (_meshesAreTexturing != scene.TexturingMode)
-            {
-                DropRoomMeshes();
-                _meshesAreTexturing = scene.TexturingMode;
-            }
-
+            // Bindings are persistent across pipeline switches in this RHI,
+            // so we set them once up front: the room / object / skybox
+            // pipelines share the same b0/t0/s0 layout (view-projection cbuf
+            // + atlas texture + atlas sampler).
             cl.SetPipeline(_roomPipeline);
             _scratchCbuf[0] = _viewCb;
             _scratchTex [0] = _atlas!.Texture;
@@ -252,6 +265,17 @@ public sealed class LevelRenderer : IDisposable
                 Textures        = _scratchTex,
                 Samplers        = _scratchSamp,
             });
+
+            // Horizon (skybox) — drawn first with depth disabled so room
+            // geometry naturally paints over it. Skipped when the user has
+            // turned off "Draw horizon" in the editor.
+            if (scene.ShowHorizon && _objects != null)
+            {
+                _objects.RenderSkybox(cl, scene.Level, _atlas, scene.Camera.GetPosition());
+                // RenderSkybox left the skybox pipeline bound. Restore the
+                // room pipeline for the upcoming foreach.
+                cl.SetPipeline(_roomPipeline);
+            }
 
             // One SectorTextureDefault per frame, mutated per room: only the
             // selected room gets a populated SelectionArea / HighlightArea
@@ -286,7 +310,7 @@ public sealed class LevelRenderer : IDisposable
                     st.SelectionArrow = ArrowType.EntireFace;
                 }
 
-                var mesh = GetOrCreateRoomMesh(room, st.Get, scene.TexturingMode);
+                var mesh = GetOrCreateRoomMesh(room, st.Get, scene.DrawKind, scene.ShowLightingWhiteTextureOnly);
                 if (mesh.VertexCount == 0) continue;
                 _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
                 cl.SetVertexBuffers(_scratchVb);
@@ -298,7 +322,24 @@ public sealed class LevelRenderer : IDisposable
             // object pipeline expects ModelMatrix + Tint via push constants.
             if (_objects != null)
                 _objects.Render(cl, _visibleRooms, scene.Level, _atlas,
-                                scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry);
+                                scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry,
+                                scene.Highlighted, scene.SelectionTint);
+
+            // Service objects (lights / cameras / sinks / sounds / memos / placeholders).
+            // Billboards are alpha-blended + depth-tested so they read on top of
+            // room floors but still hide behind walls. Volume lines for the
+            // selected light / flyby use the same Z buffer.
+            if (_services != null && scene.ShowOtherObjects)
+                _services.Render(cl, _visibleRooms, scene.Level, scene.ViewProjection,
+                                 scene.Camera.GetPosition(), scene.Camera.GetTarget(),
+                                 scene.Highlighted, scene.SelectionTint,
+                                 scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry,
+                                 scene.ShowLightMeshes);
+
+            // Gizmo overlay — depth-disabled, drawn last so it's always
+            // visible over the selected object.
+            if (_gizmo != null && scene.GizmoState.HasValue)
+                _gizmo.Render(cl, scene.GizmoState.Value, scene.ViewProjection);
         }
 
         cl.EndPass();
@@ -371,12 +412,17 @@ public sealed class LevelRenderer : IDisposable
         DropRoomMeshes();
     }
 
-    private RoomMesh GetOrCreateRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet, bool texturing)
+    private RoomMesh GetOrCreateRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet,
+                                          RenderScene.RoomDrawKind kind, bool whiteOnly)
     {
-        if (_roomMeshes.TryGetValue(room, out var existing))
+        // whiteOnly is only meaningful in Lighting mode — collapse the key
+        // for other modes so we don't waste cache slots.
+        bool keyWhite = kind == RenderScene.RoomDrawKind.Lighting && whiteOnly;
+        var key = new RoomMeshKey(room, kind, keyWhite);
+        if (_roomMeshes.TryGetValue(key, out var existing))
             return existing;
-        var mesh = BuildRoomMesh(room, sectorTextureGet, texturing);
-        _roomMeshes[room] = mesh;
+        var mesh = BuildRoomMesh(room, sectorTextureGet, kind, keyWhite);
+        _roomMeshes[key] = mesh;
         return mesh;
     }
 
@@ -387,11 +433,22 @@ public sealed class LevelRenderer : IDisposable
         _roomMeshes.Clear();
     }
 
-    /// <summary>Invalidate a single room's cached mesh (call on RoomGeometryChanged).</summary>
+    /// <summary>
+    /// Invalidate every cached mesh for the given room across all modes
+    /// (RoomGeometryChanged / selection-rect changes touch every kind).
+    /// </summary>
     public void InvalidateRoom(Room room)
     {
-        if (_roomMeshes.Remove(room, out var mesh))
-            _device.Destroy(mesh.Vb);
+        // Single-pass: collect matching keys then remove. The cache stays
+        // small enough that a linear scan beats maintaining a side index.
+        List<RoomMeshKey>? toRemove = null;
+        foreach (var key in _roomMeshes.Keys)
+            if (ReferenceEquals(key.Room, room))
+                (toRemove ??= new List<RoomMeshKey>()).Add(key);
+        if (toRemove != null)
+            foreach (var key in toRemove)
+                if (_roomMeshes.Remove(key, out var mesh))
+                    _device.Destroy(mesh.Vb);
     }
 
     /// <summary>Drop all cached room meshes and the atlas (call on LevelChanged).</summary>
@@ -410,8 +467,11 @@ public sealed class LevelRenderer : IDisposable
     private static readonly Vector3 _selectionTint   = new(1.0f, 0.15f, 0.15f);
     private static readonly Vector3 _highlightTint   = new(1.0f, 0.95f, 0.30f);
 
-    private RoomMesh BuildRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet, bool texturing)
+    private RoomMesh BuildRoomMesh(Room room, SectorTextureGetDelegate sectorTextureGet,
+                                    RenderScene.RoomDrawKind kind, bool whiteOnly)
     {
+        bool texturing = kind == RenderScene.RoomDrawKind.Texturing;
+        bool lighting  = kind == RenderScene.RoomDrawKind.Lighting;
         var geom = room.RoomGeometry;
         int singleSidedVertexCount = geom.VertexPositions.Count;
         if (singleSidedVertexCount == 0 || _atlas == null)
@@ -483,9 +543,48 @@ public sealed class LevelRenderer : IDisposable
                     c2 = tint * geom.VertexColors[i * 3 + 2];
                 }
             }
+            else if (lighting)
+            {
+                // Lighting mode: real textures × per-vertex lighting (matches
+                // legacy RoomDisableVertexColors=false + RoomGridForce=false
+                // path). With whiteOnly on, swap the texture for the atlas
+                // white pixel so the user sees pure lighting on a uniform
+                // surface — the "DrawWhiteLighting" toggle.
+                bool hasTex = ta.Texture != null && !ta.Texture.IsUnavailable
+                              && ta.Texture is not TextureInvisible;
+                if (hasTex && !whiteOnly)
+                {
+                    uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
+                    uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
+                    uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+                }
+                else
+                {
+                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                }
+
+                c0 = geom.VertexColors[i * 3 + 0];
+                c1 = geom.VertexColors[i * 3 + 1];
+                c2 = geom.VertexColors[i * 3 + 2];
+
+                // Keep the selection / highlight cue visible so the user
+                // doesn't lose track of which sectors they have selected.
+                if (res.Highlighted)
+                {
+                    c0 = Vector3.Lerp(c0, _highlightTint, 0.30f);
+                    c1 = Vector3.Lerp(c1, _highlightTint, 0.30f);
+                    c2 = Vector3.Lerp(c2, _highlightTint, 0.30f);
+                }
+                if (res.Selected)
+                {
+                    c0 = Vector3.Lerp(c0, _selectionTint, 0.45f);
+                    c1 = Vector3.Lerp(c1, _selectionTint, 0.45f);
+                    c2 = Vector3.Lerp(c2, _selectionTint, 0.45f);
+                }
+            }
             else
             {
-                // Geometry / Lighting / ObjectPlacement modes: sector
+                // Geometry / ObjectPlacement modes (handled here): sector
                 // classification colour + sector overlay sprite (slope
                 // arrows, slide markers, ...).
                 Vector3 baseColor = new(res.Color.X, res.Color.Y, res.Color.Z);
@@ -554,6 +653,8 @@ public sealed class LevelRenderer : IDisposable
         InvalidateAllRooms();
         _atlas?.Dispose();
         _objects?.Dispose();
+        _services?.Dispose();
+        _gizmo?.Dispose();
         if (_viewCb.IsValid)        _device.Destroy(_viewCb);
         if (_roomPipeline.IsValid)  _device.Destroy(_roomPipeline);
         if (_swap.IsValid)          _device.Destroy(_swap);

@@ -22,6 +22,11 @@ internal sealed class ObjectRenderer : IDisposable
 {
     private readonly IRhiDevice _device;
     private PipelineHandle      _pipeline;
+    // Skybox pipeline = same Object shader but depth-test/write disabled,
+    // so the horizon mesh acts as a background that room geometry paints
+    // over naturally (no need for a mid-pass ClearDepth like the legacy did).
+    private PipelineHandle      _skyboxPipeline;
+    private BufferHandle        _skyboxInstanceVb; // single InstanceData per frame
     private TextureAtlas        _atlas;
 
     // Per-asset GPU mesh (immutable VB, mesh in default-pose model space).
@@ -101,6 +106,86 @@ internal sealed class ObjectRenderer : IDisposable
         });
 
         AllocInstanceBuffer(_instanceCapacity);
+
+        // ---- Skybox pipeline: same vertex layout / shader, just no depth.
+        _skyboxPipeline = device.CreatePipeline(new PipelineDesc
+        {
+            VertexShader   = vs,
+            FragmentShader = ps,
+            VertexAttributes = new[]
+            {
+                new VertexAttribute("POSITION", 0, Format.R32G32B32_Float,    bufferSlot: 0, offset: 0),
+                new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,     bufferSlot: 0, offset: 12),
+                new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,       bufferSlot: 0, offset: 16),
+                new VertexAttribute("TEXCOORD", 1, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 0,  perInstance: true),
+                new VertexAttribute("TEXCOORD", 2, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 16, perInstance: true),
+                new VertexAttribute("TEXCOORD", 3, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 32, perInstance: true),
+                new VertexAttribute("TEXCOORD", 4, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 48, perInstance: true),
+                new VertexAttribute("TEXCOORD", 5, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 64, perInstance: true),
+            },
+            VertexBufferLayouts = new[]
+            {
+                new VertexBufferLayout(strideBytes: 20),
+                new VertexBufferLayout(strideBytes: InstanceStride, perInstance: true),
+            },
+            Topology               = PrimitiveTopology.TriangleList,
+            // CullMode.None — TR horizon meshes are typically inside-out
+            // boxes/spheres; we don't want back-face culling to swallow them
+            // regardless of which face the camera looks at.
+            Rasterizer             = new RasterizerState(CullMode.None),
+            DepthStencil           = DepthStencilState.Disabled,
+            BlendStates            = new[] { BlendState.Opaque },
+            ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
+            DepthAttachmentFormat  = Format.D24_UNorm_S8_UInt,
+            DebugName              = "ObjectSkyboxPipeline",
+        });
+
+        _skyboxInstanceVb = device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: InstanceStride,
+                usage:     BufferUsage.DynamicVertex,
+                bindFlags: BufferBindFlags.Vertex,
+                debugName: "SkyboxInstance"),
+            ReadOnlySpan<byte>.Empty);
+    }
+
+    /// <summary>
+    /// Draw the level's horizon (skybox) moveable at the camera position.
+    /// Must be called inside an active pass, *before* room geometry — the
+    /// skybox writes color with depth disabled so subsequent geometry
+    /// naturally paints over it.
+    /// </summary>
+    public void RenderSkybox(ICommandList cl, Level level, TextureAtlas atlas, Vector3 camPos)
+    {
+        if (level == null || atlas == null) return;
+        _atlas = atlas;
+
+        var horizonId = WadMoveableId.GetHorizon(level.Settings.GameVersion);
+        if (!horizonId.HasValue) return;
+        var horizon = level.Settings?.WadTryGetMoveable(horizonId.Value);
+        if (horizon == null) return;
+
+        var mesh = GetOrBuildMoveable(horizon);
+        if (mesh.VertexCount == 0) return;
+
+        // Scale × Translate(camPos). Matches the legacy DrawSkybox transform.
+        var model = Matrix4x4.CreateScale(128f) * Matrix4x4.CreateTranslation(camPos);
+        var inst = new InstanceData
+        {
+            Model = Matrix4x4.Transpose(model),
+            Tint  = new Vector4(1f, 1f, 1f, 0f), // alpha=0 → multiply path (vertex × white)
+        };
+        unsafe
+        {
+            var span = new ReadOnlySpan<byte>(&inst, InstanceStride);
+            cl.UpdateBuffer(_skyboxInstanceVb, 0, span);
+        }
+
+        cl.SetPipeline(_skyboxPipeline);
+        _scratchVbs[0] = new VertexBufferBinding(mesh.Vb, 0);
+        _scratchVbs[1] = new VertexBufferBinding(_skyboxInstanceVb, 0);
+        cl.SetVertexBuffers(_scratchVbs);
+        cl.Draw(mesh.VertexCount, instanceCount: 1);
     }
 
     private void AllocInstanceBuffer(int capacity)
@@ -128,10 +213,23 @@ internal sealed class ObjectRenderer : IDisposable
     }
 
     public void Render(ICommandList cl, IList<Room> visibleRooms, Level level, TextureAtlas atlas,
-                       bool showMoveables, bool showStatics, bool showImportedGeometry)
+                       bool showMoveables, bool showStatics, bool showImportedGeometry,
+                       HighlightedObjects highlighted = null, Vector4 selectionTint = default)
     {
         if (level == null || atlas == null) return;
         _atlas = atlas;
+
+        // Tint convention (see Object.hlsl):
+        //   .rgb = colour to apply, .a = replace factor in [0,1]
+        //   a=0 → multiply (vertex.color × tint), used for the normal
+        //         per-instance lighting tint.
+        //   a=1 → full replace, used for the selection red — matches the
+        //         legacy "output.Color = ColorSelection" overwrite that keeps
+        //         selected dark meshes visible.
+        Vector3 selRgb = selectionTint == default
+                       ? new Vector3(1f, 0f, 0f)
+                       : new Vector3(selectionTint.X, selectionTint.Y, selectionTint.Z);
+        Vector4 selTint = new Vector4(selRgb, 1f);
 
         // ----- 1. Group instances by source asset.
         foreach (var v in _staticBatch.Values)   v.Clear();
@@ -143,6 +241,7 @@ internal sealed class ObjectRenderer : IDisposable
             if (room?.Objects == null) continue;
             foreach (var obj in room.Objects)
             {
+                bool isSelected = highlighted != null && highlighted.Contains(obj);
                 switch (obj)
                 {
                     case StaticInstance si when showStatics:
@@ -154,7 +253,8 @@ internal sealed class ObjectRenderer : IDisposable
                             list.Add(new InstanceData
                             {
                                 Model = Matrix4x4.Transpose(si.ObjectMatrix),
-                                Tint  = new Vector4(si.Color.X, si.Color.Y, si.Color.Z, 1f),
+                                Tint  = isSelected ? selTint
+                                                   : new Vector4(si.Color.X, si.Color.Y, si.Color.Z, 0f),
                             });
                             break;
                         }
@@ -167,7 +267,7 @@ internal sealed class ObjectRenderer : IDisposable
                             list.Add(new InstanceData
                             {
                                 Model = Matrix4x4.Transpose(mi.ObjectMatrix),
-                                Tint  = new Vector4(1, 1, 1, 1),
+                                Tint  = isSelected ? selTint : new Vector4(1, 1, 1, 0),
                             });
                             break;
                         }
@@ -180,7 +280,8 @@ internal sealed class ObjectRenderer : IDisposable
                             list.Add(new InstanceData
                             {
                                 Model = Matrix4x4.Transpose(m),
-                                Tint  = new Vector4(ig.Color.X, ig.Color.Y, ig.Color.Z, 1f),
+                                Tint  = isSelected ? selTint
+                                                   : new Vector4(ig.Color.X, ig.Color.Y, ig.Color.Z, 0f),
                             });
                             break;
                         }
@@ -402,7 +503,9 @@ internal sealed class ObjectRenderer : IDisposable
     public void Dispose()
     {
         InvalidateAll();
-        if (_instanceVb.IsValid) _device.Destroy(_instanceVb);
-        if (_pipeline.IsValid)   _device.Destroy(_pipeline);
+        if (_instanceVb.IsValid)       _device.Destroy(_instanceVb);
+        if (_skyboxInstanceVb.IsValid) _device.Destroy(_skyboxInstanceVb);
+        if (_pipeline.IsValid)         _device.Destroy(_pipeline);
+        if (_skyboxPipeline.IsValid)   _device.Destroy(_skyboxPipeline);
     }
 }

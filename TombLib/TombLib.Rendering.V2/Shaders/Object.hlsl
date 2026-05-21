@@ -53,13 +53,22 @@ VsOut vs_main(VsIn input)
     float4x4 model = float4x4(input.InstMat0, input.InstMat1, input.InstMat2, input.InstMat3);
     float4 worldPos = mul(model, float4(input.PositionMS, 1.0));
     o.PositionCS = mul(ViewProjection, worldPos);
-    o.Color      = input.Color * input.InstTint;
-    o.Uv         = input.Uv;
+
+    // InstTint.a is a 0..1 *replace* factor — same trick the legacy Model.fx
+    // uses, where selecting a mesh sets output.Color = Color (full replace
+    // of the per-vertex contribution). With a=0 we keep the vertex-colour ×
+    // tint multiply (lighting / per-instance tint), with a=1 we throw the
+    // vertex colour away so the selection red shows through even on dark
+    // meshes that would otherwise multiply to near-black.
+    float3 mul3   = input.Color.rgb * input.InstTint.rgb;
+    o.Color.rgb   = lerp(mul3, input.InstTint.rgb, input.InstTint.a);
+    o.Color.a     = 1.0;
+    o.Uv          = input.Uv;
     return o;
 }
 
 float4 ps_main(VsOut input) : SV_Target
 {
     float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
-    return float4(sampled.rgb * input.Color.rgb, sampled.a * input.Color.a);
+    return float4(sampled.rgb * input.Color.rgb, sampled.a);
 }

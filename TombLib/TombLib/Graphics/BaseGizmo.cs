@@ -836,5 +836,83 @@ namespace TombLib.Graphics
         protected abstract bool SupportRotationX { get; }
         protected abstract bool SupportRotationZ { get; }
         protected virtual bool DrawGizmo => SupportTranslateX || SupportTranslateY || SupportTranslateZ || SupportScale || SupportRotationY || SupportRotationX || SupportRotationZ;
+
+        // ----- Public snapshot of the gizmo's protected state, for use by
+        // external (non-legacy) renderers that draw the gizmo themselves.
+        // The legacy Draw() above still works for the legacy renderer; the V2
+        // renderer reads this snapshot at the start of its render pass.
+        public readonly struct PublicState
+        {
+            public readonly Vector3 Position;
+            public readonly float   Size;
+            public readonly float   CentreCubeSize;
+            public readonly float   TranslationConeSize;
+            public readonly float   ScaleCubeSize;
+            public readonly float   LineThickness;
+            public readonly GizmoOrientation Orientation;
+            public readonly bool    SupportTranslateX, SupportTranslateY, SupportTranslateZ;
+            public readonly bool    SupportScale;
+            public readonly bool    SupportRotationX, SupportRotationY, SupportRotationZ;
+            public readonly float   RotationX, RotationY, RotationZ;
+            public readonly Vector3 Scale;
+            public readonly GizmoMode ActiveMode;
+            public readonly GizmoMode HoveredMode;
+            public readonly bool    DrawGizmo;
+
+            // Rotation matrices applied to each ring. When ActiveMode is the
+            // matching RotateX/Y/Z the renderer should use the frozen matrix
+            // instead of the live one, so the ring stays visually pinned
+            // while the user drags. Matches BaseGizmo.Draw's switch.
+            public readonly Matrix4x4 RotateMatrixX, RotateMatrixY, RotateMatrixZ;
+            public readonly Matrix4x4 FrozenRotateMatrixX, FrozenRotateMatrixY, FrozenRotateMatrixZ;
+
+            // Rotation pie helper (only meaningful while ActiveMode is a Rotate*).
+            public readonly float RotationPickAngle;
+            public readonly float RotationLastMouseAngle;
+            public readonly float RotationLastMouseRadius;
+
+            internal PublicState(BaseGizmo g)
+            {
+                Position             = g.Position;
+                Size                 = g.Size;
+                CentreCubeSize       = g.CentreCubeSize;
+                TranslationConeSize  = g.TranslationConeSize;
+                ScaleCubeSize        = g.ScaleCubeSize;
+                LineThickness        = g.LineThickness;
+                Orientation          = g.Orientation;
+                SupportTranslateX    = g.SupportTranslateX;
+                SupportTranslateY    = g.SupportTranslateY;
+                SupportTranslateZ    = g.SupportTranslateZ;
+                SupportScale         = g.SupportScale;
+                SupportRotationX     = g.SupportRotationX;
+                SupportRotationY     = g.SupportRotationY;
+                SupportRotationZ     = g.SupportRotationZ;
+                // Reads of g.RotationX / RotationY / RotationZ on the
+                // concrete gizmo cast to IRotateableY[X[Roll]]. Skipping the
+                // cast when the axis isn't supported matches what
+                // BaseGizmo.RotateMatrix*/Draw do internally — otherwise
+                // selecting a StaticInstance (IRotateableY only) would throw
+                // on the RotationX/Z reads here.
+                RotationY            = g.SupportRotationY ? g.RotationY : 0.0f;
+                RotationX            = g.SupportRotationX ? g.RotationX : 0.0f;
+                RotationZ            = g.SupportRotationZ ? g.RotationZ : 0.0f;
+                Scale                = g.SupportScale ? g.Scale : Vector3.One;
+                ActiveMode           = g._mode;
+                HoveredMode          = g._hoveredMode;
+                DrawGizmo            = g.DrawGizmo;
+
+                RotateMatrixY        = g.RotateMatrixY;
+                RotateMatrixX        = g.RotateMatrixX;
+                RotateMatrixZ        = g.RotateMatrixZ;
+                FrozenRotateMatrixY  = g._frozenRotateMatrixY;
+                FrozenRotateMatrixX  = g._frozenRotateMatrixX;
+                FrozenRotateMatrixZ  = g._frozenRotateMatrixZ;
+                RotationPickAngle       = g._rotationPickAngle;
+                RotationLastMouseAngle  = g._rotationLastMouseAngle;
+                RotationLastMouseRadius = g._rotationLastMouseRadius;
+            }
+        }
+
+        public PublicState GetPublicState() => new PublicState(this);
     }
 }

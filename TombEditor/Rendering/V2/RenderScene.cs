@@ -37,8 +37,19 @@ public readonly struct RenderScene
     public readonly bool               ShowMoveables;
     public readonly bool               ShowStatics;
     public readonly bool               ShowImportedGeometry;
+    public readonly bool               ShowOtherObjects;
+    public readonly bool               ShowLightMeshes;
+    public readonly bool               ShowLightingWhiteTextureOnly;
+    public readonly bool               ShowHorizon;
     public readonly EditorMode         Mode;
     public readonly float              GridLineWidth;
+    public readonly BaseGizmo.PublicState? GizmoState;
+    // Highlighted objects (currently selected single object, or all members
+    // of a selected ObjectGroup). Drives the red selection tint on
+    // moveables / statics / imported geometry. May be null when nothing is
+    // selected.
+    public readonly HighlightedObjects? Highlighted;
+    public readonly Vector4 SelectionTint;
 
     public RenderScene(
         Level             level,
@@ -58,8 +69,15 @@ public readonly struct RenderScene
         bool              showMoveables,
         bool              showStatics,
         bool              showImportedGeometry,
+        bool              showOtherObjects,
+        bool              showLightMeshes,
+        bool              showLightingWhiteTextureOnly,
+        bool              showHorizon,
         EditorMode        mode,
-        float             gridLineWidth)
+        float             gridLineWidth,
+        BaseGizmo.PublicState? gizmoState = null,
+        HighlightedObjects? highlighted = null,
+        Vector4? selectionTint = null)
     {
         Level                         = level;
         Camera                        = camera;
@@ -79,10 +97,45 @@ public readonly struct RenderScene
         ShowMoveables                 = showMoveables;
         ShowStatics                   = showStatics;
         ShowImportedGeometry          = showImportedGeometry;
+        ShowOtherObjects              = showOtherObjects;
+        ShowLightMeshes               = showLightMeshes;
+        ShowLightingWhiteTextureOnly  = showLightingWhiteTextureOnly;
+        ShowHorizon                   = showHorizon;
         Mode                          = mode;
         GridLineWidth                 = gridLineWidth;
+        GizmoState                    = gizmoState;
+        Highlighted                   = highlighted;
+        SelectionTint                 = selectionTint ?? new Vector4(1f, 0f, 0f, 1f);
     }
 
-    /// <summary>Texturing mode renders real textures with lighting, grid off.</summary>
+    /// <summary>Texturing mode renders real textures full-bright, grid off.</summary>
     public bool TexturingMode => Mode == EditorMode.FaceEdit;
+    /// <summary>Lighting mode renders real textures modulated by vertex lighting, grid off.</summary>
+    public bool LightingMode => Mode == EditorMode.Lighting;
+
+    /// <summary>
+    /// One of three rendering strategies for a room's vertex buffer. Used as
+    /// the mesh-cache invalidation key — flipping modes drops every cached
+    /// room so it gets rebuilt with the new strategy.
+    /// </summary>
+    public enum RoomDrawKind : byte
+    {
+        /// <summary>Sector classification colours + sector overlay sprites + grid.</summary>
+        Geometry,
+        /// <summary>Real textures full-bright, no grid (FaceEdit / ObjectPlacement).</summary>
+        Texturing,
+        /// <summary>Real textures × per-vertex lighting, no grid (Lighting).</summary>
+        Lighting,
+    }
+
+    public RoomDrawKind DrawKind => Mode switch
+    {
+        // FaceEdit + ObjectPlacement render textures full-bright with no
+        // grid; they only differ in cursor / brush behaviour, not in the
+        // room mesh build.
+        EditorMode.FaceEdit        => RoomDrawKind.Texturing,
+        EditorMode.ObjectPlacement => RoomDrawKind.Texturing,
+        EditorMode.Lighting        => RoomDrawKind.Lighting,
+        _                          => RoomDrawKind.Geometry,
+    };
 }

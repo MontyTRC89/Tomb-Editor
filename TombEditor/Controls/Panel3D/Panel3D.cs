@@ -362,6 +362,22 @@ namespace TombEditor.Controls.Panel3D
                 _v2Renderer?.InvalidateAllRooms();
             }
 
+            // V2 picking caches: triangle lists are baked from WAD/imported
+            // geometry the first time an object is tested against the ray.
+            // After a level reload / wad swap / imported-geometry refresh the
+            // backing assets are different objects, but the cache still holds
+            // the old tris — which means we'd either get stale picks or, more
+            // commonly, just dictionary entries that never resolve. Wipe them
+            // on the same events that invalidate the renderer caches.
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+            {
+                _v2PickStatic.Clear();
+                _v2PickMoveable.Clear();
+                _v2PickImported.Clear();
+            }
+
             if (obj is Editor.ObjectBrushSettingsChangedEvent)
                 Invalidate();
 
@@ -574,10 +590,20 @@ namespace TombEditor.Controls.Panel3D
                 Capture = true;
             if (e.Button == MouseButtons.Left)
             {
+                // Priority order matches the legacy DoPicking:
+                //   1. gizmo handle (translate axis / rotate ring / scale cube)
+                //   2. object (moveable / static / imported geometry)
+                //   3. sector
+                if (CanUseGizmo() && V2TryGizmoPick(e.Location))
+                {
+                    Capture = true;
+                    Invalidate();
+                    return;
+                }
+
                 // Objects take priority over sectors: clicking a moveable /
                 // static / imported geometry selects the object, not the
-                // floor beneath it. Same priority order as the legacy
-                // DoPicking (gizmo -> objects -> sectors).
+                // floor beneath it.
                 if (V2PickObject(e.Location, out var pickedObj))
                 {
                     _editor.SelectedObject = pickedObj;
@@ -654,6 +680,11 @@ namespace TombEditor.Controls.Panel3D
             }
             if (e.Button == MouseButtons.Left)
             {
+                // Release any active gizmo drag — re-enables sector pick on
+                // the next click.
+                if (_gizmo != null && _gizmo.MouseUp())
+                    Invalidate();
+
                 if (_v2SelClickedOnSel && _editor.SelectedSectors.Valid)
                     CycleSelectionArrow(ModifierKeys.HasFlag(Keys.Control));
 
@@ -661,6 +692,35 @@ namespace TombEditor.Controls.Panel3D
                 _v2SelClickedOnSel = false;
                 _v2SelAnchorRoom   = null;
             }
+        }
+
+        // Build a world-space pick ray from screen coords, using the camera +
+        // current viewport. Single helper so V2 picking + gizmo picking share
+        // the same math.
+        private bool V2BuildRay(System.Drawing.Point screenPos, out TombLib.Ray ray, out System.Numerics.Matrix4x4 vp)
+        {
+            ray = default;
+            vp  = default;
+            if (Camera == null || ClientSize.Width <= 0 || ClientSize.Height <= 0)
+                return false;
+            vp  = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            ray = TombLib.Ray.GetPickRay(
+                new System.Numerics.Vector2(screenPos.X, screenPos.Y),
+                vp, ClientSize.Width, ClientSize.Height);
+            return true;
+        }
+
+        // Attempt to hit one of the gizmo handles; if successful, activates
+        // the gizmo (its DoPicking sets the internal _mode so subsequent
+        // MouseMoved calls drive the transform).
+        private bool V2TryGizmoPick(System.Drawing.Point screenPos)
+        {
+            if (_gizmo == null) return false;
+            if (!V2BuildRay(screenPos, out var ray, out _)) return false;
+            var pick = _gizmo.DoPicking(ray);
+            if (pick == null) return false;
+            _gizmo.ActivateGizmo(pick);
+            return true;
         }
 
         // Cycles SelectedSectors.Arrow on each in-selection click. Same order
@@ -700,6 +760,21 @@ namespace TombEditor.Controls.Panel3D
         {
             if (Camera == null) return;
 
+            // Gizmo drag takes priority over sector-rectangle drag while a
+            // gizmo handle is active.
+            if (_gizmo != null && (e.Button & MouseButtons.Left) != 0)
+            {
+                if (V2BuildRay(e.Location, out var giRay, out var giVp))
+                {
+                    if (_gizmo.MouseMoved(giVp, giRay))
+                    {
+                        Invalidate();
+                        _lastMousePosition = e.Location;
+                        return;
+                    }
+                }
+            }
+
             if (_v2SelDragging && (e.Button & MouseButtons.Left) != 0 && _v2SelAnchorRoom != null)
             {
                 if (V2PickRaw(e.Location, out var hitRoom, out var pos) && hitRoom == _v2SelAnchorRoom)
@@ -734,6 +809,22 @@ namespace TombEditor.Controls.Panel3D
                        -delta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
                 Invalidate();
             }
+            else if (e.Button == MouseButtons.None && _gizmo != null)
+            {
+                // Hover highlight on gizmo handles — mirrors the legacy
+                // OnMouseMoved fallback path. The redraw flag tells us
+                // whether the highlighted handle actually changed.
+                bool redraw;
+                if (CanUseGizmo() && V2BuildRay(e.Location, out var hoverRay, out _))
+                    redraw = _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(hoverRay));
+                else
+                    redraw = _gizmo.GizmoUpdateHoverEffect(null);
+                if (redraw)
+                {
+                    Invalidate();
+                    Update(); // legacy "magic fix for gizmo stiffness" — paint immediately
+                }
+            }
             _lastMousePosition = e.Location;
         }
 
@@ -762,10 +853,51 @@ namespace TombEditor.Controls.Panel3D
             foreach (var room in rooms)
             {
                 if (room?.Objects == null) continue;
+                var wp = room.WorldPos;
                 foreach (var obj in room.Objects)
                 {
+                    // --- Service objects: simple bounding sphere / box hit
+                    // (matches the legacy Panel3DPicking fallback so the user
+                    // can click lights / cameras / sinks / sounds / memos).
+                    if (ShowOtherObjects)
+                    {
+                        switch (obj)
+                        {
+                            case LightInstance light:
+                                {
+                                    var sphere = new TombLib.BoundingSphere(
+                                        wp + light.Position,
+                                        TombEditor.Rendering.V2.ServiceObjectRenderer.LightSphereRadius);
+                                    if (TombLib.Utils.Collision.RayIntersectsSphere(ray, sphere, out float d) && d < bestDist)
+                                    { bestDist = d; best = obj; }
+                                    continue;
+                                }
+                            case CameraInstance:
+                            case FlybyCameraInstance:
+                            case SinkInstance:
+                            case SoundSourceInstance:
+                            case MemoInstance:
+                            case SpriteInstance:
+                                {
+                                    var pbi = (PositionBasedObjectInstance)obj;
+                                    var half = new System.Numerics.Vector3(
+                                        TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                                    var box = new TombLib.BoundingBox(
+                                        wp + pbi.Position - half, wp + pbi.Position + half);
+                                    if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
+                                    { bestDist = d; best = obj; }
+                                    continue;
+                                }
+                        }
+                    }
+
+                    // --- Asset-backed instances: mesh-triangle pick (current
+                    // behaviour). Missing-asset placeholders are picked as
+                    // boxes via the same service-object path above (after
+                    // the WAD lookup fails the mesh branch returns null).
                     System.Collections.Generic.IList<System.Numerics.Vector3> verts = null;
                     System.Numerics.Matrix4x4 model = default;
+                    bool isPlaceholder = false;
                     switch (obj)
                     {
                         case StaticInstance si when ShowStatics:
@@ -776,6 +908,7 @@ namespace TombEditor.Controls.Panel3D
                                     verts = BuildStaticPickVertices(s);
                                     model = si.ObjectMatrix;
                                 }
+                                else isPlaceholder = true;
                                 break;
                             }
                         case MoveableInstance mi when ShowMoveables:
@@ -786,15 +919,33 @@ namespace TombEditor.Controls.Panel3D
                                     verts = BuildMoveablePickVertices(mv);
                                     model = mi.ObjectMatrix;
                                 }
+                                else isPlaceholder = true;
                                 break;
                             }
                         case ImportedGeometryInstance ii when ShowImportedGeometry:
                             {
-                                verts = BuildImportedPickVertices(ii.Model);
-                                if (verts != null)
-                                    model = ii.RotationPositionMatrix * System.Numerics.Matrix4x4.CreateScale(ii.Scale);
+                                if (ii.Model?.DirectXModel != null &&
+                                    ii.Model.DirectXModel.Meshes.Count > 0 && !ii.Hidden)
+                                {
+                                    verts = BuildImportedPickVertices(ii.Model);
+                                    if (verts != null)
+                                        model = ii.RotationPositionMatrix * System.Numerics.Matrix4x4.CreateScale(ii.Scale);
+                                }
+                                else isPlaceholder = true;
                                 break;
                             }
+                    }
+
+                    // Placeholder cube fallback for missing wad/imported assets.
+                    if (isPlaceholder && ShowOtherObjects && obj is PositionBasedObjectInstance pbi2)
+                    {
+                        var half = new System.Numerics.Vector3(
+                            TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                        var box = new TombLib.BoundingBox(
+                            wp + pbi2.Position - half, wp + pbi2.Position + half);
+                        if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
+                        { bestDist = d; best = obj; }
+                        continue;
                     }
 
                     if (verts == null || verts.Count < 3) continue;
@@ -980,6 +1131,10 @@ namespace TombEditor.Controls.Panel3D
             {
                 if (_editor?.Level is not null && Camera is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
                 {
+                    TombLib.Graphics.BaseGizmo.PublicState? gizmoSnap = null;
+                    if (_gizmo != null && CanUseGizmo())
+                        gizmoSnap = _gizmo.GetPublicState();
+
                     var scene = new TombEditor.Rendering.V2.RenderScene(
                         level:                         _editor.Level,
                         camera:                        Camera,
@@ -998,8 +1153,15 @@ namespace TombEditor.Controls.Panel3D
                         showMoveables:                 ShowMoveables,
                         showStatics:                   ShowStatics,
                         showImportedGeometry:          ShowImportedGeometry,
+                        showOtherObjects:              ShowOtherObjects,
+                        showLightMeshes:               ShowLightMeshes,
+                        showLightingWhiteTextureOnly:  ShowLightingWhiteTextureOnly,
+                        showHorizon:                   ShowHorizon,
                         mode:                          _editor.Mode,
-                        gridLineWidth:                 _editor.Configuration.Rendering3D_LineWidth);
+                        gridLineWidth:                 _editor.Configuration.Rendering3D_LineWidth,
+                        gizmoState:                    gizmoSnap,
+                        highlighted:                   _highlightedObjects,
+                        selectionTint:                 _editor.Configuration.UI_ColorScheme.ColorSelection);
                     _v2Renderer.RenderFrame(scene);
                 }
                 else
