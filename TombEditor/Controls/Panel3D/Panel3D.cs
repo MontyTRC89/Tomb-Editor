@@ -184,6 +184,9 @@ namespace TombEditor.Controls.Panel3D
         // entirely (no swapchain / textures / state buffer / legacy device init).
         internal TombEditor.Rendering.V2.LevelRenderer _v2Renderer;
 
+        /// <summary>Human-readable name of the active V2 backend, or null when V2 isn't active yet.</summary>
+        public string? V2BackendName => _v2Renderer?.BackendName;
+
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
 

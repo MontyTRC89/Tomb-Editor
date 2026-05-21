@@ -19,9 +19,15 @@ namespace TombLib.RenderingV2.Rhi;
 public static class RhiBackend
 {
     /// <summary>Build a device with the configured / default backend.</summary>
-    public static IRhiDevice Create()
+    /// <param name="preference">Optional override from the editor's Configuration
+    /// (e.g. "Vulkan", "OpenGL", "DX11", or "Default" / empty for the cascade).
+    /// The TOMBEDITOR_RHI environment variable always wins over this when set.</param>
+    public static IRhiDevice Create(string? preference = null)
     {
         string pref = (Environment.GetEnvironmentVariable("TOMBEDITOR_RHI") ?? "").Trim().ToLowerInvariant();
+        if (string.IsNullOrEmpty(pref) && !string.IsNullOrEmpty(preference))
+            pref = preference.Trim().ToLowerInvariant();
+        if (pref == "default") pref = ""; // explicit "Default" = auto cascade
 
         if (pref == "dx11")
             return new Dx11Device();

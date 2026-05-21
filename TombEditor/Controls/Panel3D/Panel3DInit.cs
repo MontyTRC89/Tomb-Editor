@@ -21,7 +21,8 @@ namespace TombEditor.Controls.Panel3D
             // ignored — the V2 device is created fresh from Silk.NET.
 
             _v2Renderer = new TombEditor.Rendering.V2.LevelRenderer(
-                Handle, ClientSize.Width, ClientSize.Height);
+                Handle, ClientSize.Width, ClientSize.Height,
+                _editor.Configuration.Rendering3D_Backend);
 
             // Gizmo: we keep BaseGizmo for picking + drag math (DoPicking /
             // MouseMoved / MouseUp). The headless ctor skips every legacy

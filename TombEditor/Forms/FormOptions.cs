@@ -64,6 +64,42 @@ namespace TombEditor.Forms
                 .ToList()
                 .ForEach(item => cmbColorScheme.Items.Add(item.Name));
 
+            // Add the V2 rendering-backend selector programmatically. We
+            // could put this in FormOptions.Designer.cs but keeping the
+            // backend choice in code-behind avoids touching the autogen
+            // designer file and lets the option list grow with future
+            // backends without a designer round-trip. The combo + label
+            // bind to Configuration.Rendering3D_Backend via Tag, picked up
+            // by FormOptionsBase.ReadConfigIntoControls.
+            int backendY = darkGroupBox4.Height + 4;
+            darkGroupBox4.Height += 56;
+            var cmbBackend = new DarkUI.Controls.DarkComboBox
+            {
+                FormattingEnabled = true,
+                Location = new Point(232, backendY),
+                Size     = new Size(123, 23),
+                Tag      = "Rendering3D_Backend",
+                DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList,
+            };
+            cmbBackend.Items.AddRange(new object[] { "Default", "Vulkan", "OpenGL", "DX11" });
+            var lblBackend = new DarkUI.Controls.DarkLabel
+            {
+                AutoSize  = true,
+                ForeColor = Color.FromArgb(220, 220, 220),
+                Location  = new Point(3, backendY + 3),
+                Text      = "Rendering backend:",
+            };
+            var lblBackendHint = new DarkUI.Controls.DarkLabel
+            {
+                AutoSize  = true,
+                ForeColor = Color.FromArgb(160, 160, 160),
+                Location  = new Point(3, backendY + 28),
+                Text      = "Default = auto (Vulkan → OpenGL → DX11). Restart the editor for a change to take effect.",
+            };
+            darkGroupBox4.Controls.Add(cmbBackend);
+            darkGroupBox4.Controls.Add(lblBackend);
+            darkGroupBox4.Controls.Add(lblBackendHint);
+
             // Reset color scheme combo if color was changed
             foreach (var panel in AllOptionControls(this).Where(c => c is DarkPanel))
                 panel.BackColorChanged += (sender, e) =>

@@ -54,6 +54,8 @@ namespace TombEditor.Forms
             _editor.RaiseEvent(new Editor.InitEvent());
 
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            // The backend suffix gets appended once InitializeRendering has
+            // run (V2BackendName is null until then). See UpdateTitleBar.
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only show debug menu when a debugger is attached...
@@ -76,6 +78,12 @@ namespace TombEditor.Forms
             GetWindow<MainView>().InitializeRendering(null);
             GetWindow<ItemBrowser>().InitializeRendering(null);
             GetWindow<ImportedGeometryBrowser>().InitializeRendering(null);
+
+            // Now that MainView -> panel3D -> LevelRenderer exists, refresh
+            // the title bar to append the active backend ("[Vulkan]" /
+            // "[OpenGL]" / "[DirectX 11]"). The InitEvent above fired
+            // BEFORE rendering init, so V2BackendName was still null then.
+            UpdateTitleBar();
 
             // Restore window settings and prepare UI
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -109,6 +117,21 @@ namespace TombEditor.Forms
             if (disposing && components != null)
                 components.Dispose();
             base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// Rebuild the title bar string: "Tomb Editor X.Y - Level[*]  [Backend]".
+        /// Safe to call any time; the backend suffix is omitted until
+        /// MainView.InitializeRendering has run and produced a LevelRenderer.
+        /// </summary>
+        private void UpdateTitleBar()
+        {
+            string levelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
+                PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
+            string backend = GetWindow<MainView>().V2BackendName;
+            string backendSuffix = string.IsNullOrEmpty(backend) ? "" : "  [" + backend + "]";
+            Text = "Tomb Editor " + Application.ProductVersion + " - " + levelName
+                 + (_editor.HasUnsavedChanges ? "*" : "") + backendSuffix;
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -283,12 +306,10 @@ namespace TombEditor.Forms
             }
 
             // Update application title bar
-            if (obj is Editor.LevelFileNameChangedEvent || obj is Editor.HasUnsavedChangesChangedEvent)
+            if (obj is Editor.LevelFileNameChangedEvent || obj is Editor.HasUnsavedChangesChangedEvent
+                || obj is Editor.InitEvent || obj is Editor.LevelChangedEvent)
             {
-                string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
-
-                Text = "Tomb Editor " + Application.ProductVersion + " - " + LevelName + (_editor.HasUnsavedChanges ? "*" : "");
+                UpdateTitleBar();
             }
 
             // Update save button

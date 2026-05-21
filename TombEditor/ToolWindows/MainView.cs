@@ -48,6 +48,9 @@ namespace TombEditor.ToolWindows
             panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias, (TombLib.Controls.ObjectRenderingQuality)_editor.Configuration.Rendering3D_ObjectQuality);
         }
 
+        /// <summary>Active V2 backend name (Vulkan / OpenGL / DirectX 11), or null when V2 isn't initialised yet.</summary>
+        public string? V2BackendName => panel3D?.V2BackendName;
+
         public void AddToolbox(DarkFloatingToolbox toolbox)
         {
             if (!panel3D.Contains(toolbox))

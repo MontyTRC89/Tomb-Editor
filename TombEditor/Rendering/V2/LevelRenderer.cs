@@ -127,15 +127,23 @@ public sealed class LevelRenderer : IDisposable
 
     public IRhiDevice     Device    => _device;
     public SwapchainHandle Swapchain => _swap;
+    /// <summary>Human-readable name of the active RHI backend ("Vulkan" / "OpenGL" / "DirectX 11").</summary>
+    public string BackendName => _device.Capabilities.Backend switch
+    {
+        TombLib.RenderingV2.Rhi.RhiBackendKind.Vulkan    => "Vulkan",
+        TombLib.RenderingV2.Rhi.RhiBackendKind.OpenGL    => "OpenGL",
+        TombLib.RenderingV2.Rhi.RhiBackendKind.DirectX11 => "DirectX 11",
+        _                                                => _device.Capabilities.Backend.ToString(),
+    };
     /// <summary>Rooms drawn by the last RenderFrame call (post visibility + frustum cull).</summary>
     public IReadOnlyList<Room> LastVisibleRooms => _visibleRooms;
 
-    public LevelRenderer(IntPtr hwnd, int width, int height)
+    public LevelRenderer(IntPtr hwnd, int width, int height, string? backendPreference = null)
     {
         _width  = Math.Max(1, width);
         _height = Math.Max(1, height);
 
-        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create();
+        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create(backendPreference);
         // Bind the swapchain directly to the Panel3D HWND. (An earlier
         // experiment routed it through a private child window to work
         // around ErrorNativeWindowInUseKhr, but that turned out to be a
