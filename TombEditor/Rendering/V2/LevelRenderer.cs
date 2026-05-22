@@ -9,6 +9,7 @@ using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
 using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
+using TombLib.RenderingV2.Text;
 using TombLib.Utils;
 
 namespace TombEditor.Rendering.V2;
@@ -34,7 +35,12 @@ public sealed class LevelRenderer : IDisposable
 
     // Room geometry pass resources.
     private PipelineHandle          _roomPipeline;
+    // Second room pipeline for additive / alpha-blended faces: premultiplied
+    // blending, depth-tested but not depth-writing, drawn after the opaque pass.
+    private PipelineHandle          _roomTransparentPipeline;
     private BufferHandle            _viewCb;
+    // Same view params with RoomAlpha < 1, bound for the hidden-room pass.
+    private BufferHandle            _viewCbHidden;
     private TextureAtlas?           _atlas;
     private Level?                  _atlasLevel;
     // Per-mode mesh cache. Geometry / Texturing / Lighting each bake
@@ -55,6 +61,11 @@ public sealed class LevelRenderer : IDisposable
     private ServiceObjectRenderer?              _services;
     // Gizmo overlay (translate / rotate / scale handles for the selected object).
     private GizmoRenderer?                      _gizmo;
+    // Text overlay (room names, coordinates, object labels, cardinal directions, FPS).
+    private TextRenderer?                       _text;
+    // Editor wireframe overlay (room / object bounding boxes, volumes, ghost
+    // blocks, flyby paths, the selected object's height line).
+    private EditorGeometryRenderer?             _editorGeo;
 
     // Reusable per-frame scratch arrays. Keeping these as fields avoids
     // a fresh managed allocation on every Bindings / SetVertexBuffers /
@@ -74,7 +85,11 @@ public sealed class LevelRenderer : IDisposable
         public Matrix4x4 ViewProjection;   // 64B
         public float     GridLineWidth;    // 4B  -- legacy default 10.0
         public float     GridEnabled;      // 4B  -- 1=outline, 0=texturing mode
-        public float     _pad1, _pad2;
+        public float     RoomAlpha;        // 4B  -- 1=opaque, <1 fades a hidden room
+        public float     _pad2;
+        public Vector4   DofCenterRange;       // flyby DOF: xyz origin, w range
+        public Vector4   DofDirectionDistance; // flyby DOF: xyz direction, w distance
+        public Vector4   DofColorStrength;     // flyby DOF: xyz darkening, w mode (0 = off)
     }
 
     // Packed vertex layout (24 B vs the 40 B float-only version):
@@ -96,14 +111,15 @@ public sealed class LevelRenderer : IDisposable
         public Half    GridUvV;      // 22..24
     }
 
-    private static uint PackColor(Vector3 c, bool overlayFlag = false)
+    private static uint PackColor(Vector3 c, uint alphaByte)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
         uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
         uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
-        // Alpha byte doubles as the sector-overlay flag: 255 → composite
-        // sprite add/sub style in the pixel shader, 0 → plain multiply.
-        uint a = overlayFlag ? 255u : 0u;
+        // The alpha byte is mode-dependent metadata, not opacity: in Geometry
+        // mode it is the sector-overlay flag (255 = composite sprite add/sub),
+        // in Texturing / Lighting mode it carries the face BlendMode (0-15).
+        uint a = Math.Clamp(alphaByte, 0u, 255u);
         return r | (g << 8) | (b << 16) | (a << 24);
     }
 
@@ -113,13 +129,15 @@ public sealed class LevelRenderer : IDisposable
     private sealed class RoomMesh : IDisposable
     {
         public BufferHandle Vb;
-        public int          VertexCount;
+        public int          VertexCount;        // total: opaque + transparent
+        public int          OpaqueVertexCount;  // [0, OpaqueVertexCount) opaque; the rest transparent
         public bool         Disposed;
 
-        public RoomMesh(BufferHandle vb, int vertexCount)
+        public RoomMesh(BufferHandle vb, int vertexCount, int opaqueVertexCount)
         {
-            Vb          = vb;
-            VertexCount = vertexCount;
+            Vb                = vb;
+            VertexCount       = vertexCount;
+            OpaqueVertexCount = opaqueVertexCount;
         }
 
         public void Dispose() => Disposed = true;
@@ -174,31 +192,42 @@ public sealed class LevelRenderer : IDisposable
     private void InitRoomPipeline()
     {
         var (vs, ps) = ShaderLibrary.Load("RoomGeometry");
-        _roomPipeline = _device.CreatePipeline(new PipelineDesc
-        {
-            VertexShader   = vs,
-            FragmentShader = ps,
-            VertexAttributes = new[]
+
+        // Two room pipelines sharing one shader. The opaque pass writes depth
+        // and renders Normal / AlphaTest faces; the transparent pass blends
+        // additive / alpha-blended faces with premultiplied alpha and does
+        // NOT write depth, so they composite correctly over the geometry
+        // already drawn behind them.
+        PipelineHandle MakeRoomPipeline(BlendState blend, DepthStencilState depth, string name)
+            => _device.CreatePipeline(new PipelineDesc
             {
-                new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
-                new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
-                new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
-                new VertexAttribute("TEXCOORD", 1, Format.R16G16_Float,    bufferSlot: 0, offset: 20),
-            },
-            VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 24) },
-            Topology               = PrimitiveTopology.TriangleList,
-            // TR room geometry is wound so that triangles face *into* the
-            // room. With CullMode.None the back-facing exterior surfaces
-            // overlap the interior ones and the level looks "inside-out".
-            // Match the legacy renderer: cull back faces so walls disappear
-            // when the camera is outside the room.
-            Rasterizer             = new RasterizerState(CullMode.Back),
-            DepthStencil           = DepthStencilState.Default,
-            BlendStates            = new[] { BlendState.Opaque },
-            ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
-            DepthAttachmentFormat  = Format.D24_UNorm_S8_UInt,
-            DebugName              = "RoomGeometryPipeline",
-        });
+                VertexShader   = vs,
+                FragmentShader = ps,
+                VertexAttributes = new[]
+                {
+                    new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
+                    new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
+                    new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
+                    new VertexAttribute("TEXCOORD", 1, Format.R16G16_Float,    bufferSlot: 0, offset: 20),
+                },
+                VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 24) },
+                Topology               = PrimitiveTopology.TriangleList,
+                // TR room geometry is wound so triangles face *into* the room;
+                // cull back faces so walls vanish when the camera is outside.
+                Rasterizer             = new RasterizerState(CullMode.Back),
+                DepthStencil           = depth,
+                BlendStates            = new[] { blend },
+                ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
+                DepthAttachmentFormat  = Format.D24_UNorm_S8_UInt,
+                DebugName              = name,
+            });
+
+        _roomPipeline            = MakeRoomPipeline(BlendState.Opaque,
+                                                    DepthStencilState.Default,
+                                                    "RoomGeometryPipeline");
+        _roomTransparentPipeline = MakeRoomPipeline(BlendState.PremultipliedAlpha,
+                                                    DepthStencilState.DepthReadOnly,
+                                                    "RoomGeometryTransparentPipeline");
 
         _viewCb = _device.CreateBuffer(
             new BufferDesc(
@@ -208,9 +237,19 @@ public sealed class LevelRenderer : IDisposable
                 debugName: "RoomViewParams"),
             ReadOnlySpan<byte>.Empty);
 
-        _objects  = new ObjectRenderer(_device);
-        _services = new ServiceObjectRenderer(_device);
-        _gizmo    = new GizmoRenderer(_device);
+        _viewCbHidden = _device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: System.Runtime.CompilerServices.Unsafe.SizeOf<ViewParams>(),
+                usage:     BufferUsage.DynamicUniform,
+                bindFlags: BufferBindFlags.Constant,
+                debugName: "RoomViewParamsHidden"),
+            ReadOnlySpan<byte>.Empty);
+
+        _objects   = new ObjectRenderer(_device);
+        _services  = new ServiceObjectRenderer(_device);
+        _gizmo     = new GizmoRenderer(_device);
+        _text      = new TextRenderer(_device);
+        _editorGeo = new EditorGeometryRenderer(_device);
     }
 
     public void Resize(int width, int height)
@@ -227,6 +266,13 @@ public sealed class LevelRenderer : IDisposable
 
     public void RenderFrame(in RenderScene scene)
     {
+        // Rasterise new glyphs and (re)upload the glyph atlas BEFORE opening
+        // the command list. Atlas (re)creation runs its own one-shot GPU
+        // submit; doing that mid-recording corrupts the frame command buffer
+        // and deadlocks the next BeginCommandList on its fence.
+        if (_text != null && scene.Labels is { Count: > 0 })
+            _text.Prepare(scene.Labels);
+
         var cl = _device.BeginCommandList();
 
         // Upload view-projection. NOTE: no transpose. .NET's Matrix4x4 is
@@ -244,11 +290,23 @@ public sealed class LevelRenderer : IDisposable
             // texture UVs and skip the grid overlay entirely — matches the
             // legacy "RoomGridForce" gating.
             GridEnabled    = scene.DrawKind == RenderScene.RoomDrawKind.Geometry ? 1f : 0f,
+            RoomAlpha      = 1f,
         };
+        // Flyby depth-of-field overlay params (left zero — DofColorStrength.w
+        // == 0 — when no DOF flyby is selected, so the shader skips it).
+        if (scene.Dof is { } dof)
+        {
+            vp.DofCenterRange       = dof.CenterRange;
+            vp.DofDirectionDistance = dof.DirectionDistance;
+            vp.DofColorStrength     = dof.ColorStrength;
+        }
+        // Same params with a reduced RoomAlpha — bound for the hidden-room pass.
+        var vpHidden = vp;
+        vpHidden.RoomAlpha = 0.45f;
         unsafe
         {
-            var span = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));
-            cl.UpdateBuffer(_viewCb, 0, span);
+            cl.UpdateBuffer(_viewCb,       0, new ReadOnlySpan<byte>(&vp,       sizeof(ViewParams)));
+            cl.UpdateBuffer(_viewCbHidden, 0, new ReadOnlySpan<byte>(&vpHidden, sizeof(ViewParams)));
         }
 
         _scratchClearCol[0] = new Vector4(0.08f, 0.08f, 0.12f, 1f);
@@ -305,7 +363,9 @@ public sealed class LevelRenderer : IDisposable
                 DrawIllegalSlopes             = scene.ShowIllegalSlopes,
                 DrawSlideDirections           = scene.ShowSlideDirections,
                 ProbeAttributesThroughPortals = scene.ProbeAttributesThroughPortals,
-                HideHiddenRooms               = scene.HideHiddenRooms,
+                // Always false — hidden rooms keep full meshes and are faded
+                // in a dedicated pass instead of having their faces stripped.
+                HideHiddenRooms               = false,
             };
 
             // Match the legacy visible-room set: with ShowAllRooms off and
@@ -314,8 +374,12 @@ public sealed class LevelRenderer : IDisposable
             // so large levels stay quick when ShowAllRooms is on.
             CollectVisibleRooms(scene);
 
+            // Opaque room pass — Normal / AlphaTest faces, depth write on.
             foreach (Room room in _visibleRooms)
             {
+                // Hidden rooms are drawn faded in a dedicated pass below.
+                if (scene.HideHiddenRooms && room.Properties.Hidden) continue;
+
                 if (ReferenceEquals(room, scene.SelectedRoom))
                 {
                     st.SelectionArea  = scene.SelectionArea;
@@ -330,10 +394,28 @@ public sealed class LevelRenderer : IDisposable
                 }
 
                 var mesh = GetOrCreateRoomMesh(room, st.Get, scene.DrawKind, scene.ShowLightingWhiteTextureOnly);
-                if (mesh.VertexCount == 0) continue;
+                if (mesh.OpaqueVertexCount == 0) continue;
                 _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
                 cl.SetVertexBuffers(_scratchVb);
-                cl.Draw(mesh.VertexCount);
+                cl.Draw(mesh.OpaqueVertexCount);
+            }
+
+            // Transparent room pass — additive / alpha-blended faces. Depth-
+            // tested but not depth-writing, drawn after every opaque face so
+            // they composite over the geometry behind them. Meshes are
+            // already cached from the opaque pass, so GetOrCreateRoomMesh
+            // here is just a dictionary hit. Bindings persist across the
+            // pipeline switch (same b0/t0/s0 layout).
+            cl.SetPipeline(_roomTransparentPipeline);
+            foreach (Room room in _visibleRooms)
+            {
+                if (scene.HideHiddenRooms && room.Properties.Hidden) continue;
+                var mesh = GetOrCreateRoomMesh(room, st.Get, scene.DrawKind, scene.ShowLightingWhiteTextureOnly);
+                int transparentCount = mesh.VertexCount - mesh.OpaqueVertexCount;
+                if (transparentCount == 0) continue;
+                _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
+                cl.SetVertexBuffers(_scratchVb);
+                cl.Draw(transparentCount, 1, mesh.OpaqueVertexCount);
             }
 
             // Objects (moveables / statics / imported geometry). Reuses the
@@ -355,10 +437,51 @@ public sealed class LevelRenderer : IDisposable
                                  scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry,
                                  scene.ShowLightMeshes);
 
+            // Hidden-room pass — rooms flagged hidden are drawn last and
+            // faded (RoomAlpha < 1 via _viewCbHidden) instead of being
+            // culled, so the user still sees their outline and contents.
+            if (scene.HideHiddenRooms)
+            {
+                cl.SetPipeline(_roomTransparentPipeline);
+                _scratchCbuf[0] = _viewCbHidden;
+                _scratchTex [0] = _atlas!.Texture;
+                _scratchSamp[0] = _atlas.Sampler;
+                cl.SetBindings(new Bindings
+                {
+                    ConstantBuffers = _scratchCbuf,
+                    Textures        = _scratchTex,
+                    Samplers        = _scratchSamp,
+                });
+                st.SelectionArea  = new RectangleInt2(-1, -1, -1, -1);
+                st.HighlightArea  = new RectangleInt2(-1, -1, -1, -1);
+                st.SelectionArrow = ArrowType.EntireFace;
+                foreach (Room room in _visibleRooms)
+                {
+                    if (!room.Properties.Hidden) continue;
+                    var mesh = GetOrCreateRoomMesh(room, st.Get, scene.DrawKind, scene.ShowLightingWhiteTextureOnly);
+                    if (mesh.VertexCount == 0) continue;
+                    _scratchVb[0] = new VertexBufferBinding(mesh.Vb, 0);
+                    cl.SetVertexBuffers(_scratchVb);
+                    cl.Draw(mesh.VertexCount);
+                }
+            }
+
+            // Editor wireframe overlay — room / object bounding boxes,
+            // volumes, ghost blocks, flyby paths, height line. Depth-tested
+            // so it sits naturally in the scene.
+            if (_editorGeo != null)
+                _editorGeo.Render(cl, _visibleRooms, scene.Level, scene.ViewProjection, scene);
+
             // Gizmo overlay — depth-disabled, drawn last so it's always
             // visible over the selected object.
             if (_gizmo != null && scene.GizmoState.HasValue)
                 _gizmo.Render(cl, scene.GizmoState.Value, scene.ViewProjection);
+
+            // Text overlay — room names, coordinates, selected-object info,
+            // cardinal directions, FPS. Drawn after the gizmo so labels read
+            // on top of everything else.
+            if (_text != null && scene.Labels is { Count: > 0 })
+                _text.Render(cl, scene.Labels, scene.ViewProjection, _width, _height);
         }
 
         cl.EndPass();
@@ -494,7 +617,7 @@ public sealed class LevelRenderer : IDisposable
         var geom = room.RoomGeometry;
         int singleSidedVertexCount = geom.VertexPositions.Count;
         if (singleSidedVertexCount == 0 || _atlas == null)
-            return new RoomMesh(default, 0);
+            return new RoomMesh(default, 0, 0);
 
         int triCount = singleSidedVertexCount / 3;
 
@@ -514,11 +637,14 @@ public sealed class LevelRenderer : IDisposable
         }
 
         if (visibleTris == 0)
-            return new RoomMesh(default, 0);
+            return new RoomMesh(default, 0, 0);
 
         Vector3 wp = room.WorldPos;
-        var verts = new RoomVertex[visibleTris * 3];
-        int outIdx = 0;
+        // Faces split into opaque (Normal / AlphaTest) and transparent
+        // (additive / alpha-blended) groups, drawn in two passes with the
+        // matching pipeline.
+        var opaqueVerts      = new List<RoomVertex>(visibleTris * 3);
+        var transparentVerts = new List<RoomVertex>();
 
         for (int i = 0; i < triCount; i++)
         {
@@ -625,35 +751,61 @@ public sealed class LevelRenderer : IDisposable
                 }
             }
 
-            verts[outIdx + 0] = new RoomVertex
+            // The face BlendMode decides which pass the triangle joins. In
+            // Geometry mode there are no real textures, so the alpha byte
+            // keeps its sector-overlay meaning and every face is opaque.
+            uint alphaByte;
+            bool transparent;
+            if (texturing || lighting)
+            {
+                int bm      = (int)ta.BlendMode;
+                alphaByte   = (uint)Math.Clamp(bm, 0, 15);
+                transparent = bm >= 2;   // Additive(2) and up are blended
+            }
+            else
+            {
+                alphaByte   = overlay ? 255u : 0u;
+                transparent = false;
+            }
+
+            var dst = transparent ? transparentVerts : opaqueVerts;
+            dst.Add(new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 0] + wp,
-                ColorRgba8 = PackColor(c0, overlay),
+                ColorRgba8 = PackColor(c0, alphaByte),
                 UvU        = PackUNorm16(uv0.X),
                 UvV        = PackUNorm16(uv0.Y),
                 GridUvU    = (Half)eu0.X,
                 GridUvV    = (Half)eu0.Y,
-            };
-            verts[outIdx + 1] = new RoomVertex
+            });
+            dst.Add(new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 1] + wp,
-                ColorRgba8 = PackColor(c1, overlay),
+                ColorRgba8 = PackColor(c1, alphaByte),
                 UvU        = PackUNorm16(uv1.X),
                 UvV        = PackUNorm16(uv1.Y),
                 GridUvU    = (Half)eu1.X,
                 GridUvV    = (Half)eu1.Y,
-            };
-            verts[outIdx + 2] = new RoomVertex
+            });
+            dst.Add(new RoomVertex
             {
                 Position   = geom.VertexPositions[i * 3 + 2] + wp,
-                ColorRgba8 = PackColor(c2, overlay),
+                ColorRgba8 = PackColor(c2, alphaByte),
                 UvU        = PackUNorm16(uv2.X),
                 UvV        = PackUNorm16(uv2.Y),
                 GridUvU    = (Half)eu2.X,
                 GridUvV    = (Half)eu2.Y,
-            };
-            outIdx += 3;
+            });
         }
+
+        // Opaque first, transparent appended after — the render loop draws
+        // [0, OpaqueVertexCount) then [OpaqueVertexCount, VertexCount).
+        int opaqueCount = opaqueVerts.Count;
+        var verts = new RoomVertex[opaqueCount + transparentVerts.Count];
+        opaqueVerts.CopyTo(verts, 0);
+        transparentVerts.CopyTo(verts, opaqueCount);
+        if (verts.Length == 0)
+            return new RoomMesh(default, 0, 0);
 
         var bytes = MemoryMarshal.AsBytes(verts.AsSpan());
         var vb = _device.CreateBuffer(
@@ -663,7 +815,7 @@ public sealed class LevelRenderer : IDisposable
                 bindFlags: BufferBindFlags.Vertex,
                 debugName: "Room:" + (room.Name ?? "?")),
             bytes);
-        return new RoomMesh(vb, verts.Length);
+        return new RoomMesh(vb, verts.Length, opaqueCount);
     }
 
     public void Dispose()
@@ -674,9 +826,13 @@ public sealed class LevelRenderer : IDisposable
         _objects?.Dispose();
         _services?.Dispose();
         _gizmo?.Dispose();
-        if (_viewCb.IsValid)        _device.Destroy(_viewCb);
-        if (_roomPipeline.IsValid)  _device.Destroy(_roomPipeline);
-        if (_swap.IsValid)          _device.Destroy(_swap);
+        _text?.Dispose();
+        _editorGeo?.Dispose();
+        if (_viewCb.IsValid)                   _device.Destroy(_viewCb);
+        if (_viewCbHidden.IsValid)             _device.Destroy(_viewCbHidden);
+        if (_roomPipeline.IsValid)             _device.Destroy(_roomPipeline);
+        if (_roomTransparentPipeline.IsValid)  _device.Destroy(_roomTransparentPipeline);
+        if (_swap.IsValid)                     _device.Destroy(_swap);
         _device.Dispose();
     }
 }

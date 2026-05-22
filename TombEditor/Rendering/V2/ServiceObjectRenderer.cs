@@ -33,7 +33,13 @@ internal sealed class ServiceObjectRenderer : IDisposable
     private readonly IRhiDevice    _device;
     private readonly PipelineHandle _spritePipeline;
     private readonly PipelineHandle _linePipeline;
-    private readonly BufferHandle   _viewCb;
+    // Separate view-params cbuffers for the sprite and line passes. They must
+    // NOT share one buffer: on Vulkan UpdateBuffer is an immediate memcpy into
+    // mapped memory, so a single buffer written twice per frame would make
+    // both draws read the value of the LAST write — collapsing every billboard
+    // (the sprite pass would read the line pass' zeroed CamRight/CamUp).
+    private readonly BufferHandle   _spriteViewCb;
+    private readonly BufferHandle   _lineViewCb;
     private readonly TextureHandle  _iconAtlas;
     private readonly SamplerHandle  _iconSampler;
 
@@ -52,10 +58,9 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
     // Picking constants exposed to Panel3D so the same hitbox math drives
     // both the renderer's billboards and the ray-cast.
-    public const float MarkerHalfExtent  = 384f; // billboard half-size in world units
-    public const float LightSphereRadius = 384f; // matches MarkerHalfExtent — slightly larger
-                                                  // than the legacy 128 since the icon is bigger
-                                                  // (89×89 × ~3 zoom vs the old cube).
+    public const float MarkerHalfExtent  = 192f; // billboard half-size in world units
+    public const float LightSphereRadius = 192f; // kept equal to MarkerHalfExtent so the
+                                                  // billboard and its pick hitbox agree
 
     // ----- Icon atlas layout -------------------------------------------------
     // 16 icons of 89×89 each, packed in a 4×4 grid → 356×356 atlas.
@@ -79,6 +84,12 @@ internal sealed class ServiceObjectRenderer : IDisposable
         public uint    Tint;      // RGBA8
     }
     private const int SpriteStride = 12 + 8 + 8 + 4; // 32
+
+    // One service-object icon. Billboards are collected, depth-sorted
+    // farthest-first, then emitted so overlapping alpha-blended icons
+    // composite in the correct order.
+    private readonly record struct Billboard(Vector3 Center, ServiceObjectTexture Icon, uint Tint);
+    private readonly List<Billboard> _billboards = new();
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct LineVertex
@@ -149,12 +160,19 @@ internal sealed class ServiceObjectRenderer : IDisposable
             DebugName              = "ServiceLinePipeline",
         });
 
-        _viewCb = device.CreateBuffer(
+        _spriteViewCb = device.CreateBuffer(
             new BufferDesc(
-                sizeBytes: Math.Max(Unsafe.SizeOf<SpriteViewParams>(), Unsafe.SizeOf<LineViewParams>()),
+                sizeBytes: Unsafe.SizeOf<SpriteViewParams>(),
                 usage:     BufferUsage.DynamicUniform,
                 bindFlags: BufferBindFlags.Constant,
-                debugName: "ServiceViewParams"),
+                debugName: "ServiceSpriteViewParams"),
+            ReadOnlySpan<byte>.Empty);
+        _lineViewCb = device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: Unsafe.SizeOf<LineViewParams>(),
+                usage:     BufferUsage.DynamicUniform,
+                bindFlags: BufferBindFlags.Constant,
+                debugName: "ServiceLineViewParams"),
             ReadOnlySpan<byte>.Empty);
 
         AllocSpriteVb(8192);
@@ -243,12 +261,22 @@ internal sealed class ServiceObjectRenderer : IDisposable
         Vector3 camUp = Vector3.Normalize(Vector3.Cross(camRight, forward));
 
         // ---- Build sprite + line geometry (resize loop on each VB) ----
+        // Collect every billboard, then depth-sort farthest-first so the
+        // alpha-blended icons composite correctly where they overlap.
+        _billboards.Clear();
+        CollectBillboards(_billboards, visibleRooms, level, highlighted, selectionTint,
+                          showMoveables, showStatics, showImportedGeometry);
+        _billboards.Sort((a, b) =>
+            Vector3.DistanceSquared(b.Center, camPos).CompareTo(
+            Vector3.DistanceSquared(a.Center, camPos)));
+
         int spriteN;
         for (;;)
         {
             var span = MemoryMarshal.Cast<byte, SpriteVertex>(_spriteVbCpu.AsSpan());
-            spriteN = BuildSprites(span, visibleRooms, level, highlighted, selectionTint,
-                                    showMoveables, showStatics, showImportedGeometry);
+            spriteN = 0;
+            foreach (var bb in _billboards)
+                EmitBillboard(bb.Center, bb.Icon, bb.Tint, span, ref spriteN);
             if (spriteN <= _spriteVbCapacity) break;
             AllocSpriteVb(Math.Max(spriteN, _spriteVbCapacity * 2));
         }
@@ -276,11 +304,11 @@ internal sealed class ServiceObjectRenderer : IDisposable
             unsafe
             {
                 var vpSpan = new ReadOnlySpan<byte>(&vp, sizeof(SpriteViewParams));
-                cl.UpdateBuffer(_viewCb, 0, vpSpan);
+                cl.UpdateBuffer(_spriteViewCb, 0, vpSpan);
             }
 
             cl.SetPipeline(_spritePipeline);
-            _scratchCbuf[0] = _viewCb;
+            _scratchCbuf[0] = _spriteViewCb;
             _scratchTex[0]  = _iconAtlas;
             _scratchSamp[0] = _iconSampler;
             cl.SetBindings(new Bindings
@@ -303,11 +331,11 @@ internal sealed class ServiceObjectRenderer : IDisposable
             unsafe
             {
                 var lvpSpan = new ReadOnlySpan<byte>(&lvp, sizeof(LineViewParams));
-                cl.UpdateBuffer(_viewCb, 0, lvpSpan);
+                cl.UpdateBuffer(_lineViewCb, 0, lvpSpan);
             }
 
             cl.SetPipeline(_linePipeline);
-            _scratchCbuf[0] = _viewCb;
+            _scratchCbuf[0] = _lineViewCb;
             cl.SetBindings(new Bindings { ConstantBuffers = _scratchCbuf });
             _scratchVbs[0] = new VertexBufferBinding(_lineVb, 0);
             cl.SetVertexBuffers(_scratchVbs);
@@ -319,7 +347,8 @@ internal sealed class ServiceObjectRenderer : IDisposable
     {
         if (_spriteVb.IsValid)       _device.Destroy(_spriteVb);
         if (_lineVb.IsValid)         _device.Destroy(_lineVb);
-        if (_viewCb.IsValid)         _device.Destroy(_viewCb);
+        if (_spriteViewCb.IsValid)   _device.Destroy(_spriteViewCb);
+        if (_lineViewCb.IsValid)     _device.Destroy(_lineViewCb);
         if (_iconAtlas.IsValid)      _device.Destroy(_iconAtlas);
         if (_iconSampler.IsValid)    _device.Destroy(_iconSampler);
         if (_spritePipeline.IsValid) _device.Destroy(_spritePipeline);
@@ -328,12 +357,11 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
     // ======================================================== Sprite build
 
-    private static int BuildSprites(Span<SpriteVertex> v, IReadOnlyList<Room> rooms, Level level,
-                                     HighlightedObjects highlighted, Vector4 selectionTint,
-                                     bool showMoveables, bool showStatics, bool showImportedGeometry)
+    private static void CollectBillboards(List<Billboard> outList, IReadOnlyList<Room> rooms, Level level,
+                                          HighlightedObjects highlighted, Vector4 selectionTint,
+                                          bool showMoveables, bool showStatics, bool showImportedGeometry)
     {
         uint selRgba = PackRgba(selectionTint);
-        int n = 0;
         foreach (var room in rooms)
         {
             if (room?.Objects == null) continue;
@@ -346,10 +374,9 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
                 bool sel = highlighted != null && highlighted.Contains(obj);
                 uint tint = sel ? selRgba : ServiceObjectColor(obj);
-                EmitBillboard(wp + position, icon, tint, v, ref n);
+                outList.Add(new Billboard(wp + position, icon, tint));
             }
         }
-        return n;
     }
 
     // Per-type sprite tint. Mirrors the legacy DrawPlaceholders / DrawLights /

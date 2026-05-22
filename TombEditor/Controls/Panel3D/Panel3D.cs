@@ -1187,7 +1187,17 @@ namespace TombEditor.Controls.Panel3D
                         gridLineWidth:                 _editor.Configuration.Rendering3D_LineWidth,
                         gizmoState:                    gizmoSnap,
                         highlighted:                   _highlightedObjects,
-                        selectionTint:                 _editor.Configuration.UI_ColorScheme.ColorSelection);
+                        selectionTint:                 _editor.Configuration.UI_ColorScheme.ColorSelection,
+                        labels:                        BuildV2Labels(),
+                        showGhostBlocks:               ShowGhostBlocks,
+                        showVolumes:                   ShowVolumes,
+                        showBoundingBoxes:             ShowBoundingBoxes,
+                        showRoomBounds:                _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds,
+                        objectHeightLine:              BuildV2HeightLine(),
+                        brush:                         BuildV2Brush(),
+                        dof:                           BuildV2Dof(),
+                        highlightedSplit:              _editor.HighlightedSplit,
+                        flybyPathSequence:             TryGetSelectedFlybySequence(out int v2FlybySeq) ? v2FlybySeq : -1);
                     _v2Renderer.RenderFrame(scene);
                 }
                 else

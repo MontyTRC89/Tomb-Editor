@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombLib.RenderingV2.Text;
 using TombEditor;
 
 namespace TombEditor.Rendering.V2;
@@ -50,6 +52,25 @@ public readonly struct RenderScene
     // selected.
     public readonly HighlightedObjects? Highlighted;
     public readonly Vector4 SelectionTint;
+    // Text overlay for this frame — room names, coordinates, object info,
+    // cardinal directions, FPS. Built by Panel3D; the renderer only projects
+    // and draws them. May be null when there is nothing to label.
+    public readonly IReadOnlyList<TextLabel>? Labels;
+    // Editor overlay geometry toggles (drawn by EditorGeometryRenderer).
+    public readonly bool ShowGhostBlocks;
+    public readonly bool ShowVolumes;
+    public readonly bool ShowBoundingBoxes;
+    public readonly bool ShowRoomBounds;
+    // Selected object's vertical line down to the floor under it (world space).
+    public readonly (Vector3 From, Vector3 To)? ObjectHeightLine;
+    // Object-brush overlay (painting mode): floor circle at Center, world-unit Radius.
+    public readonly (Vector3 Center, float Radius)? Brush;
+    // Flyby depth-of-field overlay (TombEngine) — null when no DOF flyby is selected.
+    public readonly (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? Dof;
+    // Sector split highlighted in the editor (0 = none) — drives the split-highlight ribbons.
+    public readonly int HighlightedSplit;
+    // Flyby sequence whose solid path tube should be drawn (-1 = none selected).
+    public readonly int FlybyPathSequence;
 
     public RenderScene(
         Level             level,
@@ -77,7 +98,17 @@ public readonly struct RenderScene
         float             gridLineWidth,
         BaseGizmo.PublicState? gizmoState = null,
         HighlightedObjects? highlighted = null,
-        Vector4? selectionTint = null)
+        Vector4? selectionTint = null,
+        IReadOnlyList<TextLabel>? labels = null,
+        bool showGhostBlocks = false,
+        bool showVolumes = false,
+        bool showBoundingBoxes = false,
+        bool showRoomBounds = false,
+        (Vector3 From, Vector3 To)? objectHeightLine = null,
+        (Vector3 Center, float Radius)? brush = null,
+        (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? dof = null,
+        int highlightedSplit = 0,
+        int flybyPathSequence = -1)
     {
         Level                         = level;
         Camera                        = camera;
@@ -106,6 +137,16 @@ public readonly struct RenderScene
         GizmoState                    = gizmoState;
         Highlighted                   = highlighted;
         SelectionTint                 = selectionTint ?? new Vector4(1f, 0f, 0f, 1f);
+        Labels                        = labels;
+        ShowGhostBlocks               = showGhostBlocks;
+        ShowVolumes                   = showVolumes;
+        ShowBoundingBoxes             = showBoundingBoxes;
+        ShowRoomBounds                = showRoomBounds;
+        ObjectHeightLine              = objectHeightLine;
+        Brush                         = brush;
+        Dof                           = dof;
+        HighlightedSplit              = highlightedSplit;
+        FlybyPathSequence             = flybyPathSequence;
     }
 
     /// <summary>Texturing mode renders real textures full-bright, grid off.</summary>

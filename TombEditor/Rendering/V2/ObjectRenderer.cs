@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using TombLib.LevelData;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Rendering.V2;
 
@@ -173,7 +174,10 @@ internal sealed class ObjectRenderer : IDisposable
         var inst = new InstanceData
         {
             Model = Matrix4x4.Transpose(model),
-            Tint  = new Vector4(1f, 1f, 1f, 0f), // alpha=0 → multiply path (vertex × white)
+            // alpha=1 → full-replace path: o.Color = white, so the horizon
+            // shows its pure texture with no vertex-colour modulation — matches
+            // the legacy DrawSkybox (ColoredVertices = false).
+            Tint  = new Vector4(1f, 1f, 1f, 1f),
         };
         unsafe
         {
@@ -260,7 +264,7 @@ internal sealed class ObjectRenderer : IDisposable
                         }
                     case MoveableInstance mi when showMoveables:
                         {
-                            var mv = level.Settings?.WadTryGetMoveable(mi.WadObjectId);
+                            var mv = ResolveMoveable(level, mi.WadObjectId);
                             if (mv == null) continue;
                             if (!_moveableBatch.TryGetValue(mv, out var list))
                                 _moveableBatch[mv] = list = new List<InstanceData>();
@@ -348,6 +352,24 @@ internal sealed class ObjectRenderer : IDisposable
             cl.SetVertexBuffers(_scratchVbs);
             cl.Draw(g.VertexCount, g.InstanceCount);
         }
+    }
+
+    // Resolve the WadMoveable to actually draw for an instance. Lara (id 0)
+    // is drawn with the LARA_SKIN object's meshes when that object exists and
+    // its mesh count matches — same rule as the legacy DrawMoveables.
+    private static WadMoveable ResolveMoveable(Level level, WadMoveableId id)
+    {
+        var mv = level.Settings?.WadTryGetMoveable(id);
+        if (mv == null) return null;
+
+        if (id == WadMoveableId.Lara)
+        {
+            uint skinTypeId = TrCatalog.GetMoveableSkin(level.Settings.GameVersion, id.TypeId);
+            var skin = level.Settings.WadTryGetMoveable(new WadMoveableId(skinTypeId));
+            if (skin != null && skin.Meshes.Count == mv.Meshes.Count)
+                return skin;
+        }
+        return mv;
     }
 
     // ----------------------------------------------------------- Mesh cache

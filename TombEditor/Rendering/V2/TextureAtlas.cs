@@ -12,6 +12,7 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Rendering.V2;
 
@@ -132,6 +133,22 @@ public sealed class TextureAtlas : IDisposable
             }
         }
 
+        // The horizon (skybox) moveable is drawn every frame even though no
+        // room or instance references it — make sure its polygon textures are
+        // packed too, otherwise the skybox samples the white pixel.
+        if (level.Settings != null)
+        {
+            var horizonId = WadMoveableId.GetHorizon(level.Settings.GameVersion);
+            if (horizonId.HasValue)
+            {
+                var horizon = level.Settings.WadTryGetMoveable(horizonId.Value);
+                if (horizon != null)
+                    foreach (var bone in horizon.Bones)
+                        if (bone?.Mesh != null)
+                            foreach (var poly in bone.Mesh.Polys) TryAdd(poly.Texture.Texture);
+            }
+        }
+
         // ImportedGeometry textures.
         if (level.Settings?.ImportedGeometries != null)
         {
@@ -144,8 +161,17 @@ public sealed class TextureAtlas : IDisposable
             }
         }
 
-        var textureJobs = new List<PackJob>(unique.Count);
-        foreach (var tex in unique)
+        // Pack the largest textures first. The shelf packer fragments badly
+        // when a big texture (e.g. the horizon's sky texture) arrives after
+        // many small ones — it then fails to find a contiguous slot and the
+        // texture is dropped, so it samples the white pixel instead. Packing
+        // big-to-small keeps large entries from being dropped.
+        var sortedTextures = new List<Texture>(unique);
+        sortedTextures.Sort((a, b) =>
+            ((long)b.Image.Width * b.Image.Height).CompareTo((long)a.Image.Width * a.Image.Height));
+
+        var textureJobs = new List<PackJob>(sortedTextures.Count);
+        foreach (var tex in sortedTextures)
         {
             if (TryPack(packer, tex.Image, out var inner))
             {
@@ -193,7 +219,8 @@ public sealed class TextureAtlas : IDisposable
     // at oblique floor angles can extend ~6-8 texels in the elongated
     // direction. 4 px was insufficient to contain that footprint at sector
     // seams (visible thin dark/light lines on tiled floors). 8 px costs more
-    // atlas area but covers the worst case without artifacts.
+    // a
+    // tlas area but covers the worst case without artifacts.
     private const int Gutter = 8;
 
     private static bool TryPack(RectPackerSimpleStack packer, ImageC image, out VectorInt2 innerOrigin)

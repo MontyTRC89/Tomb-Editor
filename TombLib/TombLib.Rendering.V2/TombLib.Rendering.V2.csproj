@@ -51,6 +51,10 @@
       <EntryVs>vs_main</EntryVs>
       <EntryPs>ps_main</EntryPs>
     </HlslShaderV2>
+    <HlslShaderV2 Include="Shaders\Text.hlsl">
+      <EntryVs>vs_main</EntryVs>
+      <EntryPs>ps_main</EntryPs>
+    </HlslShaderV2>
     <None Include="Shaders\*.hlsli" />
   </ItemGroup>
 
@@ -62,6 +66,11 @@
     <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.21.0" />
     <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL" Version="2.21.0" />
+    <!-- Cross-platform, fully-managed font rasterisation for the V2 text pass.
+         SixLabors.ImageSharp.Drawing transitively brings in SixLabors.Fonts
+         (glyph metrics + system-font discovery + fallback) and ImageSharp
+         (the actual glyph rasteriser). No native binaries on any platform. -->
+    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.6" />
   </ItemGroup>
 
   <Import Project="HlslShaderCompile.V2.targets" />
