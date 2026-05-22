@@ -69,11 +69,16 @@ public unsafe sealed class VkCommandList : ICommandList
         int width  = desc.ViewportWidth  > 0 ? desc.ViewportWidth  : sc.Width;
         int height = desc.ViewportHeight > 0 ? desc.ViewportHeight : sc.Height;
 
-        // Clear values match the RHI's PassDesc ops.
-        var clears = stackalloc ClearValue[2];
+        // Clear values are indexed by attachment. Attachment order matches
+        // GetOrCreateRenderPass: [0] colour, [1] depth, and — when the
+        // swapchain is multisampled — [2] the resolve target (its load op is
+        // DontCare so the value is unused, but the array must still cover it).
+        int attachCount = sc.Samples > 1 ? 3 : 2;
+        var clears = stackalloc ClearValue[3];
         Vector4 c = (desc.ClearColors != null && desc.ClearColors.Length > 0) ? desc.ClearColors[0] : default;
         clears[0] = new ClearValue { Color = new ClearColorValue(c.X, c.Y, c.Z, c.W) };
         clears[1] = new ClearValue { DepthStencil = new ClearDepthStencilValue(desc.ClearDepth, desc.ClearStencil) };
+        clears[2] = default;
 
         var rpbi = new RenderPassBeginInfo
         {
@@ -81,7 +86,7 @@ public unsafe sealed class VkCommandList : ICommandList
             RenderPass       = sc.RenderPass,
             Framebuffer      = sc.Framebuffers[sc.CurrentImageIndex],
             RenderArea       = new Rect2D(new Offset2D(desc.ViewportX, desc.ViewportY), new Extent2D((uint)width, (uint)height)),
-            ClearValueCount  = 2,
+            ClearValueCount  = (uint)attachCount,
             PClearValues     = clears,
         };
         _dev.Api.CmdBeginRenderPass(_cmd, in rpbi, SubpassContents.Inline);

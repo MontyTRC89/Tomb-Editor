@@ -255,7 +255,9 @@ public unsafe sealed partial class VkDevice
             var ms = new PipelineMultisampleStateCreateInfo
             {
                 SType                 = StructureType.PipelineMultisampleStateCreateInfo,
-                RasterizationSamples  = SampleCountFlags.Count1Bit,
+                // Must match the swapchain render pass' sample count — every
+                // pipeline in this renderer targets the (MSAA) swapchain.
+                RasterizationSamples  = VkMapping.ToSampleCount(MsaaSamples),
                 SampleShadingEnable   = false,
             };
 
@@ -305,7 +307,10 @@ public unsafe sealed partial class VkDevice
             // be built lazily by BeginPass on first use.
             var colorFmtRhi = desc.ColorAttachmentFormats.Length > 0 ? desc.ColorAttachmentFormats[0] : RhiFormat.R8G8B8A8_UNorm;
             var depthFmtRhi = desc.DepthAttachmentFormat;
-            var rp = GetOrCreateRenderPass(VkMapping.ToVk(colorFmtRhi), VkMapping.ToVk(depthFmtRhi), 1, resolveToSwapchain: false);
+            // MsaaSamples + resolveToSwapchain:true so this matches the
+            // swapchain's render pass shape exactly (same cache key → same
+            // VkRenderPass → guaranteed compatible at draw time).
+            var rp = GetOrCreateRenderPass(VkMapping.ToVk(colorFmtRhi), VkMapping.ToVk(depthFmtRhi), MsaaSamples, resolveToSwapchain: true);
 
             var gpci = new GraphicsPipelineCreateInfo
             {
@@ -350,7 +355,7 @@ public unsafe sealed partial class VkDevice
                 VertexStrides = strides,
                 ColorFormats  = desc.ColorAttachmentFormats,
                 DepthFormat   = depthFmtRhi,
-                Samples       = 1,
+                Samples       = MsaaSamples,
                 BasePass      = rp,
             };
             return new PipelineHandle(id);
@@ -374,7 +379,8 @@ public unsafe sealed partial class VkDevice
 
     public void Destroy(PipelineHandle h)
     {
-        if (Pipelines.Remove(h.Id, out var p)) DestroyPipelineInternal(p);
+        if (Pipelines.Remove(h.Id, out var p))
+            _pendingDeletes.Add(() => DestroyPipelineInternal(p));
     }
 
     internal void DestroyPipelineInternal(VkPipelineRes p)

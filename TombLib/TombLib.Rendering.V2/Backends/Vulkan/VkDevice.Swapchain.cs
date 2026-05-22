@@ -40,15 +40,15 @@ public unsafe sealed partial class VkDevice
         if (!supported)
             throw new InvalidOperationException("Selected queue family cannot present to the window's surface");
 
-        // For the first cut we hard-set samples=1 (no MSAA). The viewport
-        // looks a touch jaggier than the DX11 path but every Vulkan
-        // resolve/MSAA attachment complication goes away.
+        // 4x MSAA: render into an off-screen multisampled colour + depth
+        // image, then let the render pass resolve into the single-sample
+        // swapchain image for presentation. Matches the DX11 backend.
         var res = new VkSwapchainRes
         {
             Surface     = surface,
             ColorFormat = desc.ColorFormat,
             DepthFormat = desc.DepthFormat,
-            Samples     = 1,
+            Samples     = MsaaSamples,
             VSync       = desc.VSync,
             Hwnd        = desc.WindowHandle,
             Width       = desc.Width,
@@ -217,7 +217,7 @@ public unsafe sealed partial class VkDevice
             Extent        = new Extent3D(extent.Width, extent.Height, 1),
             MipLevels     = 1,
             ArrayLayers   = 1,
-            Samples       = SampleCountFlags.Count1Bit,
+            Samples       = VkMapping.ToSampleCount(sc.Samples),
             Tiling        = ImageTiling.Optimal,
             Usage         = ImageUsageFlags.DepthStencilAttachmentBit,
             SharingMode   = SharingMode.Exclusive,
@@ -243,19 +243,76 @@ public unsafe sealed partial class VkDevice
         };
         Api.CreateImageView(Device, in dvci, null, out sc.DepthView);
 
-        // Render pass + framebuffers. resolveToSwapchain=true so the final
-        // layout of the color attachment is PRESENT_SRC_KHR.
-        sc.RenderPass = GetOrCreateRenderPass(chosen.Format, depthVk, 1, resolveToSwapchain: true);
+        // Off-screen multisampled colour target. Rendering is multisampled
+        // into this image; the render pass resolves it into the single-sample
+        // swapchain image at the end of the pass. Skipped when Samples == 1.
+        if (sc.Samples > 1)
+        {
+            var mci = new ImageCreateInfo
+            {
+                SType         = StructureType.ImageCreateInfo,
+                ImageType     = ImageType.Type2D,
+                Format        = chosen.Format,
+                Extent        = new Extent3D(extent.Width, extent.Height, 1),
+                MipLevels     = 1,
+                ArrayLayers   = 1,
+                Samples       = VkMapping.ToSampleCount(sc.Samples),
+                Tiling        = ImageTiling.Optimal,
+                Usage         = ImageUsageFlags.ColorAttachmentBit,
+                SharingMode   = SharingMode.Exclusive,
+                InitialLayout = ImageLayout.Undefined,
+            };
+            Api.CreateImage(Device, in mci, null, out sc.MsaaColorImage);
+            Api.GetImageMemoryRequirements(Device, sc.MsaaColorImage, out var mReq);
+            sc.MsaaColorMemory = AllocMemory(mReq.Size, mReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
+            Api.BindImageMemory(Device, sc.MsaaColorImage, sc.MsaaColorMemory, 0);
+            var mvci = new ImageViewCreateInfo
+            {
+                SType    = StructureType.ImageViewCreateInfo,
+                Image    = sc.MsaaColorImage,
+                ViewType = ImageViewType.Type2D,
+                Format   = chosen.Format,
+                SubresourceRange = new ImageSubresourceRange
+                {
+                    AspectMask = ImageAspectFlags.ColorBit,
+                    BaseMipLevel = 0, LevelCount = 1,
+                    BaseArrayLayer = 0, LayerCount = 1,
+                },
+            };
+            Api.CreateImageView(Device, in mvci, null, out sc.MsaaColorView);
+        }
+
+        // Render pass + framebuffers. resolveToSwapchain=true: at Samples > 1
+        // the pass gains a resolve attachment (final layout PRESENT_SRC_KHR);
+        // at Samples == 1 the colour attachment itself is the present target.
+        sc.RenderPass = GetOrCreateRenderPass(chosen.Format, depthVk, sc.Samples, resolveToSwapchain: true);
 
         sc.Framebuffers = new Framebuffer[n];
         for (int i = 0; i < n; i++)
         {
-            var attachments = stackalloc ImageView[2] { sc.ColorViews[i], sc.DepthView };
+            // Attachment order must match GetOrCreateRenderPass:
+            //   MSAA -> [0] multisampled colour, [1] depth, [2] resolve (swapchain image)
+            //   1x   -> [0] colour (swapchain image), [1] depth
+            var attachments = stackalloc ImageView[3];
+            uint attachCount;
+            if (sc.Samples > 1)
+            {
+                attachments[0] = sc.MsaaColorView;
+                attachments[1] = sc.DepthView;
+                attachments[2] = sc.ColorViews[i];
+                attachCount = 3;
+            }
+            else
+            {
+                attachments[0] = sc.ColorViews[i];
+                attachments[1] = sc.DepthView;
+                attachCount = 2;
+            }
             var fbci = new FramebufferCreateInfo
             {
                 SType           = StructureType.FramebufferCreateInfo,
                 RenderPass      = sc.RenderPass,
-                AttachmentCount = 2,
+                AttachmentCount = attachCount,
                 PAttachments    = attachments,
                 Width           = extent.Width,
                 Height          = extent.Height,
@@ -263,11 +320,18 @@ public unsafe sealed partial class VkDevice
             };
             Api.CreateFramebuffer(Device, in fbci, null, out sc.Framebuffers[i]);
         }
+
+        // One "render finished" semaphore per swapchain image (see
+        // VkSwapchainRes). Recreated alongside the images on every resize.
+        sc.RenderFinishedSemaphores = new Semaphore[n];
+        var semCi = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
+        for (int i = 0; i < n; i++)
+            Api.CreateSemaphore(Device, in semCi, null, out sc.RenderFinishedSemaphores[i]);
     }
 
     public void ResizeSwapchain(SwapchainHandle handle, int width, int height)
     {
-        var sc = Swapchains[handle.Id];
+        if (_disposed || !Swapchains.TryGetValue(handle.Id, out var sc)) return;
         WaitIdle();
         DestroySwapchainViews(sc);
         sc.Width = width; sc.Height = height;
@@ -315,6 +379,10 @@ public unsafe sealed partial class VkDevice
 
     private void DestroySwapchainViews(VkSwapchainRes sc)
     {
+        if (sc.RenderFinishedSemaphores != null)
+            for (int i = 0; i < sc.RenderFinishedSemaphores.Length; i++)
+                if (sc.RenderFinishedSemaphores[i].Handle != 0)
+                    Api.DestroySemaphore(Device, sc.RenderFinishedSemaphores[i], null);
         if (sc.Framebuffers != null)
             for (int i = 0; i < sc.Framebuffers.Length; i++)
                 if (sc.Framebuffers[i].Handle != 0)
@@ -322,6 +390,9 @@ public unsafe sealed partial class VkDevice
         if (sc.DepthView.Handle  != 0) Api.DestroyImageView(Device, sc.DepthView,  null);
         if (sc.DepthImage.Handle != 0) Api.DestroyImage(Device, sc.DepthImage,     null);
         if (sc.DepthMemory.Handle!= 0) Api.FreeMemory(Device, sc.DepthMemory,      null);
+        if (sc.MsaaColorView.Handle   != 0) Api.DestroyImageView(Device, sc.MsaaColorView,  null);
+        if (sc.MsaaColorImage.Handle  != 0) Api.DestroyImage(Device, sc.MsaaColorImage,     null);
+        if (sc.MsaaColorMemory.Handle != 0) Api.FreeMemory(Device, sc.MsaaColorMemory,      null);
         if (sc.ColorViews != null)
             for (int i = 0; i < sc.ColorViews.Length; i++)
                 if (sc.ColorViews[i].Handle != 0)

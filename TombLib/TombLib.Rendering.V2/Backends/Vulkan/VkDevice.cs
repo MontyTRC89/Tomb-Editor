@@ -74,9 +74,15 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     internal CommandBuffer        FrameCmd;
     internal Fence                FrameFence;
     internal Semaphore            ImageAvailable;
-    internal Semaphore            RenderFinished;
     internal DescriptorPool       TransientDescPool;
     internal bool                 FrameRecording;     // true between BeginCommandList and Submit
+
+    // Swapchain MSAA sample count. Rendering targets an off-screen 4x colour
+    // + depth image which the render pass resolves into the single-sample
+    // swapchain image at EndPass. The Vulkan spec guarantees both
+    // framebufferColorSampleCounts and framebufferDepthSampleCounts include
+    // 1x and 4x, so this needs no capability probe. Matches the DX11 backend.
+    internal const int MsaaSamples = 4;
 
     // Resource pools (handle id → resource).
     private uint _nextHandle = 1;
@@ -486,8 +492,11 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Api.CreateFence(Device, in fci, null, out FrameFence);
 
         var sci = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
+        // ImageAvailable is one shared acquire semaphore — safe with a single
+        // frame in flight (BeginCommandList waits FrameFence before the next
+        // acquire). The "render finished" semaphores are per swapchain image
+        // and live on VkSwapchainRes; see CreateSwapchainResources.
         Api.CreateSemaphore(Device, in sci, null, out ImageAvailable);
-        Api.CreateSemaphore(Device, in sci, null, out RenderFinished);
 
         // Transient descriptor pool — sized to one descriptor of each type
         // per allocation × MaxSets. SetBindings allocates a fresh descriptor
@@ -513,9 +522,32 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     internal uint AllocHandle() => _nextHandle++;
 
+    // Deferred resource destruction. The backend runs a single frame in
+    // flight, so a buffer / texture / sampler / pipeline stays GPU-visible
+    // until the NEXT BeginCommandList drains the previous frame's fence.
+    // Freeing one immediately races that in-flight frame
+    // (VUID-vkDestroy*-*-00922 / sampler-01082 / ... → device lost → the next
+    // WaitForFences hangs). Destroy() therefore only unregisters the handle
+    // and queues the real free here; the queue is flushed at the start of
+    // every BeginCommandList, once the previous frame is provably complete.
+    private readonly List<Action> _pendingDeletes = new();
+
+    private void FlushPendingDeletes()
+    {
+        if (_pendingDeletes.Count == 0) return;
+        foreach (var del in _pendingDeletes) del();
+        _pendingDeletes.Clear();
+    }
+
     public void Dispose()
     {
+        // Guard against double-dispose: a second call would run WaitIdle() and
+        // Api.* against an already-destroyed device / disposed Api and crash
+        // with an access violation.
+        if (_disposed) return;
         WaitIdle();
+        _disposed = true;
+        FlushPendingDeletes();
         foreach (var s in Swapchains.Values) DestroySwapchainInternal(s);
         foreach (var p in Pipelines.Values)  DestroyPipelineInternal(p);
         foreach (var s in Samplers.Values)   Api.DestroySampler(Device, s.Handle, null);
@@ -528,7 +560,6 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Buffers.Clear();
 
         if (TransientDescPool.Handle    != 0) Api.DestroyDescriptorPool(Device, TransientDescPool, null);
-        if (RenderFinished.Handle       != 0) Api.DestroySemaphore(Device, RenderFinished, null);
         if (ImageAvailable.Handle       != 0) Api.DestroySemaphore(Device, ImageAvailable, null);
         if (FrameFence.Handle           != 0) Api.DestroyFence(Device, FrameFence, null);
         if (GraphicsPool.Handle         != 0) Api.DestroyCommandPool(Device, GraphicsPool, null);
@@ -541,7 +572,15 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Api.Dispose();
     }
 
-    public void WaitIdle() { if (Device.Handle != 0) Api.DeviceWaitIdle(Device); }
+    // Set once Dispose() has destroyed the device — blocks any further
+    // WaitIdle() / swapchain teardown from touching freed Vulkan handles.
+    private bool _disposed;
+
+    public void WaitIdle()
+    {
+        if (_disposed || Device.Handle == 0) return;
+        Api.DeviceWaitIdle(Device);
+    }
 
     // ============================================================ Buffers
 
@@ -646,7 +685,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public void Destroy(BufferHandle h)
     {
-        if (Buffers.Remove(h.Id, out var b)) DestroyBufferInternal(b);
+        if (Buffers.Remove(h.Id, out var b))
+            _pendingDeletes.Add(() => DestroyBufferInternal(b));
     }
 
     private void DestroyBufferInternal(VkBufferRes b)
@@ -669,7 +709,16 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (hasShader) imgUsage |= ImageUsageFlags.SampledBit;
         if (hasColor)  imgUsage |= ImageUsageFlags.ColorAttachmentBit;
         if (hasDepth)  imgUsage |= ImageUsageFlags.DepthStencilAttachmentBit;
-        if (initialData.Length > 0) imgUsage |= ImageUsageFlags.TransferDstBit;
+        // Always allow TransferDst. It is needed for create-time uploads
+        // (below) AND for every later UpdateTexture call — and UpdateTexture
+        // routinely targets a texture created with no initial data (the
+        // preview / WAD-thumbnail atlases create empty on purpose, then fill
+        // regions incrementally). Gating this on initialData made
+        // vkCmdCopyBufferToImage fail validation (VUID-...-dstImage-00177) on
+        // those atlases, which on a strict driver loses the device and hangs
+        // the next frame's WaitForFences. It is free on a texture that is
+        // never copied into — exactly like TransferSrc just below.
+        imgUsage |= ImageUsageFlags.TransferDstBit;
         // We always allow TransferSrc so ReadTexture (thumbnail capture)
         // can copy out of any texture; vkCmdCopyImageToBuffer needs it.
         imgUsage |= ImageUsageFlags.TransferSrcBit;
@@ -905,7 +954,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public void Destroy(TextureHandle h)
     {
-        if (Textures.Remove(h.Id, out var t)) DestroyTextureInternal(t);
+        if (Textures.Remove(h.Id, out var t))
+            _pendingDeletes.Add(() => DestroyTextureInternal(t));
     }
 
     private void DestroyTextureInternal(VkTextureRes t)
@@ -983,7 +1033,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public void Destroy(SamplerHandle h)
     {
-        if (Samplers.Remove(h.Id, out var s)) Api.DestroySampler(Device, s.Handle, null);
+        if (Samplers.Remove(h.Id, out var s))
+            _pendingDeletes.Add(() => Api.DestroySampler(Device, s.Handle, null));
     }
 
     // ============================================================ One-shot command helper
@@ -1028,9 +1079,26 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public ICommandList BeginCommandList()
     {
-        // Wait for the previous frame to finish using FrameCmd.
         var fence = FrameFence;
-        Api.WaitForFences(Device, 1, in fence, true, ulong.MaxValue);
+        if (FrameRecording)
+        {
+            // The previous frame was abandoned before Submit — an exception
+            // fired between BeginCommandList and Submit (e.g. the not-yet-
+            // implemented offscreen BeginPass that thumbnail rendering uses).
+            // FrameFence was reset but never submitted, so waiting on it would
+            // deadlock; and since nothing was submitted the GPU is idle. Skip
+            // the wait — ResetCommandPool below recycles the orphaned FrameCmd
+            // whatever state it was left in.
+            FrameRecording = false;
+        }
+        else
+        {
+            // Wait for the previous (submitted) frame to finish using FrameCmd.
+            Api.WaitForFences(Device, 1, in fence, true, ulong.MaxValue);
+        }
+        // The previous frame is now complete — free anything queued for
+        // deletion before reusing the command pool / descriptors.
+        FlushPendingDeletes();
         Api.ResetFences(Device, 1, in fence);
         Api.ResetCommandPool(Device, GraphicsPool, 0);
         Api.ResetDescriptorPool(Device, TransientDescPool, 0);
@@ -1060,7 +1128,10 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (swapchain != null)
         {
             var waitSem = ImageAvailable;
-            var signalSem = RenderFinished;
+            // Signal this image's own "render finished" semaphore. A single
+            // shared one is illegal — the previous image's present may still
+            // be consuming it (VUID-vkQueueSubmit-pSignalSemaphores-00067).
+            var signalSem = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
             var waitStage = PipelineStageFlags.ColorAttachmentOutputBit;
             var cb = FrameCmd;
             var si = new SubmitInfo
@@ -1095,7 +1166,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     {
         var sc = Swapchains[handle.Id];
         if (!sc.ImageAcquired) return;
-        var renderFinished = RenderFinished;
+        // Wait on the same per-image semaphore Submit signalled for this image.
+        var renderFinished = sc.RenderFinishedSemaphores[sc.CurrentImageIndex];
         var swap = sc.SwapchainHandle;
         var idx = sc.CurrentImageIndex;
         var pi = new PresentInfoKHR

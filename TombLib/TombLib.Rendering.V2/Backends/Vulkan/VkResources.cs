@@ -63,15 +63,30 @@ internal sealed class VkSwapchainRes
     public ImageView[]    ColorViews  = System.Array.Empty<ImageView>();
     public ImageLayout[]  ImageLayouts = System.Array.Empty<ImageLayout>();
 
-    // Depth attachment matching the swapchain dimensions.
+    // Depth attachment matching the swapchain dimensions (multisampled when Samples > 1).
     public Image          DepthImage;
     public ImageView      DepthView;
     public DeviceMemory   DepthMemory;
     public RhiFormat      DepthFormat;       // RHI format
     public Silk.NET.Vulkan.Format DepthFormatVk;
 
+    // Off-screen multisampled colour target (only when Samples > 1). The
+    // swapchain images are always single-sample, so MSAA rendering targets
+    // this image and the render pass resolves it into the swapchain image.
+    public Image          MsaaColorImage;
+    public ImageView      MsaaColorView;
+    public DeviceMemory   MsaaColorMemory;
+
     public RenderPass     RenderPass;
     public Framebuffer[]  Framebuffers = System.Array.Empty<Framebuffer>();
+
+    // One "render finished" semaphore PER swapchain image. A single shared
+    // semaphore is illegal: the present of one image may still be consuming
+    // it when the submit for the next image re-signals it
+    // (VUID-vkQueueSubmit-pSignalSemaphores-00067). Indexing by image means a
+    // semaphore is only reused once its image has been re-acquired, which
+    // already implies its previous present completed.
+    public Semaphore[]    RenderFinishedSemaphores = System.Array.Empty<Semaphore>();
 
     public int            Width, Height, Samples;
     public RhiFormat      ColorFormat;       // RHI format
