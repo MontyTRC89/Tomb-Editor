@@ -1,17 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Silk.NET.Core.Native;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.KHR;
 using TombLib.RenderingV2.Rhi;
-using RhiFormat   = TombLib.RenderingV2.Rhi.Format;
 using VkFormat    = Silk.NET.Vulkan.Format;
 using VkBuffer    = Silk.NET.Vulkan.Buffer;
 using BufferDesc  = TombLib.RenderingV2.Rhi.BufferDesc;
 using TextureDesc = TombLib.RenderingV2.Rhi.TextureDesc;
 using SamplerDesc = TombLib.RenderingV2.Rhi.SamplerDesc;
-using SwapchainDesc = TombLib.RenderingV2.Rhi.SwapchainDesc;
 
 namespace TombLib.RenderingV2.Backends.Vulkan;
 
@@ -21,30 +18,34 @@ namespace TombLib.RenderingV2.Backends.Vulkan;
 ///
 /// <para>Design notes (kept deliberately simple — see Dx11Device for the
 /// reference implementation):
-///   - One frame in flight. CPU waits on the previous frame's fence before
-///     recording the next, so we don't need per-frame command pools / descriptor
-///     pools / per-resource staging-buffer rings.
+///   - One frame in flight. The CPU waits on the previous frame's fence
+///     before recording the next, so there's no need for per-frame command
+///     pools / descriptor pools / per-resource staging-buffer rings.
 ///   - Per-resource memory allocations (vkAllocateMemory / vkBindBufferMemory).
 ///     Not optimal vs a VMA-style sub-allocator, but the editor allocates a
-///     few hundred buffers/textures total, well under the typical Vulkan
+///     few hundred buffers / textures total — well under the typical Vulkan
 ///     allocation limit (4096).
-///   - Device-shared descriptor set layout sized to RhiLimits. Every
+///   - One device-shared descriptor-set layout sized to RhiLimits. Every
 ///     pipeline shares it; SetBindings allocates a fresh descriptor set from
-///     the per-frame transient pool (which gets reset at frame start).
-///   - Push constants block: 128 bytes at VS + FS stages.
-/// </para>
+///     the per-frame transient pool (reset at frame start).
+///   - Push-constant block: 128 bytes at the VS + FS stages.</para>
+///
+/// <para>Split across partial files by concern:
+///   VkDevice.cs           — device, resources (buffers / textures / samplers).
+///   VkDevice.Pipeline.cs  — pipelines and render passes.
+///   VkDevice.Swapchain.cs — surface and swapchain.</para>
 /// </summary>
 public unsafe sealed partial class VkDevice : IRhiDevice
 {
-    internal readonly Vk Api;
-    internal Instance Instance;
-    internal PhysicalDevice PhysicalDevice;
-    internal Device Device;
-    internal uint GraphicsQueueFamily;
-    internal Queue GraphicsQueue;
+    internal readonly Vk        Api;
+    internal Instance           Instance;
+    internal PhysicalDevice     PhysicalDevice;
+    internal Device             Device;
+    internal uint               GraphicsQueueFamily;
+    internal Queue              GraphicsQueue;
 
-    internal KhrSurface     KhrSurface;
-    internal KhrSwapchain   KhrSwapchain;
+    internal KhrSurface      KhrSurface;
+    internal KhrSwapchain    KhrSwapchain;
     internal KhrWin32Surface KhrWin32Surface;
     internal Silk.NET.Vulkan.Extensions.EXT.ExtDebugUtils? DebugUtils;
     internal DebugUtilsMessengerEXT DebugMessenger;
@@ -52,36 +53,36 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     // still holds the function pointer.
     internal DebugUtilsMessengerCallbackFunctionEXT? DebugCallback;
 
-    // Memory properties cached after device creation — used by every
-    // FindMemoryType call.
-    internal PhysicalDeviceMemoryProperties MemProps;
+    // Device capabilities cached after device creation — used by every
+    // FindMemoryType call and the Capabilities query.
+    internal PhysicalDeviceMemoryProperties MemoryProperties;
     internal PhysicalDeviceLimits           Limits;
     internal PhysicalDeviceFeatures         Features;
 
-    // Shared descriptor layout / pipeline layout. All RHI pipelines use this
-    // single descriptor model:
+    // Shared descriptor / pipeline layout. All RHI pipelines use this single
+    // descriptor model:
     //   set 0:
-    //     b0..b3    : MaxConstantBuffers uniform buffers      (VS + FS)
-    //     t0..t7    : MaxTextureBindings sampled images       (VS + FS)
-    //     s0..s3    : MaxSamplerBindings samplers             (VS + FS)
-    //     ssbo0..1  : MaxStorageBuffers storage buffers       (VS + FS)
-    //   push constants: 128 bytes at offset 0, stages = VS|FS
+    //     b0..b3   : MaxConstantBuffers uniform buffers  (VS + FS)
+    //     t0..t7   : MaxTextureBindings sampled images   (VS + FS)
+    //     s0..s3   : MaxSamplerBindings samplers         (VS + FS)
+    //     ssbo0..1 : MaxStorageBuffers storage buffers   (VS + FS)
+    //   push constants: 128 bytes at offset 0, stages = VS | FS
     internal DescriptorSetLayout SharedDescLayout;
     internal PipelineLayout      SharedPipelineLayout;
 
     // Per-frame resources. With one frame in flight there's just one of each.
-    internal CommandPool          GraphicsPool;
-    internal CommandBuffer        FrameCmd;
-    internal Fence                FrameFence;
-    internal Semaphore            ImageAvailable;
-    internal DescriptorPool       TransientDescPool;
-    internal bool                 FrameRecording;     // true between BeginCommandList and Submit
+    internal CommandPool    GraphicsPool;
+    internal CommandBuffer  FrameCmd;
+    internal Fence          FrameFence;
+    internal Semaphore      ImageAvailable;
+    internal DescriptorPool TransientDescPool;
+    internal bool           FrameRecording;   // true between BeginCommandList and Submit
 
-    // Swapchain MSAA sample count. Rendering targets an off-screen 4x colour
-    // + depth image which the render pass resolves into the single-sample
+    // Swapchain MSAA sample count. Rendering targets an off-screen 4× colour +
+    // depth image which the render pass resolves into the single-sample
     // swapchain image at EndPass. The Vulkan spec guarantees both
     // framebufferColorSampleCounts and framebufferDepthSampleCounts include
-    // 1x and 4x, so this needs no capability probe. Matches the DX11 backend.
+    // 1× and 4×, so this needs no capability probe. Matches the DX11 backend.
     internal const int MsaaSamples = 4;
 
     // Resource pools (handle id → resource).
@@ -114,26 +115,27 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             maxArrayLayers: (int)Limits.MaxImageArrayLayers);
     }
 
-    // ============================================================ Instance
+    // =============================================================== Instance
 
     private void CreateInstance()
     {
         var appInfo = new ApplicationInfo
         {
-            SType        = StructureType.ApplicationInfo,
-            PApplicationName = (byte*)Marshal.StringToHGlobalAnsi("TombEditor"),
+            SType              = StructureType.ApplicationInfo,
+            PApplicationName   = (byte*)Marshal.StringToHGlobalAnsi("TombEditor"),
             ApplicationVersion = 1,
-            PEngineName  = (byte*)Marshal.StringToHGlobalAnsi("TombEditor"),
-            EngineVersion = 1,
-            ApiVersion   = Vk.Version11,
+            PEngineName        = (byte*)Marshal.StringToHGlobalAnsi("TombEditor"),
+            EngineVersion      = 1,
+            ApiVersion         = Vk.Version11,
         };
 
-        // Validation is opt-out (TOMBEDITOR_VK_VALIDATION=0 disables) when
-        // the Khronos validation layer is installed. Captured messages go to
-        // %TEMP%\TombEditorVk.log via a debug-utils messenger so we get the
-        // real driver / spec violation text when an API call fails.
+        // Validation is opt-out (TOMBEDITOR_VK_VALIDATION=0 disables) when the
+        // Khronos validation layer is installed. Captured messages go to
+        // %TEMP%\TombEditorVk.log via a debug-utils messenger so the real
+        // driver / spec-violation text is available when an API call fails.
         bool wantValidation = Environment.GetEnvironmentVariable("TOMBEDITOR_VK_VALIDATION") != "0"
                               && IsLayerAvailable("VK_LAYER_KHRONOS_validation");
+
         var extensions = new List<string>
         {
             KhrSurface.ExtensionName,
@@ -143,39 +145,40 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
         var layers = new List<string>();
         if (wantValidation) layers.Add("VK_LAYER_KHRONOS_validation");
-        DebugLog($"VkDevice init: validation={(wantValidation ? "ON" : "off")}, layers={layers.Count}, extensions={extensions.Count}");
+        DebugLog($"VkDevice init: validation={(wantValidation ? "ON" : "off")}, " +
+                 $"layers={layers.Count}, extensions={extensions.Count}");
 
-        var pExtNames = new byte*[extensions.Count];
-        var pLayerNames = new byte*[layers.Count];
+        var extensionPtrs = new byte*[extensions.Count];
+        var layerPtrs     = new byte*[layers.Count];
         try
         {
             for (int i = 0; i < extensions.Count; i++)
-                pExtNames[i] = (byte*)Marshal.StringToHGlobalAnsi(extensions[i]);
+                extensionPtrs[i] = (byte*)Marshal.StringToHGlobalAnsi(extensions[i]);
             for (int i = 0; i < layers.Count; i++)
-                pLayerNames[i] = (byte*)Marshal.StringToHGlobalAnsi(layers[i]);
+                layerPtrs[i] = (byte*)Marshal.StringToHGlobalAnsi(layers[i]);
 
-            fixed (byte** ppExt = pExtNames)
-            fixed (byte** ppLay = pLayerNames)
+            fixed (byte** ppExtensions = extensionPtrs)
+            fixed (byte** ppLayers     = layerPtrs)
             {
-                var ci = new InstanceCreateInfo
+                var instanceInfo = new InstanceCreateInfo
                 {
                     SType                   = StructureType.InstanceCreateInfo,
                     PApplicationInfo        = &appInfo,
                     EnabledExtensionCount   = (uint)extensions.Count,
-                    PpEnabledExtensionNames = ppExt,
+                    PpEnabledExtensionNames = ppExtensions,
                     EnabledLayerCount       = (uint)layers.Count,
-                    PpEnabledLayerNames     = ppLay,
+                    PpEnabledLayerNames     = ppLayers,
                 };
-                if (Api.CreateInstance(in ci, null, out Instance) != Result.Success)
+                if (Api.CreateInstance(in instanceInfo, null, out Instance) != Result.Success)
                     throw new InvalidOperationException("vkCreateInstance failed");
             }
         }
         finally
         {
-            for (int i = 0; i < pExtNames.Length; i++)
-                if (pExtNames[i] != null) Marshal.FreeHGlobal((IntPtr)pExtNames[i]);
-            for (int i = 0; i < pLayerNames.Length; i++)
-                if (pLayerNames[i] != null) Marshal.FreeHGlobal((IntPtr)pLayerNames[i]);
+            for (int i = 0; i < extensionPtrs.Length; i++)
+                if (extensionPtrs[i] != null) Marshal.FreeHGlobal((IntPtr)extensionPtrs[i]);
+            for (int i = 0; i < layerPtrs.Length; i++)
+                if (layerPtrs[i] != null) Marshal.FreeHGlobal((IntPtr)layerPtrs[i]);
             Marshal.FreeHGlobal((IntPtr)appInfo.PApplicationName);
             Marshal.FreeHGlobal((IntPtr)appInfo.PEngineName);
         }
@@ -189,11 +192,12 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         // log file alongside the surface / swapchain trace. Without this,
         // validation output goes to the OutputDebugString channel and never
         // reaches the user.
-        if (wantValidation && Api.TryGetInstanceExtension(Instance, out Silk.NET.Vulkan.Extensions.EXT.ExtDebugUtils du))
+        if (wantValidation &&
+            Api.TryGetInstanceExtension(Instance, out Silk.NET.Vulkan.Extensions.EXT.ExtDebugUtils debugUtils))
         {
-            DebugUtils = du;
+            DebugUtils    = debugUtils;
             DebugCallback = DebugMessageCallback;
-            var dmci = new DebugUtilsMessengerCreateInfoEXT
+            var messengerInfo = new DebugUtilsMessengerCreateInfoEXT
             {
                 SType           = StructureType.DebugUtilsMessengerCreateInfoExt,
                 MessageSeverity = DebugUtilsMessageSeverityFlagsEXT.WarningBitExt
@@ -204,7 +208,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
                                 | DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt,
                 PfnUserCallback = new PfnDebugUtilsMessengerCallbackEXT(DebugCallback),
             };
-            DebugUtils.CreateDebugUtilsMessenger(Instance, in dmci, null, out DebugMessenger);
+            DebugUtils.CreateDebugUtilsMessenger(Instance, in messengerInfo, null, out DebugMessenger);
             DebugLog("VkDevice debug messenger attached");
         }
     }
@@ -215,10 +219,10 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         DebugUtilsMessengerCallbackDataEXT* data,
         void* userData)
     {
-        string msg = data != null && data->PMessage != null
-                     ? Marshal.PtrToStringAnsi((IntPtr)data->PMessage) ?? "(no message)"
-                     : "(no data)";
-        DebugLog($"VK [{severity}] {msg}");
+        string message = data != null && data->PMessage != null
+                         ? Marshal.PtrToStringAnsi((IntPtr)data->PMessage) ?? "(no message)"
+                         : "(no data)";
+        DebugLog($"VK [{severity}] {message}");
         return 0u; // VK_FALSE: don't abort the call
     }
 
@@ -227,82 +231,91 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         uint count = 0;
         Api.EnumerateInstanceLayerProperties(ref count, null);
         if (count == 0) return false;
-        var props = new LayerProperties[count];
-        fixed (LayerProperties* p = props)
-            Api.EnumerateInstanceLayerProperties(ref count, p);
-        for (int i = 0; i < props.Length; i++)
+
+        var layerProperties = new LayerProperties[count];
+        fixed (LayerProperties* pLayerProperties = layerProperties)
+            Api.EnumerateInstanceLayerProperties(ref count, pLayerProperties);
+
+        for (int i = 0; i < layerProperties.Length; i++)
         {
-            fixed (byte* n = props[i].LayerName)
+            fixed (byte* pName = layerProperties[i].LayerName)
             {
-                string layerName = Marshal.PtrToStringAnsi((IntPtr)n) ?? "";
+                string layerName = Marshal.PtrToStringAnsi((IntPtr)pName) ?? "";
                 if (layerName == name) return true;
             }
         }
         return false;
     }
 
-    // ============================================================ Physical / Logical device
+    // ============================================ Physical / logical device
 
     private void PickPhysicalDevice()
     {
         uint count = 0;
         Api.EnumeratePhysicalDevices(Instance, ref count, null);
         if (count == 0) throw new InvalidOperationException("No Vulkan physical devices");
-        var devs = new PhysicalDevice[count];
-        fixed (PhysicalDevice* p = devs) Api.EnumeratePhysicalDevices(Instance, ref count, p);
+
+        var devices = new PhysicalDevice[count];
+        fixed (PhysicalDevice* pDevices = devices)
+            Api.EnumeratePhysicalDevices(Instance, ref count, pDevices);
 
         PhysicalDevice best = default;
         int bestScore = -1;
-        for (int i = 0; i < devs.Length; i++)
+        for (int i = 0; i < devices.Length; i++)
         {
-            var d = devs[i];
-            Api.GetPhysicalDeviceProperties(d, out var props);
-            // Score: discrete GPU > integrated > anything else; we always
-            // need a graphics queue and KHR_swapchain support.
-            if (!HasGraphicsQueue(d)) continue;
-            if (!HasExtension(d, "VK_KHR_swapchain")) continue;
-            int score = props.DeviceType switch
+            var candidate = devices[i];
+            Api.GetPhysicalDeviceProperties(candidate, out var properties);
+            // We always need a graphics queue and KHR_swapchain support;
+            // score discrete GPU > integrated > anything else.
+            if (!HasGraphicsQueue(candidate)) continue;
+            if (!HasExtension(candidate, "VK_KHR_swapchain")) continue;
+            int score = properties.DeviceType switch
             {
                 PhysicalDeviceType.DiscreteGpu   => 1000,
                 PhysicalDeviceType.IntegratedGpu => 500,
                 PhysicalDeviceType.VirtualGpu    => 100,
-                _                                 => 10,
+                _                                => 10,
             };
-            if (score > bestScore) { best = d; bestScore = score; }
+            if (score > bestScore) { best = candidate; bestScore = score; }
         }
-        if (bestScore < 0) throw new InvalidOperationException("No suitable Vulkan device (need graphics + swapchain)");
+        if (bestScore < 0)
+            throw new InvalidOperationException("No suitable Vulkan device (need graphics + swapchain)");
 
         PhysicalDevice = best;
-        Api.GetPhysicalDeviceMemoryProperties(PhysicalDevice, out MemProps);
-        Api.GetPhysicalDeviceProperties(PhysicalDevice, out var p2);
-        Limits = p2.Limits;
+        Api.GetPhysicalDeviceMemoryProperties(PhysicalDevice, out MemoryProperties);
+        Api.GetPhysicalDeviceProperties(PhysicalDevice, out var deviceProperties);
+        Limits = deviceProperties.Limits;
         Api.GetPhysicalDeviceFeatures(PhysicalDevice, out Features);
     }
 
-    private bool HasGraphicsQueue(PhysicalDevice d)
+    private bool HasGraphicsQueue(PhysicalDevice device)
     {
         uint count = 0;
-        Api.GetPhysicalDeviceQueueFamilyProperties(d, ref count, null);
-        var props = new QueueFamilyProperties[count];
-        fixed (QueueFamilyProperties* p = props) Api.GetPhysicalDeviceQueueFamilyProperties(d, ref count, p);
-        for (int i = 0; i < props.Length; i++)
-            if ((props[i].QueueFlags & QueueFlags.GraphicsBit) != 0)
+        Api.GetPhysicalDeviceQueueFamilyProperties(device, ref count, null);
+        var queueFamilies = new QueueFamilyProperties[count];
+        fixed (QueueFamilyProperties* pQueueFamilies = queueFamilies)
+            Api.GetPhysicalDeviceQueueFamilyProperties(device, ref count, pQueueFamilies);
+
+        for (int i = 0; i < queueFamilies.Length; i++)
+            if ((queueFamilies[i].QueueFlags & QueueFlags.GraphicsBit) != 0)
                 return true;
         return false;
     }
 
-    private bool HasExtension(PhysicalDevice d, string name)
+    private bool HasExtension(PhysicalDevice device, string name)
     {
         uint count = 0;
-        Api.EnumerateDeviceExtensionProperties(d, (byte*)null, ref count, null);
-        var props = new ExtensionProperties[count];
-        fixed (ExtensionProperties* p = props) Api.EnumerateDeviceExtensionProperties(d, (byte*)null, ref count, p);
-        for (int i = 0; i < props.Length; i++)
+        Api.EnumerateDeviceExtensionProperties(device, (byte*)null, ref count, null);
+        var extensionProperties = new ExtensionProperties[count];
+        fixed (ExtensionProperties* pExtensionProperties = extensionProperties)
+            Api.EnumerateDeviceExtensionProperties(device, (byte*)null, ref count, pExtensionProperties);
+
+        for (int i = 0; i < extensionProperties.Length; i++)
         {
-            fixed (byte* n = props[i].ExtensionName)
+            fixed (byte* pName = extensionProperties[i].ExtensionName)
             {
-                string ext = Marshal.PtrToStringAnsi((IntPtr)n) ?? "";
-                if (ext == name) return true;
+                string extensionName = Marshal.PtrToStringAnsi((IntPtr)pName) ?? "";
+                if (extensionName == name) return true;
             }
         }
         return false;
@@ -310,36 +323,41 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     private void CreateLogicalDevice()
     {
-        // Pick first graphics+present queue family. On Windows the graphics
-        // queue is always presentation-capable on consumer GPUs, so we don't
-        // need to query per-surface presentation support before device
-        // creation (we'd need a dummy surface for that).
+        // Pick the first graphics + present queue family. On Windows the
+        // graphics queue is always presentation-capable on consumer GPUs, so
+        // there's no need to query per-surface presentation support before
+        // device creation (which would require a dummy surface).
         uint count = 0;
         Api.GetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, ref count, null);
-        var qProps = new QueueFamilyProperties[count];
-        fixed (QueueFamilyProperties* p = qProps) Api.GetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, ref count, p);
+        var queueFamilies = new QueueFamilyProperties[count];
+        fixed (QueueFamilyProperties* pQueueFamilies = queueFamilies)
+            Api.GetPhysicalDeviceQueueFamilyProperties(PhysicalDevice, ref count, pQueueFamilies);
+
         GraphicsQueueFamily = uint.MaxValue;
-        for (uint i = 0; i < qProps.Length; i++)
-            if ((qProps[i].QueueFlags & QueueFlags.GraphicsBit) != 0)
-            { GraphicsQueueFamily = i; break; }
+        for (uint i = 0; i < queueFamilies.Length; i++)
+            if ((queueFamilies[i].QueueFlags & QueueFlags.GraphicsBit) != 0)
+            {
+                GraphicsQueueFamily = i;
+                break;
+            }
         if (GraphicsQueueFamily == uint.MaxValue)
             throw new InvalidOperationException("No graphics queue family");
 
-        float priority = 1.0f;
-        var qci = new DeviceQueueCreateInfo
+        float queuePriority = 1.0f;
+        var queueInfo = new DeviceQueueCreateInfo
         {
             SType            = StructureType.DeviceQueueCreateInfo,
             QueueFamilyIndex = GraphicsQueueFamily,
             QueueCount       = 1,
-            PQueuePriorities = &priority,
+            PQueuePriorities = &queuePriority,
         };
 
-        var deviceExts = new[] { "VK_KHR_swapchain" };
-        var pDevExts = new byte*[deviceExts.Length];
-        for (int i = 0; i < deviceExts.Length; i++)
-            pDevExts[i] = (byte*)Marshal.StringToHGlobalAnsi(deviceExts[i]);
+        var deviceExtensions    = new[] { "VK_KHR_swapchain" };
+        var deviceExtensionPtrs = new byte*[deviceExtensions.Length];
+        for (int i = 0; i < deviceExtensions.Length; i++)
+            deviceExtensionPtrs[i] = (byte*)Marshal.StringToHGlobalAnsi(deviceExtensions[i]);
 
-        var feats = new PhysicalDeviceFeatures
+        var enabledFeatures = new PhysicalDeviceFeatures
         {
             SamplerAnisotropy = Features.SamplerAnisotropy,
             FillModeNonSolid  = Features.FillModeNonSolid, // wireframe
@@ -347,24 +365,25 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
         try
         {
-            fixed (byte** ppExt = pDevExts)
+            fixed (byte** ppDeviceExtensions = deviceExtensionPtrs)
             {
-                var dci = new DeviceCreateInfo
+                var deviceInfo = new DeviceCreateInfo
                 {
                     SType                   = StructureType.DeviceCreateInfo,
                     QueueCreateInfoCount    = 1,
-                    PQueueCreateInfos       = &qci,
-                    EnabledExtensionCount   = (uint)deviceExts.Length,
-                    PpEnabledExtensionNames = ppExt,
-                    PEnabledFeatures        = &feats,
+                    PQueueCreateInfos       = &queueInfo,
+                    EnabledExtensionCount   = (uint)deviceExtensions.Length,
+                    PpEnabledExtensionNames = ppDeviceExtensions,
+                    PEnabledFeatures        = &enabledFeatures,
                 };
-                if (Api.CreateDevice(PhysicalDevice, in dci, null, out Device) != Result.Success)
+                if (Api.CreateDevice(PhysicalDevice, in deviceInfo, null, out Device) != Result.Success)
                     throw new InvalidOperationException("vkCreateDevice failed");
             }
         }
         finally
         {
-            for (int i = 0; i < pDevExts.Length; i++) Marshal.FreeHGlobal((IntPtr)pDevExts[i]);
+            for (int i = 0; i < deviceExtensionPtrs.Length; i++)
+                Marshal.FreeHGlobal((IntPtr)deviceExtensionPtrs[i]);
         }
 
         Api.GetDeviceQueue(Device, GraphicsQueueFamily, 0, out GraphicsQueue);
@@ -372,14 +391,14 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             throw new InvalidOperationException("VK_KHR_swapchain not available on device");
     }
 
-    // ============================================================ Memory helper
+    // ========================================================= Memory helper
 
     internal uint FindMemoryType(uint typeBits, MemoryPropertyFlags required)
     {
-        for (uint i = 0; i < MemProps.MemoryTypeCount; i++)
+        for (uint i = 0; i < MemoryProperties.MemoryTypeCount; i++)
         {
             if ((typeBits & (1u << (int)i)) == 0) continue;
-            if ((MemProps.MemoryTypes[(int)i].PropertyFlags & required) == required)
+            if ((MemoryProperties.MemoryTypes[(int)i].PropertyFlags & required) == required)
                 return i;
         }
         throw new InvalidOperationException($"No suitable memory type for required flags {required}");
@@ -387,29 +406,29 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     internal DeviceMemory AllocMemory(ulong size, uint typeBits, MemoryPropertyFlags required)
     {
-        var ai = new MemoryAllocateInfo
+        var allocInfo = new MemoryAllocateInfo
         {
             SType           = StructureType.MemoryAllocateInfo,
             AllocationSize  = size,
             MemoryTypeIndex = FindMemoryType(typeBits, required),
         };
-        if (Api.AllocateMemory(Device, in ai, null, out var mem) != Result.Success)
+        if (Api.AllocateMemory(Device, in allocInfo, null, out var memory) != Result.Success)
             throw new InvalidOperationException("vkAllocateMemory failed");
-        return mem;
+        return memory;
     }
 
-    // ============================================================ Shared layouts
+    // ========================================================= Shared layouts
 
     private void CreateSharedDescriptorLayout()
     {
-        // Layout matches what the shaders actually declare via VK_BINDING:
+        // Layout matches what the shaders declare via VK_BINDING:
         //   binding 0 = ViewParams cbuffer
         //   binding 1 = Atlas texture
         //   binding 2 = Atlas sampler
-        // C# code uses ConstantBuffers[0] / Textures[0] / Samplers[0]
+        // The C# side uses ConstantBuffers[0] / Textures[0] / Samplers[0]
         // respectively. If a future shader needs a second cbuf / texture,
         // extend this layout *and* the VK_BINDING numbers in the HLSL.
-        var bindings = stackalloc DescriptorSetLayoutBinding[3]
+        var layoutBindings = stackalloc DescriptorSetLayoutBinding[3]
         {
             new()
             {
@@ -433,74 +452,74 @@ public unsafe sealed partial class VkDevice : IRhiDevice
                 StageFlags      = ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit,
             },
         };
-        var slci = new DescriptorSetLayoutCreateInfo
+        var layoutInfo = new DescriptorSetLayoutCreateInfo
         {
             SType        = StructureType.DescriptorSetLayoutCreateInfo,
             BindingCount = 3,
-            PBindings    = bindings,
+            PBindings    = layoutBindings,
         };
-        if (Api.CreateDescriptorSetLayout(Device, in slci, null, out SharedDescLayout) != Result.Success)
+        if (Api.CreateDescriptorSetLayout(Device, in layoutInfo, null, out SharedDescLayout) != Result.Success)
             throw new InvalidOperationException("vkCreateDescriptorSetLayout failed");
 
-        var pcRange = new PushConstantRange
+        var pushConstantRange = new PushConstantRange
         {
             StageFlags = ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit,
             Offset     = 0,
             Size       = (uint)RhiLimits.PushConstantSize,
         };
-        var dsl = SharedDescLayout;
-        var plci = new PipelineLayoutCreateInfo
+        var setLayout = SharedDescLayout;
+        var pipelineLayoutInfo = new PipelineLayoutCreateInfo
         {
             SType                  = StructureType.PipelineLayoutCreateInfo,
             SetLayoutCount         = 1,
-            PSetLayouts            = &dsl,
+            PSetLayouts            = &setLayout,
             PushConstantRangeCount = 1,
-            PPushConstantRanges    = &pcRange,
+            PPushConstantRanges    = &pushConstantRange,
         };
-        if (Api.CreatePipelineLayout(Device, in plci, null, out SharedPipelineLayout) != Result.Success)
+        if (Api.CreatePipelineLayout(Device, in pipelineLayoutInfo, null, out SharedPipelineLayout) != Result.Success)
             throw new InvalidOperationException("vkCreatePipelineLayout failed");
     }
 
     private void CreateFrameResources()
     {
-        var cpci = new CommandPoolCreateInfo
+        var commandPoolInfo = new CommandPoolCreateInfo
         {
             SType            = StructureType.CommandPoolCreateInfo,
             QueueFamilyIndex = GraphicsQueueFamily,
             Flags            = CommandPoolCreateFlags.ResetCommandBufferBit,
         };
-        if (Api.CreateCommandPool(Device, in cpci, null, out GraphicsPool) != Result.Success)
+        if (Api.CreateCommandPool(Device, in commandPoolInfo, null, out GraphicsPool) != Result.Success)
             throw new InvalidOperationException("vkCreateCommandPool failed");
 
-        var cba = new CommandBufferAllocateInfo
+        var commandBufferAllocInfo = new CommandBufferAllocateInfo
         {
             SType              = StructureType.CommandBufferAllocateInfo,
             CommandPool        = GraphicsPool,
             Level              = CommandBufferLevel.Primary,
             CommandBufferCount = 1,
         };
-        CommandBuffer cb = default;
-        if (Api.AllocateCommandBuffers(Device, in cba, &cb) != Result.Success)
+        CommandBuffer commandBuffer = default;
+        if (Api.AllocateCommandBuffers(Device, in commandBufferAllocInfo, &commandBuffer) != Result.Success)
             throw new InvalidOperationException("vkAllocateCommandBuffers failed");
-        FrameCmd = cb;
+        FrameCmd = commandBuffer;
 
-        var fci = new FenceCreateInfo
+        var fenceInfo = new FenceCreateInfo
         {
             SType = StructureType.FenceCreateInfo,
-            Flags = FenceCreateFlags.SignaledBit, // start signaled so first WaitForFences passes
+            Flags = FenceCreateFlags.SignaledBit, // start signalled so the first WaitForFences passes
         };
-        Api.CreateFence(Device, in fci, null, out FrameFence);
+        Api.CreateFence(Device, in fenceInfo, null, out FrameFence);
 
-        var sci = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
         // ImageAvailable is one shared acquire semaphore — safe with a single
         // frame in flight (BeginCommandList waits FrameFence before the next
         // acquire). The "render finished" semaphores are per swapchain image
         // and live on VkSwapchainRes; see CreateSwapchainResources.
-        Api.CreateSemaphore(Device, in sci, null, out ImageAvailable);
+        var semaphoreInfo = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
+        Api.CreateSemaphore(Device, in semaphoreInfo, null, out ImageAvailable);
 
-        // Transient descriptor pool — sized to one descriptor of each type
-        // per allocation × MaxSets. SetBindings allocates a fresh descriptor
-        // set every call within a frame; the pool resets at frame start.
+        // Transient descriptor pool — sized to one descriptor of each type per
+        // allocation × MaxSets. SetBindings allocates a fresh descriptor set
+        // every call within a frame; the pool resets at frame start.
         const int setsPerFrame = 1024;
         var poolSizes = stackalloc DescriptorPoolSize[3]
         {
@@ -508,15 +527,15 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             new() { Type = DescriptorType.SampledImage,  DescriptorCount = setsPerFrame },
             new() { Type = DescriptorType.Sampler,       DescriptorCount = setsPerFrame },
         };
-        var dpci = new DescriptorPoolCreateInfo
+        var descriptorPoolInfo = new DescriptorPoolCreateInfo
         {
             SType         = StructureType.DescriptorPoolCreateInfo,
             MaxSets       = setsPerFrame,
             PoolSizeCount = 3,
             PPoolSizes    = poolSizes,
-            Flags         = 0, // no individual free; we reset the whole pool each frame
+            Flags         = 0, // no individual free — the whole pool resets each frame
         };
-        if (Api.CreateDescriptorPool(Device, in dpci, null, out TransientDescPool) != Result.Success)
+        if (Api.CreateDescriptorPool(Device, in descriptorPoolInfo, null, out TransientDescPool) != Result.Success)
             throw new InvalidOperationException("vkCreateDescriptorPool failed");
     }
 
@@ -535,7 +554,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     private void FlushPendingDeletes()
     {
         if (_pendingDeletes.Count == 0) return;
-        foreach (var del in _pendingDeletes) del();
+        foreach (var deleteAction in _pendingDeletes) deleteAction();
         _pendingDeletes.Clear();
     }
 
@@ -548,11 +567,12 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         WaitIdle();
         _disposed = true;
         FlushPendingDeletes();
-        foreach (var s in Swapchains.Values) DestroySwapchainInternal(s);
-        foreach (var p in Pipelines.Values)  DestroyPipelineInternal(p);
-        foreach (var s in Samplers.Values)   Api.DestroySampler(Device, s.Handle, null);
-        foreach (var t in Textures.Values)   DestroyTextureInternal(t);
-        foreach (var b in Buffers.Values)    DestroyBufferInternal(b);
+
+        foreach (var swapchain in Swapchains.Values) DestroySwapchainInternal(swapchain);
+        foreach (var pipeline  in Pipelines.Values)  DestroyPipelineInternal(pipeline);
+        foreach (var sampler   in Samplers.Values)   Api.DestroySampler(Device, sampler.Handle, null);
+        foreach (var texture   in Textures.Values)   DestroyTextureInternal(texture);
+        foreach (var buffer    in Buffers.Values)    DestroyBufferInternal(buffer);
         Swapchains.Clear();
         Pipelines.Clear();
         Samplers.Clear();
@@ -582,7 +602,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Api.DeviceWaitIdle(Device);
     }
 
-    // ============================================================ Buffers
+    // ================================================================ Buffers
 
     public BufferHandle CreateBuffer(in BufferDesc desc, ReadOnlySpan<byte> initialData)
     {
@@ -594,121 +614,124 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if ((desc.BindFlags & BufferBindFlags.Index)      != 0) usageFlags |= BufferUsageFlags.IndexBufferBit;
         if ((desc.BindFlags & BufferBindFlags.Constant)   != 0) usageFlags |= BufferUsageFlags.UniformBufferBit;
         if ((desc.BindFlags & BufferBindFlags.Structured) != 0) usageFlags |= BufferUsageFlags.StorageBufferBit;
-        // We also need TransferDst on every buffer that can receive a staging
-        // copy (immutable + initialData and dynamic UpdateBuffer fallback).
+        // Every buffer also needs TransferDst so it can receive a staging copy
+        // (immutable + initialData, and the dynamic UpdateBuffer fallback).
         usageFlags |= BufferUsageFlags.TransferDstBit;
 
-        var bci = new BufferCreateInfo
+        var bufferInfo = new BufferCreateInfo
         {
             SType       = StructureType.BufferCreateInfo,
             Size        = (ulong)desc.SizeBytes,
             Usage       = usageFlags,
             SharingMode = SharingMode.Exclusive,
         };
-        if (Api.CreateBuffer(Device, in bci, null, out var buf) != Result.Success)
+        if (Api.CreateBuffer(Device, in bufferInfo, null, out var buffer) != Result.Success)
             throw new InvalidOperationException("vkCreateBuffer failed");
-        Api.GetBufferMemoryRequirements(Device, buf, out var req);
+        Api.GetBufferMemoryRequirements(Device, buffer, out var memoryReq);
 
-        // Dynamic buffers go in HOST_VISIBLE | HOST_COHERENT memory so the
-        // CPU can map them persistently; immutable buffers go in DEVICE_LOCAL.
-        var memFlags = isDynamic
-                       ? (MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit)
-                       : MemoryPropertyFlags.DeviceLocalBit;
-        var mem = AllocMemory(req.Size, req.MemoryTypeBits, memFlags);
-        Api.BindBufferMemory(Device, buf, mem, 0);
+        // Dynamic buffers go in HOST_VISIBLE | HOST_COHERENT memory so the CPU
+        // can map them persistently; immutable buffers go in DEVICE_LOCAL.
+        var memoryFlags = isDynamic
+                          ? MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit
+                          : MemoryPropertyFlags.DeviceLocalBit;
+        var memory = AllocMemory(memoryReq.Size, memoryReq.MemoryTypeBits, memoryFlags);
+        Api.BindBufferMemory(Device, buffer, memory, 0);
 
         void* mapped = null;
         if (isDynamic)
         {
-            void* p;
-            Api.MapMemory(Device, mem, 0, req.Size, 0, &p);
-            mapped = p;
+            void* mappedPtr;
+            Api.MapMemory(Device, memory, 0, memoryReq.Size, 0, &mappedPtr);
+            mapped = mappedPtr;
         }
 
-        var res = new VkBufferRes
+        var bufferRes = new VkBufferRes
         {
-            Handle    = buf,
-            Memory    = mem,
+            Handle    = buffer,
+            Memory    = memory,
             Size      = (ulong)desc.SizeBytes,
             Mapped    = mapped,
             Usage     = desc.Usage,
             BindFlags = desc.BindFlags,
         };
 
-        // Initial upload (immutable path: staging buffer + copy).
+        // Initial upload — dynamic: copy into the mapped region; immutable:
+        // staging buffer + copy command.
         if (initialData.Length > 0)
         {
             if (isDynamic)
             {
                 fixed (byte* src = initialData)
-                    System.Buffer.MemoryCopy(src, mapped, (long)res.Size, initialData.Length);
+                    System.Buffer.MemoryCopy(src, mapped, (long)bufferRes.Size, initialData.Length);
             }
             else
             {
-                UploadImmutable(res, initialData);
+                UploadImmutable(bufferRes, initialData);
             }
         }
 
         uint id = AllocHandle();
-        Buffers[id] = res;
+        Buffers[id] = bufferRes;
         return new BufferHandle(id);
     }
 
-    private void UploadImmutable(VkBufferRes dst, ReadOnlySpan<byte> data)
+    private void UploadImmutable(VkBufferRes destination, ReadOnlySpan<byte> data)
     {
         // Staging buffer in host memory + one-shot copy command.
-        var sci = new BufferCreateInfo
+        var stagingInfo = new BufferCreateInfo
         {
             SType       = StructureType.BufferCreateInfo,
             Size        = (ulong)data.Length,
             Usage       = BufferUsageFlags.TransferSrcBit,
             SharingMode = SharingMode.Exclusive,
         };
-        Api.CreateBuffer(Device, in sci, null, out var staging);
-        Api.GetBufferMemoryRequirements(Device, staging, out var sReq);
-        var sMem = AllocMemory(sReq.Size, sReq.MemoryTypeBits,
-                               MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
-        Api.BindBufferMemory(Device, staging, sMem, 0);
-        void* p;
-        Api.MapMemory(Device, sMem, 0, sReq.Size, 0, &p);
-        fixed (byte* src = data) System.Buffer.MemoryCopy(src, p, (long)sReq.Size, data.Length);
-        Api.UnmapMemory(Device, sMem);
+        Api.CreateBuffer(Device, in stagingInfo, null, out var staging);
+        Api.GetBufferMemoryRequirements(Device, staging, out var stagingMemoryReq);
+        var stagingMemory = AllocMemory(stagingMemoryReq.Size, stagingMemoryReq.MemoryTypeBits,
+                                        MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
+        Api.BindBufferMemory(Device, staging, stagingMemory, 0);
 
-        var cmd = OneShotBegin();
+        void* mappedPtr;
+        Api.MapMemory(Device, stagingMemory, 0, stagingMemoryReq.Size, 0, &mappedPtr);
+        fixed (byte* src = data)
+            System.Buffer.MemoryCopy(src, mappedPtr, (long)stagingMemoryReq.Size, data.Length);
+        Api.UnmapMemory(Device, stagingMemory);
+
+        var commandBuffer = OneShotBegin();
         var region = new BufferCopy { Size = (ulong)data.Length };
-        Api.CmdCopyBuffer(cmd, staging, dst.Handle, 1, in region);
-        OneShotEndSubmitWait(cmd);
+        Api.CmdCopyBuffer(commandBuffer, staging, destination.Handle, 1, in region);
+        OneShotEndSubmitWait(commandBuffer);
 
         Api.DestroyBuffer(Device, staging, null);
-        Api.FreeMemory(Device, sMem, null);
+        Api.FreeMemory(Device, stagingMemory, null);
     }
 
-    public void Destroy(BufferHandle h)
+    public void Destroy(BufferHandle handle)
     {
-        if (Buffers.Remove(h.Id, out var b))
-            _pendingDeletes.Add(() => DestroyBufferInternal(b));
+        if (Buffers.Remove(handle.Id, out var buffer))
+            _pendingDeletes.Add(() => DestroyBufferInternal(buffer));
     }
 
-    private void DestroyBufferInternal(VkBufferRes b)
+    private void DestroyBufferInternal(VkBufferRes buffer)
     {
-        if (b.Mapped != null) Api.UnmapMemory(Device, b.Memory);
-        Api.DestroyBuffer(Device, b.Handle, null);
-        Api.FreeMemory(Device, b.Memory, null);
+        if (buffer.Mapped != null) Api.UnmapMemory(Device, buffer.Memory);
+        Api.DestroyBuffer(Device, buffer.Handle, null);
+        Api.FreeMemory(Device, buffer.Memory, null);
     }
 
-    // ============================================================ Textures
+    // =============================================================== Textures
 
     public TextureHandle CreateTexture(in TextureDesc desc, ReadOnlySpan<byte> initialData)
     {
-        bool hasColor = (desc.BindFlags & TextureBindFlags.RenderTarget) != 0;
-        bool hasDepth = (desc.BindFlags & TextureBindFlags.DepthStencil) != 0;
+        bool hasColor  = (desc.BindFlags & TextureBindFlags.RenderTarget)   != 0;
+        bool hasDepth  = (desc.BindFlags & TextureBindFlags.DepthStencil)   != 0;
         bool hasShader = (desc.BindFlags & TextureBindFlags.ShaderResource) != 0;
 
-        var aspect = VkMapping.AspectOf(desc.Format);
-        var imgUsage = ImageUsageFlags.None;
-        if (hasShader) imgUsage |= ImageUsageFlags.SampledBit;
-        if (hasColor)  imgUsage |= ImageUsageFlags.ColorAttachmentBit;
-        if (hasDepth)  imgUsage |= ImageUsageFlags.DepthStencilAttachmentBit;
+        var aspect     = VkMapping.AspectOf(desc.Format);
+        var imageUsage = ImageUsageFlags.None;
+        if (hasShader) imageUsage |= ImageUsageFlags.SampledBit;
+        if (hasColor)  imageUsage |= ImageUsageFlags.ColorAttachmentBit;
+        if (hasDepth)  imageUsage |= ImageUsageFlags.DepthStencilAttachmentBit;
         // Always allow TransferDst. It is needed for create-time uploads
         // (below) AND for every later UpdateTexture call — and UpdateTexture
         // routinely targets a texture created with no initial data (the
@@ -718,44 +741,44 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         // those atlases, which on a strict driver loses the device and hangs
         // the next frame's WaitForFences. It is free on a texture that is
         // never copied into — exactly like TransferSrc just below.
-        imgUsage |= ImageUsageFlags.TransferDstBit;
-        // We always allow TransferSrc so ReadTexture (thumbnail capture)
-        // can copy out of any texture; vkCmdCopyImageToBuffer needs it.
-        imgUsage |= ImageUsageFlags.TransferSrcBit;
+        imageUsage |= ImageUsageFlags.TransferDstBit;
+        // Always allow TransferSrc so ReadTexture (thumbnail capture) can copy
+        // out of any texture; vkCmdCopyImageToBuffer needs it.
+        imageUsage |= ImageUsageFlags.TransferSrcBit;
 
-        int mip = Math.Max(1, desc.MipLevels);
-        var ici = new ImageCreateInfo
+        int mipLevels = Math.Max(1, desc.MipLevels);
+        var imageInfo = new ImageCreateInfo
         {
             SType         = StructureType.ImageCreateInfo,
             ImageType     = ImageType.Type2D,
             Format        = VkMapping.ToVk(desc.Format),
             Extent        = new Extent3D((uint)desc.Width, (uint)desc.Height, 1),
-            MipLevels     = (uint)mip,
+            MipLevels     = (uint)mipLevels,
             ArrayLayers   = (uint)desc.ArrayLayers,
             Samples       = VkMapping.ToSampleCount(desc.Samples),
             Tiling        = ImageTiling.Optimal,
-            Usage         = imgUsage,
+            Usage         = imageUsage,
             SharingMode   = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
             Flags         = desc.Kind == TextureKind.TextureCube ? ImageCreateFlags.CreateCubeCompatibleBit : 0,
         };
-        if (Api.CreateImage(Device, in ici, null, out var img) != Result.Success)
+        if (Api.CreateImage(Device, in imageInfo, null, out var image) != Result.Success)
             throw new InvalidOperationException("vkCreateImage failed");
-        Api.GetImageMemoryRequirements(Device, img, out var req);
-        var mem = AllocMemory(req.Size, req.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
-        Api.BindImageMemory(Device, img, mem, 0);
+        Api.GetImageMemoryRequirements(Device, image, out var memoryReq);
+        var memory = AllocMemory(memoryReq.Size, memoryReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
+        Api.BindImageMemory(Device, image, memory, 0);
 
-        var view = CreateImageView(img, VkMapping.ToVk(desc.Format), aspect, (uint)mip);
+        var view = CreateImageView(image, VkMapping.ToVk(desc.Format), aspect, (uint)mipLevels);
 
-        var res = new VkTextureRes
+        var textureRes = new VkTextureRes
         {
-            Image         = img,
+            Image         = image,
             View          = view,
-            Memory        = mem,
+            Memory        = memory,
             Format        = desc.Format,
             Width         = desc.Width,
             Height        = desc.Height,
-            MipLevels     = mip,
+            MipLevels     = mipLevels,
             ArrayLayers   = desc.ArrayLayers,
             Samples       = desc.Samples,
             BindFlags     = desc.BindFlags,
@@ -764,32 +787,34 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         };
 
         if (initialData.Length > 0)
-            UploadTextureMip0(res, initialData);
+        {
+            UploadTextureMip0(textureRes, initialData);
+        }
         else
         {
-            // Transition to a stable layout so first use as shader resource
-            // doesn't validate as Undefined.
+            // Transition to a stable layout so the first use as a shader
+            // resource doesn't validate as Undefined.
             if (hasShader)
-                TransitionImage(res, ImageLayout.ShaderReadOnlyOptimal);
+                TransitionImage(textureRes, ImageLayout.ShaderReadOnlyOptimal);
             else if (hasColor)
-                TransitionImage(res, ImageLayout.ColorAttachmentOptimal);
+                TransitionImage(textureRes, ImageLayout.ColorAttachmentOptimal);
             else if (hasDepth)
-                TransitionImage(res, ImageLayout.DepthStencilAttachmentOptimal);
+                TransitionImage(textureRes, ImageLayout.DepthStencilAttachmentOptimal);
         }
 
         uint id = AllocHandle();
-        Textures[id] = res;
+        Textures[id] = textureRes;
         return new TextureHandle(id);
     }
 
-    private ImageView CreateImageView(Image img, VkFormat fmt, ImageAspectFlags aspect, uint mipLevels)
+    private ImageView CreateImageView(Image image, VkFormat format, ImageAspectFlags aspect, uint mipLevels)
     {
-        var ivci = new ImageViewCreateInfo
+        var viewInfo = new ImageViewCreateInfo
         {
             SType    = StructureType.ImageViewCreateInfo,
-            Image    = img,
+            Image    = image,
             ViewType = ImageViewType.Type2D,
-            Format   = fmt,
+            Format   = format,
             SubresourceRange = new ImageSubresourceRange
             {
                 AspectMask     = aspect,
@@ -799,213 +824,220 @@ public unsafe sealed partial class VkDevice : IRhiDevice
                 LayerCount     = 1,
             },
         };
-        Api.CreateImageView(Device, in ivci, null, out var view);
+        Api.CreateImageView(Device, in viewInfo, null, out var view);
         return view;
     }
 
-    private void UploadTextureMip0(VkTextureRes tex, ReadOnlySpan<byte> data)
+    private void UploadTextureMip0(VkTextureRes texture, ReadOnlySpan<byte> data)
     {
-        int bpp = VkMapping.BytesPerPixel(tex.Format);
-        ulong size = (ulong)(tex.Width * tex.Height * bpp);
+        int   bytesPerPixel = VkMapping.BytesPerPixel(texture.Format);
+        ulong size          = (ulong)(texture.Width * texture.Height * bytesPerPixel);
 
-        var sci = new BufferCreateInfo
+        var stagingInfo = new BufferCreateInfo
         {
             SType       = StructureType.BufferCreateInfo,
             Size        = size,
             Usage       = BufferUsageFlags.TransferSrcBit,
             SharingMode = SharingMode.Exclusive,
         };
-        Api.CreateBuffer(Device, in sci, null, out var staging);
-        Api.GetBufferMemoryRequirements(Device, staging, out var sReq);
-        var sMem = AllocMemory(sReq.Size, sReq.MemoryTypeBits,
-                               MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
-        Api.BindBufferMemory(Device, staging, sMem, 0);
-        void* p;
-        Api.MapMemory(Device, sMem, 0, sReq.Size, 0, &p);
-        fixed (byte* src = data) System.Buffer.MemoryCopy(src, p, (long)sReq.Size, Math.Min(data.Length, (int)size));
-        Api.UnmapMemory(Device, sMem);
+        Api.CreateBuffer(Device, in stagingInfo, null, out var staging);
+        Api.GetBufferMemoryRequirements(Device, staging, out var stagingMemoryReq);
+        var stagingMemory = AllocMemory(stagingMemoryReq.Size, stagingMemoryReq.MemoryTypeBits,
+                                        MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
+        Api.BindBufferMemory(Device, staging, stagingMemory, 0);
 
-        var cmd = OneShotBegin();
-        TransitionImage(cmd, tex, ImageLayout.TransferDstOptimal);
+        void* mappedPtr;
+        Api.MapMemory(Device, stagingMemory, 0, stagingMemoryReq.Size, 0, &mappedPtr);
+        fixed (byte* src = data)
+            System.Buffer.MemoryCopy(src, mappedPtr, (long)stagingMemoryReq.Size, Math.Min(data.Length, (int)size));
+        Api.UnmapMemory(Device, stagingMemory);
+
+        var commandBuffer = OneShotBegin();
+        TransitionImage(commandBuffer, texture, ImageLayout.TransferDstOptimal);
         var region = new BufferImageCopy
         {
             BufferOffset      = 0,
             BufferRowLength   = 0,
             BufferImageHeight = 0,
-            ImageSubresource  = new ImageSubresourceLayers { AspectMask = tex.Aspect, MipLevel = 0, BaseArrayLayer = 0, LayerCount = 1 },
-            ImageOffset       = new Offset3D(0, 0, 0),
-            ImageExtent       = new Extent3D((uint)tex.Width, (uint)tex.Height, 1),
+            ImageSubresource  = new ImageSubresourceLayers
+            {
+                AspectMask = texture.Aspect, MipLevel = 0, BaseArrayLayer = 0, LayerCount = 1,
+            },
+            ImageOffset = new Offset3D(0, 0, 0),
+            ImageExtent = new Extent3D((uint)texture.Width, (uint)texture.Height, 1),
         };
-        Api.CmdCopyBufferToImage(cmd, staging, tex.Image, ImageLayout.TransferDstOptimal, 1, in region);
-        TransitionImage(cmd, tex, ImageLayout.ShaderReadOnlyOptimal);
-        OneShotEndSubmitWait(cmd);
+        Api.CmdCopyBufferToImage(commandBuffer, staging, texture.Image, ImageLayout.TransferDstOptimal, 1, in region);
+        TransitionImage(commandBuffer, texture, ImageLayout.ShaderReadOnlyOptimal);
+        OneShotEndSubmitWait(commandBuffer);
 
         Api.DestroyBuffer(Device, staging, null);
-        Api.FreeMemory(Device, sMem, null);
+        Api.FreeMemory(Device, stagingMemory, null);
     }
 
     public void UpdateTexture(TextureHandle handle, int subresource,
                               int x, int y, int width, int height,
                               int rowPitchBytes, ReadOnlySpan<byte> data)
     {
-        var t = Textures[handle.Id];
+        var texture = Textures[handle.Id];
         // Build a tightly-packed staging copy. The caller's rowPitch may be
         // larger than width*bpp on D3D, but in practice TombEditor never sends
         // padded rows here — keep it simple.
-        int bpp = VkMapping.BytesPerPixel(t.Format);
-        ulong size = (ulong)(width * height * bpp);
+        int   bytesPerPixel = VkMapping.BytesPerPixel(texture.Format);
+        ulong size          = (ulong)(width * height * bytesPerPixel);
 
-        var sci = new BufferCreateInfo
+        var stagingInfo = new BufferCreateInfo
         {
             SType       = StructureType.BufferCreateInfo,
             Size        = size,
             Usage       = BufferUsageFlags.TransferSrcBit,
             SharingMode = SharingMode.Exclusive,
         };
-        Api.CreateBuffer(Device, in sci, null, out var staging);
-        Api.GetBufferMemoryRequirements(Device, staging, out var sReq);
-        var sMem = AllocMemory(sReq.Size, sReq.MemoryTypeBits,
-                               MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
-        Api.BindBufferMemory(Device, staging, sMem, 0);
-        void* p;
-        Api.MapMemory(Device, sMem, 0, sReq.Size, 0, &p);
+        Api.CreateBuffer(Device, in stagingInfo, null, out var staging);
+        Api.GetBufferMemoryRequirements(Device, staging, out var stagingMemoryReq);
+        var stagingMemory = AllocMemory(stagingMemoryReq.Size, stagingMemoryReq.MemoryTypeBits,
+                                        MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
+        Api.BindBufferMemory(Device, staging, stagingMemory, 0);
+
+        void* mappedPtr;
+        Api.MapMemory(Device, stagingMemory, 0, stagingMemoryReq.Size, 0, &mappedPtr);
         // Copy row by row, dropping any source padding.
         fixed (byte* src = data)
         {
-            for (int yy = 0; yy < height; yy++)
-                System.Buffer.MemoryCopy(src + yy * rowPitchBytes,
-                                         (byte*)p + yy * width * bpp,
-                                         width * bpp, width * bpp);
+            for (int row = 0; row < height; row++)
+                System.Buffer.MemoryCopy(src + row * rowPitchBytes,
+                                         (byte*)mappedPtr + row * width * bytesPerPixel,
+                                         width * bytesPerPixel, width * bytesPerPixel);
         }
-        Api.UnmapMemory(Device, sMem);
+        Api.UnmapMemory(Device, stagingMemory);
 
-        var cmd = OneShotBegin();
-        TransitionImage(cmd, t, ImageLayout.TransferDstOptimal);
+        var commandBuffer = OneShotBegin();
+        TransitionImage(commandBuffer, texture, ImageLayout.TransferDstOptimal);
         var region = new BufferImageCopy
         {
             ImageSubresource = new ImageSubresourceLayers
             {
-                AspectMask = t.Aspect, MipLevel = (uint)subresource,
+                AspectMask = texture.Aspect, MipLevel = (uint)subresource,
                 BaseArrayLayer = 0, LayerCount = 1,
             },
             ImageOffset = new Offset3D(x, y, 0),
             ImageExtent = new Extent3D((uint)width, (uint)height, 1),
         };
-        Api.CmdCopyBufferToImage(cmd, staging, t.Image, ImageLayout.TransferDstOptimal, 1, in region);
-        TransitionImage(cmd, t, ImageLayout.ShaderReadOnlyOptimal);
-        OneShotEndSubmitWait(cmd);
+        Api.CmdCopyBufferToImage(commandBuffer, staging, texture.Image, ImageLayout.TransferDstOptimal, 1, in region);
+        TransitionImage(commandBuffer, texture, ImageLayout.ShaderReadOnlyOptimal);
+        OneShotEndSubmitWait(commandBuffer);
 
         Api.DestroyBuffer(Device, staging, null);
-        Api.FreeMemory(Device, sMem, null);
+        Api.FreeMemory(Device, stagingMemory, null);
     }
 
     public byte[] ReadTexture(TextureHandle handle, int subresource = 0)
     {
-        var t = Textures[handle.Id];
-        int bpp = VkMapping.BytesPerPixel(t.Format);
-        ulong size = (ulong)(t.Width * t.Height * bpp);
-        byte[] result = new byte[size];
+        var texture = Textures[handle.Id];
+        int   bytesPerPixel = VkMapping.BytesPerPixel(texture.Format);
+        ulong size          = (ulong)(texture.Width * texture.Height * bytesPerPixel);
+        byte[] result       = new byte[size];
 
-        var sci = new BufferCreateInfo
+        var stagingInfo = new BufferCreateInfo
         {
             SType       = StructureType.BufferCreateInfo,
             Size        = size,
             Usage       = BufferUsageFlags.TransferDstBit,
             SharingMode = SharingMode.Exclusive,
         };
-        Api.CreateBuffer(Device, in sci, null, out var staging);
-        Api.GetBufferMemoryRequirements(Device, staging, out var sReq);
-        var sMem = AllocMemory(sReq.Size, sReq.MemoryTypeBits,
-                               MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
-        Api.BindBufferMemory(Device, staging, sMem, 0);
+        Api.CreateBuffer(Device, in stagingInfo, null, out var staging);
+        Api.GetBufferMemoryRequirements(Device, staging, out var stagingMemoryReq);
+        var stagingMemory = AllocMemory(stagingMemoryReq.Size, stagingMemoryReq.MemoryTypeBits,
+                                        MemoryPropertyFlags.HostVisibleBit | MemoryPropertyFlags.HostCoherentBit);
+        Api.BindBufferMemory(Device, staging, stagingMemory, 0);
 
-        var cmd = OneShotBegin();
-        var prevLayout = t.CurrentLayout;
-        TransitionImage(cmd, t, ImageLayout.TransferSrcOptimal);
+        var commandBuffer = OneShotBegin();
+        var previousLayout = texture.CurrentLayout;
+        TransitionImage(commandBuffer, texture, ImageLayout.TransferSrcOptimal);
         var region = new BufferImageCopy
         {
             ImageSubresource = new ImageSubresourceLayers
             {
-                AspectMask = t.Aspect, MipLevel = (uint)subresource,
+                AspectMask = texture.Aspect, MipLevel = (uint)subresource,
                 BaseArrayLayer = 0, LayerCount = 1,
             },
             ImageOffset = new Offset3D(0, 0, 0),
-            ImageExtent = new Extent3D((uint)t.Width, (uint)t.Height, 1),
+            ImageExtent = new Extent3D((uint)texture.Width, (uint)texture.Height, 1),
         };
-        Api.CmdCopyImageToBuffer(cmd, t.Image, ImageLayout.TransferSrcOptimal, staging, 1, in region);
-        // Restore to a sensible post-read layout: shader read for sampled
+        Api.CmdCopyImageToBuffer(commandBuffer, texture.Image, ImageLayout.TransferSrcOptimal, staging, 1, in region);
+        // Restore to a sensible post-read layout: shader-read for sampled
         // textures, otherwise the previous layout the caller relied on.
-        var restore = (t.BindFlags & TextureBindFlags.ShaderResource) != 0
-                      ? ImageLayout.ShaderReadOnlyOptimal
-                      : prevLayout != ImageLayout.Undefined ? prevLayout : ImageLayout.General;
-        TransitionImage(cmd, t, restore);
-        OneShotEndSubmitWait(cmd);
+        var restoreLayout = (texture.BindFlags & TextureBindFlags.ShaderResource) != 0
+                            ? ImageLayout.ShaderReadOnlyOptimal
+                            : previousLayout != ImageLayout.Undefined ? previousLayout : ImageLayout.General;
+        TransitionImage(commandBuffer, texture, restoreLayout);
+        OneShotEndSubmitWait(commandBuffer);
 
-        void* p;
-        Api.MapMemory(Device, sMem, 0, size, 0, &p);
+        void* mappedPtr;
+        Api.MapMemory(Device, stagingMemory, 0, size, 0, &mappedPtr);
         fixed (byte* dst = result)
-            System.Buffer.MemoryCopy(p, dst, (long)size, (long)size);
-        Api.UnmapMemory(Device, sMem);
+            System.Buffer.MemoryCopy(mappedPtr, dst, (long)size, (long)size);
+        Api.UnmapMemory(Device, stagingMemory);
 
         Api.DestroyBuffer(Device, staging, null);
-        Api.FreeMemory(Device, sMem, null);
+        Api.FreeMemory(Device, stagingMemory, null);
         return result;
     }
 
-    public void Destroy(TextureHandle h)
+    public void Destroy(TextureHandle handle)
     {
-        if (Textures.Remove(h.Id, out var t))
-            _pendingDeletes.Add(() => DestroyTextureInternal(t));
+        if (Textures.Remove(handle.Id, out var texture))
+            _pendingDeletes.Add(() => DestroyTextureInternal(texture));
     }
 
-    private void DestroyTextureInternal(VkTextureRes t)
+    private void DestroyTextureInternal(VkTextureRes texture)
     {
-        if (t.View.Handle  != 0) Api.DestroyImageView(Device, t.View, null);
-        if (t.Image.Handle != 0) Api.DestroyImage(Device, t.Image, null);
-        if (t.Memory.Handle != 0) Api.FreeMemory(Device, t.Memory, null);
+        if (texture.View.Handle   != 0) Api.DestroyImageView(Device, texture.View, null);
+        if (texture.Image.Handle  != 0) Api.DestroyImage(Device, texture.Image, null);
+        if (texture.Memory.Handle != 0) Api.FreeMemory(Device, texture.Memory, null);
     }
 
-    internal void TransitionImage(VkTextureRes tex, ImageLayout newLayout)
+    // One-shot variant — begins / submits / waits its own command buffer.
+    internal void TransitionImage(VkTextureRes texture, ImageLayout newLayout)
     {
-        var cmd = OneShotBegin();
-        TransitionImage(cmd, tex, newLayout);
-        OneShotEndSubmitWait(cmd);
+        var commandBuffer = OneShotBegin();
+        TransitionImage(commandBuffer, texture, newLayout);
+        OneShotEndSubmitWait(commandBuffer);
     }
 
-    internal void TransitionImage(CommandBuffer cmd, VkTextureRes tex, ImageLayout newLayout)
+    internal void TransitionImage(CommandBuffer commandBuffer, VkTextureRes texture, ImageLayout newLayout)
     {
-        if (tex.CurrentLayout == newLayout) return;
+        if (texture.CurrentLayout == newLayout) return;
         var barrier = new ImageMemoryBarrier
         {
-            SType            = StructureType.ImageMemoryBarrier,
-            OldLayout        = tex.CurrentLayout,
-            NewLayout        = newLayout,
+            SType               = StructureType.ImageMemoryBarrier,
+            OldLayout           = texture.CurrentLayout,
+            NewLayout           = newLayout,
             SrcQueueFamilyIndex = Vk.QueueFamilyIgnored,
             DstQueueFamilyIndex = Vk.QueueFamilyIgnored,
-            Image            = tex.Image,
-            SubresourceRange = new ImageSubresourceRange
+            Image               = texture.Image,
+            SubresourceRange    = new ImageSubresourceRange
             {
-                AspectMask = tex.Aspect, BaseMipLevel = 0, LevelCount = (uint)tex.MipLevels,
-                BaseArrayLayer = 0, LayerCount = (uint)tex.ArrayLayers,
+                AspectMask     = texture.Aspect,
+                BaseMipLevel   = 0, LevelCount = (uint)texture.MipLevels,
+                BaseArrayLayer = 0, LayerCount = (uint)texture.ArrayLayers,
             },
         };
-        PipelineStageFlags srcStage = PipelineStageFlags.AllCommandsBit;
-        PipelineStageFlags dstStage = PipelineStageFlags.AllCommandsBit;
-        // Conservative access masks — AllCommands stage covers everything;
+        // Conservative access masks — the AllCommands stage covers everything;
         // overkill but simple.
         barrier.SrcAccessMask = AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit;
         barrier.DstAccessMask = AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit;
-        Api.CmdPipelineBarrier(cmd, srcStage, dstStage, 0,
+        Api.CmdPipelineBarrier(commandBuffer,
+                               PipelineStageFlags.AllCommandsBit, PipelineStageFlags.AllCommandsBit, 0,
                                0, null, 0, null, 1, in barrier);
-        tex.CurrentLayout = newLayout;
+        texture.CurrentLayout = newLayout;
     }
 
-    // ============================================================ Samplers
+    // =============================================================== Samplers
 
     public SamplerHandle CreateSampler(in SamplerDesc desc)
     {
-        bool aniso = desc.MinFilter == FilterMode.Anisotropic && Features.SamplerAnisotropy;
-        var sci = new SamplerCreateInfo
+        bool anisotropyEnabled = desc.MinFilter == FilterMode.Anisotropic && Features.SamplerAnisotropy;
+        var samplerInfo = new SamplerCreateInfo
         {
             SType            = StructureType.SamplerCreateInfo,
             MagFilter        = desc.MagFilter == FilterMode.Nearest ? Filter.Nearest : Filter.Linear,
@@ -1015,8 +1047,10 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             AddressModeV     = VkMapping.ToVk(desc.AddressV),
             AddressModeW     = VkMapping.ToVk(desc.AddressW),
             MipLodBias       = 0,
-            AnisotropyEnable = aniso,
-            MaxAnisotropy    = aniso ? Math.Min(desc.MaxAnisotropy, (int)Limits.MaxSamplerAnisotropy) : 1,
+            AnisotropyEnable = anisotropyEnabled,
+            MaxAnisotropy    = anisotropyEnabled
+                               ? Math.Min(desc.MaxAnisotropy, (int)Limits.MaxSamplerAnisotropy)
+                               : 1,
             CompareEnable    = false,
             CompareOp        = Silk.NET.Vulkan.CompareOp.Never,
             MinLod           = 0,
@@ -1024,56 +1058,57 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             BorderColor      = BorderColor.FloatTransparentBlack,
             UnnormalizedCoordinates = false,
         };
-        Api.CreateSampler(Device, in sci, null, out var s);
+        Api.CreateSampler(Device, in samplerInfo, null, out var sampler);
 
         uint id = AllocHandle();
-        Samplers[id] = new VkSamplerRes { Handle = s };
+        Samplers[id] = new VkSamplerRes { Handle = sampler };
         return new SamplerHandle(id);
     }
 
-    public void Destroy(SamplerHandle h)
+    public void Destroy(SamplerHandle handle)
     {
-        if (Samplers.Remove(h.Id, out var s))
-            _pendingDeletes.Add(() => Api.DestroySampler(Device, s.Handle, null));
+        if (Samplers.Remove(handle.Id, out var sampler))
+            _pendingDeletes.Add(() => Api.DestroySampler(Device, sampler.Handle, null));
     }
 
-    // ============================================================ One-shot command helper
+    // ================================================== One-shot command helper
 
     internal CommandBuffer OneShotBegin()
     {
-        var alloc = new CommandBufferAllocateInfo
+        var allocInfo = new CommandBufferAllocateInfo
         {
             SType              = StructureType.CommandBufferAllocateInfo,
             CommandPool        = GraphicsPool,
             Level              = CommandBufferLevel.Primary,
             CommandBufferCount = 1,
         };
-        CommandBuffer cb = default;
-        Api.AllocateCommandBuffers(Device, in alloc, &cb);
-        var bi = new CommandBufferBeginInfo
+        CommandBuffer commandBuffer = default;
+        Api.AllocateCommandBuffers(Device, in allocInfo, &commandBuffer);
+
+        var beginInfo = new CommandBufferBeginInfo
         {
             SType = StructureType.CommandBufferBeginInfo,
             Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
         };
-        Api.BeginCommandBuffer(cb, in bi);
-        return cb;
+        Api.BeginCommandBuffer(commandBuffer, in beginInfo);
+        return commandBuffer;
     }
 
-    internal void OneShotEndSubmitWait(CommandBuffer cb)
+    internal void OneShotEndSubmitWait(CommandBuffer commandBuffer)
     {
-        Api.EndCommandBuffer(cb);
-        var si = new SubmitInfo
+        Api.EndCommandBuffer(commandBuffer);
+        var submitInfo = new SubmitInfo
         {
             SType              = StructureType.SubmitInfo,
             CommandBufferCount = 1,
-            PCommandBuffers    = &cb,
+            PCommandBuffers    = &commandBuffer,
         };
-        Api.QueueSubmit(GraphicsQueue, 1, in si, default);
+        Api.QueueSubmit(GraphicsQueue, 1, in submitInfo, default);
         Api.QueueWaitIdle(GraphicsQueue);
-        Api.FreeCommandBuffers(Device, GraphicsPool, 1, &cb);
+        Api.FreeCommandBuffers(Device, GraphicsPool, 1, &commandBuffer);
     }
 
-    // ============================================================ Command stream
+    // ========================================================= Command stream
 
     private VkCommandList? _activeCmd;
 
@@ -1096,6 +1131,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             // Wait for the previous (submitted) frame to finish using FrameCmd.
             Api.WaitForFences(Device, 1, in fence, true, ulong.MaxValue);
         }
+
         // The previous frame is now complete — free anything queued for
         // deletion before reusing the command pool / descriptors.
         FlushPendingDeletes();
@@ -1103,12 +1139,12 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Api.ResetCommandPool(Device, GraphicsPool, 0);
         Api.ResetDescriptorPool(Device, TransientDescPool, 0);
 
-        var bi = new CommandBufferBeginInfo
+        var beginInfo = new CommandBufferBeginInfo
         {
             SType = StructureType.CommandBufferBeginInfo,
             Flags = CommandBufferUsageFlags.OneTimeSubmitBit,
         };
-        Api.BeginCommandBuffer(FrameCmd, in bi);
+        Api.BeginCommandBuffer(FrameCmd, in beginInfo);
         FrameRecording = true;
 
         _activeCmd = new VkCommandList(this, FrameCmd);
@@ -1118,45 +1154,45 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     public void Submit(ICommandList commandList)
     {
         if (!FrameRecording) return;
-        var cl = (VkCommandList)commandList;
-        cl.Finish();
+        var vkCommandList = (VkCommandList)commandList;
+        vkCommandList.Finish();
         Api.EndCommandBuffer(FrameCmd);
 
-        // If any swapchain image was acquired during the frame, we need to
-        // synchronise present with the render submission.
-        var swapchain = cl.AcquiredSwapchain;
+        // If a swapchain image was acquired this frame, synchronise present
+        // with the render submission.
+        var swapchain = vkCommandList.AcquiredSwapchain;
         if (swapchain != null)
         {
-            var waitSem = ImageAvailable;
+            var waitSemaphore = ImageAvailable;
             // Signal this image's own "render finished" semaphore. A single
             // shared one is illegal — the previous image's present may still
             // be consuming it (VUID-vkQueueSubmit-pSignalSemaphores-00067).
-            var signalSem = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
-            var waitStage = PipelineStageFlags.ColorAttachmentOutputBit;
-            var cb = FrameCmd;
-            var si = new SubmitInfo
+            var signalSemaphore = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
+            var waitStage       = PipelineStageFlags.ColorAttachmentOutputBit;
+            var commandBuffer   = FrameCmd;
+            var submitInfo = new SubmitInfo
             {
                 SType                = StructureType.SubmitInfo,
                 WaitSemaphoreCount   = 1,
-                PWaitSemaphores      = &waitSem,
+                PWaitSemaphores      = &waitSemaphore,
                 PWaitDstStageMask    = &waitStage,
                 CommandBufferCount   = 1,
-                PCommandBuffers      = &cb,
+                PCommandBuffers      = &commandBuffer,
                 SignalSemaphoreCount = 1,
-                PSignalSemaphores    = &signalSem,
+                PSignalSemaphores    = &signalSemaphore,
             };
-            Api.QueueSubmit(GraphicsQueue, 1, in si, FrameFence);
+            Api.QueueSubmit(GraphicsQueue, 1, in submitInfo, FrameFence);
         }
         else
         {
-            var cb = FrameCmd;
-            var si = new SubmitInfo
+            var commandBuffer = FrameCmd;
+            var submitInfo = new SubmitInfo
             {
                 SType              = StructureType.SubmitInfo,
                 CommandBufferCount = 1,
-                PCommandBuffers    = &cb,
+                PCommandBuffers    = &commandBuffer,
             };
-            Api.QueueSubmit(GraphicsQueue, 1, in si, FrameFence);
+            Api.QueueSubmit(GraphicsQueue, 1, in submitInfo, FrameFence);
         }
         FrameRecording = false;
         _activeCmd = null;
@@ -1164,22 +1200,23 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public void Present(SwapchainHandle handle)
     {
-        var sc = Swapchains[handle.Id];
-        if (!sc.ImageAcquired) return;
+        var swapchain = Swapchains[handle.Id];
+        if (!swapchain.ImageAcquired) return;
+
         // Wait on the same per-image semaphore Submit signalled for this image.
-        var renderFinished = sc.RenderFinishedSemaphores[sc.CurrentImageIndex];
-        var swap = sc.SwapchainHandle;
-        var idx = sc.CurrentImageIndex;
-        var pi = new PresentInfoKHR
+        var renderFinished  = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
+        var swapchainHandle = swapchain.SwapchainHandle;
+        var imageIndex      = swapchain.CurrentImageIndex;
+        var presentInfo = new PresentInfoKHR
         {
             SType              = StructureType.PresentInfoKhr,
             WaitSemaphoreCount = 1,
             PWaitSemaphores    = &renderFinished,
             SwapchainCount     = 1,
-            PSwapchains        = &swap,
-            PImageIndices      = &idx,
+            PSwapchains        = &swapchainHandle,
+            PImageIndices      = &imageIndex,
         };
-        KhrSwapchain.QueuePresent(GraphicsQueue, in pi);
-        sc.ImageAcquired = false;
+        KhrSwapchain.QueuePresent(GraphicsQueue, in presentInfo);
+        swapchain.ImageAcquired = false;
     }
 }

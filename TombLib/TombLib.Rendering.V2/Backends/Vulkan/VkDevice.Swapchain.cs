@@ -3,47 +3,49 @@ using Silk.NET.Core;
 using Silk.NET.Vulkan;
 using Silk.NET.Vulkan.Extensions.KHR;
 using TombLib.RenderingV2.Rhi;
-using VkFormat = Silk.NET.Vulkan.Format;
 using RhiFormat = TombLib.RenderingV2.Rhi.Format;
 using SwapchainDesc = TombLib.RenderingV2.Rhi.SwapchainDesc;
 
 namespace TombLib.RenderingV2.Backends.Vulkan;
 
+// Swapchain management for the Vulkan backend: the Win32 surface, the
+// swapchain images and views, the depth attachment and (for MSAA) the
+// off-screen multisampled colour target, plus the framebuffers.
 public unsafe sealed partial class VkDevice
 {
     public SwapchainHandle CreateSwapchain(in SwapchainDesc desc)
     {
         const int GWLP_HINSTANCE = -6;
-        IntPtr hinst = IntPtr.Size == 8
-                       ? GetWindowLongPtr(desc.WindowHandle, GWLP_HINSTANCE)
-                       : new IntPtr(GetWindowLong(desc.WindowHandle, GWLP_HINSTANCE));
-        if (hinst == IntPtr.Zero)
-            hinst = GetModuleHandle(null);
+        IntPtr hInstance = IntPtr.Size == 8
+                           ? GetWindowLongPtr(desc.WindowHandle, GWLP_HINSTANCE)
+                           : new IntPtr(GetWindowLong(desc.WindowHandle, GWLP_HINSTANCE));
+        if (hInstance == IntPtr.Zero)
+            hInstance = GetModuleHandle(null);
 
-        DebugLog($"CreateSwapchain: hwnd=0x{desc.WindowHandle.ToInt64():X}, hinst=0x{hinst.ToInt64():X}, " +
+        DebugLog($"CreateSwapchain: hwnd=0x{desc.WindowHandle.ToInt64():X}, hinst=0x{hInstance.ToInt64():X}, " +
                  $"size={desc.Width}x{desc.Height}, samples={desc.Samples}, vsync={desc.VSync}");
 
-        var surfCi = new Win32SurfaceCreateInfoKHR
+        var surfaceCreateInfo = new Win32SurfaceCreateInfoKHR
         {
             SType     = StructureType.Win32SurfaceCreateInfoKhr,
-            Hinstance = hinst,
+            Hinstance = hInstance,
             Hwnd      = desc.WindowHandle,
         };
-        var surfRes = KhrWin32Surface.CreateWin32Surface(Instance, in surfCi, null, out var surface);
-        if (surfRes != Result.Success)
-            throw new InvalidOperationException($"vkCreateWin32SurfaceKHR failed: {surfRes}");
+        var surfaceResult = KhrWin32Surface.CreateWin32Surface(Instance, in surfaceCreateInfo, null, out var surface);
+        if (surfaceResult != Result.Success)
+            throw new InvalidOperationException($"vkCreateWin32SurfaceKHR failed: {surfaceResult}");
         DebugLog($"  surface created: 0x{surface.Handle:X}");
 
         // Confirm the graphics queue can present to this surface.
-        Bool32 supported = false;
-        KhrSurface.GetPhysicalDeviceSurfaceSupport(PhysicalDevice, GraphicsQueueFamily, surface, out supported);
-        if (!supported)
+        Bool32 presentSupported = false;
+        KhrSurface.GetPhysicalDeviceSurfaceSupport(PhysicalDevice, GraphicsQueueFamily, surface, out presentSupported);
+        if (!presentSupported)
             throw new InvalidOperationException("Selected queue family cannot present to the window's surface");
 
-        // 4x MSAA: render into an off-screen multisampled colour + depth
+        // 4× MSAA: render into an off-screen multisampled colour + depth
         // image, then let the render pass resolve into the single-sample
         // swapchain image for presentation. Matches the DX11 backend.
-        var res = new VkSwapchainRes
+        var swapchain = new VkSwapchainRes
         {
             Surface     = surface,
             ColorFormat = desc.ColorFormat,
@@ -54,348 +56,366 @@ public unsafe sealed partial class VkDevice
             Width       = desc.Width,
             Height      = desc.Height,
         };
-        CreateSwapchainResources(res);
+        CreateSwapchainResources(swapchain);
 
         uint id = AllocHandle();
-        Swapchains[id] = res;
+        Swapchains[id] = swapchain;
         return new SwapchainHandle(id);
     }
 
-    private void CreateSwapchainResources(VkSwapchainRes sc)
+    private void CreateSwapchainResources(VkSwapchainRes swapchain)
     {
-        // Pick a surface format. Prefer the requested ColorFormat;
-        // fall back to the first supported BGRA8.
-        uint fmtCount = 0;
-        KhrSurface.GetPhysicalDeviceSurfaceFormats(PhysicalDevice, sc.Surface, ref fmtCount, null);
-        var formats = new SurfaceFormatKHR[fmtCount];
-        fixed (SurfaceFormatKHR* p = formats)
-            KhrSurface.GetPhysicalDeviceSurfaceFormats(PhysicalDevice, sc.Surface, ref fmtCount, p);
-        var wantVk = VkMapping.ToVk(sc.ColorFormat);
-        SurfaceFormatKHR chosen = formats[0];
+        // ---- Surface format: prefer the requested ColorFormat, else fall
+        // back to the surface's first supported format. ----
+        uint formatCount = 0;
+        KhrSurface.GetPhysicalDeviceSurfaceFormats(PhysicalDevice, swapchain.Surface, ref formatCount, null);
+        var formats = new SurfaceFormatKHR[formatCount];
+        fixed (SurfaceFormatKHR* pFormats = formats)
+            KhrSurface.GetPhysicalDeviceSurfaceFormats(PhysicalDevice, swapchain.Surface, ref formatCount, pFormats);
+
+        var preferredFormat = VkMapping.ToVk(swapchain.ColorFormat);
+        SurfaceFormatKHR chosenFormat = formats[0];
         for (int i = 0; i < formats.Length; i++)
-            if (formats[i].Format == wantVk) { chosen = formats[i]; break; }
-        sc.SwapchainFormat = chosen.Format;
+            if (formats[i].Format == preferredFormat) { chosenFormat = formats[i]; break; }
+        swapchain.SwapchainFormat = chosenFormat.Format;
 
-        // Capabilities (extent, image count, transform).
-        KhrSurface.GetPhysicalDeviceSurfaceCapabilities(PhysicalDevice, sc.Surface, out var caps);
-        uint imageCount = caps.MinImageCount + 1;
-        if (caps.MaxImageCount > 0 && imageCount > caps.MaxImageCount) imageCount = caps.MaxImageCount;
-        var extent = caps.CurrentExtent.Width != uint.MaxValue
-                     ? caps.CurrentExtent
-                     : new Extent2D((uint)Math.Clamp(sc.Width,  (int)caps.MinImageExtent.Width,  (int)caps.MaxImageExtent.Width),
-                                    (uint)Math.Clamp(sc.Height, (int)caps.MinImageExtent.Height, (int)caps.MaxImageExtent.Height));
-        sc.Width  = (int)extent.Width;
-        sc.Height = (int)extent.Height;
+        // ---- Surface capabilities: extent, image count, transform. ----
+        KhrSurface.GetPhysicalDeviceSurfaceCapabilities(PhysicalDevice, swapchain.Surface, out var surfaceCaps);
+        uint desiredImageCount = surfaceCaps.MinImageCount + 1;
+        if (surfaceCaps.MaxImageCount > 0 && desiredImageCount > surfaceCaps.MaxImageCount)
+            desiredImageCount = surfaceCaps.MaxImageCount;
+        var extent = surfaceCaps.CurrentExtent.Width != uint.MaxValue
+                     ? surfaceCaps.CurrentExtent
+                     : new Extent2D(
+                         (uint)Math.Clamp(swapchain.Width,  (int)surfaceCaps.MinImageExtent.Width,  (int)surfaceCaps.MaxImageExtent.Width),
+                         (uint)Math.Clamp(swapchain.Height, (int)surfaceCaps.MinImageExtent.Height, (int)surfaceCaps.MaxImageExtent.Height));
+        swapchain.Width  = (int)extent.Width;
+        swapchain.Height = (int)extent.Height;
 
-        // Present-mode negotiation. FIFO is always supported; IMMEDIATE
+        // ---- Present mode: FIFO is always supported; MAILBOX / IMMEDIATE
         // (vsync off) only sometimes — fall back to FIFO if missing so the
-        // editor still runs on a tearing-conservative driver.
-        var present = PresentModeKHR.FifoKhr; // safe default
-        if (!sc.VSync)
+        // editor still runs on a tearing-conservative driver. ----
+        var presentMode = PresentModeKHR.FifoKhr;
+        if (!swapchain.VSync)
         {
-            uint pmCount = 0;
-            KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, sc.Surface, ref pmCount, null);
-            var modes = new PresentModeKHR[pmCount];
-            fixed (PresentModeKHR* pp = modes)
-                KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, sc.Surface, ref pmCount, pp);
-            for (int i = 0; i < modes.Length; i++)
-                if (modes[i] == PresentModeKHR.MailboxKhr) { present = PresentModeKHR.MailboxKhr; break; }
-            if (present == PresentModeKHR.FifoKhr)
-                for (int i = 0; i < modes.Length; i++)
-                    if (modes[i] == PresentModeKHR.ImmediateKhr) { present = PresentModeKHR.ImmediateKhr; break; }
+            uint presentModeCount = 0;
+            KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, swapchain.Surface, ref presentModeCount, null);
+            var presentModes = new PresentModeKHR[presentModeCount];
+            fixed (PresentModeKHR* pPresentModes = presentModes)
+                KhrSurface.GetPhysicalDeviceSurfacePresentModes(PhysicalDevice, swapchain.Surface, ref presentModeCount, pPresentModes);
+
+            for (int i = 0; i < presentModes.Length; i++)
+                if (presentModes[i] == PresentModeKHR.MailboxKhr) { presentMode = PresentModeKHR.MailboxKhr; break; }
+            if (presentMode == PresentModeKHR.FifoKhr)
+                for (int i = 0; i < presentModes.Length; i++)
+                    if (presentModes[i] == PresentModeKHR.ImmediateKhr) { presentMode = PresentModeKHR.ImmediateKhr; break; }
         }
 
         // Image usage: ColorAttachmentBit is always allowed; TransferDstBit is
         // only allowed if the surface advertises it (most do, but not all).
-        var imgUsage = ImageUsageFlags.ColorAttachmentBit;
-        if ((caps.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) != 0)
-            imgUsage |= ImageUsageFlags.TransferDstBit;
+        var imageUsage = ImageUsageFlags.ColorAttachmentBit;
+        if ((surfaceCaps.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) != 0)
+            imageUsage |= ImageUsageFlags.TransferDstBit;
 
-        // CompositeAlpha negotiation: pick the first supported mode. Opaque
-        // is the natural choice but some compositors only offer Inherit /
-        // PreMultiplied.
+        // Composite alpha: Opaque is the natural choice, but some compositors
+        // only offer Inherit / PreMultiplied / PostMultiplied.
         var compositeAlpha = CompositeAlphaFlagsKHR.OpaqueBitKhr;
-        if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.OpaqueBitKhr) == 0)
+        if ((surfaceCaps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.OpaqueBitKhr) == 0)
         {
-            if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.InheritBitKhr) != 0)
+            if ((surfaceCaps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.InheritBitKhr) != 0)
                 compositeAlpha = CompositeAlphaFlagsKHR.InheritBitKhr;
-            else if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PreMultipliedBitKhr) != 0)
+            else if ((surfaceCaps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PreMultipliedBitKhr) != 0)
                 compositeAlpha = CompositeAlphaFlagsKHR.PreMultipliedBitKhr;
-            else if ((caps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PostMultipliedBitKhr) != 0)
+            else if ((surfaceCaps.SupportedCompositeAlpha & CompositeAlphaFlagsKHR.PostMultipliedBitKhr) != 0)
                 compositeAlpha = CompositeAlphaFlagsKHR.PostMultipliedBitKhr;
         }
 
         // CRITICAL: pass the existing swapchain (if any) as OldSwapchain.
-        // Without this, Vulkan keeps the previous swapchain alive — the
-        // surface is "in use" by it, and the second CreateSwapchain on the
-        // same surface fails with ErrorNativeWindowInUseKhr. We destroy
-        // the old one only *after* the new one has been successfully
-        // created (so the driver can recycle resources).
-        var oldSwapchain = sc.SwapchainHandle;
+        // Without this, Vulkan keeps the previous swapchain alive — the surface
+        // is "in use" by it, and the second CreateSwapchain on the same surface
+        // fails with ErrorNativeWindowInUseKhr. The old one is destroyed only
+        // *after* the new one succeeds, so the driver can recycle resources.
+        var oldSwapchain = swapchain.SwapchainHandle;
 
-        var sci = new SwapchainCreateInfoKHR
+        var swapchainCreateInfo = new SwapchainCreateInfoKHR
         {
             SType            = StructureType.SwapchainCreateInfoKhr,
-            Surface          = sc.Surface,
-            MinImageCount    = imageCount,
-            ImageFormat      = chosen.Format,
-            ImageColorSpace  = chosen.ColorSpace,
+            Surface          = swapchain.Surface,
+            MinImageCount    = desiredImageCount,
+            ImageFormat      = chosenFormat.Format,
+            ImageColorSpace  = chosenFormat.ColorSpace,
             ImageExtent      = extent,
             ImageArrayLayers = 1,
-            ImageUsage       = imgUsage,
+            ImageUsage       = imageUsage,
             ImageSharingMode = SharingMode.Exclusive,
-            PreTransform     = (caps.SupportedTransforms & SurfaceTransformFlagsKHR.IdentityBitKhr) != 0
+            PreTransform     = (surfaceCaps.SupportedTransforms & SurfaceTransformFlagsKHR.IdentityBitKhr) != 0
                                ? SurfaceTransformFlagsKHR.IdentityBitKhr
-                               : caps.CurrentTransform,
+                               : surfaceCaps.CurrentTransform,
             CompositeAlpha   = compositeAlpha,
-            PresentMode      = present,
+            PresentMode      = presentMode,
             Clipped          = true,
             OldSwapchain     = oldSwapchain,
         };
-        DebugLog($"  attempting swapchain: minImg={imageCount}, format={chosen.Format}/{chosen.ColorSpace}, " +
-                 $"extent={extent.Width}x{extent.Height}, usage={imgUsage}, composite={compositeAlpha}, present={present}");
-        var scRes = KhrSwapchain.CreateSwapchain(Device, in sci, null, out sc.SwapchainHandle);
-        if (scRes != Result.Success)
+        DebugLog($"  attempting swapchain: minImg={desiredImageCount}, format={chosenFormat.Format}/{chosenFormat.ColorSpace}, " +
+                 $"extent={extent.Width}x{extent.Height}, usage={imageUsage}, composite={compositeAlpha}, present={presentMode}");
+
+        var swapchainResult = KhrSwapchain.CreateSwapchain(Device, in swapchainCreateInfo, null, out swapchain.SwapchainHandle);
+        if (swapchainResult != Result.Success)
         {
-            DebugLog($"  swapchain failed: {scRes}");
-            DebugLog($"  surface caps: Min/Max={caps.MinImageCount}/{caps.MaxImageCount}, " +
-                     $"SupportedUsage={caps.SupportedUsageFlags}, SupportedComposite={caps.SupportedCompositeAlpha}, " +
-                     $"CurrentExtent={caps.CurrentExtent.Width}x{caps.CurrentExtent.Height}, " +
-                     $"SupportedTransforms={caps.SupportedTransforms}, CurrentTransform={caps.CurrentTransform}");
+            DebugLog($"  swapchain failed: {swapchainResult}");
+            DebugLog($"  surface caps: Min/Max={surfaceCaps.MinImageCount}/{surfaceCaps.MaxImageCount}, " +
+                     $"SupportedUsage={surfaceCaps.SupportedUsageFlags}, SupportedComposite={surfaceCaps.SupportedCompositeAlpha}, " +
+                     $"CurrentExtent={surfaceCaps.CurrentExtent.Width}x{surfaceCaps.CurrentExtent.Height}, " +
+                     $"SupportedTransforms={surfaceCaps.SupportedTransforms}, CurrentTransform={surfaceCaps.CurrentTransform}");
             throw new InvalidOperationException(
-                $"vkCreateSwapchainKHR failed: {scRes}. " +
-                $"HWND=0x{sc.Hwnd.ToInt64():X}, Format={chosen.Format}, ColorSpace={chosen.ColorSpace}, Extent={extent.Width}x{extent.Height}, " +
-                $"MinImageCount={imageCount}, ImageUsage={imgUsage}, CompositeAlpha={compositeAlpha}, PresentMode={present}. " +
-                $"Surface caps: Min/Max={caps.MinImageCount}/{caps.MaxImageCount}, " +
-                $"SupportedUsage={caps.SupportedUsageFlags}, SupportedComposite={caps.SupportedCompositeAlpha}. " +
+                $"vkCreateSwapchainKHR failed: {swapchainResult}. " +
+                $"HWND=0x{swapchain.Hwnd.ToInt64():X}, Format={chosenFormat.Format}, ColorSpace={chosenFormat.ColorSpace}, Extent={extent.Width}x{extent.Height}, " +
+                $"MinImageCount={desiredImageCount}, ImageUsage={imageUsage}, CompositeAlpha={compositeAlpha}, PresentMode={presentMode}. " +
+                $"Surface caps: Min/Max={surfaceCaps.MinImageCount}/{surfaceCaps.MaxImageCount}, " +
+                $"SupportedUsage={surfaceCaps.SupportedUsageFlags}, SupportedComposite={surfaceCaps.SupportedCompositeAlpha}. " +
                 $"Full negotiation log at: {System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TombEditorVk.log")}");
         }
-        DebugLog($"  swapchain OK: handle=0x{sc.SwapchainHandle.Handle:X}");
+        DebugLog($"  swapchain OK: handle=0x{swapchain.SwapchainHandle.Handle:X}");
 
-        // Now safe to destroy the previous swapchain — the driver has
-        // migrated its surface ownership to the new one.
+        // Now safe to destroy the previous swapchain — the driver has migrated
+        // its surface ownership to the new one.
         if (oldSwapchain.Handle != 0)
         {
             KhrSwapchain.DestroySwapchain(Device, oldSwapchain, null);
             DebugLog($"  retired old swapchain: 0x{oldSwapchain.Handle:X}");
         }
 
-        uint n = 0;
-        KhrSwapchain.GetSwapchainImages(Device, sc.SwapchainHandle, ref n, null);
-        sc.ColorImages = new Image[n];
-        sc.ColorViews  = new ImageView[n];
-        sc.ImageLayouts = new ImageLayout[n];
-        fixed (Image* p = sc.ColorImages)
-            KhrSwapchain.GetSwapchainImages(Device, sc.SwapchainHandle, ref n, p);
-        for (int i = 0; i < n; i++)
+        // ---- Swapchain colour images + views. ----
+        uint imageCount = 0;
+        KhrSwapchain.GetSwapchainImages(Device, swapchain.SwapchainHandle, ref imageCount, null);
+        swapchain.ColorImages  = new Image[imageCount];
+        swapchain.ColorViews   = new ImageView[imageCount];
+        swapchain.ImageLayouts = new ImageLayout[imageCount];
+        fixed (Image* pImages = swapchain.ColorImages)
+            KhrSwapchain.GetSwapchainImages(Device, swapchain.SwapchainHandle, ref imageCount, pImages);
+
+        for (int i = 0; i < imageCount; i++)
         {
-            var ivci = new ImageViewCreateInfo
+            var colorViewInfo = new ImageViewCreateInfo
             {
                 SType    = StructureType.ImageViewCreateInfo,
-                Image    = sc.ColorImages[i],
+                Image    = swapchain.ColorImages[i],
                 ViewType = ImageViewType.Type2D,
-                Format   = chosen.Format,
+                Format   = chosenFormat.Format,
                 SubresourceRange = new ImageSubresourceRange
                 {
-                    AspectMask = ImageAspectFlags.ColorBit,
-                    BaseMipLevel = 0, LevelCount = 1,
+                    AspectMask     = ImageAspectFlags.ColorBit,
+                    BaseMipLevel   = 0, LevelCount = 1,
                     BaseArrayLayer = 0, LayerCount = 1,
                 },
             };
-            Api.CreateImageView(Device, in ivci, null, out sc.ColorViews[i]);
-            sc.ImageLayouts[i] = ImageLayout.Undefined;
+            Api.CreateImageView(Device, in colorViewInfo, null, out swapchain.ColorViews[i]);
+            swapchain.ImageLayouts[i] = ImageLayout.Undefined;
         }
 
-        // Depth image.
-        var depthVk = VkMapping.ToVk(sc.DepthFormat);
-        sc.DepthFormatVk = depthVk;
-        var dci = new ImageCreateInfo
+        // ---- Depth image + view (multisampled when Samples > 1). ----
+        var depthFormatVk = VkMapping.ToVk(swapchain.DepthFormat);
+        swapchain.DepthFormatVk = depthFormatVk;
+        var depthImageInfo = new ImageCreateInfo
         {
             SType         = StructureType.ImageCreateInfo,
             ImageType     = ImageType.Type2D,
-            Format        = depthVk,
+            Format        = depthFormatVk,
             Extent        = new Extent3D(extent.Width, extent.Height, 1),
             MipLevels     = 1,
             ArrayLayers   = 1,
-            Samples       = VkMapping.ToSampleCount(sc.Samples),
+            Samples       = VkMapping.ToSampleCount(swapchain.Samples),
             Tiling        = ImageTiling.Optimal,
             Usage         = ImageUsageFlags.DepthStencilAttachmentBit,
             SharingMode   = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
-        Api.CreateImage(Device, in dci, null, out sc.DepthImage);
-        Api.GetImageMemoryRequirements(Device, sc.DepthImage, out var dReq);
-        sc.DepthMemory = AllocMemory(dReq.Size, dReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
-        Api.BindImageMemory(Device, sc.DepthImage, sc.DepthMemory, 0);
-        var dvci = new ImageViewCreateInfo
+        Api.CreateImage(Device, in depthImageInfo, null, out swapchain.DepthImage);
+        Api.GetImageMemoryRequirements(Device, swapchain.DepthImage, out var depthMemReq);
+        swapchain.DepthMemory = AllocMemory(depthMemReq.Size, depthMemReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
+        Api.BindImageMemory(Device, swapchain.DepthImage, swapchain.DepthMemory, 0);
+
+        var depthViewInfo = new ImageViewCreateInfo
         {
             SType    = StructureType.ImageViewCreateInfo,
-            Image    = sc.DepthImage,
+            Image    = swapchain.DepthImage,
             ViewType = ImageViewType.Type2D,
-            Format   = depthVk,
+            Format   = depthFormatVk,
             SubresourceRange = new ImageSubresourceRange
             {
                 AspectMask = ImageAspectFlags.DepthBit |
-                             (sc.DepthFormat == RhiFormat.D24_UNorm_S8_UInt ? ImageAspectFlags.StencilBit : 0),
-                BaseMipLevel = 0, LevelCount = 1,
+                             (swapchain.DepthFormat == RhiFormat.D24_UNorm_S8_UInt ? ImageAspectFlags.StencilBit : 0),
+                BaseMipLevel   = 0, LevelCount = 1,
                 BaseArrayLayer = 0, LayerCount = 1,
             },
         };
-        Api.CreateImageView(Device, in dvci, null, out sc.DepthView);
+        Api.CreateImageView(Device, in depthViewInfo, null, out swapchain.DepthView);
 
-        // Off-screen multisampled colour target. Rendering is multisampled
-        // into this image; the render pass resolves it into the single-sample
-        // swapchain image at the end of the pass. Skipped when Samples == 1.
-        if (sc.Samples > 1)
+        // ---- Off-screen multisampled colour target. Rendering is
+        // multisampled into this image; the render pass resolves it into the
+        // single-sample swapchain image at the end of the pass. ----
+        if (swapchain.Samples > 1)
         {
-            var mci = new ImageCreateInfo
+            var msaaImageInfo = new ImageCreateInfo
             {
                 SType         = StructureType.ImageCreateInfo,
                 ImageType     = ImageType.Type2D,
-                Format        = chosen.Format,
+                Format        = chosenFormat.Format,
                 Extent        = new Extent3D(extent.Width, extent.Height, 1),
                 MipLevels     = 1,
                 ArrayLayers   = 1,
-                Samples       = VkMapping.ToSampleCount(sc.Samples),
+                Samples       = VkMapping.ToSampleCount(swapchain.Samples),
                 Tiling        = ImageTiling.Optimal,
                 Usage         = ImageUsageFlags.ColorAttachmentBit,
                 SharingMode   = SharingMode.Exclusive,
                 InitialLayout = ImageLayout.Undefined,
             };
-            Api.CreateImage(Device, in mci, null, out sc.MsaaColorImage);
-            Api.GetImageMemoryRequirements(Device, sc.MsaaColorImage, out var mReq);
-            sc.MsaaColorMemory = AllocMemory(mReq.Size, mReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
-            Api.BindImageMemory(Device, sc.MsaaColorImage, sc.MsaaColorMemory, 0);
-            var mvci = new ImageViewCreateInfo
+            Api.CreateImage(Device, in msaaImageInfo, null, out swapchain.MsaaColorImage);
+            Api.GetImageMemoryRequirements(Device, swapchain.MsaaColorImage, out var msaaMemReq);
+            swapchain.MsaaColorMemory = AllocMemory(msaaMemReq.Size, msaaMemReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
+            Api.BindImageMemory(Device, swapchain.MsaaColorImage, swapchain.MsaaColorMemory, 0);
+
+            var msaaViewInfo = new ImageViewCreateInfo
             {
                 SType    = StructureType.ImageViewCreateInfo,
-                Image    = sc.MsaaColorImage,
+                Image    = swapchain.MsaaColorImage,
                 ViewType = ImageViewType.Type2D,
-                Format   = chosen.Format,
+                Format   = chosenFormat.Format,
                 SubresourceRange = new ImageSubresourceRange
                 {
-                    AspectMask = ImageAspectFlags.ColorBit,
-                    BaseMipLevel = 0, LevelCount = 1,
+                    AspectMask     = ImageAspectFlags.ColorBit,
+                    BaseMipLevel   = 0, LevelCount = 1,
                     BaseArrayLayer = 0, LayerCount = 1,
                 },
             };
-            Api.CreateImageView(Device, in mvci, null, out sc.MsaaColorView);
+            Api.CreateImageView(Device, in msaaViewInfo, null, out swapchain.MsaaColorView);
         }
 
-        // Render pass + framebuffers. resolveToSwapchain=true: at Samples > 1
-        // the pass gains a resolve attachment (final layout PRESENT_SRC_KHR);
-        // at Samples == 1 the colour attachment itself is the present target.
-        sc.RenderPass = GetOrCreateRenderPass(chosen.Format, depthVk, sc.Samples, resolveToSwapchain: true);
+        // ---- Render pass + framebuffers. With resolveToSwapchain=true and
+        // Samples > 1 the pass gains a resolve attachment (final layout
+        // PRESENT_SRC_KHR); at Samples == 1 the colour attachment is the
+        // present target itself. ----
+        swapchain.RenderPass = GetOrCreateRenderPass(chosenFormat.Format, depthFormatVk, swapchain.Samples, resolveToSwapchain: true);
 
-        sc.Framebuffers = new Framebuffer[n];
-        for (int i = 0; i < n; i++)
+        swapchain.Framebuffers = new Framebuffer[imageCount];
+        for (int i = 0; i < imageCount; i++)
         {
             // Attachment order must match GetOrCreateRenderPass:
             //   MSAA -> [0] multisampled colour, [1] depth, [2] resolve (swapchain image)
-            //   1x   -> [0] colour (swapchain image), [1] depth
+            //   1×   -> [0] colour (swapchain image), [1] depth
             var attachments = stackalloc ImageView[3];
-            uint attachCount;
-            if (sc.Samples > 1)
+            uint attachmentCount;
+            if (swapchain.Samples > 1)
             {
-                attachments[0] = sc.MsaaColorView;
-                attachments[1] = sc.DepthView;
-                attachments[2] = sc.ColorViews[i];
-                attachCount = 3;
+                attachments[0]  = swapchain.MsaaColorView;
+                attachments[1]  = swapchain.DepthView;
+                attachments[2]  = swapchain.ColorViews[i];
+                attachmentCount = 3;
             }
             else
             {
-                attachments[0] = sc.ColorViews[i];
-                attachments[1] = sc.DepthView;
-                attachCount = 2;
+                attachments[0]  = swapchain.ColorViews[i];
+                attachments[1]  = swapchain.DepthView;
+                attachmentCount = 2;
             }
-            var fbci = new FramebufferCreateInfo
+            var framebufferInfo = new FramebufferCreateInfo
             {
                 SType           = StructureType.FramebufferCreateInfo,
-                RenderPass      = sc.RenderPass,
-                AttachmentCount = attachCount,
+                RenderPass      = swapchain.RenderPass,
+                AttachmentCount = attachmentCount,
                 PAttachments    = attachments,
                 Width           = extent.Width,
                 Height          = extent.Height,
                 Layers          = 1,
             };
-            Api.CreateFramebuffer(Device, in fbci, null, out sc.Framebuffers[i]);
+            Api.CreateFramebuffer(Device, in framebufferInfo, null, out swapchain.Framebuffers[i]);
         }
 
         // One "render finished" semaphore per swapchain image (see
         // VkSwapchainRes). Recreated alongside the images on every resize.
-        sc.RenderFinishedSemaphores = new Semaphore[n];
-        var semCi = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
-        for (int i = 0; i < n; i++)
-            Api.CreateSemaphore(Device, in semCi, null, out sc.RenderFinishedSemaphores[i]);
+        swapchain.RenderFinishedSemaphores = new Semaphore[imageCount];
+        var semaphoreInfo = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
+        for (int i = 0; i < imageCount; i++)
+            Api.CreateSemaphore(Device, in semaphoreInfo, null, out swapchain.RenderFinishedSemaphores[i]);
     }
 
     public void ResizeSwapchain(SwapchainHandle handle, int width, int height)
     {
-        if (_disposed || !Swapchains.TryGetValue(handle.Id, out var sc)) return;
+        if (_disposed || !Swapchains.TryGetValue(handle.Id, out var swapchain)) return;
         WaitIdle();
-        DestroySwapchainViews(sc);
-        sc.Width = width; sc.Height = height;
-        CreateSwapchainResources(sc);
+        DestroySwapchainViews(swapchain);
+        swapchain.Width  = width;
+        swapchain.Height = height;
+        CreateSwapchainResources(swapchain);
     }
 
-    public void Destroy(SwapchainHandle h)
+    public void Destroy(SwapchainHandle handle)
     {
-        if (Swapchains.Remove(h.Id, out var s)) DestroySwapchainInternal(s);
+        if (Swapchains.Remove(handle.Id, out var swapchain))
+            DestroySwapchainInternal(swapchain);
     }
 
-    internal void DestroySwapchainInternal(VkSwapchainRes sc)
+    internal void DestroySwapchainInternal(VkSwapchainRes swapchain)
     {
         WaitIdle();
-        DestroySwapchainViews(sc);
-        if (sc.SwapchainHandle.Handle != 0)
-            KhrSwapchain.DestroySwapchain(Device, sc.SwapchainHandle, null);
-        if (sc.Surface.Handle != 0)
-            KhrSurface.DestroySurface(Instance, sc.Surface, null);
+        DestroySwapchainViews(swapchain);
+        if (swapchain.SwapchainHandle.Handle != 0)
+            KhrSwapchain.DestroySwapchain(Device, swapchain.SwapchainHandle, null);
+        if (swapchain.Surface.Handle != 0)
+            KhrSurface.DestroySurface(Instance, swapchain.Surface, null);
     }
+
+    // Destroys every per-image / per-extent object so the swapchain can be
+    // recreated at a new size (or fully torn down).
+    private void DestroySwapchainViews(VkSwapchainRes swapchain)
+    {
+        if (swapchain.RenderFinishedSemaphores != null)
+            foreach (var semaphore in swapchain.RenderFinishedSemaphores)
+                if (semaphore.Handle != 0) Api.DestroySemaphore(Device, semaphore, null);
+
+        if (swapchain.Framebuffers != null)
+            foreach (var framebuffer in swapchain.Framebuffers)
+                if (framebuffer.Handle != 0) Api.DestroyFramebuffer(Device, framebuffer, null);
+
+        if (swapchain.DepthView.Handle   != 0) Api.DestroyImageView(Device, swapchain.DepthView,   null);
+        if (swapchain.DepthImage.Handle  != 0) Api.DestroyImage(Device, swapchain.DepthImage,      null);
+        if (swapchain.DepthMemory.Handle != 0) Api.FreeMemory(Device, swapchain.DepthMemory,       null);
+
+        if (swapchain.MsaaColorView.Handle   != 0) Api.DestroyImageView(Device, swapchain.MsaaColorView,  null);
+        if (swapchain.MsaaColorImage.Handle  != 0) Api.DestroyImage(Device, swapchain.MsaaColorImage,     null);
+        if (swapchain.MsaaColorMemory.Handle != 0) Api.FreeMemory(Device, swapchain.MsaaColorMemory,      null);
+
+        if (swapchain.ColorViews != null)
+            foreach (var colorView in swapchain.ColorViews)
+                if (colorView.Handle != 0) Api.DestroyImageView(Device, colorView, null);
+    }
+
+    // ----------------------------------------------------------- Win32 interop
 
     [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
     private static extern IntPtr GetWindowLongPtr(IntPtr hwnd, int nIndex);
+
     [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "GetWindowLongW")]
     private static extern int GetWindowLong(IntPtr hwnd, int nIndex);
-    [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW",
+        CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
     private static extern IntPtr GetModuleHandle(string? lpModuleName);
 
-    // Diagnostic log into %TEMP%\TombEditorVk.log so we capture surface +
-    // swapchain negotiation regardless of whether stderr is attached.
+    // Diagnostic log into %TEMP%\TombEditorVk.log so surface + swapchain
+    // negotiation is captured regardless of whether stderr is attached.
     private static readonly object _logLock = new();
-    internal static void DebugLog(string msg)
+
+    internal static void DebugLog(string message)
     {
         try
         {
             lock (_logLock)
             {
                 var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TombEditorVk.log");
-                System.IO.File.AppendAllText(path,
-                    $"[{DateTime.Now:HH:mm:ss.fff}] {msg}\n");
+                System.IO.File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] {message}\n");
             }
         }
         catch { /* never fail because of logging */ }
-    }
-
-    private void DestroySwapchainViews(VkSwapchainRes sc)
-    {
-        if (sc.RenderFinishedSemaphores != null)
-            for (int i = 0; i < sc.RenderFinishedSemaphores.Length; i++)
-                if (sc.RenderFinishedSemaphores[i].Handle != 0)
-                    Api.DestroySemaphore(Device, sc.RenderFinishedSemaphores[i], null);
-        if (sc.Framebuffers != null)
-            for (int i = 0; i < sc.Framebuffers.Length; i++)
-                if (sc.Framebuffers[i].Handle != 0)
-                    Api.DestroyFramebuffer(Device, sc.Framebuffers[i], null);
-        if (sc.DepthView.Handle  != 0) Api.DestroyImageView(Device, sc.DepthView,  null);
-        if (sc.DepthImage.Handle != 0) Api.DestroyImage(Device, sc.DepthImage,     null);
-        if (sc.DepthMemory.Handle!= 0) Api.FreeMemory(Device, sc.DepthMemory,      null);
-        if (sc.MsaaColorView.Handle   != 0) Api.DestroyImageView(Device, sc.MsaaColorView,  null);
-        if (sc.MsaaColorImage.Handle  != 0) Api.DestroyImage(Device, sc.MsaaColorImage,     null);
-        if (sc.MsaaColorMemory.Handle != 0) Api.FreeMemory(Device, sc.MsaaColorMemory,      null);
-        if (sc.ColorViews != null)
-            for (int i = 0; i < sc.ColorViews.Length; i++)
-                if (sc.ColorViews[i].Handle != 0)
-                    Api.DestroyImageView(Device, sc.ColorViews[i], null);
     }
 }
