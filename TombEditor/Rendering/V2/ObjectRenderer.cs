@@ -467,6 +467,7 @@ internal sealed class ObjectRenderer : IDisposable
         {
             var ta = poly.Texture;
             var sampleTex = ta.Texture;
+            uint bm = (uint)ta.BlendMode;   // per-face blend mode → vertex alpha
             Vector2 uv0 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord0);
             Vector2 uv1 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord1);
             Vector2 uv2 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord2);
@@ -474,23 +475,23 @@ internal sealed class ObjectRenderer : IDisposable
 
             if (poly.Shape == WadPolygonShape.Triangle)
             {
-                Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
+                Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
             }
             else
             {
-                Push(poly.Index0, uv0); Push(poly.Index1, uv1); Push(poly.Index2, uv2);
-                Push(poly.Index0, uv0); Push(poly.Index2, uv2); Push(poly.Index3, uv3);
+                Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
+                Push(poly.Index0, uv0, bm); Push(poly.Index2, uv2, bm); Push(poly.Index3, uv3, bm);
             }
         }
 
-        void Push(int i, Vector2 uv)
+        void Push(int i, Vector2 uv, uint blendMode)
         {
             if (i < 0 || i >= pos.Count) return;
             Vector3 c = hasColors ? col[i] : Vector3.One;
             verts.Add(new ObjectVertex
             {
                 Position = Vector3.Transform(pos[i], transform),
-                Color    = PackColorRgba8(c),
+                Color    = PackColor(c, blendMode),
                 UvU      = PackUNorm16(uv.X),
                 UvV      = PackUNorm16(uv.Y),
             });
@@ -511,12 +512,16 @@ internal sealed class ObjectRenderer : IDisposable
         return new GpuMesh { Vb = vb, VertexCount = verts.Count };
     }
 
-    private static uint PackColorRgba8(Vector3 c)
+    private static uint PackColorRgba8(Vector3 c) => PackColor(c, 0xFFu);
+
+    // Packs an RGB tint plus an 8-bit alpha payload — for WAD meshes the alpha
+    // byte carries the face BlendMode so the shader can alpha-test cutouts.
+    private static uint PackColor(Vector3 c, uint alphaByte)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
         uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
         uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
-        return r | (g << 8) | (b << 16) | (0xFFu << 24);
+        return r | (g << 8) | (b << 16) | ((alphaByte & 0xFFu) << 24);
     }
 
     private static ushort PackUNorm16(float v) =>

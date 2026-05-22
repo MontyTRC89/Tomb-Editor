@@ -62,6 +62,10 @@ internal sealed class EditorGeometryRenderer : IDisposable
     private const uint HeightColor     = 0xFF_FF_FF_FFu;  // white
     private const uint BrushColor      = 0xFF_00_FF_FFu;  // yellow
     private const uint SplitColor      = 0xFF_00_A0_FFu;  // orange
+    // Volume solid fill — VolumeColor rgb at this alpha (legacy ~0.55; the
+    // CullNone triangle pass blends front + back faces, so a lower value
+    // composites to roughly the legacy opacity).
+    private const uint VolumeFillAlpha = 0x55000000u;
 
     // Ghost-block volume tessellation reused for sphere volumes.
     private const int SphereSegments = 24;
@@ -520,30 +524,96 @@ internal sealed class EditorGeometryRenderer : IDisposable
                                       in RenderScene scene)
     {
         int n = 0;
-        if (!scene.ShowOtherObjects) return n;
-
         uint selRgba = PackRgba(scene.SelectionTint);
         var highlighted = scene.Highlighted;
 
-        // ---- Flyby direction cones — one per flyby camera in view ----
         foreach (Room room in rooms)
         {
             if (room?.Objects == null) continue;
+            Vector3 wp = room.WorldPos;
             foreach (var obj in room.Objects)
-                if (obj is FlybyCameraInstance fb)
+            {
+                bool sel = highlighted != null && highlighted.Contains(obj);
+                switch (obj)
                 {
-                    bool sel = highlighted != null && highlighted.Contains(fb);
-                    uint rgb = sel ? selRgba : SequenceColor(fb.Sequence);
-                    // Translucent cone (alpha 0x66) so it doesn't hide the scene.
-                    EmitFlybyCone(v, ref n, fb, (rgb & 0x00FFFFFFu) | 0x66000000u);
+                    // Flyby direction cone — translucent so it doesn't hide the scene.
+                    case FlybyCameraInstance fb when scene.ShowOtherObjects:
+                    {
+                        uint rgb = sel ? selRgba : SequenceColor(fb.Sequence);
+                        EmitFlybyCone(v, ref n, fb, (rgb & 0x00FFFFFFu) | 0x66000000u);
+                        break;
+                    }
+                    // Volumes — solid translucent violet box / sphere.
+                    case BoxVolumeInstance bx when scene.ShowVolumes:
+                        EmitSolidBox(v, ref n, bx.RotationPositionMatrix, bx.Size * 0.5f,
+                                     ((sel ? selRgba : VolumeColor) & 0x00FFFFFFu) | VolumeFillAlpha);
+                        break;
+                    case SphereVolumeInstance sp when scene.ShowVolumes:
+                        EmitSolidSphere(v, ref n, wp + sp.Position, sp.Size,
+                                        ((sel ? selRgba : VolumeColor) & 0x00FFFFFFu) | VolumeFillAlpha);
+                        break;
                 }
+            }
         }
 
         // ---- Solid Catmull-Rom path tube for the selected flyby sequence ----
-        if (scene.FlybyPathSequence >= 0)
+        if (scene.ShowOtherObjects && scene.FlybyPathSequence >= 0)
             EmitFlybyPathSolid(v, ref n, level, scene.FlybyPathSequence);
 
         return n;
+    }
+
+    // Solid translucent box (12 triangles) — winding is irrelevant, the
+    // triangle pass is CullNone.
+    private static void EmitSolidBox(Span<LineVertex> v, ref int n, Matrix4x4 m,
+                                     Vector3 he, uint color)
+    {
+        Vector3 C(float x, float y, float z) =>
+            Vector3.Transform(new Vector3(x * he.X, y * he.Y, z * he.Z), m);
+
+        Vector3 c000 = C(-1, -1, -1), c100 = C(1, -1, -1), c110 = C(1, 1, -1), c010 = C(-1, 1, -1);
+        Vector3 c001 = C(-1, -1, 1),  c101 = C(1, -1, 1),  c111 = C(1, 1, 1),  c011 = C(-1, 1, 1);
+
+        Quad(v, ref n, c000, c100, c110, c010, color);  // -Z
+        Quad(v, ref n, c101, c001, c011, c111, color);  // +Z
+        Quad(v, ref n, c001, c000, c010, c011, color);  // -X
+        Quad(v, ref n, c100, c101, c111, c110, color);  // +X
+        Quad(v, ref n, c000, c001, c101, c100, color);  // -Y
+        Quad(v, ref n, c010, c110, c111, c011, color);  // +Y
+    }
+
+    private static void Quad(Span<LineVertex> v, ref int n,
+                             Vector3 a, Vector3 b, Vector3 c, Vector3 d, uint color)
+    {
+        EmitTri(v, ref n, a, b, c, color);
+        EmitTri(v, ref n, a, c, d, color);
+    }
+
+    // Solid translucent UV sphere.
+    private static void EmitSolidSphere(Span<LineVertex> v, ref int n, Vector3 centre,
+                                        float radius, uint color)
+    {
+        const int rings = 8, segs = 12;
+        for (int ring = 0; ring < rings; ring++)
+        {
+            float lat0 = (float)(Math.PI * ring       / rings - Math.PI / 2);
+            float lat1 = (float)(Math.PI * (ring + 1) / rings - Math.PI / 2);
+            float y0 = (float)Math.Sin(lat0), r0 = (float)Math.Cos(lat0);
+            float y1 = (float)Math.Sin(lat1), r1 = (float)Math.Cos(lat1);
+            for (int s = 0; s < segs; s++)
+            {
+                float lon0 = (float)(2 * Math.PI * s       / segs);
+                float lon1 = (float)(2 * Math.PI * (s + 1) / segs);
+                float c0 = (float)Math.Cos(lon0), s0 = (float)Math.Sin(lon0);
+                float c1 = (float)Math.Cos(lon1), s1 = (float)Math.Sin(lon1);
+                Vector3 p00 = centre + new Vector3(r0 * c0, y0, r0 * s0) * radius;
+                Vector3 p01 = centre + new Vector3(r0 * c1, y0, r0 * s1) * radius;
+                Vector3 p10 = centre + new Vector3(r1 * c0, y1, r1 * s0) * radius;
+                Vector3 p11 = centre + new Vector3(r1 * c1, y1, r1 * s1) * radius;
+                EmitTri(v, ref n, p00, p01, p11, color);
+                EmitTri(v, ref n, p00, p11, p10, color);
+            }
+        }
     }
 
     // Flyby path — a solid triangular-prism tube following the Catmull-Rom

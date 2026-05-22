@@ -63,12 +63,16 @@ internal sealed class ServiceObjectRenderer : IDisposable
                                                   // billboard and its pick hitbox agree
 
     // ----- Icon atlas layout -------------------------------------------------
-    // 16 icons of 89×89 each, packed in a 4×4 grid → 356×356 atlas.
+    // 16 icons of 89×89 each, packed in a 4×4 grid. Each cell gets an
+    // edge-replicated gutter so bilinear / mip sampling can't bleed pixels
+    // from the neighbouring icon.
     private const int IconSize   = 89;
+    private const int IconGutter = 8;
+    private const int IconCell   = IconSize + IconGutter * 2;  // 105
     private const int AtlasCols  = 4;
     private const int AtlasRows  = 4;
-    private const int AtlasW     = IconSize * AtlasCols;
-    private const int AtlasH     = IconSize * AtlasRows;
+    private const int AtlasW     = IconCell * AtlasCols;       // 420
+    private const int AtlasH     = IconCell * AtlasRows;
 
     // Light volume tessellation. Kept modest — these only appear for the
     // single selected light, so cost is negligible.
@@ -132,7 +136,10 @@ internal sealed class ServiceObjectRenderer : IDisposable
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: SpriteStride) },
             Topology               = PrimitiveTopology.TriangleList,
             Rasterizer             = new RasterizerState(CullMode.None),
-            DepthStencil           = DepthStencilState.Default,
+            // Depth-tested (hidden behind walls) but no depth write — the
+            // alpha-blended billboards must not clip each other with their
+            // transparent quad corners; draw order is the depth-sort instead.
+            DepthStencil           = DepthStencilState.DepthReadOnly,
             BlendStates            = new[] { BlendState.AlphaBlend },
             ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
             DepthAttachmentFormat  = Format.D24_UNorm_S8_UInt,
@@ -178,17 +185,19 @@ internal sealed class ServiceObjectRenderer : IDisposable
         AllocSpriteVb(8192);
         AllocLineVb(2048);
 
-        // Icon atlas: BGRA8 to match TextureAtlas, sampled with bilinear /
-        // clamp (no mip — icons are small and we draw them at world-fixed
-        // size so they down-sample naturally on the GPU).
+        // Icon atlas: BGRA8, single mip — CreateTexture takes only mip-0 data
+        // here. The per-cell edge-replicated gutter keeps bilinear sampling
+        // from bleeding across neighbouring icons.
         var atlasBytes = BuildIconAtlas();
         _iconAtlas = device.CreateTexture(
             new TextureDesc(TextureKind.Texture2D, AtlasW, AtlasH,
                             Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
                             mipLevels: 1, debugName: "ServiceIconAtlas"),
             atlasBytes);
+        // Anisotropic sampling takes several taps even without a mip chain,
+        // which softens the minification aliasing on distant billboards.
         _iconSampler = device.CreateSampler(new SamplerDesc(
-            FilterMode.Linear, AddressMode.Clamp, maxAnisotropy: 1));
+            FilterMode.Anisotropic, AddressMode.Clamp, maxAnisotropy: 16));
     }
 
     private static byte[] BuildIconAtlas()
@@ -205,13 +214,37 @@ internal sealed class ServiceObjectRenderer : IDisposable
             var img = ImageC.FromStream(stream);
             if (img.Width != IconSize || img.Height != IconSize) continue;
             byte[] src = img.ToByteArray();
+
             int col = i % AtlasCols, row = i / AtlasCols;
-            int ox = col * IconSize, oy = row * IconSize;
+            int ox = col * IconCell + IconGutter;
+            int oy = row * IconCell + IconGutter;
+
+            // Inner icon.
             for (int y = 0; y < IconSize; y++)
+                Buffer.BlockCopy(src, y * IconSize * 4, bytes,
+                                 ((oy + y) * AtlasW + ox) * 4, IconSize * 4);
+
+            // Top / bottom gutter — replicate the icon's edge rows.
+            for (int g = 1; g <= IconGutter; g++)
             {
-                int srcRow = y * IconSize * 4;
-                int dstRow = ((oy + y) * AtlasW + ox) * 4;
-                Buffer.BlockCopy(src, srcRow, bytes, dstRow, IconSize * 4);
+                Buffer.BlockCopy(bytes, (oy * AtlasW + ox) * 4,
+                                 bytes, ((oy - g) * AtlasW + ox) * 4, IconSize * 4);
+                Buffer.BlockCopy(bytes, ((oy + IconSize - 1) * AtlasW + ox) * 4,
+                                 bytes, ((oy + IconSize - 1 + g) * AtlasW + ox) * 4, IconSize * 4);
+            }
+
+            // Left / right gutter (full padded height — fills the corners too).
+            for (int y = -IconGutter; y < IconSize + IconGutter; y++)
+            {
+                int yc       = Math.Clamp(y, 0, IconSize - 1);
+                int leftIdx  = ((oy + yc) * AtlasW + ox) * 4;
+                int rightIdx = ((oy + yc) * AtlasW + ox + IconSize - 1) * 4;
+                int rowBase  = (oy + y) * AtlasW * 4;
+                for (int g = 1; g <= IconGutter; g++)
+                {
+                    Buffer.BlockCopy(bytes, leftIdx,  bytes, rowBase + (ox - g) * 4, 4);
+                    Buffer.BlockCopy(bytes, rightIdx, bytes, rowBase + (ox + IconSize - 1 + g) * 4, 4);
+                }
             }
         }
         return bytes;
@@ -496,10 +529,10 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
         int idx = (int)icon;
         int col = idx % AtlasCols, row = idx / AtlasCols;
-        float u0 = (col       * IconSize) / (float)AtlasW;
-        float v0 = (row       * IconSize) / (float)AtlasH;
-        float u1 = ((col + 1) * IconSize) / (float)AtlasW;
-        float v1 = ((row + 1) * IconSize) / (float)AtlasH;
+        float u0 = (col * IconCell + IconGutter)            / (float)AtlasW;
+        float v0 = (row * IconCell + IconGutter)            / (float)AtlasH;
+        float u1 = (col * IconCell + IconGutter + IconSize) / (float)AtlasW;
+        float v1 = (row * IconCell + IconGutter + IconSize) / (float)AtlasH;
         float h  = MarkerHalfExtent;
 
         // Quad corners in (right, up) coefficients. Up = +Y in the shader's

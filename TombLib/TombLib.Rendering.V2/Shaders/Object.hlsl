@@ -62,7 +62,9 @@ VsOut vs_main(VsIn input)
     // meshes that would otherwise multiply to near-black.
     float3 mul3   = input.Color.rgb * input.InstTint.rgb;
     o.Color.rgb   = lerp(mul3, input.InstTint.rgb, input.InstTint.a);
-    o.Color.a     = 1.0;
+    // Color.a carries the per-face BlendMode (packed by ObjectRenderer) — kept
+    // unmodified for the pixel shader's alpha test.
+    o.Color.a     = input.Color.a;
     o.Uv          = input.Uv;
     return o;
 }
@@ -70,5 +72,12 @@ VsOut vs_main(VsIn input)
 float4 ps_main(VsOut input) : SV_Target
 {
     float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
+
+    // Alpha test — discard see-through texels so object cutout textures
+    // (foliage, grates, fences) render as holes instead of opaque black.
+    // Applied to every object face: WAD meshes don't carry a reliable
+    // per-poly blend mode, so the legacy renderer alpha-tests them globally.
+    clip(sampled.a - 0.5);
+
     return float4(sampled.rgb * input.Color.rgb, sampled.a);
 }
