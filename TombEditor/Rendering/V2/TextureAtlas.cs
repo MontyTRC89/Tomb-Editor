@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
@@ -91,23 +92,24 @@ public sealed class TextureAtlas : IDisposable
             atlasBytes[idx + 3] = 255;
         }
 
-        // --- 2) Load the sector-overlay sprites from embedded resources.
-        var overlayImages = new List<(SectorTexture St, ImageC Img)>();
-        foreach (SectorTexture st in Enum.GetValues(typeof(SectorTexture)))
+        // --- 2) Load the sector-overlay sprites from embedded resources, in
+        // parallel — each is an independent PNG decode.
+        var overlayBag = new ConcurrentBag<(SectorTexture St, ImageC Img)>();
+        Parallel.ForEach((SectorTexture[])Enum.GetValues(typeof(SectorTexture)), st =>
         {
-            if (st == SectorTexture.None) continue;
+            if (st == SectorTexture.None) return;
 
             string resourceName = "TombLib.Rendering.SectorTextures." + st + ".png";
             using Stream? stream = RenderingAssembly.GetManifestResourceStream(resourceName);
-            if (stream == null) continue;
+            if (stream == null) return;
 
             ImageC image;
             try { image = ImageC.FromStream(stream); }
-            catch { continue; }
-            if (image == null || image.Width <= 0 || image.Height <= 0) continue;
-
-            overlayImages.Add((st, image));
-        }
+            catch { return; }
+            if (image != null && image.Width > 0 && image.Height > 0)
+                overlayBag.Add((st, image));
+        });
+        var overlayImages = new List<(SectorTexture St, ImageC Img)>(overlayBag);
 
         // --- 3) Collect the texture regions every face / polygon samples.
         var regionSet = new HashSet<TexRegion>();
@@ -125,13 +127,19 @@ public sealed class TextureAtlas : IDisposable
             }
         }
 
-        // Room geometry — every textured triangle.
-        foreach (var room in level.Rooms)
-        {
-            if (room?.RoomGeometry == null) continue;
-            foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
-                CollectFace(regionSet, ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
-        }
+        // Room geometry — every textured triangle. Parallelised over rooms:
+        // each thread fills its own set (HashSet is not thread-safe), and the
+        // sets are merged as each partition finishes.
+        Parallel.ForEach(level.Rooms,
+            () => new HashSet<TexRegion>(),
+            (room, _, localSet) =>
+            {
+                if (room?.RoomGeometry != null)
+                    foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
+                        CollectFace(localSet, ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
+                return localSet;
+            },
+            localSet => { lock (regionSet) regionSet.UnionWith(localSet); });
 
         // WAD static / moveable polygons.
         if (level.Settings?.Wads != null)
@@ -169,24 +177,32 @@ public sealed class TextureAtlas : IDisposable
                         CollectWholeImage(regionSet, submesh.Material?.Texture);
             }
 
-        // --- 4) Pack regions largest-first, then the overlay sprites.
+        // --- 4) Convert every distinct source page to raw BGRA bytes, in
+        // parallel — one independent ImageC.ToByteArray per page.
+        var uniquePages = new List<Texture>();
+        var seenPages   = new HashSet<Texture>();
+        foreach (var region in regionSet)
+            if (seenPages.Add(region.Texture)) uniquePages.Add(region.Texture);
+
+        var pageByteArrays = new byte[uniquePages.Count][];
+        Parallel.For(0, uniquePages.Count, i => pageByteArrays[i] = uniquePages[i].Image.ToByteArray());
+
+        var pageBytes = new Dictionary<Texture, byte[]>(uniquePages.Count);
+        for (int i = 0; i < uniquePages.Count; i++)
+            pageBytes[uniquePages[i]] = pageByteArrays[i];
+
+        // --- 5) Pack regions largest-first, then the overlay sprites. Packing
+        // itself stays single-threaded — the shelf packer is stateful.
         var packJobs = new List<PackJob>();
 
         var sortedRegions = new List<TexRegion>(regionSet);
         sortedRegions.Sort((a, b) => ((long)b.W * b.H).CompareTo((long)a.W * a.H));
 
-        var pageBytes = new Dictionary<Texture, byte[]>();
         foreach (var region in sortedRegions)
         {
             if (!TryPack(packer, region.W, region.H, out var inner)) continue;
             _regions[region] = inner;
-
-            if (!pageBytes.TryGetValue(region.Texture, out var bytes))
-            {
-                bytes = region.Texture.Image.ToByteArray();
-                pageBytes[region.Texture] = bytes;
-            }
-            packJobs.Add(new PackJob(inner, bytes, region.Texture.Image.Width * 4,
+            packJobs.Add(new PackJob(inner, pageBytes[region.Texture], region.Texture.Image.Width * 4,
                                      region.X, region.Y, region.W, region.H));
         }
 
@@ -198,7 +214,7 @@ public sealed class TextureAtlas : IDisposable
                                      0, 0, image.Width, image.Height));
         }
 
-        // --- 5) Blit + replicate gutters in parallel (disjoint atlas rects).
+        // --- 6) Blit + replicate gutters in parallel (disjoint atlas rects).
         Parallel.ForEach(packJobs, job =>
             BlitAndPad(atlasBytes, atlasSize, job.InnerOrigin,
                        job.Src, job.SrcStride, job.SrcX, job.SrcY, job.W, job.H));
@@ -261,21 +277,19 @@ public sealed class TextureAtlas : IDisposable
         int imageH = texture.Image.Height;
         if (imageW <= 0 || imageH <= 0) return false;
 
-        float minX = float.MaxValue, minY = float.MaxValue;
-        float maxX = float.MinValue, maxY = float.MinValue;
-        foreach (var coord in faceCoords)
+        // SIMD min / max — System.Numerics.Vector2 lowers each step to a
+        // single packed-min / packed-max instruction.
+        Vector2 min = faceCoords[0], max = faceCoords[0];
+        for (int i = 1; i < faceCoords.Length; i++)
         {
-            if (coord.X < minX) minX = coord.X;
-            if (coord.X > maxX) maxX = coord.X;
-            if (coord.Y < minY) minY = coord.Y;
-            if (coord.Y > maxY) maxY = coord.Y;
+            min = Vector2.Min(min, faceCoords[i]);
+            max = Vector2.Max(max, faceCoords[i]);
         }
-        if (minX > maxX || minY > maxY) return false;
 
-        int x0 = Math.Clamp((int)MathF.Floor(minX),   0, imageW);
-        int y0 = Math.Clamp((int)MathF.Floor(minY),   0, imageH);
-        int x1 = Math.Clamp((int)MathF.Ceiling(maxX), 0, imageW);
-        int y1 = Math.Clamp((int)MathF.Ceiling(maxY), 0, imageH);
+        int x0 = Math.Clamp((int)MathF.Floor(min.X),   0, imageW);
+        int y0 = Math.Clamp((int)MathF.Floor(min.Y),   0, imageH);
+        int x1 = Math.Clamp((int)MathF.Ceiling(max.X), 0, imageW);
+        int y1 = Math.Clamp((int)MathF.Ceiling(max.Y), 0, imageH);
         if (x1 <= x0) { x0 = Math.Min(x0, imageW - 1); x1 = x0 + 1; }
         if (y1 <= y0) { y0 = Math.Min(y0, imageH - 1); y1 = y0 + 1; }
         if (x0 < 0 || y0 < 0) return false;
