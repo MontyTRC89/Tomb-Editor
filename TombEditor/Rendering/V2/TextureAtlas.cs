@@ -22,36 +22,52 @@ namespace TombEditor.Rendering.V2;
 ///   1. A reserved white pixel (untextured / fallback).
 ///   2. All <see cref="SectorTexture"/> overlay sprites loaded from
 ///      TombLib.Rendering's embedded resources.
-///   3. Every loaded level <see cref="Texture"/> (plus any face-referenced
-///      texture that isn't in the level texture list).
+///   3. One entry per distinct texture <i>region</i> sampled by a face — the
+///      rectangle a polygon actually uses, never the whole source page.
 ///
-/// <para>Entries get a 1-pixel edge-replicated gutter so bilinear /
-/// anisotropic / mipmap sampling can't bleed pixels from neighbouring
-/// packed textures.</para>
+/// <para>Packing per region (instead of per page) is what keeps textured
+/// polygons seam-free: every entry gets its own edge-replicated gutter, so a
+/// face that samples right up to its tile edge can only ever reach a copy of
+/// its own edge — never the neighbouring tile of the same source page. This
+/// mirrors the legacy <c>RenderingTextureAllocator.GetForTriangle</c> /
+/// <c>Dx11RenderingTextureAllocator</c> behaviour.</para>
 ///
 /// <para>Build pipeline:
-///   1. Pack all sources sequentially (the shelf packer is not thread-safe).
-///   2. Blit + replicate the gutter in parallel via <see cref="Parallel.ForEach"/>
-///      — each job writes to a disjoint atlas region, so the work scales
-///      with core count.
-///   3. Row copies inside each job use AVX2 (32-byte) or SSE2 (16-byte)
-///      stores when supported, scalar fallback otherwise.
-/// </para>
+///   1. Collect the distinct (texture, region) rectangles every room face,
+///      WAD polygon and imported-geometry submesh samples.
+///   2. Pack them largest-first into the page (the shelf packer fragments
+///      badly otherwise and would drop big entries).
+///   3. Blit each region's pixels + replicate its gutter, in parallel via
+///      <see cref="Parallel.ForEach"/> — each job writes a disjoint atlas
+///      rectangle. Row copies use AVX2 / SSE2 stores when available.</para>
 /// </summary>
 public sealed class TextureAtlas : IDisposable
 {
-    public TextureHandle Texture  { get; }
-    public SamplerHandle Sampler  { get; }
-    public VectorInt2    Size     { get; }
+    public TextureHandle Texture { get; }
+    public SamplerHandle Sampler { get; }
+    public VectorInt2    Size    { get; }
 
     private readonly IRhiDevice _device;
-    private readonly Dictionary<Texture, VectorInt2> _origins = new();
+    private readonly Dictionary<TexRegion, VectorInt2> _regions = new();
     private readonly Dictionary<SectorTexture, (VectorInt2 Origin, VectorInt2 Size)> _sectorOverlays = new();
     private readonly VectorInt2 _whitePixel;
 
     private static readonly Assembly RenderingAssembly = typeof(SectorTexture).Assembly;
 
-    private readonly record struct PackJob(VectorInt2 InnerOrigin, ImageC Image);
+    // Edge-replicated gutter around every packed entry. The legacy allocator
+    // used 1 px and never showed seams; 4 px is a generous margin for the
+    // anisotropic footprint at oblique angles without wasting much atlas area.
+    private const int Gutter = 4;
+
+    // A distinct rectangle of a source texture page, identified by the page
+    // plus its integer bounding box. Two faces sampling the same tile resolve
+    // to the same region and share one packed entry.
+    private readonly record struct TexRegion(Texture Texture, int X, int Y, int W, int H);
+
+    // One blit task: copy the W×H sub-rect at (SrcX, SrcY) of Src (stride
+    // SrcStride bytes) into the atlas at InnerOrigin, then replicate gutters.
+    private readonly record struct PackJob(
+        VectorInt2 InnerOrigin, byte[] Src, int SrcStride, int SrcX, int SrcY, int W, int H);
 
     public TextureAtlas(IRhiDevice device, Level level, int atlasSize = 4096)
     {
@@ -61,81 +77,75 @@ public sealed class TextureAtlas : IDisposable
         var atlasBytes = new byte[atlasSize * atlasSize * 4];
         var packer = new RectPackerSimpleStack(Size);
 
-        // 1) White pixel + 1-pixel gutter (3×3 white block).
-        var wpPadded = packer.TryAdd(new VectorInt2(3, 3))
-                       ?? throw new InvalidOperationException("Atlas too small for the reserved white pixel.");
-        _whitePixel = new VectorInt2(wpPadded.X + 1, wpPadded.Y + 1);
+        // --- 1) Reserved white pixel — a 3×3 white block, sampled at its centre.
+        var whiteBlock = packer.TryAdd(new VectorInt2(3, 3))
+                         ?? throw new InvalidOperationException("Atlas too small for the reserved white pixel.");
+        _whitePixel = new VectorInt2(whiteBlock.X + 1, whiteBlock.Y + 1);
         for (int yy = 0; yy < 3; yy++)
         for (int xx = 0; xx < 3; xx++)
         {
-            int idx = ((wpPadded.Y + yy) * atlasSize + (wpPadded.X + xx)) * 4;
+            int idx = ((whiteBlock.Y + yy) * atlasSize + (whiteBlock.X + xx)) * 4;
             atlasBytes[idx + 0] = 255;
             atlasBytes[idx + 1] = 255;
             atlasBytes[idx + 2] = 255;
             atlasBytes[idx + 3] = 255;
         }
 
-        // 2 + 3) Pack everything sequentially (RectPacker is not thread-safe).
-        var overlayJobs = new List<(SectorTexture St, PackJob Job)>();
+        // --- 2) Load the sector-overlay sprites from embedded resources.
+        var overlayImages = new List<(SectorTexture St, ImageC Img)>();
         foreach (SectorTexture st in Enum.GetValues(typeof(SectorTexture)))
         {
             if (st == SectorTexture.None) continue;
 
-            string resName = "TombLib.Rendering.SectorTextures." + st.ToString() + ".png";
-            using Stream? stream = RenderingAssembly.GetManifestResourceStream(resName);
+            string resourceName = "TombLib.Rendering.SectorTextures." + st + ".png";
+            using Stream? stream = RenderingAssembly.GetManifestResourceStream(resourceName);
             if (stream == null) continue;
 
-            ImageC img;
-            try { img = ImageC.FromStream(stream); }
+            ImageC image;
+            try { image = ImageC.FromStream(stream); }
             catch { continue; }
-            if (img == null || img.Width <= 0 || img.Height <= 0) continue;
+            if (image == null || image.Width <= 0 || image.Height <= 0) continue;
 
-            if (TryPack(packer, img, out var inner))
+            overlayImages.Add((st, image));
+        }
+
+        // --- 3) Collect the texture regions every face / polygon samples.
+        var regionSet = new HashSet<TexRegion>();
+
+        void CollectMesh(WadMesh? mesh)
+        {
+            if (mesh == null) return;
+            foreach (var poly in mesh.Polys)
             {
-                _sectorOverlays[st] = (inner, new VectorInt2(img.Width, img.Height));
-                overlayJobs.Add((st, new PackJob(inner, img)));
+                var ta = poly.Texture;
+                if (poly.Shape == WadPolygonShape.Triangle)
+                    CollectFace(regionSet, ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
+                else
+                    CollectFace(regionSet, ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2, ta.TexCoord3);
             }
         }
 
-        var unique = new HashSet<Texture>();
-        void TryAdd(Texture? t)
-        {
-            if (t == null || t is TextureInvisible) return;
-            if (t.IsUnavailable || t.Image == null) return;
-            if (t.Image.Width <= 0 || t.Image.Height <= 0) return;
-            unique.Add(t);
-        }
-
-        if (level.Settings?.Textures != null)
-            foreach (var t in level.Settings.Textures) TryAdd(t);
-
+        // Room geometry — every textured triangle.
         foreach (var room in level.Rooms)
         {
             if (room?.RoomGeometry == null) continue;
             foreach (var ta in room.RoomGeometry.TriangleTextureAreas)
-                TryAdd(ta.Texture);
+                CollectFace(regionSet, ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
         }
 
-        // WAD textures: every static / moveable polygon's texture, so the
-        // object pass can sample them.
+        // WAD static / moveable polygons.
         if (level.Settings?.Wads != null)
-        {
             foreach (var refWad in level.Settings.Wads)
             {
                 if (refWad?.Wad == null) continue;
-                foreach (var s in refWad.Wad.Statics.Values)
-                    if (s.Mesh != null)
-                        foreach (var poly in s.Mesh.Polys) TryAdd(poly.Texture.Texture);
-                foreach (var m in refWad.Wad.Moveables.Values)
-                    foreach (var bone in m.Bones)
-                        if (bone?.Mesh != null)
-                            foreach (var poly in bone.Mesh.Polys) TryAdd(poly.Texture.Texture);
+                foreach (var staticMesh in refWad.Wad.Statics.Values)
+                    CollectMesh(staticMesh.Mesh);
+                foreach (var moveable in refWad.Wad.Moveables.Values)
+                    foreach (var bone in moveable.Bones)
+                        CollectMesh(bone?.Mesh);
             }
-        }
 
-        // The horizon (skybox) moveable is drawn every frame even though no
-        // room or instance references it — make sure its polygon textures are
-        // packed too, otherwise the skybox samples the white pixel.
+        // Horizon (skybox) moveable — drawn every frame, referenced by nothing.
         if (level.Settings != null)
         {
             var horizonId = WadMoveableId.GetHorizon(level.Settings.GameVersion);
@@ -144,133 +154,179 @@ public sealed class TextureAtlas : IDisposable
                 var horizon = level.Settings.WadTryGetMoveable(horizonId.Value);
                 if (horizon != null)
                     foreach (var bone in horizon.Bones)
-                        if (bone?.Mesh != null)
-                            foreach (var poly in bone.Mesh.Polys) TryAdd(poly.Texture.Texture);
+                        CollectMesh(bone?.Mesh);
             }
         }
 
-        // ImportedGeometry textures.
+        // Imported geometry — sampled with full-image UVs, so the region is
+        // the whole texture.
         if (level.Settings?.ImportedGeometries != null)
-        {
             foreach (var ig in level.Settings.ImportedGeometries)
             {
                 if (ig?.DirectXModel?.Meshes == null) continue;
                 foreach (var mesh in ig.DirectXModel.Meshes)
                     foreach (var submesh in mesh.Submeshes.Values)
-                        TryAdd(submesh.Material?.Texture);
+                        CollectWholeImage(regionSet, submesh.Material?.Texture);
             }
-        }
 
-        // Pack the largest textures first. The shelf packer fragments badly
-        // when a big texture (e.g. the horizon's sky texture) arrives after
-        // many small ones — it then fails to find a contiguous slot and the
-        // texture is dropped, so it samples the white pixel instead. Packing
-        // big-to-small keeps large entries from being dropped.
-        var sortedTextures = new List<Texture>(unique);
-        sortedTextures.Sort((a, b) =>
-            ((long)b.Image.Width * b.Image.Height).CompareTo((long)a.Image.Width * a.Image.Height));
+        // --- 4) Pack regions largest-first, then the overlay sprites.
+        var packJobs = new List<PackJob>();
 
-        var textureJobs = new List<PackJob>(sortedTextures.Count);
-        foreach (var tex in sortedTextures)
+        var sortedRegions = new List<TexRegion>(regionSet);
+        sortedRegions.Sort((a, b) => ((long)b.W * b.H).CompareTo((long)a.W * a.H));
+
+        var pageBytes = new Dictionary<Texture, byte[]>();
+        foreach (var region in sortedRegions)
         {
-            if (TryPack(packer, tex.Image, out var inner))
+            if (!TryPack(packer, region.W, region.H, out var inner)) continue;
+            _regions[region] = inner;
+
+            if (!pageBytes.TryGetValue(region.Texture, out var bytes))
             {
-                _origins[tex] = inner;
-                textureJobs.Add(new PackJob(inner, tex.Image));
+                bytes = region.Texture.Image.ToByteArray();
+                pageBytes[region.Texture] = bytes;
             }
+            packJobs.Add(new PackJob(inner, bytes, region.Texture.Image.Width * 4,
+                                     region.X, region.Y, region.W, region.H));
         }
 
-        // Phase 2 — parallel blit + padding. Each job writes to a disjoint
-        // (W+2)×(H+2) rectangle so there are no overlapping writes.
-        var allJobs = new List<PackJob>(overlayJobs.Count + textureJobs.Count);
-        foreach (var (_, job) in overlayJobs) allJobs.Add(job);
-        allJobs.AddRange(textureJobs);
-
-        Parallel.ForEach(allJobs, job =>
+        foreach (var (st, image) in overlayImages)
         {
-            BlitAndPad(atlasBytes, atlasSize, job.InnerOrigin, job.Image);
-        });
+            if (!TryPack(packer, image.Width, image.Height, out var inner)) continue;
+            _sectorOverlays[st] = (inner, new VectorInt2(image.Width, image.Height));
+            packJobs.Add(new PackJob(inner, image.ToByteArray(), image.Width * 4,
+                                     0, 0, image.Width, image.Height));
+        }
 
-        // No mip chain on purpose. The legacy Dx11RenderingTextureAllocator
-        // (room atlas) uses MipLevels=1 + anisotropic 4× — the small gutter
-        // is enough because the sampler footprint at mip 0 stays inside the
-        // 4-pixel edge replication. With auto-generated mips, lower mip
-        // levels shrink the gutter to sub-pixel (gutter / 2^mip) and the
-        // anisotropic minification blends across neighbouring atlas entries,
-        // which shows up as visible dark lines at sector seams. Trade-off:
-        // textures viewed at extreme distance can alias — the legacy lives
-        // with that and it's never been a reported issue.
+        // --- 5) Blit + replicate gutters in parallel (disjoint atlas rects).
+        Parallel.ForEach(packJobs, job =>
+            BlitAndPad(atlasBytes, atlasSize, job.InnerOrigin,
+                       job.Src, job.SrcStride, job.SrcX, job.SrcY, job.W, job.H));
+
+        // No mip chain on purpose — the legacy room atlas runs MipLevels=1 +
+        // anisotropic 4× too. With auto mips the gutter shrinks to sub-pixel
+        // on lower levels and the anisotropic minification blends across
+        // neighbouring atlas entries, which shows as dark lines at seams.
         Texture = device.CreateTexture(
             new TextureDesc(TextureKind.Texture2D, atlasSize, atlasSize,
                             Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
-                            mipLevels: 1,
-                            debugName: "LevelAtlas"),
+                            mipLevels: 1, debugName: "LevelAtlas"),
             atlasBytes);
 
-        // Mirror address mode + anisotropic 4× — the legacy
-        // Dx11RenderingDevice.SamplerDefault uses exactly this combination.
-        // Wrap was reading "around the atlas" on the anisotropic footprint
-        // at oblique angles and showed up as thin lines at polygon seams.
+        // Anisotropic 4× + Mirror address mode — the same combination the
+        // legacy Dx11RenderingDevice.SamplerDefault uses.
         Sampler = device.CreateSampler(new SamplerDesc(
             FilterMode.Anisotropic, AddressMode.Mirror, maxAnisotropy: 4));
     }
 
-    // 8-pixel gutter on each side. With anisotropic 4× the sampler footprint
-    // at oblique floor angles can extend ~6-8 texels in the elongated
-    // direction. 4 px was insufficient to contain that footprint at sector
-    // seams (visible thin dark/light lines on tiled floors). 8 px costs more
-    // a
-    // tlas area but covers the worst case without artifacts.
-    private const int Gutter = 8;
+    // ===================================================== Region collection
 
-    private static bool TryPack(RectPackerSimpleStack packer, ImageC image, out VectorInt2 innerOrigin)
+    private static void CollectFace(HashSet<TexRegion> set, Texture? texture,
+                                    Vector2 a, Vector2 b, Vector2 c)
+    {
+        Span<Vector2> coords = stackalloc Vector2[3] { a, b, c };
+        if (TryComputeRegion(texture, coords, out var region))
+            set.Add(region);
+    }
+
+    private static void CollectFace(HashSet<TexRegion> set, Texture? texture,
+                                    Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+    {
+        Span<Vector2> coords = stackalloc Vector2[4] { a, b, c, d };
+        if (TryComputeRegion(texture, coords, out var region))
+            set.Add(region);
+    }
+
+    private static void CollectWholeImage(HashSet<TexRegion> set, Texture? texture)
+    {
+        if (texture?.Image == null || texture.Image.Width <= 0 || texture.Image.Height <= 0)
+            return;
+        CollectFace(set, texture, Vector2.Zero,
+                    new Vector2(texture.Image.Width, texture.Image.Height), Vector2.Zero);
+    }
+
+    // Integer bounding box of a face's source texcoords, clamped to the source
+    // image. Two faces sampling the same tile produce the same region, so they
+    // share one packed entry. Build-time collection and render-time MapFace
+    // both go through here, so the keys always agree.
+    private static bool TryComputeRegion(Texture? texture, ReadOnlySpan<Vector2> faceCoords,
+                                         out TexRegion region)
+    {
+        region = default;
+        if (texture == null || texture is TextureInvisible || texture.IsUnavailable
+            || texture.Image == null || faceCoords.Length == 0)
+            return false;
+
+        int imageW = texture.Image.Width;
+        int imageH = texture.Image.Height;
+        if (imageW <= 0 || imageH <= 0) return false;
+
+        float minX = float.MaxValue, minY = float.MaxValue;
+        float maxX = float.MinValue, maxY = float.MinValue;
+        foreach (var coord in faceCoords)
+        {
+            if (coord.X < minX) minX = coord.X;
+            if (coord.X > maxX) maxX = coord.X;
+            if (coord.Y < minY) minY = coord.Y;
+            if (coord.Y > maxY) maxY = coord.Y;
+        }
+        if (minX > maxX || minY > maxY) return false;
+
+        int x0 = Math.Clamp((int)MathF.Floor(minX),   0, imageW);
+        int y0 = Math.Clamp((int)MathF.Floor(minY),   0, imageH);
+        int x1 = Math.Clamp((int)MathF.Ceiling(maxX), 0, imageW);
+        int y1 = Math.Clamp((int)MathF.Ceiling(maxY), 0, imageH);
+        if (x1 <= x0) { x0 = Math.Min(x0, imageW - 1); x1 = x0 + 1; }
+        if (y1 <= y0) { y0 = Math.Min(y0, imageH - 1); y1 = y0 + 1; }
+        if (x0 < 0 || y0 < 0) return false;
+
+        region = new TexRegion(texture, x0, y0, x1 - x0, y1 - y0);
+        return true;
+    }
+
+    // ============================================================== Packing
+
+    private static bool TryPack(RectPackerSimpleStack packer, int w, int h, out VectorInt2 innerOrigin)
     {
         innerOrigin = default;
-        var padded = new VectorInt2(image.Width + Gutter * 2, image.Height + Gutter * 2);
-        var pos = packer.TryAdd(padded);
+        var pos = packer.TryAdd(new VectorInt2(w + Gutter * 2, h + Gutter * 2));
         if (pos == null) return false;
         innerOrigin = new VectorInt2(pos.Value.X + Gutter, pos.Value.Y + Gutter);
         return true;
     }
 
-    // Thread-safe: each call writes to a region of the atlas that is
-    // disjoint from any other call's region (the packer guarantees it).
-    // Uses SIMD memcpy for the inner rows; gutters are 4 px on each side.
+    // Thread-safe: each call writes a region of the atlas disjoint from any
+    // other call's (the packer guarantees it). Copies the W×H sub-rect of
+    // `src` at (srcX, srcY), then replicates a Gutter-wide edge border so
+    // bilinear / anisotropic sampling at the entry edge stays inside it.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private static unsafe void BlitAndPad(byte[] atlasBytes, int atlasSize, VectorInt2 origin, ImageC image)
+    private static unsafe void BlitAndPad(byte[] atlasBytes, int atlasSize, VectorInt2 origin,
+                                          byte[] src, int srcStride, int srcX, int srcY, int w, int h)
     {
-        int w = image.Width;
-        int h = image.Height;
-        byte[] src = image.ToByteArray();
         int rowBytes = w * 4;
 
         fixed (byte* atlasPtr = atlasBytes)
         fixed (byte* srcPtr   = src)
         {
-            // Inner image — N rows of `rowBytes` each.
+            // Inner image — copy each row of the source sub-rect.
             for (int y = 0; y < h; y++)
             {
                 byte* dst = atlasPtr + ((origin.Y + y) * atlasSize + origin.X) * 4;
-                byte* s   = srcPtr   + y * rowBytes;
+                byte* s   = srcPtr   + (srcY + y) * srcStride + srcX * 4;
                 SimdMemcpy(dst, s, rowBytes);
             }
 
-            // Top + bottom gutters — replicate the adjacent in-image row
-            // Gutter times. This pre-computes the same value we'd otherwise
-            // sample at runtime via Address.Clamp, but works inside the atlas.
+            // Top + bottom gutters — replicate the adjacent in-image row.
             byte* topSrc = atlasPtr + ( origin.Y          * atlasSize + origin.X) * 4;
             byte* botSrc = atlasPtr + ((origin.Y + h - 1) * atlasSize + origin.X) * 4;
             for (int g = 1; g <= Gutter; g++)
             {
-                byte* topDst = atlasPtr + ((origin.Y - g)         * atlasSize + origin.X) * 4;
-                byte* botDst = atlasPtr + ((origin.Y + h - 1 + g) * atlasSize + origin.X) * 4;
-                SimdMemcpy(topDst, topSrc, rowBytes);
-                SimdMemcpy(botDst, botSrc, rowBytes);
+                SimdMemcpy(atlasPtr + ((origin.Y - g)         * atlasSize + origin.X) * 4, topSrc, rowBytes);
+                SimdMemcpy(atlasPtr + ((origin.Y + h - 1 + g) * atlasSize + origin.X) * 4, botSrc, rowBytes);
             }
 
-            // Left + right gutters (including the corners). yClamped pulls
-            // the sampled in-image pixel for rows above/below the inner area
-            // so corner pixels still get filled with edge colour.
+            // Left + right gutters (corners included). yClamped pulls the
+            // edge pixel for rows above / below the inner area.
             for (int y = -Gutter; y < h + Gutter; y++)
             {
                 int yClamped = y < 0 ? 0 : (y >= h ? h - 1 : y);
@@ -279,8 +335,8 @@ public sealed class TextureAtlas : IDisposable
                 uint  rightPx = *(uint*)(atlasPtr + ((origin.Y + yClamped) * atlasSize + origin.X + w - 1) * 4);
                 for (int g = 1; g <= Gutter; g++)
                 {
-                    *(uint*)(rowBase + (origin.X - g)        * 4) = leftPx;
-                    *(uint*)(rowBase + (origin.X + w - 1 + g)* 4) = rightPx;
+                    *(uint*)(rowBase + (origin.X - g)         * 4) = leftPx;
+                    *(uint*)(rowBase + (origin.X + w - 1 + g) * 4) = rightPx;
                 }
             }
         }
@@ -289,7 +345,7 @@ public sealed class TextureAtlas : IDisposable
     /// <summary>
     /// Block-copy <paramref name="byteCount"/> bytes from <paramref name="src"/>
     /// to <paramref name="dst"/> using the widest SIMD path available:
-    /// AVX2 (32-byte unaligned stores) → SSE2 (16-byte) → scalar.
+    /// AVX2 (32-byte stores) → SSE2 (16-byte) → scalar.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static unsafe void SimdMemcpy(byte* dst, byte* src, int byteCount)
@@ -310,29 +366,50 @@ public sealed class TextureAtlas : IDisposable
         for (; i < byteCount; i++) dst[i] = src[i];
     }
 
-    /// <summary>UV of the reserved 1×1 white pixel (used as a no-texture fallback).</summary>
+    // ============================================================ Public API
+
+    /// <summary>UV of the reserved 1×1 white pixel (the no-texture fallback).</summary>
     public Vector2 WhitePixelUv => new(
         (_whitePixel.X + 0.5f) / Size.X,
         (_whitePixel.Y + 0.5f) / Size.Y);
 
     /// <summary>
-    /// Translate a source-texture pixel coordinate into a normalized atlas UV.
-    /// Returns the centre of the reserved white pixel for untextured tris.
+    /// Resolves the atlas placement for one textured face. Pass every source
+    /// texcoord the face uses — together they identify the packed region.
+    /// The returned <see cref="FaceUvMapper"/> converts each of those
+    /// texcoords to an atlas UV; it falls back to the white pixel when the
+    /// face's texture / region was not packed.
     /// </summary>
-    public Vector2 GetAtlasUv(Texture? texture, Vector2 sourcePixelCoord)
+    public FaceUvMapper MapFace(Texture? texture, ReadOnlySpan<Vector2> faceCoords)
     {
-        if (texture != null && _origins.TryGetValue(texture, out var origin))
-            return new Vector2(
-                (origin.X + sourcePixelCoord.X) / Size.X,
-                (origin.Y + sourcePixelCoord.Y) / Size.Y);
-        return WhitePixelUv;
+        if (TryComputeRegion(texture, faceCoords, out var region)
+            && _regions.TryGetValue(region, out var atlasOrigin))
+            return new FaceUvMapper(atlasOrigin, new VectorInt2(region.X, region.Y), Size);
+        return new FaceUvMapper(WhitePixelUv);
+    }
+
+    public FaceUvMapper MapFace(Texture? texture, Vector2 a, Vector2 b)
+    {
+        Span<Vector2> coords = stackalloc Vector2[2] { a, b };
+        return MapFace(texture, coords);
+    }
+
+    public FaceUvMapper MapFace(Texture? texture, Vector2 a, Vector2 b, Vector2 c)
+    {
+        Span<Vector2> coords = stackalloc Vector2[3] { a, b, c };
+        return MapFace(texture, coords);
+    }
+
+    public FaceUvMapper MapFace(Texture? texture, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+    {
+        Span<Vector2> coords = stackalloc Vector2[4] { a, b, c, d };
+        return MapFace(texture, coords);
     }
 
     /// <summary>
     /// Atlas UV for a sector-overlay sprite (slope arrow, slide, cross, ...).
     /// <paramref name="faceUv"/> is the per-vertex (0..1) coordinate inside
-    /// the sprite as produced by <see cref="RoomGeometry.VertexEditorUVs"/>.
-    /// Returns the white-pixel UV when the sprite is missing from the atlas.
+    /// the sprite. Returns the white-pixel UV when the sprite is missing.
     /// </summary>
     public Vector2 GetSectorOverlayUv(SectorTexture st, Vector2 faceUv)
     {
@@ -347,5 +424,44 @@ public sealed class TextureAtlas : IDisposable
     {
         if (Sampler.IsValid) _device.Destroy(Sampler);
         if (Texture.IsValid) _device.Destroy(Texture);
+    }
+
+    /// <summary>
+    /// Maps a single textured face's source texcoords to atlas UVs. Created by
+    /// <see cref="TextureAtlas.MapFace(Texture, ReadOnlySpan{Vector2})"/> — one
+    /// per face — then <see cref="Map"/> is called for each of the face's
+    /// vertices.
+    /// </summary>
+    public readonly struct FaceUvMapper
+    {
+        private readonly Vector2 _atlasOrigin;   // packed region origin, atlas texels
+        private readonly Vector2 _sourceStart;   // region origin in the source page
+        private readonly Vector2 _invAtlasSize;
+        private readonly Vector2 _fallbackUv;
+        private readonly bool    _valid;
+
+        internal FaceUvMapper(VectorInt2 atlasOrigin, VectorInt2 sourceStart, VectorInt2 atlasSize)
+        {
+            _atlasOrigin  = new Vector2(atlasOrigin.X, atlasOrigin.Y);
+            _sourceStart  = new Vector2(sourceStart.X, sourceStart.Y);
+            _invAtlasSize = new Vector2(1f / atlasSize.X, 1f / atlasSize.Y);
+            _fallbackUv   = default;
+            _valid        = true;
+        }
+
+        internal FaceUvMapper(Vector2 fallbackUv)
+        {
+            _atlasOrigin  = default;
+            _sourceStart  = default;
+            _invAtlasSize = default;
+            _fallbackUv   = fallbackUv;
+            _valid        = false;
+        }
+
+        /// <summary>Maps one source-page pixel coordinate to a normalized atlas UV.</summary>
+        public Vector2 Map(Vector2 sourcePixelCoord)
+            => _valid
+               ? (_atlasOrigin + (sourcePixelCoord - _sourceStart)) * _invAtlasSize
+               : _fallbackUv;
     }
 }

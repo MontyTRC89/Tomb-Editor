@@ -435,6 +435,9 @@ internal sealed class ObjectRenderer : IDisposable
                     Vector2 texSize = igTex?.Image is { Width: > 0, Height: > 0 }
                                       ? new Vector2(igTex.Image.Width, igTex.Image.Height)
                                       : Vector2.One;
+                    // Imported geometry samples the whole texture image, so
+                    // the packed atlas region is the full page.
+                    var igMapper = _atlas.MapFace(igTex, Vector2.Zero, texSize);
                     int baseIdx = submesh.BaseIndex;
                     int count   = submesh.NumIndices;
                     for (int k = 0; k < count; k++)
@@ -442,7 +445,7 @@ internal sealed class ObjectRenderer : IDisposable
                         int vi = mesh.Indices[baseIdx + k];
                         var v = mesh.Vertices[vi];
                         Vector3 col = hasColors ? v.Color : Vector3.One;
-                        Vector2 atlasUv = _atlas.GetAtlasUv(igTex, v.UV * texSize);
+                        Vector2 atlasUv = igMapper.Map(v.UV * texSize);
                         list.Add(new ObjectVertex
                         {
                             Position = v.Position,
@@ -466,19 +469,24 @@ internal sealed class ObjectRenderer : IDisposable
         foreach (var poly in mesh.Polys)
         {
             var ta = poly.Texture;
-            var sampleTex = ta.Texture;
             uint bm = (uint)ta.BlendMode;   // per-face blend mode → vertex alpha
-            Vector2 uv0 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord0);
-            Vector2 uv1 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord1);
-            Vector2 uv2 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord2);
-            Vector2 uv3 = _atlas.GetAtlasUv(sampleTex, ta.TexCoord3);
+            bool isTriangle = poly.Shape == WadPolygonShape.Triangle;
 
-            if (poly.Shape == WadPolygonShape.Triangle)
+            // Resolve the packed atlas region from the polygon's texcoords.
+            var mapper = isTriangle
+                ? _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2)
+                : _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2, ta.TexCoord3);
+            Vector2 uv0 = mapper.Map(ta.TexCoord0);
+            Vector2 uv1 = mapper.Map(ta.TexCoord1);
+            Vector2 uv2 = mapper.Map(ta.TexCoord2);
+
+            if (isTriangle)
             {
                 Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
             }
             else
             {
+                Vector2 uv3 = mapper.Map(ta.TexCoord3);
                 Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
                 Push(poly.Index0, uv0, bm); Push(poly.Index2, uv2, bm); Push(poly.Index3, uv3, bm);
             }

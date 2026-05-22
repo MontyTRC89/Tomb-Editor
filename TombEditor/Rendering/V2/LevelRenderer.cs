@@ -675,9 +675,10 @@ public sealed class LevelRenderer : IDisposable
 
                 if (ta.Texture != null && !ta.Texture.IsUnavailable && ta.Texture is not TextureInvisible)
                 {
-                    uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
-                    uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
-                    uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+                    var mapper = _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
+                    uv0 = mapper.Map(ta.TexCoord0);
+                    uv1 = mapper.Map(ta.TexCoord1);
+                    uv2 = mapper.Map(ta.TexCoord2);
                     c0 = c1 = c2 = tint;
                 }
                 else
@@ -699,9 +700,10 @@ public sealed class LevelRenderer : IDisposable
                               && ta.Texture is not TextureInvisible;
                 if (hasTex && !whiteOnly)
                 {
-                    uv0 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord0);
-                    uv1 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord1);
-                    uv2 = _atlas.GetAtlasUv(ta.Texture, ta.TexCoord2);
+                    var mapper = _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
+                    uv0 = mapper.Map(ta.TexCoord0);
+                    uv1 = mapper.Map(ta.TexCoord1);
+                    uv2 = mapper.Map(ta.TexCoord2);
                 }
                 else
                 {
