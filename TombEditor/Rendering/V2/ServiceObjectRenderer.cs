@@ -604,7 +604,9 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
             case LightType.Spot:
                 {
-                    var fwd = TransformDir(light.ObjectMatrix, -Vector3.UnitZ);
+                    // ObjectMatrix is a model matrix — its forward is +Z
+                    // (ObjectMatrix·+Z equals the instance's GetDirection()).
+                    var fwd = TransformDir(light.ObjectMatrix, Vector3.UnitZ);
                     if (light.InnerAngle > 0f)
                         EmitWireCone(centre, fwd, light.InnerRange * LightRangeToWorld,
                                      light.InnerAngle * (float)(Math.PI / 180), LineInner, v, ref n);
@@ -616,7 +618,9 @@ internal sealed class ServiceObjectRenderer : IDisposable
             case LightType.Sun:
                 {
                     // Thin direction indicator (very narrow cone).
-                    var fwd = TransformDir(light.ObjectMatrix, -Vector3.UnitZ);
+                    // ObjectMatrix is a model matrix — its forward is +Z
+                    // (ObjectMatrix·+Z equals the instance's GetDirection()).
+                    var fwd = TransformDir(light.ObjectMatrix, Vector3.UnitZ);
                     EmitWireCone(centre, fwd, LightRangeToWorld, 0.05f, LineCone, v, ref n);
                     break;
                 }
@@ -627,7 +631,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
     {
         if (flyby.Room == null) return;
         Vector3 centre = flyby.Room.WorldPos + flyby.Position;
-        Vector3 fwd    = TransformDir(flyby.ObjectMatrix, -Vector3.UnitZ);
+        Vector3 fwd    = TransformDir(flyby.ObjectMatrix, Vector3.UnitZ);  // +Z = ObjectMatrix forward
         // FOV is total horizontal field of view in degrees. Convert to a
         // half-angle, and pick a fixed length that's still readable in the
         // viewport (1 sector).
