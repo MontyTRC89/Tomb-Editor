@@ -144,7 +144,7 @@ public sealed class TextRenderer : IDisposable
         }
         if (n == 0) return;
 
-        // 3. Upload + draw.
+        // Upload + draw.
         cl.UpdateBuffer(_vb, 0, new ReadOnlySpan<byte>(_vbCpu, 0, n * Stride));
 
         var vp = new ViewParams { InvViewport = new Vector4(2f / width, 2f / height, 0f, 0f) };
