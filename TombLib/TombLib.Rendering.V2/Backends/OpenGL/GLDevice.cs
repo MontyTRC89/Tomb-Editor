@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using TombLib.RenderingV2.Rhi;
@@ -10,35 +9,39 @@ using RhiFormat   = TombLib.RenderingV2.Rhi.Format;
 using BufferDesc  = TombLib.RenderingV2.Rhi.BufferDesc;
 using TextureDesc = TombLib.RenderingV2.Rhi.TextureDesc;
 using SamplerDesc = TombLib.RenderingV2.Rhi.SamplerDesc;
-using SwapchainDesc = TombLib.RenderingV2.Rhi.SwapchainDesc;
 
 namespace TombLib.RenderingV2.Backends.OpenGL;
 
 /// <summary>
-/// OpenGL 4.3 Core Profile backend for <see cref="IRhiDevice"/>. Uses
-/// WGL on Windows to create the GL context against an HWND's DC, and
-/// Silk.NET.OpenGL for the GL function loader.
+/// OpenGL 4.3 Core Profile backend for <see cref="IRhiDevice"/>. Uses WGL on
+/// Windows to create the GL context against an HWND's DC, and Silk.NET.OpenGL
+/// as the GL function loader.
 ///
-/// <para>Design choices that mirror what the DX11 / Vulkan backends do:
+/// <para>Design choices that mirror the DX11 / Vulkan backends:
 ///   - Single-threaded. All calls must come from the rendering thread the
 ///     context was made current on.
-///   - Resource pools (Buffers / Textures / Samplers / Pipelines / Swapchains)
+///   - Resource pools (buffers / textures / samplers / pipelines / swapchains)
 ///     keyed by uint handles so the RHI surface stays opaque.
-///   - One pipeline = one linked GL program + one VAO that captures the
-///     vertex attribute layout. SetPipeline becomes glUseProgram +
-///     glBindVertexArray + apply fixed-function state.
-///   - The "swapchain" is really just the WGL context's default
-///     framebuffer (FBO 0); Present = wglSwapBuffers.</para>
+///   - One pipeline = one linked GL program + one VAO that captures the vertex
+///     attribute layout. SetPipeline becomes glUseProgram + glBindVertexArray
+///     + apply the fixed-function state.
+///   - The "swapchain" is really just the WGL context's default framebuffer
+///     (FBO 0); Present = wglSwapBuffers.</para>
+///
+/// <para>Split across partial files by concern:
+///   GLDevice.cs           — device, resources (buffers / textures / samplers).
+///   GLDevice.Pipeline.cs  — pipeline programs and VAOs.
+///   GLDevice.Swapchain.cs — per-HWND WGL surfaces.</para>
 /// </summary>
 public unsafe sealed partial class GLDevice : IRhiDevice
 {
-    internal GL Gl = null!;
+    internal GL     Gl = null!;
     internal IntPtr Hwnd;
     internal IntPtr Hdc;
     internal IntPtr Hglrc;
     private  WglLoader? _loader;
 
-    // Resource pools.
+    // Resource pools (handle id → resource).
     private uint _nextHandle = 1;
     internal readonly Dictionary<uint, GLBufferRes>    Buffers    = new();
     internal readonly Dictionary<uint, GLTextureRes>   Textures   = new();
@@ -50,49 +53,50 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     public GLDevice()
     {
-        // We need a Win32 window to create a GL context. The editor's
-        // existing Panel3D HWND will be passed via CreateSwapchain — at
-        // device-creation time we don't have one yet. Trick: create a
-        // throwaway "dummy" Win32 window just to bootstrap a context, then
-        // re-bind to the real HWND when CreateSwapchain is called.
+        // A GL context needs a Win32 window. The editor's Panel3D HWND arrives
+        // later via CreateSwapchain — at device-creation time there's none yet.
+        // Trick: bootstrap a context on a throwaway "dummy" window, then bind
+        // to the real HWND when CreateSwapchain is first called.
         InitDummyContext();
 
         // Cache device capabilities.
-        Gl.GetInteger(GetPName.MaxTextureSize, out int maxTex);
-        Gl.GetInteger(GetPName.MaxArrayTextureLayers, out int maxLayers);
-        bool aniso = HasExtension("GL_EXT_texture_filter_anisotropic")
-                  || HasExtension("GL_ARB_texture_filter_anisotropic");
+        Gl.GetInteger(GetPName.MaxTextureSize, out int maxTextureSize);
+        Gl.GetInteger(GetPName.MaxArrayTextureLayers, out int maxArrayLayers);
+        bool anisotropySupported = HasExtension("GL_EXT_texture_filter_anisotropic")
+                                || HasExtension("GL_ARB_texture_filter_anisotropic");
         Capabilities = new RhiCapabilities(
             backend:        RhiBackendKind.OpenGL,
             instanced:      true,
             structured:     true,
             nativePush:     false,
-            anisotropy:     aniso,
+            anisotropy:     anisotropySupported,
             debugMarkers:   true,
-            maxTexSize:     maxTex,
-            maxArrayLayers: maxLayers);
+            maxTexSize:     maxTextureSize,
+            maxArrayLayers: maxArrayLayers);
     }
 
     internal uint AllocHandle() => _nextHandle++;
 
     public void Dispose()
     {
-        foreach (var s in Swapchains.Values) { /* swapchain just holds HDC/Hwnd, nothing to free */ }
-        foreach (var p in Pipelines.Values)
+        // Swapchains only hold an HDC / HWND borrowed from Panel3D — nothing
+        // GL-side to free for them.
+        foreach (var pipeline in Pipelines.Values)
         {
-            if (p.Vao != 0)    Gl.DeleteVertexArray(p.Vao);
-            if (p.Program != 0) Gl.DeleteProgram(p.Program);
+            if (pipeline.Vao     != 0) Gl.DeleteVertexArray(pipeline.Vao);
+            if (pipeline.Program != 0) Gl.DeleteProgram(pipeline.Program);
         }
-        foreach (var s in Samplers.Values) if (s.Handle != 0) Gl.DeleteSampler(s.Handle);
-        foreach (var t in Textures.Values)
+        foreach (var sampler in Samplers.Values)
+            if (sampler.Handle != 0) Gl.DeleteSampler(sampler.Handle);
+        foreach (var texture in Textures.Values)
         {
-            if (t.FramebufferHandle != 0) Gl.DeleteFramebuffer(t.FramebufferHandle);
-            if (t.Handle != 0) Gl.DeleteTexture(t.Handle);
+            if (texture.FramebufferHandle != 0) Gl.DeleteFramebuffer(texture.FramebufferHandle);
+            if (texture.Handle != 0)            Gl.DeleteTexture(texture.Handle);
         }
-        foreach (var b in Buffers.Values)
+        foreach (var buffer in Buffers.Values)
         {
-            if (b.Mapped != null) Gl.UnmapNamedBuffer(b.Handle);
-            if (b.Handle != 0) Gl.DeleteBuffer(b.Handle);
+            if (buffer.Mapped != null) Gl.UnmapNamedBuffer(buffer.Handle);
+            if (buffer.Handle != 0)    Gl.DeleteBuffer(buffer.Handle);
         }
         Swapchains.Clear();
         Pipelines.Clear();
@@ -120,16 +124,16 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     private bool HasExtension(string name)
     {
-        Gl.GetInteger(GetPName.NumExtensions, out int n);
-        for (uint i = 0; i < (uint)n; i++)
+        Gl.GetInteger(GetPName.NumExtensions, out int extensionCount);
+        for (uint i = 0; i < (uint)extensionCount; i++)
         {
-            string ext = Gl.GetStringS(StringName.Extensions, i);
-            if (ext == name) return true;
+            string extension = Gl.GetStringS(StringName.Extensions, i);
+            if (extension == name) return true;
         }
         return false;
     }
 
-    // ====================================================== Context bootstrap
+    // ===================================================== Context bootstrap
 
     private const uint PFD_DRAW_TO_WINDOW = 0x00000004;
     private const uint PFD_SUPPORT_OPENGL = 0x00000020;
@@ -145,72 +149,79 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     private void InitDummyContext()
     {
-        // 1. Create a hidden Win32 message-only window so we can pin a DC to
-        //    it for the bootstrap context.
+        // 1. Create a hidden Win32 message-only window so a DC can be pinned
+        //    to it for the bootstrap context.
         Hwnd = CreateMessageWindow();
         Hdc  = GetDC(Hwnd);
-        if (Hdc == IntPtr.Zero) throw new InvalidOperationException("GetDC failed for bootstrap window");
+        if (Hdc == IntPtr.Zero)
+            throw new InvalidOperationException("GetDC failed for bootstrap window");
 
-        var pfd = new PIXELFORMATDESCRIPTOR
+        var pixelFormatDesc = new PIXELFORMATDESCRIPTOR
         {
-            nSize = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
-            nVersion = 1,
-            dwFlags  = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
-            iPixelType = PFD_TYPE_RGBA,
-            cColorBits = 32,
-            cDepthBits = 24,
+            nSize        = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
+            nVersion     = 1,
+            dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+            iPixelType   = PFD_TYPE_RGBA,
+            cColorBits   = 32,
+            cDepthBits   = 24,
             cStencilBits = 8,
-            iLayerType = PFD_MAIN_PLANE,
+            iLayerType   = PFD_MAIN_PLANE,
         };
-        int format = ChoosePixelFormat(Hdc, ref pfd);
-        if (format == 0) throw new InvalidOperationException("ChoosePixelFormat failed");
-        if (!SetPixelFormat(Hdc, format, ref pfd))
+        int pixelFormat = ChoosePixelFormat(Hdc, ref pixelFormatDesc);
+        if (pixelFormat == 0)
+            throw new InvalidOperationException("ChoosePixelFormat failed");
+        if (!SetPixelFormat(Hdc, pixelFormat, ref pixelFormatDesc))
             throw new InvalidOperationException("SetPixelFormat failed");
 
         // 2. Legacy context (any GL version) just to bootstrap.
-        IntPtr legacy = WglCreateContext(Hdc);
-        if (legacy == IntPtr.Zero) throw new InvalidOperationException("wglCreateContext failed");
-        if (!WglMakeCurrent(Hdc, legacy))
+        IntPtr legacyContext = WglCreateContext(Hdc);
+        if (legacyContext == IntPtr.Zero)
+            throw new InvalidOperationException("wglCreateContext failed");
+        if (!WglMakeCurrent(Hdc, legacyContext))
             throw new InvalidOperationException("wglMakeCurrent on legacy context failed");
 
         // 3. Try to upgrade to a 4.3 core context via wglCreateContextAttribsARB.
-        IntPtr wglCreateAttribs = WglGetProcAddress("wglCreateContextAttribsARB");
-        if (wglCreateAttribs != IntPtr.Zero)
+        IntPtr createContextAttribsAddr = WglGetProcAddress("wglCreateContextAttribsARB");
+        if (createContextAttribsAddr != IntPtr.Zero)
         {
-            var del = Marshal.GetDelegateForFunctionPointer<WglCreateContextAttribsARB>(wglCreateAttribs);
-            int[] attribs = {
+            var createContextAttribs =
+                Marshal.GetDelegateForFunctionPointer<WglCreateContextAttribsARB>(createContextAttribsAddr);
+            int[] contextAttribs =
+            {
                 WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
                 WGL_CONTEXT_MINOR_VERSION_ARB, 3,
                 WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-                // Debug bit when env var asks for it — costs ~5% on most drivers.
+                // Debug bit when the env var asks for it — costs ~5% on most drivers.
                 WGL_CONTEXT_FLAGS_ARB,
                 Environment.GetEnvironmentVariable("TOMBEDITOR_GL_DEBUG") == "1" ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
-                0
+                0,
             };
-            IntPtr core;
-            unsafe { fixed (int* p = attribs) { core = del(Hdc, IntPtr.Zero, (IntPtr)p); } }
-            if (core != IntPtr.Zero)
+            IntPtr coreContext;
+            fixed (int* pAttribs = contextAttribs)
+                coreContext = createContextAttribs(Hdc, IntPtr.Zero, (IntPtr)pAttribs);
+
+            if (coreContext != IntPtr.Zero)
             {
-                WglMakeCurrent(Hdc, core);
-                WglDeleteContext(legacy);
-                Hglrc = core;
+                WglMakeCurrent(Hdc, coreContext);
+                WglDeleteContext(legacyContext);
+                Hglrc = coreContext;
             }
             else
             {
-                Hglrc = legacy; // fall back to legacy (will be reported below if version is too low)
+                Hglrc = legacyContext; // fall back (the version check below will catch it)
             }
         }
         else
         {
-            Hglrc = legacy;
+            Hglrc = legacyContext;
         }
 
-        // 4. Load the GL function table via Silk.NET. The loader callback
-        //    asks WGL (or the system loader) for each function pointer.
+        // 4. Load the GL function table via Silk.NET. The loader callback asks
+        //    WGL (or the system loader) for each function pointer.
         _loader = new WglLoader();
         Gl = GL.GetApi(_loader);
 
-        // Confirm we got the version we wanted; older drivers may have
+        // Confirm we got the version we asked for; older drivers may have
         // silently downgraded.
         Gl.GetInteger(GetPName.MajorVersion, out int major);
         Gl.GetInteger(GetPName.MinorVersion, out int minor);
@@ -228,32 +239,32 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     }
 
     private static DebugProc? _glDebugCallback;
+
     private static void OnGlDebugMessage(GLEnum source, GLEnum type, int id, GLEnum severity,
-                                          int length, nint message, nint userParam)
+                                         int length, nint message, nint userParam)
     {
         if (severity == GLEnum.DebugSeverityNotification) return;
-        string msg = Marshal.PtrToStringAnsi(message, length) ?? "(no msg)";
+        string text = Marshal.PtrToStringAnsi(message, length) ?? "(no msg)";
         try
         {
             var path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "TombEditorGL.log");
-            System.IO.File.AppendAllText(path,
-                $"[{DateTime.Now:HH:mm:ss.fff}] GL [{severity}] {msg}\n");
+            System.IO.File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss.fff}] GL [{severity}] {text}\n");
         }
         catch { /* never fail because of logging */ }
     }
 
-    // -------------------- Win32 P/Invoke for WGL bootstrap --------------------
+    // -------------------- Win32 P/Invoke for the WGL bootstrap --------------------
 
     [StructLayout(LayoutKind.Sequential)]
     private struct PIXELFORMATDESCRIPTOR
     {
         public ushort nSize, nVersion;
-        public uint dwFlags;
-        public byte iPixelType, cColorBits, cRedBits, cRedShift, cGreenBits, cGreenShift,
-                    cBlueBits, cBlueShift, cAlphaBits, cAlphaShift,
-                    cAccumBits, cAccumRedBits, cAccumGreenBits, cAccumBlueBits, cAccumAlphaBits,
-                    cDepthBits, cStencilBits, cAuxBuffers, iLayerType, bReserved;
-        public uint dwLayerMask, dwVisibleMask, dwDamageMask;
+        public uint   dwFlags;
+        public byte   iPixelType, cColorBits, cRedBits, cRedShift, cGreenBits, cGreenShift,
+                      cBlueBits, cBlueShift, cAlphaBits, cAlphaShift,
+                      cAccumBits, cAccumRedBits, cAccumGreenBits, cAccumBlueBits, cAccumAlphaBits,
+                      cDepthBits, cStencilBits, cAuxBuffers, iLayerType, bReserved;
+        public uint   dwLayerMask, dwVisibleMask, dwDamageMask;
     }
 
     [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -280,7 +291,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     private static extern bool WglDeleteContext(IntPtr hglrc);
     [DllImport("opengl32.dll", EntryPoint = "wglMakeCurrent")]
     private static extern bool WglMakeCurrent(IntPtr hdc, IntPtr hglrc);
-    /// <summary>Exposed for GLCommandList.BeginPass — same WGL call.</summary>
+    /// <summary>Exposed for GLCommandList.BeginPass — the same WGL call.</summary>
     internal static bool WglMakeCurrentExt(IntPtr hdc, IntPtr hglrc) => WglMakeCurrent(hdc, hglrc);
     [DllImport("opengl32.dll", EntryPoint = "wglGetProcAddress")]
     private static extern IntPtr WglGetProcAddress(string name);
@@ -292,125 +303,128 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     private delegate IntPtr WglCreateContextAttribsARB(IntPtr hdc, IntPtr hShareContext, IntPtr attribs);
 
-    private static IntPtr s_msgWindow;
+    private static IntPtr s_messageWindow;
+
     private static IntPtr CreateMessageWindow()
     {
-        if (s_msgWindow != IntPtr.Zero) return s_msgWindow;
+        if (s_messageWindow != IntPtr.Zero) return s_messageWindow;
         const uint WS_POPUP = 0x80000000;
-        // Re-use any built-in Win32 class — "STATIC" works and is always
-        // registered. We never make this window visible.
-        s_msgWindow = CreateWindowExW(0, "STATIC", "TombEditorGL", WS_POPUP,
-                                       0, 0, 1, 1, IntPtr.Zero, IntPtr.Zero, GetModuleHandleW(null), IntPtr.Zero);
-        if (s_msgWindow == IntPtr.Zero) throw new InvalidOperationException("CreateWindowEx failed for GL bootstrap");
-        return s_msgWindow;
+        // Reuse a built-in Win32 class — "STATIC" is always registered. This
+        // window is never made visible.
+        s_messageWindow = CreateWindowExW(0, "STATIC", "TombEditorGL", WS_POPUP,
+                                          0, 0, 1, 1, IntPtr.Zero, IntPtr.Zero, GetModuleHandleW(null), IntPtr.Zero);
+        if (s_messageWindow == IntPtr.Zero)
+            throw new InvalidOperationException("CreateWindowEx failed for GL bootstrap");
+        return s_messageWindow;
     }
 
     /// <summary>
-    /// Silk.NET INativeContext loader implementation that funnels every
-    /// GL function lookup through wglGetProcAddress + opengl32.dll
-    /// GetProcAddress (the latter for GL 1.1 entry points that
-    /// wglGetProcAddress won't return).
+    /// Silk.NET INativeContext loader that funnels every GL function lookup
+    /// through wglGetProcAddress + opengl32.dll GetProcAddress (the latter for
+    /// the GL 1.1 entry points that wglGetProcAddress won't return).
     /// </summary>
     private sealed class WglLoader : INativeContext
     {
-        private static IntPtr _opengl32 = GetModuleHandleW("opengl32.dll");
+        private static readonly IntPtr _opengl32 = GetModuleHandleW("opengl32.dll");
+
         public nint GetProcAddress(string proc, int? slot = null)
         {
-            IntPtr p = WglGetProcAddress(proc);
-            if (p == IntPtr.Zero || p == (IntPtr)1 || p == (IntPtr)2 || p == (IntPtr)3 || p == (IntPtr)(-1))
-                p = GLDevice.GetProcAddress(_opengl32, proc);
-            return p;
+            IntPtr address = WglGetProcAddress(proc);
+            if (address == IntPtr.Zero || address == (IntPtr)1 || address == (IntPtr)2 ||
+                address == (IntPtr)3   || address == (IntPtr)(-1))
+                address = GLDevice.GetProcAddress(_opengl32, proc);
+            return address;
         }
+
         public bool TryGetProcAddress(string proc, out nint addr, int? slot = null)
         {
             addr = GetProcAddress(proc);
             return addr != IntPtr.Zero;
         }
+
         public void Dispose() { }
     }
 
-    // ====================================================== Buffers
+    // ================================================================ Buffers
 
     public BufferHandle CreateBuffer(in BufferDesc desc, ReadOnlySpan<byte> initialData)
     {
-        uint bo;
-        Gl.CreateBuffers(1, &bo);
+        uint bufferObject;
+        Gl.CreateBuffers(1, &bufferObject);
 
-        // Always allocate with DynamicStorageBit so glNamedBufferSubData
-        // works for any later UpdateBuffer call. We *don't* use persistent
-        // mapping anymore — it required per-driver memory barriers to make
-        // CPU writes visible to subsequent draws, and getting that wrong
-        // shows up as ghost / flickering frames after editor state changes.
+        // Always allocate with DynamicStorageBit so glNamedBufferSubData works
+        // for any later UpdateBuffer call. Persistent mapping is deliberately
+        // NOT used — it required per-driver memory barriers to make CPU writes
+        // visible to subsequent draws, and getting that wrong showed up as
+        // ghost / flickering frames after editor state changes.
         // glNamedBufferSubData is enough for the editor's update rates.
-        BufferStorageMask flags = BufferStorageMask.DynamicStorageBit;
+        const BufferStorageMask storageFlags = BufferStorageMask.DynamicStorageBit;
 
         if (initialData.Length > 0)
         {
             fixed (byte* src = initialData)
-                Gl.NamedBufferStorage(bo, (nuint)desc.SizeBytes, src, flags);
+                Gl.NamedBufferStorage(bufferObject, (nuint)desc.SizeBytes, src, storageFlags);
         }
         else
         {
-            Gl.NamedBufferStorage(bo, (nuint)desc.SizeBytes, null, flags);
+            Gl.NamedBufferStorage(bufferObject, (nuint)desc.SizeBytes, null, storageFlags);
         }
 
-        var res = new GLBufferRes
+        uint id = AllocHandle();
+        Buffers[id] = new GLBufferRes
         {
-            Handle    = bo,
+            Handle    = bufferObject,
             Size      = desc.SizeBytes,
             Mapped    = null,
             Usage     = desc.Usage,
             BindFlags = desc.BindFlags,
         };
-        uint id = AllocHandle();
-        Buffers[id] = res;
         return new BufferHandle(id);
     }
 
-    public void Destroy(BufferHandle h)
+    public void Destroy(BufferHandle handle)
     {
-        if (Buffers.Remove(h.Id, out var b))
-        {
-            if (b.Handle != 0) Gl.DeleteBuffer(b.Handle);
-        }
+        if (Buffers.Remove(handle.Id, out var buffer) && buffer.Handle != 0)
+            Gl.DeleteBuffer(buffer.Handle);
     }
 
-    // ====================================================== Textures
+    // =============================================================== Textures
 
     public TextureHandle CreateTexture(in TextureDesc desc, ReadOnlySpan<byte> initialData)
     {
-        var (ifmt, pfmt, ptype) = GLMapping.ToGl(desc.Format);
-        int mip = Math.Max(1, desc.MipLevels);
+        var (internalFormat, pixelFormat, pixelType) = GLMapping.ToGl(desc.Format);
+        int mipLevels = Math.Max(1, desc.MipLevels);
 
-        uint tex;
-        Gl.CreateTextures(TextureTarget.Texture2D, 1, &tex);
-        Gl.TextureStorage2D(tex, (uint)mip, (SizedInternalFormat)ifmt, (uint)desc.Width, (uint)desc.Height);
+        uint texture;
+        Gl.CreateTextures(TextureTarget.Texture2D, 1, &texture);
+        Gl.TextureStorage2D(texture, (uint)mipLevels, (SizedInternalFormat)internalFormat,
+                            (uint)desc.Width, (uint)desc.Height);
 
         if (initialData.Length > 0)
         {
             fixed (byte* src = initialData)
-                Gl.TextureSubImage2D(tex, 0, 0, 0, (uint)desc.Width, (uint)desc.Height, pfmt, ptype, src);
+                Gl.TextureSubImage2D(texture, 0, 0, 0, (uint)desc.Width, (uint)desc.Height,
+                                     pixelFormat, pixelType, src);
         }
 
-        // Default texture parameters — samplers will override per-binding,
+        // Default texture parameters — samplers override these per-binding,
         // but reasonable defaults make naked sampling work too.
-        Gl.TextureParameter(tex, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-        Gl.TextureParameter(tex, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-        Gl.TextureParameter(tex, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-        Gl.TextureParameter(tex, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+        Gl.TextureParameter(texture, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        Gl.TextureParameter(texture, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        Gl.TextureParameter(texture, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+        Gl.TextureParameter(texture, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
-        var res = new GLTextureRes
+        uint id = AllocHandle();
+        Textures[id] = new GLTextureRes
         {
-            Handle    = tex,
+            Handle    = texture,
             Width     = desc.Width,
             Height    = desc.Height,
-            MipLevels = mip,
+            MipLevels = mipLevels,
             Format    = desc.Format,
             BindFlags = desc.BindFlags,
-            IsDepth   = GLMapping.ToGl(desc.Format).fmt is PixelFormat.DepthComponent or PixelFormat.DepthStencil,
+            IsDepth   = pixelFormat is PixelFormat.DepthComponent or PixelFormat.DepthStencil,
         };
-        uint id = AllocHandle();
-        Textures[id] = res;
         return new TextureHandle(id);
     }
 
@@ -418,15 +432,17 @@ public unsafe sealed partial class GLDevice : IRhiDevice
                               int x, int y, int width, int height,
                               int rowPitchBytes, ReadOnlySpan<byte> data)
     {
-        var t = Textures[handle.Id];
-        var (_, pfmt, ptype) = GLMapping.ToGl(t.Format);
-        // GL pixel stores rowsBytes via GL_UNPACK_ROW_LENGTH (in pixels).
-        int bpp = BytesPerPixelOf(t.Format);
-        Gl.PixelStore(PixelStoreParameter.UnpackRowLength, rowPitchBytes / bpp);
+        var texture = Textures[handle.Id];
+        var (_, pixelFormat, pixelType) = GLMapping.ToGl(texture.Format);
+
+        // GL specifies the source row stride via GL_UNPACK_ROW_LENGTH (in pixels).
+        int bytesPerPixel = BytesPerPixelOf(texture.Format);
+        Gl.PixelStore(PixelStoreParameter.UnpackRowLength, rowPitchBytes / bytesPerPixel);
         try
         {
             fixed (byte* src = data)
-                Gl.TextureSubImage2D(t.Handle, subresource, x, y, (uint)width, (uint)height, pfmt, ptype, src);
+                Gl.TextureSubImage2D(texture.Handle, subresource, x, y, (uint)width, (uint)height,
+                                     pixelFormat, pixelType, src);
         }
         finally
         {
@@ -436,85 +452,87 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     public byte[] ReadTexture(TextureHandle handle, int subresource = 0)
     {
-        var t = Textures[handle.Id];
-        var (_, pfmt, ptype) = GLMapping.ToGl(t.Format);
-        int bpp = BytesPerPixelOf(t.Format);
-        int size = t.Width * t.Height * bpp;
+        var texture = Textures[handle.Id];
+        var (_, pixelFormat, pixelType) = GLMapping.ToGl(texture.Format);
+        int bytesPerPixel = BytesPerPixelOf(texture.Format);
+        int size = texture.Width * texture.Height * bytesPerPixel;
+
         byte[] result = new byte[size];
         fixed (byte* dst = result)
-            Gl.GetTextureImage(t.Handle, subresource, pfmt, ptype, (uint)size, dst);
+            Gl.GetTextureImage(texture.Handle, subresource, pixelFormat, pixelType, (uint)size, dst);
         return result;
     }
 
-    public void Destroy(TextureHandle h)
+    public void Destroy(TextureHandle handle)
     {
-        if (Textures.Remove(h.Id, out var t))
+        if (Textures.Remove(handle.Id, out var texture))
         {
-            if (t.FramebufferHandle != 0) Gl.DeleteFramebuffer(t.FramebufferHandle);
-            if (t.Handle != 0) Gl.DeleteTexture(t.Handle);
+            if (texture.FramebufferHandle != 0) Gl.DeleteFramebuffer(texture.FramebufferHandle);
+            if (texture.Handle != 0)            Gl.DeleteTexture(texture.Handle);
         }
     }
 
-    private static int BytesPerPixelOf(RhiFormat f) => f switch
+    private static int BytesPerPixelOf(RhiFormat format) => format switch
     {
         RhiFormat.R8G8B8A8_UNorm or RhiFormat.R8G8B8A8_UNorm_SRgb or RhiFormat.B8G8R8A8_UNorm
             or RhiFormat.R8G8B8A8_UInt or RhiFormat.R32_UInt or RhiFormat.R32_Float
             or RhiFormat.R16G16_UNorm or RhiFormat.R16G16_Float
-            or RhiFormat.D24_UNorm_S8_UInt or RhiFormat.D32_Float => 4,
-        RhiFormat.R16G16B16A16_Float or RhiFormat.R16G16B16A16_UNorm or RhiFormat.R32G32_Float => 8,
-        RhiFormat.R32G32B32_Float => 12,
-        RhiFormat.R32G32B32A32_Float => 16,
-        _ => throw new ArgumentOutOfRangeException(nameof(f), f, "BytesPerPixel undefined"),
+            or RhiFormat.D24_UNorm_S8_UInt or RhiFormat.D32_Float                                 => 4,
+        RhiFormat.R16G16B16A16_Float or RhiFormat.R16G16B16A16_UNorm or RhiFormat.R32G32_Float     => 8,
+        RhiFormat.R32G32B32_Float                                                                 => 12,
+        RhiFormat.R32G32B32A32_Float                                                              => 16,
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, "BytesPerPixel undefined"),
     };
 
-    // ====================================================== Samplers
+    // =============================================================== Samplers
 
     public SamplerHandle CreateSampler(in SamplerDesc desc)
     {
-        uint s;
-        Gl.CreateSamplers(1, &s);
+        uint sampler;
+        Gl.CreateSamplers(1, &sampler);
 
-        // Lod range: with mip filter active, use the full range; otherwise 0..0.
+        // With a mip filter active, use the full LOD range; otherwise 0..0.
         bool hasMips = desc.MipFilter != FilterMode.Nearest || desc.MinFilter != FilterMode.Nearest;
-        Gl.SamplerParameter(s, SamplerParameterI.TextureMinFilter,
+        Gl.SamplerParameter(sampler, SamplerParameterI.TextureMinFilter,
             (int)GLMapping.ToMinFilter(desc.MinFilter, desc.MipFilter, hasMips));
-        Gl.SamplerParameter(s, SamplerParameterI.TextureMagFilter,
+        Gl.SamplerParameter(sampler, SamplerParameterI.TextureMagFilter,
             (int)GLMapping.ToMagFilter(desc.MagFilter));
-        Gl.SamplerParameter(s, SamplerParameterI.TextureWrapS, (int)GLMapping.ToGl(desc.AddressU));
-        Gl.SamplerParameter(s, SamplerParameterI.TextureWrapT, (int)GLMapping.ToGl(desc.AddressV));
-        Gl.SamplerParameter(s, SamplerParameterI.TextureWrapR, (int)GLMapping.ToGl(desc.AddressW));
+        Gl.SamplerParameter(sampler, SamplerParameterI.TextureWrapS, (int)GLMapping.ToGl(desc.AddressU));
+        Gl.SamplerParameter(sampler, SamplerParameterI.TextureWrapT, (int)GLMapping.ToGl(desc.AddressV));
+        Gl.SamplerParameter(sampler, SamplerParameterI.TextureWrapR, (int)GLMapping.ToGl(desc.AddressW));
+
         if (desc.MinFilter == FilterMode.Anisotropic && desc.MaxAnisotropy > 1
             && (HasExtension("GL_EXT_texture_filter_anisotropic")
              || HasExtension("GL_ARB_texture_filter_anisotropic")))
         {
             const int GL_TEXTURE_MAX_ANISOTROPY = 0x84FE;
-            Gl.SamplerParameter(s, (SamplerParameterF)GL_TEXTURE_MAX_ANISOTROPY, (float)desc.MaxAnisotropy);
+            Gl.SamplerParameter(sampler, (SamplerParameterF)GL_TEXTURE_MAX_ANISOTROPY, (float)desc.MaxAnisotropy);
         }
 
         uint id = AllocHandle();
-        Samplers[id] = new GLSamplerRes { Handle = s };
+        Samplers[id] = new GLSamplerRes { Handle = sampler };
         return new SamplerHandle(id);
     }
 
-    public void Destroy(SamplerHandle h)
+    public void Destroy(SamplerHandle handle)
     {
-        if (Samplers.Remove(h.Id, out var s)) Gl.DeleteSampler(s.Handle);
+        if (Samplers.Remove(handle.Id, out var sampler))
+            Gl.DeleteSampler(sampler.Handle);
     }
 
-    // ====================================================== Command stream
+    // ========================================================= Command stream
 
     public ICommandList BeginCommandList()
     {
-        // We do NOT make any context current here — every swapchain owns
-        // its own HDC, and BeginCommandList doesn't know which swapchain
-        // the caller's BeginPass will target. The right binding happens in
+        // No context is made current here — every swapchain owns its own HDC,
+        // and BeginCommandList doesn't know which swapchain the caller's
+        // BeginPass will target. The correct binding happens in
         // GLCommandList.BeginPass and in Present, both of which receive a
-        // SwapchainHandle and can pick the matching HDC. If we used a
-        // single shared HDC here, the most-recently-created swapchain
-        // (typically an item-preview panel) would steal the current target
-        // and the main Panel3D viewport would silently render to a hidden
-        // surface — exactly the "frozen viewport after level load" symptom
-        // the user reported.
+        // SwapchainHandle and pick the matching HDC. A single shared HDC here
+        // would let the most-recently-created swapchain (typically an
+        // item-preview panel) steal the current target and make the main
+        // Panel3D viewport silently render to a hidden surface — exactly the
+        // "frozen viewport after level load" symptom that was reported.
         return new GLCommandList(this);
     }
 

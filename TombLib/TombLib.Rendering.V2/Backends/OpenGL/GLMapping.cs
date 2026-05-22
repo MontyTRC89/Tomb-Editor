@@ -1,8 +1,6 @@
 using System;
 using Silk.NET.OpenGL;
 using RhiFormat = TombLib.RenderingV2.Rhi.Format;
-using RhiCullMode = TombLib.RenderingV2.Rhi.CullMode;
-using RhiFillMode = TombLib.RenderingV2.Rhi.FillMode;
 using RhiCompareOp = TombLib.RenderingV2.Rhi.CompareOp;
 using RhiBlendFactor = TombLib.RenderingV2.Rhi.BlendFactor;
 using RhiBlendOp = TombLib.RenderingV2.Rhi.BlendOp;
@@ -13,48 +11,55 @@ using RhiIndexFormat = TombLib.RenderingV2.Rhi.IndexFormat;
 
 namespace TombLib.RenderingV2.Backends.OpenGL;
 
+/// <summary>
+/// RHI → OpenGL enum mappings. Mirrors the corresponding VkMapping / Dx11Mapping
+/// helpers — every RHI enum value maps to a concrete OpenGL equivalent.
+/// </summary>
 internal static class GLMapping
 {
-    // Format → (internal, format, type). InternalFormat is the texture's
-    // storage format; Format + Type describe the pixel data being uploaded.
-    public static (InternalFormat ifmt, PixelFormat fmt, PixelType type) ToGl(RhiFormat f) => f switch
+    // Format → (internalFormat, pixelFormat, pixelType). InternalFormat is the
+    // texture's storage format; PixelFormat + PixelType describe the pixel
+    // data being uploaded into it.
+    public static (InternalFormat InternalFormat, PixelFormat PixelFormat, PixelType PixelType) ToGl(RhiFormat format)
+        => format switch
     {
-        RhiFormat.R8G8B8A8_UNorm      => (InternalFormat.Rgba8,     PixelFormat.Rgba, PixelType.UnsignedByte),
-        RhiFormat.R8G8B8A8_UNorm_SRgb => (InternalFormat.Srgb8Alpha8, PixelFormat.Rgba, PixelType.UnsignedByte),
-        RhiFormat.B8G8R8A8_UNorm      => (InternalFormat.Rgba8,     PixelFormat.Bgra, PixelType.UnsignedByte),
-        RhiFormat.R16G16B16A16_Float  => (InternalFormat.Rgba16f,   PixelFormat.Rgba, PixelType.HalfFloat),
-        RhiFormat.D24_UNorm_S8_UInt   => (InternalFormat.Depth24Stencil8, PixelFormat.DepthStencil, PixelType.UnsignedInt248),
+        RhiFormat.R8G8B8A8_UNorm      => (InternalFormat.Rgba8,             PixelFormat.Rgba,           PixelType.UnsignedByte),
+        RhiFormat.R8G8B8A8_UNorm_SRgb => (InternalFormat.Srgb8Alpha8,       PixelFormat.Rgba,           PixelType.UnsignedByte),
+        RhiFormat.B8G8R8A8_UNorm      => (InternalFormat.Rgba8,             PixelFormat.Bgra,           PixelType.UnsignedByte),
+        RhiFormat.R16G16B16A16_Float  => (InternalFormat.Rgba16f,           PixelFormat.Rgba,           PixelType.HalfFloat),
+        RhiFormat.D24_UNorm_S8_UInt   => (InternalFormat.Depth24Stencil8,   PixelFormat.DepthStencil,   PixelType.UnsignedInt248),
         RhiFormat.D32_Float           => (InternalFormat.DepthComponent32f, PixelFormat.DepthComponent, PixelType.Float),
-        RhiFormat.R32_UInt            => (InternalFormat.R32ui,     PixelFormat.RedInteger, PixelType.UnsignedInt),
-        RhiFormat.R32G32_Float        => (InternalFormat.RG32f,     PixelFormat.RG,   PixelType.Float),
-        RhiFormat.R32G32B32_Float     => (InternalFormat.Rgb32f,    PixelFormat.Rgb,  PixelType.Float),
-        RhiFormat.R32G32B32A32_Float  => (InternalFormat.Rgba32f,   PixelFormat.Rgba, PixelType.Float),
-        RhiFormat.R32_Float           => (InternalFormat.R32f,      PixelFormat.Red,  PixelType.Float),
-        RhiFormat.R16G16B16A16_UNorm  => (InternalFormat.Rgba16,    PixelFormat.Rgba, PixelType.UnsignedShort),
-        RhiFormat.R8G8B8A8_UInt       => (InternalFormat.Rgba8ui,   PixelFormat.RgbaInteger, PixelType.UnsignedByte),
-        RhiFormat.R16G16_UNorm        => (InternalFormat.RG16,      PixelFormat.RG,   PixelType.UnsignedShort),
-        RhiFormat.R16G16_Float        => (InternalFormat.RG16f,     PixelFormat.RG,   PixelType.HalfFloat),
-        _ => throw new ArgumentOutOfRangeException(nameof(f), f, "Unmapped format"),
+        RhiFormat.R32_UInt            => (InternalFormat.R32ui,             PixelFormat.RedInteger,     PixelType.UnsignedInt),
+        RhiFormat.R32G32_Float        => (InternalFormat.RG32f,             PixelFormat.RG,             PixelType.Float),
+        RhiFormat.R32G32B32_Float     => (InternalFormat.Rgb32f,            PixelFormat.Rgb,            PixelType.Float),
+        RhiFormat.R32G32B32A32_Float  => (InternalFormat.Rgba32f,           PixelFormat.Rgba,           PixelType.Float),
+        RhiFormat.R32_Float           => (InternalFormat.R32f,              PixelFormat.Red,            PixelType.Float),
+        RhiFormat.R16G16B16A16_UNorm  => (InternalFormat.Rgba16,            PixelFormat.Rgba,           PixelType.UnsignedShort),
+        RhiFormat.R8G8B8A8_UInt       => (InternalFormat.Rgba8ui,           PixelFormat.RgbaInteger,    PixelType.UnsignedByte),
+        RhiFormat.R16G16_UNorm        => (InternalFormat.RG16,              PixelFormat.RG,             PixelType.UnsignedShort),
+        RhiFormat.R16G16_Float        => (InternalFormat.RG16f,             PixelFormat.RG,             PixelType.HalfFloat),
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unmapped format"),
     };
 
-    // Vertex attribute format → (gl type, num components, normalized).
-    public static (VertexAttribPointerType type, int components, bool normalized, bool isInteger) AttribFormat(RhiFormat f) => f switch
+    // Vertex-attribute format → (glType, componentCount, normalized, isInteger).
+    public static (VertexAttribPointerType Type, int Components, bool Normalized, bool IsInteger) AttribFormat(RhiFormat format)
+        => format switch
     {
-        RhiFormat.R32G32B32_Float    => (VertexAttribPointerType.Float, 3, false, false),
-        RhiFormat.R32G32_Float       => (VertexAttribPointerType.Float, 2, false, false),
-        RhiFormat.R32G32B32A32_Float => (VertexAttribPointerType.Float, 4, false, false),
-        RhiFormat.R32_Float          => (VertexAttribPointerType.Float, 1, false, false),
-        RhiFormat.R8G8B8A8_UNorm     => (VertexAttribPointerType.UnsignedByte, 4, true, false),
-        RhiFormat.R8G8B8A8_UInt      => (VertexAttribPointerType.UnsignedByte, 4, false, true),
-        RhiFormat.R16G16_UNorm       => (VertexAttribPointerType.UnsignedShort, 2, true, false),
-        RhiFormat.R16G16_Float       => (VertexAttribPointerType.HalfFloat, 2, false, false),
-        RhiFormat.R16G16B16A16_UNorm => (VertexAttribPointerType.UnsignedShort, 4, true, false),
-        RhiFormat.R16G16B16A16_Float => (VertexAttribPointerType.HalfFloat, 4, false, false),
-        RhiFormat.R32_UInt           => (VertexAttribPointerType.UnsignedInt, 1, false, true),
-        _ => throw new ArgumentOutOfRangeException(nameof(f), f, "Unmapped vertex format"),
+        RhiFormat.R32G32B32_Float    => (VertexAttribPointerType.Float,         3, false, false),
+        RhiFormat.R32G32_Float       => (VertexAttribPointerType.Float,         2, false, false),
+        RhiFormat.R32G32B32A32_Float => (VertexAttribPointerType.Float,         4, false, false),
+        RhiFormat.R32_Float          => (VertexAttribPointerType.Float,         1, false, false),
+        RhiFormat.R8G8B8A8_UNorm     => (VertexAttribPointerType.UnsignedByte,  4, true,  false),
+        RhiFormat.R8G8B8A8_UInt      => (VertexAttribPointerType.UnsignedByte,  4, false, true),
+        RhiFormat.R16G16_UNorm       => (VertexAttribPointerType.UnsignedShort, 2, true,  false),
+        RhiFormat.R16G16_Float       => (VertexAttribPointerType.HalfFloat,     2, false, false),
+        RhiFormat.R16G16B16A16_UNorm => (VertexAttribPointerType.UnsignedShort, 4, true,  false),
+        RhiFormat.R16G16B16A16_Float => (VertexAttribPointerType.HalfFloat,     4, false, false),
+        RhiFormat.R32_UInt           => (VertexAttribPointerType.UnsignedInt,   1, false, true),
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unmapped vertex format"),
     };
 
-    public static PrimitiveType ToGl(RhiPrimitiveTopology t) => t switch
+    public static PrimitiveType ToGl(RhiPrimitiveTopology topology) => topology switch
     {
         RhiPrimitiveTopology.TriangleList  => PrimitiveType.Triangles,
         RhiPrimitiveTopology.TriangleStrip => PrimitiveType.TriangleStrip,
@@ -64,7 +69,7 @@ internal static class GLMapping
         _ => PrimitiveType.Triangles,
     };
 
-    public static DepthFunction ToGl(RhiCompareOp c) => c switch
+    public static DepthFunction ToGl(RhiCompareOp compareOp) => compareOp switch
     {
         RhiCompareOp.Never        => DepthFunction.Never,
         RhiCompareOp.Less         => DepthFunction.Less,
@@ -77,7 +82,7 @@ internal static class GLMapping
         _ => DepthFunction.Lequal,
     };
 
-    public static BlendingFactor ToGl(RhiBlendFactor f) => f switch
+    public static BlendingFactor ToGl(RhiBlendFactor blendFactor) => blendFactor switch
     {
         RhiBlendFactor.Zero             => BlendingFactor.Zero,
         RhiBlendFactor.One              => BlendingFactor.One,
@@ -92,7 +97,7 @@ internal static class GLMapping
         _ => BlendingFactor.Zero,
     };
 
-    public static BlendEquationModeEXT ToGl(RhiBlendOp op) => op switch
+    public static BlendEquationModeEXT ToGl(RhiBlendOp blendOp) => blendOp switch
     {
         RhiBlendOp.Add             => BlendEquationModeEXT.FuncAdd,
         RhiBlendOp.Subtract        => BlendEquationModeEXT.FuncSubtract,
@@ -102,7 +107,7 @@ internal static class GLMapping
         _ => BlendEquationModeEXT.FuncAdd,
     };
 
-    public static TextureWrapMode ToGl(RhiAddressMode m) => m switch
+    public static TextureWrapMode ToGl(RhiAddressMode addressMode) => addressMode switch
     {
         RhiAddressMode.Wrap   => TextureWrapMode.Repeat,
         RhiAddressMode.Mirror => TextureWrapMode.MirroredRepeat,
@@ -115,17 +120,22 @@ internal static class GLMapping
     {
         if (minFilter == RhiFilterMode.Nearest)
             return hasMips
-                   ? (mipFilter == RhiFilterMode.Linear ? TextureMinFilter.NearestMipmapLinear : TextureMinFilter.NearestMipmapNearest)
+                   ? mipFilter == RhiFilterMode.Linear
+                       ? TextureMinFilter.NearestMipmapLinear
+                       : TextureMinFilter.NearestMipmapNearest
                    : TextureMinFilter.Nearest;
-        // Linear or Anisotropic
+
+        // Linear or Anisotropic.
         return hasMips
-               ? (mipFilter == RhiFilterMode.Nearest ? TextureMinFilter.LinearMipmapNearest : TextureMinFilter.LinearMipmapLinear)
+               ? mipFilter == RhiFilterMode.Nearest
+                   ? TextureMinFilter.LinearMipmapNearest
+                   : TextureMinFilter.LinearMipmapLinear
                : TextureMinFilter.Linear;
     }
 
     public static TextureMagFilter ToMagFilter(RhiFilterMode magFilter)
         => magFilter == RhiFilterMode.Nearest ? TextureMagFilter.Nearest : TextureMagFilter.Linear;
 
-    public static DrawElementsType ToGl(RhiIndexFormat f)
-        => f == RhiIndexFormat.U16 ? DrawElementsType.UnsignedShort : DrawElementsType.UnsignedInt;
+    public static DrawElementsType ToGl(RhiIndexFormat indexFormat)
+        => indexFormat == RhiIndexFormat.U16 ? DrawElementsType.UnsignedShort : DrawElementsType.UnsignedInt;
 }
