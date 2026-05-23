@@ -6,6 +6,8 @@ Tomb Editor:
  * Added Content Browser tool window for more streamlined object management.
  * Added Flyby Timeline control to edit and preview flyby sequences.
  * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
+ * Added ability to group event sets into categories.
+ * Added indication of the nodes not supported by the current event type.
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
  * Added multiple window layout support.
 
