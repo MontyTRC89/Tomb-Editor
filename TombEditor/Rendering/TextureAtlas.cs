@@ -15,10 +15,10 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
-/// Single-page atlas owned by the V2 renderer. Packs three classes of texel
+/// Single-page atlas owned by the renderer. Packs three classes of texel
 /// data into one BGRA8 page:
 ///   1. A reserved white pixel (untextured / fallback).
 ///   2. All <see cref="SectorTexture"/> overlay sprites loaded from

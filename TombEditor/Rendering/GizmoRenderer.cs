@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 using TombLib.Graphics;
 using TombLib.RenderingV2.Rhi;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Draws the translate / scale / rotate gizmo as world-space colored
-/// geometry, using the V2 RHI. Reads the gizmo state from a
+/// geometry, using the RHI. Reads the gizmo state from a
 /// <see cref="BaseGizmo"/> snapshot at the start of every <see cref="Render"/>
 /// call — the actual picking + drag math still lives in BaseGizmo, this
 /// class only handles the visuals.

@@ -10,7 +10,7 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 using TombEditor.Controls.FlybyTimeline.Sequence;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Draws the editor's wireframe overlay geometry — the level-scene elements

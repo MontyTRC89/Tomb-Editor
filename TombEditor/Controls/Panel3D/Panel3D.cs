@@ -126,20 +126,20 @@ namespace TombEditor.Controls.Panel3D
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
 
-        // V2 renderer state — the legacy DXGI device / WAD renderer / room
-        // cache are gone; everything lives in _v2Renderer.
+        // renderer state — the legacy DXGI device / WAD renderer / room
+        // cache are gone; everything lives in _renderer.
 
         // Flyby cone falloff radius — used for the distance-fade math when
         // the camera approaches a flyby's cone.
         private const float _coneRadius = 1024.0f;
 
-        // V2 renderer. Non-null only when Configuration.Rendering3D_UseV2Renderer
+        // renderer. Non-null only when Configuration.Rendering3D_Backend
         // was set at panel init. When set, the legacy rendering path is bypassed
         // entirely (no swapchain / textures / state buffer / legacy device init).
-        internal TombEditor.Rendering.V2.LevelRenderer _v2Renderer;
+        internal TombEditor.Rendering.LevelRenderer _renderer;
 
-        /// <summary>Human-readable name of the active V2 backend, or null when V2 isn't active yet.</summary>
-        public string? V2BackendName => _v2Renderer?.BackendName;
+        /// <summary>Human-readable name of the active backend, or null when isn't active yet.</summary>
+        public string? BackendName => _renderer?.BackendName;
 
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
@@ -202,7 +202,7 @@ namespace TombEditor.Controls.Panel3D
                         _editor.GetViewportCamera = null;
                 }
 
-                _v2Renderer?.Dispose();
+                _renderer?.Dispose();
                 _gizmo?.Dispose();
                 _movementTimer?.Dispose();
                 _flyModeTimer?.Dispose();
@@ -269,11 +269,11 @@ namespace TombEditor.Controls.Panel3D
             {
                 var room = ((IEditorRoomChangedEvent)obj).Room;
 
-                _v2Renderer?.InvalidateRoom(room);
+                _renderer?.InvalidateRoom(room);
                 if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
                     foreach (var portal in room.Portals)
                     {
-                        _v2Renderer?.InvalidateRoom(portal.AdjoiningRoom);
+                        _renderer?.InvalidateRoom(portal.AdjoiningRoom);
                     }
             }
 
@@ -282,7 +282,7 @@ namespace TombEditor.Controls.Panel3D
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                 {
-                    _v2Renderer?.InvalidateRoom(value.Object.Room);
+                    _renderer?.InvalidateRoom(value.Object.Room);
                 }
             }
 
@@ -290,21 +290,21 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
             {
-                _v2Renderer?.InvalidateRoom(_editor.SelectedRoom);
+                _renderer?.InvalidateRoom(_editor.SelectedRoom);
             }
             if (obj is Editor.SelectedRoomChangedEvent)
             {
                 var prev = ((Editor.SelectedRoomChangedEvent)obj).Previous;
-                _v2Renderer?.InvalidateRoom(prev);
-                // V2 bakes the SectorTextureDefault state into the mesh, so
+                _renderer?.InvalidateRoom(prev);
+                // bakes the SectorTextureDefault state into the mesh, so
                 // entering a new room must also rebuild it (otherwise stale
                 // selection ghosts from the last time this room was current).
                 if (_editor.SelectedRoom != null)
-                    _v2Renderer?.InvalidateRoom(_editor.SelectedRoom);
+                    _renderer?.InvalidateRoom(_editor.SelectedRoom);
             }
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
             {
-                _v2Renderer?.InvalidateRoom(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
+                _renderer?.InvalidateRoom(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
             }
             if (obj is Editor.LoadedTexturesChangedEvent ||
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
@@ -312,10 +312,10 @@ namespace TombEditor.Controls.Panel3D
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
             {
-                _v2Renderer?.InvalidateAllRooms();
+                _renderer?.InvalidateAllRooms();
             }
 
-            // V2 picking caches: triangle lists are baked from WAD/imported
+            // picking caches: triangle lists are baked from WAD/imported
             // geometry the first time an object is tested against the ray.
             // After a level reload / wad swap / imported-geometry refresh the
             // backing assets are different objects, but the cache still holds
@@ -326,9 +326,9 @@ namespace TombEditor.Controls.Panel3D
                 obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
-                _v2PickStatic.Clear();
-                _v2PickMoveable.Clear();
-                _v2PickImported.Clear();
+                _pickStatic.Clear();
+                _pickMoveable.Clear();
+                _pickImported.Clear();
             }
 
             if (obj is Editor.ObjectBrushSettingsChangedEvent)
@@ -456,25 +456,25 @@ namespace TombEditor.Controls.Panel3D
                 _editor.HighlightedSplit = 0;
         }
 
-        // V2 renderer is the only path — mouse input goes straight through
-        // V2-specific handlers below.
+        // renderer is the only path — mouse input goes straight through
+        // specific handlers below.
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            V2MouseWheel(e);
+            HandleMouseWheel(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            V2MouseDown(e);
+            HandleMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            V2MouseUp(e);
+            HandleMouseUp(e);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -485,7 +485,7 @@ namespace TombEditor.Controls.Panel3D
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            V2MouseMove(e);
+            HandleMouseMove(e);
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -504,27 +504,27 @@ namespace TombEditor.Controls.Panel3D
             base.OnDragDrop(e);
         }
 
-        // --- V2 input handlers ------------------------------------------------
+        // --- input handlers ------------------------------------------------
 
-        private MouseButtons _v2DragButton;
+        private MouseButtons _dragButton;
 
         // Left-mouse interaction state, mirrors the legacy _doSectorSelection
         // logic:
         //   - Clicking outside (or with no selection) → reset selection to the
-        //     picked sector, start a drag-select (_v2SelDragging = true).
+        //     picked sector, start a drag-select (_selDragging = true).
         //   - Clicking inside the existing selection → leave the rectangle
-        //     alone (_v2SelDragging = false) and cycle the edit arrow on
+        //     alone (_selDragging = false) and cycle the edit arrow on
         //     mouse-up. Modifier Ctrl cycles corners instead of edges.
-        private Room       _v2SelAnchorRoom;
-        private VectorInt2 _v2SelAnchor;
-        private bool       _v2SelDragging;
-        private bool       _v2SelClickedOnSel;
+        private Room       _selAnchorRoom;
+        private VectorInt2 _selAnchor;
+        private bool       _selDragging;
+        private bool       _selClickedOnSel;
 
-        private void V2MouseDown(MouseEventArgs e)
+        private void HandleMouseDown(MouseEventArgs e)
         {
             if (!Focused) Focus();
             _lastMousePosition = e.Location;
-            _v2DragButton = e.Button;
+            _dragButton = e.Button;
             if (e.Button is MouseButtons.Right or MouseButtons.Middle)
                 Capture = true;
             if (e.Button == MouseButtons.Right)
@@ -536,7 +536,7 @@ namespace TombEditor.Controls.Panel3D
                 //   1. gizmo handle (translate axis / rotate ring / scale cube)
                 //   2. object (moveable / static / imported geometry)
                 //   3. sector
-                if (CanUseGizmo() && V2TryGizmoPick(e.Location))
+                if (CanUseGizmo() && TryGizmoPick(e.Location))
                 {
                     Capture = true;
                     Invalidate();
@@ -549,7 +549,7 @@ namespace TombEditor.Controls.Panel3D
                 // there, mirroring the legacy OnMouseButtonDownLeft path.
                 if (_editor.Action is IEditorActionPlace || _editor.Action is EditorActionRelocateCamera)
                 {
-                    if (!V2PickFace(e.Location, out var placeRoom, out var placePos, out _))
+                    if (!PickFace(e.Location, out var placeRoom, out var placePos, out _))
                         return;
                     if (_editor.SelectedRoom != placeRoom) _editor.SelectedRoom = placeRoom;
                     if (_editor.Action is EditorActionRelocateCamera)
@@ -569,16 +569,16 @@ namespace TombEditor.Controls.Panel3D
                 // Objects take priority over sectors: clicking a moveable /
                 // static / imported geometry selects the object, not the
                 // floor beneath it.
-                if (V2PickObject(e.Location, out var pickedObj))
+                if (PickObject(e.Location, out var pickedObj))
                 {
                     _editor.SelectedObject = pickedObj;
                     return;
                 }
 
-                if (!V2PickFace(e.Location, out var room, out var pos, out var face))
+                if (!PickFace(e.Location, out var room, out var pos, out var face))
                 {
-                    _v2SelDragging     = false;
-                    _v2SelClickedOnSel = false;
+                    _selDragging     = false;
+                    _selClickedOnSel = false;
                     return;
                 }
 
@@ -587,7 +587,7 @@ namespace TombEditor.Controls.Panel3D
                 if (_editor.Mode == EditorMode.FaceEdit && _editor.Tool.Tool != EditorToolType.Selection)
                 {
                     if (_editor.SelectedRoom != room) _editor.SelectedRoom = room;
-                    V2HandleTextureClick(room, pos, face);
+                    HandleTextureClick(room, pos, face);
                     return;
                 }
 
@@ -598,16 +598,16 @@ namespace TombEditor.Controls.Panel3D
                 {
                     // Don't reset the rectangle, don't drag. Wait for mouse-up
                     // to cycle the arrow.
-                    _v2SelDragging     = false;
-                    _v2SelClickedOnSel = true;
+                    _selDragging     = false;
+                    _selClickedOnSel = true;
                 }
                 else
                 {
                     if (_editor.SelectedRoom != room) _editor.SelectedRoom = room;
-                    _v2SelAnchorRoom = room;
-                    _v2SelAnchor     = pos;
-                    _v2SelDragging   = true;
-                    _v2SelClickedOnSel = false;
+                    _selAnchorRoom = room;
+                    _selAnchor     = pos;
+                    _selDragging   = true;
+                    _selClickedOnSel = false;
                     _editor.SelectedSectors = new SectorSelection
                     {
                         Area  = new TombLib.RectangleInt2(pos.X, pos.Y, pos.X, pos.Y),
@@ -624,7 +624,7 @@ namespace TombEditor.Controls.Panel3D
         //   Ctrl  → mirror texture
         //   Alt   → pick texture
         //   none  → apply currently-selected texture
-        private void V2HandleTextureClick(Room room, VectorInt2 pos, TombLib.LevelData.SectorEnums.SectorFace face)
+        private void HandleTextureClick(Room room, VectorInt2 pos, TombLib.LevelData.SectorEnums.SectorFace face)
         {
             if (ModifierKeys.HasFlag(Keys.Shift))
                 EditorActions.RotateTexture(room, pos, face);
@@ -636,11 +636,11 @@ namespace TombEditor.Controls.Panel3D
                 EditorActions.ApplyTexture(room, pos, face, _editor.SelectedTexture);
         }
 
-        private void V2MouseUp(MouseEventArgs e)
+        private void HandleMouseUp(MouseEventArgs e)
         {
-            if (e.Button == _v2DragButton)
+            if (e.Button == _dragButton)
             {
-                _v2DragButton = MouseButtons.None;
+                _dragButton = MouseButtons.None;
                 Capture = false;
             }
             if (e.Button == MouseButtons.Right)
@@ -651,7 +651,7 @@ namespace TombEditor.Controls.Panel3D
                 int dx = e.Location.X - _startMousePosition.X;
                 int dy = e.Location.Y - _startMousePosition.Y;
                 if (dx * dx + dy * dy < 16)
-                    V2ShowContextMenu(e.Location);
+                    ShowContextMenu(e.Location);
             }
             if (e.Button == MouseButtons.Left)
             {
@@ -660,12 +660,12 @@ namespace TombEditor.Controls.Panel3D
                 if (_gizmo != null && _gizmo.MouseUp())
                     Invalidate();
 
-                if (_v2SelClickedOnSel && _editor.SelectedSectors.Valid)
+                if (_selClickedOnSel && _editor.SelectedSectors.Valid)
                     CycleSelectionArrow(ModifierKeys.HasFlag(Keys.Control));
 
-                _v2SelDragging     = false;
-                _v2SelClickedOnSel = false;
-                _v2SelAnchorRoom   = null;
+                _selDragging     = false;
+                _selClickedOnSel = false;
+                _selAnchorRoom   = null;
             }
         }
 
@@ -674,16 +674,16 @@ namespace TombEditor.Controls.Panel3D
         // otherwise the sector menu (SelectedGeometryContextMenu when the
         // click landed inside the current rectangle, plain SectorContextMenu
         // outside it).
-        private void V2ShowContextMenu(Point location)
+        private void ShowContextMenu(Point location)
         {
             _currentContextMenu?.Dispose();
             _currentContextMenu = null;
 
-            if (V2PickObject(location, out var pickedObj) && pickedObj is ISpatial)
+            if (PickObject(location, out var pickedObj) && pickedObj is ISpatial)
             {
                 _currentContextMenu = new MaterialObjectContextMenu(_editor, this, pickedObj);
             }
-            else if (V2PickFace(location, out var ctxRoom, out var ctxPos, out _))
+            else if (PickFace(location, out var ctxRoom, out var ctxPos, out _))
             {
                 if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(ctxPos))
                     _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, ctxRoom, _editor.SelectedSectors.Area, ctxPos);
@@ -694,9 +694,9 @@ namespace TombEditor.Controls.Panel3D
         }
 
         // Build a world-space pick ray from screen coords, using the camera +
-        // current viewport. Single helper so V2 picking + gizmo picking share
+        // current viewport. Single helper so picking + gizmo picking share
         // the same math.
-        private bool V2BuildRay(System.Drawing.Point screenPos, out TombLib.Ray ray, out System.Numerics.Matrix4x4 vp)
+        private bool BuildPickRay(System.Drawing.Point screenPos, out TombLib.Ray ray, out System.Numerics.Matrix4x4 vp)
         {
             ray = default;
             vp  = default;
@@ -712,10 +712,10 @@ namespace TombEditor.Controls.Panel3D
         // Attempt to hit one of the gizmo handles; if successful, activates
         // the gizmo (its DoPicking sets the internal _mode so subsequent
         // MouseMoved calls drive the transform).
-        private bool V2TryGizmoPick(System.Drawing.Point screenPos)
+        private bool TryGizmoPick(System.Drawing.Point screenPos)
         {
             if (_gizmo == null) return false;
-            if (!V2BuildRay(screenPos, out var ray, out _)) return false;
+            if (!BuildPickRay(screenPos, out var ray, out _)) return false;
             var pick = _gizmo.DoPicking(ray);
             if (pick == null) return false;
             _gizmo.ActivateGizmo(pick);
@@ -755,7 +755,7 @@ namespace TombEditor.Controls.Panel3D
             _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(next);
         }
 
-        private void V2MouseMove(MouseEventArgs e)
+        private void HandleMouseMove(MouseEventArgs e)
         {
             if (Camera == null) return;
 
@@ -763,7 +763,7 @@ namespace TombEditor.Controls.Panel3D
             // gizmo handle is active.
             if (_gizmo != null && (e.Button & MouseButtons.Left) != 0)
             {
-                if (V2BuildRay(e.Location, out var giRay, out var giVp))
+                if (BuildPickRay(e.Location, out var giRay, out var giVp))
                 {
                     if (_gizmo.MouseMoved(giVp, giRay))
                     {
@@ -774,14 +774,14 @@ namespace TombEditor.Controls.Panel3D
                 }
             }
 
-            if (_v2SelDragging && (e.Button & MouseButtons.Left) != 0 && _v2SelAnchorRoom != null)
+            if (_selDragging && (e.Button & MouseButtons.Left) != 0 && _selAnchorRoom != null)
             {
-                if (V2PickRaw(e.Location, out var hitRoom, out var pos) && hitRoom == _v2SelAnchorRoom)
+                if (PickRaw(e.Location, out var hitRoom, out var pos) && hitRoom == _selAnchorRoom)
                 {
-                    int x0 = Math.Min(_v2SelAnchor.X, pos.X);
-                    int z0 = Math.Min(_v2SelAnchor.Y, pos.Y);
-                    int x1 = Math.Max(_v2SelAnchor.X, pos.X);
-                    int z1 = Math.Max(_v2SelAnchor.Y, pos.Y);
+                    int x0 = Math.Min(_selAnchor.X, pos.X);
+                    int z0 = Math.Min(_selAnchor.Y, pos.Y);
+                    int x1 = Math.Max(_selAnchor.X, pos.X);
+                    int z1 = Math.Max(_selAnchor.Y, pos.Y);
                     var newArea = new TombLib.RectangleInt2(x0, z0, x1, z1);
                     if (_editor.SelectedSectors.Area != newArea)
                     {
@@ -793,7 +793,7 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
             }
-            else if (_v2DragButton is MouseButtons.Right or MouseButtons.Middle)
+            else if (_dragButton is MouseButtons.Right or MouseButtons.Middle)
             {
                 var delta = Delta(e.Location, _lastMousePosition);
                 if (ModifierKeys.HasFlag(Keys.Shift))
@@ -814,7 +814,7 @@ namespace TombEditor.Controls.Panel3D
                 // OnMouseMoved fallback path. The redraw flag tells us
                 // whether the highlighted handle actually changed.
                 bool redraw;
-                if (CanUseGizmo() && V2BuildRay(e.Location, out var hoverRay, out _))
+                if (CanUseGizmo() && BuildPickRay(e.Location, out var hoverRay, out _))
                     redraw = _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(hoverRay));
                 else
                     redraw = _gizmo.GizmoUpdateHoverEffect(null);
@@ -832,7 +832,7 @@ namespace TombEditor.Controls.Panel3D
         // tested in its own local space via the inverse of ObjectMatrix —
         // the geometry stays cached in model coordinates so we don't have
         // to transform vertices on the CPU.
-        private bool V2PickObject(System.Drawing.Point pos, out ObjectInstance picked)
+        private bool PickObject(System.Drawing.Point pos, out ObjectInstance picked)
         {
             picked = null;
             ObjectInstance best = null;
@@ -845,8 +845,8 @@ namespace TombEditor.Controls.Panel3D
 
             float bestDist = float.PositiveInfinity;
 
-            var rooms = _v2Renderer != null
-                ? _v2Renderer.LastVisibleRooms
+            var rooms = _renderer != null
+                ? _renderer.LastVisibleRooms
                 : (System.Collections.Generic.IReadOnlyList<Room>)Array.Empty<Room>();
 
             foreach (var room in rooms)
@@ -864,7 +864,7 @@ namespace TombEditor.Controls.Panel3D
                         {
                             var pbi = (PositionBasedObjectInstance)obj;
                             var half = new System.Numerics.Vector3(
-                                TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                                TombEditor.Rendering.ServiceObjectRenderer.MarkerHalfExtent);
                             var box = new TombLib.BoundingBox(
                                 wp + pbi.Position - half, wp + pbi.Position + half);
                             if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
@@ -884,7 +884,7 @@ namespace TombEditor.Controls.Panel3D
                                 {
                                     var sphere = new TombLib.BoundingSphere(
                                         wp + light.Position,
-                                        TombEditor.Rendering.V2.ServiceObjectRenderer.LightSphereRadius);
+                                        TombEditor.Rendering.ServiceObjectRenderer.LightSphereRadius);
                                     if (TombLib.Utils.Collision.RayIntersectsSphere(ray, sphere, out float d) && d < bestDist)
                                     { bestDist = d; best = obj; }
                                     continue;
@@ -898,7 +898,7 @@ namespace TombEditor.Controls.Panel3D
                                 {
                                     var pbi = (PositionBasedObjectInstance)obj;
                                     var half = new System.Numerics.Vector3(
-                                        TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                                        TombEditor.Rendering.ServiceObjectRenderer.MarkerHalfExtent);
                                     var box = new TombLib.BoundingBox(
                                         wp + pbi.Position - half, wp + pbi.Position + half);
                                     if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
@@ -957,7 +957,7 @@ namespace TombEditor.Controls.Panel3D
                     if (isPlaceholder && ShowOtherObjects && obj is PositionBasedObjectInstance pbi2)
                     {
                         var half = new System.Numerics.Vector3(
-                            TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                            TombEditor.Rendering.ServiceObjectRenderer.MarkerHalfExtent);
                         var box = new TombLib.BoundingBox(
                             wp + pbi2.Position - half, wp + pbi2.Position + half);
                         if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
@@ -989,23 +989,23 @@ namespace TombEditor.Controls.Panel3D
         // CPU-side pick caches — one triangle-list per source asset, reused
         // every time the picking ray runs. Cleared on level/wad reload via
         // the existing IEditorRoomChangedEvent / LoadedWadsChangedEvent
-        // handlers (see _v2PickCache.Clear below).
-        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadStatic, System.Collections.Generic.List<System.Numerics.Vector3>>          _v2PickStatic   = new();
-        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadMoveable, System.Collections.Generic.List<System.Numerics.Vector3>>        _v2PickMoveable = new();
-        private readonly System.Collections.Generic.Dictionary<TombLib.LevelData.ImportedGeometry, System.Collections.Generic.List<System.Numerics.Vector3>> _v2PickImported = new();
+        // handlers (see _pickCache.Clear below).
+        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadStatic, System.Collections.Generic.List<System.Numerics.Vector3>>          _pickStatic   = new();
+        private readonly System.Collections.Generic.Dictionary<TombLib.Wad.WadMoveable, System.Collections.Generic.List<System.Numerics.Vector3>>        _pickMoveable = new();
+        private readonly System.Collections.Generic.Dictionary<TombLib.LevelData.ImportedGeometry, System.Collections.Generic.List<System.Numerics.Vector3>> _pickImported = new();
 
         private System.Collections.Generic.List<System.Numerics.Vector3> BuildStaticPickVertices(TombLib.Wad.WadStatic s)
         {
-            if (_v2PickStatic.TryGetValue(s, out var list)) return list;
+            if (_pickStatic.TryGetValue(s, out var list)) return list;
             list = new System.Collections.Generic.List<System.Numerics.Vector3>();
             AppendTrisFromWadMesh(list, s.Mesh, System.Numerics.Matrix4x4.Identity);
-            _v2PickStatic[s] = list;
+            _pickStatic[s] = list;
             return list;
         }
 
         private System.Collections.Generic.List<System.Numerics.Vector3> BuildMoveablePickVertices(TombLib.Wad.WadMoveable mv)
         {
-            if (_v2PickMoveable.TryGetValue(mv, out var list)) return list;
+            if (_pickMoveable.TryGetValue(mv, out var list)) return list;
             list = new System.Collections.Generic.List<System.Numerics.Vector3>();
 
             // Same first-frame pose math as ObjectRenderer.BuildMoveableMesh
@@ -1036,14 +1036,14 @@ namespace TombEditor.Controls.Panel3D
                 if (bone.Mesh != null) AppendTrisFromWadMesh(list, bone.Mesh, g);
                 bi++;
             }
-            _v2PickMoveable[mv] = list;
+            _pickMoveable[mv] = list;
             return list;
         }
 
         private System.Collections.Generic.List<System.Numerics.Vector3> BuildImportedPickVertices(TombLib.LevelData.ImportedGeometry imp)
         {
             if (imp?.DirectXModel == null) return null;
-            if (_v2PickImported.TryGetValue(imp, out var list)) return list;
+            if (_pickImported.TryGetValue(imp, out var list)) return list;
             list = new System.Collections.Generic.List<System.Numerics.Vector3>();
             foreach (var mesh in imp.DirectXModel.Meshes)
             {
@@ -1056,7 +1056,7 @@ namespace TombEditor.Controls.Panel3D
                     }
                 }
             }
-            _v2PickImported[imp] = list;
+            _pickImported[imp] = list;
             return list;
         }
 
@@ -1080,10 +1080,10 @@ namespace TombEditor.Controls.Panel3D
         // While a drag is active it sticks to the anchor room (so the
         // selection rectangle can't jump into a neighbour); otherwise it
         // picks within the currently selected room (legacy default).
-        private bool V2PickRaw(System.Drawing.Point pos, out Room room, out VectorInt2 sector) =>
-            V2PickFace(pos, out room, out sector, out _);
+        private bool PickRaw(System.Drawing.Point pos, out Room room, out VectorInt2 sector) =>
+            PickFace(pos, out room, out sector, out _);
 
-        private bool V2PickFace(System.Drawing.Point pos, out Room room, out VectorInt2 sector,
+        private bool PickFace(System.Drawing.Point pos, out Room room, out VectorInt2 sector,
                                 out TombLib.LevelData.SectorEnums.SectorFace face)
         {
             room   = null;
@@ -1092,8 +1092,8 @@ namespace TombEditor.Controls.Panel3D
             if (_editor?.Level == null || Camera == null) return false;
             if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return false;
 
-            var target = _v2SelDragging && _v2SelAnchorRoom != null
-                       ? _v2SelAnchorRoom
+            var target = _selDragging && _selAnchorRoom != null
+                       ? _selAnchorRoom
                        : _editor.SelectedRoom;
             if (target?.RoomGeometry == null) return false;
 
@@ -1111,7 +1111,7 @@ namespace TombEditor.Controls.Panel3D
             return true;
         }
 
-        private void V2MouseWheel(MouseEventArgs e)
+        private void HandleMouseWheel(MouseEventArgs e)
         {
             if (Camera == null) return;
             float dir = e.Delta > 0 ? -1f : 1f;
@@ -1125,18 +1125,18 @@ namespace TombEditor.Controls.Panel3D
             _movementTimer.Stop();
         }
 
-        // When the V2 renderer is active, we bypass RenderingPanel's paint flow
-        // (which assumes the legacy SwapChain is alive) and let V2 own the
+        // When the renderer is active, we bypass RenderingPanel's paint flow
+        // (which assumes the legacy SwapChain is alive) and let own the
         // entire client area: no background clear, no fallback messages, no
         // legacy Clear/Present.
         protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e)
         {
-            // V2 renderer owns the swapchain — skip the default background fill.
+            // renderer owns the swapchain — skip the default background fill.
         }
 
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
         {
-            if (_v2Renderer is not null)
+            if (_renderer is not null)
             {
                 if (_editor?.Level is not null && Camera is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
                 {
@@ -1144,7 +1144,7 @@ namespace TombEditor.Controls.Panel3D
                     if (_gizmo != null && CanUseGizmo())
                         gizmoSnap = _gizmo.GetPublicState();
 
-                    var scene = new TombEditor.Rendering.V2.RenderScene(
+                    var scene = new TombEditor.Rendering.RenderScene(
                         level:                         _editor.Level,
                         camera:                        Camera,
                         viewportSize:                  ClientSize,
@@ -1171,31 +1171,31 @@ namespace TombEditor.Controls.Panel3D
                         gizmoState:                    gizmoSnap,
                         highlighted:                   _highlightedObjects,
                         selectionTint:                 _editor.Configuration.UI_ColorScheme.ColorSelection,
-                        labels:                        BuildV2Labels(),
+                        labels:                        BuildSceneLabels(),
                         showGhostBlocks:               ShowGhostBlocks,
                         showVolumes:                   ShowVolumes,
                         showBoundingBoxes:             ShowBoundingBoxes,
                         showRoomBounds:                _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds,
-                        objectHeightLine:              BuildV2HeightLine(),
-                        brush:                         BuildV2Brush(),
-                        dof:                           BuildV2Dof(),
+                        objectHeightLine:              BuildHeightLine(),
+                        brush:                         BuildBrushOverlay(),
+                        dof:                           BuildDofOverlay(),
                         highlightedSplit:              _editor.HighlightedSplit,
                         flybyPathSequence:             TryGetSelectedFlybySequence(out int v2FlybySeq) ? v2FlybySeq : -1,
                         volumeColor:                   _editor.Configuration.UI_ColorScheme.ColorTrigger);
-                    _v2Renderer.RenderFrame(scene);
+                    _renderer.RenderFrame(scene);
                 }
                 else
                 {
-                    _v2Renderer.RenderFrame();
+                    _renderer.RenderFrame();
                 }
             }
         }
 
         protected override void OnResize(EventArgs e)
         {
-            if (_v2Renderer is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
+            if (_renderer is not null && ClientSize.Width > 0 && ClientSize.Height > 0)
             {
-                _v2Renderer.Resize(ClientSize.Width, ClientSize.Height);
+                _renderer.Resize(ClientSize.Width, ClientSize.Height);
                 Invalidate();
                 return;
             }

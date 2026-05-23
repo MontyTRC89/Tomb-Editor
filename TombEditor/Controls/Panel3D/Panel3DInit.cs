@@ -7,11 +7,11 @@ namespace TombEditor.Controls.Panel3D
     public partial class Panel3D
     {
         // The base RenderingPanel signature still expects a legacy
-        // RenderingDevice / antialias / quality triple, but the V2 renderer
+        // RenderingDevice / antialias / quality triple, but the renderer
         // owns its own swapchain (Silk.NET) and ignores every parameter.
         public override void InitializeRendering(RenderingDevice device, bool antialias, ObjectRenderingQuality objectQuality)
         {
-            _v2Renderer = new TombEditor.Rendering.V2.LevelRenderer(
+            _renderer = new TombEditor.Rendering.LevelRenderer(
                 Handle, ClientSize.Width, ClientSize.Height,
                 _editor.Configuration.Rendering3D_Backend);
 

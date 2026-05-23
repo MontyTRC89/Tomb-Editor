@@ -55,7 +55,7 @@ namespace TombEditor.Forms
 
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             // The backend suffix gets appended once InitializeRendering has
-            // run (V2BackendName is null until then). See UpdateTitleBar.
+            // run (BackendName is null until then). See UpdateTitleBar.
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only show debug menu when a debugger is attached...
@@ -72,9 +72,9 @@ namespace TombEditor.Forms
             // DeviceManager.DefaultDeviceManager to allocate a Dx11 device
             // + DXGI factory at startup, which on Intel UHD then prevents
             // the Vulkan WSI from ever attaching a swapchain
-            // (ErrorNativeWindowInUseKhr). The V2 panels (MainView ->
+            // (ErrorNativeWindowInUseKhr). The panels (MainView ->
             // Panel3D, ItemBrowser, ImportedGeometryBrowser) all accept
-            // null and lazily create their own V2 device on first paint.
+            // null and lazily create their own device on first paint.
             GetWindow<MainView>().InitializeRendering(null);
             GetWindow<ItemBrowser>().InitializeRendering(null);
             GetWindow<ImportedGeometryBrowser>().InitializeRendering(null);
@@ -82,7 +82,7 @@ namespace TombEditor.Forms
             // Now that MainView -> panel3D -> LevelRenderer exists, refresh
             // the title bar to append the active backend ("[Vulkan]" /
             // "[OpenGL]" / "[DirectX 11]"). The InitEvent above fired
-            // BEFORE rendering init, so V2BackendName was still null then.
+            // BEFORE rendering init, so BackendName was still null then.
             UpdateTitleBar();
 
             // Restore window settings and prepare UI
@@ -128,7 +128,7 @@ namespace TombEditor.Forms
         {
             string levelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                 PathC.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
-            string backend = GetWindow<MainView>().V2BackendName;
+            string backend = GetWindow<MainView>().BackendName;
             string backendSuffix = string.IsNullOrEmpty(backend) ? "" : "  [" + backend + "]";
             Text = "Tomb Editor " + Application.ProductVersion + " - " + levelName
                  + (_editor.HasUnsavedChanges ? "*" : "") + backendSuffix;

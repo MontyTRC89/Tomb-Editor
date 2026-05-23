@@ -12,7 +12,7 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Builds the per-bone world transforms for a moveable's first-keyframe pose.
@@ -21,7 +21,7 @@ namespace TombEditor.Rendering.V2;
 /// <see cref="WadBone.Parent"/> (which is null on TR-converted moveables —
 /// only Wad2-format moveables populate Parent directly). The legacy
 /// AnimatedModel.BuildSkeleton replays the same stack walk; we do the
-/// equivalent here so V2 renderers don't need a legacy AnimatedModel.
+/// equivalent here so renderers don't need a legacy AnimatedModel.
 /// </summary>
 public static class WadMoveablePoseV2
 {
@@ -84,7 +84,7 @@ public static class WadMoveablePoseV2
 }
 
 /// <summary>
-/// V2 renderer for previewing a single <see cref="IWadObject"/>. Used by both
+/// renderer for previewing a single <see cref="IWadObject"/>. Used by both
 /// the item-browser preview panel and the content-browser thumbnail capturer.
 ///
 /// <para>Holds ONE shared B8G8R8A8 atlas across every cached object — same

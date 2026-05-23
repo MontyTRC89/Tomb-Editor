@@ -47,7 +47,7 @@ namespace TombEditor.Controls.Panel3D
         }
 
         // Pure ray vs room-geometry pick — pure CPU math, no rendering data.
-        // Object picking is no longer supported here (the V2 mouse path does
+        // Object picking is no longer supported here (the mouse path does
         // its own object picking); the only remaining caller is the
         // object-brush helper, which always passes <c>skipObjects: true</c>.
         private PickingResult DoPicking(Ray ray, bool pickAnyRoom = false, bool skipObjects = false)

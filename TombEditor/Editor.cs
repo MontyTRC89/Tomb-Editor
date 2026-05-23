@@ -1512,7 +1512,7 @@ namespace TombEditor
         // Construction
         public SynchronizationContext SynchronizationContext { get; }
         // Lazy access — only initialises the legacy DX11 device the first
-        // time legacy code asks for it. The V2 path never reads this, so on
+        // time legacy code asks for it. The path never reads this, so on
         // a Vulkan startup the legacy DXGI factory is never created.
         public RenderingDevice RenderingDevice => TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device;
 

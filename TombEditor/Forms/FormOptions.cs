@@ -64,7 +64,7 @@ namespace TombEditor.Forms
                 .ToList()
                 .ForEach(item => cmbColorScheme.Items.Add(item.Name));
 
-            // Add the V2 rendering-backend selector programmatically. We
+            // Add the rendering-backend selector programmatically. We
             // could put this in FormOptions.Designer.cs but keeping the
             // backend choice in code-behind avoids touching the autogen
             // designer file and lets the option list grow with future

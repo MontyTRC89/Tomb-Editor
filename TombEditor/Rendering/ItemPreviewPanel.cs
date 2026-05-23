@@ -11,16 +11,16 @@ using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Wad;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
-/// Single shared V2 device used by every preview panel and the offscreen
+/// Single shared device used by every preview panel and the offscreen
 /// thumbnail capturer. One D3D11 context per process keeps GPU resource use
 /// down and lets the mesh / atlas cache in <see cref="WadObjectPreviewRenderer"/>
 /// be shared across the item browser, thumbnail batch render, and any future
 /// preview surface.
 /// </summary>
-public static class V2PreviewDevice
+public static class PreviewDevice
 {
     private static IRhiDevice? _device;
     private static bool _ownsDevice;
@@ -73,11 +73,11 @@ public static class V2PreviewDevice
 
 /// <summary>
 /// WinForms control that renders a single <see cref="IWadObject"/> using the
-/// V2 device. Replaces the legacy <c>PanelItemPreview</c> for the item
+/// device. Replaces the legacy <c>PanelItemPreview</c> for the item
 /// browser preview. Camera + mouse navigation kept compatible so the rest of
 /// the editor needs no changes.
 /// </summary>
-public abstract class ItemPreviewPanelV2 : Panel
+public abstract class ItemPreviewPanel : Panel
 {
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IWadObject? CurrentObject
@@ -114,7 +114,7 @@ public abstract class ItemPreviewPanelV2 : Panel
 
     /// <summary>
     /// Kept for designer compatibility with the old <c>PanelItemPreview</c>
-    /// (transparency was a per-control switch in the legacy renderer). The V2
+    /// (transparency was a per-control switch in the legacy renderer). The
     /// preview pipeline does not yet implement alpha-blended draws — the flag
     /// is accepted but has no effect.
     /// </summary>
@@ -132,7 +132,7 @@ public abstract class ItemPreviewPanelV2 : Panel
 
     private float _lastX, _lastY;
 
-    protected ItemPreviewPanelV2()
+    protected ItemPreviewPanel()
     {
         BorderStyle = BorderStyle.None;
         // Don't enable OptimizedDoubleBuffer / UserPaint / AllPaintingInWmPaint
@@ -186,7 +186,7 @@ public abstract class ItemPreviewPanelV2 : Panel
 
         _width  = ClientSize.Width;
         _height = ClientSize.Height;
-        _swap = V2PreviewDevice.Device.CreateSwapchain(new SwapchainDesc(
+        _swap = PreviewDevice.Device.CreateSwapchain(new SwapchainDesc(
             hwnd:    Handle,
             width:   _width,
             height:  _height,
@@ -204,8 +204,8 @@ public abstract class ItemPreviewPanelV2 : Panel
         int w = Math.Max(1, ClientSize.Width);
         int h = Math.Max(1, ClientSize.Height);
         if (w == _width && h == _height) return;
-        V2PreviewDevice.Device.WaitIdle();
-        V2PreviewDevice.Device.ResizeSwapchain(_swap, w, h);
+        PreviewDevice.Device.WaitIdle();
+        PreviewDevice.Device.ResizeSwapchain(_swap, w, h);
         _width  = w;
         _height = h;
         Invalidate();
@@ -225,7 +225,7 @@ public abstract class ItemPreviewPanelV2 : Panel
             return;
         }
 
-        var device = V2PreviewDevice.Device;
+        var device = PreviewDevice.Device;
         var cl = device.BeginCommandList();
 
         var clear = ClearColor;
@@ -248,7 +248,7 @@ public abstract class ItemPreviewPanelV2 : Panel
         if (_currentObject != null && IsValid(_currentObject))
         {
             var vp = Camera.GetViewProjectionMatrix(_width, _height);
-            V2PreviewDevice.Renderer.Render(cl, _currentObject, vp);
+            PreviewDevice.Renderer.Render(cl, _currentObject, vp);
         }
 
         cl.EndPass();
@@ -330,8 +330,8 @@ public abstract class ItemPreviewPanelV2 : Panel
             _animTimer.Dispose();
             if (_swapchainReady && _swap.IsValid)
             {
-                V2PreviewDevice.Device.WaitIdle();
-                V2PreviewDevice.Device.Destroy(_swap);
+                PreviewDevice.Device.WaitIdle();
+                PreviewDevice.Device.Destroy(_swap);
                 _swapchainReady = false;
             }
         }

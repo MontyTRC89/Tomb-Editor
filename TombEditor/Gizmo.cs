@@ -19,8 +19,8 @@ namespace TombEditor
             _editor = Editor.Instance;
         }
 
-        // Headless constructor for the V2 renderer: skips every legacy
-        // GraphicsDevice / Effect allocation. The V2 GizmoRenderer draws the
+        // Headless constructor for the renderer: skips every legacy
+        // GraphicsDevice / Effect allocation. The GizmoRenderer draws the
         // gizmo itself; this instance is here only for picking + drag math.
         public Gizmo()
             : base()

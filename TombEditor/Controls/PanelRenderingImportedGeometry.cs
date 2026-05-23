@@ -35,7 +35,7 @@ namespace TombEditor.Controls
         {
             // Update field of view. Guard against transient null Configuration
             // (e.g. during settings reload) and against a Camera that hasn't
-            // been initialised yet on the V2 panel base — same guard as
+            // been initialised yet on the panel base — same guard as
             // PanelRenderingItem.
             if (obj is Editor.ConfigurationChangedEvent)
             {

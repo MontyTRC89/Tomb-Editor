@@ -7,7 +7,7 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Draws the rooms' object instances using GPU instancing. One draw call

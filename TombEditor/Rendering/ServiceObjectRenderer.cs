@@ -9,7 +9,7 @@ using TombLib.Rendering;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Draws the editor's "service" objects — lights, cameras, sinks, sound

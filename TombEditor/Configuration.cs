@@ -91,7 +91,7 @@ namespace TombEditor
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
         public bool Rendering3D_SafeMode { get; set; } = false;
-        // V2 rendering backend selection. Empty / "Default" = automatic
+        // rendering backend selection. Empty / "Default" = automatic
         // fallback chain (Vulkan → OpenGL → DX11). Forced choices skip the
         // fallback so driver init failures surface. Requires editor restart
         // to take effect (the backend is created once at startup).

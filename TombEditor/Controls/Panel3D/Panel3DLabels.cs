@@ -9,22 +9,22 @@ using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D
 {
-    // V2 text overlay. Builds the list of TextLabels the V2 renderer draws
+    // text overlay. Builds the list of TextLabels the renderer draws
     // every frame — the same strings the legacy renderer produced in
     // Panel3DDraw.DrawText / DrawPlaceholders / DrawLights / ... — and hands
     // them to the renderer through RenderScene. All editor-specific string
     // formatting stays here; the renderer only projects and rasterises.
     public partial class Panel3D
     {
-        private readonly Stopwatch _v2FpsWatch = Stopwatch.StartNew();
-        private double _v2Fps;
+        private readonly Stopwatch _fpsWatch = Stopwatch.StartNew();
+        private double _fps;
 
-        private static readonly Vector4 _v2TextWhite = new(1f, 1f, 1f, 1f);
+        private static readonly Vector4 _textWhite = new(1f, 1f, 1f, 1f);
 
         // Legacy object tags sit slightly above-right of the anchor.
-        private static readonly Vector2 _v2ObjectTagOffset = new(10f, -10f);
-        private static readonly Vector2 _v2AlignTopLeft    = new(0f, 0f);
-        private static readonly Vector2 _v2AlignCenter     = new(0.5f, 0.5f);
+        private static readonly Vector2 _objectTagOffset = new(10f, -10f);
+        private static readonly Vector2 _alignTopLeft    = new(0f, 0f);
+        private static readonly Vector2 _alignCenter     = new(0.5f, 0.5f);
 
         /// <summary>
         /// Collects every text label for the current frame. Mirrors the legacy
@@ -32,7 +32,7 @@ namespace TombEditor.Controls.Panel3D
         /// object read-out, the selected object's detailed tag, and memos
         /// flagged "always display".
         /// </summary>
-        internal List<TextLabel> BuildV2Labels()
+        internal List<TextLabel> BuildSceneLabels()
         {
             var labels = new List<TextLabel>();
             if (_editor?.Level == null)
@@ -42,7 +42,7 @@ namespace TombEditor.Controls.Panel3D
 
             // Rooms whose names / contents we label: just the selected room in
             // the default view, the whole level when "show all rooms" is on —
-            // matching the V2 renderer's own visible-room set.
+            // matching the renderer's own visible-room set.
             IEnumerable<Room> rooms = ShowAllRooms
                 ? _editor.Level.Rooms.Where(r => r != null)
                 : (_editor.SelectedRoom != null ? new[] { _editor.SelectedRoom } : Array.Empty<Room>());
@@ -53,7 +53,7 @@ namespace TombEditor.Controls.Panel3D
                 {
                     if (room?.RoomGeometry == null) continue;
                     labels.Add(TextLabel.World(room.Name, room.WorldPos + room.GetLocalCenter(),
-                                               _v2TextWhite, overlay, _v2AlignCenter));
+                                               _textWhite, overlay, _alignCenter));
                 }
 
             // --- Cardinal directions ----------------------------------------
@@ -71,14 +71,14 @@ namespace TombEditor.Controls.Panel3D
                     "Group of " + group.Count() + " objects\n" +
                     GetObjectPositionString(group.Room, group),
                     group.Room.WorldPos + group.Position,
-                    _v2TextWhite, overlay, _v2AlignTopLeft, _v2ObjectTagOffset));
+                    _textWhite, overlay, _alignTopLeft, _objectTagOffset));
             }
             else if (selected != null)
             {
                 string text = GetObjectLabelString(selected);
                 if (!string.IsNullOrEmpty(text) && TryGetLabelAnchor(selected, out Vector3 anchor))
-                    labels.Add(TextLabel.World(text, anchor, _v2TextWhite, overlay,
-                                               _v2AlignTopLeft, _v2ObjectTagOffset));
+                    labels.Add(TextLabel.World(text, anchor, _textWhite, overlay,
+                                               _alignTopLeft, _objectTagOffset));
             }
 
             // --- Memos flagged "always display" -----------------------------
@@ -90,8 +90,8 @@ namespace TombEditor.Controls.Panel3D
                         if (obj is MemoInstance memo && memo.AlwaysDisplay
                             && !ReferenceEquals(memo, selected) && !string.IsNullOrEmpty(memo.Text))
                             labels.Add(TextLabel.World(memo.Text, memo.Room.WorldPos + memo.Position,
-                                                       _v2TextWhite, overlay,
-                                                       _v2AlignTopLeft, _v2ObjectTagOffset));
+                                                       _textWhite, overlay,
+                                                       _alignTopLeft, _objectTagOffset));
                 }
 
             return labels;
@@ -115,7 +115,7 @@ namespace TombEditor.Controls.Panel3D
             Vector3 center = room.WorldPos + room.GetLocalCenter();
             for (int i = 0; i < 4; i++)
                 labels.Add(TextLabel.World(messages[i], center + offsets[i],
-                                           _v2TextWhite, overlay, _v2AlignCenter));
+                                           _textWhite, overlay, _alignCenter));
         }
 
         private void AddDebugString(List<TextLabel> labels, bool overlay)
@@ -124,15 +124,15 @@ namespace TombEditor.Controls.Panel3D
 
             if (_editor.Configuration.Rendering3D_ShowFPS)
             {
-                double dt = _v2FpsWatch.Elapsed.TotalSeconds;
-                _v2FpsWatch.Restart();
+                double dt = _fpsWatch.Elapsed.TotalSeconds;
+                _fpsWatch.Restart();
                 if (dt > 0)
                 {
                     double instant = 1.0 / dt;
                     // Light smoothing so the read-out doesn't flicker.
-                    _v2Fps = _v2Fps <= 0 ? instant : _v2Fps * 0.9 + instant * 0.1;
+                    _fps = _fps <= 0 ? instant : _fps * 0.9 + instant * 0.1;
                 }
-                debug += "FPS: " + Math.Round(_v2Fps, 1) + "\n";
+                debug += "FPS: " + Math.Round(_fps, 1) + "\n";
             }
 
             if (_editor.SelectedObject != null)
@@ -140,7 +140,7 @@ namespace TombEditor.Controls.Panel3D
 
             if (debug.Length > 0)
                 labels.Add(TextLabel.Screen(debug.TrimEnd('\n'), new Vector2(10f, 10f),
-                                            _v2TextWhite, overlay, _v2AlignTopLeft));
+                                            _textWhite, overlay, _alignTopLeft));
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace TombEditor.Controls.Panel3D
         /// floor under it — the legacy "object height line". Null when no
         /// position-based object is selected.
         /// </summary>
-        internal (Vector3 From, Vector3 To)? BuildV2HeightLine()
+        internal (Vector3 From, Vector3 To)? BuildHeightLine()
         {
             if (_editor?.SelectedObject is not PositionBasedObjectInstance pbi || pbi.Room == null)
                 return null;
@@ -168,7 +168,7 @@ namespace TombEditor.Controls.Panel3D
         /// The object-brush overlay (painting mode): the floor circle under
         /// the cursor. Null when the brush is inactive.
         /// </summary>
-        internal (Vector3 Center, float Radius)? BuildV2Brush()
+        internal (Vector3 Center, float Radius)? BuildBrushOverlay()
         {
             var bo = ComputeBrushOverlay();
             if (bo.Shape == 0) return null;
@@ -179,7 +179,7 @@ namespace TombEditor.Controls.Panel3D
         /// The flyby depth-of-field overlay parameters, when a TombEngine
         /// flyby camera with a DOF mode is selected; null otherwise.
         /// </summary>
-        internal (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? BuildV2Dof()
+        internal (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? BuildDofOverlay()
         {
             return TryGetFlybyDofOverlayState(out var dof)
                 ? (dof.CenterRange, dof.DirectionDistance, dof.ColorStrength)

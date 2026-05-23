@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Rendering.V2;
+using TombEditor.Rendering;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -13,11 +13,11 @@ using TombLib.Wad;
 namespace TombEditor.Controls
 {
     /// <summary>
-    /// Item-browser preview panel — V2 renderer edition. Wires the panel's
+    /// Item-browser preview panel — renderer edition. Wires the panel's
     /// abstract render hooks to the editor configuration and the WAD-loaded
     /// state of the current level.
     /// </summary>
-    public class PanelRenderingItem : ItemPreviewPanelV2
+    public class PanelRenderingItem : ItemPreviewPanel
     {
         private readonly Editor _editor;
 
@@ -41,7 +41,7 @@ namespace TombEditor.Controls
         {
             // Update field of view. Guard against transient null Configuration
             // (e.g. during settings reload) and against a Camera that hasn't
-            // been initialised yet on the V2 panel base.
+            // been initialised yet on the panel base.
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var cfg = _editor?.Configuration;
@@ -73,7 +73,7 @@ namespace TombEditor.Controls
                 // Drop the entire shared preview cache: meshes / atlases that
                 // referenced the old WAD textures must be rebuilt against the
                 // newly loaded ones.
-                V2PreviewDevice.InvalidateAll();
+                PreviewDevice.InvalidateAll();
             }
         }
 

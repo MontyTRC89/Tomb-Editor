@@ -28,7 +28,7 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            // V2 preview panel lazily creates its own D3D device + swapchain
+            // preview panel lazily creates its own D3D device + swapchain
             // on first paint; the legacy device argument is ignored.
         }
 
@@ -157,7 +157,7 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count == 0 || comboItems.SelectedIndex < 0 || !(comboItems.SelectedItem is WadMoveable item))
                 return;
 
-            panelItem.CurrentObject = TombEditor.Rendering.V2.WadObjectPreviewHelper.GetRenderObject(item, _editor.Level.Settings);
+            panelItem.CurrentObject = TombEditor.Rendering.WadObjectPreviewHelper.GetRenderObject(item, _editor.Level.Settings);
             panelItem.ResetCamera();
         }
 

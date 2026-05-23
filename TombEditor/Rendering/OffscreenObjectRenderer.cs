@@ -7,7 +7,7 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
 /// Renders a single <see cref="IWadObject"/> off-screen and returns the
@@ -18,7 +18,7 @@ namespace TombEditor.Rendering.V2;
 /// can be handed straight to <see cref="ImageC.FromByteArray"/> with no
 /// channel swizzle.</para>
 /// </summary>
-public sealed class OffscreenObjectRendererV2 : IDisposable
+public sealed class OffscreenObjectRenderer : IDisposable
 {
     private readonly IRhiDevice _device;
     private readonly WadObjectPreviewRenderer _renderer;
@@ -29,10 +29,10 @@ public sealed class OffscreenObjectRendererV2 : IDisposable
 
     private static readonly Vector4 _defaultClear = new(0.392f, 0.584f, 0.929f, 1f);
 
-    public OffscreenObjectRendererV2()
+    public OffscreenObjectRenderer()
     {
-        _device   = V2PreviewDevice.Device;
-        _renderer = V2PreviewDevice.Renderer;
+        _device   = PreviewDevice.Device;
+        _renderer = PreviewDevice.Renderer;
     }
 
     public ImageC RenderThumbnail(IWadObject? obj, TRVersion.Game gameVersion, Vector4 backColor, int size = 128)
@@ -107,8 +107,8 @@ public sealed class OffscreenObjectRendererV2 : IDisposable
     public void GarbageCollect()
     {
         // Cached object meshes / atlases are owned by the shared
-        // V2PreviewDevice.Renderer; let the caller (ContentBrowser) decide
-        // when to invalidate via V2PreviewDevice.InvalidateAll().
+        // PreviewDevice.Renderer; let the caller (ContentBrowser) decide
+        // when to invalidate via PreviewDevice.InvalidateAll().
     }
 
     public void Dispose()

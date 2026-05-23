@@ -12,10 +12,10 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.RenderingV2.Text;
 using TombLib.Utils;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
-/// V2 renderer for the editor's main 3D viewport (Panel3D). Owns a single
+/// renderer for the editor's main 3D viewport (Panel3D). Owns a single
 /// <see cref="Dx11Device"/> + swapchain bound to the host control's HWND.
 ///
 /// <para>Current scope: solid-color room geometry. Each visible room is
@@ -171,10 +171,10 @@ public sealed class LevelRenderer : IDisposable
         _swap = CreateMainSwapchain(hwnd);
 
         // Share the device with the preview panel + thumbnail renderer.
-        // Without this, V2PreviewDevice would lazily allocate its own
+        // Without this, PreviewDevice would lazily allocate its own
         // device on the first thumbnail tick (~50-200 ms cold-start hit
         // that lands right when the user just finished loading a wad).
-        V2PreviewDevice.RegisterSharedDevice(_device);
+        PreviewDevice.RegisterSharedDevice(_device);
 
         InitRoomPipeline();
     }

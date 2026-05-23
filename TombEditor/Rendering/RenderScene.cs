@@ -8,10 +8,10 @@ using TombLib.Rendering;
 using TombLib.RenderingV2.Text;
 using TombEditor;
 
-namespace TombEditor.Rendering.V2;
+namespace TombEditor.Rendering;
 
 /// <summary>
-/// Immutable per-frame description of what the V2 renderer should draw.
+/// Immutable per-frame description of what the renderer should draw.
 /// Built by Panel3D right before <see cref="LevelRenderer.RenderFrame"/>;
 /// renderer passes read it without touching editor state directly.
 ///
