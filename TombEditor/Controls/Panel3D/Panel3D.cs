@@ -528,67 +528,52 @@ namespace TombEditor.Controls.Panel3D
                 _editor.HighlightedSplit = 0;
         }
 
-        // While the V2 renderer is being filled in, the legacy interactions
-        // (gizmo, picking, brush, object move) dereference fields the V2 init
-        // path leaves null. We short-circuit them all, but route the bits
-        // that *don't* depend on legacy state (camera rotate/zoom and
-        // keyboard focus) through V2-specific handlers below.
-        private bool LegacyMouseDisabled => _v2Renderer is not null;
+        // V2 renderer is the only path — mouse input goes straight through
+        // V2-specific handlers below.
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            if (LegacyMouseDisabled) { V2MouseWheel(e); return; }
-            OnMouseWheelScroll(e.Delta, e.Location);
+            V2MouseWheel(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (LegacyMouseDisabled) { V2MouseDown(e); return; }
-            OnMouseButtonDown(e.Button, e.Location);
+            V2MouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            if (LegacyMouseDisabled) { V2MouseUp(e); return; }
-            OnMouseButtonUp(e.Button, e.Location);
+            V2MouseUp(e);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
-            if (LegacyMouseDisabled) return;
-            OnMouseDoubleClicked(e.Button, e.Location);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (LegacyMouseDisabled) { V2MouseMove(e); return; }
-            OnMouseMoved(e.Button, e.Location);
+            V2MouseMove(e);
         }
 
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            if (LegacyMouseDisabled) { if (!Focused) Focus(); return; }
-            OnMouseEntered();
+            if (!Focused) Focus();
         }
 
         protected override void OnDragEnter(DragEventArgs e)
         {
             base.OnDragEnter(e);
-            if (LegacyMouseDisabled) return;
-            OnMouseDragEntered(e);
         }
 
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
-            if (LegacyMouseDisabled) return;
-            OnMouseDragAndDrop(e);
         }
 
         // --- V2 input handlers ------------------------------------------------
@@ -614,6 +599,9 @@ namespace TombEditor.Controls.Panel3D
             _v2DragButton = e.Button;
             if (e.Button is MouseButtons.Right or MouseButtons.Middle)
                 Capture = true;
+            if (e.Button == MouseButtons.Right)
+                _startMousePosition = e.Location;   // for the right-up "click vs drag" test
+
             if (e.Button == MouseButtons.Left)
             {
                 // Priority order matches the legacy DoPicking:
@@ -624,6 +612,29 @@ namespace TombEditor.Controls.Panel3D
                 {
                     Capture = true;
                     Invalidate();
+                    return;
+                }
+
+                // An active toolbox / panel "place" or "relocate camera" action
+                // (the "+" / crosshair cursor) overrides object picking — the
+                // click goes to the sector beneath so the object is dropped
+                // there, mirroring the legacy OnMouseButtonDownLeft path.
+                if (_editor.Action is IEditorActionPlace || _editor.Action is EditorActionRelocateCamera)
+                {
+                    if (!V2PickFace(e.Location, out var placeRoom, out var placePos, out _))
+                        return;
+                    if (_editor.SelectedRoom != placeRoom) _editor.SelectedRoom = placeRoom;
+                    if (_editor.Action is EditorActionRelocateCamera)
+                    {
+                        _editor.MoveCameraToSector(placePos);
+                    }
+                    else if (_editor.Action is IEditorActionPlace placeAction)
+                    {
+                        EditorActions.PlaceObject(placeRoom, placePos,
+                            placeAction.CreateInstance(_editor.Level, placeRoom));
+                        if (!placeAction.ShouldBeActive)
+                            _editor.Action = null;
+                    }
                     return;
                 }
 
@@ -704,6 +715,16 @@ namespace TombEditor.Controls.Panel3D
                 _v2DragButton = MouseButtons.None;
                 Capture = false;
             }
+            if (e.Button == MouseButtons.Right)
+            {
+                // Show the appropriate context menu when the user merely
+                // clicked (no significant drag). 4-pixel threshold mirrors the
+                // legacy OnMouseButtonUpRight check.
+                int dx = e.Location.X - _startMousePosition.X;
+                int dy = e.Location.Y - _startMousePosition.Y;
+                if (dx * dx + dy * dy < 16)
+                    V2ShowContextMenu(e.Location);
+            }
             if (e.Button == MouseButtons.Left)
             {
                 // Release any active gizmo drag — re-enables sector pick on
@@ -718,6 +739,30 @@ namespace TombEditor.Controls.Panel3D
                 _v2SelClickedOnSel = false;
                 _v2SelAnchorRoom   = null;
             }
+        }
+
+        // Right-click context menu — same dispatch as the legacy
+        // OnMouseButtonUpRight: object pick first (MaterialObjectContextMenu),
+        // otherwise the sector menu (SelectedGeometryContextMenu when the
+        // click landed inside the current rectangle, plain SectorContextMenu
+        // outside it).
+        private void V2ShowContextMenu(Point location)
+        {
+            _currentContextMenu?.Dispose();
+            _currentContextMenu = null;
+
+            if (V2PickObject(location, out var pickedObj) && pickedObj is ISpatial)
+            {
+                _currentContextMenu = new MaterialObjectContextMenu(_editor, this, pickedObj);
+            }
+            else if (V2PickFace(location, out var ctxRoom, out var ctxPos, out _))
+            {
+                if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(ctxPos))
+                    _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, ctxRoom, _editor.SelectedSectors.Area, ctxPos);
+                else
+                    _currentContextMenu = new SectorContextMenu(_editor, this, ctxRoom, ctxPos);
+            }
+            _currentContextMenu?.Show(PointToScreen(location));
         }
 
         // Build a world-space pick ray from screen coords, using the camera +
@@ -882,6 +927,24 @@ namespace TombEditor.Controls.Panel3D
                 var wp = room.WorldPos;
                 foreach (var obj in room.Objects)
                 {
+                    // Volumes — pick on the central billboard sprite, gated by
+                    // ShowVolumes (matches the legacy Panel3DPicking VolumeInstance
+                    // branch). The actual box / sphere shape isn't pickable yet.
+                    if (obj is VolumeInstance)
+                    {
+                        if (ShowVolumes)
+                        {
+                            var pbi = (PositionBasedObjectInstance)obj;
+                            var half = new System.Numerics.Vector3(
+                                TombEditor.Rendering.V2.ServiceObjectRenderer.MarkerHalfExtent);
+                            var box = new TombLib.BoundingBox(
+                                wp + pbi.Position - half, wp + pbi.Position + half);
+                            if (TombLib.Utils.Collision.RayIntersectsBox(ray, box, out float d) && d < bestDist)
+                            { bestDist = d; best = obj; }
+                        }
+                        continue;
+                    }
+
                     // --- Service objects: simple bounding sphere / box hit
                     // (matches the legacy Panel3DPicking fallback so the user
                     // can click lights / cameras / sinks / sounds / memos).
@@ -1134,21 +1197,13 @@ namespace TombEditor.Controls.Panel3D
             _movementTimer.Stop();
         }
 
-        // Do NOT call this method to redraw the scene!
-        // Call Invalidate() instead to schedule a redraw in the message loop.
-        protected override void OnDraw()
-        {
-            DrawScene();
-        }
-
         // When the V2 renderer is active, we bypass RenderingPanel's paint flow
         // (which assumes the legacy SwapChain is alive) and let V2 own the
         // entire client area: no background clear, no fallback messages, no
         // legacy Clear/Present.
         protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e)
         {
-            if (_v2Renderer is not null) return;
-            base.OnPaintBackground(e);
+            // V2 renderer owns the swapchain — skip the default background fill.
         }
 
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
@@ -1197,16 +1252,15 @@ namespace TombEditor.Controls.Panel3D
                         brush:                         BuildV2Brush(),
                         dof:                           BuildV2Dof(),
                         highlightedSplit:              _editor.HighlightedSplit,
-                        flybyPathSequence:             TryGetSelectedFlybySequence(out int v2FlybySeq) ? v2FlybySeq : -1);
+                        flybyPathSequence:             TryGetSelectedFlybySequence(out int v2FlybySeq) ? v2FlybySeq : -1,
+                        volumeColor:                   _editor.Configuration.UI_ColorScheme.ColorTrigger);
                     _v2Renderer.RenderFrame(scene);
                 }
                 else
                 {
                     _v2Renderer.RenderFrame();
                 }
-                return;
             }
-            base.OnPaint(e);
         }
 
         protected override void OnResize(EventArgs e)

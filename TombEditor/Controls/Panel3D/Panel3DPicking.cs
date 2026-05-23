@@ -257,7 +257,14 @@ namespace TombEditor.Controls.Panel3D
 
         private PickingResult TryPickServiceObject(PositionBasedObjectInstance instance, Ray ray, PickingResult result, out float distance)
         {
-            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects || instance is SpriteInstance)
+            // The V2 renderer always draws volumes as a billboard sprite (no
+            // little-cube fallback), so pick against the sprite rect regardless
+            // of the Rendering3D_UseSpritesForServiceObjects setting — that
+            // way clicks on the visible sprite hit it instead of an invisible
+            // cube at its centre.
+            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects
+                || instance is SpriteInstance
+                || instance is VolumeInstance)
             {
                 RectangleInt2 bounds;
 

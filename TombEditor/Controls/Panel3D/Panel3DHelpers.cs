@@ -19,6 +19,45 @@ namespace TombEditor.Controls.Panel3D
             public Vector4 ColorStrength;
         }
 
+        private bool TryGetSelectedFlybySequence(out int sequence)
+        {
+            if (_editor.SelectedObject is FlybyCameraInstance flyby)
+            {
+                sequence = flyby.Sequence;
+                return true;
+            }
+
+            if (_editor.SelectedObject is ObjectGroup group)
+            {
+                bool hasFlyby = false;
+                int selectedSequence = 0;
+                foreach (var item in group)
+                {
+                    if (item is not FlybyCameraInstance selectedFlyby)
+                        continue;
+                    if (!hasFlyby)
+                    {
+                        selectedSequence = selectedFlyby.Sequence;
+                        hasFlyby = true;
+                        continue;
+                    }
+                    if (selectedFlyby.Sequence != selectedSequence)
+                    {
+                        sequence = 0;
+                        return false;
+                    }
+                }
+                if (hasFlyby)
+                {
+                    sequence = selectedSequence;
+                    return true;
+                }
+            }
+
+            sequence = 0;
+            return false;
+        }
+
         private static int GetFloorHeight(Room room, Vector3 position)
         {
             int xSector = (int)Math.Max(0, Math.Min(room.NumXSectors - 1, Math.Floor(position.X / Level.SectorSizeUnit)));
