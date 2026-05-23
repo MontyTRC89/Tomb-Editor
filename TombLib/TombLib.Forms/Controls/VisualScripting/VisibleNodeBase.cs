@@ -162,6 +162,10 @@ namespace TombLib.Controls.VisualScripting
 
         public void SpawnUIElements()
         {
+            // AI-suggested safeguard against null reference exceptions.
+            if (IsDisposed || Disposing)
+                return;
+
             var func = cbFunction.SelectedItem as NodeFunction;
 
             if (func == null)
