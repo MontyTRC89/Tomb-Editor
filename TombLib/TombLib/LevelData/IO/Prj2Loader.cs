@@ -532,6 +532,8 @@ namespace TombLib.LevelData.IO
                                 eventSetIndex = chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetFolder)
+                                eventSet.Folder = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
                                 eventSet.LastUsedEvent = (EventType)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)
@@ -726,6 +728,22 @@ namespace TombLib.LevelData.IO
                         if (id2 == Prj2Chunks.Favorite)
                         {
                             settings.Favorites.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
+                }
+                else if (id == Prj2Chunks.CollapsedGlobalEventSetFolders ||
+                         id == Prj2Chunks.CollapsedVolumeEventSetFolders)
+                {
+                    var target = id == Prj2Chunks.CollapsedGlobalEventSetFolders ? settings.CollapsedGlobalEventSetFolders : settings.CollapsedVolumeEventSetFolders;
+
+                    target.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.CollapsedEventSetFolder)
+                        {
+                            target.Add(chunkIO.ReadChunkString(chunkSize2));
                             return true;
                         }
                         else return false;
