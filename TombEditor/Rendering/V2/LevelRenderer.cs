@@ -435,7 +435,8 @@ public sealed class LevelRenderer : IDisposable
                                  scene.Camera.GetPosition(), scene.Camera.GetTarget(),
                                  scene.Highlighted, scene.SelectionTint,
                                  scene.ShowMoveables, scene.ShowStatics, scene.ShowImportedGeometry,
-                                 scene.ShowLightMeshes);
+                                 scene.ShowLightMeshes,
+                                 scene.ShowVolumes, scene.VolumeColor);
 
             // Hidden-room pass — rooms flagged hidden are drawn last and
             // faded (RoomAlpha < 1 via _viewCbHidden) instead of being

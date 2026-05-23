@@ -281,7 +281,8 @@ internal sealed class ServiceObjectRenderer : IDisposable
                         Matrix4x4 viewProjection, Vector3 camPos, Vector3 camTarget,
                         HighlightedObjects highlighted, Vector4 selectionTint,
                         bool showMoveables, bool showStatics, bool showImportedGeometry,
-                        bool showLightMeshes)
+                        bool showLightMeshes,
+                        bool showVolumes, Vector4 volumeColor)
     {
         if (level == null || visibleRooms == null || visibleRooms.Count == 0) return;
 
@@ -298,7 +299,8 @@ internal sealed class ServiceObjectRenderer : IDisposable
         // alpha-blended icons composite correctly where they overlap.
         _billboards.Clear();
         CollectBillboards(_billboards, visibleRooms, level, highlighted, selectionTint,
-                          showMoveables, showStatics, showImportedGeometry);
+                          showMoveables, showStatics, showImportedGeometry,
+                          showVolumes, volumeColor);
         _billboards.Sort((a, b) =>
             Vector3.DistanceSquared(b.Center, camPos).CompareTo(
             Vector3.DistanceSquared(a.Center, camPos)));
@@ -392,7 +394,8 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
     private static void CollectBillboards(List<Billboard> outList, IReadOnlyList<Room> rooms, Level level,
                                           HighlightedObjects highlighted, Vector4 selectionTint,
-                                          bool showMoveables, bool showStatics, bool showImportedGeometry)
+                                          bool showMoveables, bool showStatics, bool showImportedGeometry,
+                                          bool showVolumes, Vector4 volumeColor)
     {
         uint selRgba = PackRgba(selectionTint);
         foreach (var room in rooms)
@@ -401,12 +404,15 @@ internal sealed class ServiceObjectRenderer : IDisposable
             Vector3 wp = room.WorldPos;
             foreach (var obj in room.Objects)
             {
+                if (obj is VolumeInstance && !showVolumes) continue;
                 if (!TryGetServiceIcon(obj, level, showMoveables, showStatics, showImportedGeometry,
                                        out ServiceObjectTexture icon, out Vector3 position))
                     continue;
 
                 bool sel = highlighted != null && highlighted.Contains(obj);
-                uint tint = sel ? selRgba : ServiceObjectColor(obj);
+                uint tint = obj is VolumeInstance vol
+                    ? EditorGeometryRenderer.VolumeFillColor(volumeColor, vol.Enabled, sel)
+                    : sel ? selRgba : ServiceObjectColor(obj);
                 outList.Add(new Billboard(wp + position, icon, tint));
             }
         }
@@ -500,6 +506,10 @@ internal sealed class ServiceObjectRenderer : IDisposable
                 icon = ServiceObjectTexture.memo; pos = memo.Position; return true;
             case SpriteInstance sprite:
                 icon = ServiceObjectTexture.sprite; pos = sprite.Position; return true;
+            case VolumeInstance volume:
+                // Central billboard sprite for box / sphere / prism volumes,
+                // tinted at the call site by the volume's state colour.
+                icon = ServiceObjectTexture.volume; pos = volume.Position; return true;
 
             // Missing-asset placeholders — same icons the legacy uses in
             // sprite mode so the user still sees something at the position.

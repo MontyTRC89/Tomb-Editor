@@ -8,25 +8,6 @@ namespace TombEditor.Controls.Panel3D
 {
     public partial class Panel3D
     {
-        private Text CreateTextTagForObject(Matrix4x4 matrix, string message)
-        {
-            if (matrix.TransformPerspectively(new Vector3()).Z > 1.0f)
-                return null; // Discard text on the back
-
-            if (_editor.CameraPreviewMode != CameraPreviewType.None)
-                return null;
-
-            return new Text
-            {
-                Font = _fontDefault,
-                TextAlignment = new Vector2(0.0f, 0.0f),
-                PixelPos = new VectorInt2(10, -10),
-                Pos = matrix.TransformPerspectively(new Vector3()).To2(),
-                Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                String = message
-            };
-        }
-
         private string GetObjectTriggerString(ObjectInstance instance)
         {
             string message = "";

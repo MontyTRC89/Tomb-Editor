@@ -71,6 +71,9 @@ public readonly struct RenderScene
     public readonly int HighlightedSplit;
     // Flyby sequence whose solid path tube should be drawn (-1 = none selected).
     public readonly int FlybyPathSequence;
+    // Editor's configured ColorTrigger — base colour for volume rendering
+    // (the actual normal / selected / disabled shades are derived from it).
+    public readonly Vector4 VolumeColor;
 
     public RenderScene(
         Level             level,
@@ -108,7 +111,8 @@ public readonly struct RenderScene
         (Vector3 Center, float Radius)? brush = null,
         (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? dof = null,
         int highlightedSplit = 0,
-        int flybyPathSequence = -1)
+        int flybyPathSequence = -1,
+        Vector4 volumeColor = default)
     {
         Level                         = level;
         Camera                        = camera;
@@ -147,6 +151,7 @@ public readonly struct RenderScene
         Dof                           = dof;
         HighlightedSplit              = highlightedSplit;
         FlybyPathSequence             = flybyPathSequence;
+        VolumeColor                   = volumeColor;
     }
 
     /// <summary>Texturing mode renders real textures full-bright, grid off.</summary>

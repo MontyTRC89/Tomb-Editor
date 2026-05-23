@@ -56,16 +56,40 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // Colour palette (RGBA8). Matches the legacy renderer's at-a-glance hues.
     private const uint RoomBoundsColor = 0xFF_C8_C8_C8u; // light grey
-    private const uint VolumeColor     = 0xFF_FF_50_FFu;  // violet
     private const uint GhostColor      = 0xFF_40_D0_FFu;  // cyan
     private const uint BBoxColor       = 0xFF_30_FF_30u;  // green
     private const uint HeightColor     = 0xFF_FF_FF_FFu;  // white
     private const uint BrushColor      = 0xFF_00_FF_FFu;  // yellow
     private const uint SplitColor      = 0xFF_00_A0_FFu;  // orange
-    // Volume solid fill — VolumeColor rgb at this alpha (legacy ~0.55; the
-    // CullNone triangle pass blends front + back faces, so a lower value
-    // composites to roughly the legacy opacity).
-    private const uint VolumeFillAlpha = 0x55000000u;
+    // Volume state colours derived from the editor's configured ColorTrigger,
+    // matching the legacy DrawVolumes formula:
+    //   normal   = rgb × 0.6, α 0.55
+    //   selected = rgb,        α 0.70
+    //   disabled = luma of the equivalent tone, α 0.55
+    internal static uint VolumeFillColor(in Vector4 baseColor, bool enabled, bool selected)
+    {
+        var rgb = new Vector3(baseColor.X, baseColor.Y, baseColor.Z);
+        if (!enabled)
+        {
+            var tone = selected ? rgb : rgb * 0.6f;
+            float l = tone.GetLuma();
+            return PackRgba(new Vector4(l, l, l, 0.55f));
+        }
+        return selected
+            ? PackRgba(new Vector4(rgb,        0.70f))
+            : PackRgba(new Vector4(rgb * 0.6f, 0.55f));
+    }
+
+    // Wireframe outline overlaid on the solid volume — half-bright, half-alpha
+    // (legacy d=1 pass: new Vector4(color.To3() * 0.5f, 0.5f)).
+    internal static uint VolumeWireColor(in Vector4 baseColor, bool enabled, bool selected)
+    {
+        uint fill = VolumeFillColor(baseColor, enabled, selected);
+        byte r = (byte)(((fill >> 0)  & 0xFF) >> 1);
+        byte g = (byte)(((fill >> 8)  & 0xFF) >> 1);
+        byte b = (byte)(((fill >> 16) & 0xFF) >> 1);
+        return r | ((uint)g << 8) | ((uint)b << 16) | (0x80u << 24);
+    }
 
     // Ghost-block volume tessellation reused for sphere volumes.
     private const int SphereSegments = 24;
@@ -259,13 +283,13 @@ internal sealed class EditorGeometryRenderer : IDisposable
                     switch (obj)
                     {
                         case BoxVolumeInstance box when scene.ShowVolumes:
-                            EmitWireBox(v, ref n, box.RotationPositionMatrix,
-                                        box.Size * 0.5f, sel ? selRgba : VolumeColor);
+                            EmitWireBox(v, ref n, box.RotationPositionMatrix, box.Size * 0.5f,
+                                        VolumeWireColor(scene.VolumeColor, box.Enabled, sel));
                             break;
 
                         case SphereVolumeInstance sphere when scene.ShowVolumes:
-                            EmitWireSphere(v, ref n, wp + sphere.Position,
-                                           sphere.Size, sel ? selRgba : VolumeColor);
+                            EmitWireSphere(v, ref n, wp + sphere.Position, sphere.Size,
+                                           VolumeWireColor(scene.VolumeColor, sphere.Enabled, sel));
                             break;
 
                         case MoveableInstance mov when scene.ShowBoundingBoxes:
@@ -543,14 +567,14 @@ internal sealed class EditorGeometryRenderer : IDisposable
                         EmitFlybyCone(v, ref n, fb, (rgb & 0x00FFFFFFu) | 0x66000000u);
                         break;
                     }
-                    // Volumes — solid translucent violet box / sphere.
+                    // Volumes — translucent fill using the editor's ColorTrigger.
                     case BoxVolumeInstance bx when scene.ShowVolumes:
                         EmitSolidBox(v, ref n, bx.RotationPositionMatrix, bx.Size * 0.5f,
-                                     ((sel ? selRgba : VolumeColor) & 0x00FFFFFFu) | VolumeFillAlpha);
+                                     VolumeFillColor(scene.VolumeColor, bx.Enabled, sel));
                         break;
                     case SphereVolumeInstance sp when scene.ShowVolumes:
                         EmitSolidSphere(v, ref n, wp + sp.Position, sp.Size,
-                                        ((sel ? selRgba : VolumeColor) & 0x00FFFFFFu) | VolumeFillAlpha);
+                                        VolumeFillColor(scene.VolumeColor, sp.Enabled, sel));
                         break;
                 }
             }

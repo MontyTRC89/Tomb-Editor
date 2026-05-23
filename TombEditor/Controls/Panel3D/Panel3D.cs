@@ -71,7 +71,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowSlideDirections
         {
             get { return _drawSlideDirections; }
-            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms?.Clear(); }
+            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; }
         }
         private bool _drawSlideDirections = false;
 
@@ -79,7 +79,7 @@ namespace TombEditor.Controls.Panel3D
         public bool ShowIllegalSlopes
         {
             get { return _drawIllegalSlopes; }
-            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms?.Clear(); }
+            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; }
         }
         private bool _drawIllegalSlopes = false;
 
@@ -87,7 +87,7 @@ namespace TombEditor.Controls.Panel3D
         public bool DisablePickingForHiddenRooms
         {
             get { return _disablePickingForHiddenRooms; }
-            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms?.Clear(); }
+            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; }
         }
         private bool _disablePickingForHiddenRooms = false;
 
@@ -126,58 +126,12 @@ namespace TombEditor.Controls.Panel3D
         private bool _dragObjectMoved = false;
         private HighlightedObjects _highlightedObjects = HighlightedObjects.Create(null);
 
-        // Legacy rendering state
-        private WadRenderer _wadRenderer;
-        private RasterizerState _rasterizerStateDepthBias;
-        private GraphicsDevice _legacyDevice;
-        private RasterizerState _rasterizerWireframe;
-        private GeometricPrimitive _sphere;
-        private GeometricPrimitive _cone;
-        private GeometricPrimitive _linesCube;
-        private GeometricPrimitive _littleCube;
-        private GeometricPrimitive _littleSphere;
-        private bool _drawHeightLine;
-        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
-        private Buffer<SolidVertex> _flybyPathVertexBuffer;
-        private Buffer<SolidVertex> _ghostBlockVertexBuffer;
-        private Buffer<SolidVertex> _boxVertexBuffer;
+        // V2 renderer state — the legacy DXGI device / WAD renderer / room
+        // cache are gone; everything lives in _v2Renderer.
 
-        // Flyby stuff
-        private const float _flybyPathThickness = 32.0f;
-        private const int _flybyPathSmoothness = 7;
-        private static readonly List<VectorInt2> _flybyPathIndices = new List<VectorInt2>()
-        {
-            new VectorInt2(0, 0),
-            new VectorInt2(1, 0),
-            new VectorInt2(1, 1),
-            new VectorInt2(1, 1),
-            new VectorInt2(0, 1),
-            new VectorInt2(0, 0),
-            new VectorInt2(2, 0),
-            new VectorInt2(1, 0),
-            new VectorInt2(1, 1),
-            new VectorInt2(1, 1),
-            new VectorInt2(2, 1),
-            new VectorInt2(2, 0),
-            new VectorInt2(0, 0),
-            new VectorInt2(2, 0),
-            new VectorInt2(2, 1),
-            new VectorInt2(2, 1),
-            new VectorInt2(0, 1),
-            new VectorInt2(0, 0)
-        };
-
-        // Other drawing consts
-        private const float _littleCubeRadius = 128.0f;
-        private const float _littleSphereRadius = 128.0f;
+        // Flyby cone falloff radius — used for the distance-fade math when
+        // the camera approaches a flyby's cone.
         private const float _coneRadius = 1024.0f;
-
-        // Rendering state
-        private RenderingStateBuffer _renderingStateBuffer;
-        private RenderingTextureAllocator _renderingTextures;
-        private RenderingTextureAllocator _fontTexture;
-        private RenderingFont _fontDefault;
-        private readonly Cache<Room, RenderingDrawingRoom> _renderingCachedRooms;
 
         // V2 renderer. Non-null only when Configuration.Rendering3D_UseV2Renderer
         // was set at panel init. When set, the legacy rendering path is bypassed
@@ -232,7 +186,6 @@ namespace TombEditor.Controls.Panel3D
                 _flyModeTimer = new Timer { Interval = 1 };
                 _flyModeTimer.Tick += FlyModeTimer_Tick;
 
-                _renderingCachedRooms = new Cache<Room, RenderingDrawingRoom>(1024, CacheRoom);
                 Application.AddMessageFilter(_filter);
             }
         }
@@ -250,24 +203,11 @@ namespace TombEditor.Controls.Panel3D
                 }
 
                 _v2Renderer?.Dispose();
-                _renderingStateBuffer?.Dispose();
-                _renderingTextures?.Dispose();
-                _renderingCachedRooms?.Dispose();
-                _rasterizerWireframe?.Dispose();
-                _objectHeightLineVertexBuffer?.Dispose();
-                _flybyPathVertexBuffer?.Dispose();
                 _gizmo?.Dispose();
-                _sphere?.Dispose();
-                _cone?.Dispose();
-                _linesCube?.Dispose();
-                _littleCube?.Dispose();
-                _littleSphere?.Dispose();
                 _movementTimer?.Dispose();
                 _flyModeTimer?.Dispose();
                 _flybyPreview?.Dispose();
-                _rasterizerStateDepthBias?.Dispose();
                 _currentContextMenu?.Dispose();
-                _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -329,12 +269,10 @@ namespace TombEditor.Controls.Panel3D
             {
                 var room = ((IEditorRoomChangedEvent)obj).Room;
 
-                _renderingCachedRooms.Remove(room);
                 _v2Renderer?.InvalidateRoom(room);
                 if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
                     foreach (var portal in room.Portals)
                     {
-                        _renderingCachedRooms.Remove(portal.AdjoiningRoom);
                         _v2Renderer?.InvalidateRoom(portal.AdjoiningRoom);
                     }
             }
@@ -344,7 +282,6 @@ namespace TombEditor.Controls.Panel3D
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                 {
-                    _renderingCachedRooms.Remove(value.Object.Room);
                     _v2Renderer?.InvalidateRoom(value.Object.Room);
                 }
             }
@@ -353,13 +290,11 @@ namespace TombEditor.Controls.Panel3D
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
             {
-                _renderingCachedRooms.Remove(_editor.SelectedRoom);
                 _v2Renderer?.InvalidateRoom(_editor.SelectedRoom);
             }
             if (obj is Editor.SelectedRoomChangedEvent)
             {
                 var prev = ((Editor.SelectedRoomChangedEvent)obj).Previous;
-                _renderingCachedRooms.Remove(prev);
                 _v2Renderer?.InvalidateRoom(prev);
                 // V2 bakes the SectorTextureDefault state into the mesh, so
                 // entering a new room must also rebuild it (otherwise stale
@@ -369,7 +304,6 @@ namespace TombEditor.Controls.Panel3D
             }
             if (obj is Editor.RoomSectorPropertiesChangedEvent)
             {
-                _renderingCachedRooms.Remove(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
                 _v2Renderer?.InvalidateRoom(((Editor.RoomSectorPropertiesChangedEvent)obj).Room);
             }
             if (obj is Editor.LoadedTexturesChangedEvent ||
@@ -378,7 +312,6 @@ namespace TombEditor.Controls.Panel3D
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
             {
-                _renderingCachedRooms.Clear();
                 _v2Renderer?.InvalidateAllRooms();
             }
 
@@ -428,11 +361,6 @@ namespace TombEditor.Controls.Panel3D
             // mode switch happens after the level is loaded).
             if (obj is Editor.LevelChangedEvent)
                 Invalidate(false);
-
-            // Clean up wad renderer
-            if (obj is Editor.LoadedWadsChangedEvent ||
-                obj is Editor.LevelChangedEvent)
-                _wadRenderer?.GarbageCollect();
 
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
