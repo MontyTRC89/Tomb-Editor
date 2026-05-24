@@ -33,7 +33,7 @@ namespace TombEditor.Forms
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panelRenderingSprite.InitializeRendering(device, _editor.Configuration.RenderingItem_Antialias);
+            // GDI+ sprite preview — no rendering device needed.
         }
 
         private void EditorEventRaised(IEditorEvent obj)

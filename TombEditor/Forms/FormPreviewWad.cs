@@ -20,7 +20,8 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             panelItem.Editor = editor;
-            panelItem.InitializeRendering(device, editor.Configuration.RenderingItem_Antialias);
+            // V2 preview panel lazily creates its own device + swapchain on
+            // first paint — no explicit InitializeRendering needed.
             panelItem.AnimatePreview = editor.Configuration.RenderingItem_Animate;
             wadTree.Wad = wad;
             wadTree.MultiSelect = false;
@@ -57,7 +58,7 @@ namespace TombEditor.Forms
                 Close();
         }
 
-        public class PanelRenderingItemPreview : PanelItemPreview
+        public class PanelRenderingItemPreview : TombEditor.Rendering.ItemPreviewPanel
         {
             public Editor Editor { get; set; }
 

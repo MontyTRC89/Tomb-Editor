@@ -5,13 +5,13 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib.Controls;
+using TombEditor.Rendering;
 using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
-    public class PanelRenderingImportedGeometry : PanelItemPreview
+    public class PanelRenderingImportedGeometry : ItemPreviewPanel
     {
         private readonly Editor _editor;
 

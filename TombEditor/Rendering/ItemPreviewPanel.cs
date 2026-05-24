@@ -345,4 +345,8 @@ public abstract class ItemPreviewPanel : Panel
     public abstract float NavigationSpeedMouseZoom { get; }
     public abstract float NavigationSpeedMouseTranslate { get; }
     public abstract float NavigationSpeedMouseRotate { get; }
+
+    /// <summary>When true, the panel suppresses drag-source behaviour — used
+    /// by the imported-geometry browser and the WAD preview window.</summary>
+    public virtual bool ReadOnly => false;
 }

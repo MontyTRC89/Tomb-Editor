@@ -24,7 +24,8 @@ namespace TombEditor.ToolWindows
 
         public void InitializeRendering(RenderingDevice device)
         {
-            panelItem.InitializeRendering(device, _editor.Configuration.RenderingItem_Antialias);
+            // preview panel lazily creates its own device + swapchain on
+            // first paint; the legacy device argument is ignored.
         }
 
         protected override void Dispose(bool disposing)
