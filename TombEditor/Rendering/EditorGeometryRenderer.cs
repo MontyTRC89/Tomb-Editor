@@ -532,6 +532,178 @@ internal sealed class EditorGeometryRenderer : IDisposable
         Line(v, ref n, c, d, color); Line(v, ref n, d, a, color);
     }
 
+    // Solid translucent body for a ghost block — ported from the legacy
+    // DrawGhostBlockBodies. Emits the four wall faces (with diagonal-split
+    // height shifts) plus the two split triangles and the diagonal pair, both
+    // for the floor and ceiling halves.
+    private static void EmitGhostBlockBody(Span<LineVertex> v, ref int n, GhostBlockInstance ghost,
+                                           in Vector4 baseColor, bool selected)
+    {
+        if (!ghost.Valid) return;
+
+        // Same colour formula as the legacy: p1c is the "front" tone, p2c the
+        // dimmer "back" tone; both share the alpha.
+        Vector3 rgb = new(baseColor.X, baseColor.Y, baseColor.Z);
+        uint p1c = PackRgba(new Vector4(rgb * (selected ? 0.8f : 0.4f), selected ? 0.7f : 0.5f));
+        uint p2c = PackRgba(new Vector4(rgb * (selected ? 0.5f : 0.2f), selected ? 0.7f : 0.5f));
+
+        for (int f = 0; f < 2; f++)
+        {
+            bool floor = f == 0;
+            if ((floor && !ghost.ValidFloor) || (!floor && !ghost.ValidCeiling)) continue;
+
+            var split   = floor ? ghost.Sector.Floor.DiagonalSplit : ghost.Sector.Ceiling.DiagonalSplit;
+            bool tog    = floor ? ghost.FloorSplitToggled          : ghost.CeilingSplitToggled;
+            var vPos    = ghost.ControlPositions(floor, false);
+            var vOrg    = ghost.ControlPositions(floor, true);
+
+            bool s0 = split == DiagonalSplit.XpZp || split == DiagonalSplit.XpZn;
+            bool s1 = split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp;
+            bool s2 = split == DiagonalSplit.XnZn || split == DiagonalSplit.XnZp;
+            bool s3 = split == DiagonalSplit.XnZn || split == DiagonalSplit.XpZn;
+
+            // Four side walls (Xn, Zn, Xp, Zp).
+            for (int i = 0; i < 4; i++)
+            {
+                Vector3 fp0, fp1, fp2, fp3;
+                bool sh = i == 0 ? s0 : i == 1 ? s1 : i == 2 ? s2 : s3;
+                switch (i)
+                {
+                    case 0: // Xn
+                        fp0 = vOrg[0]; fp1 = vOrg[3]; fp2 = vPos[3]; fp3 = vPos[0];
+                        if (sh)
+                        {
+                            if (split == DiagonalSplit.XpZp)
+                            {
+                                fp0.Y = vOrg[3].Y;
+                                fp3.Y = (vOrg[3] + (vPos[0] - vOrg[0])).Y;
+                            }
+                            else
+                            {
+                                fp1.Y = vOrg[0].Y;
+                                fp2.Y = (vOrg[0] + (vPos[3] - vOrg[3])).Y;
+                            }
+                        }
+                        break;
+                    case 1: // Zn
+                        fp0 = vOrg[3]; fp1 = vOrg[2]; fp2 = vPos[2]; fp3 = vPos[3];
+                        if (sh)
+                        {
+                            if (split == DiagonalSplit.XnZp)
+                            {
+                                fp0.Y = vOrg[2].Y;
+                                fp3.Y = (vOrg[2] + (vPos[3] - vOrg[3])).Y;
+                            }
+                            else
+                            {
+                                fp1.Y = vOrg[3].Y;
+                                fp2.Y = (vOrg[3] + (vPos[2] - vOrg[2])).Y;
+                            }
+                        }
+                        break;
+                    case 2: // Xp
+                        fp0 = vOrg[2]; fp1 = vOrg[1]; fp2 = vPos[1]; fp3 = vPos[2];
+                        if (sh)
+                        {
+                            if (split == DiagonalSplit.XnZn)
+                            {
+                                fp0.Y = vOrg[1].Y;
+                                fp3.Y = (vOrg[1] + (vPos[2] - vOrg[2])).Y;
+                            }
+                            else
+                            {
+                                fp1.Y = vOrg[2].Y;
+                                fp2.Y = (vOrg[2] + (vPos[1] - vOrg[1])).Y;
+                            }
+                        }
+                        break;
+                    default: // Zp
+                        fp0 = vOrg[1]; fp1 = vOrg[0]; fp2 = vPos[0]; fp3 = vPos[1];
+                        if (sh)
+                        {
+                            if (split == DiagonalSplit.XpZn)
+                            {
+                                fp0.Y = vOrg[0].Y;
+                                fp3.Y = (vOrg[0] + (vPos[1] - vOrg[1])).Y;
+                            }
+                            else
+                            {
+                                fp1.Y = vOrg[1].Y;
+                                fp2.Y = (vOrg[1] + (vPos[0] - vOrg[0])).Y;
+                            }
+                        }
+                        break;
+                }
+                EmitTriRgba(v, ref n, fp0, fp1, fp3, p1c, p1c, p2c);
+                EmitTriRgba(v, ref n, fp1, fp2, fp3, p1c, p1c, p2c);
+            }
+
+            // Two split triangles capping the top / bottom — hidden when the
+            // sector edge equals the original height (the shift height matches
+            // the corner reference for the active split).
+            int r = split switch
+            {
+                DiagonalSplit.XpZn => 0,
+                DiagonalSplit.XnZn => 1,
+                DiagonalSplit.XnZp => 2,
+                DiagonalSplit.XpZp => 3,
+                _                  => 0,
+            };
+
+            for (int i = 0; i < 2; i++)
+            {
+                bool triShift = (i == 0 && (split == DiagonalSplit.XpZn || split == DiagonalSplit.XnZn)) ||
+                                (i != 0 && (split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp));
+                int ch0 = i == 0 ? (tog ? 3 : 0) : (tog ? 1 : 2);
+                int ch1 = i == 0 ? (tog ? 0 : 1) : (tog ? 2 : 3);
+                int ch2 = i == 0 ? (tog ? 1 : 2) : (tog ? 3 : 0);
+
+                Vector3 t0 = vPos[ch0];
+                if (triShift) t0.Y = vOrg[r].Y + (vPos[ch0] - vOrg[ch0]).Y;
+                Vector3 t1 = vPos[ch1];
+                Vector3 t2 = vPos[ch2];
+                if (triShift) t2.Y = vOrg[r].Y + (vPos[ch2] - vOrg[ch2]).Y;
+
+                bool degenerate = vPos[ch0] == vOrg[ch0]
+                               && vPos[ch1] == vOrg[ch1]
+                               && vPos[ch2] == vOrg[ch2];
+                uint tc = degenerate ? 0u : (i == 1 ? p1c : p2c);
+                EmitTriRgba(v, ref n, t0, t1, t2, tc, tc, tc);
+            }
+
+            // Diagonal (skipped when the floor / ceiling is a flat quad).
+            bool flip = split == DiagonalSplit.XnZp || split == DiagonalSplit.XpZn;
+            bool draw = split != DiagonalSplit.None && !(floor ? ghost.FloorIsQuad : ghost.CeilingIsQuad);
+            uint dc1 = draw ? p1c : 0u;
+            uint dc2 = draw ? p2c : 0u;
+            Vector3 d0 = flip ? vOrg[1] : vOrg[0];
+            Vector3 d1 = flip ? vOrg[3] : vOrg[2];
+            Vector3 d2 = flip ? vPos[3] : vPos[2];
+            Vector3 d3 = flip ? vPos[1] : vPos[0];
+            EmitTriRgba(v, ref n, d0, d1, d2, dc1, dc2, dc1);
+            EmitTriRgba(v, ref n, d2, d3, d0, dc1, dc2, dc1);
+        }
+    }
+
+    // Triangle emitter with per-vertex colours — same fast-path as EmitTri,
+    // just with three independent colours.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private static void EmitTriRgba(Span<LineVertex> v, ref int n,
+                                    Vector3 a, Vector3 b, Vector3 c, uint ca, uint cb, uint cc)
+    {
+        int i = n;
+        if ((uint)(i + 3) <= (uint)v.Length)
+        {
+            ref var v0 = ref Unsafe.Add(ref MemoryMarshal.GetReference(v), i);
+            v0.Position = a; v0.Color = ca;
+            ref var v1 = ref Unsafe.Add(ref v0, 1);
+            v1.Position = b; v1.Color = cb;
+            ref var v2 = ref Unsafe.Add(ref v0, 2);
+            v2.Position = c; v2.Color = cc;
+        }
+        n = i + 3;
+    }
+
     // ---- Object bounding boxes ---------------------------------------------
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -593,6 +765,15 @@ internal sealed class EditorGeometryRenderer : IDisposable
                         break;
                 }
             }
+
+            // Ghost block solid bodies — same translucent fill the legacy
+            // DrawGhostBlockBodies path drew.
+            if (scene.ShowGhostBlocks && room.GhostBlocks != null)
+                foreach (var ghost in room.GhostBlocks)
+                {
+                    bool gsel = highlighted != null && highlighted.Contains(ghost);
+                    EmitGhostBlockBody(v, ref n, ghost, scene.GhostBlockColor, gsel);
+                }
         }
 
         // ---- Solid Catmull-Rom path tube for the selected flyby sequence ----

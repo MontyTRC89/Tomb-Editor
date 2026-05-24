@@ -74,6 +74,9 @@ public readonly struct RenderScene
     // Editor's configured ColorTrigger — base colour for volume rendering
     // (the actual normal / selected / disabled shades are derived from it).
     public readonly Vector4 VolumeColor;
+    // Editor's configured ColorFloor — base colour for the ghost-block solid
+    // body fill (derived shades match the legacy DrawGhostBlockBodies formula).
+    public readonly Vector4 GhostBlockColor;
 
     public RenderScene(
         Level             level,
@@ -112,7 +115,8 @@ public readonly struct RenderScene
         (Vector4 CenterRange, Vector4 DirectionDistance, Vector4 ColorStrength)? dof = null,
         int highlightedSplit = 0,
         int flybyPathSequence = -1,
-        Vector4 volumeColor = default)
+        Vector4 volumeColor = default,
+        Vector4 ghostBlockColor = default)
     {
         Level                         = level;
         Camera                        = camera;
@@ -152,6 +156,7 @@ public readonly struct RenderScene
         HighlightedSplit              = highlightedSplit;
         FlybyPathSequence             = flybyPathSequence;
         VolumeColor                   = volumeColor;
+        GhostBlockColor               = ghostBlockColor;
     }
 
     /// <summary>Texturing mode renders real textures full-bright, grid off.</summary>

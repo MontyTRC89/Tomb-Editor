@@ -1181,7 +1181,8 @@ namespace TombEditor.Controls.Panel3D
                         dof:                           BuildDofOverlay(),
                         highlightedSplit:              _editor.HighlightedSplit,
                         flybyPathSequence:             TryGetSelectedFlybySequence(out int v2FlybySeq) ? v2FlybySeq : -1,
-                        volumeColor:                   _editor.Configuration.UI_ColorScheme.ColorTrigger);
+                        volumeColor:                   _editor.Configuration.UI_ColorScheme.ColorTrigger,
+                        ghostBlockColor:               _editor.Configuration.UI_ColorScheme.ColorFloor);
                     _renderer.RenderFrame(scene);
                 }
                 else
