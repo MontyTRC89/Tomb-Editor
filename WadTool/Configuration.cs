@@ -41,6 +41,7 @@ namespace WadTool
         public int Rendering3D_FontSize { get; set; } = 16;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
+        public string Rendering3D_Backend { get; set; } = "Default";
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 800.0f;

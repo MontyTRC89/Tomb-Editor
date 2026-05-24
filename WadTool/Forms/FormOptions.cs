@@ -1,4 +1,5 @@
-﻿using TombLib.Forms;
+﻿using System.Drawing;
+using TombLib.Forms;
 using TombLib.Utils;
 
 namespace WadTool
@@ -17,7 +18,50 @@ namespace WadTool
             _tool = tool;
             _tool.EditorEventRaised += EditorEventRaised;
 
+            // Add the V2 rendering-backend selector programmatically to the
+            // System groupbox. Binds to Configuration.Rendering3D_Backend via
+            // Tag, picked up by FormOptionsBase.ReadConfigIntoControls. Mirrors
+            // TombEditor's FormOptions setup.
+            AddBackendSelector();
+
             ReadConfigIntoControls(this);
+        }
+
+        private void AddBackendSelector()
+        {
+            // Drop the combo + label/hint inside the System groupbox
+            // (darkGroupBox1). Grow the box to fit the two new rows.
+            int backendY = darkGroupBox1.Height + 4;
+            darkGroupBox1.Height += 56;
+
+            var cmbBackend = new DarkUI.Controls.DarkComboBox
+            {
+                FormattingEnabled = true,
+                Location = new Point(232, backendY),
+                Size     = new Size(123, 23),
+                Tag      = "Rendering3D_Backend",
+                DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList,
+            };
+            cmbBackend.Items.AddRange(new object[] { "Default", "Vulkan", "OpenGL", "DX11" });
+
+            var lblBackend = new DarkUI.Controls.DarkLabel
+            {
+                AutoSize  = true,
+                ForeColor = Color.FromArgb(220, 220, 220),
+                Location  = new Point(3, backendY + 3),
+                Text      = "Rendering backend:",
+            };
+            var lblBackendHint = new DarkUI.Controls.DarkLabel
+            {
+                AutoSize  = true,
+                ForeColor = Color.FromArgb(160, 160, 160),
+                Location  = new Point(3, backendY + 28),
+                Text      = "Default = auto (Vulkan → OpenGL → DX11). Restart WadTool for a change to take effect.",
+            };
+
+            darkGroupBox1.Controls.Add(cmbBackend);
+            darkGroupBox1.Controls.Add(lblBackend);
+            darkGroupBox1.Controls.Add(lblBackendHint);
         }
 
         private void EditorEventRaised(IEditorEvent obj)

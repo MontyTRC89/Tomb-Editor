@@ -30,7 +30,23 @@ public static class PreviewDevice
     private static WadObjectPreviewRenderer? _renderer;
     private static GizmoRenderer? _gizmo;
     private static TextRenderer? _text;
+    private static string? _backendPreference;
     private static readonly object _lock = new();
+
+    /// <summary>
+    /// Set the RHI backend preference ("Default" / "Vulkan" / "OpenGL" /
+    /// "DX11") before the first lazy device creation. The environment
+    /// variable <c>TOMBEDITOR_RHI</c> still overrides this. Must be called
+    /// before any preview panel paints — once the device is up, the
+    /// preference is fixed.
+    /// </summary>
+    public static void SetBackendPreference(string? preference)
+    {
+        lock (_lock)
+        {
+            if (_device == null) _backendPreference = preference;
+        }
+    }
 
     public static IRhiDevice Device
     {
@@ -52,6 +68,26 @@ public static class PreviewDevice
     public static TextRenderer Text
     {
         get { EnsureCreated(); return _text!; }
+    }
+
+    /// <summary>
+    /// Human-readable name of the active RHI backend ("Vulkan" / "OpenGL" /
+    /// "DirectX 11"), or <c>null</c> if the shared device hasn't been created
+    /// yet. Mirrors <c>LevelRenderer.BackendName</c> in TombEditor.
+    /// </summary>
+    public static string? BackendName
+    {
+        get
+        {
+            if (_device == null) return null;
+            return _device.Capabilities.Backend switch
+            {
+                RhiBackendKind.Vulkan    => "Vulkan",
+                RhiBackendKind.OpenGL    => "OpenGL",
+                RhiBackendKind.DirectX11 => "DirectX 11",
+                _                        => _device.Capabilities.Backend.ToString(),
+            };
+        }
     }
 
     /// <summary>
@@ -80,7 +116,7 @@ public static class PreviewDevice
         lock (_lock)
         {
             if (_renderer != null) return;
-            _device     = TombLib.RenderingV2.Rhi.RhiBackend.Create();
+            _device     = TombLib.RenderingV2.Rhi.RhiBackend.Create(_backendPreference);
             _ownsDevice = true;
             _renderer   = new WadObjectPreviewRenderer(_device);
             _gizmo      = new GizmoRenderer(_device);

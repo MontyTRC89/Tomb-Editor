@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.RenderingV2.Preview;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;
@@ -30,6 +31,15 @@ namespace WadTool
 
             _tool = tool;
 
+            // Honour the configured RHI backend BEFORE the first preview
+            // panel touches PreviewDevice (lazy init) — otherwise the device
+            // boots with the default cascade and the user's setting is
+            // ignored until next launch.
+            PreviewDevice.SetBackendPreference(tool.Configuration.Rendering3D_Backend);
+            _ = PreviewDevice.Device; // force creation now so the title bar
+                                       // can show the active backend even
+                                       // before the first panel paint.
+
             panel3D.Configuration = tool.Configuration;
             // V2 ItemPreviewPanel lazily creates its own device + swapchain on
             // first paint — no explicit InitializeRendering needed.
@@ -47,6 +57,19 @@ namespace WadTool
 
             // Load recent files
             RefreshRecentWadsList();
+
+            UpdateTitleBar();
+        }
+
+        /// <summary>
+        /// Rebuild the title bar: "WadTool  [Backend]". The constructor forces
+        /// <see cref="PreviewDevice.Device"/> creation up-front so the backend
+        /// suffix is always present from the first paint of the form's title.
+        /// </summary>
+        private void UpdateTitleBar()
+        {
+            string backend = PreviewDevice.BackendName;
+            Text = "WadTool" + (string.IsNullOrEmpty(backend) ? "" : "  [" + backend + "]");
         }
 
         private class InitEvent : IEditorEvent { };
