@@ -177,6 +177,21 @@ public sealed class TextureAtlas : IDisposable
                         CollectWholeImage(regionSet, submesh.Material?.Texture);
             }
 
+        // TR1 / TR2 sprite-instance frames — each WadSpriteSequence holds a
+        // list of frames, each frame is one whole texture. Higher engines
+        // don't use SpriteInstance, so we skip the scan for them.
+        if (level.Settings != null &&
+            level.Settings.GameVersion.Native() <= TRVersion.Game.TR2)
+        {
+            foreach (var kv in level.Settings.WadGetAllSpriteSequences())
+            {
+                var seq = kv.Value;
+                if (seq?.Sprites == null) continue;
+                foreach (var sprite in seq.Sprites)
+                    CollectWholeImage(regionSet, sprite.Texture);
+            }
+        }
+
         // --- 4) Convert every distinct source page to raw BGRA bytes, in
         // parallel — one independent ImageC.ToByteArray per page.
         var uniquePages = new List<Texture>();
@@ -437,6 +452,28 @@ public sealed class TextureAtlas : IDisposable
         return new Vector2(
             (rect.Origin.X + faceUv.X * rect.Size.X) / Size.X,
             (rect.Origin.Y + faceUv.Y * rect.Size.Y) / Size.Y);
+    }
+
+    /// <summary>
+    /// Resolves the UV rectangle of a TR1 / TR2 sprite frame inside the atlas.
+    /// Returns false (and a degenerate output) when the frame's texture wasn't
+    /// packed — typically because the level isn't TR1 / TR2.
+    /// </summary>
+    public bool TryGetSpriteFrameUv(TombLib.Wad.WadSpriteSequence sequence, int frame,
+                                    out Vector2 uvMin, out Vector2 uvMax)
+    {
+        uvMin = uvMax = default;
+        if (sequence == null || frame < 0 || frame >= sequence.Sprites.Count) return false;
+        var tex = sequence.Sprites[frame].Texture;
+        if (tex?.Image == null || tex.Image.Width <= 0 || tex.Image.Height <= 0) return false;
+
+        var key = new TexRegion(tex, 0, 0, tex.Image.Width, tex.Image.Height);
+        if (!_regions.TryGetValue(key, out var origin)) return false;
+
+        float invW = 1f / Size.X, invH = 1f / Size.Y;
+        uvMin = new Vector2(origin.X * invW, origin.Y * invH);
+        uvMax = new Vector2((origin.X + tex.Image.Width) * invW, (origin.Y + tex.Image.Height) * invH);
+        return true;
     }
 
     public void Dispose()

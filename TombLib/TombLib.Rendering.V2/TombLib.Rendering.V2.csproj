@@ -51,6 +51,10 @@
       <EntryVs>vs_main</EntryVs>
       <EntryPs>ps_main</EntryPs>
     </HlslShaderV2>
+    <HlslShaderV2 Include="Shaders\Sprite.hlsl">
+      <EntryVs>vs_main</EntryVs>
+      <EntryPs>ps_main</EntryPs>
+    </HlslShaderV2>
     <HlslShaderV2 Include="Shaders\Text.hlsl">
       <EntryVs>vs_main</EntryVs>
       <EntryPs>ps_main</EntryPs>

@@ -64,6 +64,8 @@ public sealed class LevelRenderer : IDisposable
     private GizmoRenderer?                      _gizmo;
     // Text overlay (room names, coordinates, object labels, cardinal directions, FPS).
     private TextRenderer?                       _text;
+    // TR1 / TR2 sprite-instance pass (no-op on higher engines).
+    private SpriteRenderer?                     _sprites;
     // Editor wireframe overlay (room / object bounding boxes, volumes, ghost
     // blocks, flyby paths, the selected object's height line).
     private EditorGeometryRenderer?             _editorGeo;
@@ -252,6 +254,7 @@ public sealed class LevelRenderer : IDisposable
         _services  = new ServiceObjectRenderer(_device);
         _gizmo     = new GizmoRenderer(_device);
         _text      = new TextRenderer(_device);
+        _sprites   = new SpriteRenderer(_device);
         _editorGeo = new EditorGeometryRenderer(_device);
     }
 
@@ -486,6 +489,13 @@ public sealed class LevelRenderer : IDisposable
             // on top of everything else.
             if (_text != null && scene.Labels is { Count: > 0 })
                 _text.Render(cl, scene.Labels, scene.ViewProjection, _width, _height);
+
+            // TR1 / TR2 sprite-instance overlay — draws actual sprite frames at
+            // each SpriteInstance's projected screen position. No-op on TR3+.
+            if (_sprites != null && _atlas != null)
+                _sprites.Render(cl, _visibleRooms, scene.Level, _atlas,
+                                scene.ViewProjection, scene.ViewportSize,
+                                scene.Highlighted, scene.SelectionTint);
         }
 
         cl.EndPass();
@@ -833,6 +843,7 @@ public sealed class LevelRenderer : IDisposable
         _services?.Dispose();
         _gizmo?.Dispose();
         _text?.Dispose();
+        _sprites?.Dispose();
         _editorGeo?.Dispose();
         if (_viewCb.IsValid)                   _device.Destroy(_viewCb);
         if (_viewCbHidden.IsValid)             _device.Destroy(_viewCbHidden);

@@ -506,8 +506,8 @@ internal sealed class ServiceObjectRenderer : IDisposable
                 icon = ServiceObjectTexture.sound_source; pos = snd.Position; return true;
             case MemoInstance memo:
                 icon = ServiceObjectTexture.memo; pos = memo.Position; return true;
-            case SpriteInstance sprite:
-                icon = ServiceObjectTexture.sprite; pos = sprite.Position; return true;
+            // SpriteInstance is drawn by SpriteRenderer (actual TR1/TR2 sprite
+            // frame), so the service-object placeholder is skipped here.
             case VolumeInstance volume:
                 // Central billboard sprite for box / sphere / prism volumes,
                 // tinted at the call site by the volume's state colour.
