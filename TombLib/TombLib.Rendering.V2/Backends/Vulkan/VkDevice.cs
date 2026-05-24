@@ -1112,8 +1112,20 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     private VkCommandList? _activeCmd;
 
+    // Swapchain whose frame was submitted and is now waiting to be presented.
+    // Cleared by BeginCommandList; Present only proceeds for a matching entry,
+    // so a Present after an abandoned (re-entrant) frame can't hang forever
+    // waiting on a render-finished semaphore that was never signalled.
+    private VkSwapchainRes? _pendingPresent;
+
     public ICommandList BeginCommandList()
     {
+        // A previous command list — abandoned, or the outer frame of a
+        // re-entrant render — must stop touching the shared command buffer
+        // once it is reset below.
+        if (_activeCmd != null) _activeCmd.Disowned = true;
+        _pendingPresent = null;
+
         var fence = FrameFence;
         if (FrameRecording)
         {
@@ -1155,6 +1167,9 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     {
         if (!FrameRecording) return;
         var vkCommandList = (VkCommandList)commandList;
+        // A stale command list — a newer BeginCommandList already took over
+        // the shared command buffer — must not finalise this frame.
+        if (vkCommandList != _activeCmd) return;
         vkCommandList.Finish();
         Api.EndCommandBuffer(FrameCmd);
 
@@ -1163,6 +1178,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         var swapchain = vkCommandList.AcquiredSwapchain;
         if (swapchain != null)
         {
+            _pendingPresent = swapchain;   // this frame is now eligible for Present
             var waitSemaphore = ImageAvailable;
             // Signal this image's own "render finished" semaphore. A single
             // shared one is illegal — the previous image's present may still
@@ -1201,7 +1217,11 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     public void Present(SwapchainHandle handle)
     {
         var swapchain = Swapchains[handle.Id];
-        if (!swapchain.ImageAcquired) return;
+        // Present only the swapchain whose frame was actually submitted this
+        // cycle. Presenting an abandoned frame would wait on a render-finished
+        // semaphore that was never signalled.
+        if (swapchain != _pendingPresent || !swapchain.ImageAcquired) return;
+        _pendingPresent = null;
 
         // Wait on the same per-image semaphore Submit signalled for this image.
         var renderFinished  = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
