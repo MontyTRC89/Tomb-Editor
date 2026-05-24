@@ -1,4 +1,3 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System.Numerics;
 using TombLib;
 using TombLib.Graphics;
@@ -6,15 +5,19 @@ using WadTool.Controls;
 
 namespace WadTool
 {
+    /// <summary>
+    /// Skeleton-bone-offset gizmo for the WadTool skeleton editor. Headless:
+    /// the V2 <c>GizmoRenderer</c> draws the visuals from <see cref="BaseGizmo.GetPublicState"/>;
+    /// this class only feeds pick + drag math.
+    /// </summary>
     public class GizmoSkeletonEditor : BaseGizmo
     {
         private readonly Configuration _configuration;
         private readonly PanelRenderingSkeleton _control;
         private readonly WadToolClass _tool;
 
-        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, GraphicsDevice device,
-                                   Effect effect, PanelRenderingSkeleton control)
-            : base(device, effect)
+        public GizmoSkeletonEditor(WadToolClass tool, Configuration configuration, PanelRenderingSkeleton control)
+            : base()
         {
             _configuration = configuration;
             _control = control;
@@ -33,14 +36,10 @@ namespace WadTool
         {
             if (_control != null && _control.SelectedNode != null)
             {
-                // Move the bone offset
                 _control.SelectedNode.Bone.Translation += delta;
                 _tool.BoneOffsetMoved();
-
-                // Draw scene
                 _control.Invalidate();
             }
-
         }
 
         protected override Vector3 Position => _control != null && _control.SelectedNode != null ? _control.SelectedNode.Center : Vector3.Zero;

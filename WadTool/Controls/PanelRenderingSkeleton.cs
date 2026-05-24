@@ -1,23 +1,24 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
-using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
-using TombLib.Rendering;
+using TombLib.RenderingV2.Preview;
+using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingSkeleton : RenderingPanel
+    /// <summary>
+    /// Skeleton editor preview. Inherits the V2 <see cref="ItemPreviewPanel"/>
+    /// for swapchain + camera plumbing; <see cref="RenderContents"/> draws the
+    /// skeleton bones, grid, selection box, and gizmo.
+    /// </summary>
+    public class PanelRenderingSkeleton : ItemPreviewPanel
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -37,222 +38,87 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadMeshBoneNode SelectedNode { get; set; }
 
-        public Matrix4x4 GizmoTransform
-        {
-            get
-            {
-                return Matrix4x4.CreateScale(StaticScale) *
-                       Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
-                       Matrix4x4.CreateTranslation(StaticPosition);
-            }
-        }
+        public Matrix4x4 GizmoTransform =>
+            Matrix4x4.CreateScale(StaticScale) *
+            Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
+            Matrix4x4.CreateTranslation(StaticPosition);
 
-        // General state
         private WadToolClass _tool;
+        private GizmoSkeletonEditor _gizmo;
+        private LinePrimitiveRenderer _lines;
 
-        // Interaction state
         private float _lastX;
         private float _lastY;
 
-        // Rendering state
-        private RenderingTextureAllocator _fontTexture;
-        private RenderingFont _fontDefault;
-
-        // Legacy rendering state
-        private GraphicsDevice _device;
-        private DeviceManager _deviceManager;
-        private RasterizerState _rasterizerWireframe;
-        private GizmoSkeletonEditor _gizmo;
-        private GeometricPrimitive _plane;
-        private WadRenderer _wadRenderer; // TODO Remove internal hack that destroys rendering encapsulation
-        private WadStatic _dummyStatic = new WadStatic(new WadStaticId(0));
-        private Buffer<SolidVertex> _vertexBufferVisibility;
-
-        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
+        public void Initialize(WadToolClass tool)
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
-
-            base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
-            _device = deviceManager.___LegacyDevice;
-            _deviceManager = deviceManager;
-
-            // Actual "InitializeRendering"
-            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
-            {
-                FontName = _tool.Configuration.Rendering3D_FontName,
-                FontSize = _tool.Configuration.Rendering3D_FontSize,
-                FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
-                TextureAllocator = _fontTexture
-            });
-
-            // Legacy rendering
-            {
-                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048, false);
-                new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-                _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                    IsAntialiasedLineEnabled = true,
-                    IsDepthClipEnabled = true,
-                    IsFrontCounterClockwise = false,
-                    IsMultisampleEnabled = true,
-                    IsScissorEnabled = false,
-                    SlopeScaledDepthBias = 0
-                });
-                _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
-                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
-            }
+            _gizmo = new GizmoSkeletonEditor(_tool, _tool.Configuration, this);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _fontTexture?.Dispose();
-                _fontDefault?.Dispose();
-                _rasterizerWireframe?.Dispose();
-                _vertexBufferVisibility?.Dispose();
                 _gizmo?.Dispose();
-                _plane?.Dispose();
-                _wadRenderer?.Dispose();
+                _lines?.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
+        // ------------------------------------------------ Rendering
 
-        protected override void OnDraw()
+        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.65f, 0.65f, 0.65f, 1f);
+
+        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50f;
+        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f;
+        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
+        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
+        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+
+        protected override void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
         {
-            // To make sure things are in a defined state for legacy rendering...
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            var device = PreviewDevice.Device;
+            var renderer = PreviewDevice.Renderer;
+            _lines ??= new LinePrimitiveRenderer(device);
 
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-            _device.SetBlendState(_device.BlendStates.Opaque);
-
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            Effect solidEffect = _deviceManager.___LegacyEffects["Solid"];
-            
-            if (DrawGrid)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
-            }
-
+            // Bones (textured).
             if (Skeleton != null)
             {
-                var effect = _deviceManager.___LegacyEffects["Model"];
-
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
                 foreach (var node in Skeleton)
-                {
-                    // TODO Keep data on GPU, optimize data upload
-                    // Use new renderer
-
-                    _dummyStatic.Mesh = node.Mesh;
-                    _dummyStatic.Version = DataVersion.GetNext();
-                    var mesh = _wadRenderer.GetStatic(_dummyStatic);
-                    mesh.UpdateBuffers(Camera.GetPosition());
-
-                    effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                    effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(Vector4.One);
-                    effect.Parameters["StaticLighting"].SetValue(node.Mesh.LightingType != WadMeshLightingType.Normals);
-                    effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine);
-
-                    effect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var mesh_ in mesh.Meshes)
-                    {
-                        _device.SetVertexBuffer(0, mesh_.VertexBuffer);
-                        _device.SetIndexBuffer(mesh_.IndexBuffer, true);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer));
-
-                        foreach (var submesh in mesh_.Submeshes)
-                        {
-                            if (submesh.Value.Material.AdditiveBlending)
-                                _device.SetBlendState(_device.BlendStates.Additive);
-                            else
-                                _device.SetBlendState(_device.BlendStates.Opaque);
-
-                            if (submesh.Value.Material.DoubleSided)
-                                _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                            else
-                                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
-                    }
-                }
-
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                _device.SetBlendState(_device.BlendStates.Opaque);
-
-                // Draw box
-                if (SelectedNode != null)
-                {
-                    _vertexBufferVisibility?.Dispose();
-                    _vertexBufferVisibility = SelectedNode.Mesh.BoundingBox.GetVertexBuffer(_device);
-
-                    _device.SetVertexBuffer(_vertexBufferVisibility);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                    _device.SetIndexBuffer(null, false);
-
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((SelectedNode.GlobalTransform * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                    _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
-                }
+                    if (node.Mesh != null)
+                        renderer.RenderMesh(cl, node.Mesh, node.GlobalTransform, viewProjection);
             }
 
+            // Line overlays: reference grid + selection bounding box.
+            _lines.Begin();
+            if (DrawGrid)
+            {
+                // Legacy GeometricPrimitive.GridPlane(8, 4) → 8×4 cells over
+                // [-1..+1] in legacy unit space; our preview camera lives in
+                // WAD units (~256 per click), so scale up to match.
+                _lines.AddGridXZ(size: 4096f, cells: 16, color: 0x80_FF_FF_FFu);
+            }
+            if (SelectedNode?.Mesh != null)
+            {
+                _lines.AddBox(SelectedNode.Mesh.BoundingBox, SelectedNode.GlobalTransform, color: 0xFF_00_FF_00u);
+            }
+            _lines.Flush(cl, viewProjection);
+
+            // Gizmo overlay.
             if (DrawGizmo && SelectedNode != null)
             {
-                // Draw the gizmo
-                SwapChain.ClearDepth();
-                _gizmo.Draw(viewProjection);
-            }
-
-            // Draw debug strings
-            if (SelectedNode != null)
-            {
-                ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
-                Matrix4x4 worldViewProjection = SelectedNode.GlobalTransform * viewProjection;
-                SwapChain.RenderText(new Text
-                {
-                    Font = _fontDefault,
-                    Overlay = true,
-                    Pos = worldViewProjection.TransformPerspectively(SelectedNode.Center - Vector3.UnitY * 128.0f).To2(),
-                    TextAlignment = new Vector2(0, 0),
-                    ScreenAlignment = new Vector2(0.5f, 0.5f),
-                    String =
-                        "Name: " + SelectedNode.Bone.Name +
-                        "\nLocal offset: " + SelectedNode.Bone.Translation
-                });
+                var snap = _gizmo.GetPublicState();
+                PreviewDevice.Gizmo.Render(cl, snap, viewProjection);
             }
         }
 
+        // ------------------------------------------------ Mouse + picking
+
         protected override void OnMouseEnter(EventArgs e)
         {
-            // Make this control able to receive scroll and key board events...
             base.OnMouseEnter(e);
             Focus();
         }
@@ -260,18 +126,15 @@ namespace WadTool.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-
-            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
-            Invalidate();
+            // Base class already zoomed; no extra work needed.
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && _gizmo != null && Skeleton != null)
             {
                 var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
 
-                // Try to do gizmo picking
                 if (DrawGizmo)
                 {
                     var result = _gizmo.DoPicking(ray);
@@ -283,144 +146,99 @@ namespace WadTool.Controls
                     }
                 }
 
-                // Try to do node picking
+                // Bone picking — CPU ray/triangle test, identical to legacy.
                 WadMeshBoneNode foundNode = null;
+                float minDistance = float.PositiveInfinity;
                 foreach (var node in Skeleton)
                 {
-                    float distance = 0;
-                    float minDistance = float.PositiveInfinity;
-                    if (DoNodePicking(ray, node, out distance))
+                    if (DoNodePicking(ray, node, out float distance) && distance < minDistance)
                     {
-                        if (distance < minDistance)
-                        {
-                            distance = minDistance;
-                            foundNode = node;
-                        }
+                        minDistance = distance;
+                        foundNode = node;
                     }
                 }
                 SelectedNode = foundNode;
                 _tool.BonePicked();
             }
 
-            Invalidate();
-
             _lastX = e.X;
             _lastY = e.Y;
-
             base.OnMouseDown(e);
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
+            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (_gizmo == null) return;
 
             var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
-
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
                 Invalidate();
             if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
                 Invalidate();
 
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
-            {
-                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / Height;
-                float deltaY = (e.Y - _lastY) / Height;
-
-                _lastX = e.X;
-                _lastY = e.Y;
-
-                if (e.Button == MouseButtons.Right)
-                {
-                    if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                    else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
-                        Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                     -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
-                }
-                if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
-                     e.Button == MouseButtons.Middle)
-                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-
-                Invalidate();
-            }
+            // Camera nav handled by base.OnMouseMove via right/middle drag.
+            _lastX = e.X;
+            _lastY = e.Y;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-
-            if (_gizmo.MouseUp())
+            if (_gizmo != null && _gizmo.MouseUp())
                 Invalidate();
         }
 
         private bool DoNodePicking(Ray ray, WadMeshBoneNode node, out float nodeDistance)
         {
             nodeDistance = 0;
-
-            // Transform view ray to object space space
-            Matrix4x4 inverseObjectMatrix;
-            if (!Matrix4x4.Invert(node.GlobalTransform, out inverseObjectMatrix))
+            if (!Matrix4x4.Invert(node.GlobalTransform, out var inverse))
                 return false;
-            Vector3 transformedRayPos = MathC.HomogenousTransform(ray.Position, inverseObjectMatrix);
-            Vector3 transformedRayDestination = MathC.HomogenousTransform(ray.Position + ray.Direction, inverseObjectMatrix);
-            Ray transformedRay = new Ray(transformedRayPos, transformedRayDestination - transformedRayPos);
-            transformedRay.Direction = Vector3.Normalize(transformedRay.Direction);
 
-            // Now do a ray - triangle intersection test
+            Vector3 from = MathC.HomogenousTransform(ray.Position, inverse);
+            Vector3 to   = MathC.HomogenousTransform(ray.Position + ray.Direction, inverse);
+            Ray localRay = new Ray(from, Vector3.Normalize(to - from));
+
             bool hit = false;
             float minDistance = float.PositiveInfinity;
             var mesh = node.Mesh;
             foreach (var poly in mesh.Polys)
             {
+                Vector3 p0 = mesh.VertexPositions[poly.Index0];
+                Vector3 p1 = mesh.VertexPositions[poly.Index1];
+                Vector3 p2 = mesh.VertexPositions[poly.Index2];
+
+                if (Collision.RayIntersectsTriangle(localRay, p0, p1, p2, true, out float d) && d < minDistance)
+                {
+                    minDistance = d;
+                    hit = true;
+                }
+
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    Vector3 p1 = mesh.VertexPositions[poly.Index0];
-                    Vector3 p2 = mesh.VertexPositions[poly.Index1];
-                    Vector3 p3 = mesh.VertexPositions[poly.Index2];
-                    Vector3 p4 = mesh.VertexPositions[poly.Index3];
-
-                    float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, true, out distance) && distance < minDistance)
+                    Vector3 p3 = mesh.VertexPositions[poly.Index3];
+                    if (Collision.RayIntersectsTriangle(localRay, p0, p2, p3, true, out d) && d < minDistance)
                     {
-                        minDistance = distance;
-                        hit = true;
-                    }
-
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p3, p4, true, out distance) && distance < minDistance)
-                    {
-                        minDistance = distance;
-                        hit = true;
-                    }
-                }
-                else
-                {
-                    Vector3 p1 = mesh.VertexPositions[poly.Index0];
-                    Vector3 p2 = mesh.VertexPositions[poly.Index1];
-                    Vector3 p3 = mesh.VertexPositions[poly.Index2];
-
-                    float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, true, out distance) && distance < minDistance)
-                    {
-                        minDistance = distance;
+                        minDistance = d;
                         hit = true;
                     }
                 }
             }
 
-            if (hit)
-            {
-                nodeDistance = minDistance;
-                return true;
-            }
-            else
-                return false;
+            if (hit) { nodeDistance = minDistance; return true; }
+            return false;
         }
-        public void UpdateModel() => _wadRenderer.Dispose();
+
+        public void UpdateModel()
+        {
+            // Drop cached per-mesh vertex buffers for the current skeleton —
+            // a bone edit may have changed vertex positions in place.
+            if (Skeleton != null)
+                foreach (var node in Skeleton)
+                    if (node.Mesh != null)
+                        PreviewDevice.Renderer.InvalidateMesh(node.Mesh);
+            Invalidate();
+        }
     }
 }

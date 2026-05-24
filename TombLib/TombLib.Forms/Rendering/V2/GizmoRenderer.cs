@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using TombLib.Graphics;
 using TombLib.RenderingV2.Rhi;
 
-namespace TombEditor.Rendering;
+namespace TombLib.RenderingV2.Preview;
 
 /// <summary>
 /// Draws the translate / scale / rotate gizmo as world-space colored

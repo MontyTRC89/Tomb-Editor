@@ -31,7 +31,7 @@ namespace WadTool
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        public FormSkeletonEditor(WadToolClass tool, DeviceManager manager, Wad2 wad, WadMoveableId moveableId)
+        public FormSkeletonEditor(WadToolClass tool, Wad2 wad, WadMoveableId moveableId)
         {
             InitializeComponent();
 
@@ -40,7 +40,7 @@ namespace WadTool
             _tool = tool;
 
             panelRendering.Configuration = _tool.Configuration;
-            panelRendering.InitializeRendering(tool, manager);
+            panelRendering.Initialize(tool);
 
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 

@@ -128,6 +128,10 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         public BoundingBox  Bounds;
     }
     private readonly Dictionary<IWadObject, PerObject> _cache = new();
+    // Standalone mesh cache for editor scenes (skeleton / mesh editors) that
+    // render WadMeshes directly with per-call transforms — not associated to
+    // any single IWadObject. Lives in the same shared atlas as _cache.
+    private readonly Dictionary<WadMesh, PerObject>     _meshCache = new();
 
     // ---- Pipeline + per-frame scratch -------------------------------------
 
@@ -243,12 +247,121 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             if (per.Vb.IsValid) _device.Destroy(per.Vb);
         _cache.Clear();
 
+        foreach (var per in _meshCache.Values)
+            if (per.Vb.IsValid) _device.Destroy(per.Vb);
+        _meshCache.Clear();
+
         _texturePositions.Clear();
         if (_atlas.IsValid) _device.Destroy(_atlas);
         _atlas       = default;
         _atlasBytes  = null;
         _packer      = null;
         _whitePixel  = default;
+    }
+
+    /// <summary>
+    /// Drop the cached vertex buffer for one specific <see cref="WadMesh"/>.
+    /// Editors call this after editing the mesh in place so the next paint
+    /// re-tessellates from the new vertex / poly data.
+    /// </summary>
+    public void InvalidateMesh(WadMesh mesh)
+    {
+        if (mesh == null) return;
+        if (_meshCache.TryGetValue(mesh, out var per))
+        {
+            if (per.Vb.IsValid) _device.Destroy(per.Vb);
+            _meshCache.Remove(mesh);
+        }
+    }
+
+    /// <summary>
+    /// Render a single <see cref="WadMesh"/> with the supplied model transform
+    /// (baked into the VP). Caches the per-mesh vertex buffer keyed by
+    /// <paramref name="mesh"/> in the same shared atlas as <see cref="Render"/>.
+    /// Used by the skeleton / mesh editors that need to draw arbitrary bones
+    /// without going through an <see cref="IWadObject"/> wrapper.
+    /// </summary>
+    public void RenderMesh(ICommandList cl, WadMesh mesh, Matrix4x4 model, Matrix4x4 viewProjection)
+    {
+        if (mesh == null) return;
+        var per = GetOrBuildMesh(mesh);
+        if (per == null || per.VertexCount == 0) return;
+
+        var vp = new ViewParams
+        {
+            ViewProjection = model * viewProjection,
+            GridLineWidth  = 0f,
+            GridEnabled    = 0f,
+        };
+        unsafe
+        {
+            var span = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));
+            cl.UpdateBuffer(_viewCb, 0, span);
+        }
+
+        cl.SetPipeline(_pipeline);
+
+        _scratchCbuf[0] = _viewCb;
+        _scratchTex [0] = _atlas;
+        _scratchSamp[0] = _sampler;
+        cl.SetBindings(new Bindings
+        {
+            ConstantBuffers = _scratchCbuf,
+            Textures        = _scratchTex,
+            Samplers        = _scratchSamp,
+        });
+
+        _scratchVbs[0] = new VertexBufferBinding(per.Vb, 0);
+        _scratchVbs[1] = new VertexBufferBinding(_identityInstanceVb, 0);
+        cl.SetVertexBuffers(_scratchVbs);
+        cl.Draw(per.VertexCount, 1);
+    }
+
+    /// <summary>CPU-side bounding box of the cached mesh, if built.</summary>
+    public bool TryGetMeshBounds(WadMesh mesh, out BoundingBox box)
+    {
+        if (mesh != null && _meshCache.TryGetValue(mesh, out var per))
+        {
+            box = per.Bounds;
+            return true;
+        }
+        box = default;
+        return false;
+    }
+
+    private PerObject? GetOrBuildMesh(WadMesh mesh)
+    {
+        if (_meshCache.TryGetValue(mesh, out var existing)) return existing;
+        EnsureAtlas();
+
+        var verts = new List<ObjectVertex>();
+        var bounds = new BoundingBox();
+        bool boundsInit = false;
+        void AccBounds(Vector3 p)
+        {
+            if (!boundsInit) { bounds = new BoundingBox(p, p); boundsInit = true; }
+            else { bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p)); }
+        }
+        AppendWadMesh(verts, mesh, Matrix4x4.Identity, AccBounds);
+        if (verts.Count == 0) return null;
+
+        var span = MemoryMarshal.AsBytes(verts.ToArray().AsSpan());
+        var vb = _device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: span.Length,
+                usage:     BufferUsage.Immutable,
+                bindFlags: BufferBindFlags.Vertex,
+                debugName: "PreviewMeshStandalone"),
+            span);
+
+        var per = new PerObject
+        {
+            Vb          = vb,
+            VertexCount = verts.Count,
+            Bounds      = boundsInit ? bounds : new BoundingBox(Vector3.Zero, Vector3.Zero),
+        };
+        _meshCache[mesh] = per;
+        return per;
     }
 
     public bool TryGetBounds(IWadObject obj, out BoundingBox box)

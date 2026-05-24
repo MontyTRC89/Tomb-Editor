@@ -541,7 +541,6 @@
             // 
             // panelRendering
             // 
-            panelRendering.AllowRendering = true;
             panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
             panelRendering.Location = new System.Drawing.Point(0, 0);
             panelRendering.Name = "panelRendering";

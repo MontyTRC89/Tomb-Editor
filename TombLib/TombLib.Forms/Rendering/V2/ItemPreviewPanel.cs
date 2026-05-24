@@ -26,6 +26,7 @@ public static class PreviewDevice
     private static IRhiDevice? _device;
     private static bool _ownsDevice;
     private static WadObjectPreviewRenderer? _renderer;
+    private static GizmoRenderer? _gizmo;
     private static readonly object _lock = new();
 
     public static IRhiDevice Device
@@ -36,6 +37,12 @@ public static class PreviewDevice
     public static WadObjectPreviewRenderer Renderer
     {
         get { EnsureCreated(); return _renderer!; }
+    }
+
+    /// <summary>Shared V2 gizmo renderer for editor preview overlays.</summary>
+    public static GizmoRenderer Gizmo
+    {
+        get { EnsureCreated(); return _gizmo!; }
     }
 
     /// <summary>
@@ -53,6 +60,7 @@ public static class PreviewDevice
             _device     = device;
             _ownsDevice = false;
             _renderer   = new WadObjectPreviewRenderer(_device);
+            _gizmo      = new GizmoRenderer(_device);
         }
     }
 
@@ -65,6 +73,7 @@ public static class PreviewDevice
             _device     = TombLib.RenderingV2.Rhi.RhiBackend.Create();
             _ownsDevice = true;
             _renderer   = new WadObjectPreviewRenderer(_device);
+            _gizmo      = new GizmoRenderer(_device);
         }
     }
 
@@ -125,6 +134,11 @@ public abstract class ItemPreviewPanel : Panel
     private SwapchainHandle _swap;
     private int _width, _height;
     private bool _swapchainReady;
+
+    /// <summary>Render-target width inside the current OnPaint pass.</summary>
+    protected int ViewportWidth  => _width;
+    /// <summary>Render-target height inside the current OnPaint pass.</summary>
+    protected int ViewportHeight => _height;
 
     private readonly Timer _animTimer = new() { Interval = 15 };
     private float _rotationFactor;
@@ -246,15 +260,24 @@ public abstract class ItemPreviewPanel : Panel
             ViewportHeight = _height,
         });
 
-        if (_currentObject != null && IsValid(_currentObject))
-        {
-            var vp = Camera.GetViewProjectionMatrix(_width, _height);
-            PreviewDevice.Renderer.Render(cl, _currentObject, vp);
-        }
+        var viewProjection = Camera.GetViewProjectionMatrix(_width, _height);
+        RenderContents(cl, viewProjection);
 
         cl.EndPass();
         device.Submit(cl);
         device.Present(_swap);
+    }
+
+    /// <summary>
+    /// Override hook for subclasses that need to draw additional geometry
+    /// (skeleton bones, gizmo overlay, wireframe grid, ...) inside the same
+    /// swapchain pass. The default implementation draws <see cref="CurrentObject"/>
+    /// — matching the simple item-browser behaviour.
+    /// </summary>
+    protected virtual void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
+    {
+        if (_currentObject != null && IsValid(_currentObject))
+            PreviewDevice.Renderer.Render(cl, _currentObject, viewProjection);
     }
 
     private void OnAnimTick(object? sender, EventArgs e)

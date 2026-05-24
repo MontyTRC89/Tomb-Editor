@@ -62,7 +62,7 @@ public sealed class LevelRenderer : IDisposable
     // Service objects (lights, cameras, sinks, sound sources, memos, placeholders).
     private ServiceObjectRenderer?              _services;
     // Gizmo overlay (translate / rotate / scale handles for the selected object).
-    private GizmoRenderer?                      _gizmo;
+    private TombLib.RenderingV2.Preview.GizmoRenderer? _gizmo;
     // Text overlay (room names, coordinates, object labels, cardinal directions, FPS).
     private TextRenderer?                       _text;
     // TR1 / TR2 sprite-instance pass (no-op on higher engines).
@@ -253,7 +253,7 @@ public sealed class LevelRenderer : IDisposable
 
         _objects   = new ObjectRenderer(_device);
         _services  = new ServiceObjectRenderer(_device);
-        _gizmo     = new GizmoRenderer(_device);
+        _gizmo     = new TombLib.RenderingV2.Preview.GizmoRenderer(_device);
         _text      = new TextRenderer(_device);
         _sprites   = new SpriteRenderer(_device);
         _editorGeo = new EditorGeometryRenderer(_device);

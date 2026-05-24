@@ -1497,7 +1497,7 @@ namespace WadTool
 
             Wad2 wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
-            using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
+            using (var form = new FormSkeletonEditor(tool, wad, moveableId))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
