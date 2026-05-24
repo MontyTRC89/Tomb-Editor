@@ -237,6 +237,7 @@ public sealed class TextureAtlas : IDisposable
 
     // ===================================================== Region collection
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void CollectFace(HashSet<TexRegion> set, Texture? texture,
                                     Vector2 a, Vector2 b, Vector2 c)
     {
@@ -245,6 +246,7 @@ public sealed class TextureAtlas : IDisposable
             set.Add(region);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void CollectFace(HashSet<TexRegion> set, Texture? texture,
                                     Vector2 a, Vector2 b, Vector2 c, Vector2 d)
     {
@@ -253,6 +255,7 @@ public sealed class TextureAtlas : IDisposable
             set.Add(region);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void CollectWholeImage(HashSet<TexRegion> set, Texture? texture)
     {
         if (texture?.Image == null || texture.Image.Width <= 0 || texture.Image.Height <= 0)
@@ -265,6 +268,7 @@ public sealed class TextureAtlas : IDisposable
     // image. Two faces sampling the same tile produce the same region, so they
     // share one packed entry. Build-time collection and render-time MapFace
     // both go through here, so the keys always agree.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static bool TryComputeRegion(Texture? texture, ReadOnlySpan<Vector2> faceCoords,
                                          out TexRegion region)
     {
@@ -300,6 +304,7 @@ public sealed class TextureAtlas : IDisposable
 
     // ============================================================== Packing
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static bool TryPack(RectPackerSimpleStack packer, int w, int h, out VectorInt2 innerOrigin)
     {
         innerOrigin = default;

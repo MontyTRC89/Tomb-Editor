@@ -66,6 +66,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
     //   normal   = rgb × 0.6, α 0.55
     //   selected = rgb,        α 0.70
     //   disabled = luma of the equivalent tone, α 0.55
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     internal static uint VolumeFillColor(in Vector4 baseColor, bool enabled, bool selected)
     {
         var rgb = new Vector3(baseColor.X, baseColor.Y, baseColor.Z);
@@ -82,6 +83,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // Wireframe outline overlaid on the solid volume — half-bright, half-alpha
     // (legacy d=1 pass: new Vector4(color.To3() * 0.5f, 0.5f)).
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     internal static uint VolumeWireColor(in Vector4 baseColor, bool enabled, bool selected)
     {
         uint fill = VolumeFillColor(baseColor, enabled, selected);
@@ -330,6 +332,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
     private const float SplitRibbonHalfHeight = 12f;  // legacy ribbon = 24 tall
     private const float SplitEdgeOffset       = 8f;   // legacy XZ_OFFSET
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitSectorSplits(Span<LineVertex> v, ref int n, in RenderScene scene)
     {
         Room room = scene.SelectedRoom;
@@ -372,6 +375,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitSplitSurface(Span<LineVertex> v, ref int n, Room room, int x, int z,
                                          int xnzn, int xnzp, int xpzn, int xpzp, DiagonalSplit diag)
     {
@@ -402,6 +406,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
     }
 
     // One split edge as a wireframe ribbon (top + bottom edge + two ends).
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitRibbon(Span<LineVertex> v, ref int n, Room room,
                                    int ax, int ay, int az, int bx, int by, int bz,
                                    float xOff, float zOff)
@@ -423,6 +428,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // ---- Room bounding box ---------------------------------------------------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitRoomBox(Span<LineVertex> v, ref int n, Room room, uint color)
     {
         Vector3 wp = room.WorldPos;
@@ -435,6 +441,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // ---- Volumes ------------------------------------------------------------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitWireBox(Span<LineVertex> v, ref int n, Matrix4x4 m,
                                     Vector3 halfExtents, uint color)
     {
@@ -446,6 +453,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         EmitBoxEdges(v, ref n, c000, c100, c110, c010, c001, c101, c111, c011, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitBoxMinMax(Span<LineVertex> v, ref int n, Vector3 lo, Vector3 hi, uint color)
     {
         var c000 = new Vector3(lo.X, lo.Y, lo.Z); var c100 = new Vector3(hi.X, lo.Y, lo.Z);
@@ -455,6 +463,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         EmitBoxEdges(v, ref n, c000, c100, c110, c010, c001, c101, c111, c011, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitBoxEdges(Span<LineVertex> v, ref int n,
                                      Vector3 c000, Vector3 c100, Vector3 c110, Vector3 c010,
                                      Vector3 c001, Vector3 c101, Vector3 c111, Vector3 c011,
@@ -469,6 +478,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         Line(v, ref n, c110, c111, color); Line(v, ref n, c010, c011, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitWireSphere(Span<LineVertex> v, ref int n, Vector3 centre,
                                        float radius, uint color)
     {
@@ -477,6 +487,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         EmitCircle(v, ref n, centre, Vector3.UnitY, Vector3.UnitZ, radius, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitCircle(Span<LineVertex> v, ref int n, Vector3 centre,
                                    Vector3 a, Vector3 b, float radius, uint color)
     {
@@ -492,6 +503,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // ---- Ghost blocks -------------------------------------------------------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitGhostBlock(Span<LineVertex> v, ref int n, GhostBlockInstance ghost, uint color)
     {
         Vector3[]? floor;
@@ -512,6 +524,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
             Line(v, ref n, floor[i], ceiling[i], color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitQuad(Span<LineVertex> v, ref int n,
                                  Vector3 a, Vector3 b, Vector3 c, Vector3 d, uint color)
     {
@@ -521,6 +534,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // ---- Object bounding boxes ---------------------------------------------
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitMoveableBox(Span<LineVertex> v, ref int n, MoveableInstance mov,
                                         Level level, uint color)
     {
@@ -532,6 +546,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         EmitWireBox(v, ref n, m, bb.Size * 0.5f, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitStaticBox(Span<LineVertex> v, ref int n, StaticInstance stat,
                                       Level level, uint color)
     {
@@ -589,6 +604,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // Solid translucent box (12 triangles) — winding is irrelevant, the
     // triangle pass is CullNone.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitSolidBox(Span<LineVertex> v, ref int n, Matrix4x4 m,
                                      Vector3 he, uint color)
     {
@@ -606,6 +622,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         Quad(v, ref n, c010, c110, c111, c011, color);  // +Y
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void Quad(Span<LineVertex> v, ref int n,
                              Vector3 a, Vector3 b, Vector3 c, Vector3 d, uint color)
     {
@@ -614,6 +631,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
     }
 
     // Solid translucent UV sphere.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitSolidSphere(Span<LineVertex> v, ref int n, Vector3 centre,
                                         float radius, uint color)
     {
@@ -642,6 +660,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // Flyby path — a solid triangular-prism tube following the Catmull-Rom
     // spline through the sequence's cameras. Ported from the legacy AddFlybyPath.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitFlybyPathSolid(Span<LineVertex> v, ref int n, Level level, int sequence)
     {
         var cams = FlybySequenceHelper.GetCameras(level, sequence);
@@ -679,6 +698,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
 
     // One spline segment as a triangular prism (6 triangles). The cross-section
     // is the legacy triangle: the spline point plus two points offset up-and-out.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitPrismSegment(Span<LineVertex> v, ref int n, Vector3 p0, Vector3 p1,
                                          float th, uint color)
     {
@@ -691,6 +711,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
     }
 
     // Flyby direction cone — apex at the camera, opening along its view direction.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitFlybyCone(Span<LineVertex> v, ref int n, FlybyCameraInstance fb, uint color)
     {
         if (fb.Room == null) return;
@@ -717,37 +738,49 @@ internal sealed class EditorGeometryRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint SequenceColor(int sequence)
     {
         var c = MathC.GetRandomColorByIndex(sequence, 32, 0.7f);
         return Rgb(c.X, c.Y, c.Z);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitTri(Span<LineVertex> v, ref int n, Vector3 a, Vector3 b, Vector3 c, uint color)
     {
-        if (n + 3 <= v.Length)
+        int i = n;
+        if ((uint)(i + 3) <= (uint)v.Length)
         {
-            v[n].Position     = a; v[n].Color     = color;
-            v[n + 1].Position = b; v[n + 1].Color = color;
-            v[n + 2].Position = c; v[n + 2].Color = color;
+            // Skip span bounds checks — the range fits.
+            ref var v0 = ref System.Runtime.CompilerServices.Unsafe.Add(
+                ref System.Runtime.InteropServices.MemoryMarshal.GetReference(v), i);
+            v0.Position = a; v0.Color = color;
+            ref var v1 = ref System.Runtime.CompilerServices.Unsafe.Add(ref v0, 1);
+            v1.Position = b; v1.Color = color;
+            ref var v2 = ref System.Runtime.CompilerServices.Unsafe.Add(ref v0, 2);
+            v2.Position = c; v2.Color = color;
         }
-        n += 3;
+        n = i + 3;
     }
 
     // ---- primitives ---------------------------------------------------------
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void Line(Span<LineVertex> v, ref int n, Vector3 a, Vector3 b, uint color)
     {
-        if (n + 2 <= v.Length)
+        int i = n;
+        if ((uint)(i + 2) <= (uint)v.Length)
         {
-            v[n].Position     = a; v[n].Color     = color;
-            v[n + 1].Position = b; v[n + 1].Color = color;
+            ref var v0 = ref System.Runtime.CompilerServices.Unsafe.Add(
+                ref System.Runtime.InteropServices.MemoryMarshal.GetReference(v), i);
+            v0.Position = a; v0.Color = color;
+            ref var v1 = ref System.Runtime.CompilerServices.Unsafe.Add(ref v0, 1);
+            v1.Position = b; v1.Color = color;
         }
-        n += 2;
+        n = i + 2;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint Rgb(float r, float g, float b)
     {
         uint ri = (uint)Math.Clamp((int)(r * 255f + 0.5f), 0, 255);
@@ -756,6 +789,7 @@ internal sealed class EditorGeometryRenderer : IDisposable
         return ri | (gi << 8) | (bi << 16) | (0xFFu << 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackRgba(Vector4 c)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);

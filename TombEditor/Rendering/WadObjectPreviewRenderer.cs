@@ -508,6 +508,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         return r | (g << 8) | (b << 16) | (0xFFu << 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static ushort PackUNorm16(float v) =>
         (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 

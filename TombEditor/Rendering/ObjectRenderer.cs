@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -520,10 +521,12 @@ internal sealed class ObjectRenderer : IDisposable
         return new GpuMesh { Vb = vb, VertexCount = verts.Count };
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackColorRgba8(Vector3 c) => PackColor(c, 0xFFu);
 
     // Packs an RGB tint plus an 8-bit alpha payload — for WAD meshes the alpha
     // byte carries the face BlendMode so the shader can alpha-test cutouts.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackColor(Vector3 c, uint alphaByte)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
@@ -532,6 +535,7 @@ internal sealed class ObjectRenderer : IDisposable
         return r | (g << 8) | (b << 16) | ((alphaByte & 0xFFu) << 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static ushort PackUNorm16(float v) =>
         (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 

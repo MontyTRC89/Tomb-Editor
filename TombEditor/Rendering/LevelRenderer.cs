@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -111,6 +112,7 @@ public sealed class LevelRenderer : IDisposable
         public Half    GridUvV;      // 22..24
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackColor(Vector3 c, uint alphaByte)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
@@ -123,6 +125,7 @@ public sealed class LevelRenderer : IDisposable
         return r | (g << 8) | (b << 16) | (a << 24);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static ushort PackUNorm16(float v) =>
         (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
 

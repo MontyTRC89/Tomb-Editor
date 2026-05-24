@@ -165,6 +165,7 @@ public sealed class GizmoRenderer : IDisposable
     private const uint PieY = 0x94_00_FF_00u;
     private const uint PieZ = 0x94_FF_00_00u;
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint AxisColor(GizmoMode self, in BaseGizmo.PublicState s, uint normal, uint hi)
         => (s.ActiveMode == self || (s.ActiveMode == GizmoMode.None && s.HoveredMode == self)) ? hi : normal;
 
@@ -271,6 +272,7 @@ public sealed class GizmoRenderer : IDisposable
     // ------------- Geometry primitives ------------------------------------
 
     // Translate arrow: cylinder shaft + cone cap.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitAxisAndCone(Vector3 origin, Vector3 dir,
                                          float axisLen, float coneApexAt,
                                          float axisRadius, float coneRadius,
@@ -291,6 +293,7 @@ public sealed class GizmoRenderer : IDisposable
         EmitCone(coneBase, coneApex, u, w, coneRadius, ConeSegments, color, v, ref n);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitTube(Vector3 a, Vector3 b, Vector3 u, Vector3 w,
                                   float radius, int segments, uint color,
                                   Span<GizmoVertex> v, ref int n)
@@ -311,6 +314,7 @@ public sealed class GizmoRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitCone(Vector3 baseCentre, Vector3 apex,
                                   Vector3 u, Vector3 w, float radius, int segments,
                                   uint color, Span<GizmoVertex> v, ref int n)
@@ -332,6 +336,7 @@ public sealed class GizmoRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitCube(Vector3 centre, float halfExtent, uint color,
                                   Span<GizmoVertex> v, ref int n)
     {
@@ -354,6 +359,7 @@ public sealed class GizmoRenderer : IDisposable
         EmitQuad(c100, c110, c111, c101, color, v, ref n); // +X
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitQuad(Vector3 a, Vector3 b, Vector3 c, Vector3 d,
                                   uint color, Span<GizmoVertex> v, ref int n)
     {
@@ -364,6 +370,7 @@ public sealed class GizmoRenderer : IDisposable
     // Torus ring around <axis>, of major radius <ringR> and tube radius
     // <tubeR>. The ring lies in the plane spanned by (perpA, perpB) in local
     // space, then is transformed by <rot> and translated by <origin>.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitRing(Vector3 origin, Vector3 axis, Vector3 perpA, Vector3 perpB,
                                   Matrix4x4 rot, float ringR, float tubeR, uint color,
                                   Span<GizmoVertex> v, ref int n)
@@ -405,6 +412,7 @@ public sealed class GizmoRenderer : IDisposable
     // Filled angular sector (the legacy "rotation helper geometry") + a thin
     // radial line to the cursor. Generated in the same local frame as the
     // matching ring so it sits flat on top of it.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitRotationPie(in BaseGizmo.PublicState s,
                                          Vector3 axisLocal, Vector3 perpALocal, Vector3 perpBLocal,
                                          Matrix4x4 frozenRot,
@@ -456,12 +464,15 @@ public sealed class GizmoRenderer : IDisposable
         Push(spokeTip   - spokeSide, spokeColor, v, ref n);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void Push(Vector3 p, uint color, Span<GizmoVertex> v, ref int n)
     {
-        if (n >= v.Length) return; // overflow guard — Render() resizes on next pass
-        v[n].Position = p;
-        v[n].Color    = color;
-        n++;
+        int i = n;
+        if ((uint)i >= (uint)v.Length) return; // overflow guard — Render() resizes on next pass
+        ref var vert = ref System.Runtime.CompilerServices.Unsafe.Add(
+            ref System.Runtime.InteropServices.MemoryMarshal.GetReference(v), i);
+        vert.Position = p;
+        vert.Color    = color;
+        n = i + 1;
     }
 }

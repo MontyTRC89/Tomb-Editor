@@ -179,6 +179,7 @@ public sealed class TextRenderer : IDisposable
 
     // ============================================================ helpers
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void EnsureGlyphs(string? text)
     {
         if (string.IsNullOrEmpty(text)) return;
@@ -266,6 +267,7 @@ public sealed class TextRenderer : IDisposable
         _lineScratch.Add(text.Substring(start));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private float MeasureLine(string line, float tabWidth)
     {
         float w = 0f;
@@ -274,6 +276,7 @@ public sealed class TextRenderer : IDisposable
         return w;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static bool Project(Vector3 world, Matrix4x4 vp, int width, int height, out Vector2 px)
     {
         // Row-vector multiply — matches the shader's mul(VP, pos) once the
@@ -287,6 +290,7 @@ public sealed class TextRenderer : IDisposable
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void EmitGlyphQuad(Span<TextVertex> v, ref int n, float x, float y, in Glyph g, uint color)
     {
         if (n + 6 > v.Length) { n += 6; return; }
@@ -298,6 +302,7 @@ public sealed class TextRenderer : IDisposable
         Quad(v, ref n, x, y, g.Width, g.Height, u0, v0, u1, v1, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void EmitSolidQuad(Span<TextVertex> v, ref int n, float x, float y,
                                float w, float h, uint color)
     {
@@ -306,6 +311,7 @@ public sealed class TextRenderer : IDisposable
         Quad(v, ref n, x, y, w, h, uv.X, uv.Y, uv.X, uv.Y, color);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void Quad(Span<TextVertex> v, ref int n, float x, float y, float w, float h,
                              float u0, float v0, float u1, float v1, uint color)
     {
@@ -317,6 +323,7 @@ public sealed class TextRenderer : IDisposable
         v[n++] = p00; v[n++] = p11; v[n++] = p01;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackRgba(Vector4 c)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);

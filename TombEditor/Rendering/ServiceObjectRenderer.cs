@@ -421,6 +421,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
     // Per-type sprite tint. Mirrors the legacy DrawPlaceholders / DrawLights /
     // DrawSprites colour table — the icons themselves are mostly white/grey
     // detail so the tint determines the at-a-glance colour code.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint ServiceObjectColor(ObjectInstance obj)
     {
         switch (obj)
@@ -461,6 +462,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint Rgb(float r, float g, float b)
     {
         uint ri = (uint)Math.Clamp((int)(r * 255f + 0.5f), 0, 255);
@@ -532,6 +534,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         return false;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitBillboard(Vector3 centre, ServiceObjectTexture icon, uint tint,
                                        Span<SpriteVertex> v, ref int n)
     {
@@ -599,6 +602,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         return n;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitLightVolume(Vector3 centre, LightInstance light,
                                          Span<LineVertex> v, ref int n)
     {
@@ -637,6 +641,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitFlybyCone(FlybyCameraInstance flyby, Span<LineVertex> v, ref int n)
     {
         if (flyby.Room == null) return;
@@ -650,6 +655,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         EmitWireCone(centre, fwd, LightRangeToWorld, halfAngle, LineOuter, v, ref n);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static Vector3 TransformDir(Matrix4x4 m, Vector3 d)
     {
         var r = Vector3.TransformNormal(d, m);
@@ -658,6 +664,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
 
     // 3 great circles around X / Y / Z axes — enough to read as a sphere
     // without flooding the line buffer.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitWireSphere(Vector3 centre, float radius, uint color,
                                         Span<LineVertex> v, ref int n)
     {
@@ -669,6 +676,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
         EmitCircle(centre, Vector3.UnitY, Vector3.UnitZ, radius, color, v, ref n); // YZ
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitCircle(Vector3 centre, Vector3 a, Vector3 b, float radius, uint color,
                                     Span<LineVertex> v, ref int n)
     {
@@ -684,6 +692,7 @@ internal sealed class ServiceObjectRenderer : IDisposable
     }
 
     // Wire cone: N spokes from the apex to the base + a base circle.
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitWireCone(Vector3 apex, Vector3 dir, float length, float halfAngle,
                                       uint color, Span<LineVertex> v, ref int n)
     {
@@ -719,17 +728,21 @@ internal sealed class ServiceObjectRenderer : IDisposable
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void Push(Vector3 p, uint color, Span<LineVertex> v, ref int n)
     {
-        if (n < v.Length)
+        int i = n;
+        if ((uint)i < (uint)v.Length)
         {
-            v[n].Position = p;
-            v[n].Color    = color;
+            ref var vert = ref System.Runtime.CompilerServices.Unsafe.Add(
+                ref System.Runtime.InteropServices.MemoryMarshal.GetReference(v), i);
+            vert.Position = p;
+            vert.Color    = color;
         }
-        n++;
+        n = i + 1;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackRgba(Vector4 c)
     {
         uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
