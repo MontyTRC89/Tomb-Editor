@@ -1,8 +1,9 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Scripting.ClassicScript.Writers
 {
@@ -10,45 +11,27 @@ namespace TombLib.Scripting.ClassicScript.Writers
 	{
 		public static void RenameLevelScript(TextEditorBase textEditor, string oldName, string newName)
 		{
-			foreach (DocumentLine line in textEditor.Document.Lines)
+			var regex = new Regex(Patterns.NameCommand, RegexOptions.IgnoreCase);
+
+			TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
 			{
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
-				var regex = new Regex(Patterns.NameCommand, RegexOptions.IgnoreCase);
+				if (!regex.IsMatch(lineText))
+					return null;
 
-				if (regex.IsMatch(lineText))
-				{
-					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim();
-
-					if (scriptLevelName == oldName)
-					{
-						lineText = lineText.Replace(oldName, newName);
-
-						textEditor.ReplaceLine(line, lineText, true);
-						textEditor.ScrollToLine(line.LineNumber);
-
-						break;
-					}
-				}
-			}
+				string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim();
+				return scriptLevelName == oldName
+					? lineText.Replace(oldName, newName)
+					: null;
+			});
 		}
 
 		public static void RenameLanguageString(TextEditorBase textEditor, string oldName, string newName)
-		{
-			foreach (DocumentLine line in textEditor.Document.Lines)
+			=> TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
 			{
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
 				string cleanString = LineParser.RemoveComments(LineParser.RemoveNGStringIndex(lineText)).Trim();
-
-				if (cleanString == oldName)
-				{
-					lineText = lineText.Replace(oldName, newName);
-
-					textEditor.ReplaceLine(line, lineText, true);
-					textEditor.ScrollToLine(line.LineNumber);
-
-					break;
-				}
-			}
-		}
+				return cleanString == oldName
+					? lineText.Replace(oldName, newName)
+					: null;
+			});
 	}
 }

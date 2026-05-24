@@ -224,7 +224,7 @@ namespace TombIDE.Shared
 			}
 		};
 
-		public static readonly DockPanelState Tomb1MainLayout = new DockPanelState
+		public static readonly DockPanelState TRXLayout = new DockPanelState
 		{
 			Regions = new List<DockRegionState>
 			{

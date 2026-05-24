@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -10,17 +10,17 @@ namespace TombLib.LanguageServer.Lua;
 /// <param name="ReplaceStart">The start position of the replace range, when present.</param>
 /// <param name="ReplaceEnd">The end position of the replace range, when present.</param>
 internal readonly record struct LuaCompletionTextEditIdentity(
-	LuaCompletionPosition? InsertStart,
-	LuaCompletionPosition? InsertEnd,
-	LuaCompletionPosition? ReplaceStart,
-	LuaCompletionPosition? ReplaceEnd)
+	TextCompletionPosition? InsertStart,
+	TextCompletionPosition? InsertEnd,
+	TextCompletionPosition? ReplaceStart,
+	TextCompletionPosition? ReplaceEnd)
 {
 	/// <summary>
 	/// Creates a normalized text-edit identity from a parsed completion text edit.
 	/// </summary>
 	/// <param name="textEdit">The parsed completion text edit.</param>
 	/// <returns>The normalized identity.</returns>
-	internal static LuaCompletionTextEditIdentity Create(LuaCompletionTextEdit? textEdit)
+	internal static LuaCompletionTextEditIdentity Create(TextCompletionTextEdit? textEdit)
 		=> textEdit is not { } value
 			? default
 			: new(

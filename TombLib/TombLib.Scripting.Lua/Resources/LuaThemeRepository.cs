@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Themes;
 
 namespace TombLib.Scripting.Lua.Resources;
 

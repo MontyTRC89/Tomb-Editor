@@ -1,6 +1,6 @@
 using System.Windows.Media;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Resources;
+using TombLib.Scripting.Lua.Themes;
+using TombLib.Scripting.UI.Resources;
 using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.Lua.Resources;

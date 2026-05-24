@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.Specifications.ClassicScript;
 
 namespace TombIDE.ScriptingStudio.Controls
 {
@@ -82,7 +83,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			SelectionColor = ColorTranslator.FromHtml(_config.ColorScheme.Values.HtmlColor);
 
 			// Set the colors
-			SetTextColor(@"\[\b(" + string.Join("|", Keywords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_config.ColorScheme.Sections.HtmlColor));
+			SetTextColor(@"\[\b(" + string.Join("|", ClassicScriptKeywords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_config.ColorScheme.Sections.HtmlColor));
 			SetTextColor(Patterns.StandardCommands, ColorTranslator.FromHtml(_config.ColorScheme.StandardCommands.HtmlColor));
 			SetTextColor(Patterns.NewCommands, ColorTranslator.FromHtml(_config.ColorScheme.NewCommands.HtmlColor));
 			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_config.ColorScheme.References.HtmlColor));

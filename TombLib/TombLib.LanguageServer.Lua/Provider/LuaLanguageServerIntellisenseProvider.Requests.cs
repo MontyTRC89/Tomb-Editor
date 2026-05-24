@@ -1,13 +1,30 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Editing;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Navigation;
+using TombLib.Scripting.Signatures;
 
 namespace TombLib.LanguageServer.Lua;
 
 public sealed partial class LuaLanguageServerIntellisenseProvider
 {
-	public Task<LuaHoverInfo?> GetHoverAsync(string filePath, string content,
+	public async Task<IReadOnlyList<TextReferenceLocation>> GetReferencesAsync(TextReferenceRequest request, CancellationToken cancellationToken = default)
+	{
+		ArgumentNullException.ThrowIfNull(request);
+
+		return await GetReferencesAsync(
+			request.FilePath,
+			request.DocumentText,
+			request.Line,
+			request.Column,
+			cancellationToken).ConfigureAwait(false);
+	}
+
+	public Task<TextHoverInfo?> GetHoverAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
-		return SendPositionRequestAsync<HoverResponse?, LuaHoverInfo?>(
+		return SendPositionRequestAsync<HoverResponse?, TextHoverInfo?>(
 			filePath, content, line, column, "textDocument/hover",
 			static (textDocument, position) => new TextDocumentPositionParams(textDocument, position),
 			LuaLanguageServerResponseParser.ParseHoverInfo,
@@ -16,10 +33,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
-	public Task<LuaDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
+	public Task<TextDefinitionLocation?> GetDefinitionAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
-		return SendPositionRequestAsync<DefinitionResponse, LuaDefinitionLocation?>(
+		return SendPositionRequestAsync<DefinitionResponse, TextDefinitionLocation?>(
 			filePath, content, line, column, "textDocument/definition",
 			static (textDocument, position) => new TextDocumentPositionParams(textDocument, position),
 			LuaLanguageServerResponseParser.ParseDefinitionLocation,
@@ -28,7 +45,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
-	public async Task<IReadOnlyList<LuaReferenceLocation>> GetReferencesAsync(string filePath, string content,
+	public async Task<IReadOnlyList<TextReferenceLocation>> GetReferencesAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
 		ILanguageServerClient? client = _client;
@@ -66,10 +83,11 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	public async Task<LuaWorkspaceEdit?> RenameSymbolAsync(string filePath, string content,
-		int line, int column, string newName, CancellationToken cancellationToken = default)
+	public async Task<TextWorkspaceEdit?> RenameSymbolAsync(TextRenameRequest request, CancellationToken cancellationToken = default)
 	{
-		if (string.IsNullOrWhiteSpace(newName))
+		ArgumentNullException.ThrowIfNull(request);
+
+		if (string.IsNullOrWhiteSpace(request.NewName))
 			return null;
 
 		ILanguageServerClient? client = _client;
@@ -77,12 +95,12 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		if (client is null)
 			return null;
 
-		if (!LanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
+		if (!LanguageServerPathHelper.TryNormalizeLocalPath(request.FilePath, out string normalizedFilePath))
 			return null;
 
 		try
 		{
-			if (!await SynchronizeDocumentAsync(normalizedFilePath, content,
+			if (!await SynchronizeDocumentAsync(normalizedFilePath, request.DocumentText,
 				acquireOpenReference: false, acquireRequestReference: true, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false))
 			{
 				return null;
@@ -92,10 +110,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				return null;
 
 			var textDocument = new TextDocumentIdentifier(LanguageServerPathHelper.CreateFileUri(normalizedFilePath));
-			var position = new ProtocolPosition(line, column);
+			var position = new ProtocolPosition(request.Line, request.Column);
 
 			WorkspaceEditResponse? response = await SendBoundedRequestAsync<WorkspaceEditResponse?>(client, "textDocument/rename",
-				new RenameParams(textDocument, position, newName),
+				new RenameParams(textDocument, position, request.NewName),
 				timeoutValue: null,
 				cancellationToken).ConfigureAwait(false);
 
@@ -107,36 +125,43 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	public async Task<IReadOnlyList<LuaTextEdit>> FormatDocumentAsync(string filePath, string content,
-		LuaFormattingOptions options, CancellationToken cancellationToken = default)
+	public async Task<TextWorkspaceEdit?> FormatDocumentAsync(TextFormatRequest request, CancellationToken cancellationToken = default)
 	{
+		ArgumentNullException.ThrowIfNull(request);
+
 		ILanguageServerClient? client = _client;
 
 		if (client is null)
-			return [];
+			return null;
 
-		if (!LanguageServerPathHelper.TryNormalizeLocalPath(filePath, out string normalizedFilePath))
-			return [];
+		if (!LanguageServerPathHelper.TryNormalizeLocalPath(request.FilePath, out string normalizedFilePath))
+			return null;
 
 		try
 		{
-			if (!await SynchronizeDocumentAsync(normalizedFilePath, content,
+			if (!await SynchronizeDocumentAsync(normalizedFilePath, request.DocumentText,
 				acquireOpenReference: false, acquireRequestReference: true, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false))
 			{
-				return [];
+				return null;
 			}
 
 			if (!client.SupportsFormatting)
-				return [];
+				return null;
 
 			TextEditPayload[]? response = await SendBoundedRequestAsync<TextEditPayload[]?>(client, "textDocument/formatting",
 				new DocumentFormattingParams(
 					new TextDocumentIdentifier(LanguageServerPathHelper.CreateFileUri(normalizedFilePath)),
-					new FormattingOptionsPayload(options.TabSize, options.InsertSpaces)),
+					new FormattingOptionsPayload(request.Options.TabSize, request.Options.InsertSpaces)),
 				timeoutValue: null,
 				cancellationToken).ConfigureAwait(false);
 
-			return LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(response);
+			IReadOnlyList<TextEdit> textEdits = LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(response);
+
+			return textEdits.Count == 0
+				? null
+				: new TextWorkspaceEdit([
+					new TextDocumentEdit(request.FilePath, textEdits)
+				]);
 		}
 		finally
 		{
@@ -144,10 +169,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 	}
 
-	public Task<LuaSignatureInfo?> GetSignatureHelpAsync(string filePath, string content,
+	public Task<TextSignatureHelpInfo?> GetSignatureHelpAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
-		return SendPositionRequestAsync<SignatureHelpResponse?, LuaSignatureInfo?>(
+		return SendPositionRequestAsync<SignatureHelpResponse?, TextSignatureHelpInfo?>(
 			filePath, content, line, column, "textDocument/signatureHelp",
 			static (textDocument, position) => new TextDocumentPositionParams(textDocument, position),
 			LuaLanguageServerResponseParser.ParseSignatureHelp,

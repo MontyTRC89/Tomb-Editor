@@ -1,6 +1,6 @@
 using NLog;
 using System.Diagnostics.CodeAnalysis;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Editing;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -11,12 +11,12 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses a workspace edit from a LuaLS rename response.
 	/// </summary>
-	internal static LuaWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response)
+	internal static TextWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response)
 	{
 		if (response is null)
 			return null;
 
-		var editsByFile = new Dictionary<string, List<LuaTextEdit>>(StringComparer.OrdinalIgnoreCase);
+		var editsByFile = new Dictionary<string, List<TextEdit>>(StringComparer.OrdinalIgnoreCase);
 
 		ParseChangeMap(response.Value.Changes, editsByFile);
 
@@ -26,23 +26,23 @@ internal static partial class LuaLanguageServerResponseParser
 		if (editsByFile.Count == 0)
 			return null;
 
-		var documentEdits = new List<LuaDocumentEdit>(editsByFile.Count);
+		var documentEdits = new List<TextDocumentEdit>(editsByFile.Count);
 
-		foreach ((string filePath, List<LuaTextEdit> textEdits) in editsByFile)
+		foreach ((string filePath, List<TextEdit> textEdits) in editsByFile)
 		{
 			if (textEdits.Count == 0)
 				continue;
 
-			documentEdits.Add(new LuaDocumentEdit(filePath, textEdits));
+			documentEdits.Add(new TextDocumentEdit(filePath, textEdits));
 		}
 
 		return documentEdits.Count == 0
 			? null
-			: new LuaWorkspaceEdit(documentEdits);
+			: new TextWorkspaceEdit(documentEdits);
 	}
 
 	private static void ParseChangeMap(IReadOnlyDictionary<string, IReadOnlyList<TextEditPayload>?>? changes,
-		Dictionary<string, List<LuaTextEdit>> editsByFile)
+		Dictionary<string, List<TextEdit>> editsByFile)
 	{
 		if (changes is null)
 			return;
@@ -52,13 +52,13 @@ internal static partial class LuaLanguageServerResponseParser
 			if (!LanguageServerPathHelper.TryGetFilePath(uri, out string filePath))
 				continue;
 
-			List<LuaTextEdit> textEdits = GetOrCreateTextEditBucket(editsByFile, filePath);
+			List<TextEdit> textEdits = GetOrCreateTextEditBucket(editsByFile, filePath);
 			AppendTextEdits(edits, textEdits);
 		}
 	}
 
 	private static bool ParseDocumentChanges(IReadOnlyList<WorkspaceDocumentChangePayload>? documentChanges,
-		Dictionary<string, List<LuaTextEdit>> editsByFile)
+		Dictionary<string, List<TextEdit>> editsByFile)
 	{
 		if (documentChanges is null)
 			return true;
@@ -82,42 +82,42 @@ internal static partial class LuaLanguageServerResponseParser
 			if (!LanguageServerPathHelper.TryGetFilePath(documentChange.TextDocument?.Uri, out string filePath))
 				continue;
 
-			List<LuaTextEdit> textEdits = GetOrCreateTextEditBucket(editsByFile, filePath);
+			List<TextEdit> textEdits = GetOrCreateTextEditBucket(editsByFile, filePath);
 			AppendTextEdits(documentChange.Edits, textEdits);
 		}
 
 		return true;
 	}
 
-	private static void AppendTextEdits(IReadOnlyList<TextEditPayload>? edits, List<LuaTextEdit> textEdits)
+	private static void AppendTextEdits(IReadOnlyList<TextEditPayload>? edits, List<TextEdit> textEdits)
 	{
 		if (edits is null)
 			return;
 
 		for (int i = 0; i < edits.Count; i++)
 		{
-			if (TryParseTextEdit(edits[i], out LuaTextEdit? textEdit))
+			if (TryParseTextEdit(edits[i], out TextEdit? textEdit))
 				textEdits.Add(textEdit);
 		}
 	}
 
-	private static bool TryParseTextEdit(TextEditPayload edit, [NotNullWhen(true)] out LuaTextEdit? textEdit)
+	private static bool TryParseTextEdit(TextEditPayload edit, [NotNullWhen(true)] out TextEdit? textEdit)
 	{
 		textEdit = null;
 
 		if (!ProtocolRangeHelper.TryGetOneBasedRange(edit.Range, out OneBasedDocumentRange? range))
 			return false;
 
-		textEdit = new LuaTextEdit(
-			new LuaDocumentRange(range.Value.StartLineNumber, range.Value.StartColumnNumber, range.Value.EndLineNumber, range.Value.EndColumnNumber),
+		textEdit = new TextEdit(
+			new TextDocumentRange(range.Value.StartLineNumber, range.Value.StartColumnNumber, range.Value.EndLineNumber, range.Value.EndColumnNumber),
 			edit.NewText ?? string.Empty);
 
 		return true;
 	}
 
-	private static List<LuaTextEdit> GetOrCreateTextEditBucket(Dictionary<string, List<LuaTextEdit>> editsByFile, string filePath)
+	private static List<TextEdit> GetOrCreateTextEditBucket(Dictionary<string, List<TextEdit>> editsByFile, string filePath)
 	{
-		if (!editsByFile.TryGetValue(filePath, out List<LuaTextEdit>? textEdits))
+		if (!editsByFile.TryGetValue(filePath, out List<TextEdit>? textEdits))
 		{
 			textEdits = [];
 			editsByFile[filePath] = textEdits;

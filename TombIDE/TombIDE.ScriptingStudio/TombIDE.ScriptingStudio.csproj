@@ -21,10 +21,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Settings\Tomb1MainSettingsControl.cs">
+    <Compile Update="Settings\TRXSettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Tomb1MainStudio.cs">
+    <Compile Update="TRXStudio.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="GameFlowScriptStudio.cs">
@@ -68,11 +68,13 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.LanguageServer.Lua\TombLib.LanguageServer.Lua.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Tomb1Main\TombLib.Scripting.Tomb1Main.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.TRX\TombLib.Scripting.TRX.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
@@ -83,27 +85,19 @@
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Lua.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\PlainText.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Tomb1Main.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\TRX.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Lua.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\PlainText.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Tomb1Main.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\TRX.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\ClassicScript.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Lua.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\PlainText.xml" />
     <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Tomb1Main.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\GameFlowScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Tomb1Main.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\GameFlowScript.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Tomb1Main.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\TRX.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="FileHandling.cs" />

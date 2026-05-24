@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Shortcuts;
 using TombIDE.ScriptingStudio.UI;
 
 namespace TombIDE.ScriptingStudio.Controls
@@ -11,6 +12,10 @@ namespace TombIDE.ScriptingStudio.Controls
 	public class EditorContextMenu : DarkContextMenu
 	{
 		#region Properties
+
+		public IReadOnlyList<StudioToolStripItem> DocumentModeContributionItems { get; set; }
+
+		public StudioShortcutBindingService ShortcutBindingService { get; set; }
 
 		private DocumentMode _documentMode;
 		[Browsable(false)]
@@ -66,15 +71,18 @@ namespace TombIDE.ScriptingStudio.Controls
 					yield return new ToolStripSeparator();
 				else
 				{
+					UICommand command = StudioItemParser.GetCommand(item.Command);
 					string text = StudioItemParser.GetItemText(item);
 					Image icon = StudioItemParser.FindImageInResources(item.Icon);
-					Keys keys = StudioItemParser.FindPredefinedKeys(item.Keys);
+					Keys keys = TryGetShortcut(command, out Keys shortcutKeys)
+						? shortcutKeys
+						: StudioItemParser.FindPredefinedKeys(item.Keys);
 
 					yield return new ToolStripMenuItem(text, icon, OnItemClicked, keys)
 					{
-						ShortcutKeyDisplayString = item.KeysDisplay,
+						ShortcutKeyDisplayString = GetShortcutDisplayText(command, item.KeysDisplay),
 						CheckOnClick = item.CheckOnClick,
-						Tag = new UIElementArgs(DocumentMode.GetType(), StudioItemParser.GetCommand(item.Command))
+						Tag = new UIElementArgs(DocumentMode.GetType(), command)
 					};
 				}
 		}
@@ -95,6 +103,20 @@ namespace TombIDE.ScriptingStudio.Controls
 		#endregion Other methods
 
 		private IEnumerable<StudioToolStripItem> GetStudioItems()
-			=> ToolStripXmlReader.GetItemsFromXml($"UI.DocumentModePresets.ContextMenus.{DocumentMode}.xml");
+			=> DocumentModeContributionItems?.Count > 0
+				? DocumentModeContributionItems
+				: ToolStripXmlReader.GetItemsFromXml($"UI.DocumentModePresets.ContextMenus.{DocumentMode}.xml");
+
+		private string GetShortcutDisplayText(UICommand command, string fallbackDisplayText)
+			=> ShortcutBindingService?.GetShortcutDisplayText(command, fallbackDisplayText) ?? fallbackDisplayText;
+
+		private bool TryGetShortcut(UICommand command, out Keys keys)
+		{
+			if (ShortcutBindingService is not null)
+				return ShortcutBindingService.TryGetPrimaryShortcut(command, out keys);
+
+			keys = Keys.None;
+			return false;
+		}
 	}
 }

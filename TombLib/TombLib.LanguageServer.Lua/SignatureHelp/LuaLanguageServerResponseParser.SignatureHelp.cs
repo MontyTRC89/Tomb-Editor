@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Signatures;
+using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -9,7 +10,7 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses signature help metadata from a LuaLS signature-help response.
 	/// </summary>
-	internal static LuaSignatureInfo? ParseSignatureHelp(SignatureHelpResponse? response)
+	internal static TextSignatureHelpInfo? ParseSignatureHelp(SignatureHelpResponse? response)
 	{
 		if (response?.Signatures is not { Length: > 0 } signatures)
 			return null;
@@ -31,7 +32,7 @@ internal static partial class LuaLanguageServerResponseParser
 
 		int activeParameter = ResolveActiveParameter(response, signatureElement);
 
-		var parameters = new List<LuaParameterInfo>();
+		var parameters = new List<TextSignatureParameterInfo>();
 
 		if (signatureElement.Parameters is { Length: > 0 } parametersElement)
 		{
@@ -49,11 +50,11 @@ internal static partial class LuaLanguageServerResponseParser
 					? LuaMarkupTextHelper.ExtractMarkupText(paramElement.Documentation)
 					: null;
 
-				parameters.Add(new LuaParameterInfo(parameterLabel ?? string.Empty, parameterDocumentation));
+				parameters.Add(new TextSignatureParameterInfo(parameterLabel ?? string.Empty, parameterDocumentation));
 			}
 		}
 
-		return new LuaSignatureInfo(label, documentation, parameters, activeParameter);
+		return new TextSignatureHelpInfo(label, activeParameter, documentation, parameters);
 	}
 
 	private static int ResolveActiveParameter(SignatureHelpResponse response, SignatureHelpSignaturePayload signatureElement)

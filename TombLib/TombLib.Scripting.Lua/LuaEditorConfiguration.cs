@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
-using TombLib.Scripting.Bases;
 using TombLib.Scripting.Lua.Resources;
+using TombLib.Scripting.Lua.Themes;
+using TombLib.Scripting.UI.Bases;
 
 namespace TombLib.Scripting.Lua;
 
@@ -35,7 +36,7 @@ public sealed class LuaEditorConfiguration : TextEditorConfigBase
 	/// Gets the resolved theme object for the current selection.
 	/// </summary>
 	[XmlIgnore]
-	public Objects.LuaTheme Theme { get; private set; } = LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
+	public LuaTheme Theme { get; private set; } = LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
 
 	/// <summary>
 	/// Gets or sets the legacy color-scheme alias used by existing serialized configuration data.

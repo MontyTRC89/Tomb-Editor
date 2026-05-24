@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
 
 namespace TombLib.Tests;
 
@@ -8,14 +8,14 @@ public class LuaCompletionItemTests
 	[TestMethod]
 	public async Task WithRequestContext_PreservesRequestMetadataAcrossResolve()
 	{
-		var item = new LuaCompletionItem(
+		var item = new TextCompletionItem(
 			"spawn",
 			insertText: "spawn",
-			resolveAsync: _ => Task.FromResult(new LuaCompletionItem("spawn", detail: "function", insertCaretOffset: 2)),
+			resolveAsync: _ => Task.FromResult(new TextCompletionItem("spawn", detail: "function", insertCaretOffset: 2)),
 			insertCaretOffset: 2)
 			.WithRequestContext(4, 7);
 
-		LuaCompletionItem resolvedItem = await item.ResolveAsync();
+		TextCompletionItem resolvedItem = await item.ResolveAsync();
 
 		Assert.AreEqual(4, resolvedItem.RequestDocumentVersion);
 		Assert.AreEqual(7, resolvedItem.RequestGeneration);
@@ -26,13 +26,13 @@ public class LuaCompletionItemTests
 	[TestMethod]
 	public async Task WithFilteredCommitContext_DropsTextEditAndPreservesResolveMetadata()
 	{
-		LuaCompletionTextEdit textEdit = new(
-			new LuaCompletionRange(new LuaCompletionPosition(0, 2), new LuaCompletionPosition(0, 5)));
+		TextCompletionTextEdit textEdit = new(
+			new TextCompletionRange(new TextCompletionPosition(0, 2), new TextCompletionPosition(0, 5)));
 
-		var item = new LuaCompletionItem(
+		var item = new TextCompletionItem(
 			"Color",
 			insertText: "Color",
-			resolveAsync: _ => Task.FromResult(new LuaCompletionItem("Color", detail: "enum", textEdit: textEdit)),
+			resolveAsync: _ => Task.FromResult(new TextCompletionItem("Color", detail: "enum", textEdit: textEdit)),
 			textEdit: textEdit)
 			.WithFilteredCommitContext(6, 2);
 
@@ -40,7 +40,7 @@ public class LuaCompletionItemTests
 		Assert.AreEqual(2, item.RequestGeneration);
 		Assert.IsNull(item.TextEdit);
 
-		LuaCompletionItem resolvedItem = await item.ResolveAsync();
+		TextCompletionItem resolvedItem = await item.ResolveAsync();
 
 		Assert.AreEqual("enum", resolvedItem.Detail);
 		Assert.IsNull(resolvedItem.TextEdit);

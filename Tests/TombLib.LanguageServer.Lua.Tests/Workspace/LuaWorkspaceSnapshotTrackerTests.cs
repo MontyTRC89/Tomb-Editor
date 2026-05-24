@@ -74,6 +74,41 @@ public class LuaWorkspaceSnapshotTrackerTests
 	}
 
 	[TestMethod]
+	public void BuildDeltaBatch_ReportsChangedPathWhenContentChangesWithoutLengthOrTimestampChange()
+	{
+		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWorkspaceSnapshotFingerprint_" + Guid.NewGuid().ToString("N"));
+		string scriptsDirectoryPath = Path.Combine(workspaceRoot, "Scripts");
+		string changedFilePath = Path.Combine(scriptsDirectoryPath, "changed.lua");
+
+		try
+		{
+			Directory.CreateDirectory(scriptsDirectoryPath);
+			File.WriteAllText(changedFilePath, "return 1");
+			DateTime baselineWriteTime = File.GetLastWriteTimeUtc(changedFilePath);
+
+			var tracker = CreateTracker(workspaceRoot);
+			tracker.CaptureTrackedSnapshot();
+			Dictionary<string, LuaWorkspaceSnapshotEntry> previousSnapshot = tracker.CloneTrackedSnapshot();
+
+			File.WriteAllText(changedFilePath, "return 2");
+			File.SetLastWriteTimeUtc(changedFilePath, baselineWriteTime);
+
+			Dictionary<string, LuaWorkspaceSnapshotEntry> currentSnapshot = tracker.ReplaceTrackedSnapshotWithCurrent();
+			FileChangeBatch batch = LuaWorkspaceSnapshotTracker.BuildDeltaBatch(previousSnapshot, currentSnapshot);
+
+			string normalizedChangedFilePath = LanguageServerPathHelper.NormalizeLocalPath(changedFilePath);
+
+			Assert.AreEqual(1, batch.Count);
+			Assert.AreEqual(FileChangeKind.Changed, GetChange(batch, normalizedChangedFilePath).Kind);
+		}
+		finally
+		{
+			if (Directory.Exists(workspaceRoot))
+				Directory.Delete(workspaceRoot, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public void ApplyChanges_UpdatesTrackedSnapshotForSubsequentRecoveryDiff()
 	{
 		string workspaceRoot = Path.Combine(Path.GetTempPath(), "LuaWorkspaceSnapshotApply_" + Guid.NewGuid().ToString("N"));

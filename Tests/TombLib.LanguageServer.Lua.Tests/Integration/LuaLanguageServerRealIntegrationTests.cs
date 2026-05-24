@@ -2,7 +2,11 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Editing;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -52,7 +56,7 @@ public class LuaLanguageServerRealIntegrationTests
 			IntegrationTimeout,
 			"Expected semantic tokens to reflect the updated live document content.");
 
-		IReadOnlyList<LuaCompletionItem> completionItems = await WaitForCompletionItemsAsync(
+		IReadOnlyList<TextCompletionItem> completionItems = await WaitForCompletionItemsAsync(
 			() => provider.GetCompletionItemsAsync(filePath, updatedContent, 3, 3),
 			items => items.Any(item => string.Equals(item.Label, "updated_local", StringComparison.Ordinal)),
 			IntegrationTimeout,
@@ -60,7 +64,7 @@ public class LuaLanguageServerRealIntegrationTests
 
 		Assert.IsTrue(completionItems.Any(item => string.Equals(item.Label, "updated_local", StringComparison.Ordinal)));
 
-		LuaHoverInfo hover = await WaitForHoverAsync(
+		TextHoverInfo hover = await WaitForHoverAsync(
 			() => provider.GetHoverAsync(filePath, updatedContent, 2, 8),
 			IntegrationTimeout,
 			"Expected bundled LuaLS to return hover information for the updated document.");
@@ -77,7 +81,7 @@ public class LuaLanguageServerRealIntegrationTests
 
 		provider.UpdateDocument(filePath, libraryAwareContent);
 
-		IReadOnlyList<LuaCompletionItem> libraryItems = await WaitForCompletionItemsAsync(
+		IReadOnlyList<TextCompletionItem> libraryItems = await WaitForCompletionItemsAsync(
 			() => provider.GetCompletionItemsAsync(filePath, libraryAwareContent, 4, 3),
 			items => items.Any(item => item.Label.StartsWith("generated_function", StringComparison.Ordinal)),
 			IntegrationTimeout,
@@ -113,7 +117,7 @@ public class LuaLanguageServerRealIntegrationTests
 
 		provider.OpenDocument(filePath, initialContent);
 
-		IReadOnlyList<LuaCompletionItem> initialItems = await WaitForCompletionItemsAsync(
+		IReadOnlyList<TextCompletionItem> initialItems = await WaitForCompletionItemsAsync(
 			() => provider.GetCompletionItemsAsync(filePath, initialContent, 1, 3),
 			items => items.Any(item => string.Equals(item.Label, "restart_probe", StringComparison.Ordinal)),
 			IntegrationTimeout,
@@ -140,7 +144,7 @@ public class LuaLanguageServerRealIntegrationTests
 
 		provider.UpdateDocument(filePath, restartedContent);
 
-		IReadOnlyList<LuaCompletionItem> restartedItems = await WaitForCompletionItemsAsync(
+		IReadOnlyList<TextCompletionItem> restartedItems = await WaitForCompletionItemsAsync(
 			() => provider.GetCompletionItemsAsync(filePath, restartedContent, 2, 3),
 			items => items.Any(item => string.Equals(item.Label, "after_restart", StringComparison.Ordinal)),
 			IntegrationTimeout,
@@ -186,7 +190,7 @@ public class LuaLanguageServerRealIntegrationTests
 			IntegrationTimeout,
 			"Expected the bundled Lua language server to advertise reference support.");
 
-		LuaDefinitionLocation definition = await WaitForDefinitionAsync(
+		TextDefinitionLocation definition = await WaitForDefinitionAsync(
 			() => provider.GetDefinitionAsync(filePath, content, 1, 19),
 			IntegrationTimeout,
 			"Expected the bundled Lua language server to resolve the local symbol definition.");
@@ -195,15 +199,15 @@ public class LuaLanguageServerRealIntegrationTests
 		Assert.AreEqual(1, definition.LineNumber);
 		Assert.AreEqual(7, definition.ColumnNumber);
 
-		IReadOnlyList<LuaReferenceLocation> references = await WaitForReferencesAsync(
+		IReadOnlyList<TextReferenceLocation> references = await WaitForReferencesAsync(
 			() => provider.GetReferencesAsync(filePath, content, 1, 19),
 			referenceLocations => referenceLocations.Count >= 3,
 			IntegrationTimeout,
 			"Expected the bundled Lua language server to return declaration and usage references for the local symbol.");
 
 		Assert.AreEqual(3, references.Count(location => string.Equals(location.FilePath, filePath, StringComparison.OrdinalIgnoreCase)));
-		Assert.IsTrue(references.Any(location => location.Range.StartLineNumber == 1 && location.Range.StartColumnNumber == 7));
-		Assert.AreEqual(2, references.Count(location => location.Range.StartLineNumber == 2));
+		Assert.IsTrue(references.Any(location => location.StartLineNumber == 1 && location.StartColumnNumber == 7));
+		Assert.AreEqual(2, references.Count(location => location.StartLineNumber == 2));
 	}
 
 	[TestMethod]
@@ -230,15 +234,15 @@ public class LuaLanguageServerRealIntegrationTests
 			IntegrationTimeout,
 			"Expected the bundled Lua language server to advertise rename support.");
 
-		LuaWorkspaceEdit workspaceEdit = await WaitForWorkspaceEditAsync(
-			() => provider.RenameSymbolAsync(filePath, content, 0, 8, "renamed_value"),
+		TextWorkspaceEdit workspaceEdit = await WaitForWorkspaceEditAsync(
+			() => provider.RenameSymbolAsync(new TextRenameRequest(filePath, content, 0, 8, "renamed_value")),
 			IntegrationTimeout,
 			"Expected the bundled Lua language server to return a rename workspace edit for the local symbol.");
 
 		Assert.IsTrue(workspaceEdit.HasEdits);
 		Assert.AreEqual(1, workspaceEdit.DocumentEdits.Count);
 
-		LuaDocumentEdit documentEdit = workspaceEdit.DocumentEdits[0];
+		TextDocumentEdit documentEdit = workspaceEdit.DocumentEdits[0];
 
 		Assert.IsTrue(string.Equals(filePath, documentEdit.FilePath, StringComparison.OrdinalIgnoreCase));
 		Assert.IsTrue(documentEdit.TextEdits.Count >= 3);
@@ -286,14 +290,14 @@ public class LuaLanguageServerRealIntegrationTests
 	private static int GetRequiredServerProcessId(LuaLanguageServerIntellisenseProvider provider)
 		=> GetRequiredServerProcess(GetRequiredClient(provider)).Id;
 
-	private static async Task<IReadOnlyList<LuaCompletionItem>> WaitForCompletionItemsAsync(
-		Func<Task<IReadOnlyList<LuaCompletionItem>>> action,
-		Func<IReadOnlyList<LuaCompletionItem>, bool> predicate,
+	private static async Task<IReadOnlyList<TextCompletionItem>> WaitForCompletionItemsAsync(
+		Func<Task<IReadOnlyList<TextCompletionItem>>> action,
+		Func<IReadOnlyList<TextCompletionItem>, bool> predicate,
 		TimeSpan timeout,
 		string failureMessage)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		IReadOnlyList<LuaCompletionItem> lastResult = [];
+		IReadOnlyList<TextCompletionItem> lastResult = [];
 
 		while (stopwatch.Elapsed < timeout)
 		{
@@ -311,13 +315,13 @@ public class LuaLanguageServerRealIntegrationTests
 		return [];
 	}
 
-	private static async Task<LuaDefinitionLocation> WaitForDefinitionAsync(
-		Func<Task<LuaDefinitionLocation?>> action,
+	private static async Task<TextDefinitionLocation> WaitForDefinitionAsync(
+		Func<Task<TextDefinitionLocation?>> action,
 		TimeSpan timeout,
 		string failureMessage)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		LuaDefinitionLocation? lastResult = null;
+		TextDefinitionLocation? lastResult = null;
 
 		while (stopwatch.Elapsed < timeout)
 		{
@@ -333,13 +337,13 @@ public class LuaLanguageServerRealIntegrationTests
 		return null;
 	}
 
-	private static async Task<LuaHoverInfo> WaitForHoverAsync(
-		Func<Task<LuaHoverInfo?>> action,
+	private static async Task<TextHoverInfo> WaitForHoverAsync(
+		Func<Task<TextHoverInfo?>> action,
 		TimeSpan timeout,
 		string failureMessage)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		LuaHoverInfo? lastResult = null;
+		TextHoverInfo? lastResult = null;
 
 		while (stopwatch.Elapsed < timeout)
 		{
@@ -355,14 +359,14 @@ public class LuaLanguageServerRealIntegrationTests
 		return null;
 	}
 
-	private static async Task<IReadOnlyList<LuaReferenceLocation>> WaitForReferencesAsync(
-		Func<Task<IReadOnlyList<LuaReferenceLocation>>> action,
-		Func<IReadOnlyList<LuaReferenceLocation>, bool> predicate,
+	private static async Task<IReadOnlyList<TextReferenceLocation>> WaitForReferencesAsync(
+		Func<Task<IReadOnlyList<TextReferenceLocation>>> action,
+		Func<IReadOnlyList<TextReferenceLocation>, bool> predicate,
 		TimeSpan timeout,
 		string failureMessage)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		IReadOnlyList<LuaReferenceLocation> lastResult = [];
+		IReadOnlyList<TextReferenceLocation> lastResult = [];
 
 		while (stopwatch.Elapsed < timeout)
 		{
@@ -378,13 +382,13 @@ public class LuaLanguageServerRealIntegrationTests
 		return [];
 	}
 
-	private static async Task<LuaWorkspaceEdit> WaitForWorkspaceEditAsync(
-		Func<Task<LuaWorkspaceEdit?>> action,
+	private static async Task<TextWorkspaceEdit> WaitForWorkspaceEditAsync(
+		Func<Task<TextWorkspaceEdit?>> action,
 		TimeSpan timeout,
 		string failureMessage)
 	{
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		LuaWorkspaceEdit? lastResult = null;
+		TextWorkspaceEdit? lastResult = null;
 
 		while (stopwatch.Elapsed < timeout)
 		{

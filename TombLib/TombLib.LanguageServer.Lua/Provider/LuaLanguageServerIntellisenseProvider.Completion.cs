@@ -1,4 +1,5 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -7,10 +8,10 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 	private const int CompletionTriggerKindInvoked = 1;
 	private const int CompletionTriggerKindTriggerCharacter = 2;
 
-	public async Task<IReadOnlyList<LuaCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
+	public async Task<IReadOnlyList<TextCompletionItem>> GetCompletionItemsAsync(string filePath, string content,
 		int line, int column, char? triggerCharacter = null, CancellationToken cancellationToken = default)
 	{
-		return await SendPositionRequestAsync<CompletionResponse?, IReadOnlyList<LuaCompletionItem>>(
+		return await SendPositionRequestAsync<CompletionResponse?, IReadOnlyList<TextCompletionItem>>(
 			filePath, content, line, column, "textDocument/completion",
 			(textDocument, position) => new CompletionParams(textDocument, position, BuildCompletionContext(triggerCharacter)),
 			response =>
@@ -20,7 +21,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				if (itemPayloads.Count == 0)
 					return [];
 
-				Func<LuaCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<LuaCompletionItem>>?>? resolveFactory =
+				Func<TextCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<TextCompletionItem>>?>? resolveFactory =
 					_client is not null && _client.SupportsCompletionResolve
 						? (unresolvedItem, itemPayload, itemIndex) =>
 							cancellationToken => ResolveCompletionItemAsync(unresolvedItem, itemPayload, itemIndex, cancellationToken)
@@ -40,7 +41,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			: new CompletionContextPayload(TriggerKind: CompletionTriggerKindTriggerCharacter, triggerCharacter.ToString());
 	}
 
-	private async Task<LuaCompletionItem> ResolveCompletionItemAsync(LuaCompletionItem unresolvedItem, CompletionItemPayload itemPayload, int itemIndex, CancellationToken cancellationToken)
+	private async Task<TextCompletionItem> ResolveCompletionItemAsync(TextCompletionItem unresolvedItem, CompletionItemPayload itemPayload, int itemIndex, CancellationToken cancellationToken)
 	{
 		ILanguageServerClient? client = _client;
 
@@ -57,7 +58,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 			if (resolvedItem is not null)
 			{
-				LuaCompletionItem? parsedItem = LuaLanguageServerResponseParser.ParseCompletionItem(resolvedItem, itemIndex);
+				TextCompletionItem? parsedItem = LuaLanguageServerResponseParser.ParseCompletionItem(resolvedItem, itemIndex);
 
 				if (parsedItem is not null)
 					return unresolvedItem.WithResolvedContent(parsedItem);

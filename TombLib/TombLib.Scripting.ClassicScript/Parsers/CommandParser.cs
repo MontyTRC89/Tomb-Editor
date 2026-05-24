@@ -1,22 +1,21 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.ClassicScript.Enums;
-using TombLib.Scripting.ClassicScript.Objects;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Resources;
-using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.Specifications.ClassicScript.Syntaxes;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {
 	public static class CommandParser
 	{
+		private static readonly ClassicScriptMnemonicCatalogService MnemonicCatalogService = new();
+		private static readonly ClassicScriptSyntaxCatalogService SyntaxCatalogService = new();
+
 		#region Public methods
 
 		public static string GetCommandSyntax(TextDocument document, int offset)
@@ -37,12 +36,8 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				if (string.IsNullOrEmpty(commandKey))
 					return null;
 
-				foreach (DictionaryEntry entry in GetCommandSyntaxResources())
-					if (commandKey.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
-						return entry.Value.ToString();
+				return SyntaxCatalogService.GetCommandSyntax(commandKey);
 			}
-
-			return null;
 		}
 
 		public static string GetWholeCommandLineText(TextDocument document, int offset)
@@ -98,23 +93,8 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			return null;
 		}
 
-		public static List<DictionaryEntry> GetCommandSyntaxResources()
-		{
-			var entries = new List<DictionaryEntry>();
-
-			// Get resources from OldCommandSyntaxes.resx
-			var oldCommandSyntaxResource = new ResourceManager(typeof(OldCommandSyntaxes));
-			ResourceSet oldCommandResourceSet = oldCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			// Get resources from NewCommandSyntaxes.resx
-			var newCommandSyntaxResource = new ResourceManager(typeof(NewCommandSyntaxes));
-			ResourceSet newCommandResourceSet = newCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			entries.AddRange(oldCommandResourceSet.Cast<DictionaryEntry>().ToList());
-			entries.AddRange(newCommandResourceSet.Cast<DictionaryEntry>().ToList());
-
-			return entries;
-		}
+		public static IReadOnlyList<ClassicScriptSyntaxDefinition> GetCommandSyntaxDefinitions()
+			=> SyntaxCatalogService.GetCommandSyntaxDefinitions();
 
 		public static string GetFullIncludePath(TextDocument document, int offset)
 		{
@@ -138,64 +118,39 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		private static string GetSubcommandSyntax(string wholeCommandLineText, SubcommandType subcommandType)
 		{
-			ResourceManager syntaxResource = null;
-
-			switch (subcommandType)
-			{
-				case SubcommandType.Cust:
-					syntaxResource = new ResourceManager(typeof(CustSyntaxes));
-					break;
-
-				case SubcommandType.Param:
-					syntaxResource = new ResourceManager(typeof(ParamSyntaxes));
-					break;
-			}
-
-			ResourceSet resourceSet = syntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
 			string key = wholeCommandLineText.Split('=')[1].Split(',')[0].Trim();
 
-			string custParamSyntax = FindCustParamSyntaxByKey(resourceSet, key);
+			string custParamSyntax = FindCustParamSyntaxByKey(key, subcommandType);
 
-			if (string.IsNullOrEmpty(custParamSyntax))
-				foreach (DictionaryEntry entry in GetCommandSyntaxResources())
-					switch (subcommandType)
-					{
-						case SubcommandType.Cust:
-							if (entry.Key.ToString().Equals("Customize", StringComparison.OrdinalIgnoreCase))
-								return entry.Value.ToString();
-							break;
+			if (!string.IsNullOrEmpty(custParamSyntax))
+				return custParamSyntax;
 
-						case SubcommandType.Param:
-							if (entry.Key.ToString().Equals("Parameters", StringComparison.OrdinalIgnoreCase))
-								return entry.Value.ToString();
-							break;
-					}
-
-			return custParamSyntax;
+			return subcommandType switch
+			{
+				SubcommandType.Cust => SyntaxCatalogService.GetCommandSyntax("Customize"),
+				SubcommandType.Param => SyntaxCatalogService.GetCommandSyntax("Parameters"),
+				_ => null
+			};
 		}
 
-		private static string FindCustParamSyntaxByKey(ResourceSet resourceSet, string key)
+		private static string FindCustParamSyntaxByKey(string key, SubcommandType subcommandType)
 		{
 			if (string.IsNullOrWhiteSpace(key))
 				return null;
 
-			// Search in the given ResourceSet
-			foreach (DictionaryEntry entry in resourceSet)
-				if (entry.Key.ToString().Equals(key, StringComparison.OrdinalIgnoreCase))
-					return entry.Value.ToString();
+			string syntax = subcommandType switch
+			{
+				SubcommandType.Cust => SyntaxCatalogService.GetCustomizeSyntax(key),
+				SubcommandType.Param => SyntaxCatalogService.GetParameterSyntax(key),
+				_ => null
+			};
 
-			// Search in PluginMnemonics
-			foreach (PluginConstant pluginMnemonic in MnemonicData.PluginConstants)
-				if (pluginMnemonic.FlagName.Equals(key, StringComparison.OrdinalIgnoreCase))
-				{
-					string[] parts = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase);
+			if (!string.IsNullOrEmpty(syntax))
+				return syntax;
 
-					if (parts.Length > 1)
-						return parts[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
-				}
-
-			return null;
+			return MnemonicCatalogService.TryGetPluginSyntax(key, out string pluginSyntax)
+				? pluginSyntax
+				: null;
 		}
 
 		#endregion Subcommands

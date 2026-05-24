@@ -1,6 +1,8 @@
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Diagnostics;
+using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Hover;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -203,9 +205,9 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			requestTimeout: TimeSpan.FromMilliseconds(50),
 			requestTimeoutRestartThreshold: 2);
 
-		LuaHoverInfo? firstHover = await provider.GetHoverAsync(filePath, content, 0, 0);
-		LuaHoverInfo? secondHover = await provider.GetHoverAsync(filePath, content, 0, 0);
-		LuaHoverInfo? thirdHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? firstHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? secondHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? thirdHover = await provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsNull(firstHover);
 		Assert.IsNull(secondHover);
@@ -216,7 +218,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		client.TimedOutHoverRequestsRemaining = 1;
 
-		LuaHoverInfo? fourthHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? fourthHover = await provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsNull(fourthHover);
 		Assert.AreEqual(1, client.MarkTransportUnhealthyCallCount);
@@ -260,15 +262,15 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			requestTimeout: TimeSpan.FromMilliseconds(200),
 			requestTimeoutRestartThreshold: 1);
 
-		Task<LuaHoverInfo?> timedOutHoverTask = provider.GetHoverAsync(filePath, content, 0, 0);
+		Task<TextHoverInfo?> timedOutHoverTask = provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/hover", 1, TimeSpan.FromSeconds(1)));
 
 		client.MarkTransportUnhealthy();
 
-		LuaHoverInfo? restartedHover = await provider.GetHoverAsync(filePath, content, 0, 0);
-		LuaHoverInfo? timedOutHover = await timedOutHoverTask;
-		LuaHoverInfo? thirdHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? restartedHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? timedOutHover = await timedOutHoverTask;
+		TextHoverInfo? thirdHover = await provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsNotNull(restartedHover);
 		Assert.AreEqual("Hover docs.", restartedHover.Content);
@@ -319,7 +321,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		using var cancellationTokenSource = new CancellationTokenSource();
 		cancellationTokenSource.Cancel();
 
-		LuaHoverInfo? hover = await provider.GetHoverAsync(filePath, content, 0, 0, cancellationTokenSource.Token);
+		TextHoverInfo? hover = await provider.GetHoverAsync(filePath, content, 0, 0, cancellationTokenSource.Token);
 
 		Assert.IsNull(hover);
 		Assert.AreEqual(1, client.StartCallCount);
@@ -352,8 +354,8 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			requestTimeout: TimeSpan.FromMilliseconds(50),
 			requestTimeoutRestartThreshold: 1);
 
-		LuaHoverInfo? canceledHover = await provider.GetHoverAsync(filePath, content, 0, 0);
-		LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? canceledHover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? recoveredHover = await provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsNull(canceledHover);
 		Assert.IsNotNull(recoveredHover);
@@ -398,7 +400,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		provider.OpenDocument(filePath, content);
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
 
-		Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(filePath, content, 0, 0, cancellationTokenSource.Token);
+		Task<TextHoverInfo?> hoverTask = provider.GetHoverAsync(filePath, content, 0, 0, cancellationTokenSource.Token);
 
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/hover", 1, TimeSpan.FromSeconds(1)).ConfigureAwait(false));
 
@@ -527,7 +529,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		provider.UpdateDocument(firstFilePath, "local first = 2");
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didChange", 1, TimeSpan.FromSeconds(1)));
 
-		Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(secondFilePath, "local second = 1", 0, 0);
+		Task<TextHoverInfo?> hoverTask = provider.GetHoverAsync(secondFilePath, "local second = 1", 0, 0);
 		Task completedTask = await Task.WhenAny(hoverTask, Task.Delay(TimeSpan.FromSeconds(1))).ConfigureAwait(false);
 
 		Assert.AreSame(hoverTask, completedTask);
@@ -649,7 +651,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		client.StartResult = true;
 
-		LuaHoverInfo? hover = await provider.GetHoverAsync(requestFilePath, "local request = 1", 0, 0);
+		TextHoverInfo? hover = await provider.GetHoverAsync(requestFilePath, "local request = 1", 0, 0);
 
 		Assert.IsNotNull(hover);
 		Assert.AreEqual(2, client.StartCallCount);
@@ -699,14 +701,14 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 		client.IsReady = false;
 		client.StartResult = false;
 
-		LuaHoverInfo? failedHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
+		TextHoverInfo? failedHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
 
 		Assert.IsNull(failedHover);
 		Assert.AreEqual(2, client.StartCallCount);
 
 		client.StartResult = true;
 
-		LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
+		TextHoverInfo? recoveredHover = await provider.GetHoverAsync(firstFilePath, firstContent, 0, 0);
 
 		Assert.IsNotNull(recoveredHover);
 		Assert.IsTrue(await client.WaitForMethodCountAsync("textDocument/didOpen", 4, TimeSpan.FromSeconds(1)));

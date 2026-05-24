@@ -1,5 +1,5 @@
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Hover;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -17,11 +17,11 @@ public partial class LuaLanguageServerResponseParserTests
 			}
 		});
 
-		LuaHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
+		TextHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
 
 		Assert.IsNotNull(hover);
 		Assert.AreEqual("    local value = 1  \nnext", hover.Content);
-		Assert.IsTrue(hover.IsMarkdown);
+		Assert.AreEqual(TextHoverContentKind.Markdown, hover.ContentKind);
 	}
 
 	[TestMethod]
@@ -40,11 +40,11 @@ public partial class LuaLanguageServerResponseParserTests
 			}
 		});
 
-		LuaHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
+		TextHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
 
 		Assert.IsNotNull(hover);
 		Assert.AreEqual($"Summary{Environment.NewLine}{Environment.NewLine}    local value = 1", hover.Content);
-		Assert.IsTrue(hover.IsMarkdown);
+		Assert.AreEqual(TextHoverContentKind.Markdown, hover.ContentKind);
 	}
 
 	[TestMethod]
@@ -59,11 +59,11 @@ public partial class LuaLanguageServerResponseParserTests
 			}
 		});
 
-		LuaHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
+		TextHoverInfo? hover = LuaLanguageServerResponseParser.ParseHoverInfo(response);
 
 		Assert.IsNotNull(hover);
 		Assert.AreEqual("````lua\nprint(\"```\")\n````", hover.Content.Replace("\r\n", "\n", StringComparison.Ordinal));
-		Assert.IsTrue(hover.IsMarkdown);
+		Assert.AreEqual(TextHoverContentKind.Markdown, hover.ContentKind);
 	}
 
 	[TestMethod]

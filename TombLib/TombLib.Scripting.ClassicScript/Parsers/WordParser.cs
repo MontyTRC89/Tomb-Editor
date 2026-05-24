@@ -1,5 +1,4 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.ClassicScript.Enums;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {

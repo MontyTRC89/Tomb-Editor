@@ -12,8 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TombLib.LanguageServer.Core\TombLib.LanguageServer.Core.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting.Lua.LanguageServer\TombLib.Scripting.Lua.LanguageServer.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
   </ItemGroup>
 
 </Project>

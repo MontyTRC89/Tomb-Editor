@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.ProjectMaster;
 using TombIDE.ScriptingStudio.Bases;
+using TombIDE.ScriptingStudio.Services;
 using TombIDE.Shared;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
@@ -21,6 +22,7 @@ namespace TombIDE
 		private IDE _ide;
 
 		private LevelManager levelManager;
+		private ScriptingWorkspaceProfile scriptingWorkspaceProfile;
 		private StudioBase scriptingStudio;
 		private PluginManager pluginManager;
 		private Miscellaneous miscellaneous;
@@ -52,14 +54,9 @@ namespace TombIDE
 				tabPage_Plugins.Controls.Add(pluginManager);
 			}
 
-			if (_ide.Project.GameVersion is TRVersion.Game.TR4 or TRVersion.Game.TRNG)
-				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TR2 or TRVersion.Game.TR3)
-				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X)
-				scriptingStudio = new ScriptingStudio.Tomb1MainStudio(_ide.Project.GameVersion) { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TombEngine)
-				scriptingStudio = new ScriptingStudio.LuaStudio { Parent = this };
+			scriptingWorkspaceProfile = ScriptingWorkspaceProfileSelector.Create(_ide);
+			scriptingStudio = ScriptingStudioFactory.Create(scriptingWorkspaceProfile);
+			scriptingStudio.Parent = this;
 
 			scriptingStudio.Dock = DockStyle.Fill;
 			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);

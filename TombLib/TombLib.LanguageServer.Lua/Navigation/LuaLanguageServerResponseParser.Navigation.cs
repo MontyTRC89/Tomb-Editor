@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Navigation;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -7,7 +7,7 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses a definition location from a LuaLS definition response.
 	/// </summary>
-	internal static LuaDefinitionLocation? ParseDefinitionLocation(DefinitionResponse response)
+	internal static TextDefinitionLocation? ParseDefinitionLocation(DefinitionResponse response)
 	{
 		if (string.IsNullOrWhiteSpace(response.Uri)
 			|| !Uri.TryCreate(response.Uri, UriKind.Absolute, out Uri? parsedUri)
@@ -16,9 +16,9 @@ internal static partial class LuaLanguageServerResponseParser
 			return null;
 		}
 
-		return new LuaDefinitionLocation(
-			LanguageServerPathHelper.NormalizeLocalPath(parsedUri),
+		return new TextDefinitionLocation(
 			response.LineNumber,
-			response.ColumnNumber);
+			response.ColumnNumber,
+			LanguageServerPathHelper.NormalizeLocalPath(parsedUri));
 	}
 }

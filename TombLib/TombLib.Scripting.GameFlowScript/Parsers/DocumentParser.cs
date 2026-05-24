@@ -1,6 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.GameFlowScript.Enums;
+using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Resources;
 
 namespace TombLib.Scripting.GameFlowScript.Parsers

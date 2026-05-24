@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -18,7 +18,7 @@ internal readonly record struct LuaCompletionItemIdentity(
 	string FilterText,
 	string Detail,
 	string Description,
-	LuaCompletionIconKind IconKind,
+	TextCompletionItemKind Kind,
 	LuaCompletionTextEditIdentity TextEdit)
 {
 	/// <summary>
@@ -26,12 +26,12 @@ internal readonly record struct LuaCompletionItemIdentity(
 	/// </summary>
 	/// <param name="item">The parsed completion item.</param>
 	/// <returns>The normalized identity.</returns>
-	internal static LuaCompletionItemIdentity Create(LuaCompletionItem item) => new(
+	internal static LuaCompletionItemIdentity Create(TextCompletionItem item) => new(
 		item.Label,
 		item.InsertText,
 		item.FilterText,
 		item.Detail ?? string.Empty,
 		item.Description ?? string.Empty,
-		item.IconKind,
+		item.Kind,
 		LuaCompletionTextEditIdentity.Create(item.TextEdit));
 }

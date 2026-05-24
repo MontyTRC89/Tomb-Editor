@@ -2,12 +2,10 @@
 
 using System;
 using System.IO;
-using TombIDE.ScriptingStudio.Helpers;
-using TombIDE.ScriptingStudio.Objects;
-using TombIDE.ScriptingStudio.Services;
-using TombLib.Scripting.Bases;
+using TombIDE.ScriptingStudio.FindAndReplace;
+using TombIDE.ScriptingStudio.Navigation;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.UI.Bases;
 
 namespace TombIDE.ScriptingStudio;
 

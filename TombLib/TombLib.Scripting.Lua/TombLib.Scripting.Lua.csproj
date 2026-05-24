@@ -18,21 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting.Lua.LanguageServer\TombLib.Scripting.Lua.LanguageServer.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\Lua\Default.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\Themes\Lua\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\Grammars\Lua\lua.tmLanguage.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

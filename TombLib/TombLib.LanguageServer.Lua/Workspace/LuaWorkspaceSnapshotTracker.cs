@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+using System.Security.Cryptography;
 using NLog;
 
 namespace TombLib.LanguageServer.Lua;
@@ -177,14 +179,18 @@ internal sealed class LuaWorkspaceSnapshotTracker
 			if (File.Exists(normalizedPath))
 			{
 				var fileInfo = new FileInfo(normalizedPath);
-				entry = new LuaWorkspaceSnapshotEntry(IsDirectory: false, fileInfo.LastWriteTimeUtc.Ticks, fileInfo.Length);
+				entry = new LuaWorkspaceSnapshotEntry(
+					IsDirectory: false,
+					fileInfo.LastWriteTimeUtc.Ticks,
+					fileInfo.Length,
+					ComputeFileContentFingerprint(normalizedPath));
 				return true;
 			}
 
 			if (Directory.Exists(normalizedPath))
 			{
 				var directoryInfo = new DirectoryInfo(normalizedPath);
-				entry = new LuaWorkspaceSnapshotEntry(IsDirectory: true, directoryInfo.LastWriteTimeUtc.Ticks, 0);
+				entry = new LuaWorkspaceSnapshotEntry(IsDirectory: true, directoryInfo.LastWriteTimeUtc.Ticks, 0, 0);
 				return true;
 			}
 		}
@@ -194,6 +200,13 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		}
 
 		return false;
+	}
+
+	private static ulong ComputeFileContentFingerprint(string normalizedPath)
+	{
+		using FileStream stream = File.OpenRead(normalizedPath);
+		byte[] hash = SHA256.HashData(stream);
+		return BinaryPrimitives.ReadUInt64LittleEndian(hash.AsSpan(0, sizeof(ulong)));
 	}
 
 	private static bool TryDeterminePathMissing(string normalizedPath, out bool isMissing)
@@ -229,4 +242,5 @@ internal sealed class LuaWorkspaceSnapshotTracker
 /// <param name="IsDirectory">Whether the path represents a directory.</param>
 /// <param name="LastWriteUtcTicks">The last-write timestamp used for change detection.</param>
 /// <param name="Length">The file length used for change detection.</param>
-internal readonly record struct LuaWorkspaceSnapshotEntry(bool IsDirectory, long LastWriteUtcTicks, long Length);
+/// <param name="ContentFingerprint">A stable file-content fingerprint used when length and timestamps alone are ambiguous.</param>
+internal readonly record struct LuaWorkspaceSnapshotEntry(bool IsDirectory, long LastWriteUtcTicks, long Length, ulong ContentFingerprint);

@@ -1,11 +1,12 @@
 using NLog;
 using System;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.Highlighting;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Resources;
-using TombLib.Scripting.Lua.Services;
-using TombLib.Scripting.Lua.Utils;
+using TombLib.Scripting.Navigation;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Completion;
+using TombLib.Scripting.UI.Highlighting;
+using TombLib.Scripting.UI.Navigation;
 
 namespace TombLib.Scripting.Lua;
 
@@ -15,7 +16,8 @@ namespace TombLib.Scripting.Lua;
 public sealed partial class LuaEditor : TextEditorBase
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-	private readonly LuaCompletionController _completionController;
+	private readonly TextCompletionController _completionController;
+	private readonly TextDefinitionTriggerController _definitionTriggerController;
 	private readonly LuaDefinitionNavigationController _definitionNavigationController;
 	private readonly LuaHoverController _hoverController;
 	private readonly LuaSignatureHelpController _signatureHelpController;
@@ -38,7 +40,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// <summary>
 	/// Occurs when the editor resolves a definition location that should be opened by the host application.
 	/// </summary>
-	public event Action<LuaDefinitionLocation>? DefinitionNavigationRequested;
+	public event Action<TextDefinitionLocation>? DefinitionNavigationRequested;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LuaEditor"/> class for the specified engine version.
@@ -48,11 +50,11 @@ public sealed partial class LuaEditor : TextEditorBase
 	{
 		CommentPrefix = "--";
 		TextArea.IndentationStrategy = new LuaAutoIndentationStrategy(Options);
-		_completionController = new LuaCompletionController(this);
+		_completionController = new TextCompletionController(this);
+		_definitionTriggerController = new TextDefinitionTriggerController(this, GetOffsetFromPoint, TryNavigateDefinitionAsync);
 		_definitionNavigationController = new LuaDefinitionNavigationController(this);
 		_hoverController = new LuaHoverController(this);
 		_signatureHelpController = new LuaSignatureHelpController(this);
-		_signatureHelpController.InitializePopup();
 		BindLuaIntellisenseEvents();
 	}
 
@@ -60,7 +62,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// Applies the active Lua theme, refreshes syntax highlighting, and updates shared editor settings.
 	/// </summary>
 	/// <param name="configuration">The editor configuration to apply.</param>
-	public override void UpdateSettings(Bases.ConfigurationBase configuration)
+	public override void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 	{
 		var config = configuration as LuaEditorConfiguration;
 		var theme = config?.Theme ?? LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
@@ -79,7 +81,9 @@ public sealed partial class LuaEditor : TextEditorBase
 		Foreground = _themeBrushSet.EditorForeground;
 
 		base.UpdateSettings(configuration);
-		LiveErrorUnderlining = true; // TEMP - Add as a setting later
+
+		if (!SignatureHelpPopupsEnabled)
+			_signatureHelpController.Dismiss();
 	}
 
 	private LuaThemeBrushSet GetThemeBrushSet()

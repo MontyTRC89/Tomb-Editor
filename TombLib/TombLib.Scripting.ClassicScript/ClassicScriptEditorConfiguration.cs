@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.ClassicScript.Objects;
+using TombLib.Scripting.ClassicScript.Highlighting;
 using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.UI.Bases;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.ClassicScript

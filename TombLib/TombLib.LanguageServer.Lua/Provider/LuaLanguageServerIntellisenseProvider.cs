@@ -1,8 +1,7 @@
 using NLog;
 using System.Collections.Concurrent;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Services;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.Diagnostics;
+using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 

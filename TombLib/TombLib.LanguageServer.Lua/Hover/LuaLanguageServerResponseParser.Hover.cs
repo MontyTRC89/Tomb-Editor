@@ -1,5 +1,6 @@
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -8,7 +9,7 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses hover content from a LuaLS hover response.
 	/// </summary>
-	internal static LuaHoverInfo? ParseHoverInfo(HoverResponse? response)
+	internal static TextHoverInfo? ParseHoverInfo(HoverResponse? response)
 	{
 		if (response is null || response.Contents.ValueKind == JsonValueKind.Undefined)
 			return null;
@@ -17,6 +18,8 @@ internal static partial class LuaLanguageServerResponseParser
 
 		return string.IsNullOrWhiteSpace(hoverContent.Text)
 			? null
-			: new LuaHoverInfo(hoverContent.IsMarkdown ? hoverContent.Text : hoverContent.Text.Trim(), hoverContent.IsMarkdown);
+			: new TextHoverInfo(
+				hoverContent.IsMarkdown ? hoverContent.Text : hoverContent.Text.Trim(),
+				hoverContent.IsMarkdown ? TextHoverContentKind.Markdown : TextHoverContentKind.PlainText);
 	}
 }

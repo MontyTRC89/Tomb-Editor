@@ -2,7 +2,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using TombLib.Scripting.Tomb1Main;
+using TombLib.Scripting.Services;
+using TombLib.Scripting.TRX;
 
 namespace TombLib.Tests;
 
@@ -14,7 +15,7 @@ public class Tomb1MainEditorToolTipTests
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var editor = new Tomb1MainEditor(new Version(1, 0));
+			var editor = new TRXEditor(new Version(1, 0));
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 
 			try
@@ -23,7 +24,7 @@ public class Tomb1MainEditorToolTipTests
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
 				Popup popup = WPFTestHelper.GetPrivateField<Popup>(editor, "_specialToolTip");
-				ContentPresenter presenter = WPFTestHelper.GetPrivateField<ContentPresenter>(editor, "_specialToolTipPresenter");
+				ContentPresenter presenter = WPFTestHelper.GetPrivateField<EditorToolTipPresenter>(editor, "_toolTipPresenter").ContentPresenter;
 
 				Assert.IsTrue(popup.IsOpen);
 				Assert.IsNotNull(presenter.Content);

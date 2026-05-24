@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.GameFlowScript.Objects;
+using TombLib.Scripting.GameFlowScript.Highlighting;
 using TombLib.Scripting.GameFlowScript.Resources;
+using TombLib.Scripting.UI.Bases;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.GameFlowScript
@@ -43,7 +43,8 @@ namespace TombLib.Scripting.GameFlowScript
 			AutoCloseParentheses = false;
 			AutoCloseBraces = false;
 			AutoCloseBrackets = false;
-			AutoCloseQuotes = false;
+			AutoCloseDoubleQuotes = false;
+			AutoCloseSingleQuotes = false;
 
 			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
 		}

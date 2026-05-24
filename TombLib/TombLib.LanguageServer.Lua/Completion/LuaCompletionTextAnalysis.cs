@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -22,7 +22,7 @@ internal readonly struct LuaCompletionTextAnalysis
 			|| ContainsToken(detail, "parameter")
 			|| ContainsToken(description, "parameter");
 
-		IconKindOverride = ResolveIconKind(detail);
+		KindOverride = ResolveKind(detail);
 	}
 
 	/// <summary>
@@ -38,41 +38,41 @@ internal readonly struct LuaCompletionTextAnalysis
 	/// <summary>
 	/// Gets the icon override inferred from the completion detail text, when one can be resolved.
 	/// </summary>
-	internal LuaCompletionIconKind? IconKindOverride { get; }
+	internal TextCompletionItemKind? KindOverride { get; }
 
 	private static bool ContainsToken(string? text, string token)
 		=> !string.IsNullOrEmpty(text) && text.Contains(token, StringComparison.OrdinalIgnoreCase);
 
-	private static LuaCompletionIconKind? ResolveIconKind(string? detailText)
+	private static TextCompletionItemKind? ResolveKind(string? detailText)
 	{
 		if (ContainsToken(detailText, "parameter"))
-			return LuaCompletionIconKind.Parameter;
+			return TextCompletionItemKind.Parameter;
 
 		if (ContainsToken(detailText, "module") || ContainsToken(detailText, "namespace"))
-			return LuaCompletionIconKind.Namespace;
+			return TextCompletionItemKind.Namespace;
 
 		if (ContainsToken(detailText, "method") || ContainsToken(detailText, "function"))
-			return LuaCompletionIconKind.Method;
+			return TextCompletionItemKind.Method;
 
 		if (ContainsToken(detailText, "field"))
-			return LuaCompletionIconKind.Field;
+			return TextCompletionItemKind.Field;
 
 		if (ContainsToken(detailText, "property") || ContainsToken(detailText, "global")
 			|| ContainsToken(detailText, "default library"))
 		{
-			return LuaCompletionIconKind.Property;
+			return TextCompletionItemKind.Property;
 		}
 
 		if (ContainsToken(detailText, "constant"))
-			return LuaCompletionIconKind.Constant;
+			return TextCompletionItemKind.Constant;
 
 		if (ContainsToken(detailText, "keyword"))
-			return LuaCompletionIconKind.Keyword;
+			return TextCompletionItemKind.Keyword;
 
 		if (ContainsToken(detailText, "class") || ContainsToken(detailText, "interface")
 			|| ContainsToken(detailText, "enum") || ContainsToken(detailText, "struct"))
 		{
-			return LuaCompletionIconKind.Class;
+			return TextCompletionItemKind.Class;
 		}
 
 		return null;

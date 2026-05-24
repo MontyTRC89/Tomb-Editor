@@ -14,6 +14,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 	{
 		#region Properties
 
+		public IReadOnlyList<StudioToolStripItem> DocumentModeContributionItems { get; set; }
+
+		public IReadOnlyList<StudioToolStripItem> StudioModeContributionItems { get; set; }
+
 		private StudioMode _studioMode;
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -70,18 +74,30 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		#region Other methods
 
+		public void RebuildStudioModeItems()
+		{
+			UpdateItems<StudioMode>();
+			OnStudioModeChanged(EventArgs.Empty);
+		}
+
+		public void RebuildDocumentModeItems()
+		{
+			UpdateItems<DocumentMode>();
+			OnDocumentModeChanged(EventArgs.Empty);
+		}
+
 		private void UpdateItems<T>() where T : Enum
 		{
 			string enumName = typeof(T).Name;
 			Enum modeEnum = GetModeEnum(enumName); // Either StudioMode or DocumentMode
 			string enumValueName = GetEnumValueName(modeEnum);
+			StudioToolStripItem[] studioItems = GetStudioItems(enumName, enumValueName).ToArray();
 
 			ClearRelatedItems(modeEnum);
 
-			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase))
+			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase) && studioItems.Length == 0)
 				return;
 
-			IEnumerable<StudioToolStripItem> studioItems = GetStudioItems(enumName, enumValueName);
 			IEnumerable<ToolStripItem> toolStripItems = GetToolStripItemsFromStudioItems(studioItems, modeEnum);
 
 			Items.AddRange(toolStripItems.ToArray());
@@ -128,6 +144,14 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			=> @enum.ToString().Split('.').Last();
 
 		private IEnumerable<StudioToolStripItem> GetStudioItems(string enumTypeName, string enumValueName)
-			=> ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.ToolStrips.{enumValueName}.xml");
+		{
+			if (enumTypeName == nameof(StudioMode))
+				return StudioModeContributionItems ?? [];
+
+			if (enumTypeName == nameof(DocumentMode) && DocumentModeContributionItems?.Count > 0)
+				return DocumentModeContributionItems;
+
+			return ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.ToolStrips.{enumValueName}.xml");
+		}
 	}
 }

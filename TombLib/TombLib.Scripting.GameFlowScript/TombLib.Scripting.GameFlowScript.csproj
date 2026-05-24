@@ -1,40 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Update="Workers\GameFlowNodesProvider.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
+
   <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Monokai.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\Obsidian.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\NG_Center.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\GameFlowScript\VS15.gflsch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\GameFlow\TRGameflow extra commands.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\GameFlow\TRGameflow.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
-  </ItemGroup>
+
 </Project>

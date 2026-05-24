@@ -2,73 +2,64 @@
 
 using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TombIDE.ScriptingStudio.Services;
+using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.Shared;
+using TombLib.Scripting.Editing;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombIDE.ScriptingStudio;
 
 public sealed partial class LuaStudio
 {
-	private async Task ReformatDocumentAsync()
+	private readonly TextWorkspaceCommandService _workspaceCommandService;
+
+	private Task ReformatDocumentAsync()
+		=> FormatDocumentAsync(_intellisenseProvider, Strings.Default.LuaReformatUnsupported, Strings.Default.Reindent);
+
+	private Task TrimWhitespaceAsync()
+		=> FormatDocumentAsync(_trimWhitespaceProvider, unsupportedMessage: null, Strings.Default.TrimWhitespace);
+
+	private async Task FormatDocumentAsync(ITextFormattingProvider formattingProvider, string? unsupportedMessage, string commandName)
 	{
 		if (CurrentEditor is not LuaEditor editor)
 			return;
 
-		if (!_intellisenseProvider.SupportsFormatting)
+		if (!formattingProvider.SupportsFormatting)
 		{
-			DarkMessageBox.Show(this,
-				Strings.Default.LuaReformatUnsupported,
-				Strings.Default.Reindent,
-				MessageBoxButtons.OK,
-				MessageBoxIcon.Information);
+			if (!string.IsNullOrWhiteSpace(unsupportedMessage))
+			{
+				DarkMessageBox.Show(this,
+					unsupportedMessage,
+					commandName,
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+			}
+
 			return;
 		}
 
 		try
 		{
-			LuaFormattingOptions formattingOptions = CreateFormattingOptions(editor);
-			IReadOnlyList<LuaTextEdit> textEdits = await _intellisenseProvider
-				.FormatDocumentAsync(editor.FilePath, editor.Text, formattingOptions)
+			TextWorkspaceCommandResult result = await _workspaceCommandService
+				.FormatDocumentAsync(editor, formattingProvider)
 				.ConfigureAwait(true);
 
-			if (textEdits.Count == 0)
+			if (result.Status is TextWorkspaceCommandStatus.Cancelled)
 				return;
 
-			LuaWorkspaceEdit workspaceEdit = new([
-				new LuaDocumentEdit(editor.FilePath, textEdits)
-			]);
-
-			LuaWorkspaceEditSelectionState selectionState = LuaWorkspaceEditSelectionState.Capture(editor);
-			LuaWorkspaceEditTransaction transaction = _workspaceEditApplier.Apply(workspaceEdit, selectionState);
-
-			if (!transaction.HasChanges)
+			if (result.Transaction is not TextWorkspaceEditTransaction transaction || !transaction.HasChanges)
 				return;
 
 			PushWorkspaceEditTransaction(transaction);
 			HandleWorkspaceDocumentsChanged(transaction.DocumentChanges.Select(documentChange => documentChange.FilePath));
 		}
-		catch (OperationCanceledException)
-		{
-			// Ignore canceled formatting requests.
-		}
 		catch (Exception ex)
 		{
-			DarkMessageBox.Show(this, ex.Message, Strings.Default.Reindent, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			DarkMessageBox.Show(this, ex.Message, commandName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
-	}
-
-	private static LuaFormattingOptions CreateFormattingOptions(LuaEditor editor)
-	{
-		int tabSize = editor.Options.IndentationSize > 0
-			? editor.Options.IndentationSize
-			: 4;
-
-		return new LuaFormattingOptions(tabSize, editor.Options.ConvertTabsToSpaces);
 	}
 }

@@ -1,13 +1,18 @@
-﻿namespace TombLib.Scripting.ClassicScript.Resources
+﻿using TombLib.Scripting.Specifications.ClassicScript;
+using TombLib.Scripting.ClassicScript.Mnemonics;
+
+namespace TombLib.Scripting.ClassicScript.Resources
 {
 	public struct Patterns
 	{
+		private static readonly ClassicScriptMnemonicCatalogService MnemonicCatalogService = new();
+
 		public static string Comments => ";.*$";
-		public static string Sections => @"\[\b(" + string.Join("|", Keywords.Sections) + @")\b\]";
-		public static string StandardCommands => @"\b(" + string.Join("|", Keywords.OldCommands) + @")\b\s*=";
-		public static string NewCommands => @"\b(" + string.Join("|", Keywords.NewCommands) + @")\b\s*=";
+		public static string Sections => @"\[\b(" + string.Join("|", ClassicScriptKeywords.Sections) + @")\b\]";
+		public static string StandardCommands => @"\b(" + string.Join("|", ClassicScriptKeywords.OldCommands) + @")\b\s*=";
+		public static string NewCommands => @"\b(" + string.Join("|", ClassicScriptKeywords.NewCommands) + @")\b\s*=";
 		public static string NextLineKey => @">\s*(;.*)?$";
-		public static string Mnemonics => @"\b(" + string.Join("|", MnemonicData.AllConstantFlags) + @")\b";
+		public static string Mnemonics => MnemonicCatalogService.GetMnemonicPattern();
 		public static string HexValues => @"\$[a-f0-9]*";
 		public static string Directives => @"#(define|first_id|include)\s";
 		public static string Values => "\\d|\\w|\"|'|\\.|\\\\";

@@ -9,18 +9,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using TombIDE.ScriptingStudio.Services;
+using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.Shared;
 using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombIDE.ScriptingStudio;
 
 public sealed partial class LuaStudio
 {
-	private readonly Services.LuaWorkspaceEditApplier _workspaceEditApplier;
+	private readonly TextWorkspaceEditApplier _workspaceEditApplier;
 
 	private async Task RenameSymbolAsync()
 	{
@@ -30,7 +30,7 @@ public sealed partial class LuaStudio
 			return;
 		}
 
-		if (!_intellisenseProvider.SupportsRename)
+		if (!_workspaceCommandService.SupportsRename)
 		{
 			ShowRenameInfo(Strings.Default.LuaRenameUnsupported, MessageBoxIcon.Information);
 			return;
@@ -53,24 +53,18 @@ public sealed partial class LuaStudio
 
 		try
 		{
-			LuaWorkspaceEdit? workspaceEdit = await _intellisenseProvider
+			TextWorkspaceCommandResult result = await _workspaceCommandService
 				.RenameSymbolAsync(
-					editor.FilePath,
-					editor.Text,
+					editor,
 					Math.Max(0, location.Line - 1),
 					Math.Max(0, location.Column - 1),
 					newName)
 				.ConfigureAwait(true);
 
-			if (workspaceEdit is null || !workspaceEdit.HasEdits)
-			{
-				ShowRenameInfo(Strings.Default.LuaRenameNoChanges, MessageBoxIcon.Information);
+			if (result.Status is TextWorkspaceCommandStatus.Cancelled)
 				return;
-			}
 
-			LuaWorkspaceEditTransaction transaction = _workspaceEditApplier.Apply(workspaceEdit);
-
-			if (!transaction.HasChanges)
+			if (result.Transaction is not TextWorkspaceEditTransaction transaction || !transaction.HasChanges)
 			{
 				ShowRenameInfo(Strings.Default.LuaRenameNoChanges, MessageBoxIcon.Information);
 				return;
@@ -78,10 +72,6 @@ public sealed partial class LuaStudio
 
 			PushWorkspaceEditTransaction(transaction);
 			HandleWorkspaceDocumentsChanged(transaction.DocumentChanges.Select(documentChange => documentChange.FilePath));
-		}
-		catch (OperationCanceledException)
-		{
-			// Ignore canceled rename requests.
 		}
 		catch (Exception ex)
 		{

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.UI;
+using TombIDE.ScriptingStudio.Shortcuts;
 using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptingStudio.ToolStrips
@@ -13,6 +14,12 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 	public class StudioMenuStrip : DarkMenuStrip
 	{
 		#region Properties
+
+		public StudioShortcutBindingService ShortcutBindingService { get; set; }
+
+		public IReadOnlyList<StudioToolStripItem> DocumentModeContributionItems { get; set; }
+
+		public IReadOnlyList<StudioToolStripItem> StudioModeContributionItems { get; set; }
 
 		private StudioMode _studioMode;
 		[Browsable(false)]
@@ -70,18 +77,30 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		#region Other methods
 
+		public void RebuildStudioModeItems()
+		{
+			UpdateItems<StudioMode>();
+			OnStudioModeChanged(EventArgs.Empty);
+		}
+
+		public void RebuildDocumentModeItems()
+		{
+			UpdateItems<DocumentMode>();
+			OnDocumentModeChanged(EventArgs.Empty);
+		}
+
 		private void UpdateItems<T>() where T : Enum
 		{
 			string enumName = typeof(T).Name;
 			Enum modeEnum = GetModeEnum(enumName); // Either StudioMode or DocumentMode
 			string enumValueName = GetEnumValueName(modeEnum);
+			StudioToolStripItem[] studioItems = GetStudioItems(enumName, enumValueName).ToArray();
 
 			ClearRelatedItems(modeEnum);
 
-			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase))
+			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase) && studioItems.Length == 0)
 				return;
 
-			IEnumerable<StudioToolStripItem> studioItems = GetStudioItems(enumName, enumValueName);
 			IEnumerable<ToolStripMenuItem> menuItems = GetMenuItemsFromStudioItems(studioItems, modeEnum);
 
 			AddMenuItems(menuItems);
@@ -133,15 +152,18 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 					yield return new ToolStripSeparator();
 				else
 				{
+					UICommand command = StudioItemParser.GetCommand(item.Command);
 					string text = StudioItemParser.GetItemText(item);
 					Image icon = StudioItemParser.FindImageInResources(item.Icon);
-					Keys keys = StudioItemParser.FindPredefinedKeys(item.Keys);
+					Keys keys = TryGetShortcut(command, out Keys shortcutKeys)
+						? shortcutKeys
+						: StudioItemParser.FindPredefinedKeys(item.Keys);
 
 					var menuItem = new ToolStripMenuItem(text, icon, OnItemClicked, keys)
 					{
-						ShortcutKeyDisplayString = item.KeysDisplay,
+						ShortcutKeyDisplayString = GetShortcutDisplayText(command, item.KeysDisplay),
 						CheckOnClick = item.CheckOnClick,
-						Tag = new UIElementArgs(uiModeEnumType, StudioItemParser.GetCommand(item.Command))
+						Tag = new UIElementArgs(uiModeEnumType, command)
 					};
 
 					menuItem.DropDownItems.AddRange(GetSubMenuItems(item, uiModeEnumType)?.ToArray());
@@ -158,7 +180,27 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		private string GetEnumValueName(Enum @enum)
 			=> @enum.ToString().Split('.').Last();
 
+		private string GetShortcutDisplayText(UICommand command, string fallbackDisplayText)
+			=> ShortcutBindingService?.GetShortcutDisplayText(command, fallbackDisplayText) ?? fallbackDisplayText;
+
+		private bool TryGetShortcut(UICommand command, out Keys keys)
+		{
+			if (ShortcutBindingService is not null)
+				return ShortcutBindingService.TryGetPrimaryShortcut(command, out keys);
+
+			keys = Keys.None;
+			return false;
+		}
+
 		private IEnumerable<StudioToolStripItem> GetStudioItems(string enumTypeName, string enumValueName)
-			=> ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.MenuStrips.{enumValueName}.xml");
+		{
+			if (enumTypeName == nameof(StudioMode))
+				return StudioModeContributionItems ?? [];
+
+			if (enumTypeName == nameof(DocumentMode) && DocumentModeContributionItems?.Count > 0)
+				return DocumentModeContributionItems;
+
+			return ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.MenuStrips.{enumValueName}.xml");
+		}
 	}
 }

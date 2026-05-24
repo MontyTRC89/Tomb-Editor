@@ -16,7 +16,7 @@ internal sealed class LuaCompletionItemIdentityComparer : IEqualityComparer<LuaC
 		&& StringComparer.Ordinal.Equals(x.FilterText, y.FilterText)
 		&& StringComparer.Ordinal.Equals(x.Detail, y.Detail)
 		&& StringComparer.Ordinal.Equals(x.Description, y.Description)
-		&& x.IconKind == y.IconKind
+		&& x.Kind == y.Kind
 		&& x.TextEdit.Equals(y.TextEdit);
 
 	public int GetHashCode(LuaCompletionItemIdentity value)
@@ -26,6 +26,6 @@ internal sealed class LuaCompletionItemIdentityComparer : IEqualityComparer<LuaC
 			StringComparer.Ordinal.GetHashCode(value.FilterText),
 			StringComparer.Ordinal.GetHashCode(value.Detail),
 			StringComparer.Ordinal.GetHashCode(value.Description),
-			value.IconKind,
+			value.Kind,
 			value.TextEdit);
 }

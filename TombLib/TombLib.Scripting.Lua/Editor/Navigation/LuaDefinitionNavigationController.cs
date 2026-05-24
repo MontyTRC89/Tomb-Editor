@@ -1,8 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Utils;
+using TombLib.Scripting.Lua;
+using TombLib.Scripting.Lua.Editor;
+using TombLib.Scripting.Navigation;
 
 namespace TombLib.Scripting.Lua;
 
@@ -55,7 +56,7 @@ public sealed partial class LuaEditor
 
 				(int line, int column) = _editor.GetPositionFromOffset(definitionOffset);
 
-				LuaDefinitionLocation? definitionLocation = await intellisenseProvider
+				TextDefinitionLocation? definitionLocation = await intellisenseProvider
 					.GetDefinitionAsync(_editor.FilePath, _editor.Text, line, column, effectiveCancellationToken)
 					.ConfigureAwait(true);
 

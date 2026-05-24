@@ -1,4 +1,5 @@
 ﻿using DarkUI.Docking;
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,138 +7,130 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using ICSharpCode.AvalonEdit.Document;
 using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
-using TombIDE.ScriptingStudio.Services;
+using TombIDE.ScriptingStudio.Lua;
+using TombIDE.ScriptingStudio.Shell;
+using TombIDE.ScriptingStudio.TextEditing;
+using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
-using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.Enums;
-using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.Editing;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Lua.Objects;
-using TombLib.Scripting.Lua.Utils;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.Lua.Documents;
+using TombLib.Scripting.UI.Cleaning;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editing;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio
 {
-	public sealed partial class LuaStudio : StudioBase
+	public sealed partial class LuaStudio : TombIDE.ScriptingStudio.Bases.ScriptingStudio
 	{
-		public override StudioMode StudioMode => StudioMode.Lua;
-
 		#region Fields
 
+		private readonly TombEngineLevelScriptService _levelScriptService = new();
 		private readonly TombEngineLanguageScriptService _languageScriptService = new();
+		private readonly EditorTabControlTextEditorHost _textEditorHost;
+		private readonly ITextFormattingProvider _trimWhitespaceProvider = new TextDocumentFormatterProvider(TrimTrailingWhitespaceFormatter.Instance);
 
 		#endregion Fields
 
 		#region Construction
 
-		public LuaStudio() : base(IDE.Instance.Project.GetScriptRootDirectory(), IDE.Instance.Project.GetEngineRootDirectoryPath())
+		public LuaStudio(ScriptingWorkspaceProfile workspaceProfile) : base()
 		{
-			DockPanelState = IDE.Instance.IDEConfiguration.Lua_DockPanelState;
-
-			FileExplorer.ExcludedDirectoryFilter = "Scripts\\Engine";
-			FileExplorer.Filter = "*.lua";
-			FileExplorer.CommentPrefix = "--";
-			InitializeLuaDiagnostics();
-			InitializeLuaReferencesResults();
+			ArgumentNullException.ThrowIfNull(workspaceProfile);
+			var paneContributionProvider = new StaticStudioPaneContributionProvider(
+				new[]
+				{
+					new StudioPaneContribution(UICommand.LuaDiagnostics, nameof(LuaDiagnostics), CreateLuaDiagnosticsToolWindow),
+					new StudioPaneContribution(UICommand.LuaReferencesResults, nameof(LuaReferencesResults), CreateLuaReferencesResultsToolWindow)
+				});
+			_textEditorHost = new EditorTabControlTextEditorHost(EditorTabControl);
+			var silentActionService = new StudioSilentActionService(EditorTabControl);
 
 			_intellisenseProvider = CreateLuaIntellisenseProvider();
-			_workspaceEditApplier = new LuaWorkspaceEditApplier(EditorTabControl);
-			_workspaceEditHistory = new LuaWorkspaceEditHistoryService(_workspaceEditApplier);
+			_intellisenseEventBridge = new LuaIntellisenseEventBridge(
+				this,
+				_intellisenseProvider,
+				IntellisenseProvider_DiagnosticsUpdated,
+				IntellisenseProvider_SemanticTokensUpdated,
+				IntellisenseProvider_StartupFailed,
+				IntellisenseProvider_WorkspaceWatcherFailed);
+			_referenceSearchService = new LuaReferenceSearchService(_textEditorHost, _intellisenseProvider, ScriptRootDirectoryPath);
+			_workspaceEditApplier = new TextWorkspaceEditApplier(_textEditorHost);
+			_trackedDocumentStateService = new LuaTrackedDocumentStateService(_textEditorHost, _intellisenseProvider);
+			_documentLifecycleCoordinator = new LuaDocumentLifecycleCoordinator(
+				EditorTabControl,
+				_intellisenseProvider,
+				_trackedDocumentStateService,
+				() => EditorTabControl_LuaSelectedIndexChanged(this, EventArgs.Empty),
+				LuaEditor_StatusChanged,
+				LuaEditor_TextChanged,
+				NavigateToDefinition,
+				LuaEditorOpened,
+				CurrentLuaEditorRenamed);
+			_workspaceCommandService = new TextWorkspaceCommandService(_workspaceEditApplier, _intellisenseProvider);
+			var documentCommandHandler = new LuaDocumentCommandHandler(
+				new LuaDocumentCommandCallbacks(
+					() => CurrentEditor as LuaEditor,
+					ReformatDocumentAsync,
+					TrimWhitespaceAsync,
+					NavigateBack,
+					NavigateForward,
+					editor => _ = editor.NavigateToDefinitionAtCaretAsync(),
+					FindReferencesAsync,
+					RenameSymbolAsync,
+					ShowLuaBasicsDocumentation));
+			var documentCommandStatusProvider = new LuaDocumentCommandStatusProvider(_intellisenseProvider, _referenceSearchService, _workspaceCommandService);
+			_workspaceEditHistory = new TextWorkspaceEditHistoryService(_workspaceEditApplier);
+			var workspaceAutomationProvider = new LuaWorkspaceAutomationProvider(
+				silentActionService,
+				ScriptRootDirectoryPath,
+				new LuaWorkspaceAutomationCallbacks(
+					AppendScript,
+					IsLevelScriptDefined,
+					IsLevelLanguageStringDefined,
+					RenameRequestedLanguageString,
+					DisposeLuaIntellisense));
 			HookLuaIntellisense();
-
-			EditorTabControl.CheckPreviousSession();
-
-			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Instance.Project.GetScriptRootDirectory(), TombLib.LevelData.TRVersion.Game.TombEngine);
-
-			if (!string.IsNullOrWhiteSpace(initialFilePath))
-				EditorTabControl.OpenFile(initialFilePath);
+			InitializeHost(
+				workspaceProfile,
+				(editor, configs) => editor.UpdateSettings(configs.Lua),
+				() => ApplyUserSettingsToOpenEditors(afterApply: editor =>
+				{
+					if (editor is LuaEditor luaEditor)
+						_trackedDocumentStateService.ApplyTrackedState(luaEditor);
+				}),
+				documentCommandStatusProvider: documentCommandStatusProvider,
+				documentCommandHandler: documentCommandHandler,
+				paneContributionProvider: paneContributionProvider,
+				workspaceAutomationProvider: workspaceAutomationProvider,
+				dockPanelLayoutRestored: EnsureLuaToolWindowsInDockPanel);
 		}
 
 		#endregion Construction
 
-		#region IDE Events
-
-		protected override void OnIDEEventRaised(IIDEEvent obj)
+		private (bool ScriptUpdated, bool LanguageUpdated) AppendScript(ScriptGenerationResult result)
 		{
-			base.OnIDEEventRaised(obj);
+			bool scriptUpdated = false;
+			bool languageUpdated = false;
 
-			IDEEvent_HandleSilentActions(obj);
-
-			if (obj is IDE.ProgramClosingEvent)
-			{
-				DisposeLuaIntellisense();
-
-				IDE.Instance.IDEConfiguration.Lua_DockPanelState = DockPanel.GetDockPanelState();
-				IDE.Instance.IDEConfiguration.Save();
-			}
-		}
-
-		private static bool IsSilentAction(IIDEEvent obj)
-			=> obj is IDE.ScriptEditor_AppendScriptEvent
-			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
-			|| obj is IDE.ScriptEditor_StringPresenceCheckEvent
-			|| obj is IDE.ScriptEditor_RenameLevelEvent;
-
-		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
-		{
-			if (IsSilentAction(obj))
-			{
-				TabPage cachedTab = EditorTabControl.SelectedTab;
-
-				TabPage scriptFileTab = EditorTabControl.FindTabPage(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
-				bool wasScriptFileAlreadyOpened = scriptFileTab is not null;
-				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
-
-				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
-				bool wasLanguageFileAlreadyOpened = languageFileTab is not null;
-				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened && EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged;
-
-				if (obj is IDE.ScriptEditor_AppendScriptEvent asle && asle.Result.HasOutput)
-				{
-					AppendScript(asle.Result,
-						wasScriptFileAlreadyOpened, wasScriptFileFileChanged,
-						wasLanguageFileAlreadyOpened, wasLanguageFileFileChanged);
-
-					EndSilentScriptAction(cachedTab, true, false, false);
-				}
-				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
-				{
-					IDE.Instance.ScriptDefined = true; // TEMP !!!
-				}
-				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
-				{
-					IDE.Instance.StringDefined = IsLevelLanguageStringDefined(strpce.String);
-					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
-				}
-				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
-				{
-					string oldName = rle.OldName;
-					string newName = rle.NewName;
-
-					RenameRequestedLanguageString(oldName, newName);
-
-					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
-				}
-			}
-		}
-
-		private void AppendScript(ScriptGenerationResult result,
-			bool wasScriptFileAlreadyOpened, bool wasScriptFileFileChanged,
-			bool wasLanguageFileAlreadyOpened, bool wasLanguageFileFileChanged)
-		{
 			try
 			{
 				if (result.GameFlowScript.Length > 0)
-					AppendGameFlowScript(result.GameFlowScript, wasScriptFileAlreadyOpened, wasScriptFileFileChanged);
+				{
+					AppendGameFlowScript(result.GameFlowScript);
+					scriptUpdated = true;
+				}
 
 				if (result.LanguageScript.Length > 0)
-					AppendLanguageScript(result.LanguageScript, wasLanguageFileAlreadyOpened, wasLanguageFileFileChanged);
+				{
+					AppendLanguageScript(result.LanguageScript);
+					languageUpdated = true;
+				}
 
 				CreateGeneratedFiles(result.FilesToCreate);
 			}
@@ -145,32 +138,20 @@ namespace TombIDE.ScriptingStudio
 			{
 				Debug.WriteLine($"[LuaStudio] Failed to append generated Lua script output: {exception}");
 			}
+
+			return (scriptUpdated, languageUpdated);
 		}
 
-		private void AppendGameFlowScript(string scriptText, bool wasScriptFileAlreadyOpened, bool wasScriptFileFileChanged)
+		private void AppendGameFlowScript(string scriptText)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
-			TabPage affectedTab = EditorTabControl.SelectedTab;
-
-			if (CurrentEditor is not TextEditorBase editor)
-				return;
-
+			TextEditorBase editor = _textEditorHost.OpenTextEditor(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
 			editor.AppendText(Environment.NewLine + scriptText + Environment.NewLine);
 			editor.ScrollToLine(editor.LineCount);
-
-			if (!wasScriptFileFileChanged && affectedTab is not null)
-				EditorTabControl.SaveFile(affectedTab);
-
-			if (!wasScriptFileAlreadyOpened && affectedTab is not null)
-				EditorTabControl.TabPages.Remove(affectedTab);
 		}
 
-		private void AppendLanguageScript(string languageScript, bool wasLanguageFileAlreadyOpened, bool wasLanguageFileFileChanged)
+		private void AppendLanguageScript(string languageScript)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
-			TabPage affectedTab = EditorTabControl.SelectedTab;
-
-			if (CurrentEditor is TextEditorBase stringsEditor)
+			if (_textEditorHost.OpenTextEditor(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine)) is TextEditorBase stringsEditor)
 			{
 				int? insertedLineNumber = _languageScriptService.TryInsertLanguageScript(stringsEditor.Document, languageScript);
 
@@ -178,14 +159,8 @@ namespace TombIDE.ScriptingStudio
 				{
 					stringsEditor.ResetSelectionAt(insertedLineNumber.Value);
 					stringsEditor.ScrollToLine(insertedLineNumber.Value);
-
-					if (!wasLanguageFileFileChanged && affectedTab is not null)
-						EditorTabControl.SaveFile(affectedTab);
 				}
 			}
-
-			if (!wasLanguageFileAlreadyOpened && affectedTab is not null)
-				EditorTabControl.TabPages.Remove(affectedTab);
 		}
 
 		private void CreateGeneratedFiles(IReadOnlyList<GeneratedScriptFile> files)
@@ -213,24 +188,27 @@ namespace TombIDE.ScriptingStudio
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
+			TextEditorBase editor = _textEditorHost.OpenTextEditor(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
+			var regex = new Regex($"\"{Regex.Escape(levelName)}\"");
+			var stringLine = editor.Document.Lines.FirstOrDefault(line => regex.IsMatch(editor.Document.GetText(line)));
 
-			if (CurrentEditor is TextEditorBase editor)
-			{
-				var regex = new Regex($"\"{Regex.Escape(levelName)}\"");
-				var stringLine = editor.Document.Lines.FirstOrDefault(line => regex.IsMatch(editor.Document.GetText(line)));
+			return stringLine is not null;
+		}
 
-				return stringLine is not null;
-			}
+		private bool IsLevelScriptDefined(string levelName)
+		{
+			TextDocument scriptDocument = _textEditorHost.TryGetTextDocument(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
+			TextDocument languageDocument = _textEditorHost.TryGetTextDocument(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
 
-			return false;
+			if (scriptDocument is null || languageDocument is null)
+				return false;
+
+			return _levelScriptService.IsLevelScriptDefined(scriptDocument, languageDocument, levelName);
 		}
 
 		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine));
-
-			if (CurrentEditor is TextEditorBase editor)
+			if (_textEditorHost.OpenTextEditor(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, TombLib.LevelData.TRVersion.Game.TombEngine)) is TextEditorBase editor)
 			{
 				var regex = new Regex($"\"{Regex.Escape(oldName)}\"");
 				var stringLine = editor.Document.Lines.FirstOrDefault(line => regex.IsMatch(editor.Document.GetText(line)));
@@ -243,40 +221,6 @@ namespace TombIDE.ScriptingStudio
 				}
 			}
 		}
-
-		protected override void RestoreDefaultLayout()
-		{
-			DockPanelState = DefaultLayouts.LuaLayout;
-
-			DockPanel.RemoveContent();
-			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
-			EnsureLuaToolWindowsInDockPanel();
-		}
-
-		protected override void OnDockPanelLayoutRestored()
-			=> EnsureLuaToolWindowsInDockPanel();
-
-		private void EndSilentScriptAction(TabPage previousTab, bool indicateChange, bool saveAffectedFile, bool closeAffectedTab)
-		{
-			if (indicateChange)
-			{
-				CurrentEditor.LastModified = DateTime.Now;
-				IDE.Instance.ScriptEditor_IndicateExternalChange();
-			}
-
-			if (saveAffectedFile)
-				EditorTabControl.SaveFile(EditorTabControl.SelectedTab);
-
-			if (closeAffectedTab)
-				EditorTabControl.TabPages.Remove(EditorTabControl.SelectedTab);
-
-			EditorTabControl.EnsureTabFileSynchronization();
-
-			if (previousTab is not null)
-				EditorTabControl.SelectTab(previousTab);
-		}
-
-		#endregion IDE Events
 
 		#region Other methods
 
@@ -306,79 +250,18 @@ namespace TombIDE.ScriptingStudio
 			return bottomGroup ?? toolWindow.DockGroup;
 		}
 
-		protected override void ApplyUserSettings(IEditorControl editor)
-			=> editor.UpdateSettings(Configs.Lua);
-
-		protected override void ApplyUserSettings()
+		private static void ShowLuaBasicsDocumentation()
 		{
-			foreach (TabPage tab in EditorTabControl.TabPages)
+			const string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
+
+			var process = new ProcessStartInfo
 			{
-				IEditorControl editor = EditorTabControl.GetEditorOfTab(tab);
-				ApplyUserSettings(editor);
+				FileName = url,
+				UseShellExecute = true
+			};
 
-				if (editor is LuaEditor luaEditor)
-				{
-					ApplyDiagnosticsToEditor(luaEditor, _intellisenseProvider.GetDiagnostics(luaEditor.FilePath));
-					ApplySemanticTokensToEditor(luaEditor, _intellisenseProvider.GetSemanticTokens(luaEditor.FilePath));
-				}
-			}
-
-			UpdateSettings();
+			Process.Start(process);
 		}
-
-		protected override void Build()
-		{
-			// Nothing.
-		}
-
-		protected override void HandleDocumentCommands(UICommand command)
-		{
-			if (command == UICommand.Reindent && CurrentEditor is LuaEditor)
-			{
-				_ = ReformatDocumentAsync();
-				return;
-			}
-
-			switch (command)
-			{
-				case UICommand.NavigateBack:
-					NavigateBack();
-					break;
-
-				case UICommand.NavigateForward:
-					NavigateForward();
-					break;
-
-				case UICommand.GoToDefinition:
-					if (CurrentEditor is LuaEditor luaEditor)
-						_ = luaEditor.NavigateToDefinitionAtCaretAsync();
-					break;
-
-				case UICommand.FindReferences:
-					_ = FindReferencesAsync();
-					break;
-
-				case UICommand.RenameSymbol:
-					_ = RenameSymbolAsync();
-					break;
-
-				case UICommand.LuaBasics:
-					const string url = "https://github.com/MontyTRC89/TombEngine/wiki/Basics-of-Lua-Programming";
-
-					var process = new ProcessStartInfo
-					{
-						FileName = url,
-						UseShellExecute = true
-					};
-
-					Process.Start(process);
-					break;
-			}
-
-			base.HandleDocumentCommands(command);
-		}
-
-		protected override void ShowDocumentation() => throw new NotImplementedException();
 
 		#endregion Other methods
 	}

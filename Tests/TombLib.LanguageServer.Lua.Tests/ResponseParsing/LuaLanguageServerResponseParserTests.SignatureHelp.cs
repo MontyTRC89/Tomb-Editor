@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Signatures;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -7,7 +7,7 @@ public partial class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseSignatureHelp_UsesParameterLabelOffsetsAndActiveParameter()
 	{
-		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+		TextSignatureHelpInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
 			DeserializeSignatureHelpResponse(new
 			{
 				activeSignature = 0,
@@ -42,7 +42,7 @@ public partial class LuaLanguageServerResponseParserTests
 		Assert.IsNotNull(signatureInfo);
 		Assert.AreEqual("spawn(room, objectName)", signatureInfo.Label);
 		Assert.AreEqual("Spawns an object.", signatureInfo.Documentation);
-		Assert.AreEqual(1, signatureInfo.ActiveParameter);
+		Assert.AreEqual(1, signatureInfo.ActiveParameterIndex);
 		Assert.AreEqual(2, signatureInfo.Parameters.Count);
 		Assert.AreEqual("objectName", signatureInfo.Parameters[1].Label);
 		Assert.AreEqual("Object name.", signatureInfo.Parameters[1].Documentation);
@@ -51,7 +51,7 @@ public partial class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseSignatureHelp_UsesSignatureLevelActiveParameterWhenResponseOmitsIt()
 	{
-		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+		TextSignatureHelpInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
 			DeserializeSignatureHelpResponse(new
 			{
 				signatures = new[]
@@ -70,14 +70,14 @@ public partial class LuaLanguageServerResponseParserTests
 			}));
 
 		Assert.IsNotNull(signatureInfo);
-		Assert.AreEqual(1, signatureInfo.ActiveParameter);
+		Assert.AreEqual(1, signatureInfo.ActiveParameterIndex);
 		Assert.AreEqual("y", signatureInfo.Parameters[1].Label);
 	}
 
 	[TestMethod]
 	public void ParseSignatureHelp_ClampsOutOfRangeActiveParameterToLastAvailableParameter()
 	{
-		LuaSignatureInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
+		TextSignatureHelpInfo? signatureInfo = LuaLanguageServerResponseParser.ParseSignatureHelp(
 			DeserializeSignatureHelpResponse(new
 			{
 				activeSignature = 0,
@@ -98,7 +98,7 @@ public partial class LuaLanguageServerResponseParserTests
 
 		Assert.IsNotNull(signatureInfo);
 		Assert.AreEqual(2, signatureInfo.Parameters.Count);
-		Assert.AreEqual(1, signatureInfo.ActiveParameter);
-		Assert.AreEqual("objectName", signatureInfo.Parameters[signatureInfo.ActiveParameter].Label);
+		Assert.AreEqual(1, signatureInfo.ActiveParameterIndex);
+		Assert.AreEqual("objectName", signatureInfo.Parameters[signatureInfo.ActiveParameterIndex].Label);
 	}
 }

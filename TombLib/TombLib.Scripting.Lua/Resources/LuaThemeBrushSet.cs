@@ -1,5 +1,6 @@
 using System.Windows.Media;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Lua.Themes;
 
 namespace TombLib.Scripting.Lua.Resources;
 
@@ -109,19 +110,19 @@ internal sealed class LuaThemeBrushSet(
 	/// </summary>
 	/// <param name="kind">The completion item icon kind.</param>
 	/// <returns>The brush associated with that kind.</returns>
-	public Brush GetCompletionItemBrush(LuaCompletionIconKind kind) => kind switch
+	public Brush GetCompletionItemBrush(TextCompletionItemKind kind) => kind switch
 	{
-		LuaCompletionIconKind.Variable => VariableBrush,
-		LuaCompletionIconKind.Field => PropertyBrush,
-		LuaCompletionIconKind.Method => MethodBrush,
-		LuaCompletionIconKind.Property => PropertyBrush,
-		LuaCompletionIconKind.Class => TypeBrush,
-		LuaCompletionIconKind.Keyword => KeywordBrush,
-		LuaCompletionIconKind.Constant => ConstantBrush,
-		LuaCompletionIconKind.Parameter => VariableBrush,
-		LuaCompletionIconKind.Namespace => TypeBrush,
-		LuaCompletionIconKind.File => FileBrush,
-		LuaCompletionIconKind.Folder => FileBrush,
+		TextCompletionItemKind.Variable => VariableBrush,
+		TextCompletionItemKind.Field => PropertyBrush,
+		TextCompletionItemKind.Method => MethodBrush,
+		TextCompletionItemKind.Property => PropertyBrush,
+		TextCompletionItemKind.Class => TypeBrush,
+		TextCompletionItemKind.Keyword => KeywordBrush,
+		TextCompletionItemKind.Constant => ConstantBrush,
+		TextCompletionItemKind.Parameter => VariableBrush,
+		TextCompletionItemKind.Namespace => TypeBrush,
+		TextCompletionItemKind.File => FileBrush,
+		TextCompletionItemKind.Folder => FileBrush,
 		_ => MiscBrush
 	};
 }

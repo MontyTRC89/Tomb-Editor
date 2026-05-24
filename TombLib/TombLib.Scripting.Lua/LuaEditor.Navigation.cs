@@ -19,11 +19,7 @@ public sealed partial class LuaEditor
 		if (_signatureHelpController.IsVisible && (e.Key == Key.Back || e.Key == Key.Delete))
 			ScheduleSignatureHelpRefresh();
 
-		if (e.Key == Key.F12)
-		{
-			if (await _definitionNavigationController.TryNavigateAsync(CaretOffset, CancellationToken.None).ConfigureAwait(true))
-				e.Handled = true;
-		}
+		await _definitionTriggerController.TryHandleKeyDownAsync(e, CaretOffset).ConfigureAwait(true);
 	}
 
 	private void TextEditor_PreviewMouseDown(object? sender, MouseButtonEventArgs e)
@@ -36,23 +32,15 @@ public sealed partial class LuaEditor
 	}
 
 	private async void TextEditor_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
-	{
-		if (!Keyboard.Modifiers.HasFlag(ModifierKeys.Control) || e.ChangedButton != MouseButton.Left)
-			return;
-
-		int hoveredOffset = GetOffsetFromPoint(e.GetPosition(this));
-
-		if (hoveredOffset == -1)
-			return;
-
-		if (await _definitionNavigationController.TryNavigateAsync(hoveredOffset, CancellationToken.None).ConfigureAwait(true))
-			e.Handled = true;
-	}
+		=> await _definitionTriggerController.TryHandlePointerNavigationAsync(e).ConfigureAwait(true);
 
 	/// <summary>
 	/// Attempts to resolve and navigate to the symbol definition at the current caret position.
 	/// </summary>
 	/// <returns>A task that completes once the navigation attempt finishes.</returns>
 	public Task NavigateToDefinitionAtCaretAsync()
-		=> _definitionNavigationController.TryNavigateAsync(CaretOffset, CancellationToken.None);
+		=> TryNavigateDefinitionAsync(CaretOffset, CancellationToken.None);
+
+	private Task<bool> TryNavigateDefinitionAsync(int offset, CancellationToken cancellationToken)
+		=> _definitionNavigationController.TryNavigateAsync(offset, cancellationToken);
 }

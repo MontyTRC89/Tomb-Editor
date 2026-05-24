@@ -1,4 +1,4 @@
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.LanguageServer.Lua;
 

@@ -1,5 +1,5 @@
-using TombLib.Scripting.Highlighting;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Lua.Themes;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Scripting.Lua.Resources;
 

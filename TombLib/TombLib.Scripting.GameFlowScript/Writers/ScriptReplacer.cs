@@ -1,8 +1,9 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.Bases;
 using TombLib.Scripting.GameFlowScript.Parsers;
 using TombLib.Scripting.GameFlowScript.Resources;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Scripting.GameFlowScript.Writers
 {
@@ -10,44 +11,27 @@ namespace TombLib.Scripting.GameFlowScript.Writers
 	{
 		public static void RenameLevelScript(TextEditorBase textEditor, string oldName, string newName)
 		{
-			foreach (DocumentLine line in textEditor.Document.Lines)
+			var regex = new Regex(Patterns.LevelProperty, RegexOptions.IgnoreCase);
+
+			TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
 			{
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
-				var regex = new Regex(Patterns.LevelProperty, RegexOptions.IgnoreCase);
+				if (!regex.IsMatch(lineText))
+					return null;
 
-				if (regex.IsMatch(lineText))
-				{
-					string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim();
-
-					if (scriptLevelName == oldName)
-					{
-						lineText = lineText.Replace(oldName, newName);
-
-						textEditor.ReplaceLine(line, lineText, true);
-						textEditor.ScrollToLine(line.LineNumber);
-
-						break;
-					}
-				}
-			}
+				string scriptLevelName = regex.Replace(LineParser.RemoveComments(lineText), string.Empty).Trim();
+				return scriptLevelName == oldName
+					? lineText.Replace(oldName, newName)
+					: null;
+			});
 		}
 
 		public static void RenameLanguageString(TextEditorBase textEditor, string oldName, string newName)
-		{
-			foreach (DocumentLine line in textEditor.Document.Lines)
+			=> TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
 			{
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length).Trim();
-
-				if (lineText == oldName)
-				{
-					lineText = lineText.Replace(oldName, newName);
-
-					textEditor.ReplaceLine(line, lineText, true);
-					textEditor.ScrollToLine(line.LineNumber);
-
-					break;
-				}
-			}
-		}
+				string trimmedLineText = lineText.Trim();
+				return trimmedLineText == oldName
+					? trimmedLineText.Replace(oldName, newName)
+					: null;
+			});
 	}
 }

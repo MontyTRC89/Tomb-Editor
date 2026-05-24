@@ -1,17 +1,15 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using NCalc;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.ClassicScript.Resources;
-using TombLib.Scripting.Helpers;
+using TombLib.Scripting.ClassicScript.Mnemonics;
+using TombLib.Scripting.Extensions;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {
 	public static class GlobalParser
 	{
+		private static readonly ClassicScriptMnemonicCatalogService MnemonicCatalogService = new();
+
 		public static int GetNextFreeIndex(TextDocument document, int offset)
 		{
 			string commandKey = CommandParser.GetCommandKey(document, offset);
@@ -23,7 +21,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			if (string.IsNullOrEmpty(commandKey))
 				return -1;
 
-			if (StringHelper.BulkStringComparision(commandKey, StringComparison.OrdinalIgnoreCase,
+			if (commandKey.IgnoreCaseEqualsAny(
 				"AddEffect", "ColorRGB", "GlobalTrigger", "Image", "ItemGroup", "MultiEnvCondition",
 				"Organizer", "Parameters", "TestPosition", "TriggerGroup", "Plugin"))
 			{
@@ -86,9 +84,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 							if (int.TryParse(variable, out int _))
 								continue;
 
-							DataRow row = MnemonicData.MnemonicConstantsDataTable.Select($"flag = '{variable}'")?.FirstOrDefault();
-
-							if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
+							if (MnemonicCatalogService.TryGetDecimalValue(variable, out int rowValue))
 								expressionString = expressionString.Replace(variable, rowValue.ToString());
 							else
 								expressionString = expressionString.Replace(variable, GetVariableValue(document, variable).ToString());
@@ -142,9 +138,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 						if (int.TryParse(subVariable, out int _))
 							continue;
 
-						DataRow row = MnemonicData.MnemonicConstantsDataTable.Select($"flag = '{subVariable}'")?.FirstOrDefault();
-
-						if (row != null && int.TryParse(row[0].ToString(), out int rowValue))
+						if (MnemonicCatalogService.TryGetDecimalValue(subVariable, out int rowValue))
 							expressionString = expressionString.Replace(subVariable, rowValue.ToString());
 						else
 							expressionString = expressionString.Replace(subVariable, GetVariableValue(document, subVariable).ToString());

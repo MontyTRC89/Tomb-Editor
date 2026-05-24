@@ -1,30 +1,73 @@
 using DarkUI.Docking;
+using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
+using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.DocumentOutline;
+using TombIDE.ScriptingStudio.FileExplorer;
+using TombIDE.ScriptingStudio.FindAndReplace;
 using TombIDE.ScriptingStudio.Helpers;
-using TombIDE.ScriptingStudio.Objects;
+using TombIDE.ScriptingStudio.Navigation;
 using TombIDE.ScriptingStudio.Properties;
+using TombIDE.ScriptingStudio.Shell;
+using TombIDE.ScriptingStudio.Services;
+using TombIDE.ScriptingStudio.Shortcuts;
+using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.ScriptingStudio.Settings;
 using TombIDE.ScriptingStudio.ToolStrips;
 using TombIDE.ScriptingStudio.ToolWindows;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Forms;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.ClassicScript;
-using TombLib.Scripting.Forms;
-using TombLib.Scripting.Interfaces;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Strings;
+using FileExplorerToolWindow = TombIDE.ScriptingStudio.FileExplorer.FileExplorer;
 
 namespace TombIDE.ScriptingStudio.Bases
 {
 	public abstract class StudioBase : Control
 	{
+		private static readonly UICommand[] CapabilityDrivenDocumentCommands =
+		{
+			UICommand.TrimWhiteSpace,
+			UICommand.ToggleComment,
+			UICommand.CommentOut,
+			UICommand.Uncomment,
+			UICommand.ToggleBookmark,
+			UICommand.PrevBookmark,
+			UICommand.NextBookmark,
+			UICommand.ClearBookmarks,
+			UICommand.PrevSection,
+			UICommand.NextSection,
+			UICommand.ClearString,
+			UICommand.RemoveLastString,
+			UICommand.Reindent,
+			UICommand.GoToDefinition,
+			UICommand.FindReferences,
+			UICommand.RenameSymbol,
+			UICommand.TypeFirstAvailableId,
+			UICommand.NewFileAtCaret
+		};
+
+		private static readonly UICommand[] WorkspaceViewCommands =
+		{
+			UICommand.ToolStrip,
+			UICommand.ContentExplorer,
+			UICommand.FileExplorer,
+			UICommand.ReferenceBrowser,
+			UICommand.CompilerLogs,
+			UICommand.SearchResults,
+			UICommand.LuaDiagnostics,
+			UICommand.LuaReferencesResults,
+			UICommand.StatusStrip
+		};
+
 		#region Properties
 
 		public DocumentMode DocumentMode
@@ -32,6 +75,11 @@ namespace TombIDE.ScriptingStudio.Bases
 			get => MenuStrip.DocumentMode;
 			set
 			{
+				MenuStrip.DocumentModeContributionItems = GetDocumentMenuStripContributions(CurrentEditor, value);
+				ToolStrip.DocumentModeContributionItems = GetDocumentToolStripContributions(CurrentEditor, value);
+				EditorContextMenu.DocumentModeContributionItems = GetDocumentContextMenuContributions(CurrentEditor, value);
+				UpdateStatusStripContributions(CurrentEditor, value);
+
 				MenuStrip.DocumentMode = value;
 				ToolStrip.DocumentMode = value;
 				StatusStrip.DocumentMode = value;
@@ -47,8 +95,12 @@ namespace TombIDE.ScriptingStudio.Bases
 			set
 			{
 				EditorTabControl.ScriptRootDirectoryPath = value;
-				FileExplorer.RootDirectoryPath = value;
-				FileExplorer.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+
+				if (FileExplorer != null)
+				{
+					FileExplorer.RootDirectoryPath = value;
+					FileExplorer.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName;
+				}
 			}
 		}
 
@@ -70,6 +122,11 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected ConfigurationCollection Configs;
 
 		protected FormFindReplace FindReplaceForm;
+		private readonly StudioShortcutBindingService _shortcutBindings;
+		private readonly StudioEditorLifecycleCoordinator _editorLifecycleCoordinator;
+		private readonly Dictionary<string, Control> _viewControlRegistry = new(StringComparer.Ordinal);
+		private readonly Dictionary<string, DarkDockContent> _paneRegistryByKey = new(StringComparer.Ordinal);
+		private readonly Dictionary<UICommand, DarkDockContent> _paneRegistryByCommand = new();
 
 		public StudioMenuStrip MenuStrip;
 		public StudioToolStrip ToolStrip;
@@ -86,7 +143,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		public EditorTabControl EditorTabControl;
 
 		public ContentExplorer ContentExplorer;
-		public FileExplorer FileExplorer;
+		public FileExplorerToolWindow FileExplorer;
 		public CompilerLogs CompilerLogs;
 		public SearchResults SearchResults;
 
@@ -119,15 +176,26 @@ namespace TombIDE.ScriptingStudio.Bases
 		public StudioBase(string scriptRootDirectoryPath, string engineDirectoryPath)
 		{
 			Configs = new ConfigurationCollection();
+			_shortcutBindings = new StudioShortcutBindingService();
 
 			InitializeToolStrips();
 			InitializeTabControl();
 			InitializeContentExplorer();
 			InitializeFileExplorer();
 			InitializeFindReplaceForm();
+			_editorLifecycleCoordinator = new StudioEditorLifecycleCoordinator(
+				EditorTabControl,
+				ApplyUserSettings,
+				UpdateUI,
+				UpdateUndoRedoSaveStates,
+				OnToolStripItemClicked,
+				CanExecuteCommand,
+				_shortcutBindings);
+			_editorLifecycleCoordinator.Attach();
 
 			CompilerLogs = new CompilerLogs();
 			SearchResults = new SearchResults(NavigateToSearchResult);
+			RegisterBuiltInPaneContributions();
 
 			IDE.Instance.IDEEventRaised += OnIDEEventRaised;
 
@@ -137,22 +205,25 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		private void InitializeToolStrips()
 		{
-			MenuStrip = new StudioMenuStrip() { Dock = DockStyle.Top, StudioMode = StudioMode };
+			MenuStrip = new StudioMenuStrip() { Dock = DockStyle.Top, ShortcutBindingService = _shortcutBindings, StudioMode = StudioMode.None };
 			MenuStrip.ItemClicked += ToolStrip_ItemClicked;
 			MenuStrip.StudioModeChanged += MenuStrip_StudioModeChanged;
 
-			ToolStrip = new StudioToolStrip() { Dock = DockStyle.Top, StudioMode = StudioMode };
+			ToolStrip = new StudioToolStrip() { Dock = DockStyle.Top, StudioMode = StudioMode.None };
 			ToolStrip.ItemClicked += ToolStrip_ItemClicked;
 			ToolStrip.StudioModeChanged += ToolStrip_StudioModeChanged;
 
 			StatusStrip = new StudioStatusStrip() { Dock = DockStyle.Bottom };
 
-			EditorContextMenu = new EditorContextMenu();
+			EditorContextMenu = new EditorContextMenu() { ShortcutBindingService = _shortcutBindings };
 			EditorContextMenu.ItemClicked += ToolStrip_ItemClicked;
 
 			Controls.Add(StatusStrip);
 			Controls.Add(ToolStrip);
 			Controls.Add(MenuStrip);
+
+			RegisterViewControl(nameof(ToolStrip), ToolStrip);
+			RegisterViewControl(nameof(StatusStrip), StatusStrip);
 
 			InitializeFrequentlyAccessedMenuStripItems();
 			InitializeFrequentlyAccessedToolStripItems();
@@ -162,7 +233,6 @@ namespace TombIDE.ScriptingStudio.Bases
 		{
 			EditorTabControl = new EditorTabControl();
 			EditorTabControl.SelectedIndexChanged += EditorTabControl_SelectedIndexChanged;
-			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
 
 			EditorTabControlDocument = new DarkDocument();
@@ -178,7 +248,7 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		private void InitializeFileExplorer()
 		{
-			FileExplorer = new FileExplorer();
+			FileExplorer = new FileExplorerToolWindow();
 			FileExplorer.FileOpened += FileExplorer_FileOpened;
 			FileExplorer.FileChanged += FileExplorer_FileChanged;
 			FileExplorer.FileRenamed += FileExplorer_FileRenamed;
@@ -242,6 +312,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			LuaDiagnosticsViewItem = MenuStrip.FindItem(UICommand.LuaDiagnostics) as ToolStripMenuItem;
 			LuaReferencesResultsViewItem = MenuStrip.FindItem(UICommand.LuaReferencesResults) as ToolStripMenuItem;
 			StatusStripViewItem = MenuStrip.FindItem(UICommand.StatusStrip) as ToolStripMenuItem;
+
+			ApplyWorkspaceCommandSurface();
 		}
 
 		private void InitializeFrequentlyAccessedToolStripItems()
@@ -250,12 +322,53 @@ namespace TombIDE.ScriptingStudio.Bases
 			RedoToolStripButton = ToolStrip.FindItem(UICommand.Redo);
 			SaveToolStripButton = ToolStrip.FindItem(UICommand.Save);
 			SaveAllToolStripButton = ToolStrip.FindItem(UICommand.SaveAll);
+
+			ApplyWorkspaceCommandSurface();
 		}
 
 		private void ApplyMessageFilters()
 		{
 			Application.AddMessageFilter(DockPanel.DockContentDragFilter);
 			Application.AddMessageFilter(DockPanel.DockResizeFilter);
+		}
+
+		protected void ApplyWorkspaceProfileCommandSurfaceContributions()
+		{
+			if (WorkspaceProfile is null)
+				return;
+
+			MenuStrip.StudioModeContributionItems = WorkspaceProfile.MenuStripContributions;
+			ToolStrip.StudioModeContributionItems = WorkspaceProfile.ToolStripContributions;
+
+			MenuStrip.RebuildStudioModeItems();
+			ToolStrip.RebuildStudioModeItems();
+			UpdateStatusStripContributions(CurrentEditor, DocumentMode);
+		}
+
+		protected void ApplyWorkspaceProfileStartupPolicy()
+		{
+			if (WorkspaceProfile is null)
+				return;
+
+			DockPanelState = WorkspaceProfile.LoadDockPanelState();
+			FileExplorer.ExcludedDirectoryFilter = WorkspaceProfile.FileExplorerExcludedDirectoryFilter;
+			FileExplorer.Filter = WorkspaceProfile.FileExplorerFilter;
+			FileExplorer.CommentPrefix = WorkspaceProfile.CommentPrefix;
+
+			WorkspaceProfile.RegisterEditors(EditorTabControl);
+			EditorTabControl.CheckPreviousSession();
+
+			if (!string.IsNullOrWhiteSpace(WorkspaceProfile.InitialFilePath))
+				EditorTabControl.OpenFile(WorkspaceProfile.InitialFilePath);
+		}
+
+		protected void ApplyPaneContributionProvider()
+		{
+			if (PaneContributionProvider is null)
+				return;
+
+			foreach (StudioPaneContribution contribution in PaneContributionProvider.GetPaneContributions())
+				RegisterPaneContribution(contribution);
 		}
 
 		#endregion Construction
@@ -291,7 +404,14 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected virtual void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.ProgramClosingEvent e)
+			{
 				e.CanClose = EditorTabControl.AskSaveAll();
+
+				if (WorkspaceProfile is not null)
+					WorkspaceProfile.SaveDockPanelState(DockPanel.GetDockPanelState());
+			}
+
+			WorkspaceAutomationProvider?.HandleIDEEvent(obj);
 		}
 
 		protected virtual void OnToolStripItemClicked(UICommand e)
@@ -315,17 +435,102 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected virtual void ExecuteRedo()
 			=> CurrentEditor?.Redo();
 
+		protected virtual IStudioDocumentCommandStatusProvider DocumentCommandStatusProvider
+			=> null;
+
+		protected virtual IStudioDocumentCommandHandler DocumentCommandHandler
+			=> null;
+
+		protected virtual ScriptingWorkspaceProfile WorkspaceProfile
+			=> null;
+
+		protected virtual IStudioDocumentCommandSurfaceProvider DocumentCommandSurfaceProvider
+			=> XmlDocumentCommandSurfaceProvider.Instance;
+
+		protected virtual IStudioPaneContributionProvider PaneContributionProvider
+			=> null;
+
+		protected virtual IStudioDocumentStatusStripProvider DocumentStatusStripProvider
+			=> null;
+
+		protected virtual IStudioWorkspaceAutomationProvider WorkspaceAutomationProvider
+			=> null;
+
+		protected virtual IReadOnlyList<StudioToolStripItem> GetDocumentContextMenuContributions(IEditorControl editor, DocumentMode documentMode)
+			=> editor is null || DocumentCommandSurfaceProvider is null
+				? []
+				: DocumentCommandSurfaceProvider.GetContextMenuItems(editor, documentMode);
+
+		protected virtual IReadOnlyList<StudioToolStripItem> GetDocumentMenuStripContributions(IEditorControl editor, DocumentMode documentMode)
+			=> editor is null || DocumentCommandSurfaceProvider is null
+				? []
+				: DocumentCommandSurfaceProvider.GetMenuStripItems(editor, documentMode);
+
+		protected virtual IReadOnlyList<StudioToolStripItem> GetDocumentToolStripContributions(IEditorControl editor, DocumentMode documentMode)
+			=> editor is null || DocumentCommandSurfaceProvider is null
+				? []
+				: DocumentCommandSurfaceProvider.GetToolStripItems(editor, documentMode);
+
+		protected virtual IReadOnlyList<StudioStatusStripSegment> GetDocumentStatusStripSegments(IEditorControl editor, DocumentMode documentMode)
+			=> editor is null || DocumentStatusStripProvider is null
+				? []
+				: DocumentStatusStripProvider.GetSegments(editor, documentMode);
+
+		protected bool CanExecuteCommand(UICommand command)
+		{
+			switch (command)
+			{
+				case UICommand.Undo:
+					return CanExecuteUndo();
+
+				case UICommand.Redo:
+					return CanExecuteRedo();
+
+				case UICommand.Save:
+					return CurrentEditor != null && CurrentEditor.IsContentChanged;
+
+				case UICommand.SaveAs:
+				case UICommand.Cut:
+				case UICommand.Copy:
+				case UICommand.Paste:
+				case UICommand.Find:
+				case UICommand.SelectAll:
+					return CurrentEditor != null;
+
+				case UICommand.SaveAll:
+					return !EditorTabControl.IsEveryTabSaved();
+
+				default:
+					if (TryGetDocumentCommandEnabled(command, out bool isEnabled))
+						return isEnabled;
+
+					return true;
+			}
+		}
+
 		#endregion Virtual region
 
 		#region Abstract region
 
-		public abstract StudioMode StudioMode { get; }
-
 		protected abstract void ApplyUserSettings(IEditorControl editor);
 		protected abstract void ApplyUserSettings();
-		protected abstract void Build();
-		protected abstract void RestoreDefaultLayout();
-		protected abstract void ShowDocumentation();
+		protected virtual void Build()
+			=> WorkspaceAutomationProvider?.Build();
+
+		protected virtual void RestoreDefaultLayout()
+		{
+			if (WorkspaceProfile is null)
+				return;
+
+			DockPanelState = WorkspaceProfile.DefaultLayout;
+
+			DockPanel.RemoveContent();
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			OnDockPanelLayoutRestored();
+		}
+
+		protected virtual void ShowDocumentation()
+			=> WorkspaceAutomationProvider?.ShowDocumentation();
 
 		#endregion Abstract region
 
@@ -346,64 +551,22 @@ namespace TombIDE.ScriptingStudio.Bases
 		private void EditorTabControl_SelectedIndexChanged(object sender, EventArgs e)
 			=> UpdateUI();
 
-		private void EditorTabControl_FileOpened(object sender, EventArgs e)
-		{
-			var editor = sender as IEditorControl;
-
-			editor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
-
-			if (editor is TextEditorBase textEditor)
-			{
-				textEditor.KeyDown += TextEditor_KeyDown;
-				textEditor.TextChanged += TextEditor_TextChanged;
-			}
-
-			ApplyUserSettings(editor);
-
-			UpdateUI();
-		}
-
 		private void EditorTabControl_TabClosing(object sender, TabControlCancelEventArgs e)
 		{
 			if (!e.Cancel && EditorTabControl.TabCount == 1)
 				DocumentMode = DocumentMode.None;
 		}
 
-		private void Editor_ContentChangedWorkerRunCompleted(object sender, EventArgs e)
-			=> UpdateUndoRedoSaveStates();
-
-		private void TextEditor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-		{
-			if (System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Alt)
-			{
-				if (e.Key == System.Windows.Input.Key.Left)
-				{
-					OnToolStripItemClicked(UICommand.NavigateBack);
-					e.Handled = true;
-					return;
-				}
-
-				if (e.Key == System.Windows.Input.Key.Right)
-				{
-					OnToolStripItemClicked(UICommand.NavigateForward);
-					e.Handled = true;
-					return;
-				}
-			}
-
-			if ((System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
-			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
-				FindReplaceForm.Show(this, (CurrentEditor as TextEditorBase).SelectedText);
-		}
-
-		private void TextEditor_TextChanged(object sender, EventArgs e)
-			=> UpdateUndoRedoSaveStates();
-
 		private void ContentExplorer_ObjectClicked(object sender, ObjectClickedEventArgs e)
 			=> CurrentEditor.GoToObject(e.ObjectName, e.IdentifyingObject);
 
 		private void FileExplorer_FileOpened(object sender, FileOpenedEventArgs e)
-			=> EditorTabControl.OpenFile(e.FilePath, e.EditorType);
+		{
+			if (e.OpenSourceView)
+				EditorTabControl.OpenSourceFile(e.FilePath);
+			else
+				EditorTabControl.OpenFile(e.FilePath, e.EditorType);
+		}
 
 		private void FileExplorer_FileChanged(object sender, FileSystemEventArgs e)
 		{
@@ -419,14 +582,7 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		private void FormFindReplace_FindAllPerformed(object sender, FindReplaceEventArgs e)
 		{
-			if (!DockPanel.ContainsContent(SearchResults))
-			{
-				SearchResults.DockArea = DarkDockArea.Bottom;
-				DockPanel.AddContent(SearchResults);
-			}
-
-			SearchResults.DockGroup.SetVisibleContent(SearchResults);
-
+			ShowPane(UICommand.SearchResults);
 			SearchResults.UpdateResults(e);
 		}
 
@@ -437,25 +593,22 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected void UpdateUI()
 		{
 			if (CurrentEditor != null)
-				DocumentMode = FileHelper.GetDocumentModeOfEditor(CurrentEditor);
+				DocumentMode = EditorTabControl.GetDocumentMode(CurrentEditor);
 
 			if (EditorTabControl.SelectedTab != null)
 			{
-				if (CurrentEditor is TextEditorBase)
-				{
-					ElementHost elementHost = EditorTabControl.SelectedTab.Controls.OfType<ElementHost>().FirstOrDefault();
+				Control hostedControl = EditorTabControl.GetHostedControl(EditorTabControl.SelectedTab);
 
-					if (elementHost != null)
-						elementHost.ContextMenuStrip = EditorContextMenu;
-				}
-				else if (CurrentEditor is Control control)
-					control.ContextMenuStrip = EditorContextMenu;
+				if (hostedControl != null)
+					hostedControl.ContextMenuStrip = EditorContextMenu;
 			}
 
 			ContentExplorer.EditorControl = CurrentEditor;
 			StatusStrip.EditorControl = CurrentEditor;
+			UpdateStatusStripContributions(CurrentEditor, DocumentMode);
 
 			UpdateUndoRedoSaveStates();
+			UpdateDocumentCommandStates();
 		}
 
 		protected void UpdateUndoRedoSaveStates()
@@ -484,11 +637,146 @@ namespace TombIDE.ScriptingStudio.Bases
 			SaveAllToolStripButton.Enabled = SaveAllMenuItem.Enabled;
 		}
 
+		protected void UpdateDocumentCommandStates()
+		{
+			foreach (UICommand command in CapabilityDrivenDocumentCommands)
+				SetCommandEnabled(command, CanExecuteCommand(command));
+		}
+
+		protected void SetCommandEnabled(UICommand command, bool isEnabled)
+		{
+			SetCommandEnabled(MenuStrip.FindItem(command), isEnabled);
+			SetCommandEnabled(ToolStrip.FindItem(command), isEnabled);
+			SetCommandEnabled(EditorContextMenu.FindItem(command), isEnabled);
+		}
+
+		private bool TryGetDocumentCommandEnabled(UICommand command, out bool isEnabled)
+		{
+			if (TryGetBuiltInDocumentCommandEnabled(command, out isEnabled))
+			{
+				if (CurrentEditor is not null
+					&& DocumentCommandStatusProvider is not null
+					&& DocumentCommandStatusProvider.TryGetEnabled(CurrentEditor, command, out bool providerEnabled))
+				{
+					isEnabled = providerEnabled;
+				}
+
+				return true;
+			}
+
+			if (CurrentEditor is not null
+				&& DocumentCommandStatusProvider is not null
+				&& DocumentCommandStatusProvider.TryGetEnabled(CurrentEditor, command, out isEnabled))
+			{
+				return true;
+			}
+
+			isEnabled = false;
+			return false;
+		}
+
+		private bool TryGetBuiltInDocumentCommandEnabled(UICommand command, out bool isEnabled)
+		{
+			if (CurrentEditor is TextEditorBase)
+			{
+				switch (command)
+				{
+					case UICommand.TabsToSpaces:
+					case UICommand.SpacesToTabs:
+					case UICommand.Reindent:
+					case UICommand.TrimWhiteSpace:
+					case UICommand.ToggleComment:
+					case UICommand.CommentOut:
+					case UICommand.Uncomment:
+					case UICommand.ToggleBookmark:
+					case UICommand.PrevBookmark:
+					case UICommand.NextBookmark:
+					case UICommand.ClearBookmarks:
+						isEnabled = true;
+						return true;
+				}
+			}
+
+			if (CurrentEditor is StringEditor)
+			{
+				switch (command)
+				{
+					case UICommand.PrevSection:
+					case UICommand.NextSection:
+					case UICommand.ClearString:
+					case UICommand.RemoveLastString:
+						isEnabled = true;
+						return true;
+				}
+			}
+
+			switch (command)
+			{
+				case UICommand.TrimWhiteSpace:
+				case UICommand.ToggleComment:
+				case UICommand.CommentOut:
+				case UICommand.Uncomment:
+				case UICommand.ToggleBookmark:
+				case UICommand.PrevBookmark:
+				case UICommand.NextBookmark:
+				case UICommand.ClearBookmarks:
+				case UICommand.PrevSection:
+				case UICommand.NextSection:
+				case UICommand.ClearString:
+				case UICommand.RemoveLastString:
+				case UICommand.Reindent:
+				case UICommand.GoToDefinition:
+				case UICommand.FindReferences:
+				case UICommand.RenameSymbol:
+				case UICommand.TypeFirstAvailableId:
+				case UICommand.NewFileAtCaret:
+					isEnabled = false;
+					return true;
+				default:
+					isEnabled = false;
+					return false;
+			}
+		}
+
+		private static void SetCommandEnabled(ToolStripItem item, bool isEnabled)
+		{
+			if (item != null)
+				item.Enabled = isEnabled;
+		}
+
 		protected void UpdateViewMenu()
 		{
+			ApplyWorkspaceCommandSurface();
+
 			foreach (FieldInfo field in GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic))
 				if (field.Name.EndsWith("ViewItem") && field.GetValue(this) is ToolStripMenuItem fieldValue)
 					SetCheckedIfNotNull(fieldValue);
+		}
+
+		private void ApplyWorkspaceCommandSurface()
+		{
+			if (WorkspaceProfile is null)
+				return;
+
+			foreach (UICommand command in WorkspaceViewCommands)
+				SetCommandVisible(command, WorkspaceProfile.SupportsView(command));
+
+			SetCommandVisible(UICommand.Build, WorkspaceProfile.SupportsBuild);
+			SetCommandVisible(UICommand.ShowLogsAfterBuild, WorkspaceProfile.SupportsBuild);
+			SetCommandVisible(UICommand.ScriptingDocumentation, WorkspaceProfile.SupportsDocumentation);
+		}
+
+		private void SetCommandVisible(UICommand command, bool isVisible)
+		{
+			SetCommandVisible(MenuStrip.FindItem(command), isVisible);
+			SetCommandVisible(ToolStrip.FindItem(command), isVisible);
+			SetCommandVisible(EditorContextMenu.FindItem(command), isVisible);
+		}
+
+		private static void SetCommandVisible(ToolStripItem item, bool isVisible)
+		{
+			if (item != null)
+				item.Visible = isVisible;
 		}
 
 		private void HandleGlobalCommands(UICommand command)
@@ -500,7 +788,10 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.Save: EditorTabControl.SaveFile(); break;
 				case UICommand.SaveAs: EditorTabControl.SaveFileAs(); break;
 				case UICommand.SaveAll: EditorTabControl.SaveAll(); break;
-				case UICommand.Build: Build(); break;
+				case UICommand.Build:
+					if (WorkspaceProfile is null || WorkspaceProfile.SupportsBuild)
+						Build();
+					break;
 				case UICommand.Exit: IDE.Instance.RequestProgramClose(); break;
 
 				// Edit
@@ -524,7 +815,10 @@ namespace TombIDE.ScriptingStudio.Bases
 				case UICommand.RestoreDefaultLayout: RestoreDefaultLayout(); break;
 
 				// Help
-				case UICommand.ScriptingDocumentation: ShowDocumentation(); break;
+				case UICommand.ScriptingDocumentation:
+					if (WorkspaceProfile is null || WorkspaceProfile.SupportsDocumentation)
+						ShowDocumentation();
+					break;
 				case UICommand.About: ShowAboutForm(); break;
 			}
 
@@ -536,6 +830,9 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		protected virtual void HandleDocumentCommands(UICommand command)
 		{
+			if (DocumentCommandHandler?.TryHandle(command) == true)
+				return;
+
 			if (CurrentEditor is TextEditorBase textEditor)
 				switch (command)
 				{
@@ -549,7 +846,7 @@ namespace TombIDE.ScriptingStudio.Bases
 					case UICommand.ToggleBookmark: textEditor.ToggleBookmark(); break;
 					case UICommand.PrevBookmark: textEditor.GoToPrevBookmark(); break;
 					case UICommand.NextBookmark: textEditor.GoToNextBookmark(); break;
-					case UICommand.ClearBookmarks: textEditor.ClearAllBookmarks(this); break;
+					case UICommand.ClearBookmarks: textEditor.ClearAllBookmarks(() => ConfirmBookmarkClear(this)); break;
 				}
 
 			if (CurrentEditor is StringEditor stringEditor)
@@ -569,6 +866,14 @@ namespace TombIDE.ScriptingStudio.Bases
 					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}
 		}
+
+		private static bool ConfirmBookmarkClear(IWin32Window promptOwner)
+			=> DarkMessageBox.Show(
+				promptOwner,
+				"Are you sure you want to clear all bookmarks from the current document?",
+				"Are you sure?",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question) == DialogResult.Yes;
 
 		protected virtual void NavigateToSearchResult(string filePath, FindReplaceItem item)
 		{
@@ -591,6 +896,9 @@ namespace TombIDE.ScriptingStudio.Bases
 		{
 			Control control = GetControlByKey<Control>(command.ToString());
 			var menuItem = MenuStrip.FindItem(command) as ToolStripMenuItem;
+
+			if (control is null || menuItem is null)
+				return;
 
 			if (control is DarkToolWindow toolWindow)
 			{
@@ -618,16 +926,26 @@ namespace TombIDE.ScriptingStudio.Bases
 		/// NOTE: Can only catch <c>public</c> fields. Returns <c>null</c> on failure.
 		/// </summary>
 		protected DarkDockContent FindDockContentByKey(string key)
-			=> GetControlByKey<DarkDockContent>(key);
+			=> _paneRegistryByKey.TryGetValue(key, out DarkDockContent content)
+				? content
+				: GetControlByKey<DarkDockContent>(key);
 
 		/// <summary>
 		/// NOTE: Can only catch <c>public</c> fields. Returns <c>null</c> on failure.
 		/// </summary>
 		protected T GetControlByKey<T>(string key) where T : Control
 		{
+			if (_viewControlRegistry.TryGetValue(key, out Control registeredControl))
+				return registeredControl as T;
+
 			FieldInfo field = GetType().GetField(key);
 			return field != null ? (field.GetValue(this) as T) : null;
 		}
+
+		protected T GetPaneContent<T>(UICommand command) where T : DarkDockContent
+			=> _paneRegistryByCommand.TryGetValue(command, out DarkDockContent content)
+				? content as T
+				: null;
 
 		protected void ToggleToolWindow(DarkToolWindow toolWindow)
 		{
@@ -644,9 +962,12 @@ namespace TombIDE.ScriptingStudio.Bases
 				UICommand command = (item.Tag as UIElementArgs).Command;
 
 				if (command == UICommand.ToolStrip || command == UICommand.StatusStrip)
-					item.Checked = GetControlByKey<Control>(command.ToString()).Visible;
+					item.Checked = GetControlByKey<Control>(command.ToString())?.Visible ?? false;
 				else
-					item.Checked = DockPanel != null && DockPanel.ContainsContent(GetControlByKey<DarkToolWindow>(command.ToString()));
+				{
+					DarkToolWindow toolWindow = GetControlByKey<DarkToolWindow>(command.ToString());
+					item.Checked = toolWindow != null && DockPanel != null && DockPanel.ContainsContent(toolWindow);
+				}
 			}
 		}
 
@@ -655,6 +976,19 @@ namespace TombIDE.ScriptingStudio.Bases
 			UpdateSetting(UICommand.UseNewInclude);
 			UpdateSetting(UICommand.ShowLogsAfterBuild);
 			UpdateSetting(UICommand.ReindentOnSave);
+		}
+
+		protected void ApplyUserSettingsToOpenEditors(Action<IEditorControl> afterApply = null, Action afterAll = null)
+		{
+			foreach (TabPage tab in EditorTabControl.TabPages)
+			{
+				IEditorControl editor = EditorTabControl.GetEditorOfTab(tab);
+				ApplyUserSettings(editor);
+				afterApply?.Invoke(editor);
+			}
+
+			afterAll?.Invoke();
+			UpdateSettings();
 		}
 
 		protected void UpdateSetting(UICommand command)
@@ -687,12 +1021,79 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		protected void ShowSettingsForm()
 		{
-			using (var form = new FormTextEditorSettings(StudioMode))
-				if (form.ShowDialog() == DialogResult.OK)
-				{
-					Configs = new ConfigurationCollection();
-					ApplyUserSettings();
-				}
+			if (WorkspaceProfile is null)
+				return;
+
+			var viewModel = new ScriptingSettingsWindowViewModel(WorkspaceProfile, DocumentMode);
+			var window = new ScriptingSettingsWindow { DataContext = viewModel };
+
+			if (FindForm() is Form ownerForm)
+				new System.Windows.Interop.WindowInteropHelper(window).Owner = ownerForm.Handle;
+
+			if (window.ShowDialog() == true)
+			{
+				Configs = new ConfigurationCollection();
+				ApplyUserSettings();
+			}
+		}
+
+		protected void ShowPane(UICommand command, DarkDockArea defaultDockArea = DarkDockArea.Bottom)
+		{
+			if (GetPaneContent<DarkToolWindow>(command) is not DarkToolWindow toolWindow)
+				return;
+
+			if (!DockPanel.ContainsContent(toolWindow))
+			{
+				toolWindow.DockArea = defaultDockArea;
+				DockPanel.AddContent(toolWindow);
+			}
+
+			toolWindow.DockGroup.SetVisibleContent(toolWindow);
+		}
+
+		private void RegisterBuiltInPaneContributions()
+		{
+			RegisterPaneContribution(new StudioPaneContribution(UICommand.ContentExplorer, nameof(ContentExplorer), () => ContentExplorer));
+			RegisterPaneContribution(new StudioPaneContribution(UICommand.FileExplorer, nameof(FileExplorer), () => FileExplorer));
+			RegisterPaneContribution(new StudioPaneContribution(UICommand.CompilerLogs, nameof(CompilerLogs), () => CompilerLogs));
+			RegisterPaneContribution(new StudioPaneContribution(UICommand.SearchResults, nameof(SearchResults), () => SearchResults));
+		}
+
+		private void RegisterPaneContribution(StudioPaneContribution contribution)
+		{
+			if (contribution is null || _paneRegistryByCommand.ContainsKey(contribution.Command))
+				return;
+
+			DarkDockContent content = contribution.CreateContent();
+			if (content is null)
+				return;
+
+			_paneRegistryByCommand[contribution.Command] = content;
+			_paneRegistryByKey[contribution.SerializationKey] = content;
+			RegisterViewControl(contribution.Command.ToString(), content);
+			RegisterViewControl(contribution.SerializationKey, content);
+		}
+
+		private void RegisterViewControl(string key, Control control)
+		{
+			if (string.IsNullOrWhiteSpace(key) || control is null)
+				return;
+
+			_viewControlRegistry[key] = control;
+		}
+
+		private void UpdateStatusStripContributions(IEditorControl editor, DocumentMode documentMode)
+		{
+			var segments = new HashSet<StudioStatusStripSegment>();
+
+			if (WorkspaceProfile?.StatusStripSegments is not null)
+				foreach (StudioStatusStripSegment segment in WorkspaceProfile.StatusStripSegments)
+					segments.Add(segment);
+
+			foreach (StudioStatusStripSegment segment in GetDocumentStatusStripSegments(editor, documentMode))
+				segments.Add(segment);
+
+			StatusStrip.SegmentContributions = segments.ToArray();
 		}
 
 		#endregion Other methods

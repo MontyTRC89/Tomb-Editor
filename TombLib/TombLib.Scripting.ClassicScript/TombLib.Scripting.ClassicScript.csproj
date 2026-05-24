@@ -1,9 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Drawing" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Remove="Resources\Icons\Constant.png" />
     <None Remove="Resources\Icons\Directive.png" />
@@ -11,86 +20,27 @@
     <None Remove="Resources\Icons\OldCommand.png" />
     <None Remove="Resources\Icons\Section.png" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
       <Link>GlobalPaths.cs</Link>
     </Compile>
-    <Compile Update="Controls\StringDataGridView.cs" />
-    <Compile Update="StringEditor.cs" />
-    <Compile Update="Workers\ClassicScriptNodesProvider.cs" />
-    <Compile Update="Workers\StringFileNodesProvider.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="Configs\TextEditors\ColorSchemes\ClassicScript\Monokai.cssch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\ClassicScript\NG_Center.cssch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\ClassicScript\Obsidian.cssch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Configs\TextEditors\ColorSchemes\ClassicScript\VS15.cssch">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ClassicScript\Descriptions\Mnemonic Constants.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ClassicScript\Descriptions\NEW Commands.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ClassicScript\Descriptions\OCBs.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ClassicScript\Descriptions\OLD Commands.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\ClassicScript\TRNG Script Reference Manual.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\ClassicScript\EnemyDamageValues.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\KeyboardScancodes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\MnemonicConstants.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\MoveableSlotIndices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\NewCommandsList.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\OCBList.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\OldCommandsList.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\SoundIndices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\StaticObjectIndices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\ClassicScript\VariablePlaceholders.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CoreCLR-NCalc" Version="2.2.101" />
   </ItemGroup>
+
   <ItemGroup>
     <Resource Include="Resources\Icons\Constant.png" />
     <Resource Include="Resources\Icons\Directive.png" />
@@ -98,4 +48,5 @@
     <Resource Include="Resources\Icons\OldCommand.png" />
     <Resource Include="Resources\Icons\Section.png" />
   </ItemGroup>
+
 </Project>

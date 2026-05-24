@@ -1,11 +1,12 @@
 using System.Text;
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
-/// Parses typed Lua language-server responses into editor-facing Lua IntelliSense models.
+/// Parses typed Lua language-server responses into shared editor-facing completion models.
 /// </summary>
 internal static partial class LuaLanguageServerResponseParser
 {
@@ -15,16 +16,16 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <param name="itemPayloads">The typed completion-item payloads.</param>
 	/// <param name="resolveFactory">Builds an optional lazy-resolve callback for each item.</param>
 	/// <returns>The parsed completion items.</returns>
-	internal static IReadOnlyList<LuaCompletionItem> ParseCompletionItems(IEnumerable<CompletionItemPayload> itemPayloads,
-		Func<LuaCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<LuaCompletionItem>>?>? resolveFactory = null)
+	internal static IReadOnlyList<TextCompletionItem> ParseCompletionItems(IEnumerable<CompletionItemPayload> itemPayloads,
+		Func<TextCompletionItem, CompletionItemPayload, int, Func<CancellationToken, Task<TextCompletionItem>>?>? resolveFactory = null)
 	{
-		var items = new List<LuaCompletionItem>();
+		var items = new List<TextCompletionItem>();
 		var seenItems = new HashSet<LuaCompletionItemIdentity>(LuaCompletionItemIdentityComparer.Instance);
 		int itemIndex = 0;
 
 		foreach (CompletionItemPayload itemPayload in itemPayloads)
 		{
-			LuaCompletionItem? item = ParseCompletionItem(itemPayload, itemIndex);
+			TextCompletionItem? item = ParseCompletionItem(itemPayload, itemIndex);
 			itemIndex++;
 
 			if (item is null)
@@ -32,7 +33,7 @@ internal static partial class LuaLanguageServerResponseParser
 
 			if (resolveFactory is not null && CompletionItemNeedsResolve(item))
 			{
-				Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = resolveFactory(item, itemPayload, itemIndex - 1);
+				Func<CancellationToken, Task<TextCompletionItem>>? resolveAsync = resolveFactory(item, itemPayload, itemIndex - 1);
 
 				if (resolveAsync is not null)
 					item = item.WithResolveCallback(resolveAsync);
@@ -46,21 +47,21 @@ internal static partial class LuaLanguageServerResponseParser
 	}
 
 	/// <summary>
-	/// Parses a single typed LSP completion-item payload into a <see cref="LuaCompletionItem"/>.
+	/// Parses a single typed LSP completion-item payload into a <see cref="TextCompletionItem"/>.
 	/// </summary>
 	/// <param name="itemPayload">The typed completion-item payload.</param>
 	/// <param name="itemIndex">The zero-based response index used for priority weighting.</param>
 	/// <param name="resolveAsync">An optional lazy-resolve callback.</param>
 	/// <returns>The parsed completion item, or <see langword="null"/> when the payload is invalid.</returns>
-	internal static LuaCompletionItem? ParseCompletionItem(CompletionItemPayload itemPayload, int itemIndex,
-		Func<CancellationToken, Task<LuaCompletionItem>>? resolveAsync = null)
+	internal static TextCompletionItem? ParseCompletionItem(CompletionItemPayload itemPayload, int itemIndex,
+		Func<CancellationToken, Task<TextCompletionItem>>? resolveAsync = null)
 	{
 		string? label = itemPayload.Label;
 
 		if (string.IsNullOrWhiteSpace(label))
 			return null;
 
-		LuaCompletionTextEdit? textEdit = ExtractCompletionTextEdit(itemPayload, out string? textEditText);
+		TextCompletionTextEdit? textEdit = ExtractCompletionTextEdit(itemPayload, out string? textEditText);
 
 		string insertText = textEditText ?? string.Empty;
 
@@ -87,21 +88,21 @@ internal static partial class LuaLanguageServerResponseParser
 		string? searchableDescription = LuaMarkupTextHelper.NormalizeMarkupText(description.Text);
 		var textAnalysis = new LuaCompletionTextAnalysis(detail, searchableDescription);
 
-		return new LuaCompletionItem(
+		return new TextCompletionItem(
 			label,
 			insertText,
-			detail,
 			description.Text,
-			filterText,
 			BuildCompletionPriority(itemPayload, textAnalysis, itemIndex),
-			BuildCompletionIconKind(completionKind, textAnalysis),
-			description.IsMarkdown,
-			resolveAsync,
-			textEdit,
+			BuildCompletionKind(completionKind, textAnalysis),
+			detail: detail,
+			filterText: filterText,
+			isDescriptionMarkdown: description.IsMarkdown,
+			resolveAsync: resolveAsync,
+			textEdit: textEdit,
 			insertCaretOffset: insertCaretOffset);
 	}
 
-	private static LuaCompletionTextEdit? ExtractCompletionTextEdit(CompletionItemPayload itemPayload, out string? textEditText)
+	private static TextCompletionTextEdit? ExtractCompletionTextEdit(CompletionItemPayload itemPayload, out string? textEditText)
 	{
 		textEditText = null;
 
@@ -113,35 +114,35 @@ internal static partial class LuaLanguageServerResponseParser
 		return ParseCompletionTextEdit(textEditElement);
 	}
 
-	private static LuaCompletionTextEdit? ParseCompletionTextEdit(CompletionTextEditPayload textEditElement)
+	private static TextCompletionTextEdit? ParseCompletionTextEdit(CompletionTextEditPayload textEditElement)
 	{
-		if (TryParseCompletionRange(textEditElement.Range, out LuaCompletionRange range))
-			return new LuaCompletionTextEdit(range);
+		if (TryParseCompletionRange(textEditElement.Range, out TextCompletionRange range))
+			return new TextCompletionTextEdit(range);
 
-		if (TryParseCompletionRange(textEditElement.Insert, out LuaCompletionRange insertRange)
-			&& TryParseCompletionRange(textEditElement.Replace, out LuaCompletionRange replaceRange))
+		if (TryParseCompletionRange(textEditElement.Insert, out TextCompletionRange insertRange)
+			&& TryParseCompletionRange(textEditElement.Replace, out TextCompletionRange replaceRange))
 		{
-			return new LuaCompletionTextEdit(insertRange, replaceRange);
+			return new TextCompletionTextEdit(insertRange, replaceRange);
 		}
 
 		return null;
 	}
 
-	private static bool TryParseCompletionRange(ProtocolRangePayload? rangeElement, out LuaCompletionRange range)
+	private static bool TryParseCompletionRange(ProtocolRangePayload? rangeElement, out TextCompletionRange range)
 	{
 		range = default;
 
-		if (!TryParseCompletionPosition(rangeElement?.Start, out LuaCompletionPosition start)
-			|| !TryParseCompletionPosition(rangeElement?.End, out LuaCompletionPosition end))
+		if (!TryParseCompletionPosition(rangeElement?.Start, out TextCompletionPosition start)
+			|| !TryParseCompletionPosition(rangeElement?.End, out TextCompletionPosition end))
 		{
 			return false;
 		}
 
-		range = new LuaCompletionRange(start, end);
+		range = new TextCompletionRange(start, end);
 		return true;
 	}
 
-	private static bool TryParseCompletionPosition(ProtocolNullablePosition? positionElement, out LuaCompletionPosition position)
+	private static bool TryParseCompletionPosition(ProtocolNullablePosition? positionElement, out TextCompletionPosition position)
 	{
 		position = default;
 
@@ -151,11 +152,11 @@ internal static partial class LuaLanguageServerResponseParser
 		if (line < 0 || character < 0)
 			return false;
 
-		position = new LuaCompletionPosition(line, character);
+		position = new TextCompletionPosition(line, character);
 		return true;
 	}
 
-	private static bool CompletionItemNeedsResolve(LuaCompletionItem item)
+	private static bool CompletionItemNeedsResolve(TextCompletionItem item)
 		=> string.IsNullOrEmpty(item.Detail) || string.IsNullOrEmpty(item.Description);
 
 	private static double BuildCompletionPriority(CompletionItemPayload itemPayload, LuaCompletionTextAnalysis textAnalysis, int itemIndex)
@@ -202,36 +203,36 @@ internal static partial class LuaLanguageServerResponseParser
 		return true;
 	}
 
-	private static LuaCompletionIconKind BuildCompletionIconKind(LuaLanguageServerCompletionKind kind, LuaCompletionTextAnalysis textAnalysis)
+	private static TextCompletionItemKind BuildCompletionKind(LuaLanguageServerCompletionKind kind, LuaCompletionTextAnalysis textAnalysis)
 	{
-		if (textAnalysis.IconKindOverride is LuaCompletionIconKind iconKindOverride)
-			return iconKindOverride;
+		if (textAnalysis.KindOverride is TextCompletionItemKind kindOverride)
+			return kindOverride;
 
 		return kind switch
 		{
-			LuaLanguageServerCompletionKind.Method => LuaCompletionIconKind.Method,
-			LuaLanguageServerCompletionKind.Function => LuaCompletionIconKind.Method,
-			LuaLanguageServerCompletionKind.Constructor => LuaCompletionIconKind.Method,
-			LuaLanguageServerCompletionKind.Field => LuaCompletionIconKind.Field,
-			LuaLanguageServerCompletionKind.Variable => LuaCompletionIconKind.Variable,
-			LuaLanguageServerCompletionKind.Class => LuaCompletionIconKind.Class,
-			LuaLanguageServerCompletionKind.Interface => LuaCompletionIconKind.Class,
-			LuaLanguageServerCompletionKind.Module => LuaCompletionIconKind.Namespace,
-			LuaLanguageServerCompletionKind.Property => LuaCompletionIconKind.Property,
-			LuaLanguageServerCompletionKind.Value => LuaCompletionIconKind.Variable,
-			LuaLanguageServerCompletionKind.Enum => LuaCompletionIconKind.Class,
-			LuaLanguageServerCompletionKind.Keyword => LuaCompletionIconKind.Keyword,
-			LuaLanguageServerCompletionKind.Snippet => LuaCompletionIconKind.Keyword,
-			LuaLanguageServerCompletionKind.File => LuaCompletionIconKind.File,
-			LuaLanguageServerCompletionKind.Reference => LuaCompletionIconKind.Variable,
-			LuaLanguageServerCompletionKind.Folder => LuaCompletionIconKind.Folder,
-			LuaLanguageServerCompletionKind.EnumMember => LuaCompletionIconKind.Constant,
-			LuaLanguageServerCompletionKind.Constant => LuaCompletionIconKind.Constant,
-			LuaLanguageServerCompletionKind.Struct => LuaCompletionIconKind.Class,
-			LuaLanguageServerCompletionKind.Event => LuaCompletionIconKind.Method,
-			LuaLanguageServerCompletionKind.Operator => LuaCompletionIconKind.Keyword,
-			LuaLanguageServerCompletionKind.TypeParameter => LuaCompletionIconKind.Class,
-			_ => LuaCompletionIconKind.Misc
+			LuaLanguageServerCompletionKind.Method => TextCompletionItemKind.Method,
+			LuaLanguageServerCompletionKind.Function => TextCompletionItemKind.Method,
+			LuaLanguageServerCompletionKind.Constructor => TextCompletionItemKind.Method,
+			LuaLanguageServerCompletionKind.Field => TextCompletionItemKind.Field,
+			LuaLanguageServerCompletionKind.Variable => TextCompletionItemKind.Variable,
+			LuaLanguageServerCompletionKind.Class => TextCompletionItemKind.Class,
+			LuaLanguageServerCompletionKind.Interface => TextCompletionItemKind.Class,
+			LuaLanguageServerCompletionKind.Module => TextCompletionItemKind.Namespace,
+			LuaLanguageServerCompletionKind.Property => TextCompletionItemKind.Property,
+			LuaLanguageServerCompletionKind.Value => TextCompletionItemKind.Variable,
+			LuaLanguageServerCompletionKind.Enum => TextCompletionItemKind.Class,
+			LuaLanguageServerCompletionKind.Keyword => TextCompletionItemKind.Keyword,
+			LuaLanguageServerCompletionKind.Snippet => TextCompletionItemKind.Keyword,
+			LuaLanguageServerCompletionKind.File => TextCompletionItemKind.File,
+			LuaLanguageServerCompletionKind.Reference => TextCompletionItemKind.Variable,
+			LuaLanguageServerCompletionKind.Folder => TextCompletionItemKind.Folder,
+			LuaLanguageServerCompletionKind.EnumMember => TextCompletionItemKind.Constant,
+			LuaLanguageServerCompletionKind.Constant => TextCompletionItemKind.Constant,
+			LuaLanguageServerCompletionKind.Struct => TextCompletionItemKind.Class,
+			LuaLanguageServerCompletionKind.Event => TextCompletionItemKind.Method,
+			LuaLanguageServerCompletionKind.Operator => TextCompletionItemKind.Keyword,
+			LuaLanguageServerCompletionKind.TypeParameter => TextCompletionItemKind.Class,
+			_ => TextCompletionItemKind.Generic
 		};
 	}
 

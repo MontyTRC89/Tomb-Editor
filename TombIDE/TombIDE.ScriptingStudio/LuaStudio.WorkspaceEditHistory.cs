@@ -5,15 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.ScriptingStudio.Services;
 using TombIDE.Shared;
 using TombLib.Scripting.Lua;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombIDE.ScriptingStudio;
 
 public sealed partial class LuaStudio
 {
-	private readonly LuaWorkspaceEditHistoryService _workspaceEditHistory;
+	private readonly TextWorkspaceEditHistoryService _workspaceEditHistory;
 	private int _workspaceEditHistoryApplyDepth;
 
 	protected override bool CanExecuteUndo()
@@ -40,7 +40,7 @@ public sealed partial class LuaStudio
 
 	private bool IsApplyingWorkspaceEditHistory => _workspaceEditHistoryApplyDepth > 0;
 
-	private void PushWorkspaceEditTransaction(LuaWorkspaceEditTransaction transaction)
+	private void PushWorkspaceEditTransaction(TextWorkspaceEditTransaction transaction)
 	{
 		if (!transaction.HasChanges)
 			return;
@@ -103,7 +103,7 @@ public sealed partial class LuaStudio
 		foreach (string filePath in changedFiles)
 		{
 			if (TryGetOpenLuaEditor(filePath, out LuaEditor? updatedEditor) && updatedEditor is not null)
-				_intellisenseProvider.UpdateDocument(filePath, updatedEditor.Text);
+				_trackedDocumentStateService.UpdateDocument(updatedEditor);
 		}
 
 		if (CurrentEditor is LuaEditor currentEditor

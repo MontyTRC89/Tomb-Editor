@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Reflection;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.Objects;
 
 namespace TombLib.Tests;
 
@@ -14,9 +15,9 @@ public class LuaCompletionDataTests
 			new TextDocument("abcdef"),
 			fallbackOffset: 1,
 			fallbackLength: 2,
-			new LuaCompletionTextEdit(
-				new LuaCompletionRange(new LuaCompletionPosition(0, 2), new LuaCompletionPosition(0, 3)),
-				new LuaCompletionRange(new LuaCompletionPosition(0, 2), new LuaCompletionPosition(0, 5))),
+			new TextCompletionTextEdit(
+				new TextCompletionRange(new TextCompletionPosition(0, 2), new TextCompletionPosition(0, 3)),
+				new TextCompletionRange(new TextCompletionPosition(0, 2), new TextCompletionPosition(0, 5))),
 			useReplaceRange: false);
 
 		Assert.AreEqual(2, offset);
@@ -30,9 +31,9 @@ public class LuaCompletionDataTests
 			new TextDocument("abcdef"),
 			fallbackOffset: 1,
 			fallbackLength: 2,
-			new LuaCompletionTextEdit(
-				new LuaCompletionRange(new LuaCompletionPosition(0, 2), new LuaCompletionPosition(0, 3)),
-				new LuaCompletionRange(new LuaCompletionPosition(0, 2), new LuaCompletionPosition(0, 5))),
+			new TextCompletionTextEdit(
+				new TextCompletionRange(new TextCompletionPosition(0, 2), new TextCompletionPosition(0, 3)),
+				new TextCompletionRange(new TextCompletionPosition(0, 2), new TextCompletionPosition(0, 5))),
 			useReplaceRange: true);
 
 		Assert.AreEqual(2, offset);
@@ -46,8 +47,8 @@ public class LuaCompletionDataTests
 			new TextDocument("abc"),
 			fallbackOffset: 1,
 			fallbackLength: 2,
-			new LuaCompletionTextEdit(
-				new LuaCompletionRange(new LuaCompletionPosition(4, 0), new LuaCompletionPosition(4, 1))),
+			new TextCompletionTextEdit(
+				new TextCompletionRange(new TextCompletionPosition(4, 0), new TextCompletionPosition(4, 1))),
 			useReplaceRange: false);
 
 		Assert.AreEqual(1, offset);
@@ -57,14 +58,14 @@ public class LuaCompletionDataTests
 	private static (int Offset, int Length) InvokeResolveCompletionSegment(TextDocument document,
 		int fallbackOffset,
 		int fallbackLength,
-		LuaCompletionTextEdit? textEdit,
+		TextCompletionTextEdit? textEdit,
 		bool useReplaceRange)
 	{
-		MethodInfo method = typeof(LuaCompletionData).GetMethod(
+		MethodInfo method = typeof(CompletionData).GetMethod(
 			"ResolveCompletionSegment",
 			BindingFlags.NonPublic | BindingFlags.Static,
 			binder: null,
-			[typeof(TextDocument), typeof(int), typeof(int), typeof(LuaCompletionTextEdit?), typeof(bool)],
+			[typeof(TextDocument), typeof(int), typeof(int), typeof(TextCompletionTextEdit?), typeof(bool)],
 			modifiers: null)
 			?? throw new InvalidOperationException("Private static method 'ResolveCompletionSegment' was not found.");
 

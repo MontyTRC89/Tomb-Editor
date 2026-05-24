@@ -44,7 +44,7 @@ namespace TombIDE.Shared
 
 		public DockPanelState CS_DockPanelState { get; set; } = DefaultLayouts.ClassicScriptLayout;
 		public DockPanelState GFL_DockPanelState { get; set; } = DefaultLayouts.GameFlowScriptLayout;
-		public DockPanelState T1M_DockPanelState { get; set; } = DefaultLayouts.Tomb1MainLayout;
+		public DockPanelState TRX_DockPanelState { get; set; } = DefaultLayouts.TRXLayout;
 		public DockPanelState Lua_DockPanelState { get; set; } = DefaultLayouts.LuaLayout;
 
 		public string VSCodePath { get; set; } = string.Empty;

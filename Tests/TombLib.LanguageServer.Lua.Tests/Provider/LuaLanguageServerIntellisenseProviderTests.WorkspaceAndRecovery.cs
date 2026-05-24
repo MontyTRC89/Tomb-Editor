@@ -1,5 +1,7 @@
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
+using TombLib.Scripting.Signatures;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -86,7 +88,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 			client.StartResult = true;
 
-			LuaHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+			TextHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			Assert.IsNotNull(hover);
 
@@ -144,7 +146,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 				new[] { "workspace/didChangeWatchedFiles" },
 				client.GetSentMethodNames());
 
-			LuaHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+			TextHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			Assert.IsNotNull(hover);
 
@@ -204,8 +206,8 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			using var cancellationTokenSource = new CancellationTokenSource();
 			cancellationTokenSource.Cancel();
 
-			LuaHoverInfo? canceledHover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0, cancellationTokenSource.Token);
-			LuaHoverInfo? recoveredHover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+			TextHoverInfo? canceledHover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0, cancellationTokenSource.Token);
+			TextHoverInfo? recoveredHover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			Assert.IsNull(canceledHover);
 			Assert.IsNotNull(recoveredHover);
@@ -259,7 +261,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 			await DispatchWorkspaceFileChangesAsync(provider, batch, CancellationToken.None);
 
-			LuaHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+			TextHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			Assert.IsNotNull(hover);
 			Assert.AreEqual(0, client.MarkTransportUnhealthyCallCount);
@@ -320,7 +322,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 			client.IsReady = false;
 
-			Task<LuaHoverInfo?> hoverTask = provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
+			Task<TextHoverInfo?> hoverTask = provider.GetHoverAsync(scriptFilePath, "local value = 1", 0, 0);
 
 			DateTime deadline = DateTime.UtcNow + TimeSpan.FromSeconds(1);
 
@@ -334,7 +336,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 			await dispatchTask.ConfigureAwait(false);
 			Assert.IsNotNull(await hoverTask.ConfigureAwait(false));
 
-			LuaHoverInfo? followUpHover = await provider.GetHoverAsync(scriptFilePath, "local value = 2", 0, 0).ConfigureAwait(false);
+			TextHoverInfo? followUpHover = await provider.GetHoverAsync(scriptFilePath, "local value = 2", 0, 0).ConfigureAwait(false);
 
 			Assert.IsNotNull(followUpHover);
 			Assert.AreEqual(0, client.MarkTransportUnhealthyCallCount);
@@ -384,7 +386,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 				await DispatchWorkspaceFileChangesAsync(provider, batch, CancellationToken.None);
 
-				LuaHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, $"local value = {i}", 0, 0);
+				TextHoverInfo? hover = await provider.GetHoverAsync(scriptFilePath, $"local value = {i}", 0, 0);
 
 				Assert.IsNotNull(hover);
 				Assert.AreEqual(i, client.MarkTransportUnhealthyCallCount);
@@ -453,11 +455,11 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 
-		LuaHoverInfo? hover = await provider.GetHoverAsync(filePath, content, 0, 0);
+		TextHoverInfo? hover = await provider.GetHoverAsync(filePath, content, 0, 0);
 
 		Assert.IsNotNull(hover);
 		Assert.AreEqual("Hover docs.", hover.Content);
-		Assert.IsTrue(hover.IsMarkdown);
+		Assert.IsTrue(hover.ContentKind == TextHoverContentKind.Markdown);
 
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen", "textDocument/hover" },
@@ -486,7 +488,7 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 
-		LuaDefinitionLocation? definition = await provider.GetDefinitionAsync(filePath, "value", 0, 0);
+		TextDefinitionLocation? definition = await provider.GetDefinitionAsync(filePath, "value", 0, 0);
 
 		Assert.IsNotNull(definition);
 		Assert.AreEqual(targetPath, definition.FilePath);
@@ -532,12 +534,12 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 
-		IReadOnlyList<LuaReferenceLocation> references = await provider.GetReferencesAsync(filePath, "value", 0, 0);
+		IReadOnlyList<TextReferenceLocation> references = await provider.GetReferencesAsync(filePath, "value", 0, 0);
 
 		Assert.AreEqual(1, references.Count);
 		Assert.AreEqual(targetPath, references[0].FilePath);
-		Assert.AreEqual(3, references[0].Range.StartLineNumber);
-		Assert.AreEqual(5, references[0].Range.StartColumnNumber);
+		Assert.AreEqual(3, references[0].StartLineNumber);
+		Assert.AreEqual(5, references[0].StartColumnNumber);
 
 		CollectionAssert.AreEqual(
 			new[] { "textDocument/didOpen", "textDocument/references" },
@@ -586,12 +588,12 @@ public partial class LuaLanguageServerIntellisenseProviderTests
 
 		using var provider = new LuaLanguageServerIntellisenseProvider(workspaceRoot, client);
 
-		LuaSignatureInfo? signature = await provider.GetSignatureHelpAsync(filePath, "spawn(", 0, 6);
+		TextSignatureHelpInfo? signature = await provider.GetSignatureHelpAsync(filePath, "spawn(", 0, 6);
 
 		Assert.IsNotNull(signature);
 		Assert.AreEqual("spawn(room, objectName)", signature.Label);
 		Assert.AreEqual("Spawns an object.", signature.Documentation);
-		Assert.AreEqual(1, signature.ActiveParameter);
+		Assert.AreEqual(1, signature.ActiveParameterIndex);
 		Assert.AreEqual(2, signature.Parameters.Count);
 		Assert.AreEqual("objectName", signature.Parameters[1].Label);
 		Assert.AreEqual("Object name.", signature.Parameters[1].Documentation);

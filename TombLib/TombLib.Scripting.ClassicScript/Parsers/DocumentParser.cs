@@ -1,7 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.ClassicScript.Enums;
+using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombLib.Scripting.ClassicScript.Parsers

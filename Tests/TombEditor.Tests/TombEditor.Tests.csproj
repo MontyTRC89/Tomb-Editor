@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TombEditor\TombEditor.csproj" />
+    <ProjectReference Include="..\..\TombIDE\TombIDE.ScriptingStudio\TombIDE.ScriptingStudio.csproj" />
   </ItemGroup>
 
   <ItemGroup>

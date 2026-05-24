@@ -12,6 +12,6 @@
 		ClassicScript,
 		Lua,
 		GameFlowScript,
-		Tomb1Main
+		TRX
 	}
 }

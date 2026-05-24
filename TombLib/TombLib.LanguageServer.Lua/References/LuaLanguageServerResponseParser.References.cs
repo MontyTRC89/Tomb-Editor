@@ -1,4 +1,4 @@
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Navigation;
 
 namespace TombLib.LanguageServer.Lua;
 
@@ -7,12 +7,12 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses reference locations from a LuaLS references response.
 	/// </summary>
-	internal static IReadOnlyList<LuaReferenceLocation> ParseReferenceLocations(IReadOnlyList<ReferenceResponse>? response)
+	internal static IReadOnlyList<TextReferenceLocation> ParseReferenceLocations(IReadOnlyList<ReferenceResponse>? response)
 	{
 		if (response is not { Count: > 0 })
 			return [];
 
-		var locations = new List<LuaReferenceLocation>();
+		var locations = new List<TextReferenceLocation>();
 
 		for (int i = 0; i < response.Count; i++)
 		{
@@ -28,9 +28,12 @@ internal static partial class LuaLanguageServerResponseParser
 				continue;
 			}
 
-			locations.Add(new LuaReferenceLocation(
+			locations.Add(new TextReferenceLocation(
 				LanguageServerPathHelper.NormalizeLocalPath(parsedUri),
-				new LuaDocumentRange(range.Value.StartLineNumber, range.Value.StartColumnNumber, range.Value.EndLineNumber, range.Value.EndColumnNumber)));
+				range.Value.StartLineNumber,
+				range.Value.StartColumnNumber,
+				range.Value.EndLineNumber,
+				range.Value.EndColumnNumber));
 		}
 
 		return locations;

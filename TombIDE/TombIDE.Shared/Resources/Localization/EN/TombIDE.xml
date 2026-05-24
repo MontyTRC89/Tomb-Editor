@@ -86,7 +86,7 @@
 
 	<RestoreDefaultLayout>Restore Default Layout</RestoreDefaultLayout>
 
-	<ContentExplorer>Content Explorer</ContentExplorer>
+	<ContentExplorer>Document Outline</ContentExplorer>
 	<FileExplorer>File Explorer</FileExplorer>
 	<ReferenceBrowser>Reference Browser</ReferenceBrowser>
 	<CompilerLogs>Compiler Logs</CompilerLogs>
@@ -109,7 +109,7 @@
 
 	<Untitled>Untitled</Untitled>
 
-	<SearchContent>Search Content...</SearchContent>
+	<SearchContent>Search Outline...</SearchContent>
 	<SearchFunctions>Search Functions...</SearchFunctions>
 	<SearchFiles>Search Files...</SearchFiles>
 	<SearchReferences>Search References...</SearchReferences>

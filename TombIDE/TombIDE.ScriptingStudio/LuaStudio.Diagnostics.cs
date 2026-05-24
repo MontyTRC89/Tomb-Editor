@@ -2,26 +2,41 @@
 
 using System;
 using System.Collections.Generic;
-using TombIDE.ScriptingStudio.Objects;
+using TombIDE.ScriptingStudio.Navigation;
 using TombIDE.ScriptingStudio.ToolWindows;
+using TombIDE.ScriptingStudio.UI;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.UI.Presentation;
 
 namespace TombIDE.ScriptingStudio;
 
 public sealed partial class LuaStudio
 {
-	public LuaDiagnostics LuaDiagnostics = null!;
+	private TextDiagnosticsToolWindow LuaDiagnostics
+		=> GetPaneContent<TextDiagnosticsToolWindow>(UICommand.LuaDiagnostics);
 
-	private void InitializeLuaDiagnostics()
-	{
-		LuaDiagnostics = new LuaDiagnostics(NavigateToDiagnostic);
-	}
+	private TextDiagnosticsToolWindow CreateLuaDiagnosticsToolWindow()
+		=> new TextDiagnosticsToolWindow(
+			Shared.Strings.Default.LuaDiagnostics,
+			nameof(LuaDiagnostics),
+			new TextDiagnosticsPresentation(
+				Shared.Strings.Default.LuaDiagnosticsNoDocument,
+				Shared.Strings.Default.LuaDiagnosticsUpdating,
+				Shared.Strings.Default.NoDiagnostics,
+				Shared.Strings.Default.Errors,
+				Shared.Strings.Default.Warnings,
+				Shared.Strings.Default.Messages,
+				Shared.Strings.Default.Severity,
+				Shared.Strings.Default.LineHeader,
+				Shared.Strings.Default.ColumnHeader,
+				Shared.Strings.Default.Message),
+			NavigateToDiagnostic);
 
 	private void EditorTabControl_LuaSelectedIndexChanged(object? sender, EventArgs e)
 	{
 		RefreshLuaDiagnosticsView();
-		UpdateLuaFeatureCommandAvailability();
+		UpdateDocumentCommandStates();
 	}
 
 	private void LuaEditor_TextChanged(object? sender, EventArgs e)
@@ -51,10 +66,10 @@ public sealed partial class LuaStudio
 		LuaDiagnostics.ShowDiagnostics(
 			editor.FilePath,
 			editor.Document,
-			diagnostics ?? _intellisenseProvider.GetDiagnostics(editor.FilePath));
+			diagnostics ?? _trackedDocumentStateService.GetDiagnostics(editor.FilePath));
 	}
 
-	private void NavigateToDiagnostic(LuaDiagnosticListItem diagnostic)
+	private void NavigateToDiagnostic(TextDiagnosticListItem diagnostic)
 		=> NavigateToLocation(
 			diagnostic.FilePath,
 			NavigationOrigin.Diagnostics,

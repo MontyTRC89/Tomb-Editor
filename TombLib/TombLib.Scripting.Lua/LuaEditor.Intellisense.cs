@@ -4,7 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using TombLib.Scripting.Lua.Utils;
+using TombLib.Scripting.Lua.Editor;
+using TombLib.Scripting.Lua.Parsing;
 
 namespace TombLib.Scripting.Lua;
 
@@ -14,7 +15,7 @@ public sealed partial class LuaEditor
 
 	private void BindLuaIntellisenseEvents()
 	{
-		_completionController.InitializeScheduling();
+		_completionController.InitializeScheduling(RequestScheduledCompletionAsync);
 
 		Document.Changed += LuaEditor_DocumentChanged;
 		IsKeyboardFocusWithinChanged += LuaEditor_IsKeyboardFocusWithinChanged;
@@ -121,6 +122,13 @@ public sealed partial class LuaEditor
 		{
 			CancelPendingCompletionRequest();
 			CloseCompletionWindow();
+
+			if (!SignatureHelpPopupsEnabled)
+			{
+				DismissSignatureHelp();
+				return;
+			}
+
 			_signatureHelpController.CancelPendingRefresh();
 			await RequestSignatureHelpAsync(CaretOffset).ConfigureAwait(true);
 			return;
@@ -149,7 +157,7 @@ public sealed partial class LuaEditor
 			}
 		}
 
-		if (ShouldRefreshSignatureHelpAfterTextInput(e.Text))
+		if (SignatureHelpPopupsEnabled && ShouldRefreshSignatureHelpAfterTextInput(e.Text))
 			ScheduleSignatureHelpRefresh();
 
 		if (!AutocompleteEnabled)

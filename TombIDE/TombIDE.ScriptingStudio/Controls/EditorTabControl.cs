@@ -6,16 +6,15 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using TombIDE.ScriptingStudio.Forms;
+using TombIDE.ScriptingStudio.EditorTabs;
+using TombIDE.ScriptingStudio.FileExplorer;
 using TombIDE.ScriptingStudio.Helpers;
-using TombIDE.ScriptingStudio.Objects;
 using TombIDE.ScriptingStudio.Properties;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using TombLib.Scripting.Bases;
-using TombLib.Scripting.Enums;
-using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.ClassicScript.Documents;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Controls
 {
@@ -40,9 +39,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public IEditorControl CurrentEditor => SelectedTab != null ? GetEditorOfTab(SelectedTab) : null;
 
-		public bool ReloadQueueRunning { get; private set; }
-
-		public Type PlainTextTypeOverride { get; set; } = null;
+		public bool ReloadQueueRunning => _fileReloadCoordinator.IsRunning;
 
 		#endregion Properties
 
@@ -55,10 +52,9 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		private ToolTip _toolTip = new ToolTip();
 
-		/// <summary>
-		/// This list is used to store file paths of files which should be reloaded after the main window regains focus.
-		/// </summary>
-		private List<string> _pendingFileReloads = new List<string>();
+		private readonly EditorFactoryService _editorFactory = new EditorFactoryService();
+		private readonly EditorTabHostService _editorHostService = new EditorTabHostService();
+		private readonly FileReloadCoordinator _fileReloadCoordinator = new FileReloadCoordinator();
 
 		private Version _currentEngineVersion = new(0, 0);
 
@@ -149,6 +145,46 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		#region File opening
 
+		public Control GetHostedControl(TabPage tab)
+			=> _editorHostService.GetHostedControl(tab);
+
+		public DocumentMode GetDocumentMode(IEditorControl editor)
+			=> editor is null ? DocumentMode.None : _editorFactory.GetDocumentMode(editor);
+
+		public TabPage FindSourceTabPage(string filePath)
+			=> FindTabPage(filePath, _editorFactory.GetSourceViewEditorType(filePath));
+
+		public void OpenSourceFile(string filePath, bool silentSession = false)
+			=> OpenFile(filePath, _editorFactory.GetSourceViewEditorType(filePath), silentSession);
+
+		public void RegisterJson5Editor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
+			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsJson5File, static _ => true, factory);
+
+		public void RegisterLuaEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
+			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsLuaFile, static _ => true, factory);
+
+		public void RegisterPlainTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
+			=> _editorFactory.SetPlainTextEditorFactory(factory, documentMode);
+
+		public void RegisterStringsEditor(Func<Version, IEditorControl> factory)
+			=> RegisterEditor(
+				EditorType.Strings,
+				DocumentMode.Strings,
+				FileHelper.IsTextFile,
+				filePath => FileHelper.GetClassicScriptFileKind(filePath) == ClassicScriptFileKind.Strings,
+				factory);
+
+		public void RegisterTextEditor(
+			Func<Version, IEditorControl> factory,
+			DocumentMode documentMode)
+			=> RegisterTextEditor(factory, documentMode, _ => true);
+
+		public void RegisterTextEditor(
+			Func<Version, IEditorControl> factory,
+			DocumentMode documentMode,
+			Func<string, bool> isDefaultForFile)
+			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsTextFile, isDefaultForFile, factory);
+
 		public void OpenFile(string filePath, EditorType editorType = EditorType.Default, bool silentSession = false)
 		{
 			TabPage fileTabPage = FindTabPage(filePath, editorType);
@@ -161,15 +197,10 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		private void OpenFileInNewTabPage(string filePath, EditorType editorType, bool silentSession)
 		{
-			Type editorClassType = EditorTypeHelper.GetEditorClassType(filePath, editorType);
+			IEditorControl newEditor = InitializeEditor(filePath, editorType, silentSession);
 
-			if (PlainTextTypeOverride != null && editorClassType == typeof(TextEditorBase))
-				editorClassType = PlainTextTypeOverride;
-
-			if (editorClassType != null)
+			if (newEditor is not null)
 			{
-				IEditorControl newEditor = InitializeEditor(editorClassType, filePath, silentSession);
-
 				string tabPageTitle = BuildTabPageTitleText(newEditor.FilePath, newEditor.EditorType);
 				var newTabPage = new TabPage(tabPageTitle);
 				Control tabPageContent = InitializeTabPageContent(newEditor);
@@ -182,11 +213,13 @@ namespace TombIDE.ScriptingStudio.Controls
 			}
 		}
 
-		private IEditorControl InitializeEditor(Type editorClassType, string filePath, bool silentSession)
+		private IEditorControl InitializeEditor(string filePath, EditorType editorType, bool silentSession)
 		{
-			object[] args = new object[] { _currentEngineVersion };
+			IEditorControl newEditor = _editorFactory.CreateEditor(filePath, editorType, _currentEngineVersion);
 
-			var newEditor = Activator.CreateInstance(editorClassType, args) as IEditorControl;
+			if (newEditor is null)
+				return null;
+
 			newEditor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (File.Exists(filePath))
@@ -198,74 +231,36 @@ namespace TombIDE.ScriptingStudio.Controls
 		}
 
 		private Control InitializeTabPageContent(IEditorControl editor)
-		{
-			bool isWPF = editor.GetType().IsSubclassOf(typeof(System.Windows.UIElement));
+			=> _editorHostService.CreateHostControl(editor);
 
-			if (isWPF)
-				return new ElementHost { Dock = DockStyle.Fill, Child = editor as System.Windows.UIElement };
-			else
-				return editor as Control;
-		}
+		private void RegisterEditor(
+			EditorType editorType,
+			DocumentMode documentMode,
+			Func<string, bool> supportsFile,
+			Func<string, bool> isDefaultForFile,
+			Func<Version, IEditorControl> factory)
+			=> _editorFactory.Register(new EditorRegistration(editorType, documentMode, supportsFile, isDefaultForFile, factory));
 
 		#endregion File opening
 
 		#region File reloading
 
 		public void AddFileToReloadQueue(string filePath)
-		{
-			if (!_pendingFileReloads.Contains(filePath))
-				_pendingFileReloads.Add(filePath);
-		}
+			=> _fileReloadCoordinator.QueueFile(filePath);
 
 		public void TryRunFileReloadQueue()
-		{
-			if (ReloadQueueRunning) // Prevents calling the method again if it's already running
-				return;
+			=> _fileReloadCoordinator.ProcessQueuedFiles(GetOpenEditorsOfFile, ShowFileReloadPrompt);
 
-			ReloadQueueRunning = true;
+		private IReadOnlyList<IEditorControl> GetOpenEditorsOfFile(string filePath)
+			=> FindTabPagesOfFile(filePath)
+				.Select(GetEditorOfTab)
+				.Where(editor => editor is not null)
+				.ToList();
 
-			for (int i = 0; i < _pendingFileReloads.Count; i++)
-				try
-				{
-					string file = _pendingFileReloads[i];
-					IEnumerable<TabPage> tabPagesOfFile = FindTabPagesOfFile(file);
-
-					if (tabPagesOfFile.Count() > 0)
-						TryAskFileReload(tabPagesOfFile);
-				}
-				catch (Exception) { }
-
-			_pendingFileReloads.Clear();
-			ReloadQueueRunning = false;
-		}
-
-		private void TryAskFileReload(IEnumerable<TabPage> tabPagesOfFile)
-		{
-			DialogResult? result = null;
-
-			foreach (TabPage tab in tabPagesOfFile)
-			{
-				IEditorControl editor = GetEditorOfTab(tab);
-				string fileContent = File.ReadAllText(editor.FilePath);
-
-				if (editor.Content != fileContent)
-				{
-					if (result == null)
-						result = MessageBox.Show(this,
-							string.Format(Strings.Default.AskFileReload, editor.FilePath), Strings.Default.FileReloadMBT,
-							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-					if (result == DialogResult.Yes)
-					{
-						// Re-read the file, because the user might've changed the file another time
-						fileContent = File.ReadAllText(editor.FilePath);
-						editor.Content = fileContent;
-					}
-					else if (result == DialogResult.No)
-						editor.TryRunContentChangedWorker();
-				}
-			}
-		}
+		private DialogResult ShowFileReloadPrompt(string filePath)
+			=> MessageBox.Show(this,
+				string.Format(Strings.Default.AskFileReload, filePath), Strings.Default.FileReloadMBT,
+				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 		#endregion File reloading
 
@@ -421,7 +416,7 @@ namespace TombIDE.ScriptingStudio.Controls
 					&& tabEditor.EditorType != excludedEditor.EditorType)
 				{
 					if (tabEditor.Content != excludedEditor.Content)
-						tabEditor.Content = excludedEditor.Content;
+						tabEditor.ApplyPersistedContent(excludedEditor.Content);
 
 					tabEditor.TryRunContentChangedWorker();
 
@@ -454,7 +449,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		public TabPage FindTabPage(string filePath, EditorType editorType = EditorType.Default)
 		{
 			if (editorType == EditorType.Default)
-				editorType = EditorTypeHelper.GetDefaultEditorType(filePath);
+				editorType = _editorFactory.GetDefaultEditorType(filePath);
 
 			foreach (TabPage tab in TabPages)
 			{
@@ -529,17 +524,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			=> GetEditorOfTab(TabPages[index]);
 
 		public IEditorControl GetEditorOfTab(TabPage tab)
-		{
-			IEnumerable<ElementHost> elementHosts = tab?.Controls.OfType<ElementHost>();
-
-			if (elementHosts?.Count() > 0)
-				return elementHosts.First().Child as IEditorControl;
-			else
-			{
-				IEnumerable<IEditorControl> editors = tab?.Controls.OfType<IEditorControl>();
-				return editors?.Count() > 0 ? editors.First() : null;
-			}
-		}
+			=> _editorHostService.GetEditor(tab);
 
 		#endregion Editor finding
 
@@ -747,10 +732,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		}
 
 		private string BuildTabPageTitleText(string filePath, EditorType editorType)
-		{
-			string tabTypeText = editorType == EditorType.Text ? string.Empty : $" [{editorType}]";
-			return $"{Path.GetFileName(filePath)}{tabTypeText}";
-		}
+			=> _editorFactory.BuildTabTitle(filePath, editorType);
 
 		/// <summary>
 		/// The difference between this and the <c>AreAllFilesSaved()</c> method is that this one<br/>

@@ -1,6 +1,7 @@
 using NLog;
 using System.Text.Json;
-using TombLib.Scripting.Lua.Objects;
+using TombLib.Scripting.Editing;
+using TombLib.Scripting.Navigation;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 
@@ -12,7 +13,7 @@ public partial class LuaLanguageServerResponseParserTests
 		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
 		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
 
-		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
+		TextDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
 			DeserializeDefinitionResponse(new object[]
 			{
 				new
@@ -142,7 +143,7 @@ public partial class LuaLanguageServerResponseParserTests
 	{
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\linked.lua");
 
-		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
+		TextDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
 			DeserializeDefinitionResponse(new
 			{
 				targetUri = new Uri(targetPath).AbsoluteUri,
@@ -206,7 +207,7 @@ public partial class LuaLanguageServerResponseParserTests
 	{
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\linked.lua");
 
-		LuaDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
+		TextDefinitionLocation? location = LuaLanguageServerResponseParser.ParseDefinitionLocation(
 			DeserializeDefinitionResponse(new
 			{
 				targetUri = new Uri(targetPath).AbsoluteUri,
@@ -225,7 +226,7 @@ public partial class LuaLanguageServerResponseParserTests
 	{
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\references.lua");
 
-		IReadOnlyList<LuaReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
+		IReadOnlyList<TextReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
 			DeserializeReferenceResponse(new object[]
 			{
 				new
@@ -250,10 +251,10 @@ public partial class LuaLanguageServerResponseParserTests
 
 		Assert.AreEqual(1, locations.Count);
 		Assert.AreEqual(targetPath, locations[0].FilePath);
-		Assert.AreEqual(3, locations[0].Range.StartLineNumber);
-		Assert.AreEqual(5, locations[0].Range.StartColumnNumber);
-		Assert.AreEqual(3, locations[0].Range.EndLineNumber);
-		Assert.AreEqual(10, locations[0].Range.EndColumnNumber);
+		Assert.AreEqual(3, locations[0].StartLineNumber);
+		Assert.AreEqual(5, locations[0].StartColumnNumber);
+		Assert.AreEqual(3, locations[0].EndLineNumber);
+		Assert.AreEqual(10, locations[0].EndColumnNumber);
 	}
 
 	[TestMethod]
@@ -261,7 +262,7 @@ public partial class LuaLanguageServerResponseParserTests
 	{
 		string targetPath = Path.GetFullPath(@"C:\Workspace\Scripts\references.lua");
 
-		IReadOnlyList<LuaReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
+		IReadOnlyList<TextReferenceLocation> locations = LuaLanguageServerResponseParser.ParseReferenceLocations(
 			DeserializeReferenceResponse(new object[]
 			{
 				new
@@ -284,7 +285,7 @@ public partial class LuaLanguageServerResponseParserTests
 		string firstPath = Path.GetFullPath(@"C:\Workspace\Scripts\first.lua");
 		string secondPath = Path.GetFullPath(@"C:\Workspace\Scripts\second.lua");
 
-		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(
+		TextWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(
 			DeserializeWorkspaceEditResponse(new
 			{
 				changes = new Dictionary<string, object[]>
@@ -366,7 +367,7 @@ public partial class LuaLanguageServerResponseParserTests
 			}
 		});
 
-		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+		TextWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
 
 		Assert.IsNull(workspaceEdit);
 	}
@@ -392,7 +393,7 @@ public partial class LuaLanguageServerResponseParserTests
 
 		using var logScope = new NLogMemoryScope(LogLevel.Warn);
 
-		LuaWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+		TextWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
 
 		Assert.IsNull(workspaceEdit);
 		Assert.AreEqual(1, logScope.Logs.Count);
@@ -496,7 +497,7 @@ public partial class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void ParseDocumentFormattingEdits_ParsesFormattingTextEdits()
 	{
-		IReadOnlyList<LuaTextEdit> textEdits = LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(
+		IReadOnlyList<TextEdit> textEdits = LuaLanguageServerResponseParser.ParseDocumentFormattingEdits(
 			DeserializeTextEdits(new object[]
 			{
 				new

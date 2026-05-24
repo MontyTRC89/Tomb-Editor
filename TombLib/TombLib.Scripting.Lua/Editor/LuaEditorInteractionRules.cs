@@ -1,0 +1,185 @@
+using ICSharpCode.AvalonEdit.Document;
+using System;
+using System.Runtime.CompilerServices;
+using TombLib.Scripting.Lua.Parsing;
+
+namespace TombLib.Scripting.Lua.Editor;
+
+/// <summary>
+/// Encapsulates Lua-editor interaction rules for hover, completion, and definition navigation.
+/// </summary>
+internal static class LuaEditorInteractionRules
+{
+	private static readonly ConditionalWeakTable<TextDocument, LuaDocumentLineParserStateCache> LineStartStateCaches = [];
+
+	/// <summary>
+	/// Determines whether a hover request should be attempted.
+	/// </summary>
+	/// <param name="isCompletionWindowOpen">Whether the completion window is currently open.</param>
+	/// <param name="isSignatureHelpOpen">Whether signature help is currently open.</param>
+	/// <returns><see langword="true"/> if hover may be requested; otherwise, <see langword="false"/>.</returns>
+	public static bool CanRequestHover(bool isCompletionWindowOpen, bool isSignatureHelpOpen)
+		=> !isCompletionWindowOpen && !isSignatureHelpOpen;
+
+	/// <summary>
+	/// Attempts to resolve the exact offset that should be used for a hover request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based character offset under the mouse.</param>
+	/// <param name="hoverOffset">When this method returns, contains the resolved hover offset.</param>
+	/// <returns><see langword="true"/> if a hoverable identifier exists at the requested offset; otherwise, <see langword="false"/>.</returns>
+	public static bool TryGetHoverOffset(TextDocument? document, int offset, out int hoverOffset)
+	{
+		hoverOffset = 0;
+
+		if (document is null || document.TextLength == 0)
+			return false;
+
+		int safeOffset = ClampOffset(document, offset);
+
+		if (safeOffset >= document.TextLength)
+			return false;
+
+		if (IsInsideCommentOrString(document, safeOffset))
+			return false;
+
+		if (!LuaLineParser.IsIdentifierCharacter(document.GetCharAt(safeOffset)))
+			return false;
+
+		hoverOffset = safeOffset;
+		return true;
+	}
+
+	/// <summary>
+	/// Determines whether the current caret context allows an automatic completion request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based caret offset after text entry.</param>
+	/// <param name="triggerCharacter">The character that triggered completion, if any.</param>
+	/// <returns><see langword="true"/> if autocomplete should be requested; otherwise, <see langword="false"/>.</returns>
+	public static bool IsValidAutocompleteContext(TextDocument? document, int offset, char? triggerCharacter)
+	{
+		if (offset <= 0 || document is null || document.TextLength == 0)
+			return false;
+
+		if (IsInsideCommentOrString(document, offset))
+			return false;
+
+		if (triggerCharacter is '.' || triggerCharacter is ':')
+			return true;
+
+		char typedCharacter = document.GetCharAt(offset - 1);
+
+		if (!LuaLineParser.IsIdentifierCharacter(typedCharacter))
+			return false;
+
+		if (offset >= 2 && document.GetCharAt(offset - 2) == '.')
+			return false;
+
+		return true;
+	}
+
+	/// <summary>
+	/// Determines whether the current caret context allows a manual completion request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based caret offset.</param>
+	/// <returns><see langword="true"/> if manual completion may be requested; otherwise, <see langword="false"/>.</returns>
+	public static bool IsValidManualCompletionContext(TextDocument? document, int offset)
+	{
+		if (document is null)
+			return false;
+
+		if (document.TextLength == 0)
+			return true;
+
+		return !IsInsideCommentOrString(document, offset);
+	}
+
+	/// <summary>
+	/// Attempts to resolve the identifier start offset that should be used for a go-to-definition request.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based offset near the identifier.</param>
+	/// <param name="definitionOffset">When this method returns, contains the identifier start offset.</param>
+	/// <returns><see langword="true"/> if a definition target offset was found; otherwise, <see langword="false"/>.</returns>
+	public static bool TryGetDefinitionStartOffset(TextDocument? document, int offset, out int definitionOffset)
+	{
+		definitionOffset = 0;
+
+		if (document is null || document.TextLength == 0)
+			return false;
+
+		int safeOffset = ClampOffset(document, offset);
+
+		if (IsInsideCommentOrString(document, safeOffset))
+			return false;
+
+		if (!TryGetDefinitionWordBounds(document, safeOffset, out definitionOffset, out _))
+			return false;
+
+		return true;
+	}
+
+	/// <summary>
+	/// Determines whether the specified offset is inside a comment or string using document-aware long-block state.
+	/// </summary>
+	/// <param name="document">The document being inspected.</param>
+	/// <param name="offset">The zero-based character offset.</param>
+	/// <returns><see langword="true"/> if the offset is inside a comment or string on the current line; otherwise, <see langword="false"/>.</returns>
+	public static bool IsInsideCommentOrString(TextDocument? document, int offset)
+	{
+		if (document is null || document.TextLength == 0)
+			return false;
+
+		int safeOffset = ClampOffset(document, offset);
+		DocumentLine currentLine = document.GetLineByOffset(safeOffset);
+		LuaLineParserState lineStartState = GetLineStartParserState(document, currentLine);
+		int lineStart = currentLine.Offset;
+		int inspectedLength = Math.Max(0, Math.Min(safeOffset, currentLine.EndOffset) - lineStart);
+		string lineText = document.GetText(lineStart, inspectedLength);
+
+		return LuaLineParser.IsInsideCommentOrString(lineText, lineStartState, out _);
+	}
+
+	private static LuaLineParserState GetLineStartParserState(TextDocument document, DocumentLine currentLine)
+		=> LineStartStateCaches.GetValue(document, static doc => new LuaDocumentLineParserStateCache(doc)).GetLineStartState(currentLine.LineNumber);
+
+	private static int ClampOffset(TextDocument document, int offset)
+		=> Math.Clamp(offset, 0, document.TextLength);
+
+	private static bool TryGetDefinitionWordBounds(TextDocument document, int offset, out int wordStart, out int wordEnd)
+	{
+		wordStart = 0;
+		wordEnd = 0;
+
+		if (document.TextLength == 0)
+			return false;
+
+		int probeOffset = ClampOffset(document, offset);
+
+		if (probeOffset >= document.TextLength)
+			probeOffset = document.TextLength - 1;
+
+		if (probeOffset > 0
+			&& !LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset))
+			&& LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset - 1)))
+		{
+			probeOffset--;
+		}
+
+		if (!LuaLineParser.IsIdentifierCharacter(document.GetCharAt(probeOffset)))
+			return false;
+
+		wordStart = probeOffset;
+		wordEnd = probeOffset + 1;
+
+		while (wordStart > 0 && LuaLineParser.IsIdentifierCharacter(document.GetCharAt(wordStart - 1)))
+			wordStart--;
+
+		while (wordEnd < document.TextLength && LuaLineParser.IsIdentifierCharacter(document.GetCharAt(wordEnd)))
+			wordEnd++;
+
+		return wordEnd > wordStart;
+	}
+}

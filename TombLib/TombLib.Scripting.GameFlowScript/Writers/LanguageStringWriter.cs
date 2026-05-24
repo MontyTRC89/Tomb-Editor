@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.Bases;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Scripting.GameFlowScript.Writers
 {
@@ -12,21 +13,9 @@ namespace TombLib.Scripting.GameFlowScript.Writers
 		}
 
 		private static bool AssignStockLevelNameStringSlot(TextEditorBase textEditor, string levelName)
-		{
-			foreach (DocumentLine line in textEditor.Document.Lines)
-			{
-				string lineText = textEditor.Document.GetText(line.Offset, line.Length);
-
-				if (Regex.IsMatch(lineText, @"EMPTY\sSTRING\sSLOT\s\d+"))
-				{
-					textEditor.Select(line.Offset, line.Length);
-					textEditor.SelectedText = levelName;
-
-					return true;
-				}
-			}
-
-			return false;
-		}
+			=> TextEditorLineOperations.TryReplaceFirstMatchingLine(
+				textEditor,
+				lineText => Regex.IsMatch(lineText, @"EMPTY\sSTRING\sSLOT\s\d+") ? levelName : null,
+				scrollToLine: false);
 	}
 }
