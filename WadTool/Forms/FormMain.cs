@@ -324,6 +324,7 @@ namespace WadTool
                 treeDestWad.ContextMenuStrip = null;
 
             // Update menus
+            consolidateTexturesToolStripMenuItem.Enabled =
             convertSelectionToDynamicLightingToolStripMenuItem.Enabled =
             convertSelectionToStaticLightingToolStripMenuItem.Enabled =
             convertToUVMappedToolStripMenuItem.Enabled =
@@ -691,6 +692,11 @@ namespace WadTool
         private void convertToTiledToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WadActions.ConvertSelectedObjectUVMapping(_tool, this, treeDestWad.SelectedWadObjectIds.ToList(), false);
+        }
+
+        private void consolidateTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.ConsolidateSelectedObjectTextures(_tool, this, treeDestWad.SelectedWadObjectIds.ToList());
         }
 
         private void animatedTexturesToolStripMenuItem_Click(object sender, EventArgs e)

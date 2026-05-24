@@ -742,6 +742,46 @@ namespace WadTool
             tool.SendMessage(counter + " mesh" + (counter > 1 ? "es were" : " was") + " converted to specified light model.", PopupType.Info);
         }
 
+        public static void ConsolidateSelectedObjectTextures(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects)
+        {
+            if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)
+            {
+                tool.SendMessage("You must have at least one object selected and it must be in the destination wad.\nNothing was done.", PopupType.Info);
+                return;
+            }
+
+            const int texturePageSize = 2048;
+
+            int counter = 0;
+
+            foreach (var o in objects)
+            {
+                var obj = tool.DestinationWad.TryGet(o);
+                if (obj == null)
+                    continue;
+
+                if (obj is WadMoveable moveable)
+                {
+                    if (WadMesh.ConsolidateTextures(moveable.Meshes.Where(mesh => mesh != null).ToList(), 0, texturePageSize))
+                        counter++;
+                }
+                else if (obj is WadStatic @static)
+                {
+                    if (@static.Mesh != null && WadMesh.ConsolidateTextures(new List<WadMesh> { @static.Mesh }, 0, texturePageSize))
+                        counter++;
+                }
+            }
+
+            if (counter == 0)
+            {
+                tool.SendMessage("There was no packable mesh data in selected objects.\nNothing was done.", PopupType.Info);
+                return;
+            }
+
+            tool.WadChanged(WadArea.Destination);
+            tool.SendMessage(counter + " object" + (counter > 1 ? "s were" : " was") + " consolidated into texture pages.", PopupType.Info);
+        }
+
         public static List<IWadObjectId> CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
         {
             Wad2 sourceWad = tool.SourceWad;
