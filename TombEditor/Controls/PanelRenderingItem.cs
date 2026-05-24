@@ -5,8 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Rendering;
 using TombLib.LevelData;
+using TombLib.RenderingV2.Preview;
 using TombLib.Utils;
 using TombLib.Wad;
 

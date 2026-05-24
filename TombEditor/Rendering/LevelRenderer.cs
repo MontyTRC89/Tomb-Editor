@@ -9,6 +9,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
 using TombLib.RenderingV2.Backends.Dx11;
+using TombLib.RenderingV2.Preview;
 using TombLib.RenderingV2.Rhi;
 using TombLib.RenderingV2.Text;
 using TombLib.Utils;

@@ -58,7 +58,7 @@ namespace TombEditor.Forms
                 Close();
         }
 
-        public class PanelRenderingItemPreview : TombEditor.Rendering.ItemPreviewPanel
+        public class PanelRenderingItemPreview : TombLib.RenderingV2.Preview.ItemPreviewPanel
         {
             public Editor Editor { get; set; }
 

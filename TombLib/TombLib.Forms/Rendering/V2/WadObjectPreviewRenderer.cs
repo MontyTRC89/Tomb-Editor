@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -12,7 +13,7 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombEditor.Rendering;
+namespace TombLib.RenderingV2.Preview;
 
 /// <summary>
 /// Builds the per-bone world transforms for a moveable's first-keyframe pose.

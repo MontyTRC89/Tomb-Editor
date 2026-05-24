@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,7 +12,7 @@ using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Wad;
 
-namespace TombEditor.Rendering;
+namespace TombLib.RenderingV2.Preview;
 
 /// <summary>
 /// Single shared device used by every preview panel and the offscreen

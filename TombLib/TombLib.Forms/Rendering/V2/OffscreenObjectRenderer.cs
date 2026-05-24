@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Numerics;
 using TombLib;
@@ -7,7 +8,7 @@ using TombLib.RenderingV2.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 
-namespace TombEditor.Rendering;
+namespace TombLib.RenderingV2.Preview;
 
 /// <summary>
 /// Renders a single <see cref="IWadObject"/> off-screen and returns the

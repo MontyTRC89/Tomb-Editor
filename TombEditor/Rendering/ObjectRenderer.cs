@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.LevelData;
+using TombLib.RenderingV2.Preview;
 using TombLib.RenderingV2.Rhi;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;

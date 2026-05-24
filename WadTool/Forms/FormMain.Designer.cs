@@ -915,7 +915,6 @@
 			// 
 			// panel3D
 			// 
-			panel3D.AllowRendering = true;
 			panel3D.AnimatePreview = true;
 			panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
 			panel3D.DrawTransparency = false;

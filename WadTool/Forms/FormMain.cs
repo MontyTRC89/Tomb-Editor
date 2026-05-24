@@ -31,7 +31,8 @@ namespace WadTool
             _tool = tool;
 
             panel3D.Configuration = tool.Configuration;
-            panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device, tool.Configuration.RenderingItem_Antialias);
+            // V2 ItemPreviewPanel lazily creates its own device + swapchain on
+            // first paint — no explicit InitializeRendering needed.
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());

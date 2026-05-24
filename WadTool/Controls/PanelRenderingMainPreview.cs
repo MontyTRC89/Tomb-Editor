@@ -1,11 +1,16 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Numerics;
-using TombLib.Controls;
+using TombLib.RenderingV2.Preview;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingMainPreview : PanelItemPreview
+    /// <summary>
+    /// Main WAD preview panel for the WadTool main window. V2 RHI; lazily
+    /// creates its own device + swapchain on first paint (see
+    /// <see cref="ItemPreviewPanel"/>), so no <c>InitializeRendering</c> needed.
+    /// </summary>
+    public class PanelRenderingMainPreview : ItemPreviewPanel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
@@ -20,7 +25,8 @@ namespace WadTool.Controls
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            // Absorb event to prevent focusing
+            // Absorb to prevent the V2 base from grabbing focus from
+            // the WadTool main window's other controls.
         }
     }
 }
