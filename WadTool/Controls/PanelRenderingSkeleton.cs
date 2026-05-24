@@ -84,12 +84,18 @@ namespace WadTool.Controls
             var renderer = PreviewDevice.Renderer;
             _lines ??= new LinePrimitiveRenderer(device);
 
-            // Bones (textured).
+            // Bones (textured). Pack every bone into one instance batch so the
+            // per-frame cbuffer is updated exactly once (multiple cbuffer
+            // WriteDiscard updates between draws collapse into the last value
+            // on some D3D11 drivers — every bone would otherwise render with
+            // the same transform).
             if (Skeleton != null)
             {
+                renderer.BeginMeshBatch();
                 foreach (var node in Skeleton)
                     if (node.Mesh != null)
-                        renderer.RenderMesh(cl, node.Mesh, node.GlobalTransform, viewProjection);
+                        renderer.QueueMesh(node.Mesh, node.GlobalTransform);
+                renderer.FlushMeshBatch(cl, viewProjection);
             }
 
             // Line overlays: reference grid + selection bounding box.
@@ -131,6 +137,12 @@ namespace WadTool.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            // Forward to base FIRST so the inherited _lastX/_lastY get primed
+            // even when we early-return on a gizmo pick.
+            base.OnMouseDown(e);
+            _lastX = e.X;
+            _lastY = e.Y;
+
             if (e.Button == MouseButtons.Left && _gizmo != null && Skeleton != null)
             {
                 var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
@@ -161,9 +173,6 @@ namespace WadTool.Controls
                 _tool.BonePicked();
             }
 
-            _lastX = e.X;
-            _lastY = e.Y;
-            base.OnMouseDown(e);
             Invalidate();
         }
 

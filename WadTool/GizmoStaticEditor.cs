@@ -1,4 +1,3 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
 using TombLib.Graphics;
@@ -7,13 +6,18 @@ using WadTool.Controls;
 
 namespace WadTool
 {
+    /// <summary>
+    /// Static editor transform gizmo. Headless: visuals are drawn by the
+    /// shared V2 <c>GizmoRenderer</c>; this class only feeds pick + drag math
+    /// and writes the new transform into the panel.
+    /// </summary>
     public class GizmoStaticEditor : BaseGizmo
     {
         private readonly Configuration _configuration;
         private readonly PanelRenderingStaticEditor _control;
 
-        public GizmoStaticEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingStaticEditor control)
-            : base(device, effect)
+        public GizmoStaticEditor(Configuration configuration, PanelRenderingStaticEditor control)
+            : base()
         {
             _configuration = configuration;
             _control = control;
@@ -26,8 +30,6 @@ namespace WadTool
         protected override void GizmoRotateZ(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, _control.StaticRotation.Y, newAngle);
         protected override void GizmoScaleX(float newScale)
         {
-            // Set some limits to scale
-            // TODO: object risks to be too small and to be not pickable. We should add some size check
             if (newScale < 1.0f)
                 newScale = 1.0f;
             if (newScale > 128.0f)

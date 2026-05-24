@@ -1,22 +1,26 @@
-﻿using DarkUI.Forms;
-using SharpDX.Toolkit.Graphics;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
-using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
-using TombLib.LevelData;
-using TombLib.Rendering;
+using TombLib.RenderingV2.Preview;
+using TombLib.RenderingV2.Rhi;
+using TombLib.RenderingV2.Text;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool.Controls
 {
-    public class PanelRenderingStaticEditor : RenderingPanel
+    /// <summary>
+    /// Static editor preview. Inherits the V2 <see cref="ItemPreviewPanel"/>
+    /// for swapchain + camera plumbing; <see cref="RenderContents"/> draws the
+    /// static mesh under the gizmo transform, optional visibility / collision
+    /// boxes, lights, normals and the transform / light gizmos.
+    /// </summary>
+    public class PanelRenderingStaticEditor : ItemPreviewPanel
     {
         public enum StaticEditorAction
         {
@@ -28,8 +32,6 @@ namespace WadTool.Controls
         public Configuration Configuration { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadStatic Static { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadLight SelectedLight { get; set; }
 
@@ -56,320 +58,162 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public StaticEditorAction Action { get; set; }
 
-        public Matrix4x4 GizmoTransform
-        {
-            get
-            {
-                return Matrix4x4.CreateScale(StaticScale) *
-                       Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
-                       Matrix4x4.CreateTranslation(StaticPosition);
-            }
-        }
+        public Matrix4x4 GizmoTransform =>
+            Matrix4x4.CreateScale(StaticScale) *
+            Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
+            Matrix4x4.CreateTranslation(StaticPosition);
 
-        // General state
         private WadToolClass _tool;
+        private GizmoStaticEditor _gizmo;
+        private GizmoStaticEditorLight _gizmoLight;
+        private LinePrimitiveRenderer _lines;
 
-        // Interaction state
         private float _lastX;
         private float _lastY;
 
-        // Rendering state
-        private RenderingTextureAllocator _fontTexture;
-        private RenderingFont _fontDefault;
+        // Override the base camera default (centred at +256 Y) with the
+        // legacy static-editor framing.
+        public PanelRenderingStaticEditor()
+        {
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0,
+                -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000,
+                (float)Math.PI / 4.0f);
+        }
 
-        // Legacy rendering state
-        private GraphicsDevice _device;
-        private DeviceManager _deviceManager;
-        private RasterizerState _rasterizerWireframe;
-        private GizmoStaticEditor _gizmo;
-        private GizmoStaticEditorLight _gizmoLight;
-        private GeometricPrimitive _plane;
-        private GeometricPrimitive _sphere;
-        private GeometricPrimitive _littleSphere;
-        private WadRenderer _wadRenderer;
-        private Buffer<SolidVertex> _vertexBufferVisibility;
-        private Buffer<SolidVertex> _vertexBufferCollision;
-
-        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
+        public void Initialize(WadToolClass tool)
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
-
-            base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
-
-            // Actual "InitializeRendering"
-            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
-            {
-                FontName = _tool.Configuration.Rendering3D_FontName,
-                FontSize = _tool.Configuration.Rendering3D_FontSize,
-                FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
-                TextureAllocator = _fontTexture
-            });
-
-            // Legacy rendering
-            {
-                _device = deviceManager.___LegacyDevice;
-                _deviceManager = deviceManager;
-                _wadRenderer = new WadRenderer(_device, false, true, 4096, 2048, false);
-                new BasicEffect(_device); // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-                _rasterizerWireframe = RasterizerState.New(_device, new SharpDX.Direct3D11.RasterizerStateDescription
-                {
-                    CullMode = SharpDX.Direct3D11.CullMode.None,
-                    DepthBias = 0,
-                    DepthBiasClamp = 0,
-                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                    IsAntialiasedLineEnabled = true,
-                    IsDepthClipEnabled = true,
-                    IsFrontCounterClockwise = false,
-                    IsMultisampleEnabled = true,
-                    IsScissorEnabled = false,
-                    SlopeScaledDepthBias = 0
-                });
-                _gizmo = new GizmoStaticEditor(_tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
-                _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, _device, _deviceManager.___LegacyEffects["Solid"], this);
-                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
-                _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * 128.0f, 8);
-                _sphere = GeometricPrimitive.Sphere.New(_device, 1024.0f, 6);
-            }
+            _gizmo      = new GizmoStaticEditor(_tool.Configuration, this);
+            _gizmoLight = new GizmoStaticEditorLight(_tool.Configuration, this);
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _fontTexture?.Dispose();
-                _fontDefault?.Dispose();
                 _gizmo?.Dispose();
                 _gizmoLight?.Dispose();
-                _plane?.Dispose();
-                _sphere?.Dispose();
-                _littleSphere?.Dispose();
-                _rasterizerWireframe?.Dispose();
-                _wadRenderer?.Dispose();
-                _vertexBufferVisibility?.Dispose();
-                _vertexBufferCollision?.Dispose();
+                _lines?.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
-        protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
+        // ------------------------------------------------ Rendering
 
-        protected override void OnDraw()
+        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1f);
+
+        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50f;
+        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f;
+        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
+        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
+        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+
+        protected override void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
         {
-            // To make sure things are in a defined state for legacy rendering...
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            var device = PreviewDevice.Device;
+            _lines ??= new LinePrimitiveRenderer(device);
 
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-            _device.SetBlendState(_device.BlendStates.Opaque);
+            // Mesh (textured), under the gizmo transform.
+            if (Static?.Mesh != null)
+            {
+                // The model is invalidated on every Static.Mesh edit via
+                // UpdateMesh(), so changes to vertex positions / colours go
+                // through the cache cleanly.
+                PreviewDevice.Renderer.RenderMesh(cl, Static.Mesh, GizmoTransform, viewProjection);
+            }
 
-            var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            var solidEffect = _deviceManager.___LegacyEffects["Solid"];
+            // -------- Line overlays (grid, boxes, light spheres, normals) ----
+            _lines.Begin();
 
             if (DrawGrid)
             {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
-
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
-
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
-            }
-
-            if (DrawLights)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                foreach (var light in Static.Lights)
-                {
-                    // Draw the little sphere
-                    _device.SetVertexBuffer(0, _littleSphere.VertexBuffer);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
-                    _device.SetIndexBuffer(_littleSphere.IndexBuffer, false);
-
-                    var world = Matrix4x4.CreateTranslation(light.Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
-                    solidEffect.Techniques[0].Passes[0].Apply();
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
-
-                    if (SelectedLight == light)
-                    {
-                        _device.SetVertexBuffer(0, _sphere.VertexBuffer);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
-                        _device.SetIndexBuffer(_sphere.IndexBuffer, false);
-
-                        world = Matrix4x4.CreateScale(light.Radius * 2.0f) * Matrix4x4.CreateTranslation(light.Position);
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                        solidEffect.Techniques[0].Passes[0].Apply();
-
-                        _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                    }
-                }
-
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                // Legacy GridPlane(8, 4) → 8×4 cells over [-1..+1]; preview
+                // camera works in WAD units so scale up to the same on-screen
+                // density as the skeleton/main preview panels.
+                _lines.AddGridXZ(size: 4096f, cells: 16, color: 0xFF_FF_FF_FFu);
             }
 
             if (Static != null)
             {
-                var model = _wadRenderer.GetStatic(Static);
-                var effect = _deviceManager.___LegacyEffects["Model"];
-                var world = GizmoTransform;
+                if (DrawVisibilityBox)
+                    _lines.AddBox(Static.VisibilityBox, Matrix4x4.Identity, 0xFF_FF_00_00u); // blue (BGRA bits: B=FF)
+                if (DrawCollisionBox)
+                    _lines.AddBox(Static.CollisionBox,  Matrix4x4.Identity, 0xFF_00_FF_00u); // green
 
-                effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["StaticLighting"].SetValue(Static.Mesh.LightingType != WadMeshLightingType.Normals);
-                effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine);
-                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                for (int i = 0; i < model.Meshes.Count; i++)
+                if (DrawLights)
                 {
-                    var mesh = model.Meshes[i];
-                    mesh.UpdateBuffers(Camera.GetPosition());
-
-                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
-                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
-                    effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    effect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var submesh in mesh.Submeshes)
+                    foreach (var light in Static.Lights)
                     {
-                        if (submesh.Value.Material.AdditiveBlending)
-                            _device.SetBlendState(_device.BlendStates.Additive);
-                        else
-                            _device.SetBlendState(_device.BlendStates.Opaque);
+                        // Little marker sphere at the light position (yellow).
+                        _lines.AddWireSphere(light.Position, radius: 128f, segments: 16,
+                                              color: 0xFF_00_FF_FFu); // RGBA: R=FF, G=FF (yellow)
 
-                        if (submesh.Value.Material.DoubleSided)
-                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
-                        else
-                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        // Selected light's radius (green) — legacy uses
+                        // light.Radius * SectorSize (1024) for the visible
+                        // sphere extent.
+                        if (SelectedLight == light)
+                        {
+                            _lines.AddWireSphere(light.Position,
+                                                  radius: 1024f * light.Radius,
+                                                  segments: 24,
+                                                  color: 0xFF_00_FF_00u);
+                        }
                     }
                 }
 
-                _device.SetBlendState(_device.BlendStates.Opaque);
-                _device.SetRasterizerState(_rasterizerWireframe);
-
-                // Draw boxes
-                if (DrawVisibilityBox || DrawCollisionBox)
+                if (DrawNormals && Static.Mesh != null)
                 {
-
-                    if (DrawVisibilityBox)
+                    var world = GizmoTransform;
+                    int count = Math.Min(Static.Mesh.VertexNormals.Count, Static.Mesh.VertexPositions.Count);
+                    for (int i = 0; i < count; i++)
                     {
-                        _vertexBufferVisibility?.Dispose();
-                        _vertexBufferVisibility = Static.VisibilityBox.GetVertexBuffer(_device);
-
-                        _device.SetVertexBuffer(_vertexBufferVisibility);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
-                        _device.SetIndexBuffer(null, false);
-
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                        _device.Draw(PrimitiveType.LineList, _vertexBufferVisibility.ElementCount);
-                    }
-
-                    if (DrawCollisionBox)
-                    {
-                        _vertexBufferCollision?.Dispose();
-                        _vertexBufferCollision = Static.CollisionBox.GetVertexBuffer(_device);
-
-                        _device.SetVertexBuffer(_vertexBufferCollision);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferCollision));
-                        _device.SetIndexBuffer(null, false);
-
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                        _device.Draw(PrimitiveType.LineList, _vertexBufferCollision.ElementCount);
-                    }
-                }
-
-                // Draw normals
-                if (DrawNormals)
-                {
-                    var lines = new List<SolidVertex>();
-                    for (int i = 0; i < Static.Mesh.VertexNormals.Count; i++)
-                    {
+                        var rawNormal = Static.Mesh.VertexNormals[i];
+                        float len = rawNormal.Length();
+                        if (len <= 1e-6f) continue;
                         var p = Vector3.Transform(Static.Mesh.VertexPositions[i], world);
-                        var n = Vector3.TransformNormal(Static.Mesh.VertexNormals[i] /
-                            Static.Mesh.VertexNormals[i].Length(), world);
-
-                        var v = new SolidVertex();
-                        v.Position = p;
-                        v.Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-                        lines.Add(v);
-
-                        v = new SolidVertex();
-                        v.Position = p + n * 32.0f;
-                        v.Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-                        lines.Add(v);
+                        var n = Vector3.TransformNormal(rawNormal / len, world);
+                        _lines.AddLine(p, p + n * 32.0f, 0xFF_FF_FF_FFu, 0xFF_FF_FF_FFu);
                     }
-
-                    var bufferLines = SharpDX.Toolkit.Graphics.Buffer.New(_device, lines.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
-
-                    _device.SetVertexBuffer(bufferLines);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
-                    _device.SetIndexBuffer(null, false);
-
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                    _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
                 }
             }
 
-            if (DrawGizmo)
+            _lines.Flush(cl, viewProjection);
+
+            // -------- Gizmos -------------------------------------------------
+            if (DrawGizmo && _gizmo != null && Static != null)
             {
-                // Draw the gizmo
-                SwapChain.ClearDepth();
-                _gizmo.Draw(viewProjection);
+                var snap = _gizmo.GetPublicState();
+                PreviewDevice.Gizmo.Render(cl, snap, viewProjection);
             }
 
-            if (SelectedLight != null)
+            if (SelectedLight != null && _gizmoLight != null)
             {
-                // Draw the gizmo of selected light
-                SwapChain.ClearDepth();
-                _gizmoLight.Draw(viewProjection);
+                var snap = _gizmoLight.GetPublicState();
+                PreviewDevice.Gizmo.Render(cl, snap, viewProjection);
             }
-
-            // Draw debug strings
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
-            SwapChain.RenderText(new Text
-            {
-                Font = _fontDefault,
-                PixelPos = new Vector2(10, -10),
-                Alignment = new Vector2(0, 0),
-                Overlay = true,
-                String =
-                    "Position: " + StaticPosition +
-                    "\nRotation: " + StaticRotation.X * (180 / Math.PI) +
-                    "\nScale: " + StaticScale
-            });
         }
+
+        protected override void CollectText(List<TextLabel> labels, Matrix4x4 viewProjection)
+        {
+            // Pin position / rotation / scale to the top-left corner of the
+            // panel — matches the legacy debug overlay.
+            string msg =
+                "Position: " + StaticPosition +
+                "\nRotation: " + StaticRotation.X * (180.0 / Math.PI) +
+                "\nScale: " + StaticScale;
+            labels.Add(TextLabel.Screen(msg,
+                screenPosition: new Vector2(10, 10),
+                color: new Vector4(1f, 1f, 1f, 1f),
+                background: Configuration?.Rendering3D_DrawFontOverlays ?? false,
+                alignment: new Vector2(0f, 0f)));
+        }
+
+        // ------------------------------------------------ Mouse + picking
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            // Make this control able to receive scroll and key board events...
             base.OnMouseEnter(e);
             Focus();
         }
@@ -377,23 +221,18 @@ namespace WadTool.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-
-            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
-            Invalidate();
+            // Base class already zoomed; no extra work needed.
         }
 
         private void PlaceLight(int x, int y)
         {
-            // Get the intersection point between ray and the horizontal plane
             var ray = Ray.GetPickRay(Camera, ClientSize, x, y);
             var plane = new Plane(Vector3.UnitY, 0.0f);
-            var point = Vector3.Zero;
-            Collision.RayIntersectsPlane(ray, plane, out point);
+            if (!Collision.RayIntersectsPlane(ray, plane, out Vector3 point))
+                return;
 
-            // Add the light at the intersection point
             var light = new WadLight(point, 1.0f, 0.5f);
             Static.Lights.Add(light);
-
             _tool.StaticLightsChanged();
 
             Action = StaticEditorAction.Normal;
@@ -413,15 +252,20 @@ namespace WadTool.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            // Forward to base FIRST so the inherited _lastX/_lastY are always
+            // primed — otherwise the first right/middle drag delta after a
+            // gizmo-pick (early-return below) is computed against stale values.
             base.OnMouseDown(e);
+            _lastX = e.X;
+            _lastY = e.Y;
 
-            var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
-
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && Static != null)
             {
+                var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
+
                 if (Action != StaticEditorAction.PlaceLight)
                 {
-                    if (DrawGizmo)
+                    if (DrawGizmo && _gizmo != null)
                     {
                         var result = _gizmo.DoPicking(ray);
                         if (result != null)
@@ -432,7 +276,7 @@ namespace WadTool.Controls
                         }
                     }
 
-                    if (SelectedLight != null)
+                    if (SelectedLight != null && _gizmoLight != null)
                     {
                         var result = _gizmoLight.DoPicking(ray);
                         if (result != null)
@@ -443,14 +287,13 @@ namespace WadTool.Controls
                         }
                     }
 
-                    // Try to pick lights
+                    // Light picking — sphere test against each light marker.
                     float minDistance = float.MaxValue;
                     SelectedLight = null;
                     foreach (var light in Static.Lights)
                     {
-                        float distance = 0;
-                        if (Collision.RayIntersectsSphere(ray, new BoundingSphere(light.Position, 128.0f),
-                                                          out distance))
+                        if (Collision.RayIntersectsSphere(ray, new BoundingSphere(light.Position, 128f),
+                                                          out float distance))
                         {
                             if (distance <= minDistance)
                                 minDistance = distance;
@@ -470,9 +313,6 @@ namespace WadTool.Controls
             }
 
             Invalidate();
-
-            _lastX = e.X;
-            _lastY = e.Y;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -491,66 +331,53 @@ namespace WadTool.Controls
 
             var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
 
-            if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
-                Invalidate();
-            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
-                Invalidate();
-
-            if (_gizmoLight.GizmoUpdateHoverEffect(_gizmoLight.DoPicking(ray)))
-                Invalidate();
-            if (_gizmoLight.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
-                Invalidate();
-
-            if (Action == StaticEditorAction.Normal)
-                Cursor = Cursors.Default;
-            else
-                Cursor = Cursors.Cross;
-
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
+            if (_gizmo != null)
             {
-                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / Height;
-                float deltaY = (e.Y - _lastY) / Height;
-
-                _lastX = e.X;
-                _lastY = e.Y;
-
-                if (e.Button == MouseButtons.Right)
-                {
-                    if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                    else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
-                        Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                     -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
-                }
-                if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
-                     e.Button == MouseButtons.Middle)
-                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-
-                Invalidate();
+                if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
+                    Invalidate();
+                if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
+                    Invalidate();
             }
 
-            ((FormStaticEditor)FindForm()).UpdatePositionUI();
+            if (_gizmoLight != null)
+            {
+                if (_gizmoLight.GizmoUpdateHoverEffect(_gizmoLight.DoPicking(ray)))
+                    Invalidate();
+                if (_gizmoLight.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
+                    Invalidate();
+            }
+
+            Cursor = Action == StaticEditorAction.Normal ? Cursors.Default : Cursors.Cross;
+
+            _lastX = e.X;
+            _lastY = e.Y;
+
+            // Base class already handled the camera nav via right/middle drag.
+
+            if (FindForm() is FormStaticEditor form)
+                form.UpdatePositionUI();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
 
-            if (_gizmo.MouseUp())
+            if (_gizmo != null && _gizmo.MouseUp())
+                Invalidate();
+            if (_gizmoLight != null && _gizmoLight.MouseUp())
                 Invalidate();
 
-            if (_gizmoLight.MouseUp())
-                Invalidate();
-
-            ((FormStaticEditor)FindForm()).UpdatePositionUI();
+            if (FindForm() is FormStaticEditor form)
+                form.UpdatePositionUI();
         }
+
+        // ------------------------------------------------ Mesh / lights state
 
         public void UpdateLights()
         {
             Static.Mesh.VertexColors.Clear();
 
-            Matrix4x4 world = Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *  
+            Matrix4x4 world = Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
                               Matrix4x4.CreateTranslation(StaticPosition);
 
             for (int i = 0; i < Static.Mesh.VertexPositions.Count; i++)
@@ -558,32 +385,40 @@ namespace WadTool.Controls
                 float newShade = Static.AmbientLight / 255.0f;
                 foreach (var light in Static.Lights)
                 {
-                    // Transform current vertex and normal
                     var p = Vector3.Transform(Static.Mesh.VertexPositions[i], world);
                     var n = Vector3.TransformNormal(Static.Mesh.VertexNormals[i] / Static.Mesh.VertexNormals[i].Length(), world);
 
-                    // Get the light direction vector
                     var lightDirection = light.Position - p;
                     if (lightDirection.Length() > light.Radius * 1024)
                         continue;
 
                     var l = lightDirection / lightDirection.Length();
-
-                    // Calculate cosine
                     float dot = Vector3.Dot(n, l);
                     if (dot <= 0)
                         continue;
 
                     newShade += dot * light.Intensity * (1.0f - (light.Position - p).Length() /
-                                (light.Radius * Level.SectorSizeUnit));
+                                (light.Radius * TombLib.LevelData.Level.SectorSizeUnit));
                 }
 
                 Static.Mesh.VertexColors.Add(new Vector3(Math.Min(newShade, 1.0f)));
             }
 
+            // The cached vertex buffer baked the old colours — invalidate so
+            // the next paint re-uploads with the new shade.
+            PreviewDevice.Renderer.InvalidateMesh(Static.Mesh);
+
             _tool.StaticLightsChanged();
         }
 
-        public void UpdateMesh() => _wadRenderer.Dispose();
+        public void UpdateMesh()
+        {
+            // Drop the cached static mesh + per-object cache so vertex
+            // positions / colours edited externally are picked up on the next
+            // paint.
+            if (Static?.Mesh != null)
+                PreviewDevice.Renderer.InvalidateMesh(Static.Mesh);
+            PreviewDevice.Renderer.InvalidateAll();
+        }
     }
 }

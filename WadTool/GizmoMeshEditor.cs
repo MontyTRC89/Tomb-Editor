@@ -1,4 +1,3 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
 using TombLib;
@@ -8,13 +7,18 @@ using WadTool.Controls;
 
 namespace WadTool
 {
+    /// <summary>
+    /// Bounding-sphere gizmo for the mesh editor. Headless: visuals are drawn
+    /// by the shared V2 <c>GizmoRenderer</c>; this class only feeds pick + drag
+    /// math.
+    /// </summary>
     public class GizmoMeshEditor : BaseGizmo
     {
         private readonly Configuration _configuration;
         private readonly PanelRenderingMesh _control;
 
-        public GizmoMeshEditor(Configuration configuration, GraphicsDevice device, Effect effect, PanelRenderingMesh control)
-            : base(device, effect)
+        public GizmoMeshEditor(Configuration configuration, PanelRenderingMesh control)
+            : base()
         {
             _configuration = configuration;
             _control = control;
@@ -28,8 +32,6 @@ namespace WadTool
 
         protected override void GizmoScaleX(float newScale)
         {
-            // Set some limits to scale
-            // TODO: object risks to be too small and to be not pickable. We should add some size check
             if (newScale < 0.1f)
                 newScale = 0.1f;
 

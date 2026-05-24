@@ -1,11 +1,15 @@
-﻿using System.Numerics;
-using SharpDX.Toolkit.Graphics;
+using System.Numerics;
+using TombLib;
 using TombLib.Graphics;
 using WadTool.Controls;
-using TombLib;
 
 namespace WadTool
 {
+    /// <summary>
+    /// Animation editor transform/rotation gizmo. Headless: visuals are drawn
+    /// by the shared V2 <c>GizmoRenderer</c>; this class only feeds pick + drag
+    /// math and writes back into the active keyframe.
+    /// </summary>
     public class GizmoAnimationEditor : BaseGizmo
     {
         private readonly Configuration _configuration;
@@ -15,9 +19,8 @@ namespace WadTool
         private Quaternion _pickQuaternion;
         private Vector3 _pickEuler;
 
-        public GizmoAnimationEditor(AnimationEditor editor, GraphicsDevice device,
-                                    Effect effect, PanelRenderingAnimationEditor control)
-            : base(device, effect)
+        public GizmoAnimationEditor(AnimationEditor editor, PanelRenderingAnimationEditor control)
+            : base()
         {
             _editor = editor;
             _configuration = editor.Tool.Configuration;

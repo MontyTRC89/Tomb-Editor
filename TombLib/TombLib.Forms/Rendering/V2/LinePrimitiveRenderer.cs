@@ -143,6 +143,36 @@ public sealed class LinePrimitiveRenderer : IDisposable
     }
 
     /// <summary>
+    /// Emit a wireframe sphere as three axis-aligned great circles
+    /// (XY, YZ, XZ planes), <paramref name="segments"/> segments each. Approximates
+    /// the legacy <c>GeometricPrimitive.Sphere</c> rendered with the wireframe
+    /// rasterizer state — cheaper than full triangle wireframe + matches
+    /// the editor's visual style for light/radius indicators.
+    /// </summary>
+    public void AddWireSphere(Vector3 center, float radius, int segments, uint color)
+    {
+        if (segments < 3 || radius <= 0f) return;
+        float step = (float)(Math.PI * 2.0) / segments;
+        for (int i = 0; i < segments; i++)
+        {
+            float a0 = i * step;
+            float a1 = (i + 1) * step;
+            float c0 = (float)Math.Cos(a0), s0 = (float)Math.Sin(a0);
+            float c1 = (float)Math.Cos(a1), s1 = (float)Math.Sin(a1);
+
+            // XY plane (Z=0).
+            AddLine(center + new Vector3(c0 * radius, s0 * radius, 0f),
+                    center + new Vector3(c1 * radius, s1 * radius, 0f), color, color);
+            // XZ plane (Y=0).
+            AddLine(center + new Vector3(c0 * radius, 0f, s0 * radius),
+                    center + new Vector3(c1 * radius, 0f, s1 * radius), color, color);
+            // YZ plane (X=0).
+            AddLine(center + new Vector3(0f, c0 * radius, s0 * radius),
+                    center + new Vector3(0f, c1 * radius, s1 * radius), color, color);
+        }
+    }
+
+    /// <summary>
     /// Emit an axis-aligned grid of <paramref name="cells"/> cells per side,
     /// total extent <paramref name="size"/>, centred on the origin, lying in
     /// the XZ plane. Matches the legacy editor's white reference grid.

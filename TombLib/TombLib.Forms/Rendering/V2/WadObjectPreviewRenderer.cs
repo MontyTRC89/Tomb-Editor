@@ -139,6 +139,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     private readonly PipelineHandle _pipeline;
     private readonly BufferHandle   _viewCb;
     private readonly BufferHandle   _identityInstanceVb;
+    private BufferHandle            _dynamicInstanceVb;   // resized on demand
+    private int                     _dynamicInstanceCapacity;
+    private byte[]                  _batchCpu = new byte[InstanceStride * 16];
+    private readonly List<(BufferHandle Vb, int VertexCount, int InstanceOffset)> _pendingDraws = new();
+    private int                     _pendingInstanceCount;
     private readonly SamplerHandle  _sampler;
 
     private readonly BufferHandle[]        _scratchCbuf = new BufferHandle[1];
@@ -238,6 +243,37 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         // sampler footprint at mip 0.)
         _sampler = device.CreateSampler(new SamplerDesc(
             FilterMode.Linear, AddressMode.Clamp, maxAnisotropy: 1));
+
+        // Dynamic instance buffer used by mesh batches. Resized on demand —
+        // start at 16 instances so single-mesh draws don't pay any growth cost.
+        _dynamicInstanceCapacity = 16;
+        _dynamicInstanceVb = device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: _dynamicInstanceCapacity * InstanceStride,
+                usage:     BufferUsage.DynamicVertex,
+                bindFlags: BufferBindFlags.Vertex,
+                debugName: "PreviewDynamicInstance"),
+            ReadOnlySpan<byte>.Empty);
+    }
+
+    private void EnsureBatchCapacity(int instanceCount)
+    {
+        int needed = instanceCount * InstanceStride;
+        if (_batchCpu.Length < needed)
+            Array.Resize(ref _batchCpu, Math.Max(needed, _batchCpu.Length * 2));
+
+        if (_dynamicInstanceCapacity >= instanceCount) return;
+        int newCap = _dynamicInstanceCapacity;
+        while (newCap < instanceCount) newCap *= 2;
+        if (_dynamicInstanceVb.IsValid) _device.Destroy(_dynamicInstanceVb);
+        _dynamicInstanceCapacity = newCap;
+        _dynamicInstanceVb = _device.CreateBuffer(
+            new BufferDesc(
+                sizeBytes: newCap * InstanceStride,
+                usage:     BufferUsage.DynamicVertex,
+                bindFlags: BufferBindFlags.Vertex,
+                debugName: "PreviewDynamicInstance"),
+            ReadOnlySpan<byte>.Empty);
     }
 
     /// <summary>Drop the shared atlas + every cached vertex buffer.</summary>
@@ -281,15 +317,83 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// Used by the skeleton / mesh editors that need to draw arbitrary bones
     /// without going through an <see cref="IWadObject"/> wrapper.
     /// </summary>
+    /// <summary>
+    /// Single-call mesh draw. Internally batches as a 1-instance flush so the
+    /// view cbuffer is updated exactly once. Editors that draw multiple bone
+    /// meshes per frame MUST use <see cref="BeginMeshBatch"/> + per-bone
+    /// <see cref="QueueMesh"/> + <see cref="FlushMeshBatch"/> — calling
+    /// RenderMesh in a tight loop performs N WriteDiscard updates of the same
+    /// dynamic cbuffer, which on D3D11 silently collapses to the value of
+    /// the last update and makes every mesh draw with the same transform.
+    /// </summary>
     public void RenderMesh(ICommandList cl, WadMesh mesh, Matrix4x4 model, Matrix4x4 viewProjection)
+    {
+        BeginMeshBatch();
+        QueueMesh(mesh, model);
+        FlushMeshBatch(cl, viewProjection);
+    }
+
+    /// <summary>
+    /// Tinted single-call variant. Same batching caveat as the untinted
+    /// overload: use the batch API for multi-mesh frames.
+    /// </summary>
+    public void RenderMesh(ICommandList cl, WadMesh mesh, Matrix4x4 model, Matrix4x4 viewProjection, Vector4 tint)
+    {
+        BeginMeshBatch();
+        QueueMesh(mesh, model, tint);
+        FlushMeshBatch(cl, viewProjection);
+    }
+
+    /// <summary>Reset the pending batch — call before queueing any meshes for a frame.</summary>
+    public void BeginMeshBatch()
+    {
+        _pendingDraws.Clear();
+        _pendingInstanceCount = 0;
+    }
+
+    /// <summary>Queue one mesh into the pending batch. White tint (no recolour).</summary>
+    public void QueueMesh(WadMesh mesh, Matrix4x4 model)
+        => QueueMesh(mesh, model, new Vector4(1f, 1f, 1f, 0f));
+
+    /// <summary>
+    /// Queue one mesh into the pending batch with a per-instance tint. The
+    /// shader treats <c>tint.a</c> as a 0..1 replace factor (legacy mesh
+    /// selection convention): a = 0 multiplies, a = 1 hard-replaces vertex
+    /// colour with tint.rgb.
+    /// </summary>
+    public void QueueMesh(WadMesh mesh, Matrix4x4 model, Vector4 tint)
     {
         if (mesh == null) return;
         var per = GetOrBuildMesh(mesh);
         if (per == null || per.VertexCount == 0) return;
 
+        int instanceIndex = _pendingInstanceCount;
+        EnsureBatchCapacity(instanceIndex + 1);
+
+        var data = new InstanceData
+        {
+            Model = Matrix4x4.Transpose(model),
+            Tint  = tint,
+        };
+        MemoryMarshal.Write(_batchCpu.AsSpan(instanceIndex * InstanceStride), ref data);
+
+        _pendingDraws.Add((per.Vb, per.VertexCount, instanceIndex * InstanceStride));
+        _pendingInstanceCount++;
+    }
+
+    /// <summary>
+    /// Upload the accumulated instance data ONCE, then issue one draw per
+    /// queued mesh with the appropriate per-instance offset. Mirrors the
+    /// pattern used by <c>TombEditor.ObjectRenderer</c>.
+    /// </summary>
+    public void FlushMeshBatch(ICommandList cl, Matrix4x4 viewProjection)
+    {
+        if (_pendingInstanceCount == 0) return;
+
+        // Single cbuffer update for the frame's camera VP — no per-bone bake-in.
         var vp = new ViewParams
         {
-            ViewProjection = model * viewProjection,
+            ViewProjection = viewProjection,
             GridLineWidth  = 0f,
             GridEnabled    = 0f,
         };
@@ -299,8 +403,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             cl.UpdateBuffer(_viewCb, 0, span);
         }
 
-        cl.SetPipeline(_pipeline);
+        // Single instance VB upload for ALL queued meshes.
+        cl.UpdateBuffer(_dynamicInstanceVb, 0,
+            new ReadOnlySpan<byte>(_batchCpu, 0, _pendingInstanceCount * InstanceStride));
 
+        cl.SetPipeline(_pipeline);
         _scratchCbuf[0] = _viewCb;
         _scratchTex [0] = _atlas;
         _scratchSamp[0] = _sampler;
@@ -311,10 +418,16 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             Samplers        = _scratchSamp,
         });
 
-        _scratchVbs[0] = new VertexBufferBinding(per.Vb, 0);
-        _scratchVbs[1] = new VertexBufferBinding(_identityInstanceVb, 0);
-        cl.SetVertexBuffers(_scratchVbs);
-        cl.Draw(per.VertexCount, 1);
+        foreach (var d in _pendingDraws)
+        {
+            _scratchVbs[0] = new VertexBufferBinding(d.Vb, 0);
+            _scratchVbs[1] = new VertexBufferBinding(_dynamicInstanceVb, d.InstanceOffset);
+            cl.SetVertexBuffers(_scratchVbs);
+            cl.Draw(d.VertexCount, 1);
+        }
+
+        _pendingDraws.Clear();
+        _pendingInstanceCount = 0;
     }
 
     /// <summary>CPU-side bounding box of the cached mesh, if built.</summary>
@@ -386,35 +499,24 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         var per = GetOrBuild(obj);
         if (per == null || per.VertexCount == 0) return;
 
-        var vp = new ViewParams
+        // IWadObject builds bake all bone transforms into the VB at construction
+        // time, so a single draw with identity model is correct. Still go
+        // through the batch path so the cbuffer update follows the same
+        // one-per-flush discipline as RenderMesh.
+        BeginMeshBatch();
+
+        int instanceIndex = _pendingInstanceCount;
+        EnsureBatchCapacity(instanceIndex + 1);
+        var data = new InstanceData
         {
-            ViewProjection = viewProjection,
-            GridLineWidth  = 0f,
-            GridEnabled    = 0f,
+            Model = Matrix4x4.Transpose(Matrix4x4.Identity),
+            Tint  = new Vector4(1f, 1f, 1f, 0f),
         };
-        unsafe
-        {
-            var span = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));
-            cl.UpdateBuffer(_viewCb, 0, span);
-        }
+        MemoryMarshal.Write(_batchCpu.AsSpan(instanceIndex * InstanceStride), ref data);
+        _pendingDraws.Add((per.Vb, per.VertexCount, instanceIndex * InstanceStride));
+        _pendingInstanceCount++;
 
-        cl.SetPipeline(_pipeline);
-
-        _scratchCbuf[0] = _viewCb;
-        _scratchTex [0] = _atlas;
-        _scratchSamp[0] = _sampler;
-        cl.SetBindings(new Bindings
-        {
-            ConstantBuffers = _scratchCbuf,
-            Textures        = _scratchTex,
-            Samplers        = _scratchSamp,
-        });
-
-        _scratchVbs[0] = new VertexBufferBinding(per.Vb, 0);
-        _scratchVbs[1] = new VertexBufferBinding(_identityInstanceVb, 0);
-        cl.SetVertexBuffers(_scratchVbs);
-
-        cl.Draw(per.VertexCount, 1);
+        FlushMeshBatch(cl, viewProjection);
     }
 
     // ==================================================== Shared atlas state
@@ -744,10 +846,14 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         foreach (var poly in mesh.Polys)
         {
             var ta = poly.Texture;
-            Vector2 uv0 = GetAtlasUv(ta.Texture, ta.TexCoord0);
-            Vector2 uv1 = GetAtlasUv(ta.Texture, ta.TexCoord1);
-            Vector2 uv2 = GetAtlasUv(ta.Texture, ta.TexCoord2);
-            Vector2 uv3 = GetAtlasUv(ta.Texture, ta.TexCoord3);
+            // Half-pixel inset — mirrors legacy ObjectMesh.FromWad2 which calls
+            // poly.CorrectTexCoords(0.5f) to keep bilinear filtering from
+            // sampling the atlas gutter at face edges (the "bordino" effect).
+            var coords = poly.CorrectTexCoords(0.5f);
+            Vector2 uv0 = GetAtlasUv(ta.Texture, coords[0]);
+            Vector2 uv1 = GetAtlasUv(ta.Texture, coords[1]);
+            Vector2 uv2 = GetAtlasUv(ta.Texture, coords[2]);
+            Vector2 uv3 = poly.Shape == WadPolygonShape.Quad ? GetAtlasUv(ta.Texture, coords[3]) : default;
 
             if (poly.Shape == WadPolygonShape.Triangle)
             {
@@ -781,6 +887,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         InvalidateAll();
         if (_sampler.IsValid)            _device.Destroy(_sampler);
         if (_identityInstanceVb.IsValid) _device.Destroy(_identityInstanceVb);
+        if (_dynamicInstanceVb.IsValid)  _device.Destroy(_dynamicInstanceVb);
         if (_viewCb.IsValid)             _device.Destroy(_viewCb);
         if (_pipeline.IsValid)           _device.Destroy(_pipeline);
     }

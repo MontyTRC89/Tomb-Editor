@@ -1316,7 +1316,6 @@ namespace WadTool
 			// 
 			// panelRendering
 			// 
-			panelRendering.AllowRendering = true;
 			panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
 			panelRendering.Location = new System.Drawing.Point(1, 1);
 			panelRendering.Name = "panelRendering";

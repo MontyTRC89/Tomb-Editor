@@ -935,7 +935,7 @@ namespace WadTool
             // Choose behaviour
             if (wadObject is WadStatic)
             {
-                using (var form = new FormStaticEditor(tool, deviceManager, wad, (WadStatic)wadObject))
+                using (var form = new FormStaticEditor(tool, wad, (WadStatic)wadObject))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;

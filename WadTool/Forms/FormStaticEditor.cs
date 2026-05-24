@@ -1,5 +1,4 @@
 ﻿using DarkUI.Forms;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Numerics;
 using System.Windows.Forms;
@@ -19,13 +18,12 @@ namespace WadTool
         private readonly Wad2 _wad;
         private readonly WadStatic _static;
         private readonly WadToolClass _tool;
-        private readonly GraphicsDevice _device;
         private bool _doChangesInLighting = false;
 
         // Info
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic staticMesh)
+        public FormStaticEditor(WadToolClass tool, Wad2 wad, WadStatic staticMesh)
         {
             _doChangesInLighting = false;
 
@@ -33,10 +31,9 @@ namespace WadTool
 
             _wad = wad;
             _tool = tool;
-            _device = deviceManager.___LegacyDevice;
 
             _static = staticMesh.Clone();
-            panelRendering.InitializeRendering(tool, deviceManager);
+            panelRendering.Initialize(tool);
 
             cmbSoundID.Items.Add("Default");
             cmbSoundID.Items.AddRange(WadSounds.GetFormattedList(_tool.ReferenceLevel, _wad.GameVersion).ToArray());

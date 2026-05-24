@@ -178,7 +178,6 @@
             // 
             // panelMesh
             // 
-            panelMesh.AllowRendering = true;
             panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             panelMesh.Location = new System.Drawing.Point(0, 29);

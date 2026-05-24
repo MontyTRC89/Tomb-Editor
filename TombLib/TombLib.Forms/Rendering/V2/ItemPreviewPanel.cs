@@ -10,7 +10,9 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.RenderingV2.Backends.Dx11;
 using TombLib.RenderingV2.Rhi;
+using TombLib.RenderingV2.Text;
 using TombLib.Wad;
+using TextRenderer = TombLib.RenderingV2.Text.TextRenderer;
 
 namespace TombLib.RenderingV2.Preview;
 
@@ -27,6 +29,7 @@ public static class PreviewDevice
     private static bool _ownsDevice;
     private static WadObjectPreviewRenderer? _renderer;
     private static GizmoRenderer? _gizmo;
+    private static TextRenderer? _text;
     private static readonly object _lock = new();
 
     public static IRhiDevice Device
@@ -45,6 +48,12 @@ public static class PreviewDevice
         get { EnsureCreated(); return _gizmo!; }
     }
 
+    /// <summary>Shared V2 text renderer for preview-panel HUD/debug overlays.</summary>
+    public static TextRenderer Text
+    {
+        get { EnsureCreated(); return _text!; }
+    }
+
     /// <summary>
     /// Adopt an existing <see cref="IRhiDevice"/> instead of creating a fresh
     /// one on first use. Called by <see cref="LevelRenderer"/> at construction
@@ -61,6 +70,7 @@ public static class PreviewDevice
             _ownsDevice = false;
             _renderer   = new WadObjectPreviewRenderer(_device);
             _gizmo      = new GizmoRenderer(_device);
+            _text       = new TextRenderer(_device);
         }
     }
 
@@ -74,6 +84,7 @@ public static class PreviewDevice
             _ownsDevice = true;
             _renderer   = new WadObjectPreviewRenderer(_device);
             _gizmo      = new GizmoRenderer(_device);
+            _text       = new TextRenderer(_device);
         }
     }
 
@@ -146,6 +157,10 @@ public abstract class ItemPreviewPanel : Panel
     private const float _rotationStep  = 0.000125f;
 
     private float _lastX, _lastY;
+
+    // Per-frame scratch for text overlays. Cleared at the start of each paint
+    // and refilled by CollectText overrides.
+    private readonly System.Collections.Generic.List<TextLabel> _textLabels = new();
 
     protected ItemPreviewPanel()
     {
@@ -241,6 +256,17 @@ public abstract class ItemPreviewPanel : Panel
         }
 
         var device = PreviewDevice.Device;
+
+        var viewProjection = Camera.GetViewProjectionMatrix(_width, _height);
+
+        // Collect any text overlays. Text atlas updates MUST run before
+        // BeginCommandList — TextRenderer.Prepare does its own one-shot
+        // submit, which would deadlock the frame's command buffer.
+        _textLabels.Clear();
+        CollectText(_textLabels, viewProjection);
+        if (_textLabels.Count > 0)
+            PreviewDevice.Text.Prepare(_textLabels);
+
         var cl = device.BeginCommandList();
 
         var clear = ClearColor;
@@ -260,12 +286,22 @@ public abstract class ItemPreviewPanel : Panel
             ViewportHeight = _height,
         });
 
-        var viewProjection = Camera.GetViewProjectionMatrix(_width, _height);
         RenderContents(cl, viewProjection);
+
+        if (_textLabels.Count > 0)
+            PreviewDevice.Text.Render(cl, _textLabels, viewProjection, _width, _height);
 
         cl.EndPass();
         device.Submit(cl);
         device.Present(_swap);
+    }
+
+    /// <summary>
+    /// Override hook for subclasses that need to draw screen / world text
+    /// labels over the rendered scene. Default implementation emits nothing.
+    /// </summary>
+    protected virtual void CollectText(System.Collections.Generic.List<TextLabel> labels, Matrix4x4 viewProjection)
+    {
     }
 
     /// <summary>
@@ -324,8 +360,11 @@ public abstract class ItemPreviewPanel : Panel
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        if (_currentObject == null) return;
 
+        // Editor panels (skeleton / static / animation / mesh) don't set
+        // CurrentObject — they own their own scene state. Camera nav must
+        // run regardless of whether CurrentObject is populated; otherwise
+        // right/middle drag is a no-op for every editor.
         if (e.Button != MouseButtons.Right && e.Button != MouseButtons.Middle) return;
 
         float dx = (e.X - _lastX) / Height;
