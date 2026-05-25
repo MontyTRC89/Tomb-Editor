@@ -126,7 +126,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     {
         public TextureHandle Texture;
         public byte[]        Bytes = Array.Empty<byte>();
-        public RectPackerSimpleStack? Packer;
+        public RectPackerTree? Packer;
     }
     private readonly List<AtlasSlot> _atlases = new();
     private bool _atlasPoolExhaustedReported;
@@ -637,7 +637,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         var slot = new AtlasSlot
         {
             Bytes  = new byte[AtlasSize * AtlasSize * 4],
-            Packer = new RectPackerSimpleStack(new VectorInt2(AtlasSize, AtlasSize)),
+            // Tree (guillotine) packer -- noticeably tighter than the shelf
+            // packer once textures within a single atlas have mixed sizes,
+            // which means atlas N saturates later and atlas N+1 gets
+            // allocated less often.
+            Packer = new RectPackerTree(new VectorInt2(AtlasSize, AtlasSize)),
         };
 
         // Create the atlas WITHOUT initial data. The Dx11 backend promotes a
