@@ -61,15 +61,34 @@ namespace WadTool
             UpdateTitleBar();
         }
 
+        // Tracks the latest unsaved-state delivered by UnsavedChangesEvent so
+        // UpdateTitleBar() can reproduce the "*" marker without taking a bool
+        // parameter (it's now called from multiple code paths).
+        private bool _titleUnsavedChanges;
+
         /// <summary>
-        /// Rebuild the title bar: "WadTool  [Backend]". The constructor forces
-        /// <see cref="PreviewDevice.Device"/> creation up-front so the backend
-        /// suffix is always present from the first paint of the form's title.
+        /// Rebuild the title bar: "WadTool - &lt;WadName&gt;[*]  [Backend]".
+        /// Single source of truth for <see cref="Form.Text"/> — called both at
+        /// startup and whenever <see cref="UpdateSaveUI"/> runs, so the
+        /// backend suffix survives WAD loads / saves.
         /// </summary>
         private void UpdateTitleBar()
         {
+            string text = "WadTool";
+
+            if (_tool?.DestinationWad != null)
+            {
+                var newOrImported = string.IsNullOrEmpty(_tool.DestinationWad.FileName);
+                text += " - ";
+                text += newOrImported ? "Untitled" : _tool.DestinationWad.FileName;
+                if (_titleUnsavedChanges) text += "*";
+            }
+
             string backend = PreviewDevice.BackendName;
-            Text = "WadTool" + (string.IsNullOrEmpty(backend) ? "" : "  [" + backend + "]");
+            if (!string.IsNullOrEmpty(backend))
+                text += "  [" + backend + "]";
+
+            Text = text;
         }
 
         private class InitEvent : IEditorEvent { };
@@ -217,15 +236,12 @@ namespace WadTool
 
         private void UpdateSaveUI(bool hasUnsavedChanges)
         {
-            Text = "WadTool";
+            _titleUnsavedChanges = hasUnsavedChanges;
+            UpdateTitleBar();
+
             if (_tool?.DestinationWad != null)
             {
                 var newOrImported = String.IsNullOrEmpty(_tool.DestinationWad.FileName);
-
-                Text += " - ";
-                Text += newOrImported ? "Untitled" : _tool.DestinationWad.FileName;
-                Text += hasUnsavedChanges ? "*" : "";
-
                 var reallyHasUnsavedChanges = newOrImported || hasUnsavedChanges;
 
                 if (reallyHasUnsavedChanges)

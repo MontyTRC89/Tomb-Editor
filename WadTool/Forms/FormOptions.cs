@@ -30,9 +30,14 @@ namespace WadTool
         private void AddBackendSelector()
         {
             // Drop the combo + label/hint inside the System groupbox
-            // (darkGroupBox1). Grow the box to fit the two new rows.
+            // (darkGroupBox1). Grow the box AND its containing panel — the
+            // panel has fixed Size in the designer (no AutoSize), so without
+            // also bumping its height the new combo would be clipped below
+            // the visible area.
             int backendY = darkGroupBox1.Height + 4;
             darkGroupBox1.Height += 56;
+            if (darkGroupBox1.Parent != null)
+                darkGroupBox1.Parent.Height += 56;
 
             var cmbBackend = new DarkUI.Controls.DarkComboBox
             {
