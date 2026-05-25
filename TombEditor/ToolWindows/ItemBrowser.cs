@@ -26,10 +26,10 @@ namespace TombEditor.ToolWindows
             lblFromWad.ForeColor = DarkUI.Config.Colors.DisabledText;
         }
 
-        public void InitializeRendering(RenderingDevice device)
+        public void InitializeRendering()
         {
-            // preview panel lazily creates its own D3D device + swapchain
-            // on first paint; the legacy device argument is ignored.
+            // preview panel lazily creates its own device + swapchain on
+            // first paint — nothing to do here.
         }
 
         protected override void Dispose(bool disposing)

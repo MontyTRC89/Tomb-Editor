@@ -67,17 +67,11 @@ namespace TombEditor.Forms
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
             Application.AddMessageFilter(dockArea.DockResizeFilter);
 
-            // Initialize panels. We deliberately do NOT read
-            // _editor.RenderingDevice here: that getter forces the lazy
-            // DeviceManager.DefaultDeviceManager to allocate a Dx11 device
-            // + DXGI factory at startup, which on Intel UHD then prevents
-            // the Vulkan WSI from ever attaching a swapchain
-            // (ErrorNativeWindowInUseKhr). The panels (MainView ->
-            // Panel3D, ItemBrowser, ImportedGeometryBrowser) all accept
-            // null and lazily create their own device on first paint.
-            GetWindow<MainView>().InitializeRendering(null);
-            GetWindow<ItemBrowser>().InitializeRendering(null);
-            GetWindow<ImportedGeometryBrowser>().InitializeRendering(null);
+            // Initialize panels. Each panel lazily creates its own V2 device
+            // on first paint, so there's no device to pass through.
+            GetWindow<MainView>().InitializeRendering();
+            GetWindow<ItemBrowser>().InitializeRendering();
+            GetWindow<ImportedGeometryBrowser>().InitializeRendering();
 
             // Now that MainView -> panel3D -> LevelRenderer exists, refresh
             // the title bar to append the active backend ("[Vulkan]" /

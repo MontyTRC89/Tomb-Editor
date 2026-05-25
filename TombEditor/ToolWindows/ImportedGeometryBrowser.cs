@@ -22,10 +22,10 @@ namespace TombEditor.ToolWindows
             _editor.EditorEventRaised += EditorEventRaised;
         }
 
-        public void InitializeRendering(RenderingDevice device)
+        public void InitializeRendering()
         {
             // preview panel lazily creates its own device + swapchain on
-            // first paint; the legacy device argument is ignored.
+            // first paint — nothing to do here.
         }
 
         protected override void Dispose(bool disposing)

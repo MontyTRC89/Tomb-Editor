@@ -1,56 +1,23 @@
-﻿using System;
-using System.ComponentModel;
+using System;
 using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
-using TombLib.Rendering;
 
 namespace TombLib.Controls
 {
-    public enum ObjectRenderingQuality
-    {
-        High,
-        Medium,
-        Low,
-        Undefined
-    }
-
+    /// <summary>
+    /// Plain WinForms <see cref="Panel"/> base that legacy editor panels still
+    /// inherit from. Provides the cursor-warping helper used during
+    /// right/middle-mouse camera drag, plus an <see cref="AllowRendering"/>
+    /// flag the editor sets while in modal flows to suppress WM_PAINT.
+    /// </summary>
     public class RenderingPanel : Panel
     {
-        public event EventHandler Draw;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public RenderingSwapChain SwapChain { get; private set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public RenderingDevice Device { get; private set; }
-
         public bool AllowRendering { get; set; } = true;
 
         public RenderingPanel()
         {
             BorderStyle = BorderStyle.None;
-        }
-
-        public virtual void InitializeRendering(RenderingDevice device, bool antialias = false, ObjectRenderingQuality objectQuality = ObjectRenderingQuality.Undefined)
-        {
-            // A null device is a deliberate signal from the V2 init path
-            // that the legacy DX11 backend is not available in this process
-            // (e.g. running on Intel UHD where Vulkan WSI refuses to coexist
-            // with DXGI). Skip the legacy swapchain allocation so the panel
-            // simply stays blank — V2-aware derived classes own their own
-            // rendering pipeline and don't read Device / SwapChain anyway.
-            if (device == null) return;
-
-            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
-            {
-                Device = device;
-                SwapChain = device.CreateSwapChain(new RenderingSwapChain.Description
-                {
-                    Size = new VectorInt2(ClientSize.Width, ClientSize.Height),
-                    WindowHandle = Handle,
-                    Antialias = antialias
-                });
-            }
         }
 
         public Vector2 Delta(Point currentPosition, Point previousMousePosition)
@@ -86,47 +53,6 @@ namespace TombLib.Controls
             return delta;
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-            if (SwapChain != null && SwapChain.RenderException == null && ClientSize.Width > 0 && ClientSize.Height > 0)
-            {
-                SwapChain.Resize(new VectorInt2(ClientSize.Width, ClientSize.Height));
-                SwapChain.Clear(ClearColor);
-                SwapChain.Present();
-                Invalidate();
-            }
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null || SwapChain.RenderException != null)
-                e.Graphics.Clear(Parent.BackColor);
-            // Don't paint the background if being rendered
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            if (LicenseManager.UsageMode != LicenseUsageMode.Runtime || Device == null || SwapChain == null)
-            {
-                e.Graphics.DrawString("Rendering: Not Available in form designer!", Font, Brushes.DarkGray, ClientRectangle,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                return;
-            }
-
-            if (SwapChain.RenderException != null)
-            {
-                e.Graphics.DrawString("Rendering: Fatal error has occured." + Environment.NewLine + "Save the log file and report this error to the dev team.", Font, Brushes.DarkGray, ClientRectangle,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                OnDraw();
-                return;
-            }
-
-            SwapChain.Clear(ClearColor);
-            OnDraw();
-            SwapChain.Present();
-        }
-
         protected override void WndProc(ref Message m)
         {
             const int WM_PAINT = 0x000F;
@@ -137,18 +63,6 @@ namespace TombLib.Controls
             base.WndProc(ref m);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            if (disposing)
-                SwapChain?.Dispose();
-        }
-
-        protected virtual void OnDraw()
-        {
-            Draw?.Invoke(this, EventArgs.Empty);
-        }
-
-        protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1.0f); // "Cornflower blue" by default
+        protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1.0f);
     }
 }

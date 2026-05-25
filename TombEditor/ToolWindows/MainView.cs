@@ -43,9 +43,9 @@ namespace TombEditor.ToolWindows
             flybyTimelineView.Initialize(this);
         }
 
-        public void InitializeRendering(RenderingDevice device)
+        public void InitializeRendering()
         {
-            panel3D.InitializeRendering(device, _editor.Configuration.Rendering3D_Antialias, (TombLib.Controls.ObjectRenderingQuality)_editor.Configuration.Rendering3D_ObjectQuality);
+            panel3D.InitializeRendering();
         }
 
         /// <summary>Active backend name (Vulkan / OpenGL / DirectX 11), or null when isn't initialised yet.</summary>

@@ -47,7 +47,7 @@
     <MakeDir Condition="'$(FxcPath)' == ''" Directories="$(IntermediateOutputPath)" />
 
     <Exec Condition="'$(FxcPath)' == ''"
-          Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\TombLib.Rendering\ResolveFxcPath.ps1&quot; -BinRoot &quot;$(_WindowsKitsBinDir)&quot; -Architecture &quot;$(_FxcArchitecture)&quot; &gt; &quot;$(IntermediateOutputPath)fxc.v2.path&quot;"
+          Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)ResolveFxcPath.ps1&quot; -BinRoot &quot;$(_WindowsKitsBinDir)&quot; -Architecture &quot;$(_FxcArchitecture)&quot; &gt; &quot;$(IntermediateOutputPath)fxc.v2.path&quot;"
           IgnoreExitCode="true" />
 
     <ReadLinesFromFile File="$(IntermediateOutputPath)fxc.v2.path" Condition="'$(FxcPath)' == '' and Exists('$(IntermediateOutputPath)fxc.v2.path')">
