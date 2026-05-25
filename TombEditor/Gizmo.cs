@@ -1,5 +1,4 @@
-﻿using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -13,17 +12,9 @@ namespace TombEditor
     {
         private readonly Editor _editor;
 
-        public Gizmo(Effect effect)
-            : base(DeviceManager.DefaultDeviceManager.___LegacyDevice, effect)
-        {
-            _editor = Editor.Instance;
-        }
-
-        // Headless constructor for the renderer: skips every legacy
-        // GraphicsDevice / Effect allocation. The GizmoRenderer draws the
-        // gizmo itself; this instance is here only for picking + drag math.
-        public Gizmo()
-            : base()
+        // Headless: visuals are drawn by the V2 GizmoRenderer; this instance
+        // only feeds picking + drag math.
+        public Gizmo() : base()
         {
             _editor = Editor.Instance;
         }
