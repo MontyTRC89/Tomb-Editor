@@ -86,7 +86,8 @@ public unsafe sealed partial class GLDevice
                             or UniformType.IntSampler2D or UniformType.UnsignedIntSampler2D)
             {
                 int location = Gl.GetUniformLocation(program, uniformName);
-                if (location < 0) continue;
+                if (location < 0)
+                    continue;
                 Gl.Uniform1(location, nextTextureUnit);
                 samplerLocations[nextTextureUnit] = location;
                 nextTextureUnit++;

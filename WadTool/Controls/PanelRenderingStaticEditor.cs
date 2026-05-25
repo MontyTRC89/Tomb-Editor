@@ -102,13 +102,13 @@ namespace WadTool.Controls
 
         // ------------------------------------------------ Rendering
 
-        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1f);
+        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
-        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50f;
-        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f;
-        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
-        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
-        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50.0f;
+        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6.0f;
+        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800.0f;
+        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500.0f;
+        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4.0f;
 
         protected override void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
         {
@@ -129,10 +129,10 @@ namespace WadTool.Controls
 
             if (DrawGrid)
             {
-                // Legacy GridPlane(8, 4) → 8×4 cells over [-1..+1]; preview
+                // Legacy GridPlane(8, 4) -> 8x4 cells over [-1..+1]; preview
                 // camera works in WAD units so scale up to the same on-screen
                 // density as the skeleton/main preview panels.
-                _lines.AddGridXZ(size: 4096f, cells: 16, color: 0xFF_FF_FF_FFu);
+                _lines.AddGridXZ(size: 4096.0f, cells: 16, color: 0xFF_FF_FF_FFu);
             }
 
             if (Static != null)
@@ -147,16 +147,16 @@ namespace WadTool.Controls
                     foreach (var light in Static.Lights)
                     {
                         // Little marker sphere at the light position (yellow).
-                        _lines.AddWireSphere(light.Position, radius: 128f, segments: 16,
+                        _lines.AddWireSphere(light.Position, radius: 128.0f, segments: 16,
                                               color: 0xFF_00_FF_FFu); // RGBA: R=FF, G=FF (yellow)
 
-                        // Selected light's radius (green) — legacy uses
+                        // Selected light's radius (green) -- legacy uses
                         // light.Radius * SectorSize (1024) for the visible
                         // sphere extent.
                         if (SelectedLight == light)
                         {
                             _lines.AddWireSphere(light.Position,
-                                                  radius: 1024f * light.Radius,
+                                                  radius: 1024.0f * light.Radius,
                                                   segments: 24,
                                                   color: 0xFF_00_FF_00u);
                         }
@@ -171,7 +171,8 @@ namespace WadTool.Controls
                     {
                         var rawNormal = Static.Mesh.VertexNormals[i];
                         float len = rawNormal.Length();
-                        if (len <= 1e-6f) continue;
+                        if (len <= 1e-6f)
+                            continue;
                         var p = Vector3.Transform(Static.Mesh.VertexPositions[i], world);
                         var n = Vector3.TransformNormal(rawNormal / len, world);
                         _lines.AddLine(p, p + n * 32.0f, 0xFF_FF_FF_FFu, 0xFF_FF_FF_FFu);
@@ -198,16 +199,16 @@ namespace WadTool.Controls
         protected override void CollectText(List<TextLabel> labels, Matrix4x4 viewProjection)
         {
             // Pin position / rotation / scale to the top-left corner of the
-            // panel — matches the legacy debug overlay.
+            // panel -- matches the legacy debug overlay.
             string msg =
                 "Position: " + StaticPosition +
                 "\nRotation: " + StaticRotation.X * (180.0 / Math.PI) +
                 "\nScale: " + StaticScale;
             labels.Add(TextLabel.Screen(msg,
                 screenPosition: new Vector2(10, 10),
-                color: new Vector4(1f, 1f, 1f, 1f),
+                color: new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
                 background: Configuration?.Rendering3D_DrawFontOverlays ?? false,
-                alignment: new Vector2(0f, 0f)));
+                alignment: new Vector2(0.0f, 0.0f)));
         }
 
         // ------------------------------------------------ Mouse + picking
@@ -253,7 +254,7 @@ namespace WadTool.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             // Forward to base FIRST so the inherited _lastX/_lastY are always
-            // primed — otherwise the first right/middle drag delta after a
+            // primed -- otherwise the first right/middle drag delta after a
             // gizmo-pick (early-return below) is computed against stale values.
             base.OnMouseDown(e);
             _lastX = e.X;
@@ -287,12 +288,12 @@ namespace WadTool.Controls
                         }
                     }
 
-                    // Light picking — sphere test against each light marker.
+                    // Light picking -- sphere test against each light marker.
                     float minDistance = float.MaxValue;
                     SelectedLight = null;
                     foreach (var light in Static.Lights)
                     {
-                        if (Collision.RayIntersectsSphere(ray, new BoundingSphere(light.Position, 128f),
+                        if (Collision.RayIntersectsSphere(ray, new BoundingSphere(light.Position, 128.0f),
                                                           out float distance))
                         {
                             if (distance <= minDistance)
@@ -404,7 +405,7 @@ namespace WadTool.Controls
                 Static.Mesh.VertexColors.Add(new Vector3(Math.Min(newShade, 1.0f)));
             }
 
-            // The cached vertex buffer baked the old colours — invalidate so
+            // The cached vertex buffer baked the old colours -- invalidate so
             // the next paint re-uploads with the new shade.
             PreviewDevice.Renderer.InvalidateMesh(Static.Mesh);
 

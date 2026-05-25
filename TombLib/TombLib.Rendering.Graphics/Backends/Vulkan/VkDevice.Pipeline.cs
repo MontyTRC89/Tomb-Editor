@@ -12,7 +12,7 @@ namespace TombLib.Rendering.Graphics.Backends.Vulkan;
 public unsafe sealed partial class VkDevice
 {
     // Cache of render passes keyed by attachment shape. A pipeline needs a
-    // "compatible" render pass at creation time and BeginPass needs one too —
+    // "compatible" render pass at creation time and BeginPass needs one too --
     // keying on these values yields one VkRenderPass per shape, reused
     // everywhere.
     internal readonly Dictionary<(VkFormat Color, VkFormat Depth, int Samples, bool Resolve), RenderPass>
@@ -37,7 +37,7 @@ public unsafe sealed partial class VkDevice
             Format         = colorFormat,
             Samples        = VkMapping.ToSampleCount(samples),
             LoadOp         = AttachmentLoadOp.Clear,
-            // No point storing the MSAA target when it gets resolved — the
+            // No point storing the MSAA target when it gets resolved -- the
             // resolve attachment is what gets presented.
             StoreOp        = multisampledResolve ? AttachmentStoreOp.DontCare : AttachmentStoreOp.Store,
             StencilLoadOp  = AttachmentLoadOp.DontCare,
@@ -88,7 +88,7 @@ public unsafe sealed partial class VkDevice
         };
 
         // External dependencies so layout transitions happen at the right
-        // pipeline stage — one for colour, one for depth.
+        // pipeline stage -- one for colour, one for depth.
         var dependencies = stackalloc SubpassDependency[2];
         dependencies[0] = new SubpassDependency
         {
@@ -128,7 +128,7 @@ public unsafe sealed partial class VkDevice
 
     public PipelineHandle CreatePipeline(PipelineDesc desc)
     {
-        // ---- Shader stages — load SPIR-V into shader modules ----
+        // ---- Shader stages -- load SPIR-V into shader modules ----
         byte[] vertexShaderSpirv = desc.VertexShader.SpirvBytes
             ?? throw new InvalidOperationException("VertexShader.SpirvBytes is null. Did dxc produce the .spv?");
         byte[] pixelShaderSpirv = desc.FragmentShader.SpirvBytes
@@ -159,7 +159,7 @@ public unsafe sealed partial class VkDevice
             },
         };
 
-        // ---- Vertex input — bindings + attributes from PipelineDesc ----
+        // ---- Vertex input -- bindings + attributes from PipelineDesc ----
         var vertexBindings = new VertexInputBindingDescription[desc.VertexBufferLayouts.Length];
         for (int i = 0; i < desc.VertexBufferLayouts.Length; i++)
         {
@@ -230,7 +230,7 @@ public unsafe sealed partial class VkDevice
             var rasterizer = desc.Rasterizer;
             // With DXC -fvk-invert-y the SV_Position.y is negated in clip
             // space, which after the standard Vulkan viewport transform
-            // produces the same SCREEN positions as DX11 — and the same
+            // produces the same SCREEN positions as DX11 -- and the same
             // winding from the rasterizer's POV. So FrontFace matches the RHI
             // request 1:1, with no inversion.
             var rasterizationState = new PipelineRasterizationStateCreateInfo
@@ -292,7 +292,7 @@ public unsafe sealed partial class VkDevice
                 PAttachments    = &blendAttachment,
             };
 
-            // Dynamic state — viewport + scissor are set per draw.
+            // Dynamic state -- viewport + scissor are set per draw.
             var dynamicStates = stackalloc DynamicState[2] { DynamicState.Viewport, DynamicState.Scissor };
             var dynamicState  = new PipelineDynamicStateCreateInfo
             {
@@ -388,6 +388,6 @@ public unsafe sealed partial class VkDevice
     {
         if (pipeline.Handle.Handle != 0)
             Api.DestroyPipeline(Device, pipeline.Handle, null);
-        // Layout is shared (SharedPipelineLayout) — not destroyed here.
+        // Layout is shared (SharedPipelineLayout) -- not destroyed here.
     }
 }

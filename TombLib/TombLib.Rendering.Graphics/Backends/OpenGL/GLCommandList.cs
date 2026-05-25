@@ -6,7 +6,7 @@ using TombLib.Rendering.Graphics.Rhi;
 namespace TombLib.Rendering.Graphics.Backends.OpenGL;
 
 /// <summary>
-/// Immediate-mode command "list" — every method directly issues glXxx calls
+/// Immediate-mode command "list" -- every method directly issues glXxx calls
 /// on the active GL context. Kept for API parity with the deferred backends
 /// (DX11 deferred context, Vulkan command buffer).
 /// </summary>
@@ -30,7 +30,7 @@ public unsafe sealed class GLCommandList : ICommandList
         _passSwapchain = _device.Swapchains[desc.Swapchain.Id];
 
         // Make the GL context current on THIS swapchain's HDC. Without this
-        // every glXxx call goes to whatever HDC was last bound — typically the
+        // every glXxx call goes to whatever HDC was last bound -- typically the
         // most-recently-created swapchain (often an item-preview panel), not
         // the one the caller actually wants to draw into.
         if (_passSwapchain.Hdc != IntPtr.Zero)
@@ -125,38 +125,41 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void SetBindings(in Bindings bindings)
     {
-        // Constant buffers → glBindBufferBase(GL_UNIFORM_BUFFER, slot, buffer).
+        // Constant buffers -> glBindBufferBase(GL_UNIFORM_BUFFER, slot, buffer).
         if (!bindings.ConstantBuffers.IsEmpty)
         {
             for (int i = 0; i < bindings.ConstantBuffers.Length && i < RhiLimits.MaxConstantBuffers; i++)
             {
-                if (!bindings.ConstantBuffers[i].IsValid) continue;
+                if (!bindings.ConstantBuffers[i].IsValid)
+                    continue;
                 var buffer = _device.Buffers[bindings.ConstantBuffers[i].Id];
                 _device.Gl.BindBufferBase(BufferTargetARB.UniformBuffer, (uint)i, buffer.Handle);
             }
         }
 
-        // Textures → glBindTextureUnit(unit, texture).
+        // Textures -> glBindTextureUnit(unit, texture).
         if (!bindings.Textures.IsEmpty)
         {
             for (int i = 0; i < bindings.Textures.Length && i < RhiLimits.MaxTextureBindings; i++)
             {
-                if (!bindings.Textures[i].IsValid) continue;
+                if (!bindings.Textures[i].IsValid)
+                    continue;
                 var texture = _device.Textures[bindings.Textures[i].Id];
                 _device.Gl.BindTextureUnit((uint)i, texture.Handle);
             }
         }
 
-        // Samplers → glBindSampler(unit, sampler). Sampler[i] binds to texture
-        // unit i — matching CreatePipeline, where the first sampler uniform is
-        // assigned to unit 0, the second to unit 1, etc. The HLSL→SPIR-V→GLSL
+        // Samplers -> glBindSampler(unit, sampler). Sampler[i] binds to texture
+        // unit i -- matching CreatePipeline, where the first sampler uniform is
+        // assigned to unit 0, the second to unit 1, etc. The HLSL->SPIR-V->GLSL
         // pipeline produces one combined sampler per texture, so a 1:1 mapping
         // is correct.
         if (!bindings.Samplers.IsEmpty)
         {
             for (int i = 0; i < bindings.Samplers.Length && i < RhiLimits.MaxSamplerBindings; i++)
             {
-                if (!bindings.Samplers[i].IsValid) continue;
+                if (!bindings.Samplers[i].IsValid)
+                    continue;
                 var sampler = _device.Samplers[bindings.Samplers[i].Id];
                 _device.Gl.BindSampler((uint)i, sampler.Handle);
             }
@@ -165,7 +168,8 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void SetVertexBuffers(ReadOnlySpan<VertexBufferBinding> buffers)
     {
-        if (buffers.IsEmpty || _boundPipeline == null) return;
+        if (buffers.IsEmpty || _boundPipeline == null)
+            return;
         for (int i = 0; i < buffers.Length && i < RhiLimits.MaxVertexBuffers; i++)
         {
             var binding = buffers[i];
@@ -177,7 +181,8 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, int offsetBytes = 0)
     {
-        if (_boundPipeline == null) return;
+        if (_boundPipeline == null)
+            return;
         uint handle = buffer.IsValid ? _device.Buffers[buffer.Id].Handle : 0;
         _device.Gl.VertexArrayElementBuffer(_boundPipeline.Vao, handle);
         _indexFormat = format;
@@ -186,13 +191,13 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void PushConstants(ReadOnlySpan<byte> data)
     {
-        // The GL backend doesn't emulate push constants — the V2 renderer
+        // The GL backend doesn't emulate push constants -- the V2 renderer
         // never calls PushConstants (it uses uniform buffers instead), so this
         // stays a no-op until it's actually needed.
         _ = data;
     }
 
-    public void SetViewport(int x, int y, int width, int height, float minDepth = 0f, float maxDepth = 1f)
+    public void SetViewport(int x, int y, int width, int height, float minDepth = 0.0f, float maxDepth = 1.0f)
     {
         _device.Gl.Viewport(x, y, (uint)width, (uint)height);
         _device.Gl.DepthRange(minDepth, maxDepth);
@@ -205,7 +210,8 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void Draw(int vertexCount, int instanceCount = 1, int firstVertex = 0, int firstInstance = 0)
     {
-        if (_boundPipeline == null) return;
+        if (_boundPipeline == null)
+            return;
         if (instanceCount <= 1 && firstInstance == 0)
         {
             _device.Gl.DrawArrays(_boundPipeline.GlTopology, firstVertex, (uint)vertexCount);
@@ -220,7 +226,8 @@ public unsafe sealed class GLCommandList : ICommandList
     public void DrawIndexed(int indexCount, int instanceCount = 1, int firstIndex = 0,
                             int baseVertex = 0, int firstInstance = 0)
     {
-        if (_boundPipeline == null) return;
+        if (_boundPipeline == null)
+            return;
         var indexType = GLMapping.ToGl(_indexFormat);
         int indexSize = _indexFormat == IndexFormat.U16 ? 2 : 4;
         nint offset   = _indexOffset + firstIndex * indexSize;
@@ -237,9 +244,10 @@ public unsafe sealed class GLCommandList : ICommandList
 
     public void UpdateBuffer(BufferHandle buffer, int offsetBytes, ReadOnlySpan<byte> data)
     {
-        if (data.IsEmpty) return;
+        if (data.IsEmpty)
+            return;
         var bufferRes = _device.Buffers[buffer.Id];
-        // glNamedBufferSubData is a synchronous, explicit upload — the driver
+        // glNamedBufferSubData is a synchronous, explicit upload -- the driver
         // handles GPU synchronisation for us, so it avoids the stale-frame
         // issues that persistent COHERENT mapping caused.
         fixed (byte* src = data)

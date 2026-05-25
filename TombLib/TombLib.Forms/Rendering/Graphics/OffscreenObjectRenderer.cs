@@ -28,7 +28,7 @@ public sealed class OffscreenObjectRenderer : IDisposable
     private TextureHandle _depth;
     private int _size;
 
-    private static readonly Vector4 _defaultClear = new(0.392f, 0.584f, 0.929f, 1f);
+    private static readonly Vector4 _defaultClear = new(0.392f, 0.584f, 0.929f, 1.0f);
 
     public OffscreenObjectRenderer()
     {
@@ -38,14 +38,15 @@ public sealed class OffscreenObjectRenderer : IDisposable
 
     public ImageC RenderThumbnail(IWadObject? obj, TRVersion.Game gameVersion, Vector4 backColor, int size = 128)
     {
-        if (obj == null || size <= 0) return ImageC.CreateNew(Math.Max(1, size), Math.Max(1, size));
+        if (obj == null || size <= 0)
+            return ImageC.CreateNew(Math.Max(1, size), Math.Max(1, size));
 
         EnsureTargets(size);
 
         // Camera framed on the object.
         var (center, radius) = WadObjectPreviewHelper.ComputeBoundingSphere(obj);
-        radius = Math.Max(radius * 1.15f, 50f);
-        const float Fov = 50f;
+        radius = Math.Max(radius * 1.15f, 50.0f);
+        const float Fov = 50.0f;
         var camera = new ArcBallCamera(center,
             MathC.DegToRad(35), MathC.DegToRad(35),
             -(float)Math.PI / 2, (float)Math.PI / 2,
@@ -64,7 +65,7 @@ public sealed class OffscreenObjectRenderer : IDisposable
             DepthLoadOp      = LoadOp.Clear,
             DepthStoreOp     = StoreOp.Store,
             ClearColors      = new[] { backColor },
-            ClearDepth       = 1f,
+            ClearDepth       = 1.0f,
             ViewportWidth    = size,
             ViewportHeight   = size,
         });
@@ -74,7 +75,7 @@ public sealed class OffscreenObjectRenderer : IDisposable
         cl.EndPass();
         _device.Submit(cl);
 
-        // Sync readback — small (128×128×4 = 64 KB typical) so the stall is
+        // Sync readback -- small (128x128x4 = 64 KB typical) so the stall is
         // brief. The Map call is mandatory because WPF needs a frozen
         // BitmapSource on the UI thread.
         byte[] bgraBytes = _device.ReadTexture(_color);
@@ -83,7 +84,8 @@ public sealed class OffscreenObjectRenderer : IDisposable
 
     private void EnsureTargets(int size)
     {
-        if (_size == size && _color.IsValid && _depth.IsValid) return;
+        if (_size == size && _color.IsValid && _depth.IsValid)
+            return;
 
         if (_color.IsValid) _device.Destroy(_color);
         if (_depth.IsValid) _device.Destroy(_depth);

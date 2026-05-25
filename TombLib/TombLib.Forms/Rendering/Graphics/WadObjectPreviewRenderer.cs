@@ -19,7 +19,7 @@ namespace TombLib.Rendering.Graphics.Preview;
 /// Builds the per-bone world transforms for a moveable's first-keyframe pose.
 /// The bone hierarchy in TR-format WADs is encoded in <see cref="WadBone.OpCode"/>
 /// + the bone order in <see cref="WadMoveable.Bones"/>, NOT in
-/// <see cref="WadBone.Parent"/> (which is null on TR-converted moveables —
+/// <see cref="WadBone.Parent"/> (which is null on TR-converted moveables --
 /// only Wad2-format moveables populate Parent directly). The legacy
 /// AnimatedModel.BuildSkeleton replays the same stack walk; we do the
 /// equivalent here so renderers don't need a legacy AnimatedModel.
@@ -30,11 +30,12 @@ public static class WadMoveablePose
     {
         int n = mv.Bones.Count;
         var transforms = new Matrix4x4[n];
-        // Default-initialised Matrix4x4 is all zeros, not identity — anything
+        // Default-initialised Matrix4x4 is all zeros, not identity -- anything
         // we don't explicitly fill in must default to identity so we don't
         // crush vertices to (0,0,0) on malformed OpCode streams.
         for (int i = 0; i < n; i++) transforms[i] = Matrix4x4.Identity;
-        if (n == 0) return transforms;
+        if (n == 0)
+            return transforms;
 
         // Root.
         Matrix4x4 rootRot = (frame != null && 0 < frame.Angles.Count)
@@ -88,7 +89,7 @@ public static class WadMoveablePose
 /// renderer for previewing a single <see cref="IWadObject"/>. Used by both
 /// the item-browser preview panel and the content-browser thumbnail capturer.
 ///
-/// <para>Holds ONE shared B8G8R8A8 atlas across every cached object — same
+/// <para>Holds ONE shared B8G8R8A8 atlas across every cached object -- same
 /// approach as the legacy <c>WadRenderer.AllocateTexture</c>. New textures
 /// are shelf-packed lazily and uploaded with <see cref="IRhiDevice.UpdateTexture"/>
 /// (region-only) instead of re-creating a per-object texture on each
@@ -96,9 +97,9 @@ public static class WadMoveablePose
 /// texture GPU traffic (here) and N MB / object (the old per-object atlas
 /// approach).</para>
 ///
-/// <para>Hot paths use SIMD where it pays off: atlas row blits and CPU→CPU
+/// <para>Hot paths use SIMD where it pays off: atlas row blits and CPU->CPU
 /// region extracts go through AVX2/SSE2 stores (32B/16B per iter); the
-/// per-vertex color pack uses SSE2 saturating int→byte packs (~5 ops vs ~15
+/// per-vertex color pack uses SSE2 saturating int->byte packs (~5 ops vs ~15
 /// scalar). Callers own the <see cref="IRhiDevice"/> and the active render
 /// pass.</para>
 /// </summary>
@@ -111,13 +112,13 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     private const int WhitePixelBlockSize = 3;
 
     private TextureHandle _atlas;
-    private byte[]?       _atlasBytes;          // CPU mirror — needed to extract
+    private byte[]?       _atlasBytes;          // CPU mirror -- needed to extract
                                                  // freshly-blitted regions for
                                                  // partial GPU upload.
     private RectPackerSimpleStack? _packer;
     private readonly Dictionary<Texture, VectorInt2> _texturePositions = new();
-    private VectorInt2 _whitePixel;             // (1,1) — middle of the
-                                                 // reserved 3×3 white block.
+    private VectorInt2 _whitePixel;             // (1,1) -- middle of the
+                                                 // reserved 3x3 white block.
 
     // ---- Per-object cache (just the vertex buffer; atlas is shared) -------
 
@@ -129,7 +130,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     }
     private readonly Dictionary<IWadObject, PerObject> _cache = new();
     // Standalone mesh cache for editor scenes (skeleton / mesh editors) that
-    // render WadMeshes directly with per-call transforms — not associated to
+    // render WadMeshes directly with per-call transforms -- not associated to
     // any single IWadObject. Lives in the same shared atlas as _cache.
     private readonly Dictionary<WadMesh, PerObject>     _meshCache = new();
 
@@ -228,7 +229,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         id[0] = new InstanceData
         {
             Model = Matrix4x4.Transpose(Matrix4x4.Identity),
-            Tint  = new Vector4(1f, 1f, 1f, 1f),
+            Tint  = new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
         };
         _identityInstanceVb = device.CreateBuffer(
             new BufferDesc(
@@ -244,7 +245,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         _sampler = device.CreateSampler(new SamplerDesc(
             FilterMode.Linear, AddressMode.Clamp, maxAnisotropy: 1));
 
-        // Dynamic instance buffer used by mesh batches. Resized on demand —
+        // Dynamic instance buffer used by mesh batches. Resized on demand --
         // start at 16 instances so single-mesh draws don't pay any growth cost.
         _dynamicInstanceCapacity = 16;
         _dynamicInstanceVb = device.CreateBuffer(
@@ -262,7 +263,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         if (_batchCpu.Length < needed)
             Array.Resize(ref _batchCpu, Math.Max(needed, _batchCpu.Length * 2));
 
-        if (_dynamicInstanceCapacity >= instanceCount) return;
+        if (_dynamicInstanceCapacity >= instanceCount)
+            return;
         int newCap = _dynamicInstanceCapacity;
         while (newCap < instanceCount) newCap *= 2;
         if (_dynamicInstanceVb.IsValid) _device.Destroy(_dynamicInstanceVb);
@@ -302,7 +304,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// </summary>
     public void InvalidateMesh(WadMesh mesh)
     {
-        if (mesh == null) return;
+        if (mesh == null)
+            return;
         if (_meshCache.TryGetValue(mesh, out var per))
         {
             if (per.Vb.IsValid) _device.Destroy(per.Vb);
@@ -321,7 +324,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// Single-call mesh draw. Internally batches as a 1-instance flush so the
     /// view cbuffer is updated exactly once. Editors that draw multiple bone
     /// meshes per frame MUST use <see cref="BeginMeshBatch"/> + per-bone
-    /// <see cref="QueueMesh"/> + <see cref="FlushMeshBatch"/> — calling
+    /// <see cref="QueueMesh"/> + <see cref="FlushMeshBatch"/> -- calling
     /// RenderMesh in a tight loop performs N WriteDiscard updates of the same
     /// dynamic cbuffer, which on D3D11 silently collapses to the value of
     /// the last update and makes every mesh draw with the same transform.
@@ -344,7 +347,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         FlushMeshBatch(cl, viewProjection);
     }
 
-    /// <summary>Reset the pending batch — call before queueing any meshes for a frame.</summary>
+    /// <summary>Reset the pending batch -- call before queueing any meshes for a frame.</summary>
     public void BeginMeshBatch()
     {
         _pendingDraws.Clear();
@@ -353,7 +356,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     /// <summary>Queue one mesh into the pending batch. White tint (no recolour).</summary>
     public void QueueMesh(WadMesh mesh, Matrix4x4 model)
-        => QueueMesh(mesh, model, new Vector4(1f, 1f, 1f, 0f));
+        => QueueMesh(mesh, model, new Vector4(1.0f, 1.0f, 1.0f, 0.0f));
 
     /// <summary>
     /// Queue one mesh into the pending batch with a per-instance tint. The
@@ -363,9 +366,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// </summary>
     public void QueueMesh(WadMesh mesh, Matrix4x4 model, Vector4 tint)
     {
-        if (mesh == null) return;
+        if (mesh == null)
+            return;
         var per = GetOrBuildMesh(mesh);
-        if (per == null || per.VertexCount == 0) return;
+        if (per == null || per.VertexCount == 0)
+            return;
 
         int instanceIndex = _pendingInstanceCount;
         EnsureBatchCapacity(instanceIndex + 1);
@@ -388,14 +393,15 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// </summary>
     public void FlushMeshBatch(ICommandList cl, Matrix4x4 viewProjection)
     {
-        if (_pendingInstanceCount == 0) return;
+        if (_pendingInstanceCount == 0)
+            return;
 
-        // Single cbuffer update for the frame's camera VP — no per-bone bake-in.
+        // Single cbuffer update for the frame's camera VP -- no per-bone bake-in.
         var vp = new ViewParams
         {
             ViewProjection = viewProjection,
-            GridLineWidth  = 0f,
-            GridEnabled    = 0f,
+            GridLineWidth  = 0.0f,
+            GridEnabled    = 0.0f,
         };
         unsafe
         {
@@ -444,7 +450,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     private PerObject? GetOrBuildMesh(WadMesh mesh)
     {
-        if (_meshCache.TryGetValue(mesh, out var existing)) return existing;
+        if (_meshCache.TryGetValue(mesh, out var existing))
+            return existing;
         EnsureAtlas();
 
         var verts = new List<ObjectVertex>();
@@ -456,7 +463,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             else { bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p)); }
         }
         AppendWadMesh(verts, mesh, Matrix4x4.Identity, AccBounds);
-        if (verts.Count == 0) return null;
+        if (verts.Count == 0)
+            return null;
 
         var span = MemoryMarshal.AsBytes(verts.ToArray().AsSpan());
         var vb = _device.CreateBuffer(
@@ -495,9 +503,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     /// </summary>
     public void Render(ICommandList cl, IWadObject obj, Matrix4x4 viewProjection)
     {
-        if (obj == null) return;
+        if (obj == null)
+            return;
         var per = GetOrBuild(obj);
-        if (per == null || per.VertexCount == 0) return;
+        if (per == null || per.VertexCount == 0)
+            return;
 
         // IWadObject builds bake all bone transforms into the VB at construction
         // time, so a single draw with identity model is correct. Still go
@@ -510,7 +520,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         var data = new InstanceData
         {
             Model = Matrix4x4.Transpose(Matrix4x4.Identity),
-            Tint  = new Vector4(1f, 1f, 1f, 0f),
+            Tint  = new Vector4(1.0f, 1.0f, 1.0f, 0.0f),
         };
         MemoryMarshal.Write(_batchCpu.AsSpan(instanceIndex * InstanceStride), ref data);
         _pendingDraws.Add((per.Vb, per.VertexCount, instanceIndex * InstanceStride));
@@ -523,14 +533,15 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     private void EnsureAtlas()
     {
-        if (_atlas.IsValid) return;
+        if (_atlas.IsValid)
+            return;
 
         _atlasBytes = new byte[AtlasSize * AtlasSize * 4];
         _packer = new RectPackerSimpleStack(new VectorInt2(AtlasSize, AtlasSize));
 
         // Create the atlas WITHOUT initial data. The Dx11 backend promotes a
         // ShaderResource-only texture with initialData to Usage.Immutable,
-        // which silently rejects UpdateSubresource — i.e. every subsequent
+        // which silently rejects UpdateSubresource -- i.e. every subsequent
         // texture region upload below would no-op and the atlas would stay
         // zero-filled (models render fully black). Empty initialData keeps
         // the texture at Usage.Default; UpdateSubresource then works.
@@ -541,8 +552,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                             debugName: "PreviewSharedAtlas"),
             ReadOnlySpan<byte>.Empty);
 
-        // Reserve a 3×3 white-pixel block at the very top-left. Polygons with
-        // no / unavailable textures sample the centre of this block; the 3×3
+        // Reserve a 3x3 white-pixel block at the very top-left. Polygons with
+        // no / unavailable textures sample the centre of this block; the 3x3
         // size + clamp address mode keeps bilinear-blend reads entirely
         // inside the white area.
         var pos = _packer.TryAdd(new VectorInt2(WhitePixelBlockSize, WhitePixelBlockSize));
@@ -559,7 +570,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     }
 
     /// <summary>
-    /// Atlas-pixel coord → normalised UV. Lazily packs <paramref name="tex"/>
+    /// Atlas-pixel coord -> normalised UV. Lazily packs <paramref name="tex"/>
     /// into the shared atlas the first time it's seen and uploads its region
     /// to the GPU (region-only, not the full atlas).
     /// </summary>
@@ -567,7 +578,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     {
         EnsureAtlas();
         VectorInt2 origin = EnsurePacked(tex);
-        const float Inv = 1f / AtlasSize;
+        const float Inv = 1.0f / AtlasSize;
         return new Vector2(
             (origin.X + srcPixelCoord.X) * Inv,
             (origin.Y + srcPixelCoord.Y) * Inv);
@@ -582,7 +593,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
         var padded = new VectorInt2(tex.Image.Width + Gutter * 2, tex.Image.Height + Gutter * 2);
         var pos    = _packer!.TryAdd(padded);
-        if (pos == null) return _whitePixel; // atlas full — graceful fallback
+        if (pos == null)
+            return _whitePixel; // atlas full -- graceful fallback
 
         int paddedX = pos.Value.X;
         int paddedY = pos.Value.Y;
@@ -649,7 +661,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     // Extract the freshly-blitted region from the CPU atlas mirror into a
     // tight buffer (no row padding) and ship it to the GPU. We don't reupload
-    // the entire 16 MB atlas — UpdateTexture only touches the (x,y,w,h) box.
+    // the entire 16 MB atlas -- UpdateTexture only touches the (x,y,w,h) box.
     private unsafe void UploadRegion(int x, int y, int w, int h)
     {
         int rowBytes = w * 4;
@@ -701,32 +713,32 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         for (; i < byteCount; i++) dst[i] = src[i];
     }
 
-    // SSE2 RGB Vector3 (0..1) → packed BGRA uint. Multiply by 255, convert
-    // to int32, then two saturating packs (int32→int16→uint8) clamp to
+    // SSE2 RGB Vector3 (0..1) -> packed BGRA uint. Multiply by 255, convert
+    // to int32, then two saturating packs (int32->int16->uint8) clamp to
     // [0, 255] for free. ~5 SSE2 ops vs ~15 scalar (3 muls + 3 clamps + 3
     // int conversions + 3 shifts + ORs). Bonus: the high alpha lane lands
-    // at 255 automatically because we seeded it with 1f.
+    // at 255 automatically because we seeded it with 1.0f.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackColorRgba8(Vector3 c)
     {
         if (Sse2.IsSupported)
         {
-            Vector128<float> v = Vector128.Create(c.X, c.Y, c.Z, 1f);
-            v = Sse.Multiply(v, Vector128.Create(255f));
+            Vector128<float> v = Vector128.Create(c.X, c.Y, c.Z, 1.0f);
+            v = Sse.Multiply(v, Vector128.Create(255.0f));
             Vector128<int>   vi = Sse2.ConvertToVector128Int32(v);              // round-to-nearest
-            Vector128<short> sh = Sse2.PackSignedSaturate(vi, vi);              // int32 → int16, clamp
-            Vector128<byte>  by = Sse2.PackUnsignedSaturate(sh, sh);            // int16 → uint8, clamp [0,255]
+            Vector128<short> sh = Sse2.PackSignedSaturate(vi, vi);              // int32 -> int16, clamp
+            Vector128<byte>  by = Sse2.PackUnsignedSaturate(sh, sh);            // int16 -> uint8, clamp [0,255]
             return by.AsUInt32().ToScalar();
         }
-        uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
-        uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
-        uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
+        uint r = (uint)Math.Clamp((int)(c.X * 255.0f + 0.5f), 0, 255);
+        uint g = (uint)Math.Clamp((int)(c.Y * 255.0f + 0.5f), 0, 255);
+        uint b = (uint)Math.Clamp((int)(c.Z * 255.0f + 0.5f), 0, 255);
         return r | (g << 8) | (b << 16) | (0xFFu << 24);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static ushort PackUNorm16(float v) =>
-        (ushort)Math.Clamp((int)(v * 65535f + 0.5f), 0, 65535);
+        (ushort)Math.Clamp((int)(v * 65535.0f + 0.5f), 0, 65535);
 
     // ============================================================ Build path
 
@@ -768,7 +780,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 return null;
         }
 
-        if (verts.Count == 0) return null;
+        if (verts.Count == 0)
+            return null;
 
         var span = MemoryMarshal.AsBytes(verts.ToArray().AsSpan());
         var vb = _device.CreateBuffer(
@@ -803,11 +816,13 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     private void BuildImported(ImportedGeometry imp, List<ObjectVertex> verts, Action<Vector3> trackBounds)
     {
         var model = imp.DirectXModel;
-        if (model?.Meshes == null) return;
+        if (model?.Meshes == null)
+            return;
 
         foreach (var mesh in model.Meshes)
         {
-            if (mesh.Vertices == null || mesh.Indices == null) continue;
+            if (mesh.Vertices == null || mesh.Indices == null)
+                continue;
             bool hasColors = mesh.HasVertexColors;
             foreach (var submesh in mesh.Submeshes.Values)
             {
@@ -838,7 +853,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Matrix4x4 transform, Action<Vector3> trackBounds)
     {
-        if (mesh == null) return;
+        if (mesh == null)
+            return;
         var pos = mesh.VertexPositions;
         var col = mesh.VertexColors;
         bool hasColors = col != null && col.Count == pos.Count;
@@ -846,7 +862,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         foreach (var poly in mesh.Polys)
         {
             var ta = poly.Texture;
-            // Half-pixel inset — mirrors legacy ObjectMesh.FromWad2 which calls
+            // Half-pixel inset -- mirrors legacy ObjectMesh.FromWad2 which calls
             // poly.CorrectTexCoords(0.5f) to keep bilinear filtering from
             // sampling the atlas gutter at face edges (the "bordino" effect).
             var coords = poly.CorrectTexCoords(0.5f);
@@ -868,7 +884,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
         void Push(int i, Vector2 uv)
         {
-            if (i < 0 || i >= pos.Count) return;
+            if (i < 0 || i >= pos.Count)
+                return;
             Vector3 c = hasColors ? col[i] : Vector3.One;
             Vector3 p = Vector3.Transform(pos[i], transform);
             verts.Add(new ObjectVertex
@@ -894,7 +911,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 }
 
 /// <summary>
-/// Geometry/bound helpers for previewing a single WAD object. Pure CPU — no
+/// Geometry/bound helpers for previewing a single WAD object. Pure CPU -- no
 /// GPU resources, no dependency on the legacy <c>WadRenderer</c>.
 /// </summary>
 public static class WadObjectPreviewHelper
@@ -912,7 +929,7 @@ public static class WadObjectPreviewHelper
     }
 
     /// <summary>
-    /// CPU-side bounding sphere — bone-walks moveables, reads static / imported
+    /// CPU-side bounding sphere -- bone-walks moveables, reads static / imported
     /// geometry vertex positions directly. Replaces the legacy version that
     /// needed a WadRenderer to compute it.
     /// </summary>
@@ -961,11 +978,12 @@ public static class WadObjectPreviewHelper
                 break;
         }
 
-        if (!init) return (new Vector3(0f, 256f, 0f), 640f);
+        if (!init)
+            return (new Vector3(0.0f, 256.0f, 0.0f), 640.0f);
 
         var center = (min + max) * 0.5f;
         var radius = (max - min).Length() * 0.5f;
-        if (radius <= 0f) radius = 256f;
+        if (radius <= 0.0f) radius = 256.0f;
         return (center, radius);
     }
 }

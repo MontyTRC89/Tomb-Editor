@@ -133,7 +133,7 @@ public readonly struct RasterizerState
 
     public RasterizerState(CullMode cull, FillMode fill = FillMode.Solid,
                            bool frontCcw = false, int depthBias = 0,
-                           float slopeBias = 0f, bool scissor = false)
+                           float slopeBias = 0.0f, bool scissor = false)
     {
         CullMode              = cull;
         FillMode              = fill;

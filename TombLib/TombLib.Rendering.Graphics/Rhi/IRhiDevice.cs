@@ -88,7 +88,7 @@ public interface IRhiDevice : IDisposable
     /// <summary>
     /// Read back a texture's pixel data to CPU memory. Allocates and
     /// returns a freshly tightly packed byte buffer (no row padding).
-    /// Forces a CPU/GPU sync — use only for thumbnail capture / debug.
+    /// Forces a CPU/GPU sync -- use only for thumbnail capture / debug.
     /// </summary>
     byte[] ReadTexture(TextureHandle texture, int subresource = 0);
 

@@ -171,7 +171,7 @@ namespace TombLib.LevelData
             }
 
             /// <summary>
-            /// CPU-only equivalent of the legacy GPU-buffer rebuild — rebuilds
+            /// CPU-only equivalent of the legacy GPU-buffer rebuild -- rebuilds
             /// each mesh's bounding box + index stream. The V2 renderer rebuilds
             /// its atlas/vertex buffers from this data on demand, so no GPU
             /// upload happens here.

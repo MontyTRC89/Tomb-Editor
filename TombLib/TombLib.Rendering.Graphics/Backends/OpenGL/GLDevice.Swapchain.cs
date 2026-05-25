@@ -6,14 +6,14 @@ using RhiFormat = TombLib.Rendering.Graphics.Rhi.Format;
 namespace TombLib.Rendering.Graphics.Backends.OpenGL;
 
 // Swapchain management for the OpenGL backend. A "swapchain" here is just a
-// per-HWND WGL surface — OpenGL renders into the WGL context's default
+// per-HWND WGL surface -- OpenGL renders into the WGL context's default
 // framebuffer (FBO 0) and Present is wglSwapBuffers.
 public unsafe sealed partial class GLDevice
 {
     public SwapchainHandle CreateSwapchain(in SwapchainDesc desc)
     {
         // The bootstrap context was made current on a hidden window's DC.
-        // Re-bind it to the real Panel3D HWND's DC — the GL context itself
+        // Re-bind it to the real Panel3D HWND's DC -- the GL context itself
         // stays, only the target surface changes.
         IntPtr realHdc = GetDC(desc.WindowHandle);
         if (realHdc == IntPtr.Zero)
@@ -21,7 +21,7 @@ public unsafe sealed partial class GLDevice
 
         // Set a matching pixel format on the real DC. An HDC's pixel format
         // can't be changed twice, so this requires the Panel3D HWND to be
-        // freshly created — which it is (the V2 path bypasses legacy SwapChain).
+        // freshly created -- which it is (the V2 path bypasses legacy SwapChain).
         var pixelFormatDesc = new PIXELFORMATDESCRIPTOR
         {
             nSize        = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
@@ -38,13 +38,13 @@ public unsafe sealed partial class GLDevice
             throw new InvalidOperationException("ChoosePixelFormat failed for swapchain HWND");
         if (!SetPixelFormat(realHdc, pixelFormat, ref pixelFormatDesc))
             throw new InvalidOperationException(
-                "SetPixelFormat failed — was the Panel3D HWND already bound by another API?");
+                "SetPixelFormat failed -- was the Panel3D HWND already bound by another API?");
 
         // Make the context current on the real DC.
         if (!WglMakeCurrent(realHdc, Hglrc))
             throw new InvalidOperationException("wglMakeCurrent on real HWND failed");
 
-        // Release the bootstrap DC — it's no longer needed.
+        // Release the bootstrap DC -- it's no longer needed.
         if (Hdc != IntPtr.Zero && Hwnd != IntPtr.Zero)
         {
             ReleaseDC(Hwnd, Hdc);
@@ -56,7 +56,7 @@ public unsafe sealed partial class GLDevice
         Hwnd = desc.WindowHandle;
         Hdc  = realHdc;
 
-        // Optional swap interval (vsync) — applied via the WGL extension if present.
+        // Optional swap interval (vsync) -- applied via the WGL extension if present.
         SetSwapInterval(desc.VSync ? 1 : 0);
 
         var swapchain = new GLSwapchainRes
@@ -76,7 +76,7 @@ public unsafe sealed partial class GLDevice
 
     public void ResizeSwapchain(SwapchainHandle handle, int width, int height)
     {
-        // GL needs no explicit resize of the default framebuffer — it follows
+        // GL needs no explicit resize of the default framebuffer -- it follows
         // the window automatically. Just record the new size for the viewport
         // calculation in BeginPass.
         var swapchain = Swapchains[handle.Id];
@@ -86,7 +86,8 @@ public unsafe sealed partial class GLDevice
 
     public void Destroy(SwapchainHandle handle)
     {
-        if (!Swapchains.Remove(handle.Id, out var swapchain)) return;
+        if (!Swapchains.Remove(handle.Id, out var swapchain))
+            return;
         if (swapchain.Hdc != IntPtr.Zero && swapchain.Hwnd != IntPtr.Zero)
             ReleaseDC(swapchain.Hwnd, swapchain.Hdc);
     }
@@ -100,7 +101,8 @@ public unsafe sealed partial class GLDevice
     private void SetSwapInterval(int interval)
     {
         IntPtr swapIntervalAddr = WglGetProcAddress("wglSwapIntervalEXT");
-        if (swapIntervalAddr == IntPtr.Zero) return;
+        if (swapIntervalAddr == IntPtr.Zero)
+            return;
         var swapInterval = Marshal.GetDelegateForFunctionPointer<WglSwapIntervalEXTDelegate>(swapIntervalAddr);
         swapInterval(interval);
     }

@@ -98,7 +98,7 @@ public unsafe sealed partial class Dx11Device
             DepthClipEnable       = true,
             ScissorEnable         = rasterizer.ScissorEnable,
             // MSAA-aware coverage rules when the bound render target is
-            // multisampled — harmless on single-sample targets.
+            // multisampled -- harmless on single-sample targets.
             MultisampleEnable     = true,
             AntialiasedLineEnable = false,
         };

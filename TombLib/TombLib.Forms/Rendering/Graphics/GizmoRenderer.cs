@@ -11,7 +11,7 @@ namespace TombLib.Rendering.Graphics.Preview;
 /// Draws the translate / scale / rotate gizmo as world-space colored
 /// geometry, using the RHI. Reads the gizmo state from a
 /// <see cref="BaseGizmo"/> snapshot at the start of every <see cref="Render"/>
-/// call — the actual picking + drag math still lives in BaseGizmo, this
+/// call -- the actual picking + drag math still lives in BaseGizmo, this
 /// class only handles the visuals.
 ///
 /// <para>Geometry is rebuilt every frame into a single dynamic vertex
@@ -67,7 +67,7 @@ public sealed class GizmoRenderer : IDisposable
             },
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: VertexStride) },
             Topology               = PrimitiveTopology.TriangleList,
-            // Disable depth-test so the gizmo is always visible — it's an
+            // Disable depth-test so the gizmo is always visible -- it's an
             // editor overlay, even if the camera goes through a wall the
             // user should still see the handles for their selection.
             Rasterizer             = new RasterizerState(CullMode.None),
@@ -107,24 +107,26 @@ public sealed class GizmoRenderer : IDisposable
 
     public void Render(ICommandList cl, in BaseGizmo.PublicState s, Matrix4x4 viewProjection)
     {
-        if (!s.DrawGizmo) return;
+        if (!s.DrawGizmo)
+            return;
 
-        // Stage 1 — build geometry into _vbCpu.
+        // Stage 1 -- build geometry into _vbCpu.
         var span = MemoryMarshal.Cast<byte, GizmoVertex>(_vbCpu.AsSpan());
         int n = 0;
         BuildGeometry(s, span, ref n);
-        if (n == 0) return;
+        if (n == 0)
+            return;
         if (n > _vbCapacity)
         {
             // Resize then re-emit. We only get here once per (gizmo-config,
-            // first-frame) pair — subsequent frames hit the same capacity.
+            // first-frame) pair -- subsequent frames hit the same capacity.
             AllocateVb(Math.Max(n, _vbCapacity * 2));
             span = MemoryMarshal.Cast<byte, GizmoVertex>(_vbCpu.AsSpan());
             n = 0;
             BuildGeometry(s, span, ref n);
         }
 
-        // Stage 2 — upload + bind + draw.
+        // Stage 2 -- upload + bind + draw.
         cl.UpdateBuffer(_vb, 0, new ReadOnlySpan<byte>(_vbCpu, 0, n * VertexStride));
 
         var vp = new ViewParams { ViewProjection = viewProjection };
@@ -186,21 +188,21 @@ public sealed class GizmoRenderer : IDisposable
         if (s.SupportRotationY)
         {
             var m = s.ActiveMode == GizmoMode.RotateY ? s.FrozenRotateMatrixY : s.RotateMatrixY;
-            // Around Y → loop in XZ plane.
+            // Around Y -> loop in XZ plane.
             EmitRing(s.Position, axis: Vector3.UnitY, perpA: Vector3.UnitX, perpB: Vector3.UnitZ,
                      m, s.Size, s.LineThickness, AxisColor(GizmoMode.RotateY, s, Cy, CyHi), v, ref n);
         }
         if (s.SupportRotationX)
         {
             var m = s.ActiveMode == GizmoMode.RotateX ? s.FrozenRotateMatrixX : s.RotateMatrixX;
-            // Around X → loop in YZ plane.
+            // Around X -> loop in YZ plane.
             EmitRing(s.Position, axis: Vector3.UnitX, perpA: Vector3.UnitY, perpB: Vector3.UnitZ,
                      m, s.Size, s.LineThickness, AxisColor(GizmoMode.RotateX, s, Cx, CxHi), v, ref n);
         }
         if (s.SupportRotationZ)
         {
             var m = s.ActiveMode == GizmoMode.RotateZ ? s.FrozenRotateMatrixZ : s.RotateMatrixZ;
-            // Around Z → loop in XY plane.
+            // Around Z -> loop in XY plane.
             EmitRing(s.Position, axis: Vector3.UnitZ, perpA: Vector3.UnitX, perpB: Vector3.UnitY,
                      m, s.Size, s.LineThickness, AxisColor(GizmoMode.RotateZ, s, Cz, CzHi), v, ref n);
         }
@@ -254,7 +256,7 @@ public sealed class GizmoRenderer : IDisposable
                                 s.RotationPickAngle, s.RotationLastMouseAngle, PieY, v, ref n);
                 break;
             case GizmoMode.RotateX:
-                // Legacy: startAngle = -π/2 - rotationPickAngle, around X (loop in YZ).
+                // Legacy: startAngle = -pi/2 - rotationPickAngle, around X (loop in YZ).
                 EmitRotationPie(s, Vector3.UnitX, Vector3.UnitY, Vector3.UnitZ,
                                 s.FrozenRotateMatrixX,
                                 -(float)Math.PI * 0.5f - s.RotationPickAngle,
@@ -350,7 +352,7 @@ public sealed class GizmoRenderer : IDisposable
         Vector3 c011 = centre + new Vector3(-h, +h, +h);
         Vector3 c111 = centre + new Vector3(+h, +h, +h);
 
-        // 6 faces × 2 tris. CullMode.None so winding is irrelevant.
+        // 6 faces x 2 tris. CullMode.None so winding is irrelevant.
         EmitQuad(c000, c010, c110, c100, color, v, ref n); // -Z
         EmitQuad(c001, c101, c111, c011, color, v, ref n); // +Z
         EmitQuad(c000, c100, c101, c001, color, v, ref n); // -Y
@@ -419,8 +421,8 @@ public sealed class GizmoRenderer : IDisposable
                                          float startAngle, float endAngle, uint color,
                                          Span<GizmoVertex> v, ref int n)
     {
-        // Take the shorter arc (so a quick wrap-around doesn't fill 350°
-        // instead of 10°) and order start < end.
+        // Take the shorter arc (so a quick wrap-around doesn't fill 350 deg
+        // instead of 10 deg) and order start < end.
         float shortest = endAngle - startAngle;
         shortest = (float)(shortest - Math.Round(shortest / (Math.PI * 2)) * (Math.PI * 2));
         endAngle = startAngle + shortest;
@@ -468,7 +470,7 @@ public sealed class GizmoRenderer : IDisposable
     private static void Push(Vector3 p, uint color, Span<GizmoVertex> v, ref int n)
     {
         int i = n;
-        if ((uint)i >= (uint)v.Length) return; // overflow guard — Render() resizes on next pass
+        if ((uint)i >= (uint)v.Length) return; // overflow guard -- Render() resizes on next pass
         ref var vert = ref System.Runtime.CompilerServices.Unsafe.Add(
             ref System.Runtime.InteropServices.MemoryMarshal.GetReference(v), i);
         vert.Position = p;

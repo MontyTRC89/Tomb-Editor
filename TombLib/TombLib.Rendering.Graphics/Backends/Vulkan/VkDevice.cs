@@ -16,14 +16,14 @@ namespace TombLib.Rendering.Graphics.Backends.Vulkan;
 /// Native Vulkan backend for <see cref="IRhiDevice"/>. Single-threaded:
 /// assumes all calls come from the same rendering thread.
 ///
-/// <para>Design notes (kept deliberately simple — see Dx11Device for the
+/// <para>Design notes (kept deliberately simple -- see Dx11Device for the
 /// reference implementation):
 ///   - One frame in flight. The CPU waits on the previous frame's fence
 ///     before recording the next, so there's no need for per-frame command
 ///     pools / descriptor pools / per-resource staging-buffer rings.
 ///   - Per-resource memory allocations (vkAllocateMemory / vkBindBufferMemory).
 ///     Not optimal vs a VMA-style sub-allocator, but the editor allocates a
-///     few hundred buffers / textures total — well under the typical Vulkan
+///     few hundred buffers / textures total -- well under the typical Vulkan
 ///     allocation limit (4096).
 ///   - One device-shared descriptor-set layout sized to RhiLimits. Every
 ///     pipeline shares it; SetBindings allocates a fresh descriptor set from
@@ -31,9 +31,9 @@ namespace TombLib.Rendering.Graphics.Backends.Vulkan;
 ///   - Push-constant block: 128 bytes at the VS + FS stages.</para>
 ///
 /// <para>Split across partial files by concern:
-///   VkDevice.cs           — device, resources (buffers / textures / samplers).
-///   VkDevice.Pipeline.cs  — pipelines and render passes.
-///   VkDevice.Swapchain.cs — surface and swapchain.</para>
+///   VkDevice.cs           -- device, resources (buffers / textures / samplers).
+///   VkDevice.Pipeline.cs  -- pipelines and render passes.
+///   VkDevice.Swapchain.cs -- surface and swapchain.</para>
 /// </summary>
 public unsafe sealed partial class VkDevice : IRhiDevice
 {
@@ -53,7 +53,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     // still holds the function pointer.
     internal DebugUtilsMessengerCallbackFunctionEXT? DebugCallback;
 
-    // Device capabilities cached after device creation — used by every
+    // Device capabilities cached after device creation -- used by every
     // FindMemoryType call and the Capabilities query.
     internal PhysicalDeviceMemoryProperties MemoryProperties;
     internal PhysicalDeviceLimits           Limits;
@@ -78,14 +78,14 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     internal DescriptorPool TransientDescPool;
     internal bool           FrameRecording;   // true between BeginCommandList and Submit
 
-    // Swapchain MSAA sample count. Rendering targets an off-screen 4× colour +
+    // Swapchain MSAA sample count. Rendering targets an off-screen 4x colour +
     // depth image which the render pass resolves into the single-sample
     // swapchain image at EndPass. The Vulkan spec guarantees both
     // framebufferColorSampleCounts and framebufferDepthSampleCounts include
-    // 1× and 4×, so this needs no capability probe. Matches the DX11 backend.
+    // 1x and 4x, so this needs no capability probe. Matches the DX11 backend.
     internal const int MsaaSamples = 4;
 
-    // Resource pools (handle id → resource).
+    // Resource pools (handle id -> resource).
     private uint _nextHandle = 1;
     internal readonly Dictionary<uint, VkBufferRes>    Buffers    = new();
     internal readonly Dictionary<uint, VkTextureRes>   Textures   = new();
@@ -230,7 +230,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     {
         uint count = 0;
         Api.EnumerateInstanceLayerProperties(ref count, null);
-        if (count == 0) return false;
+        if (count == 0)
+            return false;
 
         var layerProperties = new LayerProperties[count];
         fixed (LayerProperties* pLayerProperties = layerProperties)
@@ -241,7 +242,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             fixed (byte* pName = layerProperties[i].LayerName)
             {
                 string layerName = Marshal.PtrToStringAnsi((IntPtr)pName) ?? "";
-                if (layerName == name) return true;
+                if (layerName == name)
+                    return true;
             }
         }
         return false;
@@ -253,7 +255,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     {
         uint count = 0;
         Api.EnumeratePhysicalDevices(Instance, ref count, null);
-        if (count == 0) throw new InvalidOperationException("No Vulkan physical devices");
+        if (count == 0)
+            throw new InvalidOperationException("No Vulkan physical devices");
 
         var devices = new PhysicalDevice[count];
         fixed (PhysicalDevice* pDevices = devices)
@@ -267,8 +270,10 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             Api.GetPhysicalDeviceProperties(candidate, out var properties);
             // We always need a graphics queue and KHR_swapchain support;
             // score discrete GPU > integrated > anything else.
-            if (!HasGraphicsQueue(candidate)) continue;
-            if (!HasExtension(candidate, "VK_KHR_swapchain")) continue;
+            if (!HasGraphicsQueue(candidate))
+                continue;
+            if (!HasExtension(candidate, "VK_KHR_swapchain"))
+                continue;
             int score = properties.DeviceType switch
             {
                 PhysicalDeviceType.DiscreteGpu   => 1000,
@@ -315,7 +320,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             fixed (byte* pName = extensionProperties[i].ExtensionName)
             {
                 string extensionName = Marshal.PtrToStringAnsi((IntPtr)pName) ?? "";
-                if (extensionName == name) return true;
+                if (extensionName == name)
+                    return true;
             }
         }
         return false;
@@ -397,7 +403,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     {
         for (uint i = 0; i < MemoryProperties.MemoryTypeCount; i++)
         {
-            if ((typeBits & (1u << (int)i)) == 0) continue;
+            if ((typeBits & (1u << (int)i)) == 0)
+                continue;
             if ((MemoryProperties.MemoryTypes[(int)i].PropertyFlags & required) == required)
                 return i;
         }
@@ -510,15 +517,15 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         };
         Api.CreateFence(Device, in fenceInfo, null, out FrameFence);
 
-        // ImageAvailable is one shared acquire semaphore — safe with a single
+        // ImageAvailable is one shared acquire semaphore -- safe with a single
         // frame in flight (BeginCommandList waits FrameFence before the next
         // acquire). The "render finished" semaphores are per swapchain image
         // and live on VkSwapchainRes; see CreateSwapchainResources.
         var semaphoreInfo = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
         Api.CreateSemaphore(Device, in semaphoreInfo, null, out ImageAvailable);
 
-        // Transient descriptor pool — sized to one descriptor of each type per
-        // allocation × MaxSets. SetBindings allocates a fresh descriptor set
+        // Transient descriptor pool -- sized to one descriptor of each type per
+        // allocation x MaxSets. SetBindings allocates a fresh descriptor set
         // every call within a frame; the pool resets at frame start.
         const int setsPerFrame = 1024;
         var poolSizes = stackalloc DescriptorPoolSize[3]
@@ -533,7 +540,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             MaxSets       = setsPerFrame,
             PoolSizeCount = 3,
             PPoolSizes    = poolSizes,
-            Flags         = 0, // no individual free — the whole pool resets each frame
+            Flags         = 0, // no individual free -- the whole pool resets each frame
         };
         if (Api.CreateDescriptorPool(Device, in descriptorPoolInfo, null, out TransientDescPool) != Result.Success)
             throw new InvalidOperationException("vkCreateDescriptorPool failed");
@@ -545,7 +552,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
     // flight, so a buffer / texture / sampler / pipeline stays GPU-visible
     // until the NEXT BeginCommandList drains the previous frame's fence.
     // Freeing one immediately races that in-flight frame
-    // (VUID-vkDestroy*-*-00922 / sampler-01082 / ... → device lost → the next
+    // (VUID-vkDestroy*-*-00922 / sampler-01082 / ... -> device lost -> the next
     // WaitForFences hangs). Destroy() therefore only unregisters the handle
     // and queues the real free here; the queue is flushed at the start of
     // every BeginCommandList, once the previous frame is provably complete.
@@ -553,7 +560,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     private void FlushPendingDeletes()
     {
-        if (_pendingDeletes.Count == 0) return;
+        if (_pendingDeletes.Count == 0)
+            return;
         foreach (var deleteAction in _pendingDeletes) deleteAction();
         _pendingDeletes.Clear();
     }
@@ -563,7 +571,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         // Guard against double-dispose: a second call would run WaitIdle() and
         // Api.* against an already-destroyed device / disposed Api and crash
         // with an access violation.
-        if (_disposed) return;
+        if (_disposed)
+            return;
         WaitIdle();
         _disposed = true;
         FlushPendingDeletes();
@@ -592,13 +601,14 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         Api.Dispose();
     }
 
-    // Set once Dispose() has destroyed the device — blocks any further
+    // Set once Dispose() has destroyed the device -- blocks any further
     // WaitIdle() / swapchain teardown from touching freed Vulkan handles.
     private bool _disposed;
 
     public void WaitIdle()
     {
-        if (_disposed || Device.Handle == 0) return;
+        if (_disposed || Device.Handle == 0)
+            return;
         Api.DeviceWaitIdle(Device);
     }
 
@@ -655,7 +665,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             BindFlags = desc.BindFlags,
         };
 
-        // Initial upload — dynamic: copy into the mapped region; immutable:
+        // Initial upload -- dynamic: copy into the mapped region; immutable:
         // staging buffer + copy command.
         if (initialData.Length > 0)
         {
@@ -733,14 +743,14 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (hasColor)  imageUsage |= ImageUsageFlags.ColorAttachmentBit;
         if (hasDepth)  imageUsage |= ImageUsageFlags.DepthStencilAttachmentBit;
         // Always allow TransferDst. It is needed for create-time uploads
-        // (below) AND for every later UpdateTexture call — and UpdateTexture
+        // (below) AND for every later UpdateTexture call -- and UpdateTexture
         // routinely targets a texture created with no initial data (the
         // preview / WAD-thumbnail atlases create empty on purpose, then fill
         // regions incrementally). Gating this on initialData made
         // vkCmdCopyBufferToImage fail validation (VUID-...-dstImage-00177) on
         // those atlases, which on a strict driver loses the device and hangs
         // the next frame's WaitForFences. It is free on a texture that is
-        // never copied into — exactly like TransferSrc just below.
+        // never copied into -- exactly like TransferSrc just below.
         imageUsage |= ImageUsageFlags.TransferDstBit;
         // Always allow TransferSrc so ReadTexture (thumbnail capture) can copy
         // out of any texture; vkCmdCopyImageToBuffer needs it.
@@ -881,7 +891,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         var texture = Textures[handle.Id];
         // Build a tightly-packed staging copy. The caller's rowPitch may be
         // larger than width*bpp on D3D, but in practice TombEditor never sends
-        // padded rows here — keep it simple.
+        // padded rows here -- keep it simple.
         int   bytesPerPixel = VkMapping.BytesPerPixel(texture.Format);
         ulong size          = (ulong)(width * height * bytesPerPixel);
 
@@ -996,7 +1006,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         if (texture.Memory.Handle != 0) Api.FreeMemory(Device, texture.Memory, null);
     }
 
-    // One-shot variant — begins / submits / waits its own command buffer.
+    // One-shot variant -- begins / submits / waits its own command buffer.
     internal void TransitionImage(VkTextureRes texture, ImageLayout newLayout)
     {
         var commandBuffer = OneShotBegin();
@@ -1006,7 +1016,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     internal void TransitionImage(CommandBuffer commandBuffer, VkTextureRes texture, ImageLayout newLayout)
     {
-        if (texture.CurrentLayout == newLayout) return;
+        if (texture.CurrentLayout == newLayout)
+            return;
         var barrier = new ImageMemoryBarrier
         {
             SType               = StructureType.ImageMemoryBarrier,
@@ -1022,7 +1033,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
                 BaseArrayLayer = 0, LayerCount = (uint)texture.ArrayLayers,
             },
         };
-        // Conservative access masks — the AllCommands stage covers everything;
+        // Conservative access masks -- the AllCommands stage covers everything;
         // overkill but simple.
         barrier.SrcAccessMask = AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit;
         barrier.DstAccessMask = AccessFlags.MemoryReadBit | AccessFlags.MemoryWriteBit;
@@ -1120,8 +1131,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public ICommandList BeginCommandList()
     {
-        // A previous command list — abandoned, or the outer frame of a
-        // re-entrant render — must stop touching the shared command buffer
+        // A previous command list -- abandoned, or the outer frame of a
+        // re-entrant render -- must stop touching the shared command buffer
         // once it is reset below.
         if (_activeCmd != null) _activeCmd.Disowned = true;
         _pendingPresent = null;
@@ -1129,12 +1140,12 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         var fence = FrameFence;
         if (FrameRecording)
         {
-            // The previous frame was abandoned before Submit — an exception
+            // The previous frame was abandoned before Submit -- an exception
             // fired between BeginCommandList and Submit (e.g. the not-yet-
             // implemented offscreen BeginPass that thumbnail rendering uses).
             // FrameFence was reset but never submitted, so waiting on it would
             // deadlock; and since nothing was submitted the GPU is idle. Skip
-            // the wait — ResetCommandPool below recycles the orphaned FrameCmd
+            // the wait -- ResetCommandPool below recycles the orphaned FrameCmd
             // whatever state it was left in.
             FrameRecording = false;
         }
@@ -1144,7 +1155,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             Api.WaitForFences(Device, 1, in fence, true, ulong.MaxValue);
         }
 
-        // The previous frame is now complete — free anything queued for
+        // The previous frame is now complete -- free anything queued for
         // deletion before reusing the command pool / descriptors.
         FlushPendingDeletes();
         Api.ResetFences(Device, 1, in fence);
@@ -1165,11 +1176,13 @@ public unsafe sealed partial class VkDevice : IRhiDevice
 
     public void Submit(ICommandList commandList)
     {
-        if (!FrameRecording) return;
+        if (!FrameRecording)
+            return;
         var vkCommandList = (VkCommandList)commandList;
-        // A stale command list — a newer BeginCommandList already took over
-        // the shared command buffer — must not finalise this frame.
-        if (vkCommandList != _activeCmd) return;
+        // A stale command list -- a newer BeginCommandList already took over
+        // the shared command buffer -- must not finalise this frame.
+        if (vkCommandList != _activeCmd)
+            return;
         vkCommandList.Finish();
         Api.EndCommandBuffer(FrameCmd);
 
@@ -1181,7 +1194,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
             _pendingPresent = swapchain;   // this frame is now eligible for Present
             var waitSemaphore = ImageAvailable;
             // Signal this image's own "render finished" semaphore. A single
-            // shared one is illegal — the previous image's present may still
+            // shared one is illegal -- the previous image's present may still
             // be consuming it (VUID-vkQueueSubmit-pSignalSemaphores-00067).
             var signalSemaphore = swapchain.RenderFinishedSemaphores[swapchain.CurrentImageIndex];
             var waitStage       = PipelineStageFlags.ColorAttachmentOutputBit;
@@ -1220,7 +1233,8 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         // Present only the swapchain whose frame was actually submitted this
         // cycle. Presenting an abandoned frame would wait on a render-finished
         // semaphore that was never signalled.
-        if (swapchain != _pendingPresent || !swapchain.ImageAcquired) return;
+        if (swapchain != _pendingPresent || !swapchain.ImageAcquired)
+            return;
         _pendingPresent = null;
 
         // Wait on the same per-image semaphore Submit signalled for this image.

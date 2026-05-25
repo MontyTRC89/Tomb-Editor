@@ -42,7 +42,7 @@ public unsafe sealed partial class VkDevice
         if (!presentSupported)
             throw new InvalidOperationException("Selected queue family cannot present to the window's surface");
 
-        // 4× MSAA: render into an off-screen multisampled colour + depth
+        // 4x MSAA: render into an off-screen multisampled colour + depth
         // image, then let the render pass resolve into the single-sample
         // swapchain image for presentation. Matches the DX11 backend.
         var swapchain = new VkSwapchainRes
@@ -93,7 +93,7 @@ public unsafe sealed partial class VkDevice
         swapchain.Height = (int)extent.Height;
 
         // ---- Present mode: FIFO is always supported; MAILBOX / IMMEDIATE
-        // (vsync off) only sometimes — fall back to FIFO if missing so the
+        // (vsync off) only sometimes -- fall back to FIFO if missing so the
         // editor still runs on a tearing-conservative driver. ----
         var presentMode = PresentModeKHR.FifoKhr;
         if (!swapchain.VSync)
@@ -131,7 +131,7 @@ public unsafe sealed partial class VkDevice
         }
 
         // CRITICAL: pass the existing swapchain (if any) as OldSwapchain.
-        // Without this, Vulkan keeps the previous swapchain alive — the surface
+        // Without this, Vulkan keeps the previous swapchain alive -- the surface
         // is "in use" by it, and the second CreateSwapchain on the same surface
         // fails with ErrorNativeWindowInUseKhr. The old one is destroyed only
         // *after* the new one succeeds, so the driver can recycle resources.
@@ -177,7 +177,7 @@ public unsafe sealed partial class VkDevice
         }
         DebugLog($"  swapchain OK: handle=0x{swapchain.SwapchainHandle.Handle:X}");
 
-        // Now safe to destroy the previous swapchain — the driver has migrated
+        // Now safe to destroy the previous swapchain -- the driver has migrated
         // its surface ownership to the new one.
         if (oldSwapchain.Handle != 0)
         {
@@ -302,7 +302,7 @@ public unsafe sealed partial class VkDevice
         {
             // Attachment order must match GetOrCreateRenderPass:
             //   MSAA -> [0] multisampled colour, [1] depth, [2] resolve (swapchain image)
-            //   1×   -> [0] colour (swapchain image), [1] depth
+            //   1x   -> [0] colour (swapchain image), [1] depth
             var attachments = stackalloc ImageView[3];
             uint attachmentCount;
             if (swapchain.Samples > 1)

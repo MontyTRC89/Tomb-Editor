@@ -111,7 +111,7 @@ public unsafe sealed class Dx11CommandList : ICommandList
         _dev.Context.PSSetShader(p.Ps, (DX.ID3D11ClassInstance**)null, 0);
         _dev.Context.RSSetState(p.Rasterizer);
 
-        float* blendFactor = stackalloc float[4] { 1f, 1f, 1f, 1f };
+        float* blendFactor = stackalloc float[4] { 1.0f, 1.0f, 1.0f, 1.0f };
         _dev.Context.OMSetBlendState(p.Blend, blendFactor, 0xFFFFFFFFu);
         _dev.Context.OMSetDepthStencilState(p.Depth, 0);
     }
@@ -174,7 +174,8 @@ public unsafe sealed class Dx11CommandList : ICommandList
 
     public void SetVertexBuffers(ReadOnlySpan<VertexBufferBinding> buffers)
     {
-        if (buffers.IsEmpty || _boundPipeline == null) return;
+        if (buffers.IsEmpty || _boundPipeline == null)
+            return;
 
         int n = Math.Min(buffers.Length, RhiLimits.MaxVertexBuffers);
         DX.ID3D11Buffer** native = stackalloc DX.ID3D11Buffer*[RhiLimits.MaxVertexBuffers];
@@ -200,7 +201,8 @@ public unsafe sealed class Dx11CommandList : ICommandList
 
     public void PushConstants(ReadOnlySpan<byte> data)
     {
-        if (data.IsEmpty) return;
+        if (data.IsEmpty)
+            return;
         if (data.Length > RhiLimits.PushConstantSize)
             throw new ArgumentException($"Push constant payload exceeds {RhiLimits.PushConstantSize} bytes.");
 
@@ -219,7 +221,7 @@ public unsafe sealed class Dx11CommandList : ICommandList
         _dev.Context.PSSetConstantBuffers(pushSlot, 1u, cb);
     }
 
-    public void SetViewport(int x, int y, int width, int height, float minDepth = 0f, float maxDepth = 1f)
+    public void SetViewport(int x, int y, int width, int height, float minDepth = 0.0f, float maxDepth = 1.0f)
     {
         var vp = new DX.Viewport
         {
@@ -256,7 +258,8 @@ public unsafe sealed class Dx11CommandList : ICommandList
 
     public void UpdateBuffer(BufferHandle buffer, int offsetBytes, ReadOnlySpan<byte> data)
     {
-        if (data.IsEmpty) return;
+        if (data.IsEmpty)
+            return;
         var b = _dev.GetBuffer(buffer);
 
         if (b.Usage == BufferUsage.DynamicUniform || b.Usage == BufferUsage.DynamicVertex)
@@ -271,7 +274,7 @@ public unsafe sealed class Dx11CommandList : ICommandList
         }
         else
         {
-            // UpdateSubresource for Default/Immutable buffers (Immutable will fail at runtime — by design).
+            // UpdateSubresource for Default/Immutable buffers (Immutable will fail at runtime -- by design).
             var box = new DX.Box
             {
                 Left   = (uint)offsetBytes,

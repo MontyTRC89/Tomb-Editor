@@ -63,7 +63,7 @@ public unsafe sealed partial class Dx11Device
     // and view. Called on creation and again after every resize.
     private void AcquireSwapchainViews(Dx11Swapchain swapchain)
     {
-        // Colour — the swapchain's backbuffer texture + render-target view.
+        // Colour -- the swapchain's backbuffer texture + render-target view.
         ComPtr<DX.ID3D11Texture2D> backbuffer = default;
         Guid texture2DIid = DX.ID3D11Texture2D.Guid;
         SilkMarshal.ThrowHResult(swapchain.Native.GetBuffer(
@@ -75,7 +75,7 @@ public unsafe sealed partial class Dx11Device
             (DX.ID3D11Resource*)backbuffer.Handle, (DX.RenderTargetViewDesc*)null, colorView.GetAddressOf()));
         swapchain.ColorView = colorView;
 
-        // Depth — a matching depth texture + depth-stencil view.
+        // Depth -- a matching depth texture + depth-stencil view.
         if (swapchain.DepthFormat != Format.Unknown)
         {
             var depthTextureDesc = new DX.Texture2DDesc

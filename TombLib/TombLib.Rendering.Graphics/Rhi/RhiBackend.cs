@@ -8,7 +8,7 @@ namespace TombLib.Rendering.Graphics.Rhi;
 /// <summary>
 /// Factory + selector for <see cref="IRhiDevice"/> implementations.
 ///
-/// <para>Default backend order is <b>Vulkan → OpenGL → DX11</b>: the editor
+/// <para>Default backend order is <b>Vulkan -> OpenGL -> DX11</b>: the editor
 /// tries native Vulkan first, falls back to OpenGL 4.3 if Vulkan init fails
 /// (no loader / no compatible driver), and finally to D3D11 if OpenGL also
 /// fails. The choice can be forced via the <c>TOMBEDITOR_RHI</c> environment
@@ -36,7 +36,7 @@ public static class RhiBackend
         if (pref == "opengl" || pref == "gl")
             return new GLDevice();
 
-        // Default cascade: Vulkan → OpenGL → DX11.
+        // Default cascade: Vulkan -> OpenGL -> DX11.
         try
         {
             return new VkDevice();
@@ -59,6 +59,6 @@ public static class RhiBackend
     private static void LogFallback(string backendName, Exception ex)
     {
         try { Console.Error.WriteLine($"[V2 RHI] {backendName} init failed, falling back: {ex.Message}"); }
-        catch { /* ignore — logging should never crash startup */ }
+        catch { /* ignore -- logging should never crash startup */ }
     }
 }

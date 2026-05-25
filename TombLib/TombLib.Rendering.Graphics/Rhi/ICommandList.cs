@@ -47,7 +47,7 @@ public interface ICommandList
 
     /// <summary>Override viewport for the current pass.</summary>
     void SetViewport(int x, int y, int width, int height,
-                     float minDepth = 0f, float maxDepth = 1f);
+                     float minDepth = 0.0f, float maxDepth = 1.0f);
 
     /// <summary>Override scissor rect. Requires RasterizerState.ScissorEnable.</summary>
     void SetScissor(int x, int y, int width, int height);

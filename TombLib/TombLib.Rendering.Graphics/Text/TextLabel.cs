@@ -5,7 +5,7 @@ namespace TombLib.Rendering.Graphics.Text;
 /// <summary>
 /// One piece of text the V2 renderer should draw this frame. Mirrors the
 /// legacy renderer's <c>Text</c> tag: a label is either anchored to a
-/// world-space point (projected every frame — room names, object labels) or
+/// world-space point (projected every frame -- room names, object labels) or
 /// pinned to a fixed screen pixel (FPS / status read-outs).
 ///
 /// <para>Built by the editor (Panel3D) and handed to the renderer through
@@ -18,8 +18,8 @@ public readonly struct TextLabel
     public readonly string Text;
 
     /// <summary>
-    /// true  → <see cref="ScreenPosition"/> is an absolute pixel anchor.
-    /// false → <see cref="WorldPosition"/> is projected to screen each frame.
+    /// true  -> <see cref="ScreenPosition"/> is an absolute pixel anchor.
+    /// false -> <see cref="WorldPosition"/> is projected to screen each frame.
     /// </summary>
     public readonly bool ScreenSpace;
 

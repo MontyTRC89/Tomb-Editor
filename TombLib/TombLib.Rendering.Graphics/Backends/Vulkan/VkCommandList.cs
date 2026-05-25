@@ -8,13 +8,13 @@ namespace TombLib.Rendering.Graphics.Backends.Vulkan;
 
 /// <summary>
 /// Records commands into the device's single per-frame command buffer.
-/// One-shot — instantiated by <see cref="VkDevice.BeginCommandList"/> and
+/// One-shot -- instantiated by <see cref="VkDevice.BeginCommandList"/> and
 /// finalised by <see cref="VkDevice.Submit"/>.
 ///
 /// <para>The backend records into one shared command buffer, so only one
 /// command list can be live at a time. When a new <see cref="VkDevice.BeginCommandList"/>
-/// supersedes this one — typically a re-entrant render (an offscreen preview
-/// drawn during the main viewport's frame) — the device marks the old list
+/// supersedes this one -- typically a re-entrant render (an offscreen preview
+/// drawn during the main viewport's frame) -- the device marks the old list
 /// <see cref="Disowned"/>. A disowned list's methods all become no-ops: its
 /// command buffer has been reset under it, so recording into it (e.g.
 /// <c>vkCmdEndRenderPass</c> with no active pass) would crash the driver.</para>
@@ -34,7 +34,7 @@ public unsafe sealed class VkCommandList : ICommandList
     /// </summary>
     internal bool Disowned;
 
-    // Last-set bindings — used to allocate descriptor sets on demand. Stored
+    // Last-set bindings -- used to allocate descriptor sets on demand. Stored
     // as plain handle arrays because the spans in `Bindings` are stack-only.
     private readonly BufferHandle[]  _constantBuffers = new BufferHandle[RhiLimits.MaxConstantBuffers];
     private readonly TextureHandle[] _textures        = new TextureHandle[RhiLimits.MaxTextureBindings];
@@ -57,7 +57,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     internal void Finish()
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
         if (_passActive) EndPass();
     }
 
@@ -65,7 +66,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void BeginPass(in PassDesc desc)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
 
         if (!desc.UseSwapchain)
             throw new NotImplementedException("Vulkan backend: only UseSwapchain BeginPass is wired right now.");
@@ -74,7 +76,7 @@ public unsafe sealed class VkCommandList : ICommandList
         _passSwapchain = swapchain;
 
         // This command list renders into `swapchain` whether or not it
-        // acquires the image now — a previous abandoned frame may have left
+        // acquires the image now -- a previous abandoned frame may have left
         // one already acquired, and Submit still needs to present it.
         AcquiredSwapchain = swapchain;
         if (!swapchain.ImageAcquired)
@@ -91,8 +93,8 @@ public unsafe sealed class VkCommandList : ICommandList
         int height = desc.ViewportHeight > 0 ? desc.ViewportHeight : swapchain.Height;
 
         // Clear values are indexed by attachment. Attachment order matches
-        // GetOrCreateRenderPass: [0] colour, [1] depth, and — when the
-        // swapchain is multisampled — [2] the resolve target (its load op is
+        // GetOrCreateRenderPass: [0] colour, [1] depth, and -- when the
+        // swapchain is multisampled -- [2] the resolve target (its load op is
         // DontCare so the value is unused, but the array must still cover it).
         int attachmentCount = swapchain.Samples > 1 ? 3 : 2;
         var clearValues = stackalloc ClearValue[3];
@@ -122,7 +124,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void EndPass()
     {
-        if (Disowned || !_passActive) return;
+        if (Disowned || !_passActive)
+            return;
         _device.Api.CmdEndRenderPass(_commandBuffer);
         _passActive    = false;
         _boundPipeline = null;
@@ -133,7 +136,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetPipeline(PipelineHandle pipeline)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
         var pipelineRes = _device.Pipelines[pipeline.Id];
         _boundPipeline  = pipelineRes;
         _device.Api.CmdBindPipeline(_commandBuffer, PipelineBindPoint.Graphics, pipelineRes.Handle);
@@ -142,7 +146,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetBindings(in Bindings bindings)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
 
         // Copy the spans into our private arrays so EnsureDescriptorSet can
         // reuse them later (the input spans are stack-only).
@@ -163,7 +168,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     private void EnsureDescriptorSet()
     {
-        if (!_bindingsDirty || _boundPipeline == null) return;
+        if (!_bindingsDirty || _boundPipeline == null)
+            return;
         _bindingsDirty = false;
 
         // Allocate a fresh descriptor set from the per-frame transient pool.
@@ -184,7 +190,7 @@ public unsafe sealed class VkCommandList : ICommandList
         //   binding 0 = ConstantBuffers[0]  (ViewParams cbuf)
         //   binding 1 = Textures[0]         (Atlas)
         //   binding 2 = Samplers[0]         (AtlasSamp)
-        // Bindings beyond slot 0 of each category are ignored for now — if a
+        // Bindings beyond slot 0 of each category are ignored for now -- if a
         // shader needs them, both the VK_BINDING decoration and this mapping
         // must grow together.
         var writes = stackalloc WriteDescriptorSet[3];
@@ -248,7 +254,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetVertexBuffers(ReadOnlySpan<VertexBufferBinding> buffers)
     {
-        if (Disowned || buffers.IsEmpty || _boundPipeline == null) return;
+        if (Disowned || buffers.IsEmpty || _boundPipeline == null)
+            return;
 
         int count = Math.Min(buffers.Length, RhiLimits.MaxVertexBuffers);
         var vertexBuffers = stackalloc VkBuffer[RhiLimits.MaxVertexBuffers];
@@ -263,7 +270,8 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetIndexBuffer(BufferHandle buffer, IndexFormat format, int offsetBytes = 0)
     {
-        if (Disowned || !buffer.IsValid) return;
+        if (Disowned || !buffer.IsValid)
+            return;
         var bufferRes = _device.Buffers[buffer.Id];
         _device.Api.CmdBindIndexBuffer(_commandBuffer, bufferRes.Handle, (ulong)offsetBytes,
                                        format == IndexFormat.U16 ? IndexType.Uint16 : IndexType.Uint32);
@@ -271,16 +279,18 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void PushConstants(ReadOnlySpan<byte> data)
     {
-        if (Disowned || data.IsEmpty || _boundPipeline == null) return;
+        if (Disowned || data.IsEmpty || _boundPipeline == null)
+            return;
         fixed (byte* pData = data)
             _device.Api.CmdPushConstants(_commandBuffer, _device.SharedPipelineLayout,
                                          ShaderStageFlags.VertexBit | ShaderStageFlags.FragmentBit,
                                          0, (uint)data.Length, pData);
     }
 
-    public void SetViewport(int x, int y, int width, int height, float minDepth = 0f, float maxDepth = 1f)
+    public void SetViewport(int x, int y, int width, int height, float minDepth = 0.0f, float maxDepth = 1.0f)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
 
         // Y-axis compensation is done at SPIR-V level via the DXC
         // `-fvk-invert-y` build flag, so the viewport stays in standard
@@ -298,14 +308,16 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void SetScissor(int x, int y, int width, int height)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
         var scissor = new Rect2D(new Offset2D(x, y), new Extent2D((uint)width, (uint)height));
         _device.Api.CmdSetScissor(_commandBuffer, 0, 1, in scissor);
     }
 
     public void Draw(int vertexCount, int instanceCount = 1, int firstVertex = 0, int firstInstance = 0)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
         EnsureDescriptorSet();
         _device.Api.CmdDraw(_commandBuffer, (uint)vertexCount, (uint)Math.Max(1, instanceCount),
                             (uint)firstVertex, (uint)firstInstance);
@@ -314,7 +326,8 @@ public unsafe sealed class VkCommandList : ICommandList
     public void DrawIndexed(int indexCount, int instanceCount = 1, int firstIndex = 0,
                             int baseVertex = 0, int firstInstance = 0)
     {
-        if (Disowned) return;
+        if (Disowned)
+            return;
         EnsureDescriptorSet();
         _device.Api.CmdDrawIndexed(_commandBuffer, (uint)indexCount, (uint)Math.Max(1, instanceCount),
                                    (uint)firstIndex, baseVertex, (uint)firstInstance);
@@ -322,13 +335,14 @@ public unsafe sealed class VkCommandList : ICommandList
 
     public void UpdateBuffer(BufferHandle buffer, int offsetBytes, ReadOnlySpan<byte> data)
     {
-        if (Disowned || data.IsEmpty) return;
+        if (Disowned || data.IsEmpty)
+            return;
         var bufferRes = _device.Buffers[buffer.Id];
 
         // Dynamic buffers: write directly into the persistently-mapped region.
         // No barrier needed because HOST_COHERENT memory is visible to the GPU
         // without an explicit flush. Callers are expected to call UpdateBuffer
-        // outside an active render pass — but since dynamic vertex buffers are
+        // outside an active render pass -- but since dynamic vertex buffers are
         // typically written then used in the same pass, that case is tolerated
         // (mapping is unaffected by the render pass).
         if (bufferRes.Mapped != null)

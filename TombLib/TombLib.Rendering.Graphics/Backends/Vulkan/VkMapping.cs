@@ -15,7 +15,7 @@ using VkBlendOp = Silk.NET.Vulkan.BlendOp;
 namespace TombLib.Rendering.Graphics.Backends.Vulkan;
 
 /// <summary>
-/// RHI → Vulkan enum mappings. Mirrors the corresponding Dx11Mapping helpers.
+/// RHI -> Vulkan enum mappings. Mirrors the corresponding Dx11Mapping helpers.
 /// All conversions are one-to-one and total: every RHI enum value gets a
 /// concrete Vulkan equivalent.
 /// </summary>
@@ -58,7 +58,7 @@ internal static class VkMapping
     public static bool IsDepthFormat(RhiFormat format) =>
         format == RhiFormat.D24_UNorm_S8_UInt || format == RhiFormat.D32_Float;
 
-    /// <summary>Image aspect mask for a format — colour, or depth (+ stencil for D24S8).</summary>
+    /// <summary>Image aspect mask for a format -- colour, or depth (+ stencil for D24S8).</summary>
     public static ImageAspectFlags AspectOf(RhiFormat format) =>
         IsDepthFormat(format)
             ? ImageAspectFlags.DepthBit |

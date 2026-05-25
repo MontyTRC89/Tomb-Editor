@@ -9,7 +9,7 @@ using TombLib.Rendering.Graphics.Rhi;
 namespace TombLib.Rendering.Graphics.Preview;
 
 /// <summary>
-/// Minimal line-list renderer for editor wireframe overlays — grids,
+/// Minimal line-list renderer for editor wireframe overlays -- grids,
 /// bounding boxes, debug helpers. Reuses the Gizmo shader (Position +
 /// packed RGBA) with a <see cref="PrimitiveTopology.LineList"/> pipeline.
 ///
@@ -49,7 +49,7 @@ public sealed class LinePrimitiveRenderer : IDisposable
     {
         _device = device;
 
-        // Reuse the Gizmo shader — same vertex format (Position + Color),
+        // Reuse the Gizmo shader -- same vertex format (Position + Color),
         // same ViewProjection constant buffer. We only need to swap the
         // topology to LineList.
         var (vs, ps) = ShaderLibrary.Load("Gizmo");
@@ -65,7 +65,7 @@ public sealed class LinePrimitiveRenderer : IDisposable
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: VertexStride) },
             Topology               = PrimitiveTopology.LineList,
             Rasterizer             = new RasterizerState(CullMode.None),
-            // Wireframe overlays draw on top — depth-write off keeps the
+            // Wireframe overlays draw on top -- depth-write off keeps the
             // colour without occluding solid geometry behind it.
             DepthStencil           = DepthStencilState.DepthReadOnly,
             BlendStates            = new[] { BlendState.AlphaBlend },
@@ -99,7 +99,7 @@ public sealed class LinePrimitiveRenderer : IDisposable
             ReadOnlySpan<byte>.Empty);
     }
 
-    /// <summary>Drop all buffered vertices — start a new frame's batch.</summary>
+    /// <summary>Drop all buffered vertices -- start a new frame's batch.</summary>
     public void Begin() => _vertexCount = 0;
 
     /// <summary>Emit one line segment (two vertices) into the current batch.</summary>
@@ -146,12 +146,13 @@ public sealed class LinePrimitiveRenderer : IDisposable
     /// Emit a wireframe sphere as three axis-aligned great circles
     /// (XY, YZ, XZ planes), <paramref name="segments"/> segments each. Approximates
     /// the legacy <c>GeometricPrimitive.Sphere</c> rendered with the wireframe
-    /// rasterizer state — cheaper than full triangle wireframe + matches
+    /// rasterizer state -- cheaper than full triangle wireframe + matches
     /// the editor's visual style for light/radius indicators.
     /// </summary>
     public void AddWireSphere(Vector3 center, float radius, int segments, uint color)
     {
-        if (segments < 3 || radius <= 0f) return;
+        if (segments < 3 || radius <= 0.0f)
+            return;
         float step = (float)(Math.PI * 2.0) / segments;
         for (int i = 0; i < segments; i++)
         {
@@ -161,14 +162,14 @@ public sealed class LinePrimitiveRenderer : IDisposable
             float c1 = (float)Math.Cos(a1), s1 = (float)Math.Sin(a1);
 
             // XY plane (Z=0).
-            AddLine(center + new Vector3(c0 * radius, s0 * radius, 0f),
-                    center + new Vector3(c1 * radius, s1 * radius, 0f), color, color);
+            AddLine(center + new Vector3(c0 * radius, s0 * radius, 0.0f),
+                    center + new Vector3(c1 * radius, s1 * radius, 0.0f), color, color);
             // XZ plane (Y=0).
-            AddLine(center + new Vector3(c0 * radius, 0f, s0 * radius),
-                    center + new Vector3(c1 * radius, 0f, s1 * radius), color, color);
+            AddLine(center + new Vector3(c0 * radius, 0.0f, s0 * radius),
+                    center + new Vector3(c1 * radius, 0.0f, s1 * radius), color, color);
             // YZ plane (X=0).
-            AddLine(center + new Vector3(0f, c0 * radius, s0 * radius),
-                    center + new Vector3(0f, c1 * radius, s1 * radius), color, color);
+            AddLine(center + new Vector3(0.0f, c0 * radius, s0 * radius),
+                    center + new Vector3(0.0f, c1 * radius, s1 * radius), color, color);
         }
     }
 
@@ -179,22 +180,24 @@ public sealed class LinePrimitiveRenderer : IDisposable
     /// </summary>
     public void AddGridXZ(float size, int cells, uint color)
     {
-        if (cells <= 0) return;
+        if (cells <= 0)
+            return;
         float half = size * 0.5f;
         float step = size / cells;
         for (int i = 0; i <= cells; i++)
         {
             float x = -half + i * step;
-            AddLine(new Vector3(x, 0f, -half), new Vector3(x, 0f, half), color, color);
+            AddLine(new Vector3(x, 0.0f, -half), new Vector3(x, 0.0f, half), color, color);
             float z = -half + i * step;
-            AddLine(new Vector3(-half, 0f, z), new Vector3(half, 0f, z), color, color);
+            AddLine(new Vector3(-half, 0.0f, z), new Vector3(half, 0.0f, z), color, color);
         }
     }
 
     /// <summary>Upload + draw everything queued since <see cref="Begin"/>.</summary>
     public void Flush(ICommandList cl, Matrix4x4 viewProjection)
     {
-        if (_vertexCount == 0) return;
+        if (_vertexCount == 0)
+            return;
 
         cl.UpdateBuffer(_vb, 0, new ReadOnlySpan<byte>(_vbCpu, 0, _vertexCount * VertexStride));
 
@@ -216,7 +219,8 @@ public sealed class LinePrimitiveRenderer : IDisposable
     private void EnsureCapacity(int needVertices)
     {
         int needBytes = needVertices * VertexStride;
-        if (needBytes <= _vbCapacityBytes) return;
+        if (needBytes <= _vbCapacityBytes)
+            return;
         int newCap = _vbCapacityBytes / VertexStride;
         while (newCap < needVertices) newCap *= 2;
         // Preserve existing buffered vertices on resize.

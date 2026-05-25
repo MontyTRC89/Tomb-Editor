@@ -27,11 +27,11 @@ public struct Glyph
 
 /// <summary>
 /// Cross-platform dynamic glyph atlas for the V2 text pass. Glyphs are
-/// rasterised on demand with SixLabors (fully managed — no GDI, no native
+/// rasterised on demand with SixLabors (fully managed -- no GDI, no native
 /// binaries) so non-Latin scripts work the same on every backend / OS.
 ///
 /// <para>Coverage is stored in the texture's ALPHA channel (RGB is white).
-/// A 4×4 fully-opaque block sits at (0,0) so the text pipeline can draw the
+/// A 4x4 fully-opaque block sits at (0,0) so the text pipeline can draw the
 /// legacy "font overlay" background box by sampling <see cref="SolidUv"/>.</para>
 ///
 /// <para>The atlas owns a CPU-side mirror and re-creates the GPU texture
@@ -43,7 +43,7 @@ public sealed class GlyphAtlas : IDisposable
     /// <summary>Atlas texture dimensions (square).</summary>
     public const int Size = 1024;
     /// <summary>Font size used to rasterise glyphs, in pixels.</summary>
-    public const float FontSizePx = 16f;
+    public const float FontSizePx = 16.0f;
 
     private const int Pad        = 1;  // transparent border around each glyph
     private const int SolidBlock = 4;  // size of the opaque texel block at (0,0)
@@ -61,7 +61,7 @@ public sealed class GlyphAtlas : IDisposable
     // Shelf packer cursor.
     private int _shelfX, _shelfY, _shelfH;
 
-    /// <summary>False when no usable system font was found — the renderer then skips text.</summary>
+    /// <summary>False when no usable system font was found -- the renderer then skips text.</summary>
     public bool Available { get; private set; }
     /// <summary>Vertical distance between consecutive text lines, in pixels.</summary>
     public float LineHeight { get; private set; } = FontSizePx * 1.3f;
@@ -106,11 +106,12 @@ public sealed class GlyphAtlas : IDisposable
             if (SystemFonts.TryGet(name, out family)) { found = true; break; }
         if (!found)
             foreach (FontFamily fam in SystemFonts.Families) { family = fam; found = true; break; }
-        if (!found) return;
+        if (!found)
+            return;
 
         _font = family.CreateFont(FontSizePx, FontStyle.Regular);
 
-        // Fallback families for code points the primary font lacks — chiefly
+        // Fallback families for code points the primary font lacks -- chiefly
         // CJK, but also anything else SixLabors needs to fill in. Drawing /
         // measuring automatically walks this list per glyph.
         string[] fallbackNames =
@@ -130,7 +131,7 @@ public sealed class GlyphAtlas : IDisposable
         try
         {
             FontRectangle adv = TextMeasurer.MeasureAdvance("Ayg", MakeOptions(Vector2.Zero));
-            if (adv.Height > 1f) LineHeight = adv.Height;
+            if (adv.Height > 1.0f) LineHeight = adv.Height;
         }
         catch { /* keep the default line height */ }
     }
@@ -228,11 +229,12 @@ public sealed class GlyphAtlas : IDisposable
     /// </summary>
     public void Flush()
     {
-        if (!_dirty) return;
+        if (!_dirty)
+            return;
         _dirty = false;
         // Destroy() defers the actual free to the next frame boundary, so the
         // old atlas stays alive as long as an in-flight frame still samples
-        // it — no explicit GPU drain needed here.
+        // it -- no explicit GPU drain needed here.
         if (_texture.IsValid) _device.Destroy(_texture);
         _texture = CreateTexture();
     }

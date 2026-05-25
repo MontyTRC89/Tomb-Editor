@@ -12,12 +12,12 @@ using RhiIndexFormat = TombLib.Rendering.Graphics.Rhi.IndexFormat;
 namespace TombLib.Rendering.Graphics.Backends.OpenGL;
 
 /// <summary>
-/// RHI → OpenGL enum mappings. Mirrors the corresponding VkMapping / Dx11Mapping
-/// helpers — every RHI enum value maps to a concrete OpenGL equivalent.
+/// RHI -> OpenGL enum mappings. Mirrors the corresponding VkMapping / Dx11Mapping
+/// helpers -- every RHI enum value maps to a concrete OpenGL equivalent.
 /// </summary>
 internal static class GLMapping
 {
-    // Format → (internalFormat, pixelFormat, pixelType). InternalFormat is the
+    // Format -> (internalFormat, pixelFormat, pixelType). InternalFormat is the
     // texture's storage format; PixelFormat + PixelType describe the pixel
     // data being uploaded into it.
     public static (InternalFormat InternalFormat, PixelFormat PixelFormat, PixelType PixelType) ToGl(RhiFormat format)
@@ -41,7 +41,7 @@ internal static class GLMapping
         _ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unmapped format"),
     };
 
-    // Vertex-attribute format → (glType, componentCount, normalized, isInteger).
+    // Vertex-attribute format -> (glType, componentCount, normalized, isInteger).
     public static (VertexAttribPointerType Type, int Components, bool Normalized, bool IsInteger) AttribFormat(RhiFormat format)
         => format switch
     {

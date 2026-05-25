@@ -16,13 +16,13 @@ namespace TombLib.Rendering.Graphics.Backends.Dx11;
 
 /// <summary>
 /// Direct3D 11 backend for <see cref="IRhiDevice"/>. Talks to Silk.NET's
-/// Direct3D11 / DXGI bindings directly — no SharpDX, no middleware.
+/// Direct3D11 / DXGI bindings directly -- no SharpDX, no middleware.
 /// Single-threaded: assumes all calls come from the same rendering thread.
 ///
 /// <para>Split across partial files by concern:
-///   Dx11Device.cs           — device, resources (buffers / textures / samplers).
-///   Dx11Device.Pipeline.cs  — pipeline-state objects.
-///   Dx11Device.Swapchain.cs — DXGI swapchain.</para>
+///   Dx11Device.cs           -- device, resources (buffers / textures / samplers).
+///   Dx11Device.Pipeline.cs  -- pipeline-state objects.
+///   Dx11Device.Swapchain.cs -- DXGI swapchain.</para>
 /// </summary>
 public unsafe sealed partial class Dx11Device : IRhiDevice
 {
@@ -51,7 +51,7 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
     public Dx11Device()
     {
         // GetApi(null) loads the system D3D11 / DXGI without binding to any
-        // specific window — the swapchain explicitly supplies its HWND later.
+        // specific window -- the swapchain explicitly supplies its HWND later.
         _d3d11 = DX.D3D11.GetApi((Silk.NET.Core.Contexts.INativeWindowSource?)null);
         _dxgi  = DXGI.DXGI.GetApi((Silk.NET.Core.Contexts.INativeWindowSource?)null);
 
@@ -74,7 +74,7 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
 
         uint createFlags = (uint)DX.CreateDeviceFlag.BgraSupport;
         // The D3D11 debug layer validates every API call (UpdateSubresource,
-        // Draw, every Set*) and adds 1-10 µs per call. When a wad load fires
+        // Draw, every Set*) and adds 1-10 us per call. When a wad load fires
         // thousands of those in a row the Debug build feels noticeably slower
         // than Release. Opt-in only: set TOMBEDITOR_D3D_DEBUG=1 (or attach a
         // GPU debugger like RenderDoc / PIX, which set it themselves).
@@ -218,7 +218,7 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
 
     public TextureHandle CreateTexture(in TextureDesc desc, ReadOnlySpan<byte> initialData)
     {
-        // MipLevels == 0 → auto-generate a full mip chain. Required for
+        // MipLevels == 0 -> auto-generate a full mip chain. Required for
         // anisotropic filtering to look right at distance. Such a texture
         // also has to be a render target so GenerateMips can run on it.
         bool autoMip   = desc.MipLevels == 0;
@@ -365,7 +365,7 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
         int rowBytes      = texture.Width * bytesPerPixel;
         byte[] pixels     = new byte[rowBytes * texture.Height];
 
-        // Staging texture — CPU-readable, no bind flags, USAGE_STAGING.
+        // Staging texture -- CPU-readable, no bind flags, USAGE_STAGING.
         var stagingDesc = new DX.Texture2DDesc
         {
             Width          = (uint)texture.Width,

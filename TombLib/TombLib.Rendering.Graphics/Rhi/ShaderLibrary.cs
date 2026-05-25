@@ -32,7 +32,7 @@ public static class ShaderLibrary
             _ => throw new ArgumentOutOfRangeException(nameof(stage)),
         };
 
-        // Entry point name kept verbatim from HLSL — the build pipeline
+        // Entry point name kept verbatim from HLSL -- the build pipeline
         // invokes DXC with `-E vs_main` / `-E ps_main`, so SPIR-V exposes the
         // same names (not "main"). DX11 doesn't care since it reads the
         // entry name from the bytecode header.

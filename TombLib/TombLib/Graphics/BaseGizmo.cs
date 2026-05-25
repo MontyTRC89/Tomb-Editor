@@ -46,7 +46,7 @@ namespace TombLib.Graphics
     /// Headless picking + drag-math core for the editor transform gizmo. The
     /// actual visuals are drawn by the V2 <c>GizmoRenderer</c>, which reads
     /// <see cref="GetPublicState"/> at the start of each render pass. This
-    /// class owns no GPU resources — concrete derivations only override the
+    /// class owns no GPU resources -- concrete derivations only override the
     /// abstract callbacks below to write the picked transform back into their
     /// editor state.
     /// </summary>
@@ -73,7 +73,7 @@ namespace TombLib.Graphics
 
         /// <summary>
         /// Kept for binary compatibility with existing
-        /// <c>_gizmo?.Dispose()</c> call sites — the gizmo no longer owns
+        /// <c>_gizmo?.Dispose()</c> call sites -- the gizmo no longer owns
         /// any unmanaged resources of its own.
         /// </summary>
         public void Dispose() { }
@@ -511,7 +511,7 @@ namespace TombLib.Graphics
                 // Reads of g.RotationX / RotationY / RotationZ on the
                 // concrete gizmo cast to IRotateableY[X[Roll]]. Skipping the
                 // cast when the axis isn't supported matches what
-                // RotateMatrix* do internally — otherwise selecting a
+                // RotateMatrix* do internally -- otherwise selecting a
                 // StaticInstance (IRotateableY only) would throw on the
                 // RotationX/Z reads here.
                 RotationY            = g.SupportRotationY ? g.RotationY : 0.0f;

@@ -91,7 +91,8 @@ namespace WadTool.Controls
                 switch (EditingMode)
                 {
                     case MeshEditingMode.FaceAttributes:
-                        if (_currentElement == value) return;
+                        if (_currentElement == value)
+                            return;
                         SelectElement(value);
                         engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt);
                         break;
@@ -266,15 +267,15 @@ namespace WadTool.Controls
         private readonly List<int> _oldLaraHairIndices   = new List<int>() { 37, 38, 39, 40 };
         private readonly List<int> _youngLaraHairIndices = new List<int>() { 68, 69, 70, 71, 76, 77, 78, 79 };
 
-        protected override Vector4 ClearColor => _tool?.Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1f);
+        protected override Vector4 ClearColor => _tool?.Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
-        public override float FieldOfView => _tool?.Configuration?.RenderingItem_FieldOfView ?? 50f;
+        public override float FieldOfView => _tool?.Configuration?.RenderingItem_FieldOfView ?? 50.0f;
         // Mesh editor operates at a much smaller scale than the other previews,
         // so divide the wheel-zoom speed by 4 (legacy behaviour).
-        public override float NavigationSpeedMouseWheelZoom => (_tool?.Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f) / 4f;
-        public override float NavigationSpeedMouseZoom => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
-        public override float NavigationSpeedMouseTranslate => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
-        public override float NavigationSpeedMouseRotate => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+        public override float NavigationSpeedMouseWheelZoom => (_tool?.Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6.0f) / 4.0f;
+        public override float NavigationSpeedMouseZoom => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800.0f;
+        public override float NavigationSpeedMouseTranslate => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500.0f;
+        public override float NavigationSpeedMouseRotate => _tool?.Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4.0f;
 
         public PanelRenderingMesh()
         {
@@ -316,7 +317,7 @@ namespace WadTool.Controls
                 return;
 
             // Mesh edits in the mesh editor happen in-place on the WadMesh
-            // (poly textures, vertex colours, weights, positions, …). The V2
+            // (poly textures, vertex colours, weights, positions, ...). The V2
             // mesh cache keys by reference, so without an explicit drop the
             // cached VB would keep showing the pre-edit data. Legacy parity:
             // WadRenderer.GetStatic re-built every paint via DataVersion bumps.
@@ -330,15 +331,15 @@ namespace WadTool.Controls
             if (DrawGrid)
             {
                 // Mesh editor uses a much smaller working area than the
-                // skeleton/item previews; legacy GridPlane(8, 4) → ~256-unit
+                // skeleton/item previews; legacy GridPlane(8, 4) -> ~256-unit
                 // cells in this view.
-                _lines.AddGridXZ(size: 1024f, cells: 16, color: 0xFF_FF_FF_FFu);
+                _lines.AddGridXZ(size: 1024.0f, cells: 16, color: 0xFF_FF_FF_FFu);
             }
 
             // The textured mesh draws underneath every overlay. In the legacy
             // weight-edit mode the textured pass was skipped so flat weight
             // colours filled the screen; V2 doesn't have a wireframe-only
-            // pipeline, so we always draw the textured mesh — vertex spheres
+            // pipeline, so we always draw the textured mesh -- vertex spheres
             // + text labels carry the weight information instead.
             PreviewDevice.Renderer.RenderMesh(cl, VisibleMesh, Matrix4x4.Identity, viewProjection);
 
@@ -370,7 +371,8 @@ namespace WadTool.Controls
                     for (int i = 0; i < count; i++)
                     {
                         var n = Mesh.VertexNormals[i];
-                        if (n.LengthSquared() <= 1e-6f) continue;
+                        if (n.LengthSquared() <= 1e-6f)
+                            continue;
                         var p = Mesh.VertexPositions[i];
                         var nn = n / n.Length();
                         uint nc = i == _currentElement ? 0xFF_00_00_FFu : 0xFF_FF_FF_FFu;
@@ -423,7 +425,8 @@ namespace WadTool.Controls
 
         private uint GetVertexMarkerColor(int i, int safeIndex, bool selected)
         {
-            if (selected) return 0x80_00_00_FFu; // red, semi-transparent
+            if (selected)
+                return 0x80_00_00_FFu; // red, semi-transparent
 
             switch (EditingMode)
             {
@@ -438,7 +441,7 @@ namespace WadTool.Controls
                         float glow = a.Glow == 0 ? 0 : (a.Glow + 64.0f) / 128.0f;
                         float move = a.Move == 0 ? 0 : (a.Move + 64.0f) / 128.0f;
                         // Pack as RGBA with R=move (legacy used B=move), G=glow.
-                        return PackColor(0f, glow, move, 0.7f);
+                        return PackColor(0.0f, glow, move, 0.7f);
                     }
                     return 0xCC_00_00_00u; // black
                 case MeshEditingMode.VertexWeights:
@@ -452,16 +455,17 @@ namespace WadTool.Controls
 
         private static uint PackColor(float r, float g, float b, float a)
         {
-            byte br = (byte)Math.Clamp((int)(r * 255f + 0.5f), 0, 255);
-            byte bg = (byte)Math.Clamp((int)(g * 255f + 0.5f), 0, 255);
-            byte bb = (byte)Math.Clamp((int)(b * 255f + 0.5f), 0, 255);
-            byte ba = (byte)Math.Clamp((int)(a * 255f + 0.5f), 0, 255);
+            byte br = (byte)Math.Clamp((int)(r * 255.0f + 0.5f), 0, 255);
+            byte bg = (byte)Math.Clamp((int)(g * 255.0f + 0.5f), 0, 255);
+            byte bb = (byte)Math.Clamp((int)(b * 255.0f + 0.5f), 0, 255);
+            byte ba = (byte)Math.Clamp((int)(a * 255.0f + 0.5f), 0, 255);
             return (uint)(br | (bg << 8) | (bb << 16) | (ba << 24));
         }
 
         protected override void CollectText(List<TextLabel> labels, Matrix4x4 viewProjection)
         {
-            if (Mesh == null || _tool == null) return;
+            if (Mesh == null || _tool == null)
+                return;
             if (!(EditingMode == MeshEditingMode.VertexRemap ||
                   EditingMode == MeshEditingMode.VertexEffects ||
                   EditingMode == MeshEditingMode.VertexWeights ||
@@ -473,10 +477,11 @@ namespace WadTool.Controls
             for (int i = 0; i < Mesh.VertexPositions.Count; i++)
             {
                 var selected = i == _currentElement;
-                if (!(DrawExtraInfo || selected)) continue;
+                if (!(DrawExtraInfo || selected))
+                    continue;
 
                 // Skip duplicates that share a vertex coord with the selected
-                // one — they overlap on screen.
+                // one -- they overlap on screen.
                 if (!selected && _currentElement != -1 &&
                     Mesh.VertexPositions[i] == Mesh.VertexPositions[_currentElement])
                     continue;
@@ -494,12 +499,13 @@ namespace WadTool.Controls
                         break;
                 }
 
-                if (string.IsNullOrEmpty(msg)) continue;
+                if (string.IsNullOrEmpty(msg))
+                    continue;
                 labels.Add(TextLabel.World(msg,
                     worldPosition: VisibleMesh.VertexPositions[i],
-                    color: new Vector4(1f, 1f, 1f, 1f),
+                    color: new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
                     background: overlays,
-                    alignment: new Vector2(0f, 0f),
+                    alignment: new Vector2(0.0f, 0.0f),
                     pixelOffset: new Vector2(2, -2)));
             }
         }
@@ -602,7 +608,8 @@ namespace WadTool.Controls
         {
             base.OnMouseUp(e);
 
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+                return;
 
             CurrentElement = -1;
 
@@ -624,7 +631,8 @@ namespace WadTool.Controls
 
         private void TryPickElement(float x, float y, bool continuous = false)
         {
-            if (_mesh == null) return;
+            if (_mesh == null)
+                return;
 
             var ray = Ray.GetPickRay(Camera, ClientSize, x, y);
             float distance = float.MaxValue;

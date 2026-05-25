@@ -37,7 +37,7 @@ public static class PreviewDevice
     /// Set the RHI backend preference ("Default" / "Vulkan" / "OpenGL" /
     /// "DX11") before the first lazy device creation. The environment
     /// variable <c>TOMBEDITOR_RHI</c> still overrides this. Must be called
-    /// before any preview panel paints — once the device is up, the
+    /// before any preview panel paints -- once the device is up, the
     /// preference is fixed.
     /// </summary>
     public static void SetBackendPreference(string? preference)
@@ -79,7 +79,8 @@ public static class PreviewDevice
     {
         get
         {
-            if (_device == null) return null;
+            if (_device == null)
+                return null;
             return _device.Capabilities.Backend switch
             {
                 RhiBackendKind.Vulkan    => "Vulkan",
@@ -94,14 +95,15 @@ public static class PreviewDevice
     /// Adopt an existing <see cref="IRhiDevice"/> instead of creating a fresh
     /// one on first use. Called by <see cref="LevelRenderer"/> at construction
     /// so the preview panel + thumbnail renderer share the same device as
-    /// the main 3D viewport — one device, one atlas cache, no extra ~100 ms
+    /// the main 3D viewport -- one device, one atlas cache, no extra ~100 ms
     /// device-creation hit on the first thumbnail batch.
     /// </summary>
     public static void RegisterSharedDevice(IRhiDevice device)
     {
         lock (_lock)
         {
-            if (_renderer != null) return;
+            if (_renderer != null)
+                return;
             _device     = device;
             _ownsDevice = false;
             _renderer   = new WadObjectPreviewRenderer(_device);
@@ -112,10 +114,12 @@ public static class PreviewDevice
 
     private static void EnsureCreated()
     {
-        if (_renderer != null) return;
+        if (_renderer != null)
+            return;
         lock (_lock)
         {
-            if (_renderer != null) return;
+            if (_renderer != null)
+                return;
             _device     = TombLib.Rendering.Graphics.Rhi.RhiBackend.Create(_backendPreference);
             _ownsDevice = true;
             _renderer   = new WadObjectPreviewRenderer(_device);
@@ -124,7 +128,7 @@ public static class PreviewDevice
         }
     }
 
-    /// <summary>Drop every cached per-object mesh / atlas — call on WAD reload.</summary>
+    /// <summary>Drop every cached per-object mesh / atlas -- call on WAD reload.</summary>
     public static void InvalidateAll() => _renderer?.InvalidateAll();
 }
 
@@ -142,7 +146,8 @@ public abstract class ItemPreviewPanel : Panel
         get => _currentObject;
         set
         {
-            if (ReferenceEquals(_currentObject, value)) return;
+            if (ReferenceEquals(_currentObject, value))
+                return;
             _currentObject = value;
             // Match the legacy panel: do NOT call ResetCamera here. Callers
             // that need a fresh frame call ResetCamera() explicitly (so that
@@ -154,17 +159,18 @@ public abstract class ItemPreviewPanel : Panel
     }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public ArcBallCamera Camera { get; set; } = MakeDefaultCamera(45f);
+    public ArcBallCamera Camera { get; set; } = MakeDefaultCamera(45.0f);
 
     public bool AnimatePreview
     {
         get => _animatePreview;
         set
         {
-            if (_animatePreview == value) return;
+            if (_animatePreview == value)
+                return;
             _animatePreview = value;
             _animTimer.Enabled = value;
-            _rotationFactor = 0f;
+            _rotationFactor = 0.0f;
         }
     }
     private bool _animatePreview = true;
@@ -172,7 +178,7 @@ public abstract class ItemPreviewPanel : Panel
     /// <summary>
     /// Kept for designer compatibility with the old <c>PanelItemPreview</c>
     /// (transparency was a per-control switch in the legacy renderer). The
-    /// preview pipeline does not yet implement alpha-blended draws — the flag
+    /// preview pipeline does not yet implement alpha-blended draws -- the flag
     /// is accepted but has no effect.
     /// </summary>
     public bool DrawTransparency { get; set; } = false;
@@ -202,7 +208,7 @@ public abstract class ItemPreviewPanel : Panel
     {
         BorderStyle = BorderStyle.None;
         // Don't enable OptimizedDoubleBuffer / UserPaint / AllPaintingInWmPaint
-        // here — those make WinForms allocate a GDI back buffer and BitBlt it
+        // here -- those make WinForms allocate a GDI back buffer and BitBlt it
         // over the window each WM_PAINT, which wipes the DXGI swapchain's
         // presented frame to black between draws. The legacy RenderingPanel
         // also leaves these alone for the same reason.
@@ -217,16 +223,16 @@ public abstract class ItemPreviewPanel : Panel
             return;
         }
         var (center, radius) = WadObjectPreviewHelper.ComputeBoundingSphere(_currentObject);
-        radius = Math.Max(radius * 1.15f, 50f);
+        radius = Math.Max(radius * 1.15f, 50.0f);
         Camera = new ArcBallCamera(center, MathC.DegToRad(35), MathC.DegToRad(35),
             -(float)Math.PI / 2, (float)Math.PI / 2,
             radius * 3, 50, 1_000_000, FieldOfView * (float)(Math.PI / 180));
     }
 
     private static ArcBallCamera MakeDefaultCamera(float fovDegrees) =>
-        new ArcBallCamera(new Vector3(0f, 256f, 0f),
+        new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f),
             0, 0, -(float)Math.PI / 2, (float)Math.PI / 2,
-            2048f, 100, 1_000_000, fovDegrees * (float)(Math.PI / 180));
+            2048.0f, 100, 1_000_000, fovDegrees * (float)(Math.PI / 180));
 
     private static bool IsValid(IWadObject obj)
     {
@@ -247,8 +253,10 @@ public abstract class ItemPreviewPanel : Panel
 
     private void EnsureSwapchain()
     {
-        if (_swapchainReady) return;
-        if (!IsHandleCreated || ClientSize.Width <= 0 || ClientSize.Height <= 0) return;
+        if (_swapchainReady)
+            return;
+        if (!IsHandleCreated || ClientSize.Width <= 0 || ClientSize.Height <= 0)
+            return;
 
         _width  = ClientSize.Width;
         _height = ClientSize.Height;
@@ -266,10 +274,12 @@ public abstract class ItemPreviewPanel : Panel
     protected override void OnResize(EventArgs e)
     {
         base.OnResize(e);
-        if (!_swapchainReady) return;
+        if (!_swapchainReady)
+            return;
         int w = Math.Max(1, ClientSize.Width);
         int h = Math.Max(1, ClientSize.Height);
-        if (w == _width && h == _height) return;
+        if (w == _width && h == _height)
+            return;
         PreviewDevice.Device.WaitIdle();
         PreviewDevice.Device.ResizeSwapchain(_swap, w, h);
         _width  = w;
@@ -279,7 +289,7 @@ public abstract class ItemPreviewPanel : Panel
 
     protected override void OnPaintBackground(PaintEventArgs pevent)
     {
-        // Suppress GDI background paint — the swapchain owns the surface.
+        // Suppress GDI background paint -- the swapchain owns the surface.
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -296,7 +306,7 @@ public abstract class ItemPreviewPanel : Panel
         var viewProjection = Camera.GetViewProjectionMatrix(_width, _height);
 
         // Collect any text overlays. Text atlas updates MUST run before
-        // BeginCommandList — TextRenderer.Prepare does its own one-shot
+        // BeginCommandList -- TextRenderer.Prepare does its own one-shot
         // submit, which would deadlock the frame's command buffer.
         _textLabels.Clear();
         CollectText(_textLabels, viewProjection);
@@ -317,7 +327,7 @@ public abstract class ItemPreviewPanel : Panel
             DepthLoadOp    = LoadOp.Clear,
             DepthStoreOp   = StoreOp.Store,
             ClearColors    = clearColors,
-            ClearDepth     = 1f,
+            ClearDepth     = 1.0f,
             ViewportWidth  = _width,
             ViewportHeight = _height,
         });
@@ -344,7 +354,7 @@ public abstract class ItemPreviewPanel : Panel
     /// Override hook for subclasses that need to draw additional geometry
     /// (skeleton bones, gizmo overlay, wireframe grid, ...) inside the same
     /// swapchain pass. The default implementation draws <see cref="CurrentObject"/>
-    /// — matching the simple item-browser behaviour.
+    /// -- matching the simple item-browser behaviour.
     /// </summary>
     protected virtual void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
     {
@@ -354,10 +364,12 @@ public abstract class ItemPreviewPanel : Panel
 
     private void OnAnimTick(object? sender, EventArgs e)
     {
-        if (!AnimatePreview || _currentObject == null) return;
-        if (Form.ActiveForm != FindForm()) return;
+        if (!AnimatePreview || _currentObject == null)
+            return;
+        if (Form.ActiveForm != FindForm())
+            return;
         if (_rotationFactor < _rotationSpeed) _rotationFactor += _rotationStep;
-        Camera.Rotate(_rotationFactor, 0f);
+        Camera.Rotate(_rotationFactor, 0.0f);
         Invalidate();
     }
 
@@ -383,7 +395,7 @@ public abstract class ItemPreviewPanel : Panel
         if (e.Button != MouseButtons.Left)
         {
             _animTimer.Stop();
-            _rotationFactor = 0f;
+            _rotationFactor = 0.0f;
         }
     }
 
@@ -398,10 +410,11 @@ public abstract class ItemPreviewPanel : Panel
         base.OnMouseMove(e);
 
         // Editor panels (skeleton / static / animation / mesh) don't set
-        // CurrentObject — they own their own scene state. Camera nav must
+        // CurrentObject -- they own their own scene state. Camera nav must
         // run regardless of whether CurrentObject is populated; otherwise
         // right/middle drag is a no-op for every editor.
-        if (e.Button != MouseButtons.Right && e.Button != MouseButtons.Middle) return;
+        if (e.Button != MouseButtons.Right && e.Button != MouseButtons.Middle)
+            return;
 
         float dx = (e.X - _lastX) / Height;
         float dy = (e.Y - _lastY) / Height;
@@ -437,7 +450,7 @@ public abstract class ItemPreviewPanel : Panel
         base.Dispose(disposing);
     }
 
-    protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1f);
+    protected virtual Vector4 ClearColor { get; } = new Vector4(0.392f, 0.584f, 0.929f, 1.0f);
 
     public abstract float FieldOfView { get; }
     public abstract float NavigationSpeedMouseWheelZoom { get; }
@@ -445,7 +458,7 @@ public abstract class ItemPreviewPanel : Panel
     public abstract float NavigationSpeedMouseTranslate { get; }
     public abstract float NavigationSpeedMouseRotate { get; }
 
-    /// <summary>When true, the panel suppresses drag-source behaviour — used
+    /// <summary>When true, the panel suppresses drag-source behaviour -- used
     /// by the imported-geometry browser and the WAD preview window.</summary>
     public virtual bool ReadOnly => false;
 }

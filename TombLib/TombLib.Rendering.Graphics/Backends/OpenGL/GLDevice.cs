@@ -29,9 +29,9 @@ namespace TombLib.Rendering.Graphics.Backends.OpenGL;
 ///     (FBO 0); Present = wglSwapBuffers.</para>
 ///
 /// <para>Split across partial files by concern:
-///   GLDevice.cs           — device, resources (buffers / textures / samplers).
-///   GLDevice.Pipeline.cs  — pipeline programs and VAOs.
-///   GLDevice.Swapchain.cs — per-HWND WGL surfaces.</para>
+///   GLDevice.cs           -- device, resources (buffers / textures / samplers).
+///   GLDevice.Pipeline.cs  -- pipeline programs and VAOs.
+///   GLDevice.Swapchain.cs -- per-HWND WGL surfaces.</para>
 /// </summary>
 public unsafe sealed partial class GLDevice : IRhiDevice
 {
@@ -41,7 +41,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     internal IntPtr Hglrc;
     private  WglLoader? _loader;
 
-    // Resource pools (handle id → resource).
+    // Resource pools (handle id -> resource).
     private uint _nextHandle = 1;
     internal readonly Dictionary<uint, GLBufferRes>    Buffers    = new();
     internal readonly Dictionary<uint, GLTextureRes>   Textures   = new();
@@ -54,7 +54,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     public GLDevice()
     {
         // A GL context needs a Win32 window. The editor's Panel3D HWND arrives
-        // later via CreateSwapchain — at device-creation time there's none yet.
+        // later via CreateSwapchain -- at device-creation time there's none yet.
         // Trick: bootstrap a context on a throwaway "dummy" window, then bind
         // to the real HWND when CreateSwapchain is first called.
         InitDummyContext();
@@ -79,7 +79,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     public void Dispose()
     {
-        // Swapchains only hold an HDC / HWND borrowed from Panel3D — nothing
+        // Swapchains only hold an HDC / HWND borrowed from Panel3D -- nothing
         // GL-side to free for them.
         foreach (var pipeline in Pipelines.Values)
         {
@@ -128,7 +128,8 @@ public unsafe sealed partial class GLDevice : IRhiDevice
         for (uint i = 0; i < (uint)extensionCount; i++)
         {
             string extension = Gl.GetStringS(StringName.Extensions, i);
-            if (extension == name) return true;
+            if (extension == name)
+                return true;
         }
         return false;
     }
@@ -191,7 +192,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
                 WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
                 WGL_CONTEXT_MINOR_VERSION_ARB, 3,
                 WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-                // Debug bit when the env var asks for it — costs ~5% on most drivers.
+                // Debug bit when the env var asks for it -- costs ~5% on most drivers.
                 WGL_CONTEXT_FLAGS_ARB,
                 Environment.GetEnvironmentVariable("TOMBEDITOR_GL_DEBUG") == "1" ? WGL_CONTEXT_DEBUG_BIT_ARB : 0,
                 0,
@@ -243,7 +244,8 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     private static void OnGlDebugMessage(GLEnum source, GLEnum type, int id, GLEnum severity,
                                          int length, nint message, nint userParam)
     {
-        if (severity == GLEnum.DebugSeverityNotification) return;
+        if (severity == GLEnum.DebugSeverityNotification)
+            return;
         string text = Marshal.PtrToStringAnsi(message, length) ?? "(no msg)";
         try
         {
@@ -291,7 +293,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     private static extern bool WglDeleteContext(IntPtr hglrc);
     [DllImport("opengl32.dll", EntryPoint = "wglMakeCurrent")]
     private static extern bool WglMakeCurrent(IntPtr hdc, IntPtr hglrc);
-    /// <summary>Exposed for GLCommandList.BeginPass — the same WGL call.</summary>
+    /// <summary>Exposed for GLCommandList.BeginPass -- the same WGL call.</summary>
     internal static bool WglMakeCurrentExt(IntPtr hdc, IntPtr hglrc) => WglMakeCurrent(hdc, hglrc);
     [DllImport("opengl32.dll", EntryPoint = "wglGetProcAddress")]
     private static extern IntPtr WglGetProcAddress(string name);
@@ -307,9 +309,10 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     private static IntPtr CreateMessageWindow()
     {
-        if (s_messageWindow != IntPtr.Zero) return s_messageWindow;
+        if (s_messageWindow != IntPtr.Zero)
+            return s_messageWindow;
         const uint WS_POPUP = 0x80000000;
-        // Reuse a built-in Win32 class — "STATIC" is always registered. This
+        // Reuse a built-in Win32 class -- "STATIC" is always registered. This
         // window is never made visible.
         s_messageWindow = CreateWindowExW(0, "STATIC", "TombEditorGL", WS_POPUP,
                                           0, 0, 1, 1, IntPtr.Zero, IntPtr.Zero, GetModuleHandleW(null), IntPtr.Zero);
@@ -354,7 +357,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
         // Always allocate with DynamicStorageBit so glNamedBufferSubData works
         // for any later UpdateBuffer call. Persistent mapping is deliberately
-        // NOT used — it required per-driver memory barriers to make CPU writes
+        // NOT used -- it required per-driver memory barriers to make CPU writes
         // visible to subsequent draws, and getting that wrong showed up as
         // ghost / flickering frames after editor state changes.
         // glNamedBufferSubData is enough for the editor's update rates.
@@ -407,7 +410,7 @@ public unsafe sealed partial class GLDevice : IRhiDevice
                                      pixelFormat, pixelType, src);
         }
 
-        // Default texture parameters — samplers override these per-binding,
+        // Default texture parameters -- samplers override these per-binding,
         // but reasonable defaults make naked sampling work too.
         Gl.TextureParameter(texture, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
         Gl.TextureParameter(texture, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -524,14 +527,14 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     public ICommandList BeginCommandList()
     {
-        // No context is made current here — every swapchain owns its own HDC,
+        // No context is made current here -- every swapchain owns its own HDC,
         // and BeginCommandList doesn't know which swapchain the caller's
         // BeginPass will target. The correct binding happens in
         // GLCommandList.BeginPass and in Present, both of which receive a
         // SwapchainHandle and pick the matching HDC. A single shared HDC here
         // would let the most-recently-created swapchain (typically an
         // item-preview panel) steal the current target and make the main
-        // Panel3D viewport silently render to a hidden surface — exactly the
+        // Panel3D viewport silently render to a hidden surface -- exactly the
         // "frozen viewport after level load" symptom that was reported.
         return new GLCommandList(this);
     }

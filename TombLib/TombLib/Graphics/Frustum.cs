@@ -6,7 +6,7 @@ namespace TombLib.Graphics
 {
     /// <summary>
     /// View-frustum culler. The 6 clip planes are extracted from the
-    /// view × projection matrix (Gribb-Hartmann method) and box / sphere /
+    /// view x projection matrix (Gribb-Hartmann method) and box / sphere /
     /// point tests check that the candidate is in front of every plane (i.e.
     /// inside or straddling the frustum). Pure System.Numerics.
     /// </summary>

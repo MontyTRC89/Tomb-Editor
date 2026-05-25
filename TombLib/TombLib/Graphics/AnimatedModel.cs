@@ -10,7 +10,7 @@ namespace TombLib.Graphics
     /// <summary>
     /// CPU-only animated-model view of a <see cref="WadMoveable"/>: bone
     /// hierarchy, bind-pose + per-keyframe animation transforms, plus the
-    /// per-bone WadMesh references. Used by the animation editor — the V2
+    /// per-bone WadMesh references. Used by the animation editor -- the V2
     /// renderer reads <see cref="AnimationTransforms"/> alongside the
     /// per-bone <see cref="WadMesh"/> directly, no GPU buffers needed here.
     /// </summary>
@@ -100,7 +100,7 @@ namespace TombLib.Graphics
             AnimatedModel model = new AnimatedModel();
             List<WadBone> bones = mov.Bones;
 
-            // Per-bone meshes — kept as raw WadMesh references for the V2 renderer.
+            // Per-bone meshes -- kept as raw WadMesh references for the V2 renderer.
             for (int m = 0; m < bones.Count; m++)
                 model.Meshes.Add(bones[m].Mesh);
 

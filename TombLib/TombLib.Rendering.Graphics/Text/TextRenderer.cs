@@ -72,7 +72,7 @@ public sealed class TextRenderer : IDisposable
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: Stride) },
             Topology               = PrimitiveTopology.TriangleList,
             Rasterizer             = new RasterizerState(CullMode.None),
-            // Text is an editor overlay — always on top, no depth interaction.
+            // Text is an editor overlay -- always on top, no depth interaction.
             DepthStencil           = DepthStencilState.Disabled,
             BlendStates            = new[] { BlendState.AlphaBlend },
             ColorAttachmentFormats = new[] { Format.R8G8B8A8_UNorm },
@@ -108,7 +108,7 @@ public sealed class TextRenderer : IDisposable
     /// <summary>
     /// Rasterises every glyph the frame needs and (re)uploads the atlas
     /// texture. MUST be called BEFORE <see cref="IRhiDevice.BeginCommandList"/>
-    /// — atlas creation runs its own one-shot GPU submit, which deadlocks the
+    /// -- atlas creation runs its own one-shot GPU submit, which deadlocks the
     /// frame if done while the command buffer is open.
     /// </summary>
     public void Prepare(IReadOnlyList<TextLabel> labels)
@@ -139,15 +139,17 @@ public sealed class TextRenderer : IDisposable
         {
             var span = MemoryMarshal.Cast<byte, TextVertex>(_vbCpu.AsSpan());
             n = BuildVertices(span, labels, viewProjection, width, height);
-            if (n <= _vbCapacity) break;
+            if (n <= _vbCapacity)
+                break;
             AllocVb(Math.Max(n, _vbCapacity * 2));
         }
-        if (n == 0) return;
+        if (n == 0)
+            return;
 
         // Upload + draw.
         cl.UpdateBuffer(_vb, 0, new ReadOnlySpan<byte>(_vbCpu, 0, n * Stride));
 
-        var vp = new ViewParams { InvViewport = new Vector4(2f / width, 2f / height, 0f, 0f) };
+        var vp = new ViewParams { InvViewport = new Vector4(2.0f / width, 2.0f / height, 0.0f, 0.0f) };
         unsafe
         {
             var s = new ReadOnlySpan<byte>(&vp, sizeof(ViewParams));
@@ -182,11 +184,13 @@ public sealed class TextRenderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private void EnsureGlyphs(string? text)
     {
-        if (string.IsNullOrEmpty(text)) return;
+        if (string.IsNullOrEmpty(text))
+            return;
         foreach (Rune rune in text.EnumerateRunes())
         {
             int cp = rune.Value;
-            if (cp == '\n' || cp == '\r' || cp == '\t') continue;
+            if (cp == '\n' || cp == '\r' || cp == '\t')
+                continue;
             _atlas.GetGlyph(cp);
         }
     }
@@ -196,11 +200,12 @@ public sealed class TextRenderer : IDisposable
     {
         int n = 0;
         float lineHeight = _atlas.LineHeight;
-        float tabWidth   = _atlas.GetGlyph(' ').Advance * 4f;
+        float tabWidth   = _atlas.GetGlyph(' ').Advance * 4.0f;
 
         foreach (TextLabel label in labels)
         {
-            if (string.IsNullOrEmpty(label.Text)) continue;
+            if (string.IsNullOrEmpty(label.Text))
+                continue;
 
             // Resolve the anchor pixel.
             Vector2 anchor;
@@ -212,7 +217,7 @@ public sealed class TextRenderer : IDisposable
 
             // Split into lines and measure the block bounds.
             SplitLines(label.Text);
-            float blockW = 0f;
+            float blockW = 0.0f;
             foreach (string line in _lineScratch)
             {
                 float w = MeasureLine(line, tabWidth);
@@ -227,13 +232,13 @@ public sealed class TextRenderer : IDisposable
 
             // Background box first, so glyphs paint over it.
             if (label.Background)
-                EmitSolidQuad(v, ref n, blockLeft - 3f, blockTop - 2f,
-                              blockW + 6f, blockH + 4f, BackgroundColor);
+                EmitSolidQuad(v, ref n, blockLeft - 3.0f, blockTop - 2.0f,
+                              blockW + 6.0f, blockH + 4.0f, BackgroundColor);
 
             // Glyphs, line by line. Lines are left-aligned within the block.
             for (int i = 0; i < _lineScratch.Count; i++)
             {
-                float penX    = 0f;
+                float penX    = 0.0f;
                 float lineTop = blockTop + i * lineHeight;
                 foreach (Rune rune in _lineScratch[i].EnumerateRunes())
                 {
@@ -259,7 +264,8 @@ public sealed class TextRenderer : IDisposable
         int start = 0;
         for (int i = 0; i < text.Length; i++)
         {
-            if (text[i] != '\n') continue;
+            if (text[i] != '\n')
+                continue;
             int end = (i > start && text[i - 1] == '\r') ? i - 1 : i;
             _lineScratch.Add(text.Substring(start, end - start));
             start = i + 1;
@@ -270,7 +276,7 @@ public sealed class TextRenderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private float MeasureLine(string line, float tabWidth)
     {
-        float w = 0f;
+        float w = 0.0f;
         foreach (Rune rune in line.EnumerateRunes())
             w += rune.Value == '\t' ? tabWidth : _atlas.GetGlyph(rune.Value).Advance;
         return w;
@@ -279,13 +285,17 @@ public sealed class TextRenderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static bool Project(Vector3 world, Matrix4x4 vp, int width, int height, out Vector2 px)
     {
-        // Row-vector multiply — matches the shader's mul(VP, pos) once the
+        // Row-vector multiply -- matches the shader's mul(VP, pos) once the
         // raw .NET row-major matrix is read column-major on the GPU.
-        Vector4 clip = Vector4.Transform(new Vector4(world, 1f), vp);
-        if (clip.W <= 1e-4f) { px = default; return false; }   // behind the camera
-        float inv = 1f / clip.W;
+        Vector4 clip = Vector4.Transform(new Vector4(world, 1.0f), vp);
+        if (clip.W <= 1e-4f)
+        {
+            px = default;
+            return false;
+        }
+        float inv = 1.0f / clip.W;
         float ndcX = clip.X * inv, ndcY = clip.Y * inv, ndcZ = clip.Z * inv;
-        if (ndcZ < 0f || ndcZ > 1f) { px = default; return false; }
+        if (ndcZ < 0.0f || ndcZ > 1.0f) { px = default; return false; }
         px = new Vector2((ndcX * 0.5f + 0.5f) * width, (0.5f - ndcY * 0.5f) * height);
         return true;
     }
@@ -294,7 +304,7 @@ public sealed class TextRenderer : IDisposable
     private void EmitGlyphQuad(Span<TextVertex> v, ref int n, float x, float y, in Glyph g, uint color)
     {
         if (n + 6 > v.Length) { n += 6; return; }
-        float inv = 1f / GlyphAtlas.Size;
+        float inv = 1.0f / GlyphAtlas.Size;
         float u0 = g.AtlasX * inv;
         float v0 = g.AtlasY * inv;
         float u1 = (g.AtlasX + g.Width)  * inv;
@@ -326,10 +336,10 @@ public sealed class TextRenderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackRgba(Vector4 c)
     {
-        uint r = (uint)Math.Clamp((int)(c.X * 255f + 0.5f), 0, 255);
-        uint g = (uint)Math.Clamp((int)(c.Y * 255f + 0.5f), 0, 255);
-        uint b = (uint)Math.Clamp((int)(c.Z * 255f + 0.5f), 0, 255);
-        uint a = (uint)Math.Clamp((int)(c.W * 255f + 0.5f), 0, 255);
+        uint r = (uint)Math.Clamp((int)(c.X * 255.0f + 0.5f), 0, 255);
+        uint g = (uint)Math.Clamp((int)(c.Y * 255.0f + 0.5f), 0, 255);
+        uint b = (uint)Math.Clamp((int)(c.Z * 255.0f + 0.5f), 0, 255);
+        uint a = (uint)Math.Clamp((int)(c.W * 255.0f + 0.5f), 0, 255);
         return r | (g << 8) | (b << 16) | (a << 24);
     }
 }

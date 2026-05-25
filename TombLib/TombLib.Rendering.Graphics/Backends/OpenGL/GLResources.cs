@@ -48,7 +48,7 @@ internal sealed class GLPipelineRes
     public BlendingFactor    BlendSrcRgb, BlendDstRgb, BlendSrcA, BlendDstA;
     public BlendEquationModeEXT BlendOpRgb, BlendOpA;
     public bool              ScissorEnable;
-    public System.Collections.Generic.Dictionary<int, int> SamplerLocations = new(); // textureSlot → uniform location
+    public System.Collections.Generic.Dictionary<int, int> SamplerLocations = new(); // textureSlot -> uniform location
 }
 
 internal sealed class GLSwapchainRes
@@ -59,7 +59,7 @@ internal sealed class GLSwapchainRes
     public RhiFormat         ColorFormat, DepthFormat;
     public bool              VSync;
     // OpenGL renders directly into the system framebuffer (FBO 0), so we
-    // don't need to manage colour / depth views explicitly — the WGL
+    // don't need to manage colour / depth views explicitly -- the WGL
     // context's default framebuffer is implicit.
 }
 

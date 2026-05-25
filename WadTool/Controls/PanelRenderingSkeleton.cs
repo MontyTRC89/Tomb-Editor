@@ -70,13 +70,13 @@ namespace WadTool.Controls
 
         // ------------------------------------------------ Rendering
 
-        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.65f, 0.65f, 0.65f, 1f);
+        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
-        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50f;
-        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f;
-        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
-        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
-        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50.0f;
+        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6.0f;
+        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800.0f;
+        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500.0f;
+        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4.0f;
 
         protected override void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
         {
@@ -87,7 +87,7 @@ namespace WadTool.Controls
             // Bones (textured). Pack every bone into one instance batch so the
             // per-frame cbuffer is updated exactly once (multiple cbuffer
             // WriteDiscard updates between draws collapse into the last value
-            // on some D3D11 drivers — every bone would otherwise render with
+            // on some D3D11 drivers -- every bone would otherwise render with
             // the same transform).
             if (Skeleton != null)
             {
@@ -102,10 +102,10 @@ namespace WadTool.Controls
             _lines.Begin();
             if (DrawGrid)
             {
-                // Legacy GeometricPrimitive.GridPlane(8, 4) → 8×4 cells over
+                // Legacy GeometricPrimitive.GridPlane(8, 4) -> 8x4 cells over
                 // [-1..+1] in legacy unit space; our preview camera lives in
                 // WAD units (~256 per click), so scale up to match.
-                _lines.AddGridXZ(size: 4096f, cells: 16, color: 0x80_FF_FF_FFu);
+                _lines.AddGridXZ(size: 4096.0f, cells: 16, color: 0x80_FF_FF_FFu);
             }
             if (SelectedNode?.Mesh != null)
             {
@@ -158,7 +158,7 @@ namespace WadTool.Controls
                     }
                 }
 
-                // Bone picking — CPU ray/triangle test, identical to legacy.
+                // Bone picking -- CPU ray/triangle test, identical to legacy.
                 WadMeshBoneNode foundNode = null;
                 float minDistance = float.PositiveInfinity;
                 foreach (var node in Skeleton)
@@ -179,7 +179,8 @@ namespace WadTool.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (_gizmo == null) return;
+            if (_gizmo == null)
+                return;
 
             var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
@@ -241,7 +242,7 @@ namespace WadTool.Controls
 
         public void UpdateModel()
         {
-            // Drop cached per-mesh vertex buffers for the current skeleton —
+            // Drop cached per-mesh vertex buffers for the current skeleton --
             // a bone edit may have changed vertex positions in place.
             if (Skeleton != null)
                 foreach (var node in Skeleton)

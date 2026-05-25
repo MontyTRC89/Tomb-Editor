@@ -32,7 +32,7 @@ namespace WadTool
             _tool = tool;
 
             // Honour the configured RHI backend BEFORE the first preview
-            // panel touches PreviewDevice (lazy init) — otherwise the device
+            // panel touches PreviewDevice (lazy init) -- otherwise the device
             // boots with the default cascade and the user's setting is
             // ignored until next launch.
             PreviewDevice.SetBackendPreference(tool.Configuration.Rendering3D_Backend);
@@ -42,7 +42,7 @@ namespace WadTool
 
             panel3D.Configuration = tool.Configuration;
             // V2 ItemPreviewPanel lazily creates its own device + swapchain on
-            // first paint — no explicit InitializeRendering needed.
+            // first paint -- no explicit InitializeRendering needed.
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
@@ -68,7 +68,7 @@ namespace WadTool
 
         /// <summary>
         /// Rebuild the title bar: "WadTool - &lt;WadName&gt;[*]  [Backend]".
-        /// Single source of truth for <see cref="Form.Text"/> — called both at
+        /// Single source of truth for <see cref="Form.Text"/> -- called both at
         /// startup and whenever <see cref="UpdateSaveUI"/> runs, so the
         /// backend suffix survives WAD loads / saves.
         /// </summary>

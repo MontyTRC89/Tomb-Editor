@@ -30,7 +30,7 @@ namespace WadTool
         private void AddBackendSelector()
         {
             // Drop the combo + label/hint inside the System groupbox
-            // (darkGroupBox1). Grow the box AND its containing panel — the
+            // (darkGroupBox1). Grow the box AND its containing panel -- the
             // panel has fixed Size in the designer (no AutoSize), so without
             // also bumping its height the new combo would be clipped below
             // the visible area.
@@ -61,7 +61,7 @@ namespace WadTool
                 AutoSize  = true,
                 ForeColor = Color.FromArgb(160, 160, 160),
                 Location  = new Point(3, backendY + 28),
-                Text      = "Default = auto (Vulkan → OpenGL → DX11). Restart WadTool for a change to take effect.",
+                Text      = "Default = auto (Vulkan -> OpenGL -> DX11). Restart WadTool for a change to take effect.",
             };
 
             darkGroupBox1.Controls.Add(cmbBackend);

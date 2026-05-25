@@ -22,7 +22,7 @@ namespace WadTool.Controls
     ///
     /// <para>The CPU-side skeleton + animation pose is still computed via the
     /// legacy <see cref="AnimatedModel"/>, but only its <c>Bones</c>,
-    /// <c>BindPoseTransforms</c> and <c>AnimationTransforms</c> are read —
+    /// <c>BindPoseTransforms</c> and <c>AnimationTransforms</c> are read --
     /// the GPU buffers it allocates are unused.</para>
     /// </summary>
     public class PanelRenderingAnimationEditor : ItemPreviewPanel
@@ -46,7 +46,8 @@ namespace WadTool.Controls
             get { return _gridPosition; }
             set
             {
-                if (value == _gridPosition) return;
+                if (value == _gridPosition)
+                    return;
                 _gridPosition = new Vector3(value.X % 4096.0f, value.Y % 4096.0f, value.Z % 4096.0f);
             }
         }
@@ -128,13 +129,13 @@ namespace WadTool.Controls
 
         // ------------------------------------------------ Rendering
 
-        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1f);
+        protected override Vector4 ClearColor => Configuration?.RenderingItem_BackgroundColor ?? new Vector4(0.39f, 0.58f, 0.93f, 1.0f);
 
-        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50f;
-        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6f;
-        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800f;
-        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500f;
-        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4f;
+        public override float FieldOfView => Configuration?.RenderingItem_FieldOfView ?? 50.0f;
+        public override float NavigationSpeedMouseWheelZoom => Configuration?.RenderingItem_NavigationSpeedMouseWheelZoom ?? 6.0f;
+        public override float NavigationSpeedMouseZoom => Configuration?.RenderingItem_NavigationSpeedMouseZoom ?? 800.0f;
+        public override float NavigationSpeedMouseTranslate => Configuration?.RenderingItem_NavigationSpeedMouseTranslate ?? 1500.0f;
+        public override float NavigationSpeedMouseRotate => Configuration?.RenderingItem_NavigationSpeedMouseRotate ?? 4.0f;
 
         protected override void RenderContents(ICommandList cl, Matrix4x4 viewProjection)
         {
@@ -142,7 +143,7 @@ namespace WadTool.Controls
             _lines ??= new LinePrimitiveRenderer(device);
 
             // --- Meshes (per-bone) -------------------------------------------
-            // Single batched flush — see PanelRenderingSkeleton for the
+            // Single batched flush -- see PanelRenderingSkeleton for the
             // rationale (one cbuffer update per frame, multi-draw via
             // per-instance offsets).
             if (_model != null && _renderMoveable != null)
@@ -166,7 +167,7 @@ namespace WadTool.Controls
                     bool selected = validAnim && i < _model.Meshes.Count &&
                                     SelectedMesh == _model.Meshes[i];
                     if (selected)
-                        renderer.QueueMesh(wadMesh, transform, new Vector4(1f, 0f, 0f, 1f));
+                        renderer.QueueMesh(wadMesh, transform, new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
                     else
                         renderer.QueueMesh(wadMesh, transform);
                 }
@@ -179,10 +180,10 @@ namespace WadTool.Controls
             if (Configuration != null && Configuration.AnimationEditor_ShowGrid)
             {
                 // The grid follows the legacy "infinite plane" by snapping
-                // to GridPosition % 4096 — gives a parallax-feel without ever
+                // to GridPosition % 4096 -- gives a parallax-feel without ever
                 // running out of cells.
                 var shift = Matrix4x4.CreateTranslation(new Vector3(-GridPosition.X, GridPosition.Y, -GridPosition.Z));
-                AddGridShifted(_lines, shift, size: 4096f, cells: 16, color: 0xFF_FF_FF_FFu);
+                AddGridShifted(_lines, shift, size: 4096.0f, cells: 16, color: 0xFF_FF_FF_FFu);
             }
 
             if (_editor != null && _editor.ValidAnimationAndFrames && _model != null)
@@ -223,17 +224,18 @@ namespace WadTool.Controls
         private static void AddGridShifted(LinePrimitiveRenderer lines, Matrix4x4 shift,
                                             float size, int cells, uint color)
         {
-            if (cells <= 0) return;
+            if (cells <= 0)
+                return;
             float half = size * 0.5f;
             float step = size / cells;
             for (int i = 0; i <= cells; i++)
             {
                 float x = -half + i * step;
                 float z = -half + i * step;
-                Vector3 a = Vector3.Transform(new Vector3(x, 0f, -half), shift);
-                Vector3 b = Vector3.Transform(new Vector3(x, 0f,  half), shift);
-                Vector3 c = Vector3.Transform(new Vector3(-half, 0f, z), shift);
-                Vector3 d = Vector3.Transform(new Vector3( half, 0f, z), shift);
+                Vector3 a = Vector3.Transform(new Vector3(x, 0.0f, -half), shift);
+                Vector3 b = Vector3.Transform(new Vector3(x, 0.0f,  half), shift);
+                Vector3 c = Vector3.Transform(new Vector3(-half, 0.0f, z), shift);
+                Vector3 d = Vector3.Transform(new Vector3( half, 0.0f, z), shift);
                 lines.AddLine(a, b, color, color);
                 lines.AddLine(c, d, color, color);
             }
@@ -261,9 +263,9 @@ namespace WadTool.Controls
 
             labels.Add(TextLabel.Screen(msg,
                 screenPosition: new Vector2(10, 10),
-                color: new Vector4(1f, 1f, 1f, 1f),
+                color: new Vector4(1.0f, 1.0f, 1.0f, 1.0f),
                 background: Configuration.Rendering3D_DrawFontOverlays,
-                alignment: new Vector2(0f, 0f)));
+                alignment: new Vector2(0.0f, 0.0f)));
         }
 
         // ------------------------------------------------ Mouse / picking
@@ -278,7 +280,7 @@ namespace WadTool.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             // Forward to base FIRST so the inherited _lastX/_lastY get primed
-            // even when we early-return on a gizmo pick — otherwise the next
+            // even when we early-return on a gizmo pick -- otherwise the next
             // right/middle drag delta is computed against stale state.
             base.OnMouseDown(e);
             _lastX = e.X;
@@ -303,7 +305,7 @@ namespace WadTool.Controls
                         }
                     }
 
-                    // Bone picking — CPU ray/triangle test against each bone's
+                    // Bone picking -- CPU ray/triangle test against each bone's
                     // WadMesh in local space (matches legacy semantics).
                     WadMesh foundMesh = null;
                     float minDistance = float.PositiveInfinity;
@@ -337,7 +339,8 @@ namespace WadTool.Controls
         {
             base.OnMouseMove(e);
 
-            if (_gizmo == null) return;
+            if (_gizmo == null)
+                return;
 
             var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
@@ -376,7 +379,8 @@ namespace WadTool.Controls
             var src = (_skinModel != null && _renderMoveable != null)
                 ? _renderMoveable.Bones[meshIndex].Mesh
                 : _editor.Moveable.Bones[meshIndex].Mesh;
-            if (src == null) return false;
+            if (src == null)
+                return false;
 
             bool hit = false;
             float minDistance = float.PositiveInfinity;
