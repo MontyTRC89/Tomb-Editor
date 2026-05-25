@@ -480,7 +480,7 @@
 			debugAction0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			debugAction0ToolStripMenuItem.Name = "debugAction0ToolStripMenuItem";
 			debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			debugAction0ToolStripMenuItem.Text = "Debug action 0";
+			debugAction0ToolStripMenuItem.Text = "Dump preview atlases";
 			debugAction0ToolStripMenuItem.Click += debugAction0ToolStripMenuItem_Click;
 			// 
 			// debugAction1ToolStripMenuItem

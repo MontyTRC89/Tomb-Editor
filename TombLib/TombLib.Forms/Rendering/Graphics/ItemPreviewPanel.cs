@@ -130,6 +130,14 @@ public static class PreviewDevice
 
     /// <summary>Drop every cached per-object mesh / atlas -- call on WAD reload.</summary>
     public static void InvalidateAll() => _renderer?.InvalidateAll();
+
+    /// <summary>
+    /// Dump every live preview atlas as a PNG into <paramref name="directory"/>.
+    /// Wired to the WadTool debug menu so developers can inspect packing /
+    /// gutter behaviour without attaching a graphics debugger.
+    /// </summary>
+    public static System.Collections.Generic.IReadOnlyList<string> DumpAtlases(string directory)
+        => _renderer?.DumpAtlases(directory) ?? Array.Empty<string>();
 }
 
 /// <summary>

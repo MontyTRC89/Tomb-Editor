@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -314,6 +315,34 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 bindFlags: BufferBindFlags.Vertex,
                 debugName: "PreviewDynamicInstance"),
             ReadOnlySpan<byte>.Empty);
+    }
+
+    /// <summary>
+    /// Write each live atlas to <paramref name="directory"/> as a PNG file
+    /// (<c>PreviewAtlas0.png</c>, <c>PreviewAtlas1.png</c>, ...). Useful for
+    /// debugging packing / texture-fit issues from the editor's debug menu.
+    /// Returns the list of files written.
+    /// </summary>
+    public IReadOnlyList<string> DumpAtlases(string directory)
+    {
+        Directory.CreateDirectory(directory);
+
+        var written = new List<string>();
+        for (int i = 0; i < _atlases.Count; i++)
+        {
+            var slot = _atlases[i];
+            if (slot.Bytes.Length == 0)
+                continue;
+
+            // _atlases[i].Bytes is the same B8G8R8A8 layout we uploaded to
+            // the GPU, so ImageC's native BGRA format consumes it directly
+            // with no conversion.
+            var image = ImageC.FromByteArray(slot.Bytes, AtlasSize, AtlasSize);
+            string path = Path.Combine(directory, $"PreviewAtlas{i}.png");
+            image.SaveToFile(path);
+            written.Add(path);
+        }
+        return written;
     }
 
     /// <summary>Drop every atlas + every cached vertex buffer.</summary>

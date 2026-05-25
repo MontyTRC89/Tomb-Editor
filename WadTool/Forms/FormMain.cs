@@ -510,6 +510,31 @@ namespace WadTool
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Dump every live preview atlas to %TEMP%\TombEditorAtlasDump and
+            // pop the folder open in Explorer so the dev can inspect packing /
+            // gutter behaviour. The atlases are the shared WadObjectPreviewRenderer
+            // pool used by every WadTool preview panel + the TombEditor content
+            // browser thumbnails.
+            string dir = Path.Combine(Path.GetTempPath(), "TombEditorAtlasDump");
+            var written = PreviewDevice.DumpAtlases(dir);
+            if (written.Count == 0)
+            {
+                _tool.SendMessage("No preview atlases have been allocated yet.", PopupType.Info);
+                return;
+            }
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName        = dir,
+                    UseShellExecute = true,
+                });
+            }
+            catch
+            {
+                // Explorer launch is best-effort -- the files are still on disk.
+            }
+            _tool.SendMessage("Dumped " + written.Count + " preview atlas(es) to " + dir, PopupType.Info);
         }
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
