@@ -19,7 +19,7 @@ internal sealed class GLBufferRes
 internal sealed class GLTextureRes
 {
     public uint              Handle;
-    public int               Width, Height, MipLevels;
+    public int               Width, Height, MipLevels, ArrayLayers;
     public RhiFormat         Format;
     public RhiTextureBindFlags BindFlags;
     public bool              IsDepth;          // for framebuffer attachment routing

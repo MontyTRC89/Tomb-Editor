@@ -101,9 +101,11 @@ public sealed class LevelRenderer : IDisposable
     //   Color    : R8G8B8A8_UNorm      ( 4 B)
     //   AtlasUv  : R16G16_UNorm        ( 4 B)
     //   GridUv   : R16G16_Float (half) ( 4 B)
+    //   Layer    : R32_UInt            ( 4 B)
     // Compaction strategy mirrors what the legacy Dx11RenderingDrawingRoom
     // does: room geometry is heavy on vertex count and the room shader only
-    // needs limited precision for color / UV.
+    // needs limited precision for color / UV. The Layer attribute picks the
+    // array-texture layer the atlas region lives in (atlas is Texture2DArray).
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct RoomVertex
     {
@@ -113,6 +115,7 @@ public sealed class LevelRenderer : IDisposable
         public ushort  UvV;          // 18..20
         public Half    GridUvU;      // 20..22 (R16G16_Float)
         public Half    GridUvV;      // 22..24
+        public uint    Layer;        // 24..28 (R32_UInt)
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
@@ -222,8 +225,9 @@ public sealed class LevelRenderer : IDisposable
                     new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
                     new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
                     new VertexAttribute("TEXCOORD", 1, Format.R16G16_Float,    bufferSlot: 0, offset: 20),
+                    new VertexAttribute("TEXCOORD", 2, Format.R32_UInt,        bufferSlot: 0, offset: 24),
                 },
-                VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 24) },
+                VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: 28) },
                 Topology               = PrimitiveTopology.TriangleList,
                 // TR room geometry is wound so triangles face *into* the room;
                 // cull back faces so walls vanish when the camera is outside.
@@ -682,7 +686,8 @@ public sealed class LevelRenderer : IDisposable
 
             Vector3 c0, c1, c2;
             Vector2 uv0, uv1, uv2;
-            bool overlay = false;
+            uint    layer = (uint)_atlas.WhitePixelLayer;
+            bool    overlay = false;
 
             if (texturing)
             {
@@ -701,6 +706,7 @@ public sealed class LevelRenderer : IDisposable
                     uv0 = mapper.Map(ta.TexCoord0);
                     uv1 = mapper.Map(ta.TexCoord1);
                     uv2 = mapper.Map(ta.TexCoord2);
+                    layer = (uint)mapper.Layer;
                     c0 = c1 = c2 = tint;
                 }
                 else
@@ -726,6 +732,7 @@ public sealed class LevelRenderer : IDisposable
                     uv0 = mapper.Map(ta.TexCoord0);
                     uv1 = mapper.Map(ta.TexCoord1);
                     uv2 = mapper.Map(ta.TexCoord2);
+                    layer = (uint)mapper.Layer;
                 }
                 else
                 {
@@ -764,9 +771,11 @@ public sealed class LevelRenderer : IDisposable
 
                 if (res.SectorTexture != SectorTexture.None)
                 {
-                    uv0 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
-                    uv1 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
-                    uv2 = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
+                    var (ovLayer, ov0) = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu0));
+                    var (_,       ov1) = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu1));
+                    var (_,       ov2) = _atlas.GetSectorOverlayUv(res.SectorTexture, Vector2.Abs(eu2));
+                    uv0 = ov0; uv1 = ov1; uv2 = ov2;
+                    layer   = (uint)ovLayer;
                     overlay = true;
                 }
                 else
@@ -801,6 +810,7 @@ public sealed class LevelRenderer : IDisposable
                 UvV        = PackUNorm16(uv0.Y),
                 GridUvU    = (Half)eu0.X,
                 GridUvV    = (Half)eu0.Y,
+                Layer      = layer,
             });
             dst.Add(new RoomVertex
             {
@@ -810,6 +820,7 @@ public sealed class LevelRenderer : IDisposable
                 UvV        = PackUNorm16(uv1.Y),
                 GridUvU    = (Half)eu1.X,
                 GridUvV    = (Half)eu1.Y,
+                Layer      = layer,
             });
             dst.Add(new RoomVertex
             {
@@ -819,6 +830,7 @@ public sealed class LevelRenderer : IDisposable
                 UvV        = PackUNorm16(uv2.Y),
                 GridUvU    = (Half)eu2.X,
                 GridUvV    = (Half)eu2.Y,
+                Layer      = layer,
             });
         }
 

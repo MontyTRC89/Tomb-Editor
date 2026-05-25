@@ -778,7 +778,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         var memory = AllocMemory(memoryReq.Size, memoryReq.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit);
         Api.BindImageMemory(Device, image, memory, 0);
 
-        var view = CreateImageView(image, VkMapping.ToVk(desc.Format), aspect, (uint)mipLevels);
+        var view = CreateImageView(image, VkMapping.ToVk(desc.Format), aspect, (uint)mipLevels, (uint)desc.ArrayLayers);
 
         var textureRes = new VkTextureRes
         {
@@ -817,13 +817,13 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         return new TextureHandle(id);
     }
 
-    private ImageView CreateImageView(Image image, VkFormat format, ImageAspectFlags aspect, uint mipLevels)
+    private ImageView CreateImageView(Image image, VkFormat format, ImageAspectFlags aspect, uint mipLevels, uint arrayLayers = 1)
     {
         var viewInfo = new ImageViewCreateInfo
         {
             SType    = StructureType.ImageViewCreateInfo,
             Image    = image,
-            ViewType = ImageViewType.Type2D,
+            ViewType = arrayLayers > 1 ? ImageViewType.Type2DArray : ImageViewType.Type2D,
             Format   = format,
             SubresourceRange = new ImageSubresourceRange
             {
@@ -831,7 +831,7 @@ public unsafe sealed partial class VkDevice : IRhiDevice
                 BaseMipLevel   = 0,
                 LevelCount     = mipLevels,
                 BaseArrayLayer = 0,
-                LayerCount     = 1,
+                LayerCount     = arrayLayers,
             },
         };
         Api.CreateImageView(Device, in viewInfo, null, out var view);
@@ -920,14 +920,20 @@ public unsafe sealed partial class VkDevice : IRhiDevice
         }
         Api.UnmapMemory(Device, stagingMemory);
 
+        // DX-style subresource = mip + layer * mipLevels -- decode so the
+        // copy targets the right (mip, layer) pair on array textures.
+        int mipLevels = Math.Max(1, texture.MipLevels);
+        uint mipIndex   = (uint)(subresource % mipLevels);
+        uint layerIndex = (uint)(subresource / mipLevels);
+
         var commandBuffer = OneShotBegin();
         TransitionImage(commandBuffer, texture, ImageLayout.TransferDstOptimal);
         var region = new BufferImageCopy
         {
             ImageSubresource = new ImageSubresourceLayers
             {
-                AspectMask = texture.Aspect, MipLevel = (uint)subresource,
-                BaseArrayLayer = 0, LayerCount = 1,
+                AspectMask = texture.Aspect, MipLevel = mipIndex,
+                BaseArrayLayer = layerIndex, LayerCount = 1,
             },
             ImageOffset = new Offset3D(x, y, 0),
             ImageExtent = new Extent3D((uint)width, (uint)height, 1),

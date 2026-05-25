@@ -3,7 +3,6 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -33,14 +32,10 @@ public static class WadMoveablePose
     {
         int n = mv.Bones.Count;
         var transforms = new Matrix4x4[n];
-        // Default-initialised Matrix4x4 is all zeros, not identity -- anything
-        // we don't explicitly fill in must default to identity so we don't
-        // crush vertices to (0,0,0) on malformed OpCode streams.
         for (int i = 0; i < n; i++) transforms[i] = Matrix4x4.Identity;
         if (n == 0)
             return transforms;
 
-        // Root.
         Matrix4x4 rootRot = (frame != null && 0 < frame.Angles.Count)
                             ? frame.Angles[0].RotationMatrix
                             : Matrix4x4.Identity;
@@ -58,7 +53,6 @@ public static class WadMoveablePose
                           : Matrix4x4.Identity;
             Matrix4x4 trans = Matrix4x4.CreateTranslation(bone.Translation);
 
-            // Mirror the legacy stack walk in AnimatedModel.BuildSkeleton.
             int parentIdx;
             switch (bone.OpCode)
             {
@@ -89,97 +83,66 @@ public static class WadMoveablePose
 }
 
 /// <summary>
-/// renderer for previewing a single <see cref="IWadObject"/>. Used by both
+/// Renderer for previewing a single <see cref="IWadObject"/>. Used by both
 /// the item-browser preview panel and the content-browser thumbnail capturer.
 ///
-/// <para>Holds ONE shared B8G8R8A8 atlas across every cached object -- same
-/// approach as the legacy <c>WadRenderer.AllocateTexture</c>. New textures
-/// are shelf-packed lazily and uploaded with <see cref="IRhiDevice.UpdateTexture"/>
-/// (region-only) instead of re-creating a per-object texture on each
-/// <see cref="Render"/> call. This is the difference between ~16 KB / new
-/// texture GPU traffic (here) and N MB / object (the old per-object atlas
-/// approach).</para>
+/// <para>Holds ONE shared B8G8R8A8 Texture2DArray with up to
+/// <see cref="MaxLayers"/> 2048-square layers; new textures are guillotine-
+/// packed lazily into the first layer that has room (allocating the next
+/// layer on overflow), and uploaded with <see cref="IRhiDevice.UpdateTexture"/>
+/// region-by-region instead of re-creating a per-object texture per draw.</para>
 ///
-/// <para>Hot paths use SIMD where it pays off: atlas row blits and CPU->CPU
-/// region extracts go through AVX2/SSE2 stores (32B/16B per iter); the
-/// per-vertex color pack uses SSE2 saturating int->byte packs (~5 ops vs ~15
-/// scalar). Callers own the <see cref="IRhiDevice"/> and the active render
-/// pass.</para>
+/// <para>Storing all layers in one array texture means the shader binds the
+/// atlas exactly once per frame and reads the layer index from a per-vertex
+/// attribute -- no per-segment draws, no rebind churn.</para>
 /// </summary>
 public sealed class WadObjectPreviewRenderer : IDisposable
 {
-    // ---- Shared atlas pool (up to MaxAtlases 2048-square textures) --------
-    // The previous renderer used a single 2048-square atlas and fell back to
-    // the white pixel once it filled up, hiding textures from the user
-    // without any warning. We now keep a list of up to MaxAtlases atlases;
-    // when the active one is full a new one is allocated. Only when the cap
-    // is reached do we fall back to white (and warn via NLog).
-
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     private const int AtlasSize           = 2048;
     private const int Gutter              = 4;
     private const int WhitePixelBlockSize = 3;
-    private const int MaxAtlases          = 4;   // 4 x 2048^2 x 4 bytes = 64 MB cap
+    public  const int MaxLayers           = 4;   // 4 x 2048^2 x 4 bytes = 64 MB cap
 
-    private sealed class AtlasSlot
+    private sealed class LayerState
     {
-        public TextureHandle Texture;
-        public byte[]        Bytes = Array.Empty<byte>();
+        public byte[]         Bytes  = Array.Empty<byte>();
         public RectPackerTree? Packer;
     }
-    private readonly List<AtlasSlot> _atlases = new();
-    private bool _atlasPoolExhaustedReported;
+    private readonly LayerState?[] _layers = new LayerState?[MaxLayers];
+    private TextureHandle          _atlasArray;
+    private bool                   _atlasArrayCreated;
+    private int                    _layerCount;
+    private bool                   _atlasPoolExhaustedReported;
 
     private readonly struct AtlasEntry
     {
-        public readonly int        AtlasIndex;
+        public readonly int        Layer;
         public readonly VectorInt2 Origin;
-        public AtlasEntry(int atlasIndex, VectorInt2 origin)
+        public AtlasEntry(int layer, VectorInt2 origin)
         {
-            AtlasIndex = atlasIndex;
-            Origin     = origin;
+            Layer  = layer;
+            Origin = origin;
         }
     }
     private readonly Dictionary<Texture, AtlasEntry> _texturePositions = new();
-    private AtlasEntry _whitePixel;             // (1,1) -- middle of the
-                                                 // reserved 3x3 white block in atlas 0.
-
-    // ---- Per-object cache (vertex buffer + per-atlas segment list) --------
-
-    private readonly struct AtlasSegment
-    {
-        public readonly int AtlasIndex;
-        public readonly int FirstVertex;
-        public readonly int VertexCount;
-        public AtlasSegment(int atlasIndex, int firstVertex, int vertexCount)
-        {
-            AtlasIndex  = atlasIndex;
-            FirstVertex = firstVertex;
-            VertexCount = vertexCount;
-        }
-    }
+    private AtlasEntry _whitePixel;
 
     private sealed class PerObject
     {
-        public BufferHandle    Vb;
-        public int             VertexCount;
-        public BoundingBox     Bounds;
-        public AtlasSegment[]  Segments = Array.Empty<AtlasSegment>();
+        public BufferHandle Vb;
+        public int          VertexCount;
+        public BoundingBox  Bounds;
     }
-    private readonly Dictionary<IWadObject, PerObject> _cache = new();
-    // Standalone mesh cache for editor scenes (skeleton / mesh editors) that
-    // render WadMeshes directly with per-call transforms -- not associated to
-    // any single IWadObject. Lives in the same shared atlas as _cache.
-    private readonly Dictionary<WadMesh, PerObject>     _meshCache = new();
-
-    // ---- Pipeline + per-frame scratch -------------------------------------
+    private readonly Dictionary<IWadObject, PerObject> _cache     = new();
+    private readonly Dictionary<WadMesh, PerObject>    _meshCache = new();
 
     private readonly IRhiDevice    _device;
     private readonly PipelineHandle _pipeline;
     private readonly BufferHandle   _viewCb;
     private readonly BufferHandle   _identityInstanceVb;
-    private BufferHandle            _dynamicInstanceVb;   // resized on demand
+    private BufferHandle            _dynamicInstanceVb;
     private int                     _dynamicInstanceCapacity;
     private byte[]                  _batchCpu = new byte[InstanceStride * 16];
     private readonly List<(PerObject Mesh, int InstanceOffset)> _pendingDraws = new();
@@ -200,7 +163,9 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         public uint    Color;
         public ushort  UvU;
         public ushort  UvV;
+        public uint    Layer;
     }
+    private const int ObjectVertexStride = 24;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
     private struct ViewParams
@@ -230,6 +195,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             FragmentShader = ps,
             VertexAttributes = new[]
             {
+                // Array order MUST match the VK_LOCATION(N) numbering in
+                // Object.hlsl -- the Vulkan backend assigns SPIR-V locations
+                // from the array index. Layer goes LAST because it is
+                // VK_LOCATION(8) in the shader, even though it lives on the
+                // per-vertex slot 0.
                 new VertexAttribute("POSITION", 0, Format.R32G32B32_Float, bufferSlot: 0, offset: 0),
                 new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm,  bufferSlot: 0, offset: 12),
                 new VertexAttribute("TEXCOORD", 0, Format.R16G16_UNorm,    bufferSlot: 0, offset: 16),
@@ -238,10 +208,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 new VertexAttribute("TEXCOORD", 3, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 32, perInstance: true),
                 new VertexAttribute("TEXCOORD", 4, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 48, perInstance: true),
                 new VertexAttribute("TEXCOORD", 5, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 64, perInstance: true),
+                new VertexAttribute("TEXCOORD", 6, Format.R32_UInt,        bufferSlot: 0, offset: 20),
             },
             VertexBufferLayouts = new[]
             {
-                new VertexBufferLayout(strideBytes: 20),
+                new VertexBufferLayout(strideBytes: ObjectVertexStride),
                 new VertexBufferLayout(strideBytes: InstanceStride, perInstance: true),
             },
             Topology               = PrimitiveTopology.TriangleList,
@@ -261,9 +232,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 debugName: "PreviewViewParams"),
             ReadOnlySpan<byte>.Empty);
 
-        // Single-instance buffer with identity model + white tint. The object
-        // mesh is in its own model space; the camera/view-projection is what
-        // moves it around.
         Span<InstanceData> id = stackalloc InstanceData[1];
         id[0] = new InstanceData
         {
@@ -278,14 +246,9 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 debugName: "PreviewIdentityInstance"),
             MemoryMarshal.AsBytes(id));
 
-        // Linear+Clamp; preview camera distance is known, no need for
-        // anisotropic / mip chain. (The gutter then only has to fight the
-        // sampler footprint at mip 0.)
         _sampler = device.CreateSampler(new SamplerDesc(
             FilterMode.Linear, AddressMode.Clamp, maxAnisotropy: 1));
 
-        // Dynamic instance buffer used by mesh batches. Resized on demand --
-        // start at 16 instances so single-mesh draws don't pay any growth cost.
         _dynamicInstanceCapacity = 16;
         _dynamicInstanceVb = device.CreateBuffer(
             new BufferDesc(
@@ -318,9 +281,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     }
 
     /// <summary>
-    /// Write each live atlas to <paramref name="directory"/> as a PNG file
-    /// (<c>PreviewAtlas0.png</c>, <c>PreviewAtlas1.png</c>, ...). Useful for
-    /// debugging packing / texture-fit issues from the editor's debug menu.
+    /// Write each populated atlas layer to <paramref name="directory"/> as a
+    /// PNG file (<c>PreviewAtlas0.png</c>, <c>PreviewAtlas1.png</c>, ...).
     /// Returns the list of files written.
     /// </summary>
     public IReadOnlyList<string> DumpAtlases(string directory)
@@ -328,16 +290,13 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         Directory.CreateDirectory(directory);
 
         var written = new List<string>();
-        for (int i = 0; i < _atlases.Count; i++)
+        for (int i = 0; i < _layerCount; i++)
         {
-            var slot = _atlases[i];
-            if (slot.Bytes.Length == 0)
+            var ls = _layers[i];
+            if (ls == null || ls.Bytes.Length == 0)
                 continue;
 
-            // _atlases[i].Bytes is the same B8G8R8A8 layout we uploaded to
-            // the GPU, so ImageC's native BGRA format consumes it directly
-            // with no conversion.
-            var image = ImageC.FromByteArray(slot.Bytes, AtlasSize, AtlasSize);
+            var image = ImageC.FromByteArray(ls.Bytes, AtlasSize, AtlasSize);
             string path = Path.Combine(directory, $"PreviewAtlas{i}.png");
             image.SaveToFile(path);
             written.Add(path);
@@ -345,39 +304,31 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         return written;
     }
 
-    /// <summary>Drop every atlas + every cached vertex buffer.</summary>
     public void InvalidateAll()
     {
         foreach (var per in _cache.Values)
-        {
-            if (per.Vb.IsValid)
-                _device.Destroy(per.Vb);
-        }
+            if (per.Vb.IsValid) _device.Destroy(per.Vb);
         _cache.Clear();
 
         foreach (var per in _meshCache.Values)
-        {
-            if (per.Vb.IsValid)
-                _device.Destroy(per.Vb);
-        }
+            if (per.Vb.IsValid) _device.Destroy(per.Vb);
         _meshCache.Clear();
 
         _texturePositions.Clear();
-        foreach (var atlas in _atlases)
-        {
-            if (atlas.Texture.IsValid)
-                _device.Destroy(atlas.Texture);
-        }
-        _atlases.Clear();
+        for (int i = 0; i < _layers.Length; i++)
+            _layers[i] = null;
+        _layerCount = 0;
         _whitePixel = default;
         _atlasPoolExhaustedReported = false;
+
+        if (_atlasArrayCreated && _atlasArray.IsValid)
+        {
+            _device.Destroy(_atlasArray);
+            _atlasArray = default;
+            _atlasArrayCreated = false;
+        }
     }
 
-    /// <summary>
-    /// Drop the cached vertex buffer for one specific <see cref="WadMesh"/>.
-    /// Editors call this after editing the mesh in place so the next paint
-    /// re-tessellates from the new vertex / poly data.
-    /// </summary>
     public void InvalidateMesh(WadMesh mesh)
     {
         if (mesh == null)
@@ -389,22 +340,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         }
     }
 
-    /// <summary>
-    /// Render a single <see cref="WadMesh"/> with the supplied model transform
-    /// (baked into the VP). Caches the per-mesh vertex buffer keyed by
-    /// <paramref name="mesh"/> in the same shared atlas as <see cref="Render"/>.
-    /// Used by the skeleton / mesh editors that need to draw arbitrary bones
-    /// without going through an <see cref="IWadObject"/> wrapper.
-    /// </summary>
-    /// <summary>
-    /// Single-call mesh draw. Internally batches as a 1-instance flush so the
-    /// view cbuffer is updated exactly once. Editors that draw multiple bone
-    /// meshes per frame MUST use <see cref="BeginMeshBatch"/> + per-bone
-    /// <see cref="QueueMesh"/> + <see cref="FlushMeshBatch"/> -- calling
-    /// RenderMesh in a tight loop performs N WriteDiscard updates of the same
-    /// dynamic cbuffer, which on D3D11 silently collapses to the value of
-    /// the last update and makes every mesh draw with the same transform.
-    /// </summary>
     public void RenderMesh(ICommandList cl, WadMesh mesh, Matrix4x4 model, Matrix4x4 viewProjection)
     {
         BeginMeshBatch();
@@ -412,10 +347,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         FlushMeshBatch(cl, viewProjection);
     }
 
-    /// <summary>
-    /// Tinted single-call variant. Same batching caveat as the untinted
-    /// overload: use the batch API for multi-mesh frames.
-    /// </summary>
     public void RenderMesh(ICommandList cl, WadMesh mesh, Matrix4x4 model, Matrix4x4 viewProjection, Vector4 tint)
     {
         BeginMeshBatch();
@@ -423,23 +354,15 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         FlushMeshBatch(cl, viewProjection);
     }
 
-    /// <summary>Reset the pending batch -- call before queueing any meshes for a frame.</summary>
     public void BeginMeshBatch()
     {
         _pendingDraws.Clear();
         _pendingInstanceCount = 0;
     }
 
-    /// <summary>Queue one mesh into the pending batch. White tint (no recolour).</summary>
     public void QueueMesh(WadMesh mesh, Matrix4x4 model)
         => QueueMesh(mesh, model, new Vector4(1.0f, 1.0f, 1.0f, 0.0f));
 
-    /// <summary>
-    /// Queue one mesh into the pending batch with a per-instance tint. The
-    /// shader treats <c>tint.a</c> as a 0..1 replace factor (legacy mesh
-    /// selection convention): a = 0 multiplies, a = 1 hard-replaces vertex
-    /// colour with tint.rgb.
-    /// </summary>
     public void QueueMesh(WadMesh mesh, Matrix4x4 model, Vector4 tint)
     {
         if (mesh == null)
@@ -462,17 +385,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         _pendingInstanceCount++;
     }
 
-    /// <summary>
-    /// Upload the accumulated instance data ONCE, then issue one draw per
-    /// queued mesh with the appropriate per-instance offset. Mirrors the
-    /// pattern used by <c>TombEditor.ObjectRenderer</c>.
-    /// </summary>
     public void FlushMeshBatch(ICommandList cl, Matrix4x4 viewProjection)
     {
-        if (_pendingInstanceCount == 0)
+        if (_pendingInstanceCount == 0 || !_atlasArrayCreated)
             return;
 
-        // Single cbuffer update for the frame's camera VP -- no per-bone bake-in.
         var vp = new ViewParams
         {
             ViewProjection = viewProjection,
@@ -485,46 +402,32 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             cl.UpdateBuffer(_viewCb, 0, span);
         }
 
-        // Single instance VB upload for ALL queued meshes.
         cl.UpdateBuffer(_dynamicInstanceVb, 0,
             new ReadOnlySpan<byte>(_batchCpu, 0, _pendingInstanceCount * InstanceStride));
 
         cl.SetPipeline(_pipeline);
         _scratchCbuf[0] = _viewCb;
+        _scratchTex [0] = _atlasArray;
         _scratchSamp[0] = _sampler;
-
-        // Track the last bound atlas so we only re-issue SetBindings when the
-        // atlas actually changes (most meshes touch a single atlas).
-        int boundAtlas = -1;
+        cl.SetBindings(new Bindings
+        {
+            ConstantBuffers = _scratchCbuf,
+            Textures        = _scratchTex,
+            Samplers        = _scratchSamp,
+        });
 
         foreach (var (mesh, instanceOffset) in _pendingDraws)
         {
             _scratchVbs[0] = new VertexBufferBinding(mesh.Vb, 0);
             _scratchVbs[1] = new VertexBufferBinding(_dynamicInstanceVb, instanceOffset);
             cl.SetVertexBuffers(_scratchVbs);
-
-            foreach (var seg in mesh.Segments)
-            {
-                if (seg.AtlasIndex != boundAtlas)
-                {
-                    _scratchTex[0] = _atlases[seg.AtlasIndex].Texture;
-                    cl.SetBindings(new Bindings
-                    {
-                        ConstantBuffers = _scratchCbuf,
-                        Textures        = _scratchTex,
-                        Samplers        = _scratchSamp,
-                    });
-                    boundAtlas = seg.AtlasIndex;
-                }
-                cl.Draw(seg.VertexCount, 1, seg.FirstVertex);
-            }
+            cl.Draw(mesh.VertexCount, 1, 0);
         }
 
         _pendingDraws.Clear();
         _pendingInstanceCount = 0;
     }
 
-    /// <summary>CPU-side bounding box of the cached mesh, if built.</summary>
     public bool TryGetMeshBounds(WadMesh mesh, out BoundingBox box)
     {
         if (mesh != null && _meshCache.TryGetValue(mesh, out var per))
@@ -540,30 +443,22 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     {
         if (_meshCache.TryGetValue(mesh, out var existing))
             return existing;
-        EnsureFirstAtlas();
+        EnsureAtlasArray();
 
-        var acc    = new VertexAccumulator();
+        var verts  = new List<ObjectVertex>();
         var bounds = new BoundingBox();
         bool boundsInit = false;
         void AccBounds(Vector3 p)
         {
-            if (!boundsInit)
-            {
-                bounds = new BoundingBox(p, p);
-                boundsInit = true;
-            }
-            else
-            {
-                bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p));
-            }
+            if (!boundsInit) { bounds = new BoundingBox(p, p); boundsInit = true; }
+            else bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p));
         }
-        AppendWadMesh(acc, mesh, Matrix4x4.Identity, AccBounds);
+        AppendWadMesh(verts, mesh, Matrix4x4.Identity, AccBounds);
 
-        var (vertices, segments) = acc.Flatten();
-        if (vertices.Length == 0)
+        if (verts.Count == 0)
             return null;
 
-        var span = MemoryMarshal.AsBytes(vertices.AsSpan());
+        var span = MemoryMarshal.AsBytes(CollectionsMarshal.AsSpan(verts));
         var vb   = _device.CreateBuffer(
             new BufferDesc(
                 sizeBytes: span.Length,
@@ -575,9 +470,8 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         var per = new PerObject
         {
             Vb          = vb,
-            VertexCount = vertices.Length,
+            VertexCount = verts.Count,
             Bounds      = boundsInit ? bounds : new BoundingBox(Vector3.Zero, Vector3.Zero),
-            Segments    = segments,
         };
         _meshCache[mesh] = per;
         return per;
@@ -594,11 +488,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         return false;
     }
 
-    /// <summary>
-    /// Render <paramref name="obj"/> with the supplied view-projection inside
-    /// the caller's open render pass. Builds + caches the mesh on first call
-    /// per object; the atlas is shared across the cache.
-    /// </summary>
     public void Render(ICommandList cl, IWadObject obj, Matrix4x4 viewProjection)
     {
         if (obj == null)
@@ -607,10 +496,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         if (per == null || per.VertexCount == 0)
             return;
 
-        // IWadObject builds bake all bone transforms into the VB at construction
-        // time, so a single draw with identity model is correct. Still go
-        // through the batch path so the cbuffer update follows the same
-        // one-per-flush discipline as RenderMesh.
         BeginMeshBatch();
 
         int instanceIndex = _pendingInstanceCount;
@@ -629,79 +514,63 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     // ==================================================== Shared atlas state
 
-    // Allocate a fresh atlas slot; the first one also reserves the 3x3 white
-    // block at the top-left so polys with missing / unavailable textures have
-    // somewhere to land. Returns the new slot's index.
-    private int AllocateAtlas()
+    // Create the array texture lazily on first use. We always allocate the
+    // full MaxLayers up front -- a sparse Texture2DArray costs the same VRAM
+    // as a populated one, and lazy-resize would require a GPU copy when the
+    // pool grows.
+    private void EnsureAtlasArray()
     {
-        var slot = new AtlasSlot
-        {
-            Bytes  = new byte[AtlasSize * AtlasSize * 4],
-            // Tree (guillotine) packer -- noticeably tighter than the shelf
-            // packer once textures within a single atlas have mixed sizes,
-            // which means atlas N saturates later and atlas N+1 gets
-            // allocated less often.
-            Packer = new RectPackerTree(new VectorInt2(AtlasSize, AtlasSize)),
-        };
-
-        // Create the atlas WITHOUT initial data. The Dx11 backend promotes a
-        // ShaderResource-only texture with initialData to Usage.Immutable,
-        // which silently rejects UpdateSubresource -- i.e. every subsequent
-        // texture region upload below would no-op and the atlas would stay
-        // zero-filled (models render fully black). Empty initialData keeps
-        // the texture at Usage.Default; UpdateSubresource then works.
-        slot.Texture = _device.CreateTexture(
+        if (_atlasArrayCreated)
+            return;
+        _atlasArray = _device.CreateTexture(
             new TextureDesc(TextureKind.Texture2D, AtlasSize, AtlasSize,
                             Format.B8G8R8A8_UNorm, TextureBindFlags.ShaderResource,
-                            mipLevels: 1,
-                            debugName: $"PreviewAtlas{_atlases.Count}"),
+                            arrayLayers: MaxLayers, mipLevels: 1,
+                            debugName: "PreviewAtlasArray"),
             ReadOnlySpan<byte>.Empty);
-
-        int atlasIndex = _atlases.Count;
-        _atlases.Add(slot);
-
-        if (atlasIndex == 0)
-        {
-            // First atlas only -- reserve the white-pixel block.
-            var pos = slot.Packer.TryAdd(new VectorInt2(WhitePixelBlockSize, WhitePixelBlockSize));
-            if (pos.HasValue)
-            {
-                FillBlock(slot.Bytes, AtlasSize,
-                          pos.Value.X, pos.Value.Y,
-                          WhitePixelBlockSize, WhitePixelBlockSize,
-                          0xFFFFFFFFu);
-                _whitePixel = new AtlasEntry(0, new VectorInt2(pos.Value.X + 1, pos.Value.Y + 1));
-                UploadRegion(atlasIndex, pos.Value.X, pos.Value.Y,
-                             WhitePixelBlockSize, WhitePixelBlockSize);
-            }
-        }
-        else
-        {
-            _logger.Info("Preview atlas {0} allocated (pool size now {1}/{2}).",
-                         atlasIndex, _atlases.Count, MaxAtlases);
-        }
-
-        return atlasIndex;
+        _atlasArrayCreated = true;
+        EnsureLayer(0);
+        ReserveWhitePixel();
     }
 
-    private void EnsureFirstAtlas()
+    private LayerState EnsureLayer(int index)
     {
-        if (_atlases.Count == 0)
-            AllocateAtlas();
+        var ls = _layers[index];
+        if (ls != null)
+            return ls;
+        ls = new LayerState
+        {
+            Bytes  = new byte[AtlasSize * AtlasSize * 4],
+            Packer = new RectPackerTree(new VectorInt2(AtlasSize, AtlasSize)),
+        };
+        _layers[index] = ls;
+        if (index + 1 > _layerCount) _layerCount = index + 1;
+        if (index > 0)
+            _logger.Info("Preview atlas layer {0} allocated (pool now {1}/{2}).",
+                         index, _layerCount, MaxLayers);
+        return ls;
     }
 
-    /// <summary>
-    /// Atlas-pixel coord -> (atlas index, normalised UV). Lazily packs
-    /// <paramref name="tex"/> into the first atlas that has room, allocating
-    /// a new one if every existing atlas is full. Uploads the texture's
-    /// region only (not the whole atlas) to the GPU.
-    /// </summary>
-    private (int Atlas, Vector2 Uv) GetAtlasUv(Texture? tex, Vector2 srcPixelCoord)
+    private void ReserveWhitePixel()
     {
-        EnsureFirstAtlas();
+        var ls = _layers[0]!;
+        var pos = ls.Packer!.TryAdd(new VectorInt2(WhitePixelBlockSize, WhitePixelBlockSize));
+        if (!pos.HasValue)
+            return;
+        FillBlock(ls.Bytes, AtlasSize,
+                  pos.Value.X, pos.Value.Y,
+                  WhitePixelBlockSize, WhitePixelBlockSize,
+                  0xFFFFFFFFu);
+        _whitePixel = new AtlasEntry(0, new VectorInt2(pos.Value.X + 1, pos.Value.Y + 1));
+        UploadRegion(0, pos.Value.X, pos.Value.Y, WhitePixelBlockSize, WhitePixelBlockSize);
+    }
+
+    private (int Layer, Vector2 Uv) GetAtlasUv(Texture? tex, Vector2 srcPixelCoord)
+    {
+        EnsureAtlasArray();
         AtlasEntry entry = EnsurePacked(tex);
         const float Inv = 1.0f / AtlasSize;
-        return (entry.AtlasIndex, new Vector2(
+        return (entry.Layer, new Vector2(
             (entry.Origin.X + srcPixelCoord.X) * Inv,
             (entry.Origin.Y + srcPixelCoord.Y) * Inv));
     }
@@ -715,13 +584,13 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
         var padded = new VectorInt2(tex.Image.Width + Gutter * 2, tex.Image.Height + Gutter * 2);
 
-        // Try every existing atlas in order. The packer is stateful: once it
-        // returns null for one size it'll keep returning null for that size,
-        // but a smaller rect from a different texture might still fit.
-        for (int i = 0; i < _atlases.Count; i++)
+        // Try every layer in order, allocating the next on demand. A packer
+        // that returned null for one size keeps returning null for it, but a
+        // smaller rect from a different texture might still fit.
+        for (int i = 0; i < MaxLayers; i++)
         {
-            var slot = _atlases[i];
-            var pos  = slot.Packer!.TryAdd(padded);
+            var ls  = i < _layerCount ? _layers[i] : EnsureLayer(i);
+            var pos = ls!.Packer!.TryAdd(padded);
             if (pos == null)
                 continue;
 
@@ -729,7 +598,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             int paddedY = pos.Value.Y;
             var inner   = new VectorInt2(paddedX + Gutter, paddedY + Gutter);
 
-            BlitWithGutter(slot.Bytes, AtlasSize, inner, tex.Image);
+            BlitWithGutter(ls.Bytes, AtlasSize, inner, tex.Image);
             UploadRegion(i, paddedX, paddedY, padded.X, padded.Y);
 
             var entry = new AtlasEntry(i, inner);
@@ -737,44 +606,17 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             return entry;
         }
 
-        // Every existing atlas is full -- try to grow the pool.
-        if (_atlases.Count < MaxAtlases)
-        {
-            int newIndex = AllocateAtlas();
-            var slot = _atlases[newIndex];
-            var pos  = slot.Packer!.TryAdd(padded);
-            if (pos.HasValue)
-            {
-                int paddedX = pos.Value.X;
-                int paddedY = pos.Value.Y;
-                var inner   = new VectorInt2(paddedX + Gutter, paddedY + Gutter);
-
-                BlitWithGutter(slot.Bytes, AtlasSize, inner, tex.Image);
-                UploadRegion(newIndex, paddedX, paddedY, padded.X, padded.Y);
-
-                var entry = new AtlasEntry(newIndex, inner);
-                _texturePositions[tex] = entry;
-                return entry;
-            }
-        }
-
-        // Pool exhausted (or single texture > AtlasSize). Fall back to white
-        // and warn once per session so the user knows why some models look
-        // untextured.
         if (!_atlasPoolExhaustedReported)
         {
             _atlasPoolExhaustedReported = true;
-            _logger.Warn("Preview atlas pool exhausted ({0} atlases, {1}x{1} each). " +
-                         "Some textures will render as plain white. Consider raising MaxAtlases " +
+            _logger.Warn("Preview atlas pool exhausted ({0} layers, {1}x{1} each). " +
+                         "Some textures will render as plain white. Consider raising MaxLayers " +
                          "or downscaling source textures.",
-                         MaxAtlases, AtlasSize);
+                         MaxLayers, AtlasSize);
         }
         return _whitePixel;
     }
 
-    // Blit + 4-pixel edge-replicated gutter at (inner). SIMD copies for the
-    // inner rows + top/bottom gutter rows; left/right gutter is 4 bytes per
-    // row so SIMD wouldn't pay off there.
     private static unsafe void BlitWithGutter(byte[] atlasBytes, int atlasSize, VectorInt2 inner, ImageC img)
     {
         int w = img.Width;
@@ -785,17 +627,12 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         fixed (byte* atlasPtr = atlasBytes)
         fixed (byte* srcPtr   = src)
         {
-            // Inner image rows.
             for (int y = 0; y < h; y++)
             {
                 byte* dst = atlasPtr + ((inner.Y + y) * atlasSize + inner.X) * 4;
                 SimdMemcpy(dst, srcPtr + y * rowBytes, rowBytes);
             }
 
-            // Top + bottom gutter: replicate the adjacent in-image row Gutter
-            // times each. Pre-computes the same value Address.Clamp would
-            // sample at runtime, but inside the atlas (we can't clamp to a
-            // sub-region of the atlas at sample time).
             byte* topSrc = atlasPtr + ( inner.Y          * atlasSize + inner.X) * 4;
             byte* botSrc = atlasPtr + ((inner.Y + h - 1) * atlasSize + inner.X) * 4;
             for (int g = 1; g <= Gutter; g++)
@@ -806,9 +643,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                 SimdMemcpy(botDst, botSrc, rowBytes);
             }
 
-            // Left + right gutter, including the corners. yClamped maps rows
-            // in the top / bottom gutter to the nearest in-image row so the
-            // corner cells take the corner colour.
             for (int y = -Gutter; y < h + Gutter; y++)
             {
                 int yc = y < 0 ? 0 : (y >= h ? h - 1 : y);
@@ -824,15 +658,14 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         }
     }
 
-    // Extract the freshly-blitted region from the CPU atlas mirror into a
-    // tight buffer (no row padding) and ship it to the GPU. We don't reupload
-    // the entire 16 MB atlas -- UpdateTexture only touches the (x,y,w,h) box.
-    private unsafe void UploadRegion(int atlasIndex, int x, int y, int w, int h)
+    // Ship the freshly-blitted CPU region to the GPU at (layer, x, y). With
+    // mipLevels = 1, the subresource index is just the layer.
+    private unsafe void UploadRegion(int layer, int x, int y, int w, int h)
     {
-        var slot     = _atlases[atlasIndex];
+        var ls       = _layers[layer]!;
         int rowBytes = w * 4;
         var region   = new byte[rowBytes * h];
-        fixed (byte* src = slot.Bytes)
+        fixed (byte* src = ls.Bytes)
         fixed (byte* dst = region)
         {
             for (int row = 0; row < h; row++)
@@ -843,7 +676,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                     rowBytes);
             }
         }
-        _device.UpdateTexture(slot.Texture, 0, x, y, w, h, rowBytes, region);
+        _device.UpdateTexture(_atlasArray, layer, x, y, w, h, rowBytes, region);
     }
 
     private static unsafe void FillBlock(byte[] atlasBytes, int atlasSize,
@@ -860,8 +693,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         }
     }
 
-    // SIMD memcpy: AVX2 32-byte unaligned stores, SSE2 16-byte fallback,
-    // scalar tail. Same pattern as TextureAtlas.cs's blit hot path.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static unsafe void SimdMemcpy(byte* dst, byte* src, int byteCount)
     {
@@ -881,11 +712,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         for (; i < byteCount; i++) dst[i] = src[i];
     }
 
-    // SSE2 RGB Vector3 (0..1) -> packed BGRA uint. Multiply by 255, convert
-    // to int32, then two saturating packs (int32->int16->uint8) clamp to
-    // [0, 255] for free. ~5 SSE2 ops vs ~15 scalar (3 muls + 3 clamps + 3
-    // int conversions + 3 shifts + ORs). Bonus: the high alpha lane lands
-    // at 255 automatically because we seeded it with 1.0f.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static uint PackColorRgba8(Vector3 c)
     {
@@ -893,9 +719,9 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         {
             Vector128<float> v = Vector128.Create(c.X, c.Y, c.Z, 1.0f);
             v = Sse.Multiply(v, Vector128.Create(255.0f));
-            Vector128<int>   vi = Sse2.ConvertToVector128Int32(v);              // round-to-nearest
-            Vector128<short> sh = Sse2.PackSignedSaturate(vi, vi);              // int32 -> int16, clamp
-            Vector128<byte>  by = Sse2.PackUnsignedSaturate(sh, sh);            // int16 -> uint8, clamp [0,255]
+            Vector128<int>   vi = Sse2.ConvertToVector128Int32(v);
+            Vector128<short> sh = Sse2.PackSignedSaturate(vi, vi);
+            Vector128<byte>  by = Sse2.PackUnsignedSaturate(sh, sh);
             return by.AsUInt32().ToScalar();
         }
         uint r = (uint)Math.Clamp((int)(c.X * 255.0f + 0.5f), 0, 255);
@@ -910,48 +736,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     // ============================================================ Build path
 
-    // Per-atlas vertex bucket used while a mesh is being tessellated. Each
-    // poly is emitted to the bucket whose atlas index matches the texture's
-    // EnsurePacked result, so vertices using the same atlas end up
-    // contiguous in the final VB and can be drawn with one Draw() call per
-    // atlas.
-    private sealed class VertexAccumulator
-    {
-        public readonly Dictionary<int, List<ObjectVertex>> Buckets = new();
-
-        public void Add(int atlasIndex, in ObjectVertex v)
-        {
-            if (!Buckets.TryGetValue(atlasIndex, out var list))
-            {
-                list = new List<ObjectVertex>();
-                Buckets[atlasIndex] = list;
-            }
-            list.Add(v);
-        }
-
-        // Flatten the buckets into a single contiguous vertex array, in
-        // order of ascending atlas index, and produce the matching segment
-        // list (atlas index + first vertex + count) for the draw loop.
-        public (ObjectVertex[] Vertices, AtlasSegment[] Segments) Flatten()
-        {
-            int total = 0;
-            foreach (var l in Buckets.Values)
-                total += l.Count;
-
-            var vertices = new ObjectVertex[total];
-            var segments = new AtlasSegment[Buckets.Count];
-            int first = 0;
-            int seg   = 0;
-            foreach (var kv in Buckets.OrderBy(kv => kv.Key))
-            {
-                kv.Value.CopyTo(vertices, first);
-                segments[seg++] = new AtlasSegment(kv.Key, first, kv.Value.Count);
-                first += kv.Value.Count;
-            }
-            return (vertices, segments);
-        }
-    }
-
     private PerObject? GetOrBuild(IWadObject obj)
     {
         if (_cache.TryGetValue(obj, out var existing))
@@ -964,45 +748,37 @@ public sealed class WadObjectPreviewRenderer : IDisposable
 
     private PerObject? Build(IWadObject obj)
     {
-        EnsureFirstAtlas();
+        EnsureAtlasArray();
 
-        var acc    = new VertexAccumulator();
+        var verts  = new List<ObjectVertex>();
         var bounds = new BoundingBox();
         bool boundsInit = false;
 
         void AccBounds(Vector3 p)
         {
-            if (!boundsInit)
-            {
-                bounds = new BoundingBox(p, p);
-                boundsInit = true;
-            }
-            else
-            {
-                bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p));
-            }
+            if (!boundsInit) { bounds = new BoundingBox(p, p); boundsInit = true; }
+            else bounds = new BoundingBox(Vector3.Min(bounds.Minimum, p), Vector3.Max(bounds.Maximum, p));
         }
 
         switch (obj)
         {
             case WadMoveable mv:
-                BuildMoveable(mv, acc, AccBounds);
+                BuildMoveable(mv, verts, AccBounds);
                 break;
             case WadStatic st when st.Mesh != null:
-                AppendWadMesh(acc, st.Mesh, Matrix4x4.Identity, AccBounds);
+                AppendWadMesh(verts, st.Mesh, Matrix4x4.Identity, AccBounds);
                 break;
             case ImportedGeometry ig:
-                BuildImported(ig, acc, AccBounds);
+                BuildImported(ig, verts, AccBounds);
                 break;
             default:
                 return null;
         }
 
-        var (vertices, segments) = acc.Flatten();
-        if (vertices.Length == 0)
+        if (verts.Count == 0)
             return null;
 
-        var span = MemoryMarshal.AsBytes(vertices.AsSpan());
+        var span = MemoryMarshal.AsBytes(CollectionsMarshal.AsSpan(verts));
         var vb   = _device.CreateBuffer(
             new BufferDesc(
                 sizeBytes: span.Length,
@@ -1014,13 +790,12 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         return new PerObject
         {
             Vb          = vb,
-            VertexCount = vertices.Length,
+            VertexCount = verts.Count,
             Bounds      = boundsInit ? bounds : new BoundingBox(Vector3.Zero, Vector3.Zero),
-            Segments    = segments,
         };
     }
 
-    private void BuildMoveable(WadMoveable mv, VertexAccumulator acc, Action<Vector3> trackBounds)
+    private void BuildMoveable(WadMoveable mv, List<ObjectVertex> verts, Action<Vector3> trackBounds)
     {
         WadKeyFrame frame = (mv.Animations.Count > 0 && mv.Animations[0].KeyFrames.Count > 0)
                              ? mv.Animations[0].KeyFrames[0]
@@ -1030,11 +805,11 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         {
             var bone = mv.Bones[i];
             if (bone.Mesh != null)
-                AppendWadMesh(acc, bone.Mesh, transforms[i], trackBounds);
+                AppendWadMesh(verts, bone.Mesh, transforms[i], trackBounds);
         }
     }
 
-    private void BuildImported(ImportedGeometry imp, VertexAccumulator acc, Action<Vector3> trackBounds)
+    private void BuildImported(ImportedGeometry imp, List<ObjectVertex> verts, Action<Vector3> trackBounds)
     {
         var model = imp.DirectXModel;
         if (model?.Meshes == null)
@@ -1048,9 +823,6 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             foreach (var submesh in mesh.Submeshes.Values)
             {
                 var tex = submesh.Material?.Texture;
-                Vector2 texSize = tex?.Image is { Width: > 0, Height: > 0 }
-                                  ? new Vector2(tex.Image.Width, tex.Image.Height)
-                                  : Vector2.One;
                 int baseIdx = submesh.BaseIndex;
                 int count   = submesh.NumIndices;
                 for (int k = 0; k < count; k++)
@@ -1058,13 +830,17 @@ public sealed class WadObjectPreviewRenderer : IDisposable
                     int vi = mesh.Indices[baseIdx + k];
                     var v = mesh.Vertices[vi];
                     Vector3 col      = hasColors ? v.Color : Vector3.One;
-                    var (atlas, uv) = GetAtlasUv(tex, v.UV * texSize);
-                    acc.Add(atlas, new ObjectVertex
+                    // v.UV is already in source-pixel space (PremultiplyUV
+                    // applied at import time), so we hand it straight to
+                    // GetAtlasUv without rescaling.
+                    var (layer, uv) = GetAtlasUv(tex, v.UV);
+                    verts.Add(new ObjectVertex
                     {
                         Position = v.Position,
                         Color    = PackColorRgba8(col),
                         UvU      = PackUNorm16(uv.X),
                         UvV      = PackUNorm16(uv.Y),
+                        Layer    = (uint)layer,
                     });
                     trackBounds(v.Position);
                 }
@@ -1072,7 +848,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         }
     }
 
-    private void AppendWadMesh(VertexAccumulator acc, WadMesh mesh, Matrix4x4 transform, Action<Vector3> trackBounds)
+    private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Matrix4x4 transform, Action<Vector3> trackBounds)
     {
         if (mesh == null)
             return;
@@ -1087,46 +863,46 @@ public sealed class WadObjectPreviewRenderer : IDisposable
             // poly.CorrectTexCoords(0.5f) to keep bilinear filtering from
             // sampling the atlas gutter at face edges (the "bordino" effect).
             var coords = poly.CorrectTexCoords(0.5f);
-            var (atlas0, uv0) = GetAtlasUv(ta.Texture, coords[0]);
-            var (atlas1, uv1) = GetAtlasUv(ta.Texture, coords[1]);
-            var (atlas2, uv2) = GetAtlasUv(ta.Texture, coords[2]);
-            var (atlas3, uv3) = poly.Shape == WadPolygonShape.Quad
+            var (layer0, uv0) = GetAtlasUv(ta.Texture, coords[0]);
+            var (_,      uv1) = GetAtlasUv(ta.Texture, coords[1]);
+            var (_,      uv2) = GetAtlasUv(ta.Texture, coords[2]);
+            var (_,      uv3) = poly.Shape == WadPolygonShape.Quad
                                 ? GetAtlasUv(ta.Texture, coords[3])
-                                : (atlas0, default(Vector2));
+                                : (layer0, default(Vector2));
 
-            // All UVs of a single poly target the same texture, so all four
-            // atlas indices match. Use the first one.
-            int atlas = atlas0;
+            // All UVs of a single poly target the same texture -- one layer.
+            uint layer = (uint)layer0;
 
             if (poly.Shape == WadPolygonShape.Triangle)
             {
-                Push(poly.Index0, atlas, uv0);
-                Push(poly.Index1, atlas, uv1);
-                Push(poly.Index2, atlas, uv2);
+                Push(poly.Index0, layer, uv0);
+                Push(poly.Index1, layer, uv1);
+                Push(poly.Index2, layer, uv2);
             }
             else
             {
-                Push(poly.Index0, atlas, uv0);
-                Push(poly.Index1, atlas, uv1);
-                Push(poly.Index2, atlas, uv2);
-                Push(poly.Index0, atlas, uv0);
-                Push(poly.Index2, atlas, uv2);
-                Push(poly.Index3, atlas, uv3);
+                Push(poly.Index0, layer, uv0);
+                Push(poly.Index1, layer, uv1);
+                Push(poly.Index2, layer, uv2);
+                Push(poly.Index0, layer, uv0);
+                Push(poly.Index2, layer, uv2);
+                Push(poly.Index3, layer, uv3);
             }
         }
 
-        void Push(int i, int atlas, Vector2 uv)
+        void Push(int i, uint layer, Vector2 uv)
         {
             if (i < 0 || i >= pos.Count)
                 return;
             Vector3 c = hasColors ? col[i] : Vector3.One;
             Vector3 p = Vector3.Transform(pos[i], transform);
-            acc.Add(atlas, new ObjectVertex
+            verts.Add(new ObjectVertex
             {
                 Position = p,
                 Color    = PackColorRgba8(c),
                 UvU      = PackUNorm16(uv.X),
                 UvV      = PackUNorm16(uv.Y),
+                Layer    = layer,
             });
             trackBounds(p);
         }
@@ -1161,11 +937,6 @@ public static class WadObjectPreviewHelper
         return wadObject;
     }
 
-    /// <summary>
-    /// CPU-side bounding sphere -- bone-walks moveables, reads static / imported
-    /// geometry vertex positions directly. Replaces the legacy version that
-    /// needed a WadRenderer to compute it.
-    /// </summary>
     public static (Vector3 center, float radius) ComputeBoundingSphere(IWadObject obj)
     {
         Vector3 min, max;

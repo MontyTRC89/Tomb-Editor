@@ -10,14 +10,17 @@
 //
 // Bindings:
 //   b0  ViewParams : float4x4 ViewProjection; float GridLineWidth; ...
-//   t0  Atlas      : Texture2D (BGRA8 atlas: white pixel + arrows + level tex)
+//   t0  Atlas      : Texture2DArray (BGRA8 atlas pool: layer 0 holds the
+//                    white pixel + sector arrows + the first batch of level
+//                    textures, additional layers spill over when full)
 //   s0  AtlasSamp  : SamplerState
 //
-// Vertex layout (stride 40):
+// Vertex layout (stride 28):
 //   POSITION  : float3   (world space)
 //   COLOR     : float3   (RGB tint, 0..1)
-//   TEXCOORD0 : float2   (atlas UV)
-//   TEXCOORD1 : float2   (grid UV = raw VertexEditorUVs)
+//   TEXCOORD0 : float2   (atlas UV, R16G16_UNorm)
+//   TEXCOORD1 : float2   (grid UV = raw VertexEditorUVs, R16G16_Float)
+//   TEXCOORD2 : uint     (atlas array layer, R32_UInt)
 
 #include "Bindings.hlsli"
 
@@ -36,8 +39,8 @@ cbuffer ViewParams : register(b0)
     float4   DofColorStrength;      // xyz = darkening colour, w = mode
 };
 
-VK_BINDING(1, 0) Texture2D    Atlas     : register(t0);
-VK_BINDING(2, 0) SamplerState AtlasSamp : register(s0);
+VK_BINDING(1, 0) Texture2DArray Atlas     : register(t0);
+VK_BINDING(2, 0) SamplerState   AtlasSamp : register(s0);
 
 struct VsIn
 {
@@ -49,6 +52,7 @@ struct VsIn
     VK_LOCATION(1) float4 Color      : COLOR;
     VK_LOCATION(2) float2 Uv         : TEXCOORD0;
     VK_LOCATION(3) float2 GridUv     : TEXCOORD1;
+    VK_LOCATION(4) uint   Layer      : TEXCOORD2;
 };
 
 struct VsOut
@@ -58,6 +62,7 @@ struct VsOut
     float2 Uv            : TEXCOORD0;
     float2 GridUv        : TEXCOORD1;
     float3 WorldPosition : TEXCOORD2;   // for the depth-of-field overlay
+    nointerpolation uint Layer : TEXCOORD3;
 };
 
 // Per-axis derivative length, used as the "resolution" of the grid UV in
@@ -113,12 +118,13 @@ VsOut vs_main(VsIn input)
     o.Uv            = input.Uv;
     o.GridUv        = input.GridUv;
     o.WorldPosition = input.PositionWS;
+    o.Layer         = input.Layer;
     return o;
 }
 
 float4 ps_main(VsOut input) : SV_Target
 {
-    float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
+    float4 sampled = Atlas.Sample(AtlasSamp, float3(input.Uv, (float)input.Layer));
     float4 outColor;
 
     // GridEnabled is a uniform (cbuffer value), so this split is NOT a

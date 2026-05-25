@@ -39,8 +39,9 @@ public sealed class SpriteRenderer : IDisposable
         public Vector2 Pos;     // pixel coordinates, top-left origin
         public Vector2 Uv;
         public uint    Color;   // RGBA8
+        public uint    Layer;   // Texture2DArray layer
     }
-    private const int Stride = 20;
+    private const int Stride = 24;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 256)]
     private struct ViewParams
@@ -62,6 +63,7 @@ public sealed class SpriteRenderer : IDisposable
                 new VertexAttribute("POSITION", 0, Format.R32G32_Float,   bufferSlot: 0, offset: 0),
                 new VertexAttribute("TEXCOORD", 0, Format.R32G32_Float,   bufferSlot: 0, offset: 8),
                 new VertexAttribute("COLOR",    0, Format.R8G8B8A8_UNorm, bufferSlot: 0, offset: 16),
+                new VertexAttribute("TEXCOORD", 1, Format.R32_UInt,       bufferSlot: 0, offset: 20),
             },
             VertexBufferLayouts    = new[] { new VertexBufferLayout(strideBytes: Stride) },
             Topology               = PrimitiveTopology.TriangleList,
@@ -185,7 +187,7 @@ public sealed class SpriteRenderer : IDisposable
                     if (kv.Key.TypeId == sprite.Sequence) { seq = kv.Value; break; }
                 if (seq == null || sprite.Frame < 0 || sprite.Frame >= seq.Sprites.Count) continue;
 
-                if (!atlas.TryGetSpriteFrameUv(seq, sprite.Frame, out var uvMin, out var uvMax)) continue;
+                if (!atlas.TryGetSpriteFrameUv(seq, sprite.Frame, out var uvMin, out var uvMax, out int layer)) continue;
                 var alignment = seq.Sprites[sprite.Frame].Alignment;
 
                 // Project the world position to viewport pixels (top-left origin).
@@ -201,7 +203,7 @@ public sealed class SpriteRenderer : IDisposable
                             ? selRgba
                             : 0xFF_FF_FF_FFu;
 
-                EmitQuad(v, ref n, x0, y0, x1, y1, uvMin.X, uvMin.Y, uvMax.X, uvMax.Y, tint);
+                EmitQuad(v, ref n, x0, y0, x1, y1, uvMin.X, uvMin.Y, uvMax.X, uvMax.Y, tint, (uint)layer);
             }
         }
         return n;
@@ -224,22 +226,22 @@ public sealed class SpriteRenderer : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static void EmitQuad(Span<SpriteVertex> v, ref int n,
                                  float x0, float y0, float x1, float y1,
-                                 float u0, float v0Tex, float u1, float v1Tex, uint color)
+                                 float u0, float v0Tex, float u1, float v1Tex, uint color, uint layer)
     {
         int i = n;
         if ((uint)(i + 6) > (uint)v.Length) { n = i + 6; return; }
         ref var p0 = ref Unsafe.Add(ref MemoryMarshal.GetReference(v), i);
-        p0.Pos = new Vector2(x0, y0); p0.Uv = new Vector2(u0, v0Tex); p0.Color = color;
+        p0.Pos = new Vector2(x0, y0); p0.Uv = new Vector2(u0, v0Tex); p0.Color = color; p0.Layer = layer;
         ref var p1 = ref Unsafe.Add(ref p0, 1);
-        p1.Pos = new Vector2(x1, y0); p1.Uv = new Vector2(u1, v0Tex); p1.Color = color;
+        p1.Pos = new Vector2(x1, y0); p1.Uv = new Vector2(u1, v0Tex); p1.Color = color; p1.Layer = layer;
         ref var p2 = ref Unsafe.Add(ref p0, 2);
-        p2.Pos = new Vector2(x1, y1); p2.Uv = new Vector2(u1, v1Tex); p2.Color = color;
+        p2.Pos = new Vector2(x1, y1); p2.Uv = new Vector2(u1, v1Tex); p2.Color = color; p2.Layer = layer;
         ref var p3 = ref Unsafe.Add(ref p0, 3);
-        p3.Pos = new Vector2(x0, y0); p3.Uv = new Vector2(u0, v0Tex); p3.Color = color;
+        p3.Pos = new Vector2(x0, y0); p3.Uv = new Vector2(u0, v0Tex); p3.Color = color; p3.Layer = layer;
         ref var p4 = ref Unsafe.Add(ref p0, 4);
-        p4.Pos = new Vector2(x1, y1); p4.Uv = new Vector2(u1, v1Tex); p4.Color = color;
+        p4.Pos = new Vector2(x1, y1); p4.Uv = new Vector2(u1, v1Tex); p4.Color = color; p4.Layer = layer;
         ref var p5 = ref Unsafe.Add(ref p0, 5);
-        p5.Pos = new Vector2(x0, y1); p5.Uv = new Vector2(u0, v1Tex); p5.Color = color;
+        p5.Pos = new Vector2(x0, y1); p5.Uv = new Vector2(u0, v1Tex); p5.Color = color; p5.Layer = layer;
         n = i + 6;
     }
 

@@ -55,7 +55,9 @@ internal sealed class ObjectRenderer : IDisposable
         public uint    Color;       // R8G8B8A8_UNorm
         public ushort  UvU;
         public ushort  UvV;
+        public uint    Layer;       // Texture2DArray layer index
     }
+    private const int ObjectVertexStride = 24;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct InstanceData
@@ -93,10 +95,13 @@ internal sealed class ObjectRenderer : IDisposable
                 new VertexAttribute("TEXCOORD", 3, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 32, perInstance: true),
                 new VertexAttribute("TEXCOORD", 4, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 48, perInstance: true),
                 new VertexAttribute("TEXCOORD", 5, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 64, perInstance: true),
+                // Layer goes LAST -- VK_LOCATION(8) in Object.hlsl, and the
+                // Vulkan backend takes SPIR-V locations from the array index.
+                new VertexAttribute("TEXCOORD", 6, Format.R32_UInt,        bufferSlot: 0, offset: 20),
             },
             VertexBufferLayouts = new[]
             {
-                new VertexBufferLayout(strideBytes: 20),
+                new VertexBufferLayout(strideBytes: ObjectVertexStride),
                 new VertexBufferLayout(strideBytes: InstanceStride, perInstance: true),
             },
             Topology               = PrimitiveTopology.TriangleList,
@@ -125,10 +130,13 @@ internal sealed class ObjectRenderer : IDisposable
                 new VertexAttribute("TEXCOORD", 3, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 32, perInstance: true),
                 new VertexAttribute("TEXCOORD", 4, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 48, perInstance: true),
                 new VertexAttribute("TEXCOORD", 5, Format.R32G32B32A32_Float, bufferSlot: 1, offset: 64, perInstance: true),
+                // Layer goes LAST -- VK_LOCATION(8) in Object.hlsl, see the
+                // main pipeline above for why ordering matters under Vulkan.
+                new VertexAttribute("TEXCOORD", 6, Format.R32_UInt,           bufferSlot: 0, offset: 20),
             },
             VertexBufferLayouts = new[]
             {
-                new VertexBufferLayout(strideBytes: 20),
+                new VertexBufferLayout(strideBytes: ObjectVertexStride),
                 new VertexBufferLayout(strideBytes: InstanceStride, perInstance: true),
             },
             Topology               = PrimitiveTopology.TriangleList,
@@ -434,32 +442,45 @@ internal sealed class ObjectRenderer : IDisposable
                 foreach (var submesh in mesh.Submeshes.Values)
                 {
                     var igTex = submesh.Material?.Texture;
-                    Vector2 texSize = igTex?.Image is { Width: > 0, Height: > 0 }
-                                      ? new Vector2(igTex.Image.Width, igTex.Image.Height)
-                                      : Vector2.One;
-                    // Imported geometry samples the whole texture image, so
-                    // the packed atlas region is the full page.
-                    var igMapper = _atlas.MapFace(igTex, Vector2.Zero, texSize);
                     int baseIdx = submesh.BaseIndex;
                     int count   = submesh.NumIndices;
-                    for (int k = 0; k < count; k++)
+                    // Per-triangle MapFace -- same pattern as AppendWadMesh.
+                    // ImportedGeometryVertex.UV is ALREADY in source-pixel
+                    // coordinates (BaseGeometryImporter.ApplyUVTransform
+                    // applied PremultiplyUV during load -- default true), so
+                    // we pass it straight to MapFace without rescaling.
+                    for (int k = 0; k + 2 < count; k += 3)
                     {
-                        int vi = mesh.Indices[baseIdx + k];
-                        var v = mesh.Vertices[vi];
-                        Vector3 col = hasColors ? v.Color : Vector3.One;
-                        Vector2 atlasUv = igMapper.Map(v.UV * texSize);
-                        list.Add(new ObjectVertex
-                        {
-                            Position = v.Position,
-                            Color    = PackColorRgba8(col),
-                            UvU      = PackUNorm16(atlasUv.X),
-                            UvV      = PackUNorm16(atlasUv.Y),
-                        });
+                        int i0 = mesh.Indices[baseIdx + k + 0];
+                        int i1 = mesh.Indices[baseIdx + k + 1];
+                        int i2 = mesh.Indices[baseIdx + k + 2];
+                        var v0 = mesh.Vertices[i0];
+                        var v1 = mesh.Vertices[i1];
+                        var v2 = mesh.Vertices[i2];
+                        var igMapper = _atlas.MapFace(igTex, v0.UV, v1.UV, v2.UV);
+                        uint igLayer = (uint)igMapper.Layer;
+                        PushImported(list, v0, igMapper.Map(v0.UV), igLayer, hasColors);
+                        PushImported(list, v1, igMapper.Map(v1.UV), igLayer, hasColors);
+                        PushImported(list, v2, igMapper.Map(v2.UV), igLayer, hasColors);
                     }
                 }
             }
         }
         return UploadMesh(list, "Imported:" + (imp.ToString() ?? "?"));
+    }
+
+    private static void PushImported(List<ObjectVertex> list, ImportedGeometryVertex v,
+                                     Vector2 atlasUv, uint layer, bool hasColors)
+    {
+        Vector3 col = hasColors ? v.Color : Vector3.One;
+        list.Add(new ObjectVertex
+        {
+            Position = v.Position,
+            Color    = PackColorRgba8(col),
+            UvU      = PackUNorm16(atlasUv.X),
+            UvV      = PackUNorm16(atlasUv.Y),
+            Layer    = layer,
+        });
     }
 
     private void AppendWadMesh(List<ObjectVertex> verts, WadMesh mesh, Matrix4x4 transform)
@@ -481,20 +502,21 @@ internal sealed class ObjectRenderer : IDisposable
             Vector2 uv0 = mapper.Map(ta.TexCoord0);
             Vector2 uv1 = mapper.Map(ta.TexCoord1);
             Vector2 uv2 = mapper.Map(ta.TexCoord2);
+            uint    layer = (uint)mapper.Layer;
 
             if (isTriangle)
             {
-                Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
+                Push(poly.Index0, uv0, bm, layer); Push(poly.Index1, uv1, bm, layer); Push(poly.Index2, uv2, bm, layer);
             }
             else
             {
                 Vector2 uv3 = mapper.Map(ta.TexCoord3);
-                Push(poly.Index0, uv0, bm); Push(poly.Index1, uv1, bm); Push(poly.Index2, uv2, bm);
-                Push(poly.Index0, uv0, bm); Push(poly.Index2, uv2, bm); Push(poly.Index3, uv3, bm);
+                Push(poly.Index0, uv0, bm, layer); Push(poly.Index1, uv1, bm, layer); Push(poly.Index2, uv2, bm, layer);
+                Push(poly.Index0, uv0, bm, layer); Push(poly.Index2, uv2, bm, layer); Push(poly.Index3, uv3, bm, layer);
             }
         }
 
-        void Push(int i, Vector2 uv, uint blendMode)
+        void Push(int i, Vector2 uv, uint blendMode, uint layer)
         {
             if (i < 0 || i >= pos.Count) return;
             Vector3 c = hasColors ? col[i] : Vector3.One;
@@ -504,6 +526,7 @@ internal sealed class ObjectRenderer : IDisposable
                 Color    = PackColor(c, blendMode),
                 UvU      = PackUNorm16(uv.X),
                 UvV      = PackUNorm16(uv.Y),
+                Layer    = layer,
             });
         }
     }

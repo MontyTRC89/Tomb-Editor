@@ -17,14 +17,15 @@ cbuffer SpriteParams : register(b0)
     float4 _pad2;
 };
 
-VK_BINDING(1, 0) Texture2D    Atlas     : register(t0);
-VK_BINDING(2, 0) SamplerState AtlasSamp : register(s0);
+VK_BINDING(1, 0) Texture2DArray Atlas     : register(t0);
+VK_BINDING(2, 0) SamplerState   AtlasSamp : register(s0);
 
 struct VsIn
 {
     VK_LOCATION(0) float2 PositionPx : POSITION;
     VK_LOCATION(1) float2 Uv         : TEXCOORD0;
     VK_LOCATION(2) float4 Tint       : COLOR;
+    VK_LOCATION(3) uint   Layer      : TEXCOORD1;
 };
 
 struct VsOut
@@ -32,6 +33,7 @@ struct VsOut
     float4 PositionCS : SV_Position;
     float2 Uv         : TEXCOORD0;
     float4 Tint       : COLOR;
+    nointerpolation uint Layer : TEXCOORD1;
 };
 
 VsOut vs_main(VsIn input)
@@ -45,11 +47,12 @@ VsOut vs_main(VsIn input)
     o.PositionCS = float4(ndc, 0.0, 1.0);
     o.Uv         = input.Uv;
     o.Tint       = input.Tint;
+    o.Layer      = input.Layer;
     return o;
 }
 
 float4 ps_main(VsOut input) : SV_Target
 {
-    float4 tex = Atlas.Sample(AtlasSamp, input.Uv);
+    float4 tex = Atlas.Sample(AtlasSamp, float3(input.Uv, (float)input.Layer));
     return tex * input.Tint;
 }

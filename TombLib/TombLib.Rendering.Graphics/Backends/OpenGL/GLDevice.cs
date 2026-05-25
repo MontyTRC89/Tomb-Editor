@@ -396,18 +396,35 @@ public unsafe sealed partial class GLDevice : IRhiDevice
     public TextureHandle CreateTexture(in TextureDesc desc, ReadOnlySpan<byte> initialData)
     {
         var (internalFormat, pixelFormat, pixelType) = GLMapping.ToGl(desc.Format);
-        int mipLevels = Math.Max(1, desc.MipLevels);
+        int mipLevels   = Math.Max(1, desc.MipLevels);
+        int arrayLayers = Math.Max(1, desc.ArrayLayers);
+        var target      = arrayLayers > 1 ? TextureTarget.Texture2DArray : TextureTarget.Texture2D;
 
         uint texture;
-        Gl.CreateTextures(TextureTarget.Texture2D, 1, &texture);
-        Gl.TextureStorage2D(texture, (uint)mipLevels, (SizedInternalFormat)internalFormat,
-                            (uint)desc.Width, (uint)desc.Height);
+        Gl.CreateTextures(target, 1, &texture);
+        if (arrayLayers > 1)
+        {
+            Gl.TextureStorage3D(texture, (uint)mipLevels, (SizedInternalFormat)internalFormat,
+                                (uint)desc.Width, (uint)desc.Height, (uint)arrayLayers);
+        }
+        else
+        {
+            Gl.TextureStorage2D(texture, (uint)mipLevels, (SizedInternalFormat)internalFormat,
+                                (uint)desc.Width, (uint)desc.Height);
+        }
 
         if (initialData.Length > 0)
         {
+            // Initial data fills mip 0 / layer 0 only -- matches DX11 behaviour.
             fixed (byte* src = initialData)
-                Gl.TextureSubImage2D(texture, 0, 0, 0, (uint)desc.Width, (uint)desc.Height,
-                                     pixelFormat, pixelType, src);
+            {
+                if (arrayLayers > 1)
+                    Gl.TextureSubImage3D(texture, 0, 0, 0, 0, (uint)desc.Width, (uint)desc.Height, 1,
+                                         pixelFormat, pixelType, src);
+                else
+                    Gl.TextureSubImage2D(texture, 0, 0, 0, (uint)desc.Width, (uint)desc.Height,
+                                         pixelFormat, pixelType, src);
+            }
         }
 
         // Default texture parameters -- samplers override these per-binding,
@@ -420,13 +437,14 @@ public unsafe sealed partial class GLDevice : IRhiDevice
         uint id = AllocHandle();
         Textures[id] = new GLTextureRes
         {
-            Handle    = texture,
-            Width     = desc.Width,
-            Height    = desc.Height,
-            MipLevels = mipLevels,
-            Format    = desc.Format,
-            BindFlags = desc.BindFlags,
-            IsDepth   = pixelFormat is PixelFormat.DepthComponent or PixelFormat.DepthStencil,
+            Handle      = texture,
+            Width       = desc.Width,
+            Height      = desc.Height,
+            MipLevels   = mipLevels,
+            ArrayLayers = arrayLayers,
+            Format      = desc.Format,
+            BindFlags   = desc.BindFlags,
+            IsDepth     = pixelFormat is PixelFormat.DepthComponent or PixelFormat.DepthStencil,
         };
         return new TextureHandle(id);
     }
@@ -438,14 +456,25 @@ public unsafe sealed partial class GLDevice : IRhiDevice
         var texture = Textures[handle.Id];
         var (_, pixelFormat, pixelType) = GLMapping.ToGl(texture.Format);
 
+        // DX-style subresource = mip + layer * mipLevels.
+        int mipLevels   = Math.Max(1, texture.MipLevels);
+        int mipIndex    = subresource % mipLevels;
+        int layerIndex  = subresource / mipLevels;
+
         // GL specifies the source row stride via GL_UNPACK_ROW_LENGTH (in pixels).
         int bytesPerPixel = BytesPerPixelOf(texture.Format);
         Gl.PixelStore(PixelStoreParameter.UnpackRowLength, rowPitchBytes / bytesPerPixel);
         try
         {
             fixed (byte* src = data)
-                Gl.TextureSubImage2D(texture.Handle, subresource, x, y, (uint)width, (uint)height,
-                                     pixelFormat, pixelType, src);
+            {
+                if (texture.ArrayLayers > 1)
+                    Gl.TextureSubImage3D(texture.Handle, mipIndex, x, y, layerIndex,
+                                         (uint)width, (uint)height, 1, pixelFormat, pixelType, src);
+                else
+                    Gl.TextureSubImage2D(texture.Handle, mipIndex, x, y, (uint)width, (uint)height,
+                                         pixelFormat, pixelType, src);
+            }
         }
         finally
         {

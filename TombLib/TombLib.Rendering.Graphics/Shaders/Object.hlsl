@@ -1,9 +1,10 @@
 // Instanced object pass.
 //
-// Slot 0 (per-vertex, stride 20):
+// Slot 0 (per-vertex, stride 24):
 //   POSITION  : float3       (model-local space)
 //   COLOR     : R8G8B8A8     (vertex tint)
 //   TEXCOORD0 : R16G16_UNorm (atlas UV)
+//   TEXCOORD6 : R32_UInt     (atlas array layer)
 //
 // Slot 1 (per-instance, stride 80):
 //   TEXCOORD1..4 : float4 each (rows of the transposed model matrix)
@@ -25,8 +26,8 @@ cbuffer ViewParams : register(b0)
     float    _pad1, _pad2;
 };
 
-VK_BINDING(1, 0) Texture2D    Atlas     : register(t0);
-VK_BINDING(2, 0) SamplerState AtlasSamp : register(s0);
+VK_BINDING(1, 0) Texture2DArray Atlas     : register(t0);
+VK_BINDING(2, 0) SamplerState   AtlasSamp : register(s0);
 
 struct VsIn
 {
@@ -38,6 +39,7 @@ struct VsIn
     VK_LOCATION(5) float4 InstMat2    : TEXCOORD3;
     VK_LOCATION(6) float4 InstMat3    : TEXCOORD4;
     VK_LOCATION(7) float4 InstTint    : TEXCOORD5;
+    VK_LOCATION(8) uint   Layer       : TEXCOORD6;
 };
 
 struct VsOut
@@ -45,6 +47,7 @@ struct VsOut
     float4 PositionCS : SV_Position;
     float4 Color      : COLOR;
     float2 Uv         : TEXCOORD0;
+    nointerpolation uint Layer : TEXCOORD1;
 };
 
 VsOut vs_main(VsIn input)
@@ -66,12 +69,13 @@ VsOut vs_main(VsIn input)
     // unmodified for the pixel shader's alpha test.
     o.Color.a     = input.Color.a;
     o.Uv          = input.Uv;
+    o.Layer       = input.Layer;
     return o;
 }
 
 float4 ps_main(VsOut input) : SV_Target
 {
-    float4 sampled = Atlas.Sample(AtlasSamp, input.Uv);
+    float4 sampled = Atlas.Sample(AtlasSamp, float3(input.Uv, (float)input.Layer));
 
     // Alpha test — discard see-through texels so object cutout textures
     // (foliage, grates, fences) render as holes instead of opaque black.
