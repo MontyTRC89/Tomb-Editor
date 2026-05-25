@@ -288,7 +288,7 @@ namespace WadTool.Controls
             GenerateBoneColors();
         }
 
-        public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
+        public void InitializeRendering(WadToolClass tool)
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;

@@ -55,12 +55,12 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<WadMeshBoneNode> Skeleton { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ObjectMesh SelectedMesh
+        public WadMesh SelectedMesh
         {
             get { return _selectedMesh; }
             set { _selectedMesh = value; Invalidate(); }
         }
-        private ObjectMesh _selectedMesh;
+        private WadMesh _selectedMesh;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePicking { get; set; }
@@ -69,15 +69,14 @@ namespace WadTool.Controls
         private AnimationEditor _editor;
 
         // Per-bone source meshes resolved at init time, matched 1:1 with the
-        // bone count of _model.Meshes. Replaces the legacy ObjectMesh→VB
-        // chain: we feed the WadMesh directly to the V2 renderer.
+        // bone count of _model.Meshes. We feed the WadMesh directly to the V2
+        // renderer.
         private WadMoveable _renderMoveable;
 
-        // Skeleton state for picking / Model/Skin form APIs (kept compatible
-        // with the legacy panel).
+        // CPU-only skeleton state (no GPU buffers). The V2 renderer reads
+        // _model.AnimationTransforms[i] alongside _renderMoveable.Bones[i].Mesh.
         private AnimatedModel _model;
         private AnimatedModel _skinModel;
-        private WadRenderer _wadRenderer;
 
         // V2 overlay renderers.
         private LinePrimitiveRenderer _lines;
@@ -87,7 +86,7 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
 
-        public void InitializeRendering(AnimationEditor editor, DeviceManager deviceManager, WadMoveable skin)
+        public void InitializeRendering(AnimationEditor editor, WadMoveable skin)
         {
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
@@ -96,17 +95,13 @@ namespace WadTool.Controls
             _editor = editor;
             Configuration = _editor.Tool.Configuration;
 
-            // The legacy WadRenderer is used purely as a vehicle to build the
-            // CPU-side AnimatedModel (skeleton hierarchy + animation pose). Its
-            // GPU buffers are unused in V2.
-            _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, true, 4096, 2048, true);
-            _model = _wadRenderer.GetMoveable(editor.Moveable);
+            _model = AnimatedModel.FromWadMoveable(editor.Moveable, loadAnimations: true);
 
             _renderMoveable = editor.Moveable;
             if (skin != null)
             {
                 var replaced = editor.Moveable.ReplaceDummyMeshes(skin);
-                _skinModel = _wadRenderer.GetMoveable(replaced);
+                _skinModel = AnimatedModel.FromWadMoveable(replaced, loadAnimations: true);
                 _renderMoveable = replaced;
             }
 
@@ -127,9 +122,6 @@ namespace WadTool.Controls
             {
                 _gizmo?.Dispose();
                 _lines?.Dispose();
-                _model?.Dispose();
-                _skinModel?.Dispose();
-                _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -313,7 +305,7 @@ namespace WadTool.Controls
 
                     // Bone picking — CPU ray/triangle test against each bone's
                     // WadMesh in local space (matches legacy semantics).
-                    ObjectMesh foundMesh = null;
+                    WadMesh foundMesh = null;
                     float minDistance = float.PositiveInfinity;
                     int boneCount = Math.Min(_renderMoveable.Bones.Count, _model.Meshes.Count);
                     for (int i = 0; i < boneCount; i++)

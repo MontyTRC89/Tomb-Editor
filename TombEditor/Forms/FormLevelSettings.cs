@@ -1230,7 +1230,7 @@ namespace TombEditor.Forms
 
                 // Open preview
                 _previewWad?.Dispose();
-                _previewWad = new FormPreviewWad(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
+                _previewWad = new FormPreviewWad(wad.Wad, _editor);
                 var screenArea = objectFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
                 FitPreview(_previewWad, new Rectangle(objectFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
                 _previewWad.Show(this);

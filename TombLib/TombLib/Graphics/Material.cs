@@ -1,4 +1,4 @@
-﻿using TombLib.Utils;
+using TombLib.Utils;
 
 namespace TombLib.Graphics
 {
@@ -27,21 +27,6 @@ namespace TombLib.Graphics
             AdditiveBlending = additiveBlending;
             DoubleSided = doubleSided;
             Shininess = shininess;
-        }
-
-        public void SetStates(SharpDX.Toolkit.Graphics.GraphicsDevice device, bool transparent)
-        {
-            if (transparent && AdditiveBlending)
-                device.SetBlendState(device.BlendStates.Additive);
-            else if (transparent)
-                device.SetBlendState(device.BlendStates.NonPremultiplied);
-            else
-                device.SetBlendState(device.BlendStates.Opaque);
-
-            if (DoubleSided)
-                device.SetRasterizerState(device.RasterizerStates.CullNone);
-            else
-                device.SetRasterizerState(device.RasterizerStates.CullBack);
         }
     }
 }

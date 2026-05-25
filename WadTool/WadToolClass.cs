@@ -214,15 +214,15 @@ namespace WadTool
 
         public class AnimationEditorMeshSelectedEvent : IEditorEvent
         {
-            public ObjectMesh Mesh { get; set; }
+            public WadMesh Mesh { get; set; }
             public AnimatedModel Model { get; set; }
-            public AnimationEditorMeshSelectedEvent(AnimatedModel model, ObjectMesh mesh)
+            public AnimationEditorMeshSelectedEvent(AnimatedModel model, WadMesh mesh)
             {
                 Model = model;
                 Mesh = mesh;
             }
         }
-        public void AnimationEditorMeshSelected(AnimatedModel model, ObjectMesh mesh)
+        public void AnimationEditorMeshSelected(AnimatedModel model, WadMesh mesh)
         {
             RaiseEvent(new AnimationEditorMeshSelectedEvent(model, mesh));
         }

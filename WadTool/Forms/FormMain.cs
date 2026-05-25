@@ -531,13 +531,13 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            using (var form = new FormMeshEditor(_tool, _tool.DestinationWad))
                 form.ShowDialog(this);
         }
 
         private void butEditItem_Click(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.EditObject(_tool, this);
         }
 
         private void butRenameAnimation_Click(object sender, EventArgs e)
@@ -552,7 +552,7 @@ namespace WadTool
 
         private void butEditAnimations_Click(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.EditObject(_tool, this);
         }
 
         private void editSkeletonToolStripMenuItem_Click(object sender, EventArgs e)
@@ -562,17 +562,17 @@ namespace WadTool
 
         private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.EditObject(_tool, this);
         }
 
         private void butEditStaticModel_Click(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.EditObject(_tool, this);
         }
 
         private void butEditSpriteSequence_Click(object sender, EventArgs e)
         {
-            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
+            WadActions.EditObject(_tool, this);
         }
 
         private void changeSlotToolStripMenuItem_Click(object sender, EventArgs e)
@@ -688,7 +688,7 @@ namespace WadTool
             if (_tool.DestinationWad == null)
                 return;
 
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, (_tool.MainSelection?.Id ?? null), _tool.DestinationWad) { ShowEditingTools = true })
+            using (var form = new FormMeshEditor(_tool, (_tool.MainSelection?.Id ?? null), _tool.DestinationWad) { ShowEditingTools = true })
                 form.ShowDialog(this);
         }
 

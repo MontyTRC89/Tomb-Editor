@@ -1,4 +1,3 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Drawing;
 using System.Numerics;

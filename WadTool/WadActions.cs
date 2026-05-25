@@ -918,7 +918,7 @@ namespace WadTool
             return newIds.ToList();
         }
 
-        public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
+        public static void EditObject(WadToolClass tool, IWin32Window owner)
         {
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             var wadObject = wad?.TryGet(tool.MainSelection?.Id);
@@ -945,7 +945,7 @@ namespace WadTool
             }
             else if (wadObject is WadMoveable)
             {
-                using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
+                using (var form = new FormAnimationEditor(tool, wad, ((WadMoveable)wadObject).Id))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;

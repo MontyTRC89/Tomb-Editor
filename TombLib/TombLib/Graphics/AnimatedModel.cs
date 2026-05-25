@@ -1,4 +1,3 @@
-﻿using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,14 @@ using TombLib.Wad;
 
 namespace TombLib.Graphics
 {
-    public class AnimatedModel : Model<ObjectMesh, ObjectVertex>
+    /// <summary>
+    /// CPU-only animated-model view of a <see cref="WadMoveable"/>: bone
+    /// hierarchy, bind-pose + per-keyframe animation transforms, plus the
+    /// per-bone WadMesh references. Used by the animation editor — the V2
+    /// renderer reads <see cref="AnimationTransforms"/> alongside the
+    /// per-bone <see cref="WadMesh"/> directly, no GPU buffers needed here.
+    /// </summary>
+    public class AnimatedModel
     {
         private struct BoneSignature
         {
@@ -23,23 +29,10 @@ namespace TombLib.Graphics
         public Bone Root { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
         public List<Bone> Bones { get; set; } = new List<Bone>();
+        public List<WadMesh> Meshes { get; set; } = new List<WadMesh>();
+        public WadMesh Skin { get; set; }
         public List<Matrix4x4> BindPoseTransforms { get; set; } = new List<Matrix4x4>();
         public List<Matrix4x4> AnimationTransforms { get; set; } = new List<Matrix4x4>();
-
-        public AnimatedModel(GraphicsDevice device)
-            : base(device, ModelType.Skinned)
-        {
-            UpdateBuffers();
-        }
-
-        public override void UpdateBuffers(Vector3? position = null)
-        {
-            foreach (var mesh in Meshes)
-            {
-                mesh.UpdateBoundingBox();
-                mesh.UpdateBuffers(position);
-            }
-        }
 
         public void BuildHierarchy()
         {
@@ -61,18 +54,6 @@ namespace TombLib.Graphics
             {
                 BuildHierarchy(child, node.GlobalTransform);
             }
-        }
-
-        public void UpdateAnimation(int animationIndex, int frameIndex)
-        {
-            if (animationIndex >= Animations.Count)
-                return;
-            var animation = Animations[animationIndex];
-            int keyFrameIndex1 = frameIndex;
-            int keyFrameIndex2 = keyFrameIndex1 + 1;
-            if (keyFrameIndex1 >= animation.KeyFrames.Count || keyFrameIndex2 >= animation.KeyFrames.Count)
-                return;
-            BuildAnimationPose(animation.KeyFrames[keyFrameIndex1], animation.KeyFrames[keyFrameIndex2], 1);
         }
 
         public void BuildAnimationPose(KeyFrame frame)
@@ -114,17 +95,17 @@ namespace TombLib.Graphics
                 BuildAnimationPose(child, AnimationTransforms[node.Index], frame1, frame2, k);
         }
 
-        public static AnimatedModel FromWadMoveable(GraphicsDevice device, WadMoveable mov, Func<WadTexture, WadRenderer.AllocationResult> allocateTexture, bool correctTexture, bool loadAnimations)
+        public static AnimatedModel FromWadMoveable(WadMoveable mov, bool loadAnimations)
         {
-            AnimatedModel model = new AnimatedModel(device);
-            List<WadBone> bones = mov.Bones;  
+            AnimatedModel model = new AnimatedModel();
+            List<WadBone> bones = mov.Bones;
 
-            // Create meshes
+            // Per-bone meshes — kept as raw WadMesh references for the V2 renderer.
             for (int m = 0; m < bones.Count; m++)
-                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture, correctTexture));
+                model.Meshes.Add(bones[m].Mesh);
 
             if (mov.Skin != null)
-                model.Skin = ObjectMesh.FromWad2(device, mov.Skin, allocateTexture, correctTexture);
+                model.Skin = mov.Skin;
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count
@@ -143,13 +124,12 @@ namespace TombLib.Graphics
                 for (int j = 0; j < mov.Animations.Count; j++)
                     model.Animations.Add(Animation.FromWad2(bones, mov.Animations[j]));
 
-                // Prepare data by loading the first valid animation and uploading data to the GPU
                 model.BuildHierarchy();
 
                 if (model.Animations.Count > 0 && model.Animations.Any(a => a.KeyFrames.Count > 0))
                     model.BuildAnimationPose(model.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0)?.KeyFrames[0]);
             }
-            else 
+            else
             {
                 // We do not need whole animation, just load the first valid animation and first keyframe
                 var anim = mov.Animations.FirstOrDefault(a => a.KeyFrames.Count > 0);
@@ -164,8 +144,6 @@ namespace TombLib.Graphics
                     model.BuildAnimationPose(modelAnim.KeyFrames[0]);
                 }
             }
-            
-            model.UpdateBuffers();
 
             return model;
         }
@@ -236,51 +214,8 @@ namespace TombLib.Graphics
                         break;
                 }
             }
-            
+
             return model.Bones[0];
-        }
-
-        public void RenderSkin(GraphicsDevice device, Effect effect, SharpDX.Matrix world, AnimatedModel animSource = null)
-        {
-            if (Skin == null)
-                return;
-
-            device.SetVertexBuffer(0, Skin.VertexBuffer);
-            device.SetIndexBuffer(Skin.IndexBuffer, true);
-            device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, Skin.VertexBuffer));
-
-            var model = animSource == null ? this : animSource;
-
-            var dxMatrices = model.AnimationTransforms.Select(m =>
-            {
-                if (!Matrix4x4.Invert(model.BindPoseTransforms[model.AnimationTransforms.IndexOf(m)], out Matrix4x4 invBindPose))
-                    return Matrix4x4.Identity;
-
-                return Matrix4x4.Transpose(invBindPose * m);
-            }).ToArray();
-
-            effect.Parameters["Skinned"].SetValue(true);
-            effect.Parameters["Bones"].SetValue(dxMatrices);
-
-            effect.Parameters["ModelViewProjection"].SetValue(world);
-            effect.Techniques[0].Passes[0].Apply();
-
-            foreach (var submesh in Skin.Submeshes)
-            {
-                if (submesh.Value.Material.AdditiveBlending)
-                    device.SetBlendState(device.BlendStates.Additive);
-                else
-                    device.SetBlendState(device.BlendStates.Opaque);
-
-                if (submesh.Value.Material.DoubleSided)
-                    device.SetRasterizerState(device.RasterizerStates.CullNone);
-                else
-                    device.SetRasterizerState(device.RasterizerStates.CullBack);
-
-                device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-            }
-
-            effect.Parameters["Skinned"].SetValue(false);
         }
 
         public List<int[]> GetBonePairs(bool flipZ = false, int symmetryMargin = 16)
@@ -314,40 +249,28 @@ namespace TombLib.Graphics
                         float compZ2 = !flipZ ? other.Pivot.Z : other.Pivot.X;
 
                         if ((i != symmetryMargin &&
-
-                            // Prioritize bones with same parent index and pivot symmetry.
-                            // Pivot symmetry is declared if X pivot position is mirrored for both bones
-                            // and bones are well apart on Z axis (to correctly identify models like scorpion or crocodile).
-                            // Unfortunately, there's a case when both bones are symmetrical but are pivoted
-                            // from single point (e.g. DEMIGOD3 spear), in this case we can't predict symmetry correctly,
-                            // so such cases are bypassed.
-
                             sig.ParentIndex == other.ParentIndex &&
                             Math.Abs(Math.Abs(compX1) - Math.Abs(compX2)) <= i &&
                             Math.Abs(compX1 - compX2) >= i &&
                             MathC.WithinEpsilon(compZ1, compZ2, symmetryMargin)) ||
 
-                            // On last pass, prioritize bones with already found matching parent mesh pairs.
-
-                            (i == symmetryMargin && 
-                            ((result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) || 
+                            (i == symmetryMargin &&
+                            ((result.Any(pair => (pair[0] == sig.ParentIndex && pair[1] == other.ParentIndex) ||
                                                  (pair[0] == other.ParentIndex && pair[1] == sig.ParentIndex)))) ||
-                                                
-                            // Additionally do final exact comparison of Y/Z values and X distance (fixes TR3 Shiva without breaking anything else)
 
-                            (MathC.WithinEpsilon(compZ1, compZ2, symmetryMargin) && 
-                             MathC.WithinEpsilon(sig.Pivot.Y, other.Pivot.Y, symmetryMargin) && 
+                            (MathC.WithinEpsilon(compZ1, compZ2, symmetryMargin) &&
+                             MathC.WithinEpsilon(sig.Pivot.Y, other.Pivot.Y, symmetryMargin) &&
                              Math.Abs(compX1 - compX2) >= symmetryMargin)))
                         {
                             int p0 = result.IndexOf(pair => pair[0] == sig.Index);
                             int p1 = result.IndexOf(pair => pair[0] == other.Index);
 
                             if (p0 == -1 && p1 == -1)
-                                result.Add(new int[2] { sig.Index, other.Index });  // No entry in pair list
+                                result.Add(new int[2] { sig.Index, other.Index });
                             else if (p0 == -1)
-                                result[p1] = new int[2] { sig.Index, other.Index }; // Entry was already in list
+                                result[p1] = new int[2] { sig.Index, other.Index };
                             else if (p1 == -1)
-                                result[p0] = new int[2] { sig.Index, other.Index }; // Found match was already in list
+                                result[p0] = new int[2] { sig.Index, other.Index };
 
                             boneAdded = true;
                             break;
@@ -355,12 +278,12 @@ namespace TombLib.Graphics
                     }
 
                     if (!boneAdded && i == symmetryMargin)
-                        result.Add(new int[2] { sig.Index, -1 }); // Entry isn't found, create new one on last pass
+                        result.Add(new int[2] { sig.Index, -1 });
                 }
             }
 
             // PARANOIA: try to flter out stray decoupled pairs
-            result = result.Where(item => !(item[1] == -1 && 
+            result = result.Where(item => !(item[1] == -1 &&
                      result.Any(item2 => (item2[0] == item[0] || item2[1] == item[0]) && item2[1] != -1))).ToList();
 
             return result;
@@ -372,10 +295,8 @@ namespace TombLib.Graphics
 
             foreach (var child in bone.Children)
             {
-                // Recursively scan through all bones
                 CollectBoneSignatures(child, depth + 1, Bones.IndexOf(bone), list);
 
-                // Add child to own bone signature
                 if (Bones.IndexOf(child) != parentIndex)
                     childIndices.Add(Bones.IndexOf(child));
             }

@@ -48,7 +48,6 @@ namespace WadTool
         }
 
         private AnimationEditor _editor;  // Editor
-        private DeviceManager _deviceManager; // Renderer
 
         // Player
         private Timer _timerPlayAnimation;
@@ -85,12 +84,11 @@ namespace WadTool
         // Logger
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public FormAnimationEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
+        public FormAnimationEditor(WadToolClass tool, Wad2 wad, WadMoveableId id)
         {
             InitializeComponent();
 
             _editor = new AnimationEditor(tool, wad, id);
-            _deviceManager = deviceManager;
 
             panelRendering.Configuration = _editor.Tool.Configuration;
 
@@ -122,7 +120,7 @@ namespace WadTool
             else
                 skin = _editor.Wad.Moveables[id];
 
-            panelRendering.InitializeRendering(_editor, _deviceManager, skin);
+            panelRendering.InitializeRendering(_editor, skin);
 
             RebuildAnimationsList();
 

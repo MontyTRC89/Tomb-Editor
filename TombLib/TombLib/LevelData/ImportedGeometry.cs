@@ -1,5 +1,4 @@
-﻿using NLog;
-using SharpDX.Toolkit.Graphics;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,15 +10,12 @@ using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Texture = TombLib.Utils.Texture;
 
 namespace TombLib.LevelData
 {
     public class ImportedGeometryTexture : Texture
     {
-        public Texture2D DirectXTexture { get; private set; }
-
         public ImportedGeometryTexture(string absolutePath)
         {
             AbsolutePath = absolutePath;
@@ -27,17 +23,10 @@ namespace TombLib.LevelData
 
             // Replace magenta with transparent color
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-
-            if (SynchronizationContext.Current == null)
-                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image);
-            else
-                SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
-                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image), null);
         }
 
         private ImportedGeometryTexture(ImportedGeometryTexture other)
         {
-            DirectXTexture = other.DirectXTexture;
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
         }
@@ -46,7 +35,6 @@ namespace TombLib.LevelData
         {
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
-            DirectXTexture = other.DirectXTexture;
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);
@@ -55,59 +43,61 @@ namespace TombLib.LevelData
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ImportedGeometryVertex : IVertex
+    public struct ImportedGeometryVertex
     {
-        [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        //private readonly float _unusedPadding;
-        [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 12)]
         public Vector2 UV;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 20)]
         public Vector3 Color;
-        [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 32)]
         public Vector3 Normal;
-
-        Vector3 IVertex.Position => Position;
     }
 
-    public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
+    /// <summary>
+    /// CPU-only mesh data for an <see cref="ImportedGeometry.Model"/>. The V2
+    /// renderer reads <see cref="Vertices"/> + <see cref="Indices"/> +
+    /// <see cref="Submeshes"/> directly when it builds its own atlas and
+    /// vertex buffers.
+    /// </summary>
+    public class ImportedGeometryMesh
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        public string Name { get; set; }
+        public List<ImportedGeometryVertex> Vertices { get; } = new List<ImportedGeometryVertex>();
+        public List<int> Indices { get; } = new List<int>();
+        public Dictionary<Material, Submesh> Submeshes { get; } = new Dictionary<Material, Submesh>();
+        public BoundingBox BoundingBox { get; set; }
         public bool HasVertexColors { get; set; }
 
-        public ImportedGeometryMesh(GraphicsDevice device, string name)
-            : base(device, name)
-        { }
-
-        public void UpdateBuffers(Vector3? position = null)
+        public ImportedGeometryMesh(string name)
         {
-            if (Vertices.Count == 0)
-                return;
+            Name = name;
+        }
 
-            // FIXME: because imp geo meshes are directly referenced everywhere in TE,
-            // we can't depth-sort them, otherwise a race condition may occur which will
-            // cause incorrect rendering or occasional SEHExceptions. For more info, see here:
-            // https://github.com/MontyTRC89/Tomb-Editor/issues/516
+        public void UpdateBoundingBox()
+        {
+            Vector3 minVertex = new Vector3(float.MaxValue);
+            Vector3 maxVertex = new Vector3(float.MinValue);
+            foreach (var vertex in Vertices)
+            {
+                minVertex = Vector3.Min(minVertex, vertex.Position);
+                maxVertex = Vector3.Max(maxVertex, vertex.Position);
+            }
+            BoundingBox = new BoundingBox(minVertex, maxVertex);
+        }
 
-            DepthSort(null); // null means no depth-sorting occurs
-            UpdateBoundingBox();
-
-            if (VertexBuffer != null)
-                VertexBuffer.Dispose();
-            if (IndexBuffer != null)
-                IndexBuffer.Dispose();
-
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
-
-            if (VertexBuffer == null)
-                logger.Error("Vertex Buffer of Imported Geometry " + Name + " could not be created!");
-            if (InputLayout == null)
-                logger.Error("Input Layout of Imported Geometry " + Name + " could not be created!");
-            if (IndexBuffer == null)
-                logger.Error("Index Buffer of Imported Geometry " + Name + " could not be created!");
+        /// <summary>
+        /// Lays out submesh BaseIndex values + populates the flat
+        /// <see cref="Indices"/> stream from each submesh's per-tri indices.
+        /// Replaces the legacy GPU depth-sort path.
+        /// </summary>
+        public void RebuildIndices()
+        {
+            int lastBaseIndex = 0;
+            Indices.Clear();
+            foreach (var submesh in Submeshes)
+            {
+                submesh.Value.BaseIndex = lastBaseIndex;
+                Indices.AddRange(submesh.Value.Indices);
+                lastBaseIndex += submesh.Value.NumIndices;
+            }
         }
     }
 
@@ -151,15 +141,17 @@ namespace TombLib.LevelData
 
     public class ImportedGeometry : IWadObject, ICloneable, IReloadableResource, IEquatable<ImportedGeometry>
     {
-        public static GraphicsDevice Device;
-
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public class UniqueIDType { }
 
-        public class Model : Model<ImportedGeometryMesh, ImportedGeometryVertex>
+        public class Model
         {
-            public float Scale { get; private set; }
+            public BoundingBox BoundingBox { get; set; }
+            public List<ImportedGeometryMesh> Meshes { get; } = new List<ImportedGeometryMesh>();
+            public List<Material> Materials { get; } = new List<Material>();
+            public float Scale { get; }
+            public DataVersion Version { get; set; } = DataVersion.GetNext();
 
             public int TotalTriangles
             {
@@ -173,19 +165,25 @@ namespace TombLib.LevelData
                 }
             }
 
-            public Model(GraphicsDevice device, float scale)
-                : base(device, ModelType.RoomGeometry)
+            public Model(float scale)
             {
                 Scale = scale;
             }
 
-            public override void UpdateBuffers(Vector3? position = null)
+            /// <summary>
+            /// CPU-only equivalent of the legacy GPU-buffer rebuild — rebuilds
+            /// each mesh's bounding box + index stream. The V2 renderer rebuilds
+            /// its atlas/vertex buffers from this data on demand, so no GPU
+            /// upload happens here.
+            /// </summary>
+            public void UpdateBuffers()
             {
                 foreach (var mesh in Meshes)
                 {
                     mesh.UpdateBoundingBox();
-                    mesh.UpdateBuffers(position);
+                    mesh.RebuildIndices();
                 }
+                Version = DataVersion.GetNext();
             }
         }
 
@@ -249,12 +247,7 @@ namespace TombLib.LevelData
                 if (tmpModel.Meshes.Count == 0)
                     throw new Exception("No valid mesh data found");
 
-                // If called from UI thread, synchronize DirectX, we can't 'send' because that may
-                // deadlock with the level settings reloader.
-                if (SynchronizationContext.Current != null)
-                    SynchronizationContext.Current.Post(unused => Update(tmpModel, info), null);
-                else
-                    Update(tmpModel, info);
+                Update(tmpModel, info);
             }
             catch (OperationCanceledException)
             {
@@ -270,11 +263,9 @@ namespace TombLib.LevelData
 
         private bool Update(IOModel tmpModel, ImportedGeometryInfo info)
         {
-            if (Device == null)
-                return false;
-
-            // Create a new static model
-            DirectXModel = new Model(Device, info.Scale);
+            // Create a new static model (CPU-only data; the V2 renderer
+            // builds GPU buffers from this on demand).
+            DirectXModel = new Model(info.Scale);
             DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
             // Create materials
@@ -294,7 +285,7 @@ namespace TombLib.LevelData
                 if (mesh.Normals.Count == 0)
                     mesh.CalculateNormals();
 
-                var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
+                var modelMesh = new ImportedGeometryMesh(mesh.Name);
 
                 modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
 
@@ -418,7 +409,7 @@ namespace TombLib.LevelData
         {
             _settings = settings;
         }
-        
+
         public bool Equals(ImportedGeometry x, ImportedGeometry y)
         {
             return (x.Info.FlipUV_V == y.Info.FlipUV_V &&

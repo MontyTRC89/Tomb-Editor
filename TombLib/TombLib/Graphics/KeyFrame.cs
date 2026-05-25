@@ -21,9 +21,12 @@ namespace TombLib.Graphics
                 if (meshesToUse != null && !meshesToUse.Contains(i))
                     continue;
 
-                foreach (var vertex in skin.Meshes[i].Vertices)
+                var mesh = skin.Meshes[i];
+                if (mesh == null) continue;
+
+                foreach (var position in mesh.VertexPositions)
                 {
-                    var transformedPosition = MathC.HomogenousTransform(vertex.Position, model.AnimationTransforms[i]);
+                    var transformedPosition = MathC.HomogenousTransform(position, model.AnimationTransforms[i]);
                     min = Vector3.Min(transformedPosition, min);
                     max = Vector3.Max(transformedPosition, max);
                 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
-using TombLib.Rendering;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -14,7 +13,7 @@ namespace TombEditor.Forms
     {
         private Wad2 _wad;
 
-        public FormPreviewWad(Wad2 wad, RenderingDevice device, Editor editor)
+        public FormPreviewWad(Wad2 wad, Editor editor)
         {
             _wad = wad;
             InitializeComponent();

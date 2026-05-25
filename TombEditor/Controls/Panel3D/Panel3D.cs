@@ -1,4 +1,3 @@
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,9 +12,7 @@ using TombEditor.Controls.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
-using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
-using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D

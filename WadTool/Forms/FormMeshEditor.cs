@@ -53,7 +53,6 @@ namespace WadTool
 		public WadMesh SelectedMesh { get; set; }
 
 		private Wad2 _wad;
-		private DeviceManager _deviceManager;
 		private WadToolClass _tool;
 
 		// Interaction state
@@ -67,11 +66,11 @@ namespace WadTool
 
 		private readonly PopUpInfo popup = new PopUpInfo();
 
-		public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
-			: this(tool, deviceManager, wad, null) { }
+		public FormMeshEditor(WadToolClass tool, Wad2 wad)
+			: this(tool, wad, null) { }
 
-		public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, IWadObjectId obj, Wad2 wad)
-			: this(tool, deviceManager, wad)
+		public FormMeshEditor(WadToolClass tool, IWadObjectId obj, Wad2 wad)
+			: this(tool, wad)
 		{
 			if (obj == null)
 				return;
@@ -103,17 +102,16 @@ namespace WadTool
 			}
 		}
 
-		public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMesh mesh)
+		public FormMeshEditor(WadToolClass tool, Wad2 wad, WadMesh mesh)
 		{
 			InitializeComponent();
 
 			_tool = tool;
 			_wad = wad;
-			_deviceManager = deviceManager;
 			_tool.EditorEventRaised += Tool_EditorEventRaised;
 			panelTextureMap.SelectedTextureChanged += (s, e) => UpdateStatusLabel();
 
-			panelMesh.InitializeRendering(_tool, _deviceManager);
+			panelMesh.InitializeRendering(_tool);
 			panelTextureMap.Initialize(_tool);
 
 			// Populate blending modes

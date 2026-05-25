@@ -145,7 +145,7 @@ namespace WadTool
             if (panelRendering.Static == null || panelRendering.Static.Mesh == null)
                 return;
 
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone()))
+            using (var form = new FormMeshEditor(_tool, _tool.DestinationWad, _static.Mesh.Clone()))
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;

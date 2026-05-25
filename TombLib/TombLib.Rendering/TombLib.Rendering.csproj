@@ -56,11 +56,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PixelShader Include="Rendering\DirectX11\RoomShaderPS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </PixelShader>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>
   <Target Name="EmbedShaderFilesTarget" AfterTargets="CompileHlslShaders" BeforeTargets="EmbeddedResource">
@@ -83,11 +78,6 @@
       </EmbeddedResource>
     </ItemGroup>
   </Target>
-  <ItemGroup>
-    <VertexShader Include="Rendering\DirectX11\RoomShaderVS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </VertexShader>
-  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Rendering\SectorTextures\arrow_down.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\arrow_left.png" />
@@ -114,24 +104,6 @@
     <EmbeddedResource Include="Rendering\SectorTextures\slide_west_flip.png" />
   </ItemGroup>
   <ItemGroup>
-    <VertexShader Include="Rendering\DirectX11\TextShaderVS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </VertexShader>
-  </ItemGroup>
-  <ItemGroup>
-    <PixelShader Include="Rendering\DirectX11\TextShaderPS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </PixelShader>
-  </ItemGroup>
-  <ItemGroup>
-    <PixelShader Include="Rendering\DirectX11\SpriteShaderPS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </PixelShader>
-    <VertexShader Include="Rendering\DirectX11\SpriteShaderVS.hlsl">
-      <ShaderModel>4_0</ShaderModel>
-    </VertexShader>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Rendering\SectorTextures\texture_coord_out_of_bounds.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
   </ItemGroup>
@@ -141,18 +113,6 @@
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\ghost_block.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\unknown.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\camera.png" />
-    <Content Include="Rendering\Legacy\IndicationOverlay.hlsli">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\Model.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\RoomGeometry.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Rendering\Legacy\Solid.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\flyby_camera.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\imp_geo.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_effect.png" />

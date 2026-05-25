@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
-using TombLib.Rendering;
 using TombLib.Wad.Catalog;
 
 namespace TombEditor.Forms
@@ -26,14 +25,9 @@ namespace TombEditor.Forms
                 // Set window property handlers
                 Configuration.ConfigureWindow(this, _editor.Configuration);
 
-                InitializeRendering(_editor.RenderingDevice);
+                // GDI+ sprite preview — no rendering device needed.
                 PopulateSpriteList();
             }
-        }
-
-        public void InitializeRendering(RenderingDevice device)
-        {
-            // GDI+ sprite preview — no rendering device needed.
         }
 
         private void EditorEventRaised(IEditorEvent obj)

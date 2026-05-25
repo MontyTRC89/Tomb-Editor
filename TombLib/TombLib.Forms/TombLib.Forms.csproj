@@ -75,9 +75,6 @@
     <Compile Update="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Controls\PanelItemPreview.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="Controls\RealtimeColorDialog.cs">
       <SubType>Component</SubType>
     </Compile>
