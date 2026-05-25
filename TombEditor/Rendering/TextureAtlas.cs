@@ -52,6 +52,10 @@ public sealed class TextureAtlas : IDisposable
     private readonly Dictionary<TexRegion, VectorInt2> _regions = new();
     private readonly Dictionary<SectorTexture, (VectorInt2 Origin, VectorInt2 Size)> _sectorOverlays = new();
     private readonly VectorInt2 _whitePixel;
+    // Kept around after construction so the debug "dump atlas" command can
+    // produce a PNG without a GPU readback. Adds ~64 MB resident per level
+    // (4096 x 4096 x 4 bytes) which is small next to the level data itself.
+    private readonly byte[] _atlasBytes;
 
     private static readonly Assembly RenderingAssembly = typeof(SectorTexture).Assembly;
 
@@ -75,7 +79,8 @@ public sealed class TextureAtlas : IDisposable
         _device = device;
         Size = new VectorInt2(atlasSize, atlasSize);
 
-        var atlasBytes = new byte[atlasSize * atlasSize * 4];
+        _atlasBytes = new byte[atlasSize * atlasSize * 4];
+        var atlasBytes = _atlasBytes;
         var packer = new RectPackerSimpleStack(Size);
 
         // --- 1) Reserved white pixel — a 3×3 white block, sampled at its centre.
@@ -474,6 +479,22 @@ public sealed class TextureAtlas : IDisposable
         uvMin = new Vector2(origin.X * invW, origin.Y * invH);
         uvMax = new Vector2((origin.X + tex.Image.Width) * invW, (origin.Y + tex.Image.Height) * invH);
         return true;
+    }
+
+    /// <summary>
+    /// Write the level atlas to <paramref name="directory"/> as
+    /// <c>LevelAtlas.png</c>. Uses the CPU mirror retained from construction
+    /// so no GPU readback is needed. Returns the file path written.
+    /// </summary>
+    public string Dump(string directory)
+    {
+        Directory.CreateDirectory(directory);
+
+        // _atlasBytes is B8G8R8A8, the native layout ImageC expects.
+        var image = ImageC.FromByteArray(_atlasBytes, Size.X, Size.Y);
+        string path = Path.Combine(directory, "LevelAtlas.png");
+        image.SaveToFile(path);
+        return path;
     }
 
     public void Dispose()

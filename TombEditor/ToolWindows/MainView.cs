@@ -51,6 +51,8 @@ namespace TombEditor.ToolWindows
         /// <summary>Active backend name (Vulkan / OpenGL / DirectX 11), or null when isn't initialised yet.</summary>
         public string? BackendName => panel3D?.BackendName;
 
+        public string? DumpAtlas(string directory) => panel3D?.DumpAtlas(directory);
+
         public void AddToolbox(DarkFloatingToolbox toolbox)
         {
             if (!panel3D.Contains(toolbox))

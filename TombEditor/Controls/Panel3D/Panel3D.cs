@@ -138,6 +138,9 @@ namespace TombEditor.Controls.Panel3D
         /// <summary>Human-readable name of the active backend, or null when isn't active yet.</summary>
         public string? BackendName => _renderer?.BackendName;
 
+        /// <summary>Dump the current level atlas to a PNG file; null if not built yet.</summary>
+        public string? DumpAtlas(string directory) => _renderer?.DumpAtlas(directory);
+
         // Render stats
         private readonly Stopwatch _watch = new Stopwatch();
 

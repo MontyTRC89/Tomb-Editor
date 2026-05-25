@@ -2073,7 +2073,7 @@ namespace TombEditor.Forms
 			debugAction1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			debugAction1ToolStripMenuItem.Name = "debugAction1ToolStripMenuItem";
 			debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			debugAction1ToolStripMenuItem.Text = "Debug Action 1";
+			debugAction1ToolStripMenuItem.Text = "Dump level atlas";
 			debugAction1ToolStripMenuItem.Click += debugAction1ToolStripMenuItem_Click;
 			// 
 			// debugAction2ToolStripMenuItem

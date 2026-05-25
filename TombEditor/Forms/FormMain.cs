@@ -824,7 +824,29 @@ namespace TombEditor.Forms
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            // Dump the current level atlas to %TEMP%\TombEditorAtlasDump and
+            // pop the folder open. The atlas is the per-level 4096-square page
+            // packed by TextureAtlas at scene rebuild time.
+            string dir = Path.Combine(Path.GetTempPath(), "TombEditorAtlasDump");
+            string? path = GetWindow<MainView>().DumpAtlas(dir);
+            if (path == null)
+            {
+                _editor.SendMessage("No level atlas has been built yet.", PopupType.Info);
+                return;
+            }
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName        = dir,
+                    UseShellExecute = true,
+                });
+            }
+            catch
+            {
+                // Explorer launch is best-effort -- the PNG is on disk regardless.
+            }
+            _editor.SendMessage("Dumped level atlas to " + path, PopupType.Info);
         }
 
         private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)

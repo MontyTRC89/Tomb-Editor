@@ -162,6 +162,13 @@ public sealed class LevelRenderer : IDisposable
     /// <summary>Rooms drawn by the last RenderFrame call (post visibility + frustum cull).</summary>
     public IReadOnlyList<Room> LastVisibleRooms => _visibleRooms;
 
+    /// <summary>
+    /// Dump the current level atlas to <paramref name="directory"/> as
+    /// <c>LevelAtlas.png</c>. Returns the file path, or <c>null</c> if no
+    /// atlas has been built yet (e.g. the scene was never rendered).
+    /// </summary>
+    public string? DumpAtlas(string directory) => _atlas?.Dump(directory);
+
     public LevelRenderer(IntPtr hwnd, int width, int height, string? backendPreference = null)
     {
         _width  = Math.Max(1, width);
