@@ -77,8 +77,17 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     internal uint AllocHandle() => _nextHandle++;
 
+    // Set once Dispose() has torn down the GL context -- blocks a late
+    // WaitIdle() (e.g. from a preview panel disposed after the shared
+    // device's owner) from calling glFinish on a deleted context.
+    private bool _disposed;
+
     public void Dispose()
     {
+        if (_disposed)
+            return;
+        _disposed = true;
+
         // Swapchains only hold an HDC / HWND borrowed from Panel3D -- nothing
         // GL-side to free for them.
         foreach (var pipeline in Pipelines.Values)
@@ -119,7 +128,8 @@ public unsafe sealed partial class GLDevice : IRhiDevice
 
     public void WaitIdle()
     {
-        if (Gl != null) Gl.Finish();
+        if (_disposed || Gl == null) return;
+        Gl.Finish();
     }
 
     private bool HasExtension(string name)

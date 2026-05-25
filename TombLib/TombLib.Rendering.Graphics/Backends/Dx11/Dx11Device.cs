@@ -126,8 +126,17 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
 
     private uint AllocHandle() => _nextHandle++;
 
+    // Set once Dispose() has released the ID3D11DeviceContext -- blocks a
+    // late WaitIdle() (e.g. from an ItemPreviewPanel disposed after the
+    // shared device's owner) from calling Flush() on a freed COM pointer.
+    private bool _disposed;
+
     public void Dispose()
     {
+        if (_disposed)
+            return;
+        _disposed = true;
+
         foreach (var swapchain in Swapchains.Values) swapchain.Dispose();
         foreach (var pipeline  in Pipelines.Values)  pipeline.Dispose();
         foreach (var sampler   in Samplers.Values)   sampler.Dispose();
@@ -471,6 +480,8 @@ public unsafe sealed partial class Dx11Device : IRhiDevice
         // ID3D11DeviceContext.Flush() returns once the GPU has accepted the
         // recorded commands; a real fence would be more thorough, but for
         // shutdown / resize this is sufficient on a single-threaded device.
+        if (_disposed)
+            return;
         Context.Flush();
     }
 
