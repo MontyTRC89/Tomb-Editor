@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Numerics;
-using TombLib.RenderingV2.Preview;
+using TombLib.Rendering.Graphics.Preview;
 
 namespace WadTool.Controls
 {

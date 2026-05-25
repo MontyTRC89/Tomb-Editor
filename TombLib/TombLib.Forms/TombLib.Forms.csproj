@@ -95,7 +95,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-    <ProjectReference Include="..\TombLib.Rendering.V2\TombLib.Rendering.V2.csproj" />
+    <ProjectReference Include="..\TombLib.Rendering.Graphics\TombLib.Rendering.Graphics.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
   </ItemGroup>

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.RenderingV2.Rhi;
+using TombLib.Rendering.Graphics.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Preview;
+using TombLib.Rendering.Graphics.Preview;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;

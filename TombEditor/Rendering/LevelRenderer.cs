@@ -8,10 +8,10 @@ using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorStructs;
 using TombLib.Rendering;
-using TombLib.RenderingV2.Backends.Dx11;
-using TombLib.RenderingV2.Preview;
-using TombLib.RenderingV2.Rhi;
-using TombLib.RenderingV2.Text;
+using TombLib.Rendering.Graphics.Backends.Dx11;
+using TombLib.Rendering.Graphics.Preview;
+using TombLib.Rendering.Graphics.Rhi;
+using TombLib.Rendering.Graphics.Text;
 using TombLib.Utils;
 
 namespace TombEditor.Rendering;
@@ -62,7 +62,7 @@ public sealed class LevelRenderer : IDisposable
     // Service objects (lights, cameras, sinks, sound sources, memos, placeholders).
     private ServiceObjectRenderer?              _services;
     // Gizmo overlay (translate / rotate / scale handles for the selected object).
-    private TombLib.RenderingV2.Preview.GizmoRenderer? _gizmo;
+    private TombLib.Rendering.Graphics.Preview.GizmoRenderer? _gizmo;
     // Text overlay (room names, coordinates, object labels, cardinal directions, FPS).
     private TextRenderer?                       _text;
     // TR1 / TR2 sprite-instance pass (no-op on higher engines).
@@ -154,9 +154,9 @@ public sealed class LevelRenderer : IDisposable
     /// <summary>Human-readable name of the active RHI backend ("Vulkan" / "OpenGL" / "DirectX 11").</summary>
     public string BackendName => _device.Capabilities.Backend switch
     {
-        TombLib.RenderingV2.Rhi.RhiBackendKind.Vulkan    => "Vulkan",
-        TombLib.RenderingV2.Rhi.RhiBackendKind.OpenGL    => "OpenGL",
-        TombLib.RenderingV2.Rhi.RhiBackendKind.DirectX11 => "DirectX 11",
+        TombLib.Rendering.Graphics.Rhi.RhiBackendKind.Vulkan    => "Vulkan",
+        TombLib.Rendering.Graphics.Rhi.RhiBackendKind.OpenGL    => "OpenGL",
+        TombLib.Rendering.Graphics.Rhi.RhiBackendKind.DirectX11 => "DirectX 11",
         _                                                => _device.Capabilities.Backend.ToString(),
     };
     /// <summary>Rooms drawn by the last RenderFrame call (post visibility + frustum cull).</summary>
@@ -167,7 +167,7 @@ public sealed class LevelRenderer : IDisposable
         _width  = Math.Max(1, width);
         _height = Math.Max(1, height);
 
-        _device = TombLib.RenderingV2.Rhi.RhiBackend.Create(backendPreference);
+        _device = TombLib.Rendering.Graphics.Rhi.RhiBackend.Create(backendPreference);
         // Bind the swapchain directly to the Panel3D HWND. (An earlier
         // experiment routed it through a private child window to work
         // around ErrorNativeWindowInUseKhr, but that turned out to be a
@@ -253,7 +253,7 @@ public sealed class LevelRenderer : IDisposable
 
         _objects   = new ObjectRenderer(_device);
         _services  = new ServiceObjectRenderer(_device);
-        _gizmo     = new TombLib.RenderingV2.Preview.GizmoRenderer(_device);
+        _gizmo     = new TombLib.Rendering.Graphics.Preview.GizmoRenderer(_device);
         _text      = new TextRenderer(_device);
         _sprites   = new SpriteRenderer(_device);
         _editorGeo = new EditorGeometryRenderer(_device);

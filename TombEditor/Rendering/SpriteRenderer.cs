@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Rhi;
+using TombLib.Rendering.Graphics.Rhi;
 
 namespace TombEditor.Rendering;
 

@@ -1,0 +1,214 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    HLSL -> { DXBC (DX11), SPIR-V (Vulkan), GLSL 430 (OpenGL) } pipeline.
+
+    Toolchain:
+      DXBC      : fxc.exe   (Windows SDK)         - native DX11 bytecode
+      SPIR-V    : dxc.exe   (Vulkan SDK)          - HLSL -> SPIR-V via -spirv
+      GLSL 430  : spirv-cross.exe (Vulkan SDK)    - SPIR-V -> GLSL
+
+    Tool discovery order:
+      FXC          : $(FxcPath) -> Windows Kits 10
+      DXC          : $(DxcExe)  -> $(VULKAN_SDK)\Bin\dxc.exe
+      SPIRV-Cross  : $(SpirvCrossExe) -> $(VULKAN_SDK)\Bin\spirv-cross.exe
+
+    Item type (both stages are required):
+      <HlslShader Include="Shaders\Hello.hlsl">
+        <EntryVs>vs_main</EntryVs>
+        <EntryPs>ps_main</EntryPs>
+      </HlslShader>
+
+    Embedded resource LogicalNames:
+      Shaders.<filename>.<vs|ps>.<dxbc|spv|glsl>
+  -->
+
+  <PropertyGroup>
+    <PrepareResourcesDependsOn>
+      $(PrepareResourcesDependsOn);
+      CompileHlslShaders;
+      EmbedHlslShaders;
+    </PrepareResourcesDependsOn>
+
+    <!-- FXC discovery (mirrors the existing TombLib.Rendering targets). -->
+    <_WindowsKitsBinDir Condition="'$(_WindowsKitsBinDir)' == ''">$(MSBuildProgramFiles32)\Windows Kits\10\bin</_WindowsKitsBinDir>
+    <_FxcArchitecture Condition="'$(PlatformTarget)' == 'x86'">x86</_FxcArchitecture>
+    <_FxcArchitecture Condition="'$(_FxcArchitecture)' == ''">x64</_FxcArchitecture>
+    <FxcPath Condition="'$(FxcPath)' == '' and '$(TargetPlatformVersion)' != '' and Exists('$(_WindowsKitsBinDir)\$(TargetPlatformVersion)\$(_FxcArchitecture)\fxc.exe')">$(_WindowsKitsBinDir)\$(TargetPlatformVersion)\$(_FxcArchitecture)\fxc.exe</FxcPath>
+    <FxcPath Condition="'$(FxcPath)' == '' and Exists('$(_WindowsKitsBinDir)\$(_FxcArchitecture)\fxc.exe')">$(_WindowsKitsBinDir)\$(_FxcArchitecture)\fxc.exe</FxcPath>
+
+    <!-- DXC + SPIRV-Cross discovery via Vulkan SDK. -->
+    <_VulkanSdkBin Condition="'$(VULKAN_SDK)' != ''">$(VULKAN_SDK)\Bin\</_VulkanSdkBin>
+    <DxcExe        Condition="'$(DxcExe)' == '' and Exists('$(_VulkanSdkBin)dxc.exe')">$(_VulkanSdkBin)dxc.exe</DxcExe>
+    <SpirvCrossExe Condition="'$(SpirvCrossExe)' == '' and Exists('$(_VulkanSdkBin)spirv-cross.exe')">$(_VulkanSdkBin)spirv-cross.exe</SpirvCrossExe>
+  </PropertyGroup>
+
+  <Target Name="_ResolveFxcPath" Condition="'@(HlslShader)' != ''">
+    <MakeDir Condition="'$(FxcPath)' == ''" Directories="$(IntermediateOutputPath)" />
+
+    <Exec Condition="'$(FxcPath)' == ''"
+          Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)ResolveFxcPath.ps1&quot; -BinRoot &quot;$(_WindowsKitsBinDir)&quot; -Architecture &quot;$(_FxcArchitecture)&quot; &gt; &quot;$(IntermediateOutputPath)fxc.path&quot;"
+          IgnoreExitCode="true" />
+
+    <ReadLinesFromFile File="$(IntermediateOutputPath)fxc.path" Condition="'$(FxcPath)' == '' and Exists('$(IntermediateOutputPath)fxc.path')">
+      <Output TaskParameter="Lines" ItemName="_ResolvedFxcPath" />
+    </ReadLinesFromFile>
+
+    <Delete Files="$(IntermediateOutputPath)fxc.path" Condition="Exists('$(IntermediateOutputPath)fxc.path')" />
+
+    <PropertyGroup Condition="'$(FxcPath)' == '' and '@(_ResolvedFxcPath)' != ''">
+      <FxcPath>@(_ResolvedFxcPath)</FxcPath>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="_VerifyShaderToolchain"
+          DependsOnTargets="_ResolveFxcPath"
+          Condition="'@(HlslShader)' != ''">
+    <Error Condition="'$(FxcPath)' == '' or !Exists('$(FxcPath)')"
+           Text="fxc.exe not found. Install a Windows 10/11 SDK or set /p:FxcPath=..." />
+    <Error Condition="'$(DxcExe)' == '' or !Exists('$(DxcExe)')"
+           Text="dxc.exe not found at '$(DxcExe)'. Install the Vulkan SDK (sets %VULKAN_SDK%) or set /p:DxcExe=..." />
+    <Error Condition="'$(SpirvCrossExe)' == '' or !Exists('$(SpirvCrossExe)')"
+           Text="spirv-cross.exe not found at '$(SpirvCrossExe)'. Install the Vulkan SDK or set /p:SpirvCrossExe=..." />
+    <Message Text="Shader toolchain: fxc='$(FxcPath)' dxc='$(DxcExe)' spirv-cross='$(SpirvCrossExe)'" Importance="High" />
+  </Target>
+
+  <!--
+    Compile target. $(ShaderOutputDir) is computed *inside* the target so
+    $(IntermediateOutputPath) is fully resolved by the time we read it.
+    Each shader produces 6 outputs (vs+ps x dxbc+spv+glsl).
+  -->
+  <Target Name="CompileHlslShaders"
+          DependsOnTargets="_VerifyShaderToolchain"
+          Condition="'@(HlslShader)' != ''">
+
+    <PropertyGroup>
+      <ShaderOutputDir>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)Shaders\'))</ShaderOutputDir>
+    </PropertyGroup>
+
+    <Error Condition="'%(HlslShader.EntryVs)' == ''"
+           Text="HlslShader '%(HlslShader.Identity)' is missing required EntryVs metadata." />
+    <Error Condition="'%(HlslShader.EntryPs)' == ''"
+           Text="HlslShader '%(HlslShader.Identity)' is missing required EntryPs metadata." />
+
+    <MakeDir Directories="$(ShaderOutputDir)" />
+
+    <!-- Vertex stage: DXBC via FXC. -->
+    <Exec Command='&quot;$(FxcPath)&quot; /nologo /T vs_5_0 /E %(HlslShader.EntryVs) /Fo &quot;$(ShaderOutputDir)%(HlslShader.Filename).vs.dxbc&quot; &quot;%(HlslShader.FullPath)&quot;' />
+
+    <!-- Vertex stage: SPIR-V via DXC. -D SPIRV activates Vulkan-only HLSL annotations.
+         -fvk-invert-y negates SV_Position.y in the VS so HLSL's DX-style
+         "Y up in NDC" output renders correctly with Vulkan's default
+         "Y down in NDC" framebuffer mapping. Without it, the whole scene is
+         flipped vertically and triangle winding looks reversed to the rasterizer.
+         Doing the flip in the shader (this flag) instead of via a negative-height
+         viewport keeps front-face winding unchanged, so CullMode.Back and
+         FrontFace.Clockwise work the same as on DX11. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-invert-y -D SPIRV=1 -T vs_6_0 -E %(HlslShader.EntryVs) -Fo &quot;$(ShaderOutputDir)%(HlslShader.Filename).vs.spv&quot; &quot;%(HlslShader.FullPath)&quot;' />
+
+    <!-- Vertex stage: a SECOND SPIR-V compile WITHOUT -fvk-invert-y, used
+         only as the source for the GLSL output. OpenGL's NDC has Y up (same
+         as HLSL's DX convention) so the shader must NOT flip Y — that's a
+         Vulkan-only fix. Re-using the Vulkan .spv here would render every
+         scene upside-down on the GL backend. The intermediate .gl.spv is
+         not embedded into the assembly; it only feeds spirv-cross. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -D SPIRV=1 -T vs_6_0 -E %(HlslShader.EntryVs) -Fo &quot;$(ShaderOutputDir)%(HlslShader.Filename).vs.gl.spv&quot; &quot;%(HlslShader.FullPath)&quot;' />
+
+    <!-- Vertex stage: GLSL 430 via SPIRV-Cross (from the GL-flavoured SPIR-V). -->
+    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --combined-samplers-inherit-bindings --output &quot;$(ShaderOutputDir)%(HlslShader.Filename).vs.glsl&quot; &quot;$(ShaderOutputDir)%(HlslShader.Filename).vs.gl.spv&quot;' />
+
+    <!-- Pixel stage: DXBC via FXC. -->
+    <Exec Command='&quot;$(FxcPath)&quot; /nologo /T ps_5_0 /E %(HlslShader.EntryPs) /Fo &quot;$(ShaderOutputDir)%(HlslShader.Filename).ps.dxbc&quot; &quot;%(HlslShader.FullPath)&quot;' />
+
+    <!-- Pixel stage: SPIR-V via DXC.
+         -fvk-use-dx-position-w makes SV_Position.w in the PS read back as
+         clip.w (DX semantics) instead of 1/clip.w (Vulkan default). The
+         grid pass in RoomGeometry.hlsl divides by input.PositionCS.w
+         assuming the DX convention; without this flag the value is the
+         reciprocal (tiny), the line-width term becomes ~10M, every fragment
+         gets multiplied by clamp(negative, 0, 1) = 0, and Geometry mode
+         renders pure black even though Texturing / Lighting (which skip
+         the grid pass) look fine. -->
+    <Exec Command='&quot;$(DxcExe)&quot; -nologo -spirv -fspv-target-env=vulkan1.1 -fvk-use-dx-layout -fvk-use-dx-position-w -D SPIRV=1 -T ps_6_0 -E %(HlslShader.EntryPs) -Fo &quot;$(ShaderOutputDir)%(HlslShader.Filename).ps.spv&quot; &quot;%(HlslShader.FullPath)&quot;' />
+
+    <!-- Pixel stage: GLSL 430 via SPIRV-Cross. -->
+    <Exec Command='&quot;$(SpirvCrossExe)&quot; --no-es --version 430 --combined-samplers-inherit-bindings --output &quot;$(ShaderOutputDir)%(HlslShader.Filename).ps.glsl&quot; &quot;$(ShaderOutputDir)%(HlslShader.Filename).ps.spv&quot;' />
+
+    <ItemGroup>
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).vs.dxbc" />
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).vs.spv" />
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).vs.glsl" />
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).ps.dxbc" />
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).ps.spv" />
+      <FileWrites Include="$(ShaderOutputDir)%(HlslShader.Filename).ps.glsl" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    Embed each output as an EmbeddedResource.
+
+    WithCulture=false is mandatory. Without it the SDK's AssignCulture
+    target sees ".ps" inside the filename (e.g. "Hello.ps.dxbc"), treats
+    it as the Pashto locale (ISO 639-1 "ps"), and ships those resources
+    to a satellite assembly "ps\<name>.resources.dll" instead of the main
+    DLL.
+
+    Each variant lives in its own ItemGroup. MSBuild keeps the source
+    item's metadata on transformed items, so %(Filename) here is the HLSL
+    file basename (e.g. "Hello"); the stage + format are baked into the
+    LogicalName literally to keep all six resource names distinct.
+  -->
+  <Target Name="EmbedHlslShaders"
+          DependsOnTargets="CompileHlslShaders"
+          Condition="'@(HlslShader)' != ''">
+
+    <PropertyGroup>
+      <ShaderOutputDir>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)Shaders\'))</ShaderOutputDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).vs.dxbc')">
+        <LogicalName>Shaders.%(Filename).vs.dxbc</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).vs.spv')">
+        <LogicalName>Shaders.%(Filename).vs.spv</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).vs.glsl')">
+        <LogicalName>Shaders.%(Filename).vs.glsl</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).ps.dxbc')">
+        <LogicalName>Shaders.%(Filename).ps.dxbc</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).ps.spv')">
+        <LogicalName>Shaders.%(Filename).ps.spv</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="@(HlslShader -> '$(ShaderOutputDir)%(Filename).ps.glsl')">
+        <LogicalName>Shaders.%(Filename).ps.glsl</LogicalName>
+        <Visible>false</Visible>
+        <WithCulture>false</WithCulture>
+      </EmbeddedResource>
+    </ItemGroup>
+
+  </Target>
+
+</Project>

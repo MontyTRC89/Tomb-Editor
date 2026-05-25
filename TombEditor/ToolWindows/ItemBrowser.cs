@@ -157,7 +157,7 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count == 0 || comboItems.SelectedIndex < 0 || !(comboItems.SelectedItem is WadMoveable item))
                 return;
 
-            panelItem.CurrentObject = TombLib.RenderingV2.Preview.WadObjectPreviewHelper.GetRenderObject(item, _editor.Level.Settings);
+            panelItem.CurrentObject = TombLib.Rendering.Graphics.Preview.WadObjectPreviewHelper.GetRenderObject(item, _editor.Level.Settings);
             panelItem.ResetCamera();
         }
 

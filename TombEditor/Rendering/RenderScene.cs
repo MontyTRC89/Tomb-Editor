@@ -5,7 +5,7 @@ using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.RenderingV2.Text;
+using TombLib.Rendering.Graphics.Text;
 using TombEditor;
 
 namespace TombEditor.Rendering;

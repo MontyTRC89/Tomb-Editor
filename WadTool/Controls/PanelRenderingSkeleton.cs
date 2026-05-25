@@ -5,8 +5,8 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
-using TombLib.RenderingV2.Preview;
-using TombLib.RenderingV2.Rhi;
+using TombLib.Rendering.Graphics.Preview;
+using TombLib.Rendering.Graphics.Rhi;
 using TombLib.Utils;
 using TombLib.Wad;
 

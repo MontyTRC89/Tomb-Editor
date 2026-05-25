@@ -8,9 +8,9 @@ using System.Windows.Forms;
 using TombLib;
 using TombLib.Graphics;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Preview;
-using TombLib.RenderingV2.Rhi;
-using TombLib.RenderingV2.Text;
+using TombLib.Rendering.Graphics.Preview;
+using TombLib.Rendering.Graphics.Rhi;
+using TombLib.Rendering.Graphics.Text;
 using TombLib.Utils;
 using TombLib.Wad;
 

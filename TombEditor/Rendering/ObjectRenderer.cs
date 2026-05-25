@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Preview;
-using TombLib.RenderingV2.Rhi;
+using TombLib.Rendering.Graphics.Preview;
+using TombLib.Rendering.Graphics.Rhi;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
@@ -413,7 +413,7 @@ internal sealed class ObjectRenderer : IDisposable
         WadKeyFrame frame = (mv.Animations.Count > 0 && mv.Animations[0].KeyFrames.Count > 0)
                              ? mv.Animations[0].KeyFrames[0]
                              : null;
-        var transforms = WadMoveablePoseV2.ComputeBoneTransforms(mv, frame);
+        var transforms = WadMoveablePose.ComputeBoneTransforms(mv, frame);
         for (int i = 0; i < mv.Bones.Count; i++)
         {
             var bone = mv.Bones[i];

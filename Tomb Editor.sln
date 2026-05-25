@@ -65,9 +65,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor.Tests", "TombEdi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F5F6BB9-64D2-4F82-B6AE-162361DF4965}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering.V2", "TombLib\TombLib.Rendering.V2\TombLib.Rendering.V2.csproj", "{B7B2A1F3-0605-4582-B6F8-9BBFAA82A3F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering.Graphics", "TombLib\TombLib.Rendering.Graphics\TombLib.Rendering.Graphics.csproj", "{B7B2A1F3-0605-4582-B6F8-9BBFAA82A3F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering.V2.Sample", "TombLib\TombLib.Rendering.V2.Sample\TombLib.Rendering.V2.Sample.csproj", "{EAF3A719-3AAB-4D12-AC6B-0E4D253B41A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering.Graphics.Sample", "TombLib\TombLib.Rendering.Graphics.Sample\TombLib.Rendering.Graphics.Sample.csproj", "{EAF3A719-3AAB-4D12-AC6B-0E4D253B41A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

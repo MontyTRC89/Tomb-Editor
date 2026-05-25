@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.LevelData.SectorEnums;
-using TombLib.RenderingV2.Rhi;
+using TombLib.Rendering.Graphics.Rhi;
 using TombLib.Utils;
 using TombEditor.Controls.FlybyTimeline.Sequence;
 

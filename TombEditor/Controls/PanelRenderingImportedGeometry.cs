@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Preview;
+using TombLib.Rendering.Graphics.Preview;
 using TombLib.Utils;
 
 namespace TombEditor.Controls

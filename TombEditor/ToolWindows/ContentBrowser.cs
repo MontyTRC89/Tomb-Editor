@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using TombEditor.ViewModels;
-using TombLib.RenderingV2.Preview;
+using TombLib.Rendering.Graphics.Preview;
 using TombLib.Controls;
 using TombLib.GeometryIO;
 using TombLib.LevelData;

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using TombLib.LevelData;
-using TombLib.RenderingV2.Text;
+using TombLib.Rendering.Graphics.Text;
 using TombLib.Utils;
 
 namespace TombEditor.Controls.Panel3D
