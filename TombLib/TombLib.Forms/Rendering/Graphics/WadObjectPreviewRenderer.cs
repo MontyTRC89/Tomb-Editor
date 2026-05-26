@@ -108,7 +108,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
     private sealed class LayerState
     {
         public byte[]         Bytes  = Array.Empty<byte>();
-        public RectPackerTree? Packer;
+        public RectPackerSimpleStack? Packer;
     }
     private readonly LayerState?[] _layers = new LayerState?[MaxLayers];
     private TextureHandle          _atlasArray;
@@ -541,7 +541,7 @@ public sealed class WadObjectPreviewRenderer : IDisposable
         ls = new LayerState
         {
             Bytes  = new byte[AtlasSize * AtlasSize * 4],
-            Packer = new RectPackerTree(new VectorInt2(AtlasSize, AtlasSize)),
+            Packer = new RectPackerSimpleStack(new VectorInt2(AtlasSize, AtlasSize)),
         };
         _layers[index] = ls;
         if (index + 1 > _layerCount) _layerCount = index + 1;

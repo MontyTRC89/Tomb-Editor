@@ -442,26 +442,21 @@ internal sealed class ObjectRenderer : IDisposable
                 foreach (var submesh in mesh.Submeshes.Values)
                 {
                     var igTex = submesh.Material?.Texture;
+                    Vector2 texSize = igTex?.Image is { Width: > 0, Height: > 0 }
+                                      ? new Vector2(igTex.Image.Width, igTex.Image.Height)
+                                      : Vector2.One;
+                    // Imported geometry samples the whole source page (packed
+                    // once per material at collection time). UV is in source-
+                    // pixel space already (PremultiplyUV).
+                    var igMapper = _atlas.MapFace(igTex, Vector2.Zero, texSize);
+                    uint igLayer = (uint)igMapper.Layer;
                     int baseIdx = submesh.BaseIndex;
                     int count   = submesh.NumIndices;
-                    // Per-triangle MapFace -- same pattern as AppendWadMesh.
-                    // ImportedGeometryVertex.UV is ALREADY in source-pixel
-                    // coordinates (BaseGeometryImporter.ApplyUVTransform
-                    // applied PremultiplyUV during load -- default true), so
-                    // we pass it straight to MapFace without rescaling.
-                    for (int k = 0; k + 2 < count; k += 3)
+                    for (int k = 0; k < count; k++)
                     {
-                        int i0 = mesh.Indices[baseIdx + k + 0];
-                        int i1 = mesh.Indices[baseIdx + k + 1];
-                        int i2 = mesh.Indices[baseIdx + k + 2];
-                        var v0 = mesh.Vertices[i0];
-                        var v1 = mesh.Vertices[i1];
-                        var v2 = mesh.Vertices[i2];
-                        var igMapper = _atlas.MapFace(igTex, v0.UV, v1.UV, v2.UV);
-                        uint igLayer = (uint)igMapper.Layer;
-                        PushImported(list, v0, igMapper.Map(v0.UV), igLayer, hasColors);
-                        PushImported(list, v1, igMapper.Map(v1.UV), igLayer, hasColors);
-                        PushImported(list, v2, igMapper.Map(v2.UV), igLayer, hasColors);
+                        int vi = mesh.Indices[baseIdx + k];
+                        var v = mesh.Vertices[vi];
+                        PushImported(list, v, igMapper.Map(v.UV), igLayer, hasColors);
                     }
                 }
             }

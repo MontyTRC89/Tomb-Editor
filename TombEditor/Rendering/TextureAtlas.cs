@@ -50,12 +50,12 @@ public sealed class TextureAtlas : IDisposable
 
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    // 8 * 4096^2 * 4 bytes = 512 MB worst-case GPU residency. Real levels
+    // 16 * 4096^2 * 4 bytes = 1 GB worst-case GPU residency. Real levels
     // typically need 1-2 layers; level + heavy imported-geometry maps can
     // push 4-8. The GPU only commits the layers we actually upload to, and
     // CPU mirrors are lazy-allocated, so the resident cost scales with the
     // populated layer count rather than MaxLayers.
-    public const int MaxLayers = 8;
+    public const int MaxLayers = 16;
 
     private readonly IRhiDevice _device;
     private readonly Dictionary<TexRegion, (int Layer, VectorInt2 Origin)> _regions = new();
@@ -88,9 +88,9 @@ public sealed class TextureAtlas : IDisposable
         // nothing. EnsureLayerBytes promotes a slot on first write.
         _layerBytes = new byte[MaxLayers][];
 
-        var packers = new RectPackerTree[MaxLayers];
+        var packers = new RectPackerSimpleStack[MaxLayers];
         for (int i = 0; i < MaxLayers; i++)
-            packers[i] = new RectPackerTree(Size);
+            packers[i] = new RectPackerSimpleStack(Size);
         int usedLayers = 1;
 
         byte[] EnsureLayerBytes(int layer)
@@ -189,41 +189,18 @@ public sealed class TextureAtlas : IDisposable
             }
         }
 
-        // Imported geometry -- treated exactly like WAD meshes: pack per
-        // triangle, not per submesh / whole image. Each face's three UVs
-        // (in pixel space) define a region; duplicate regions across faces
-        // dedup via the HashSet. This matches the WAD-mesh code path and
-        // gives the tightest possible atlas usage when a large source
-        // texture is only sampled in patches.
+        // Imported geometry -- pack the whole source page once per material
+        // texture (deduped via the HashSet). Per-triangle packing fragments
+        // the atlas badly when an OBJ has thousands of polys sampling
+        // overlapping sub-regions of the same page, and large levels with
+        // many imported geos saturate the pool well before per-image would.
         if (level.Settings?.ImportedGeometries != null)
             foreach (var ig in level.Settings.ImportedGeometries)
             {
                 if (ig?.DirectXModel?.Meshes == null) continue;
                 foreach (var mesh in ig.DirectXModel.Meshes)
-                {
-                    if (mesh.Indices == null || mesh.Vertices == null) continue;
                     foreach (var submesh in mesh.Submeshes.Values)
-                    {
-                        var tex = submesh.Material?.Texture;
-                        if (tex?.Image == null || tex.Image.Width <= 0 || tex.Image.Height <= 0)
-                            continue;
-                        int baseIdx = submesh.BaseIndex;
-                        int count   = submesh.NumIndices;
-                        // ImportedGeometryVertex.UV is already in source-pixel
-                        // coordinates (PremultiplyUV happened during load), so
-                        // it goes straight to CollectFace.
-                        for (int k = 0; k + 2 < count; k += 3)
-                        {
-                            int i0 = mesh.Indices[baseIdx + k + 0];
-                            int i1 = mesh.Indices[baseIdx + k + 1];
-                            int i2 = mesh.Indices[baseIdx + k + 2];
-                            CollectFace(regionSet, tex,
-                                mesh.Vertices[i0].UV,
-                                mesh.Vertices[i1].UV,
-                                mesh.Vertices[i2].UV);
-                        }
-                    }
-                }
+                        CollectWholeImage(regionSet, submesh.Material?.Texture);
             }
 
         if (level.Settings != null &&
@@ -413,7 +390,7 @@ public sealed class TextureAtlas : IDisposable
     // Updates usedLayers so the array texture only allocates the layers we
     // actually touched.
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private static bool TryPackPool(RectPackerTree[] packers, int w, int h,
+    private static bool TryPackPool(RectPackerSimpleStack[] packers, int w, int h,
                                     ref int usedLayers, out int layer, out VectorInt2 innerOrigin)
     {
         for (int i = 0; i < packers.Length; i++)
@@ -430,7 +407,7 @@ public sealed class TextureAtlas : IDisposable
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    private static bool TryPack(RectPackerTree packer, int w, int h, out VectorInt2 innerOrigin)
+    private static bool TryPack(RectPackerSimpleStack packer, int w, int h, out VectorInt2 innerOrigin)
     {
         innerOrigin = default;
         var pos = packer.TryAdd(new VectorInt2(w + Gutter * 2, h + Gutter * 2));
