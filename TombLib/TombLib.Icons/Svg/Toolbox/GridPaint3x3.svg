@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <text x="2.5" y="9.5" font-family="Segoe UI, Arial, sans-serif" font-size="9" font-weight="700" fill="#FFFFFF">3</text>
+  <g transform="translate(7 7) rotate(35)">
+    <rect x="0" y="-1.4" width="6" height="2.8" fill="#FFFFFF"/>
+    <path d="M0 -1.4 L-2 0 L0 1.4 Z" fill="#FFFFFF"/>
+  </g>
+</svg>

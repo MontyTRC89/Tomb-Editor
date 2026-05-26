@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <clipPath id="t1clip">
+      <circle cx="8" cy="8" r="5.7"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#t1clip)" opacity="0.7">
+    <rect x="2" y="2" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="8" y="2" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="5" y="5" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="11" y="5" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="2" y="8" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="8" y="8" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="5" y="11" width="3" height="3" fill="#FFFFFF"/>
+    <rect x="11" y="11" width="3" height="3" fill="#FFFFFF"/>
+  </g>
+  <circle cx="8" cy="8" r="6.3" fill="none" stroke="#FFFFFF" stroke-width="1.4"/>
+</svg>
