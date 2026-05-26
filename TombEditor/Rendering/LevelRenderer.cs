@@ -646,14 +646,21 @@ public sealed class LevelRenderer : IDisposable
             return new RoomMesh(default, 0, 0);
 
         int triCount = singleSidedVertexCount / 3;
+        // Legacy out-of-bounds threshold: TombEngine clamps at 1024 px,
+        // older engines at 256 px (see Dx11RenderingDrawingRoom).
+        float maxTexCoordSpan = (room.Level?.IsTombEngine == true) ? 1024.0f : 256.0f;
+        bool textured = texturing || lighting;
 
         // Count visible triangles. Hidden / Invisible drop out of the VB.
+        // Invisible faces (no texture / TextureInvisible) are skipped in
+        // textured / lighting passes only -- in geometry mode they still
+        // need to draw so the sector outline / classification stays visible.
         int visibleTris = 0;
         var triResults = new SectorTextureResult[triCount];
         for (int i = 0; i < triCount; i++)
         {
             var ta = geom.TriangleTextureAreas[i];
-            if (ta.Texture is TextureInvisible) continue;
+            if (textured && ta.TextureIsInvisible) continue;
 
             SectorFaceIdentity faceId = geom.TriangleSectorInfo[i];
             triResults[i] = sectorTextureGet(room, faceId.Position.X, faceId.Position.Y, faceId.Face);
@@ -675,7 +682,7 @@ public sealed class LevelRenderer : IDisposable
         for (int i = 0; i < triCount; i++)
         {
             var ta = geom.TriangleTextureAreas[i];
-            if (ta.Texture is TextureInvisible) continue;
+            if (textured && ta.TextureIsInvisible) continue;
 
             var res = triResults[i];
             if (res.Hidden) continue;
@@ -693,14 +700,32 @@ public sealed class LevelRenderer : IDisposable
             {
                 // Texturing mode:
                 //   - Textured face → full-bright texture (RoomDisableVertexColors path)
-                //   - Untextured face → fall back to the room lighting so
-                //     the geometry is still visible (otherwise unfinished
-                //     levels would be a uniform sheet of white).
+                //   - File missing → tile texture_unavailable.png pattern across the sector quad
+                //   - UVs out of bounds → tile texture_coord_out_of_bounds.png
+                //   - (Invisible faces were already filtered out above.)
                 Vector3 tint = res.Dimmed ? new Vector3(0.5f) : Vector3.One;
                 if (res.Highlighted) tint = Vector3.Lerp(tint, _highlightTint, 0.30f);
                 if (res.Selected)    tint = Vector3.Lerp(tint, _selectionTint, 0.45f);
 
-                if (ta.Texture != null && !ta.Texture.IsUnavailable && ta.Texture is not TextureInvisible)
+                if (ta.TextureIsUnavailable)
+                {
+                    (int ul, Vector2 u0) = _atlas.GetUnavailableUv(eu0);
+                    (_,     Vector2 u1) = _atlas.GetUnavailableUv(eu1);
+                    (_,     Vector2 u2) = _atlas.GetUnavailableUv(eu2);
+                    uv0 = u0; uv1 = u1; uv2 = u2;
+                    layer = (uint)ul;
+                    c0 = c1 = c2 = tint;
+                }
+                else if (ta.AreTriangleCoordsOutOfBounds(maxTexCoordSpan))
+                {
+                    (int ol, Vector2 o0) = _atlas.GetOutOfBoundsUv(eu0);
+                    (_,     Vector2 o1) = _atlas.GetOutOfBoundsUv(eu1);
+                    (_,     Vector2 o2) = _atlas.GetOutOfBoundsUv(eu2);
+                    uv0 = o0; uv1 = o1; uv2 = o2;
+                    layer = (uint)ol;
+                    c0 = c1 = c2 = tint;
+                }
+                else
                 {
                     var mapper = _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
                     uv0 = mapper.Map(ta.TexCoord0);
@@ -708,13 +733,6 @@ public sealed class LevelRenderer : IDisposable
                     uv2 = mapper.Map(ta.TexCoord2);
                     layer = (uint)mapper.Layer;
                     c0 = c1 = c2 = tint;
-                }
-                else
-                {
-                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
-                    c0 = tint * geom.VertexColors[i * 3 + 0];
-                    c1 = tint * geom.VertexColors[i * 3 + 1];
-                    c2 = tint * geom.VertexColors[i * 3 + 2];
                 }
             }
             else if (lighting)
@@ -724,19 +742,33 @@ public sealed class LevelRenderer : IDisposable
                 // path). With whiteOnly on, swap the texture for the atlas
                 // white pixel so the user sees pure lighting on a uniform
                 // surface — the "DrawWhiteLighting" toggle.
-                bool hasTex = ta.Texture != null && !ta.Texture.IsUnavailable
-                              && ta.Texture is not TextureInvisible;
-                if (hasTex && !whiteOnly)
+                if (whiteOnly)
+                {
+                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
+                }
+                else if (ta.TextureIsUnavailable)
+                {
+                    (int ul, Vector2 u0) = _atlas.GetUnavailableUv(eu0);
+                    (_,     Vector2 u1) = _atlas.GetUnavailableUv(eu1);
+                    (_,     Vector2 u2) = _atlas.GetUnavailableUv(eu2);
+                    uv0 = u0; uv1 = u1; uv2 = u2;
+                    layer = (uint)ul;
+                }
+                else if (ta.AreTriangleCoordsOutOfBounds(maxTexCoordSpan))
+                {
+                    (int ol, Vector2 o0) = _atlas.GetOutOfBoundsUv(eu0);
+                    (_,     Vector2 o1) = _atlas.GetOutOfBoundsUv(eu1);
+                    (_,     Vector2 o2) = _atlas.GetOutOfBoundsUv(eu2);
+                    uv0 = o0; uv1 = o1; uv2 = o2;
+                    layer = (uint)ol;
+                }
+                else
                 {
                     var mapper = _atlas.MapFace(ta.Texture, ta.TexCoord0, ta.TexCoord1, ta.TexCoord2);
                     uv0 = mapper.Map(ta.TexCoord0);
                     uv1 = mapper.Map(ta.TexCoord1);
                     uv2 = mapper.Map(ta.TexCoord2);
                     layer = (uint)mapper.Layer;
-                }
-                else
-                {
-                    uv0 = uv1 = uv2 = _atlas.WhitePixelUv;
                 }
 
                 c0 = geom.VertexColors[i * 3 + 0];

@@ -61,6 +61,11 @@ public sealed class TextureAtlas : IDisposable
     private readonly Dictionary<TexRegion, (int Layer, VectorInt2 Origin)> _regions = new();
     private readonly Dictionary<SectorTexture, (int Layer, VectorInt2 Origin, VectorInt2 Size)> _sectorOverlays = new();
     private readonly (int Layer, VectorInt2 Origin) _whitePixel;
+    // Legacy V1 fallback patterns -- packed once into the atlas so the room
+    // renderer can route faces with unavailable source files / out-of-range
+    // tex coords to a distinctive checker pattern instead of the white pixel.
+    private (int Layer, VectorInt2 Origin, VectorInt2 Size) _unavailablePattern;
+    private (int Layer, VectorInt2 Origin, VectorInt2 Size) _outOfBoundsPattern;
     // CPU mirror of each populated layer, retained for the debug "dump atlas"
     // command (PNG write). Lazy-allocated -- a level that fills only layer 0
     // never pays the (MaxLayers - 1) * 64 MB CPU pressure.
@@ -138,6 +143,24 @@ public sealed class TextureAtlas : IDisposable
                 overlayBag.Add((st, image));
         });
         var overlayImages = new List<(SectorTexture St, ImageC Img)>(overlayBag);
+
+        // --- 2b) Load the two legacy fallback patterns alongside the sector
+        // overlays. They live in the same SectorTextures resource folder but
+        // are not part of the SectorTexture enum -- they are sampled
+        // explicitly by the room renderer for IsUnavailable / out-of-bounds
+        // faces (see GetUnavailableUv / GetOutOfBoundsUv below). ImageC is a
+        // struct, so we use a bool + by-ref out for the "could load" flag.
+        static bool TryLoadPattern(string fileName, out ImageC image)
+        {
+            image = default;
+            string resourceName = "TombLib.Rendering.SectorTextures." + fileName;
+            using Stream? stream = RenderingAssembly.GetManifestResourceStream(resourceName);
+            if (stream == null) return false;
+            try { image = ImageC.FromStream(stream); return image.Width > 0 && image.Height > 0; }
+            catch { return false; }
+        }
+        bool hasUnavailable = TryLoadPattern("texture_unavailable.png", out ImageC unavailableImage);
+        bool hasOutOfBounds = TryLoadPattern("texture_coord_out_of_bounds.png", out ImageC outOfBoundsImage);
 
         // --- 3) Collect the texture regions every face / polygon samples.
         var regionSet = new HashSet<TexRegion>();
@@ -264,6 +287,30 @@ public sealed class TextureAtlas : IDisposable
             _sectorOverlays[st] = (layer, inner, new VectorInt2(image.Width, image.Height));
             packJobs.Add(new PackJob(layer, inner, image.ToByteArray(), image.Width * 4,
                                      0, 0, image.Width, image.Height));
+        }
+
+        // Pack the two fallback patterns. If either can't fit (extremely
+        // unlikely -- they are small PNGs), the consumer falls back to the
+        // white pixel via the default-constructed tuple's Size == 0 check.
+        if (hasUnavailable
+            && TryPackPool(packers, unavailableImage.Width, unavailableImage.Height,
+                           ref usedLayers, out int unavLayer, out var unavInner))
+        {
+            _unavailablePattern = (unavLayer, unavInner,
+                                   new VectorInt2(unavailableImage.Width, unavailableImage.Height));
+            packJobs.Add(new PackJob(unavLayer, unavInner, unavailableImage.ToByteArray(),
+                                     unavailableImage.Width * 4,
+                                     0, 0, unavailableImage.Width, unavailableImage.Height));
+        }
+        if (hasOutOfBounds
+            && TryPackPool(packers, outOfBoundsImage.Width, outOfBoundsImage.Height,
+                           ref usedLayers, out int oobLayer, out var oobInner))
+        {
+            _outOfBoundsPattern = (oobLayer, oobInner,
+                                   new VectorInt2(outOfBoundsImage.Width, outOfBoundsImage.Height));
+            packJobs.Add(new PackJob(oobLayer, oobInner, outOfBoundsImage.ToByteArray(),
+                                     outOfBoundsImage.Width * 4,
+                                     0, 0, outOfBoundsImage.Width, outOfBoundsImage.Height));
         }
 
         // --- 6) Pre-allocate the byte mirrors for every layer we actually
@@ -522,6 +569,41 @@ public sealed class TextureAtlas : IDisposable
         return (rect.Layer, new Vector2(
             (rect.Origin.X + faceUv.X * rect.Size.X) / Size.X,
             (rect.Origin.Y + faceUv.Y * rect.Size.Y) / Size.Y));
+    }
+
+    /// <summary>
+    /// Atlas (layer, UV) for the legacy "texture file missing" pattern, tiled
+    /// across a face using its editor UV ({-1, 0, 1} sector-corner space).
+    /// Mirrors the legacy Dx11RenderingDevice.TextureUnavailable path.
+    /// Falls back to the white pixel if the pattern couldn't be packed.
+    /// </summary>
+    public (int Layer, Vector2 Uv) GetUnavailableUv(Vector2 editorUv)
+        => MapPatternByEditorUv(_unavailablePattern, editorUv);
+
+    /// <summary>
+    /// Atlas (layer, UV) for the legacy "tex coords out of bounds" pattern,
+    /// tiled across a face using its editor UV. Mirrors the legacy
+    /// Dx11RenderingDevice.TextureCoordOutOfBounds path.
+    /// </summary>
+    public (int Layer, Vector2 Uv) GetOutOfBoundsUv(Vector2 editorUv)
+        => MapPatternByEditorUv(_outOfBoundsPattern, editorUv);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    private (int Layer, Vector2 Uv) MapPatternByEditorUv(
+        (int Layer, VectorInt2 Origin, VectorInt2 Size) pattern, Vector2 editorUv)
+    {
+        if (pattern.Size.X == 0 || pattern.Size.Y == 0)
+            return (_whitePixel.Layer, WhitePixelUv);
+        // Legacy formula: Vector2.Abs(editorUv) * (imageSize - 1) + 0.5
+        // -- maps the {-1, 0, 1} sector corner range to a pixel walk across
+        // the pattern image, with the +0.5 nudging into the center of the
+        // texel so bilinear filtering doesn't sample neighbouring atlas data.
+        Vector2 abs = Vector2.Abs(editorUv);
+        Vector2 pxInPattern = abs * new Vector2(pattern.Size.X - 1, pattern.Size.Y - 1)
+                              + new Vector2(0.5f);
+        return (pattern.Layer, new Vector2(
+            (pattern.Origin.X + pxInPattern.X) / Size.X,
+            (pattern.Origin.Y + pxInPattern.Y) / Size.Y));
     }
 
     /// <summary>
