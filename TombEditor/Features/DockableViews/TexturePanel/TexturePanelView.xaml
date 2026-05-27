@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
 	x:Class="TombEditor.Features.DockableViews.TexturePanel.TexturePanelView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,6 +13,10 @@
 	d:DesignWidth="286"
 	Background="{DynamicResource Brush_Background}"
 	mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+	</UserControl.Resources>
 
 	<controls:SpacedGrid Margin="{x:Static darkUI:Defaults.SmallThickness}" RowSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 		<Grid.RowDefinitions>
@@ -29,17 +33,32 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<controls:SearchableComboBox />
+			<controls:SearchableComboBox
+				x:Name="TexturesCombo"
+				ItemsSource="{Binding Textures}"
+				SelectedItem="{Binding SelectedTexture, Mode=TwoWay}" />
 
-			<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddTextureCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Add new texture...">
 				<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
 			</Button>
 
-			<Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="2"
+				Command="{Binding BrowseTextureCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Replace texture...">
 				<Image Source="/TombEditor;component/Resources/icons_actions/actions_refresh-16.png" />
 			</Button>
 
-			<Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="3"
+				Command="{Binding DeleteTextureCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Delete texture">
 				<Image Source="/TombEditor;component/Resources/icons_general/general_trash-16.png" />
 			</Button>
 		</controls:SpacedGrid>
@@ -59,23 +78,45 @@
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Column="0" Style="{DynamicResource ButtonWithIconOnly}">
+				<Button
+					Grid.Column="0"
+					Command="{Binding SetDoubleSidedCommand}"
+					Style="{DynamicResource ButtonWithIconOnly}"
+					ToolTip="Toggle double-sided">
 					<Image Source="/TombEditor;component/Resources/icons_texture/texture_DoubleSided_1-16.png" />
 				</Button>
 
-				<ComboBox Grid.Column="1" />
+				<ComboBox
+					Grid.Column="1"
+					ItemsSource="{Binding BlendModeNames}"
+					SelectedIndex="{Binding SelectedBlendModeIndex, Mode=TwoWay}"
+					ToolTip="Blending mode" />
 
-				<Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+				<Button
+					Grid.Column="2"
+					Command="{Binding RotateCommand}"
+					Style="{DynamicResource ButtonWithIconOnly}"
+					ToolTip="Rotate texture">
 					<Image Source="/TombEditor;component/Resources/icons_texture/texture_Rotate.png" />
 				</Button>
-				<Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
+
+				<Button
+					Grid.Column="3"
+					Command="{Binding MirrorCommand}"
+					Style="{DynamicResource ButtonWithIconOnly}"
+					ToolTip="Mirror texture">
 					<Image Source="/TombEditor;component/Resources/icons_texture/texture_mirror.png" />
 				</Button>
 
-				<ComboBox Grid.Column="4" />
+				<ComboBox
+					Grid.Column="4"
+					MinWidth="70"
+					ItemsSource="{Binding TileSizes}"
+					SelectedItem="{Binding SelectedTileSize, Mode=TwoWay}"
+					ToolTip="Selection tile size" />
 			</controls:SpacedGrid>
 
 			<controls:SpacedGrid Grid.Row="1" ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
@@ -85,12 +126,27 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button Grid.Column="0" Content="{tombLib:Localize Animations}" />
-				<Button Grid.Column="1" Content="{tombLib:Localize Sounds}" />
-				<Button Grid.Column="2" Content="{tombLib:Localize Bumpmaps}" />
+				<Button
+					Grid.Column="0"
+					Command="{Binding EditAnimationRangesCommand}"
+					Content="{tombLib:Localize Animations}" />
+
+				<Button
+					Grid.Column="1"
+					Command="{Binding TextureSoundsCommand}"
+					Content="{tombLib:Localize Sounds}" />
+
+				<Button
+					Grid.Column="2"
+					Command="{Binding BumpMapsCommand}"
+					Content="{tombLib:Localize Bumpmaps}" />
 			</controls:SpacedGrid>
 
-			<Button Grid.Row="2" Content="{tombLib:Localize Materials}" />
+			<Button
+				Grid.Row="2"
+				Command="{Binding MaterialEditorCommand}"
+				Content="{tombLib:Localize Materials}"
+				Visibility="{Binding IsMaterialsVisible, Converter={StaticResource BoolToVisibility}}" />
 		</controls:SpacedGrid>
 	</controls:SpacedGrid>
 </UserControl>

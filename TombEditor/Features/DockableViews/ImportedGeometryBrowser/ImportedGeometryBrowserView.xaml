@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
 	x:Class="TombEditor.Features.DockableViews.ImportedGeometryBrowser.ImportedGeometryBrowserView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -25,9 +25,17 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<controls:SearchableComboBox />
+			<controls:SearchableComboBox
+				x:Name="GeometriesCombo"
+				DisplayMemberPath="DisplayName"
+				ItemsSource="{Binding Geometries}"
+				SelectedItem="{Binding SelectedGeometry, Mode=TwoWay}" />
 
-			<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="1"
+				Command="{Binding AddCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Add imported geometry...">
 				<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
 			</Button>
 		</controls:SpacedGrid>
@@ -42,18 +50,30 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<Button Grid.Column="1" Style="{DynamicResource ButtonWithIconAndText}">
+			<Button
+				Grid.Column="1"
+				Command="{Binding LocateCommand}"
+				Style="{DynamicResource ButtonWithIconAndText}"
+				ToolTip="Locate item">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="/TombEditor;component/Resources/icons_general/general_target-16.png" />
 					<TextBlock Text="{tombLib:Localize LocateItem}" />
 				</StackPanel>
 			</Button>
 
-			<Button Grid.Column="2" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="2"
+				Command="{Binding PreviousCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Previous item">
 				<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowUp-16.png" />
 			</Button>
 
-			<Button Grid.Column="3" Style="{DynamicResource ButtonWithIconOnly}">
+			<Button
+				Grid.Column="3"
+				Command="{Binding NextCommand}"
+				Style="{DynamicResource ButtonWithIconOnly}"
+				ToolTip="Next item">
 				<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowDown-16.png" />
 			</Button>
 		</controls:SpacedGrid>

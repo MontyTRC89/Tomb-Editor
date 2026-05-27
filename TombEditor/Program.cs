@@ -35,6 +35,21 @@ namespace TombEditor
             bool doBatchCompile = false;
             BatchCompileList batchList = null;
 
+            // Strip the --wpf flag (preview launcher for the new WPF MainWindow).
+            // Default behaviour (FormMain WinForms) is preserved when the flag is absent.
+            bool useWpfPreview = false;
+            {
+                var filtered = new List<string>(args.Length);
+                foreach (var a in args)
+                {
+                    if (string.Equals(a, "--wpf", StringComparison.OrdinalIgnoreCase))
+                        useWpfPreview = true;
+                    else
+                        filtered.Add(a);
+                }
+                args = filtered.ToArray();
+            }
+
             if (args.Length >= 1)
             {
                 // Open files on start
@@ -86,7 +101,22 @@ namespace TombEditor
                                 Environment.Exit(1);
                     };
                     Application.AddMessageFilter(new ControlScrollFilter());
-                    SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+
+                    // The Editor captures SynchronizationContext.Current and uses Send() to
+                    // marshal events back to the UI thread. In --wpf mode the WinForms message
+                    // loop never runs, so a WindowsFormsSynchronizationContext deadlocks Send().
+                    // Bind to the WPF dispatcher (already created by WPFInitializer) instead.
+                    if (useWpfPreview)
+                    {
+                        var dispatcher = System.Windows.Application.Current?.Dispatcher
+                            ?? System.Windows.Threading.Dispatcher.CurrentDispatcher;
+                        SynchronizationContext.SetSynchronizationContext(
+                            new System.Windows.Threading.DispatcherSynchronizationContext(dispatcher));
+                    }
+                    else
+                    {
+                        SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+                    }
 
                     if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                         Environment.Exit(1);
@@ -110,7 +140,42 @@ namespace TombEditor
                     // Run editor normally if no batch compile is pending.
                     // Otherwise, don't load main form and jump straight to batch-compiling levels.
 
-                    if (!doBatchCompile)
+                    if (doBatchCompile)
+                    {
+                        EditorActions.BuildInBatch(editor, batchList, batchFile);
+                    }
+                    else if (useWpfPreview)
+                    {
+                        // WPF preview shell. Runs alongside FormMain (which remains the production
+                        // editor) until the migration is complete. Catalogs/Editor are fully loaded
+                        // above, so the new window can already observe Editor events.
+                        var wpfApp = System.Windows.Application.Current;
+
+                        // Without this handler, exceptions thrown during MainWindow construction or
+                        // any later WPF-dispatched callback are swallowed silently — the process
+                        // dies but neither the console nor NLog see anything. Route them through
+                        // the standard logger and surface them so we can actually debug them.
+                        wpfApp.DispatcherUnhandledException += (sender, e) =>
+                        {
+                            log.HandleException(e.Exception);
+                            MessageBox.Show(e.Exception.ToString(), "Tomb Editor (WPF preview) — unhandled exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            e.Handled = true;
+                        };
+
+                        try
+                        {
+                            var mainWindow = new MainWindow(editor);
+                            wpfApp.Run(mainWindow);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.HandleException(ex);
+                            MessageBox.Show(ex.ToString(), "Tomb Editor (WPF preview) — startup failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                        wpfApp.Shutdown();
+                    }
+                    else
                     {
                         using (FormMain form = new FormMain(editor))
                         {
@@ -132,8 +197,6 @@ namespace TombEditor
                             Application.Run(form);
                         }
                     }
-                    else
-                        EditorActions.BuildInBatch(editor, batchList, batchFile);
                 }
             }
             else if (startFile != null) // Send opening file to existing editor instance

@@ -9,6 +9,7 @@
 	xmlns:local="clr-namespace:TombEditor.Features.DockableViews.ContentBrowser"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	d:DataContext="{d:DesignInstance Type=local:ContentBrowserViewModel}"
 	d:DesignHeight="400"
 	d:DesignWidth="350"
@@ -194,6 +195,23 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
+
+		<!--
+			Drag-drop proxy: WPF DragDrop.DoDragDrop uses COM OLE that does not interop cleanly
+			with the WinForms drop targets used elsewhere in the editor (Panel3D, etc.). When
+			the WPF MainWindow hosts this view via AttachToEditor(...), we initiate drag-drops
+			through this hidden WinForms control instead. The host stays size-0 / hidden so it
+			never interferes with layout or hit-testing.
+		-->
+		<wfi:WindowsFormsHost
+			x:Name="DragDropProxyHost"
+			Grid.RowSpan="3"
+			Width="0"
+			Height="0"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			Focusable="False"
+			IsHitTestVisible="False" />
 
 		<!--  Header bar: Search + Category filter  -->
 		<Border
