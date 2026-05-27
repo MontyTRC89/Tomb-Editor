@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	MinWidth="286"
 	MinHeight="100"
@@ -43,7 +44,7 @@
 				Command="{Binding AddTextureCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Add new texture...">
-				<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
+				<Image Source="{tomb:Icon General/plus_math}" />
 			</Button>
 
 			<Button
@@ -51,7 +52,7 @@
 				Command="{Binding BrowseTextureCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Replace texture...">
-				<Image Source="/TombEditor;component/Resources/icons_actions/actions_refresh-16.png" />
+				<Image Source="{tomb:Icon Actions/refresh}" />
 			</Button>
 
 			<Button
@@ -59,7 +60,7 @@
 				Command="{Binding DeleteTextureCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Delete texture">
-				<Image Source="/TombEditor;component/Resources/icons_general/general_trash-16.png" />
+				<Image Source="{tomb:Icon General/trash}" />
 			</Button>
 		</controls:SpacedGrid>
 
@@ -86,7 +87,7 @@
 					Command="{Binding SetDoubleSidedCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
 					ToolTip="Toggle double-sided">
-					<Image Source="/TombEditor;component/Resources/icons_texture/texture_DoubleSided_1-16.png" />
+					<Image Source="{tomb:Icon Texture/DoubleSided_1}" />
 				</Button>
 
 				<ComboBox
@@ -100,7 +101,7 @@
 					Command="{Binding RotateCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
 					ToolTip="Rotate texture">
-					<Image Source="/TombEditor;component/Resources/icons_texture/texture_Rotate.png" />
+					<Image Source="{tomb:Icon General/Rotate}" />
 				</Button>
 
 				<Button
@@ -108,7 +109,7 @@
 					Command="{Binding MirrorCommand}"
 					Style="{DynamicResource ButtonWithIconOnly}"
 					ToolTip="Mirror texture">
-					<Image Source="/TombEditor;component/Resources/icons_texture/texture_mirror.png" />
+					<Image Source="{tomb:Icon General/Mirror}" />
 				</Button>
 
 				<ComboBox

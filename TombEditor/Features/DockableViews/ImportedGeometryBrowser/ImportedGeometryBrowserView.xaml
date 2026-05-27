@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	d:DesignHeight="250"
 	d:DesignWidth="285"
@@ -36,7 +37,7 @@
 				Command="{Binding AddCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Add imported geometry...">
-				<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
+				<Image Source="{tomb:Icon General/plus_math}" />
 			</Button>
 		</controls:SpacedGrid>
 
@@ -56,7 +57,7 @@
 				Style="{DynamicResource ButtonWithIconAndText}"
 				ToolTip="Locate item">
 				<StackPanel Orientation="Horizontal">
-					<Image Source="/TombEditor;component/Resources/icons_general/general_target-16.png" />
+					<Image Source="{tomb:Icon General/target}" />
 					<TextBlock Text="{tombLib:Localize LocateItem}" />
 				</StackPanel>
 			</Button>
@@ -66,7 +67,7 @@
 				Command="{Binding PreviousCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Previous item">
-				<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowUp-16.png" />
+				<Image Source="{tomb:Icon General/ArrowUp}" />
 			</Button>
 
 			<Button
@@ -74,7 +75,7 @@
 				Command="{Binding NextCommand}"
 				Style="{DynamicResource ButtonWithIconOnly}"
 				ToolTip="Next item">
-				<Image Source="/TombEditor;component/Resources/icons_general/general_ArrowDown-16.png" />
+				<Image Source="{tomb:Icon General/ArrowDown}" />
 			</Button>
 		</controls:SpacedGrid>
 	</controls:SpacedGrid>

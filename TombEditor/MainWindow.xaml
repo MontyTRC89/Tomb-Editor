@@ -6,6 +6,7 @@
 	xmlns:darkDock="clr-namespace:DarkUI.WPF.AvalonDock;assembly=DarkUI.WPF"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:editor="clr-namespace:TombEditor"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
@@ -272,190 +273,190 @@
 						visually pressed, matching the WinForms `butXxx.Checked = mode == EditorMode.X` pattern.
 					-->
 					<ToggleButton editor:EditorToolButton.Command="Switch2DMode" editor:EditorToolButton.ActiveMode="Map2D">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_2DView-16.png" />
+						<Image Source="{tomb:Icon Actions/2DView}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="SwitchGeometryMode" editor:EditorToolButton.ActiveMode="Geometry">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_3DView-16.png" />
+						<Image Source="{tomb:Icon Actions/3DView}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="SwitchFaceEditMode" editor:EditorToolButton.ActiveMode="FaceEdit">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_TextureMode-16.png" />
+						<Image Source="{tomb:Icon Actions/TextureMode}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="SwitchObjectPlacementMode" editor:EditorToolButton.ActiveMode="ObjectPlacement">
-						<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_ObjectPlacement-16.png" />
+						<Image Source="{tomb:Icon Toolbox/ObjectPlacement}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="SwitchLightingMode" editor:EditorToolButton.ActiveMode="Lighting">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_light_on-16.png" />
+						<Image Source="{tomb:Icon Actions/light_on}" />
 					</ToggleButton>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Undo / Redo (one-shot)  -->
 					<Button editor:EditorToolButton.Command="Undo">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_undo-16.png" />
+						<Image Source="{tomb:Icon General/undo}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="Redo">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_redo-16.png" />
+						<Image Source="{tomb:Icon General/redo}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Camera (Center is one-shot; FlyMode is a toggle but has no persisted config flag)  -->
 					<Button editor:EditorToolButton.Command="ResetCamera">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_center_direction-16.png" />
+						<Image Source="{tomb:Icon Actions/center_direction}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="ToggleFlyMode">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_airplane-16.png" />
+						<Image Source="{tomb:Icon General/airplane}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Draw flags — ToggleButtons reflect the persisted Rendering3D_* flags  -->
 					<ToggleButton editor:EditorToolButton.Command="DrawPortals" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowPortals">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_DrawPortals-16.png" />
+						<Image Source="{tomb:Icon Actions/DrawPortals}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawAllRooms" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowAllRooms">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_DrawAllRooms-16.png" />
+						<Image Source="{tomb:Icon Actions/DrawAllRooms}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawHorizon" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowHorizon">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_horizon-16.png" />
+						<Image Source="{tomb:Icon Actions/horizon}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawRoomNames" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowRoomNames">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_generic_text-16.png" />
+						<Image Source="{tomb:Icon Actions/generic_text}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawCardinalDirections" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowCardinalDirections">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_DrawCardinalDirections-16.png" />
+						<Image Source="{tomb:Icon Actions/DrawCardinalDirections}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawExtraBlendingModes" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowExtraBlendingModes">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_Transparent_1-16.png" />
+						<Image Source="{tomb:Icon Texture/Transparent_1}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="HideTransparentFaces" editor:EditorToolButton.ConfigFlag="Rendering3D_HideTransparentFaces">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_AlphaTest-16.png" />
+						<Image Source="{tomb:Icon Actions/AlphaTest}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="BilinearFilter" editor:EditorToolButton.ConfigFlag="Rendering3D_BilinearFilter">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_blur-16.png" />
+						<Image Source="{tomb:Icon General/blur}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawWhiteTextureLightingOnly" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowLightingWhiteTextureOnly">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_DrawUntexturedLights-16.png" />
+						<Image Source="{tomb:Icon Actions/DrawUntexturedLights}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="ShowRealTintForObjects" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowRealTintForObjects">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_StaticTint-16.png" />
+						<Image Source="{tomb:Icon Actions/StaticTint}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawIllegalSlopes" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowIllegalSlopes">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_Warning-16.png" />
+						<Image Source="{tomb:Icon General/Warning}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DrawSlideDirections" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowSlideDirections">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_Slide-16.png" />
+						<Image Source="{tomb:Icon Actions/Slide}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DisableGeometryPicking" editor:EditorToolButton.ConfigFlag="Rendering3D_DisablePickingForImportedGeometry">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_HideCustomGeometry_1-16.png" />
+						<Image Source="{tomb:Icon Actions/HideCustomGeometry_1}" />
 					</ToggleButton>
 					<ToggleButton editor:EditorToolButton.Command="DisableHiddenRoomPicking" editor:EditorToolButton.ConfigFlag="Rendering3D_DisablePickingForHiddenRooms">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_HideHiddenRooms-16.png" />
+						<Image Source="{tomb:Icon Actions/HideHiddenRooms}" />
 					</ToggleButton>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Flipmap + clipboard (one-shot)  -->
 					<Button editor:EditorToolButton.Command="ToggleFlipMap">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_copy_link-16.png" />
+						<Image Source="{tomb:Icon General/copy_link}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="Copy">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_copy-16.png" />
+						<Image Source="{tomb:Icon General/copy}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="Paste">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_clipboard-16.png" />
+						<Image Source="{tomb:Icon General/clipboard}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="StampObject">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_rubber_stamp-16.png" />
+						<Image Source="{tomb:Icon Actions/rubber_stamp}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Opacity toggles (one-shot — opacity is per-face state, not a global flag)  -->
 					<Button editor:EditorToolButton.Command="ToggleNoOpacity">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_Solid-16.png" />
+						<Image Source="{tomb:Icon Texture/Solid}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="ToggleOpacity">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_ToggleOpacity-16.png" />
+						<Image Source="{tomb:Icon Texture/ToggleOpacity}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="ToggleOpacity2">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_ToggleOpacity2-16.png" />
+						<Image Source="{tomb:Icon Texture/ToggleOpacity2}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="ToggleClassicPortalMirror">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_MirrorPortal-16.png" />
+						<Image Source="{tomb:Icon Texture/MirrorPortal}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Add object  -->
 					<Button editor:EditorToolButton.Command="AddCamera">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_Camera-16.png" />
+						<Image Source="{tomb:Icon Objects/Camera}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddSprite">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_Sprite-16.png" />
+						<Image Source="{tomb:Icon Objects/Sprite}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddFlybyCamera">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_movie_projector-16.png" />
+						<Image Source="{tomb:Icon Objects/movie_projector}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddSink">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_tornado-16.png" />
+						<Image Source="{tomb:Icon Objects/tornado}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddSoundSource">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_speaker-16.png" />
+						<Image Source="{tomb:Icon Objects/speaker}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddImportedGeometry">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_custom-geometry.png" />
+						<Image Source="{tomb:Icon Objects/custom-geometry}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddGhostBlock">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_geometry_override-16.png" />
+						<Image Source="{tomb:Icon Objects/geometry-override}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddMemo">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_Memo-16.png" />
+						<Image Source="{tomb:Icon Objects/Memo}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddBoxVolume">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_volume_box-16.png" />
+						<Image Source="{tomb:Icon Objects/volume-box}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="AddSphereVolume">
-						<Image Source="/TombEditor;component/Resources/icons_objects/objects_volume_sphere-16.png" />
+						<Image Source="{tomb:Icon Objects/volume-sphere}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Build  -->
 					<Button editor:EditorToolButton.Command="BuildLevel">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_compile-16.png" />
+						<Image Source="{tomb:Icon Actions/compile}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="BuildAndPlay">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_play-16.png" />
+						<Image Source="{tomb:Icon Actions/play}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="BuildAndPlayPreview">
-						<Image Source="/TombEditor;component/Resources/icons_actions/actions_play_fast-16.png" />
+						<Image Source="{tomb:Icon Actions/play_fast}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Quick texture targets  -->
 					<Button editor:EditorToolButton.Command="TextureFloor">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_Floor2-16.png" />
+						<Image Source="{tomb:Icon Texture/Floor2}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="TextureCeiling">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_Ceiling2-16.png" />
+						<Image Source="{tomb:Icon Texture/Ceiling2}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="TextureWalls">
-						<Image Source="/TombEditor;component/Resources/icons_texture/texture_Walls2-16.png" />
+						<Image Source="{tomb:Icon Texture/Walls2}" />
 					</Button>
 				</ToolBar>
 
 				<ToolBar>
 					<!--  Misc tools  -->
 					<Button editor:EditorToolButton.Command="EditLevelSettings">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_settings-16.png" />
+						<Image Source="{tomb:Icon General/settings}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="Search">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_search-16.png" />
+						<Image Source="{tomb:Icon General/search}" />
 					</Button>
 					<Button editor:EditorToolButton.Command="SearchAndReplaceObjects">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_search_and_replace-16.png" />
+						<Image Source="{tomb:Icon General/Find-and-replace}" />
 					</Button>
 				</ToolBar>
 			</ToolBarTray>
