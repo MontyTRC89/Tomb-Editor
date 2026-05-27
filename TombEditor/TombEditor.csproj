@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <LangVersion>12</LangVersion>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
@@ -155,6 +156,12 @@
     <Resource Include="Resources\icons_actions\actions_TextureMode-16.png" />
     <Resource Include="Resources\icons_actions\actions_StarOutlined-16.png" />
     <Resource Include="Resources\icons_actions\actions_StarFilled-16.png" />
+    <Resource Include="Resources\icons_actions\actions_play-16.png" />
+    <Resource Include="Resources\icons_actions\actions_3DView-16.png" />
+    <Resource Include="Resources\icons_actions\actions_delete-16.png" />
+    <Resource Include="Resources\icons_general\general_plus_math-16.png" />
+    <Resource Include="Resources\icons_general\general_trash-16.png" />
+    <Resource Include="Resources\icons_transport\*.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />

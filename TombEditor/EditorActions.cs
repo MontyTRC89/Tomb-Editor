@@ -1122,12 +1122,27 @@ namespace TombEditor
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is FlybyCameraInstance)
+            else if (instance is FlybyCameraInstance flybyCamera)
             {
-                using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
+                var undoInstance = new ChangeObjectPropertyUndoInstance(_editor.UndoManager, flybyCamera);
+                bool hasChanges = false;
+
+                using (var formFlyby = GetObjectSetupWindow(flybyCamera) as FormFlybyCamera)
+                {
+                    if (formFlyby is null)
+                        return;
+
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
-                _editor.ObjectChange(instance, ObjectChangeType.Change);
+
+                    hasChanges = formFlyby.HasChanges;
+
+                    if (formFlyby.HasChanges)
+                        _editor.UndoManager.Push(undoInstance);
+                }
+
+                if (hasChanges)
+                    _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is CameraInstance)
             {
@@ -2446,6 +2461,7 @@ namespace TombEditor
         public static void PlaceObjectGroupContents(Room room, VectorInt2 pos, ObjectGroup instance)
         {
             var undoList = new List<UndoRedoInstance>();
+            var addedObjects = new List<ObjectInstance>();
 
             // Update group position
             instance.Position = room.GetFloorMidpointPosition(pos.X, pos.Y);
@@ -2456,8 +2472,12 @@ namespace TombEditor
             {
                 room.AddObject(_editor.Level, child);
                 AllocateScriptIds(child);
+                addedObjects.Add(child);
                 undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, child, true));
             }
+
+            // Keep listeners in sync with grouped pastes before selection is mirrored back into the UI.
+            _editor.ObjectChange(addedObjects, ObjectChangeType.Add);
 
             // Update state
             _editor.UndoManager.Push(undoList);
@@ -2516,7 +2536,9 @@ namespace TombEditor
             {
                 // Selected object is also multi-selectable or already an object-group
 
-                var objectGroup = selectedItemInstance as ObjectGroup ?? new ObjectGroup(selectedItemInstance);
+                var objectGroup = selectedItemInstance is ObjectGroup existingGroup
+                    ? new ObjectGroup(existingGroup)
+                    : new ObjectGroup(selectedItemInstance);
 
                 objectGroup.AddOrRemove(objPositionBased);
 

@@ -34,13 +34,15 @@ namespace TombEditor.Controls.Panel3D
                     delta.X * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
                    -delta.Y * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-            _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)); // Update gizmo
+            if (CanUseGizmo())
+                _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)); // Update gizmo
+
             return true;
         }
 
         private bool OnMouseMovedLeft(Point location)
         {
-            if (_gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)))
+            if (CanUseGizmo() && _gizmo.MouseMoved(_viewProjection, GetRay(location.X, location.Y)))
             {
                 // Process gizmo
                 return true;

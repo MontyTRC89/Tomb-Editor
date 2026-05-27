@@ -935,6 +935,12 @@ namespace TombEditor
                 EditorActions.ReplaceObject(args.Window);
             });
 
+            AddCommand("ShowFlybyTimeline", "Flyby timeline", CommandType.Windows, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Window_Layout.ShowFlybyTimeline = !args.Editor.Configuration.Window_Layout.ShowFlybyTimeline;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("AddNewRoom", "Add new room", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.Level.Rooms == null)
@@ -1156,6 +1162,35 @@ namespace TombEditor
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance(args.Editor.SelectedObject));
+            });
+
+            AddCommand("PreviewCamera", "Preview camera or flyby sequence", CommandType.View, delegate (CommandArgs args)
+            {
+                if (args.Editor.CameraPreviewMode != CameraPreviewType.None)
+                {
+                    args.Editor.ToggleCameraPreview(false);
+                    return;
+                }
+
+                if (args.Editor.FlyMode)
+                {
+                    args.Editor.SendMessage("Cannot preview camera or flyby sequence while in fly mode.", PopupType.Info);
+                    return;
+                }
+
+                // Determine which preview to start from selected object.
+                if (args.Editor.SelectedObject is FlybyCameraInstance flyby)
+                {
+                    args.Editor.ToggleCameraPreview(true, flyby);
+                }
+                else if (args.Editor.SelectedObject is CameraInstance cam)
+                {
+                    args.Editor.ToggleCameraPreview(true, cam);
+                }
+                else
+                {
+                    args.Editor.SendMessage("Select a camera or flyby sequence first to preview.", PopupType.Info);
+                }
             });
 
             AddCommand("AddSink", "Add sink", CommandType.Objects, delegate (CommandArgs args)
@@ -1696,9 +1731,16 @@ namespace TombEditor
 
             AddCommand("ShowStatistics", "Statistics display", CommandType.Windows, delegate (CommandArgs args)
             {
-                args.Editor.Configuration.UI_ShowStats = !args.Editor.Configuration.UI_ShowStats;
+                args.Editor.Configuration.Window_Layout.ShowStats = !args.Editor.Configuration.Window_Layout.ShowStats;
                 args.Editor.ConfigurationChange();
             });
+
+            for (int i = 0; i < Configuration.MaxWindowLayouts; i++)
+            {
+                int currentLayoutIndex = i;
+                int visibleLayoutIndex = i + 1;
+                AddCommand("SwitchLayout" + visibleLayoutIndex, "Switch to layout " + visibleLayoutIndex, CommandType.Windows, (CommandArgs args) => args.Editor.SwitchLayout(currentLayoutIndex));
+            }
 
             AddCommand("DrawPortals", "Draw portals", CommandType.View, delegate (CommandArgs args)
             {
@@ -1796,7 +1838,7 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args) 
+            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly = !args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
                 args.Editor.ConfigurationChange();
@@ -2245,7 +2287,7 @@ namespace TombEditor
                 args.Editor.ActivateDefaultControl(nameof(FormMain));
             });
 
-            AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) 
+            AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",
                                    "Delete all lights", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
@@ -2264,7 +2306,7 @@ namespace TombEditor
 				}
 			});
 
-			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args) 
+			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
 				SortedDictionary<WadMoveableId,uint> moveablesCount = new SortedDictionary<WadMoveableId, uint>();
 				SortedDictionary<WadStaticId,uint> staticsCount = new SortedDictionary<WadStaticId, uint>();

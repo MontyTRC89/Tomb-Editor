@@ -1,12 +1,11 @@
 ﻿using SharpDX.Toolkit.Graphics;
 using System.Numerics;
-using TombLib.Graphics.Primitives;
-using TombLib.Graphics;
 using TombLib;
+using TombLib.Controls;
+using TombLib.Graphics;
+using TombLib.Graphics.Primitives;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.Controls;
-using System;
 
 namespace TombEditor.Controls.Panel3D
 {
@@ -42,8 +41,8 @@ namespace TombEditor.Controls.Panel3D
                 int atlasSize = objectQuality switch
                 {
                     ObjectRenderingQuality.High => 4096,
-					ObjectRenderingQuality.Medium => 1024,
-					_ => 512
+                    ObjectRenderingQuality.Medium => 1024,
+                    _ => 512
                 };
 
                 int maxAllocationSize = objectQuality switch

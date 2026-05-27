@@ -51,6 +51,7 @@ namespace TombEditor.Forms
 			editGlobalEventSetsToolStripMenuItem = new ToolStripMenuItem();
 			searchToolStripMenuItem = new ToolStripMenuItem();
 			searchAndReplaceToolStripMenuItem = new ToolStripMenuItem();
+			flybyTimelineToolStripMenuItem = new ToolStripMenuItem();
 			viewToolStripMenuItem = new ToolStripMenuItem();
 			resetCameraToolStripMenuItem = new ToolStripMenuItem();
 			relocateCameraToolStripMenuItem = new ToolStripMenuItem();
@@ -191,7 +192,7 @@ namespace TombEditor.Forms
 			toolStripMenuItem6 = new ToolStripMenuItem();
 			butFindMenu = new ToolStripMenuItem();
 			windowToolStripMenuItem = new ToolStripMenuItem();
-			restoreDefaultLayoutToolStripMenuItem = new ToolStripMenuItem();
+			layoutsToolStripMenuItem = new ToolStripMenuItem();
 			toolStripMenuSeparator14 = new ToolStripSeparator();
 			sectorOptionsToolStripMenuItem = new ToolStripMenuItem();
 			roomOptionsToolStripMenuItem = new ToolStripMenuItem();
@@ -557,6 +558,15 @@ namespace TombEditor.Forms
 			searchAndReplaceToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
 			searchAndReplaceToolStripMenuItem.Tag = "SearchAndReplaceObjects";
 			searchAndReplaceToolStripMenuItem.Text = "SearchAndReplaceObjects";
+			// 
+			// flybyTimelineToolStripMenuItem
+			// 
+			flybyTimelineToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			flybyTimelineToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			flybyTimelineToolStripMenuItem.Name = "flybyTimelineToolStripMenuItem";
+			flybyTimelineToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			flybyTimelineToolStripMenuItem.Tag = "ShowFlybyTimeline";
+			flybyTimelineToolStripMenuItem.Text = "ShowFlybyTimeline";
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1868,20 +1878,21 @@ namespace TombEditor.Forms
 			// windowToolStripMenuItem
 			// 
 			windowToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			windowToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { restoreDefaultLayoutToolStripMenuItem, toolStripMenuSeparator14, sectorOptionsToolStripMenuItem, roomOptionsToolStripMenuItem, itemBrowserToolStripMenuItem, importedGeometryBrowserToolstripMenuItem, contentBrowserToolStripMenuItem, triggerListToolStripMenuItem, lightingToolStripMenuItem, paletteToolStripMenuItem, texturePanelToolStripMenuItem, objectListToolStripMenuItem, luaPropertiesToolStripMenuItem, statisticsToolStripMenuItem, dockableToolStripMenuItem, floatingToolStripMenuItem });
+			windowToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { layoutsToolStripMenuItem, toolStripMenuSeparator14, sectorOptionsToolStripMenuItem, roomOptionsToolStripMenuItem, itemBrowserToolStripMenuItem, importedGeometryBrowserToolstripMenuItem, contentBrowserToolStripMenuItem, triggerListToolStripMenuItem, lightingToolStripMenuItem, paletteToolStripMenuItem, texturePanelToolStripMenuItem, objectListToolStripMenuItem, 
+			luaPropertiesToolStripMenuItem, statisticsToolStripMenuItem, flybyTimelineToolStripMenuItem, dockableToolStripMenuItem, floatingToolStripMenuItem });
 			windowToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			windowToolStripMenuItem.Name = "windowToolStripMenuItem";
 			windowToolStripMenuItem.Size = new System.Drawing.Size(63, 25);
 			windowToolStripMenuItem.Text = "Window";
 			// 
-			// restoreDefaultLayoutToolStripMenuItem
+			// layoutsToolStripMenuItem
 			// 
-			restoreDefaultLayoutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			restoreDefaultLayoutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
-			restoreDefaultLayoutToolStripMenuItem.Name = "restoreDefaultLayoutToolStripMenuItem";
-			restoreDefaultLayoutToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			restoreDefaultLayoutToolStripMenuItem.Text = "Restore default layout";
-			restoreDefaultLayoutToolStripMenuItem.Click += restoreDefaultLayoutToolStripMenuItem_Click;
+			layoutsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			layoutsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			layoutsToolStripMenuItem.Name = "layoutsToolStripMenuItem";
+			layoutsToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			layoutsToolStripMenuItem.Text = "Layouts";
+			layoutsToolStripMenuItem.DropDownOpening += layoutsToolStripMenuItem_DropDownOpening;
 			// 
 			// toolStripMenuSeparator14
 			// 
@@ -2328,7 +2339,7 @@ namespace TombEditor.Forms
         private DarkUI.Docking.DarkDockPanel dockArea;
         private System.Windows.Forms.Panel panelDockArea;
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restoreDefaultLayoutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem layoutsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator14;
         private System.Windows.Forms.ToolStripMenuItem sectorOptionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem roomOptionsToolStripMenuItem;
@@ -2427,6 +2438,7 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripMenuItem makeQuickItemGroupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addImportedGeometryToolStripMenuItem;
         private ToolStripMenuItem searchAndReplaceToolStripMenuItem;
+        private ToolStripMenuItem flybyTimelineToolStripMenuItem;
         private ToolStripMenuItem findTexturesToolStripMenuItem;
         private ToolStripMenuItem addSphereVolumeToolStripMenuItem;
         private ToolStripMenuItem addBoxVolumeToolStripMenuItem;

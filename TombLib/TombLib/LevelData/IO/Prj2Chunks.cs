@@ -94,6 +94,7 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId EventSet = ChunkId.FromString("TeEventSet");
         /********/public static readonly ChunkId EventSetIndex = ChunkId.FromString("TeEventSetIndex");
         /********/public static readonly ChunkId EventSetName = ChunkId.FromString("TeEventSetName");
+        /********/public static readonly ChunkId EventSetFolder = ChunkId.FromString("TeEventSetFolder");
         /********/public static readonly ChunkId EventSetLastUsedEventIndex = ChunkId.FromString("TeEventSetLUEI");
         /********/public static readonly ChunkId EventSetActivators = ChunkId.FromString("TeEventSetActivators");
         /********/public static readonly ChunkId EventSetOnEnter = ChunkId.FromString("TeEventSetOnEnter");
@@ -193,6 +194,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectSprite3 = ChunkId.FromString("TeSpr3");
         /**********/public static readonly ChunkId ObjectFlyBy = ChunkId.FromString("TeFly");
         /**********/public static readonly ChunkId ObjectFlyBy2 = ChunkId.FromString("TeFly2");
+        /**********/public static readonly ChunkId ObjectFlyBy3 = ChunkId.FromString("TeFly3");
         /**********/public static readonly ChunkId ObjectFlyBy2LuaScript = ChunkId.FromString("TeFly2Lua");
         /**********/public static readonly ChunkId ObjectMemo = ChunkId.FromString("TeMemo");
         /**********/public static readonly ChunkId ObjectMemo2 = ChunkId.FromString("TeMemo2");
@@ -250,5 +252,8 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId Palette = ChunkId.FromString("TePalette");
         /**/public static readonly ChunkId Favorites = ChunkId.FromString("TeFavorites");
         /****/public static readonly ChunkId Favorite = ChunkId.FromString("TeFavorite");
+        /**/public static readonly ChunkId CollapsedGlobalEventSetFolders = ChunkId.FromString("TeCollapsedGlbEvtFolders");
+        /**/public static readonly ChunkId CollapsedVolumeEventSetFolders = ChunkId.FromString("TeCollapsedVolEvtFolders");
+        /****/public static readonly ChunkId CollapsedEventSetFolder = ChunkId.FromString("TeCollapsedEvtFolder");
     }
 }

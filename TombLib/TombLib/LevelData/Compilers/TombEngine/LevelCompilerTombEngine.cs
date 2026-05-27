@@ -314,6 +314,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
                     DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
                     DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
+					DofMode = (int)instance.DofMode,
+					DofDistance = instance.DofDistance,
+                    DofRange = instance.DofRange,
+                    DofStrength = instance.DofStrength
                 });
             }
             _flyByCameras.Sort(new TombEngineFlybyCamera.ComparerFlyBy());
@@ -493,7 +497,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Yaw = ToTrAngle(instance.RotationY),
                             Pitch = ToTrAngle(instance.RotationX),
                             Roll = ToTrAngle(-instance.Roll),
-                            Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
+                            Color = new Vector4(NormalizeColorRange(instance.Color), 1.0f),
                             OCB = instance.Ocb,
                             Flags = unchecked((ushort)flags),
                             LuaName = instance.LuaName ?? string.Empty

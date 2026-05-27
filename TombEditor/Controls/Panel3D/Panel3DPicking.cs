@@ -112,7 +112,7 @@ namespace TombEditor.Controls.Panel3D
         private PickingResult DoPicking(Ray ray, bool pickAnyRoom = false, bool skipObjects = false)
         {
             // The gizmo has the priority because it always drawn on top
-            PickingResult result = _gizmo.DoPicking(ray);
+            PickingResult result = CanUseGizmo() ? _gizmo.DoPicking(ray) : null;
             if (result != null)
                 return result;
 

@@ -77,13 +77,13 @@
     <moveable id="81" ai="true" name="AI Check" essential="false" ten="AI_X2"/>
     <moveable id="82" name="Unknown Id #82" essential="false" />
     <moveable id="83" name="Collapsible floor" essential="false" ten="CRUMBLING_FLOOR" />
-    <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" ten="FIRE_PENDULUM" />  
-    <moveable id="87" name="Spikes / Barbed wire" essential="false" ten="TEETH_SPIKES" />
+    <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" essential="false" />  <!-- Multiple Tomb Engine IDs, no definitive remap availiable -->
+    <moveable id="87" name="Spikes / Barbed wire" essential="false" ten="TEETH_SPIKES" /> 
     <moveable id="88" name="Boulder / Barrel" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" ten="BIG_ROLLINGBALL" /> 
     <moveable id="90" name="Disk (like dart)" hidden="true" ten="DART" />
     <moveable id="91" name="Dart emitter" essential="false" ten="DART_EMITTER" />
-    <moveable id="94" name="Spiked frame / Slamming door" essential="false" ten="SLAMMING_DOORS" />
+    <moveable id="94" name="Spiked frame / Slamming door" essential="false" /> <!-- Multiple Tomb Engine IDs, no definitive remap availiable -->
     <moveable id="97" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
     <moveable id="98" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE2"/>
 	<moveable id="99" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE3"/>
@@ -284,5 +284,5 @@
     <moveable id="366" name="Yellow shell casing" hidden="true" />
     <moveable id="367" name="Red shell casing" hidden="true" />
     <moveable id="370" name="Tinnos light shaft" essential="false" ten="WATERFALL1" />
-    <moveable id="373" name="Electrical switch box" essential="false" ten="SHOOT_SWITCH2" /> 
+    <moveable id="373" name="Electrical switch box" essential="false" ten="FUSEBOX_SWITCH" /> 
 </moveables>

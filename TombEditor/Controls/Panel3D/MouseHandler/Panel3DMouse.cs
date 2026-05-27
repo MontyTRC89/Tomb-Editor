@@ -59,9 +59,17 @@ namespace TombEditor.Controls.Panel3D
         private void OnMouseButtonDown(MouseButtons button, Point location)
         {
             if (_editor.FlyMode)
-                return; // Selecting in FlyMode is not allowed
+                return;
 
             _lastMousePosition = location;
+
+            // End camera preview on any mouse click
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+            {
+                ToggleCameraPreview(false);
+                return;
+            }
+
             _doSectorSelection = false;
             _objectPlaced = false;
 
@@ -82,7 +90,7 @@ namespace TombEditor.Controls.Panel3D
 
         private void OnMouseMoved(MouseButtons button, Point location)
         {
-            if (_editor.FlyMode)
+            if (_editor.FlyMode || _editor.CameraPreviewMode != CameraPreviewType.None)
                 return;
 
             // Reset internal bool for deselection
@@ -114,7 +122,9 @@ namespace TombEditor.Controls.Panel3D
             if (!redrawWindow)
             {
                 // Hover effect on gizmo
-                redrawWindow = _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y)));
+                redrawWindow = CanUseGizmo()
+                    ? _gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(location.X, location.Y)))
+                    : _gizmo.GizmoUpdateHoverEffect(null);
             }
 
             if (redrawWindow)
@@ -144,6 +154,9 @@ namespace TombEditor.Controls.Panel3D
 
         private void OnMouseWheelScroll(int delta, Point location)
         {
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+                return;
+
             if (_movementTimer.Animating)
                 return;
 
