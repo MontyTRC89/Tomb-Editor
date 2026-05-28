@@ -810,6 +810,16 @@
         "CancelPush": "Push keys! Click here to cancel!"
     },
 
+    "Main": {
+        "Layouts_Header": "Layouts",
+        "Layouts_Default": "Default",
+        "Layouts_SaveAs": "Save layout as...",
+        "Layouts_Delete": "Delete layout",
+        "Layouts_SaveAsTitle": "Save layout",
+        "Layouts_SaveAsLabel": "Enter layout name:",
+        "Layouts_NameAlreadyExists": "A layout with this name already exists."
+    },
+
     "Generic": {
         "OK": "OK",
         "Cancel": "Cancel",

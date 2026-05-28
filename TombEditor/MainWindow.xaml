@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:editor="clr-namespace:TombEditor"
 	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
@@ -235,7 +236,10 @@
 			</MenuItem>
 
 			<MenuItem Header="Window">
-				<MenuItem Header="Layouts" />
+				<MenuItem Header="{tombLib:Localize Layouts_Header}" SubmenuOpened="LayoutsMenu_SubmenuOpened">
+					<!--  Placeholder so the SubmenuOpened event fires when the menu is opened.  -->
+					<MenuItem />
+				</MenuItem>
 				<Separator />
 				<MenuItem editor:EditorMenu.Command="ShowSectorOptions" />
 				<MenuItem editor:EditorMenu.Command="ShowRoomOptions" />

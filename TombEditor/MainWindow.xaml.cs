@@ -1,24 +1,45 @@
+using AvalonDock.Layout.Serialization;
+using System;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using TombEditor.Controls;
 using TombEditor.Controls.Panel3D;
 using TombEditor.Features.Panel3D.ObjectBrush;
 using TombEditor.Features.Panel3D.ToolPalette;
 using TombLib.Controls;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
 using TombLib.LevelData;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor;
 
 public partial class MainWindow : Window
 {
+
 	private readonly Editor _editor;
 	private readonly Panel3D _panel3D;
 	private readonly Panel2DMap _panel2DMap;
 	private readonly ToolPaletteFloating _toolPalette;
 	private readonly ObjectBrushToolbox _objectBrushToolbox;
 
+	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
+
+	// XML snapshot of the dock layout as declared in MainWindow.xaml, captured the
+	// first time the window finishes loading. Switching to "Default" deserializes
+	// this back so the user can always recover the baseline arrangement.
+	private string _defaultDockState;
+
 	public MainWindow(Editor editor)
 	{
 		_editor = editor;
+		_messageService = ServiceLocator.ResolveService<IMessageService>();
+		_localizationService = ServiceLocator.ResolveService<ILocalizationService>();
 		InitializeComponent();
 
 		// Host the WinForms Panel3D inside the AvalonDock document. Rendering is initialized
@@ -66,6 +87,29 @@ public partial class MainWindow : Window
 		// Apply the current configuration to the freshly-created Panel3D so toolbar toggles
 		// (DrawAllRooms, DrawPortals, etc.) reflect the persisted state on first paint.
 		ApplyConfigurationToPanel3D(_editor.Configuration);
+
+		// Capture the XAML-declared dock arrangement as the "Default" layout, then
+		// restore the user's previously-selected custom layout (if any). Loaded fires
+		// once the visual tree is realized, which is when AvalonDock's layout root
+		// is in its initial state.
+		Loaded += OnLoaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		Loaded -= OnLoaded;
+
+		_defaultDockState = SerializeDockState();
+
+		var activeName = _editor.Configuration.Window_ActiveLayoutName;
+		if (string.IsNullOrEmpty(activeName))
+			return;
+
+		var active = _editor.Configuration.Window_CustomLayouts.FirstOrDefault(l => l.Name == activeName);
+		if (active is null || string.IsNullOrEmpty(active.AvalonDockState))
+			return;
+
+		LoadDockState(active.AvalonDockState);
 	}
 
 	private void OnEditorEventRaised(IEditorEvent obj)
@@ -87,6 +131,9 @@ public partial class MainWindow : Window
 			else
 				mainViewDocument.IsActive = true;
 		}
+
+		if (obj is Editor.SwitchLayoutEvent layoutEvent)
+			ApplyLayoutByIndex(layoutEvent.LayoutIndex);
 	}
 
 	private void OnEditorEventForFloatingToolboxes(IEditorEvent obj)
@@ -171,6 +218,9 @@ public partial class MainWindow : Window
 		if (_objectBrushToolbox.Parent is not null)
 			_editor.Configuration.Window_Layout.ObjectBrushToolboxPosition = _objectBrushToolbox.Location;
 
+		// Snapshot the user's tweaks back into the active custom layout so they survive restart.
+		SaveCurrentStateToActiveLayout();
+
 		_editor.EditorEventRaised -= OnEditorEventRaised;
 
 		// Each migrated WPF view subscribes to Editor.EditorEventRaised in its constructor;
@@ -190,4 +240,222 @@ public partial class MainWindow : Window
 
 		base.OnClosed(e);
 	}
+
+	#region Layout management
+
+	private string SerializeDockState()
+	{
+		var serializer = new XmlLayoutSerializer(dockManager);
+		using var sw = new StringWriter();
+		serializer.Serialize(sw);
+		return sw.ToString();
+	}
+
+	private void LoadDockState(string xml)
+	{
+		if (string.IsNullOrEmpty(xml))
+			return;
+
+		var serializer = new XmlLayoutSerializer(dockManager);
+		serializer.LayoutSerializationCallback += OnLayoutSerializationCallback;
+		try
+		{
+			using var sr = new StringReader(xml);
+			serializer.Deserialize(sr);
+		}
+		finally
+		{
+			serializer.LayoutSerializationCallback -= OnLayoutSerializationCallback;
+		}
+	}
+
+	private void OnLayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
+	{
+		// Re-attach the existing view instances by ContentId. Any ContentId not listed
+		// here is something the XML knows about but the current build no longer ships —
+		// cancel so AvalonDock drops it instead of creating a phantom dock entry.
+		e.Content = e.Model.ContentId switch
+		{
+			"rooms" => roomsView,
+			"objectList" => objectListView,
+			"sectorOptions" => sectorOptionsView,
+			"roomOptions" => roomOptionsView,
+			"triggerList" => triggerListView,
+			"texturePanel" => texturePanelView,
+			"itemBrowser" => itemBrowserView,
+			"importedGeometryBrowser" => importedGeometryBrowserView,
+			"contentBrowser" => contentBrowserView,
+			"lighting" => lightingView,
+			"palette" => paletteView,
+			"mainView" => panel3DHost,
+			"map2DView" => panel2DMapHost,
+			_ => null
+		};
+
+		if (e.Content is null)
+			e.Cancel = true;
+	}
+
+	private void ApplyLayoutByIndex(int index)
+	{
+		var config = _editor.Configuration;
+
+		// Save tweaks to whatever layout was active before switching.
+		SaveCurrentStateToActiveLayout();
+
+		if (index < 0)
+		{
+			config.Window_ActiveLayoutName = string.Empty;
+			LoadDockState(_defaultDockState);
+			return;
+		}
+
+		if (index >= config.Window_CustomLayouts.Count)
+			return;
+
+		var target = config.Window_CustomLayouts[index];
+		config.Window_ActiveLayoutName = target.Name;
+		LoadDockState(string.IsNullOrEmpty(target.AvalonDockState) ? _defaultDockState : target.AvalonDockState);
+	}
+
+	private void SaveCurrentStateToActiveLayout()
+	{
+		var config = _editor.Configuration;
+		if (string.IsNullOrEmpty(config.Window_ActiveLayoutName))
+			return;
+
+		var active = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
+		if (active is null)
+			return;
+
+		active.AvalonDockState = SerializeDockState();
+	}
+
+	private void LayoutsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	{
+		if (sender is not MenuItem menuItem)
+			return;
+
+		menuItem.Items.Clear();
+
+		var config = _editor.Configuration;
+
+		var defaultItem = new MenuItem
+		{
+			Header = _localizationService["~TombEditor.MainWindow.Layouts_Default"],
+			IsChecked = string.IsNullOrEmpty(config.Window_ActiveLayoutName)
+		};
+		defaultItem.Click += (_, _) => _editor.SwitchLayout(-1);
+		menuItem.Items.Add(defaultItem);
+
+		if (config.Window_CustomLayouts.Count > 0)
+		{
+			menuItem.Items.Add(new Separator());
+
+			for (int i = 0; i < config.Window_CustomLayouts.Count; i++)
+			{
+				var layout = config.Window_CustomLayouts[i];
+				var item = new MenuItem
+				{
+					Header = layout.Name,
+					IsChecked = layout.Name == config.Window_ActiveLayoutName
+				};
+
+				if (i < Configuration.MaxWindowLayouts)
+				{
+					var hotkeyName = "SwitchLayout" + (i + 1);
+					if (config.UI_Hotkeys.Any(h => h.Key == hotkeyName))
+					{
+						item.InputGestureText = string.Join(", ",
+							config.UI_Hotkeys[hotkeyName]
+								.Select(h => h.ToString())
+								.Where(s => !string.IsNullOrWhiteSpace(s)));
+					}
+				}
+
+				int layoutIndex = i;
+				item.Click += (_, _) => _editor.SwitchLayout(layoutIndex);
+				menuItem.Items.Add(item);
+			}
+		}
+
+		menuItem.Items.Add(new Separator());
+
+		var saveAsItem = new MenuItem { Header = _localizationService["~TombEditor.MainWindow.Layouts_SaveAs"] };
+		saveAsItem.Click += (_, _) => Layout_SaveAs();
+		menuItem.Items.Add(saveAsItem);
+
+		var deleteItem = new MenuItem
+		{
+			Header = _localizationService["~TombEditor.MainWindow.Layouts_Delete"],
+			IsEnabled = !string.IsNullOrEmpty(config.Window_ActiveLayoutName)
+		};
+		deleteItem.Click += (_, _) => Layout_Delete();
+		menuItem.Items.Add(deleteItem);
+	}
+
+	private void Layout_SaveAs()
+	{
+		var config = _editor.Configuration;
+
+		var vm = new InputBoxWindowViewModel(
+			title: _localizationService["~TombEditor.MainWindow.Layouts_SaveAsTitle"],
+			label: _localizationService["~TombEditor.MainWindow.Layouts_SaveAsLabel"],
+			invalidNames: config.Window_CustomLayouts.Select(l => l.Name).ToArray());
+
+		// IDialogService.ShowDialog requires the owner ViewModel's DataContext to be
+		// registered against a Window, which MainWindow can't satisfy without
+		// breaking child bindings (it can't be its own DataContext). Construct the
+		// dialog manually and mirror the auto-close behaviour MvvmDialogs gives us
+		// by watching DialogResult on the VM.
+		var win = new InputBoxWindow
+		{
+			DataContext = vm,
+			Owner = this,
+			WindowStartupLocation = WindowStartupLocation.CenterOwner
+		};
+		void onVmChanged(object _, PropertyChangedEventArgs args)
+		{
+			if (args.PropertyName == nameof(vm.DialogResult) && vm.DialogResult is not null)
+				win.Close();
+		}
+		vm.PropertyChanged += onVmChanged;
+		try { win.ShowDialog(); }
+		finally { vm.PropertyChanged -= onVmChanged; }
+
+		if (vm.DialogResult is not true)
+			return;
+
+		var name = vm.Value.Trim();
+		if (string.IsNullOrEmpty(name))
+			return;
+
+		// Belt-and-braces — InputBoxWindowViewModel already rejects exact matches,
+		// but it's case-sensitive, so dedupe again here to stop "Foo" vs "foo".
+		if (config.Window_CustomLayouts.Any(l => l.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+		{
+			_messageService.ShowError(_localizationService["~TombEditor.MainWindow.Layouts_NameAlreadyExists"]);
+			return;
+		}
+
+		config.Window_CustomLayouts.Add(new NamedLayout
+		{
+			Name = name,
+			AvalonDockState = SerializeDockState()
+		});
+		config.Window_ActiveLayoutName = name;
+	}
+
+	private void Layout_Delete()
+	{
+		var config = _editor.Configuration;
+		var layout = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
+		if (layout is null)
+			return;
+
+		config.Window_CustomLayouts.Remove(layout);
+		_editor.SwitchLayout(-1);
+	}
+
+	#endregion
 }
