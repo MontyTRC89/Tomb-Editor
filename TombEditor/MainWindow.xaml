@@ -17,6 +17,7 @@
 	xmlns:objectList="clr-namespace:TombEditor.Features.DockableViews.ObjectList"
 	xmlns:palettePanel="clr-namespace:TombEditor.Features.DockableViews.PalettePanel"
 	xmlns:roomOptionsPanel="clr-namespace:TombEditor.Features.DockableViews.RoomOptionsPanel"
+	xmlns:roomsPanel="clr-namespace:TombEditor.Features.DockableViews.RoomsPanel"
 	xmlns:sectorOptionsPanel="clr-namespace:TombEditor.Features.DockableViews.SectorOptionsPanel"
 	xmlns:texturePanel="clr-namespace:TombEditor.Features.DockableViews.TexturePanel"
 	xmlns:triggerList="clr-namespace:TombEditor.Features.DockableViews.TriggerList"
@@ -484,7 +485,7 @@
 					<avalonDock:LayoutAnchorablePaneGroup DockWidth="260" Orientation="Vertical">
 						<avalonDock:LayoutAnchorablePane>
 							<avalonDock:LayoutAnchorable ContentId="rooms" Title="Rooms" CanClose="False">
-								<TextBlock Margin="8" Text="Rooms panel (placeholder)" />
+								<roomsPanel:RoomsView x:Name="roomsView" />
 							</avalonDock:LayoutAnchorable>
 							<avalonDock:LayoutAnchorable ContentId="objectList" Title="Objects in room" CanClose="False">
 								<objectList:ObjectListView x:Name="objectListView" />

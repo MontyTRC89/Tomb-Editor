@@ -176,6 +176,7 @@ public partial class MainWindow : Window
 		// Each migrated WPF view subscribes to Editor.EditorEventRaised in its constructor;
 		// Cleanup() unsubscribes and releases ViewModels. Without this the Editor leaks event
 		// handlers across MainWindow lifetimes (and ViewModels go on receiving events).
+		roomsView?.Cleanup();
 		roomOptionsView?.Cleanup();
 		sectorOptionsView?.Cleanup();
 		lightingView?.Cleanup();
