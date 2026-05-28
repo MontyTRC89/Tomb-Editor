@@ -1,0 +1,79 @@
+<Window
+	x:Class="TombEditor.Views.OperationDialogWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	xmlns:vm="clr-namespace:TombEditor.ViewModels"
+	Title="{Binding Title}"
+	Width="600"
+	Height="420"
+	MinWidth="480"
+	MinHeight="320"
+	d:DataContext="{d:DesignInstance Type=vm:OperationDialogWindowViewModel}"
+	md:DialogServiceViews.IsRegistered="True"
+	Background="{DynamicResource Brush_Background}"
+	ShowInTaskbar="False"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowStartupLocation="CenterOwner"
+	mc:Ignorable="d">
+
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+	</Window.Resources>
+
+	<controls:SpacedGrid
+		Margin="{x:Static darkUI:Defaults.MediumThickness}"
+		RowSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<ListBox
+			Grid.Row="0"
+			Background="{Binding LogBackground}"
+			ItemsSource="{Binding LogEntries}"
+			ScrollViewer.HorizontalScrollBarVisibility="Auto"
+			ScrollViewer.VerticalScrollBarVisibility="Auto">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Background="{Binding Background}" Text="{Binding Text}" TextWrapping="Wrap" />
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<ProgressBar
+			Grid.Row="1"
+			Height="18"
+			Maximum="100"
+			Minimum="0"
+			Value="{Binding Progress}"
+			Visibility="{Binding IsProgressVisible, Converter={StaticResource BoolToVis}}" />
+
+		<controls:SpacedStack
+			Grid.Row="2"
+			HorizontalAlignment="Right"
+			Orientation="Horizontal"
+			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<Button
+				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+				Command="{Binding OkCommand}"
+				Content="{tombLib:Localize ~Common.OK}"
+				IsDefault="True"
+				IsEnabled="{Binding IsOkEnabled}" />
+			<Button
+				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+				Command="{Binding CancelCommand}"
+				Content="{tombLib:Localize ~Common.Cancel}"
+				IsCancel="True"
+				IsEnabled="{Binding IsCancelEnabled}" />
+		</controls:SpacedStack>
+	</controls:SpacedGrid>
+</Window>

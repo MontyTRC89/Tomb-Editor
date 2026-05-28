@@ -610,6 +610,18 @@
         "Apply": "Apply"
     },
 
+    "ToolBarLayout": {
+        "Title": "Toolbar Layout",
+        "AvailableHeader": "Available buttons",
+        "CurrentHeader": "Buttons in toolbar",
+        "AddTooltip": "Add selected button to toolbar",
+        "RemoveTooltip": "Remove selected button from toolbar",
+        "MoveUpTooltip": "Move selected button up",
+        "MoveDownTooltip": "Move selected button down",
+        "Defaults": "Defaults",
+        "Apply": "Apply"
+    },
+
     "SelectRoomByTags": {
         "Title": "Select rooms by tags",
         "Tags": "Tags:",

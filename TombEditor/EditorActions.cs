@@ -4362,43 +4362,47 @@ namespace TombEditor
 			if (!string.IsNullOrEmpty(whatLoaded))
                 _editor.SendMessage(whatLoaded, PopupType.Info);
 
-            using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
-                (progressReporter, cancelToken) =>
-                {
-                    using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
-                            (LevelCompiler)(new LevelCompilerClassicTR(level, fileName, progressReporter)) :
-                            (LevelCompiler)(new LevelCompilerTombEngine(level, fileName, progressReporter)))
-                    {
-                        var watch = new Stopwatch();
-                        watch.Start();
-                        var statistics = compiler.CompileLevel(cancelToken);
-                        watch.Stop();
-
-                        progressReporter.ReportProgress(100, $"\nElapsed time: {FormatElapsedSmart(watch.Elapsed.TotalMilliseconds)}");
-
-                        // Raise an event for statistics update
-                        _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
-                        {
-                            BoxCount = statistics.BoxCount,
-                            OverlapCount = statistics.OverlapCount,
-                            TextureCount = statistics.ObjectTextureCount,
-                            InfoString = statistics.ToString()
-                        });
-                    }
-
-                    // Force garbage collector to compact memory
-                    GC.Collect();
-                }))
             {
-                // Make sure form displays correctly if we're running in silent mode without parent window
-                if (owner == null)
-                {
-                    form.StartPosition = FormStartPosition.CenterScreen;
-                    form.ShowInTaskbar = true;
-                }
+                var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Build level", autoCloseWhenDone, false,
+                    (progressReporter, cancelToken) =>
+                    {
+                        using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
+                                (LevelCompiler)(new LevelCompilerClassicTR(level, fileName, progressReporter)) :
+                                (LevelCompiler)(new LevelCompilerTombEngine(level, fileName, progressReporter)))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel(cancelToken);
+                            watch.Stop();
 
-                form.ShowDialog(owner);
-                return form.DialogResult != DialogResult.Cancel;
+                            progressReporter.ReportProgress(100, $"\nElapsed time: {FormatElapsedSmart(watch.Elapsed.TotalMilliseconds)}");
+
+                            // Raise an event for statistics update
+                            _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
+                            {
+                                BoxCount = statistics.BoxCount,
+                                OverlapCount = statistics.OverlapCount,
+                                TextureCount = statistics.ObjectTextureCount,
+                                InfoString = statistics.ToString()
+                            });
+                        }
+
+                        // Force garbage collector to compact memory
+                        GC.Collect();
+                    });
+
+                var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+
+                if (owner is null)
+                {
+                    operationDialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+                    operationDialog.ShowInTaskbar = true;
+                }
+                else
+                    operationDialog.SetOwner(owner);
+
+                operationDialog.ShowDialog();
+                return operationVm.DialogResult != false;
             }
         }
 
@@ -5430,10 +5434,15 @@ namespace TombEditor
 
             var newLevel = string.Empty;
 
-            using (var form = new FormOperationDialog("TombEngine level converter", false, true, (progressReporter, cancelToken) =>
-                newLevel = TombEngineConverter.Start(fileName, owner, progressReporter, cancelToken)))
             {
-                if (form.ShowDialog(owner) != DialogResult.OK || string.IsNullOrEmpty(newLevel))
+                var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("TombEngine level converter", false, true, (progressReporter, cancelToken) =>
+                    newLevel = TombEngineConverter.Start(fileName, owner, progressReporter, cancelToken));
+                var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                if (owner is not null)
+                    operationDialog.SetOwner(owner);
+                operationDialog.ShowDialog();
+
+                if (operationVm.DialogResult != true || string.IsNullOrEmpty(newLevel))
                     return false;
                 else
                 {
@@ -5456,17 +5465,22 @@ namespace TombEditor
             Level newLevel = null;
             try
             {
-                using (var form = new FormOperationDialog("Open level", true, true, (progressReporter, cancelToken) =>
-                    newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter, cancelToken, new Prj2Loader.Settings())))
                 {
-                    // Make sure form displays correctly if we're running in silent mode without parent window
-                    if (owner == null)
-                    {
-                        form.StartPosition = FormStartPosition.CenterScreen;
-                        form.ShowInTaskbar = true;
-                    }
+                    var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Open level", true, true, (progressReporter, cancelToken) =>
+                        newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter, cancelToken, new Prj2Loader.Settings()));
+                    var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
 
-                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                    if (owner is null)
+                    {
+                        operationDialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+                        operationDialog.ShowInTaskbar = true;
+                    }
+                    else
+                        operationDialog.SetOwner(owner);
+
+                    operationDialog.ShowDialog();
+
+                    if (operationVm.DialogResult != true || newLevel == null)
                         return false;
 
                     bool hasUnsavedChanges = false;
@@ -5564,13 +5578,18 @@ namespace TombEditor
 
             {
                 Level newLevel = null;
-                using (var form = new FormOperationDialog("Import PRJ", false, false, (progressReporter, cancelToken) =>
-                    newLevel = PrjLoader.LoadFromPrj(importViewModel.PrjPath, importViewModel.SoundsPath,
-                    importViewModel.RespectMousepatchOnFlybyHandling,
-                    importViewModel.UseHalfPixelCorrection,
-                    progressReporter, cancelToken)))
                 {
-                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                    var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Import PRJ", false, false, (progressReporter, cancelToken) =>
+                        newLevel = PrjLoader.LoadFromPrj(importViewModel.PrjPath, importViewModel.SoundsPath,
+                            importViewModel.RespectMousepatchOnFlybyHandling,
+                            importViewModel.UseHalfPixelCorrection,
+                            progressReporter, cancelToken));
+                    var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                    if (owner is not null)
+                        operationDialog.SetOwner(owner);
+                    operationDialog.ShowDialog();
+
+                    if (operationVm.DialogResult != true || newLevel == null)
                         return;
 
                     foreach (Room r in newLevel.ExistingRooms)

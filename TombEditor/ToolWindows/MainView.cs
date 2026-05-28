@@ -375,8 +375,15 @@ namespace TombEditor.ToolWindows
             var cMenu = new DarkContextMenu();
             cMenu.Items.Add(new ToolStripMenuItem("Customize...", null, (o, e2) =>
             {
-                using (var f = new FormToolBarLayout(_editor, _toolstripButtons))
-                    f.ShowDialog(this.FindForm());
+                var names = _toolstripButtons
+                    .Select(b => b.Name?.StartsWith("but") == true ? b.Name.Substring(3) : b.Name)
+                    .Where(n => !string.IsNullOrEmpty(n))
+                    .ToList();
+                var vm = new TombEditor.ViewModels.ToolBarLayoutWindowViewModel(_editor, names);
+                var dialog = new TombEditor.Views.ToolBarLayoutWindow { DataContext = vm };
+                if (this.FindForm() is { } parent)
+                    TombLib.WPF.WindowExtensions.SetOwner(dialog, parent);
+                dialog.ShowDialog();
             }));
             cMenu.Show(Cursor.Position, ToolStripDropDownDirection.BelowRight);
         }
