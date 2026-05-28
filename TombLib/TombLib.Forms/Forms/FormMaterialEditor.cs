@@ -168,7 +168,6 @@ namespace TombLib.Forms
 						Path.GetFileNameWithoutExtension(_texturePath) + ".xml");
 
 			var materialData = CreateMaterialSnapshot();
-			MaterialData.SaveToTexture(_currentTexture, materialData);
 
 			bool emptyMaterial = IsMaterialDefault(materialData);
 
@@ -276,7 +275,6 @@ namespace TombLib.Forms
 			{
 				DarkMessageBox.Show(this, "There was an error while loading the selected material. Using default.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				material = new MaterialData() { ColorMap = GetTexturePath(texture) };
-				MaterialData.ApplyTextureOverrides(texture, material);
 				_saveXml = true;
 			}
 

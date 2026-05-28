@@ -624,6 +624,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             var instanceMovProps = new Dictionary<string, LuaPropertyContainer>();
             var instanceStaticProps = new Dictionary<string, LuaPropertyContainer>();
+            var materialProps = new Dictionary<string, LuaPropertyContainer>();
 
             foreach (var room in _level.ExistingRooms)
             {
@@ -642,7 +643,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
             }
 
-            bool hasAnyProperties = globalMovProps.Count > 0 || globalStaticProps.Count > 0 || instanceMovProps.Count > 0 || instanceStaticProps.Count > 0;
+            foreach (var material in _materialDictionary.Values.OrderBy(material => material.Name))
+            {
+                if (string.IsNullOrEmpty(material.Name))
+                    continue;
+
+                var container = new LuaPropertyContainer();
+                for (int i = 0; i < MaterialData.PropertyCount; i++)
+                {
+                    var definition = material.GetPropertyDefinition(i);
+                    if (definition == null || !definition.IsDefined || string.IsNullOrEmpty(definition.Name))
+                        continue;
+
+                    var value = material.Properties[i];
+                    if (string.IsNullOrWhiteSpace(value))
+                        value = MaterialCatalog.GetDefaultValue(definition);
+
+                    container.SetValue(definition.Name, value);
+                }
+
+                if (container.HasProperties)
+                    materialProps[material.Name] = container;
+            }
+
+            bool hasAnyProperties = globalMovProps.Count > 0 || globalStaticProps.Count > 0 ||
+                instanceMovProps.Count > 0 || instanceStaticProps.Count > 0 || materialProps.Count > 0;
 
             if (!hasAnyProperties)
             {
@@ -650,7 +675,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return;
             }
 
-            _luaPropertyScriptBlob = LuaPropertyScriptBuilder.BuildFullPropertyScript(globalMovProps, globalStaticProps, instanceMovProps, instanceStaticProps);
+            _luaPropertyScriptBlob = LuaPropertyScriptBuilder.BuildFullPropertyScript(globalMovProps, globalStaticProps, instanceMovProps, instanceStaticProps, materialProps);
         }
 
         public bool CheckTombEngineVersion()

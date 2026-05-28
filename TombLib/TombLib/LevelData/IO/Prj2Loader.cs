@@ -170,7 +170,6 @@ namespace TombLib.LevelData.IO
             var WadsToLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
             var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
-            var importedGeometryMaterialNamesToLoad = new Dictionary<ImportedGeometry, Dictionary<string, string>>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
             var eventSetsToLoad = new Dictionary<EventSet, string>(new ReferenceEqualityComparer<EventSet>());
 
@@ -401,8 +400,6 @@ namespace TombLib.LevelData.IO
                                 levelTextureIndex = chunkIO.ReadChunkLong(chunkSize3);
                             else if (id3 == Prj2Chunks.LevelTexturePath)
                                 path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
-                            else if (id3 == Prj2Chunks.LevelTextureMaterialName)
-                                levelTexture.MaterialName = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.LevelTextureCustomBumpmapPath)
                                 levelTexture.BumpPath = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows)
@@ -464,7 +461,6 @@ namespace TombLib.LevelData.IO
 
                         ImportedGeometryInfo importedGeometryInfo = ImportedGeometryInfo.Default;
                         long importedGeometryIndex = long.MinValue;
-                        var importedGeometryMaterialNames = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Prj2Chunks.ImportedGeometryIndex)
@@ -494,33 +490,6 @@ namespace TombLib.LevelData.IO
                                 importedGeometryInfo.InvertFaces = chunkIO.ReadChunkBool(chunkSize3);
                             else if (id3 == Prj2Chunks.ImportedGeometryMappedUV)
                                 importedGeometryInfo.MappedUV = chunkIO.ReadChunkBool(chunkSize3);
-                            else if (id3 == Prj2Chunks.ImportedGeometryMaterialNames)
-                            {
-                                chunkIO.ReadChunks((id4, chunkSize4) =>
-                                {
-                                    if (id4 != Prj2Chunks.ImportedGeometryMaterialName)
-                                        return false;
-
-                                    string texturePath = string.Empty;
-                                    string materialName = string.Empty;
-                                    chunkIO.ReadChunks((id5, chunkSize5) =>
-                                    {
-                                        if (id5 == Prj2Chunks.ImportedGeometryMaterialPath)
-                                            texturePath = chunkIO.ReadChunkString(chunkSize5);
-                                        else if (id5 == Prj2Chunks.ImportedGeometryMaterialValue)
-                                            materialName = chunkIO.ReadChunkString(chunkSize5);
-                                        else
-                                            return false;
-
-                                        return true;
-                                    });
-
-                                    if (!string.IsNullOrWhiteSpace(texturePath))
-                                        importedGeometryMaterialNames[texturePath] = materialName ?? string.Empty;
-
-                                    return true;
-                                });
-                            }
                             else
                                 return false;
                             return true;
@@ -529,7 +498,6 @@ namespace TombLib.LevelData.IO
                         ImportedGeometry importedGeometry = new ImportedGeometry();
                         importedGeometries.Add(importedGeometryIndex, importedGeometry);
                         toLoad.Add(importedGeometry, importedGeometryInfo);
-                        importedGeometryMaterialNamesToLoad[importedGeometry] = importedGeometryMaterialNames;
                         progressReporter?.ReportInfo("Imported geometry successfully loaded: " + importedGeometryInfo.Name);
                         return true;
                     });
@@ -808,11 +776,6 @@ namespace TombLib.LevelData.IO
             // Load imported geoemtries
             progressReporter?.ReportInfo("Loading imported geometry into level");
             settings.ImportedGeometryUpdate(importedGeometriesToLoad);
-
-            foreach (var importedGeometryMaterialNames in importedGeometryMaterialNamesToLoad)
-                foreach (var texture in importedGeometryMaterialNames.Key.Textures)
-                    if (importedGeometryMaterialNames.Value.TryGetValue(texture.AbsolutePath, out var materialName))
-                        texture.MaterialName = materialName;
 
             // Apply settings
             levelSettingsIdsOuter = levelSettingsIds;

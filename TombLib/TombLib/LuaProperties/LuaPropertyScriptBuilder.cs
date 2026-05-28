@@ -9,6 +9,7 @@ using TombLib.Utils;
 //   Objects.SetStaticProperty(slotID, "propName", value)        -- Level 1 (global)
 //   GetMoveableByName("luaName"):SetProperty("propName", value) -- Level 2 (instance)
 //   GetStaticByName("luaName"):SetProperty("propName", value)   -- Level 2 (instance)
+//   GetMaterialByName("materialName"):SetProperty("propName", value) -- Materials
 //
 // Both layers are written; the engine handles override resolution internally.
 
@@ -26,6 +27,7 @@ namespace TombLib.LuaProperties
         private const string SetStaticPropertyFunc = "TEN.Objects.SetStaticProperty";
         private const string GetMoveableByNameFunc = "TEN.Objects.GetMoveableByName";
         private const string GetStaticByNameFunc = "TEN.Objects.GetStaticByName";
+        private const string GetMaterialByNameFunc = "TEN.Objects.GetMaterialByName";
 
         /// <summary>
         /// Generates a Level 1 (global) Lua property assignment for a moveable object type.
@@ -102,6 +104,25 @@ namespace TombLib.LuaProperties
         }
 
         /// <summary>
+        /// Generates a material Lua property assignment.
+        /// Output: TEN.Objects.GetMaterialByName("materialName"):SetProperty("propName", value)
+        /// </summary>
+        /// <param name="materialName">The material's Tomb Editor name.</param>
+        /// <param name="propertyName">The internal property name.</param>
+        /// <param name="boxedValue">The already-boxed Lua value string.</param>
+        public static string BuildMaterialProperty(string materialName, string propertyName, string boxedValue)
+        {
+            return GetMaterialByNameFunc + LuaSyntax.BracketOpen +
+                   TextExtensions.Quote(materialName) +
+                   LuaSyntax.BracketClose +
+                   ":SetProperty" + LuaSyntax.BracketOpen +
+                   TextExtensions.Quote(propertyName) +
+                   LuaSyntax.Separator + LuaSyntax.Space +
+                   boxedValue +
+                   LuaSyntax.BracketClose;
+        }
+
+        /// <summary>
         /// Generates a complete Lua script block for all Level 1 and Level 2 properties.
         /// The output is a series of API calls separated by newlines.
         /// </summary>
@@ -109,11 +130,13 @@ namespace TombLib.LuaProperties
         /// <param name="globalStaticProperties">Level 1 static properties: slot ID → container.</param>
         /// <param name="instanceMoveableProperties">Level 2 moveable properties: lua name → container.</param>
         /// <param name="instanceStaticProperties">Level 2 static properties: lua name → container.</param>
+        /// <param name="materialProperties">Material properties: material name → container.</param>
         public static KeyValuePair<int, string> BuildFullPropertyScript(
             Dictionary<string, LuaPropertyContainer> globalMoveableProperties,
             Dictionary<uint, LuaPropertyContainer>   globalStaticProperties,
             Dictionary<string, LuaPropertyContainer> instanceMoveableProperties,
-            Dictionary<string, LuaPropertyContainer> instanceStaticProperties)
+            Dictionary<string, LuaPropertyContainer> instanceStaticProperties,
+            Dictionary<string, LuaPropertyContainer> materialProperties)
         {
             int propertyCount = 0;
             var sb = new StringBuilder();
@@ -180,6 +203,25 @@ namespace TombLib.LuaProperties
                     foreach (var prop in kvp.Value.GetAll())
                     {
                         sb.AppendLine(BuildInstanceStaticProperty(kvp.Key, prop.Key, prop.Value));
+                        propertyCount++;
+                    }
+                }
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("-- Materials");
+            sb.AppendLine();
+
+            if (materialProperties != null)
+            {
+                foreach (var kvp in materialProperties)
+                {
+                    if (string.IsNullOrEmpty(kvp.Key))
+                        continue;
+
+                    foreach (var prop in kvp.Value.GetAll())
+                    {
+                        sb.AppendLine(BuildMaterialProperty(kvp.Key, prop.Key, prop.Value));
                         propertyCount++;
                     }
                 }

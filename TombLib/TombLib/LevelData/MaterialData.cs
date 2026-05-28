@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Numerics;
 using System.Xml.Serialization;
 using TombLib.Utils;
@@ -35,11 +34,6 @@ namespace TombLib.LevelData
 
 		public string[] Properties { get; set; }
 
-		public Vector4 Parameters0 { get; set; }
-		public Vector4 Parameters1 { get; set; }
-		public Vector4 Parameters2 { get; set; }
-		public Vector4 Parameters3 { get; set; }
-
 		[XmlIgnore]
 		public bool IsNormalMapFound { get; private set; }
 		[XmlIgnore]
@@ -65,7 +59,6 @@ namespace TombLib.LevelData
 			Type = 0;
 			Name = string.Empty;
 			Properties = new string[PropertyCount];
-			Parameters0 = new Vector4(1.0f, 1.0f, 1.0f, 0.0f);
 			ApplyDefinitionDefaults();
 		}
 
@@ -182,26 +175,7 @@ namespace TombLib.LevelData
 			if (string.IsNullOrEmpty(resolvedTexturePath) && texture != null)
 				resolvedTexturePath = texture.Image.FileName;
 
-			var materialData = TrySidecarLoadOrLoadExisting(resolvedTexturePath);
-			ApplyTextureOverrides(texture, materialData);
-			return materialData;
-		}
-
-		public static void ApplyTextureOverrides(Texture texture, MaterialData materialData)
-		{
-			if (texture == null || materialData == null)
-				return;
-
-			if (!string.IsNullOrWhiteSpace(texture.MaterialName))
-				materialData.Name = texture.MaterialName;
-		}
-
-		public static void SaveToTexture(Texture texture, MaterialData materialData)
-		{
-			if (texture == null)
-				return;
-
-			texture.MaterialName = materialData?.Name ?? string.Empty;
+			return TrySidecarLoadOrLoadExisting(resolvedTexturePath);
 		}
 
 		public MaterialTypeDefinition GetMaterialDefinition()
@@ -249,8 +223,6 @@ namespace TombLib.LevelData
 				Name = GetDefaultMaterialName();
 
 			var definition = GetMaterialDefinition();
-			var legacyParameters = new[] { Parameters0, Parameters1, Parameters2, Parameters3 };
-			var hasNewPropertyValues = Properties.Any(value => !string.IsNullOrWhiteSpace(value));
 
 			for (int i = 0; i < PropertyCount; i++)
 			{
@@ -261,18 +233,10 @@ namespace TombLib.LevelData
 					continue;
 				}
 
-				if (!hasNewPropertyValues)
-					Properties[i] = MaterialCatalog.BoxValue(property.Type, legacyParameters[i]);
-
 				if (string.IsNullOrWhiteSpace(Properties[i]))
 					Properties[i] = MaterialCatalog.GetDefaultValue(property);
 			}
 		}
-
-		public bool ShouldSerializeParameters0() => false;
-		public bool ShouldSerializeParameters1() => false;
-		public bool ShouldSerializeParameters2() => false;
-		public bool ShouldSerializeParameters3() => false;
 
 		private void ApplyDefinitionDefaults()
 		{

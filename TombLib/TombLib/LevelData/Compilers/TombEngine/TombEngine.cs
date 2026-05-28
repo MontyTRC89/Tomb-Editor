@@ -1,5 +1,6 @@
 using Microsoft.IO;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -246,21 +247,31 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Write animated textures
                 _textureInfoManager.WriteAnimatedTextures(writer);
 
+                // Write material definitions
+                var materialDefinitions = new SortedDictionary<int, MaterialTypeDefinition>();
+                foreach (var material in _materialDictionary.Values)
+                    if (!materialDefinitions.ContainsKey(material.Type))
+                        materialDefinitions.Add(material.Type, material.GetMaterialDefinition());
+
+                writer.Write((uint)materialDefinitions.Count);
+                foreach (var materialDefinition in materialDefinitions.Values)
+                {
+                    writer.Write(materialDefinition.Id);
+
+                    for (int i = 0; i < MaterialData.PropertyCount; i++)
+                    {
+                        var propertyDefinition = materialDefinition.Properties[i];
+                        writer.Write(propertyDefinition?.Name ?? string.Empty);
+                        writer.Write((int)(propertyDefinition?.Type ?? MaterialPropertyType.None));
+                    }
+                }
+
                 // Write materials
                 writer.Write((uint)_materialDictionary.Count);
                 foreach (var material in _materialDictionary)
                 {
                     writer.Write(material.Value.Name);
                     writer.Write(material.Value.Type);
-
-                    var definition = material.Value.GetMaterialDefinition();
-                    for (int i = 0; i < MaterialData.PropertyCount; i++)
-                    {
-                        var propertyDefinition = definition.Properties[i];
-                        writer.Write(propertyDefinition?.Name ?? string.Empty);
-                        writer.Write((int)(propertyDefinition?.Type ?? MaterialPropertyType.None));
-                        writer.Write(material.Value.GetPropertyVector(i));
-                    }
 
                     writer.Write(material.Value.IsNormalMapFound);
                     writer.Write(material.Value.IsHeightMapFound);
