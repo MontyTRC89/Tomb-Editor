@@ -11,6 +11,7 @@
 	xmlns:local="clr-namespace:TombEditor.Features.DockableViews.SectorOptionsPanel"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:rendering="clr-namespace:TombLib.Rendering;assembly=TombLib.Rendering"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	MinWidth="285"
 	MinHeight="256"
@@ -224,7 +225,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butClimbPositiveZ_Image" Source="/TombEditor;component/Resources/icons_sectortype/sectortype_ClimbNorth-16.png" />
+				<Image x:Name="butClimbPositiveZ_Image" Source="{tomb:Icon Sectortype/ClimbNorth}" />
 			</Button>
 			<Button
 				x:Name="butClimbNegativeZ"
@@ -239,7 +240,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butClimbNegativeZ_Image" Source="/TombEditor;component/Resources/icons_sectortype/sectortype_ClimbSouth_1-16.png" />
+				<Image x:Name="butClimbNegativeZ_Image" Source="{tomb:Icon Sectortype/ClimbSouth_1}" />
 			</Button>
 
 			<Button
@@ -254,7 +255,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butClimbNegativeX_Image" Source="/TombEditor;component/Resources/icons_sectortype/sectortype_ClimbWest-16.png" />
+				<Image x:Name="butClimbNegativeX_Image" Source="{tomb:Icon Sectortype/ClimbWest}" />
 			</Button>
 			<Button
 				x:Name="butClimbPositiveX"
@@ -269,7 +270,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Climb}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butClimbPositiveX_Image" Source="/TombEditor;component/Resources/icons_sectortype/sectortype_ClimbEast-16.png" />
+				<Image x:Name="butClimbPositiveX_Image" Source="{tomb:Icon Sectortype/ClimbEast}" />
 			</Button>
 
 			<Button
@@ -283,7 +284,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.Trigger}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butAddGhostBlock_Image" Source="/TombEditor;component/Resources/icons_objects/objects_geometry-override-16.png" />
+				<Image x:Name="butAddGhostBlock_Image" Source="{tomb:Icon Objects/geometry-override}" />
 			</Button>
 			<Button
 				x:Name="butForceSolidFloor"
@@ -297,7 +298,7 @@
 						<i:InvokeCommandAction Command="{Binding SetSectorColoringInfoPriorityCommand}" CommandParameter="{x:Static rendering:SectorColoringType.ForceFloorSolid}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
-				<Image x:Name="butForceSolidFloor_Image" Source="/TombEditor;component/Resources/icons_sectortype/sectortype_ForceSolidFloor-16 copy.png" />
+				<Image x:Name="butForceSolidFloor_Image" Source="{tomb:Icon Sectortype/ForceSolidFloor}" />
 			</Button>
 		</controls:SpacedGrid>
 
@@ -316,7 +317,7 @@
 				Style="{DynamicResource ButtonWithIconAndText}"
 				ToolTip="{editor:CommandToolTip SetDiagonalFloorStep, Key=FloorStepTooltip}">
 				<StackPanel Orientation="Horizontal">
-					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_StepFloor_1-16.png" />
+					<Image Source="{tomb:Icon Sectortype/StepFloor_1}" />
 					<TextBlock Text="{tombLib:Localize FloorStep}" />
 				</StackPanel>
 			</Button>
@@ -327,7 +328,7 @@
 				Style="{DynamicResource ButtonWithIconAndText}"
 				ToolTip="{editor:CommandToolTip SetDiagonalCeilingStep, Key=CeilingStepTooltip}">
 				<StackPanel Orientation="Horizontal">
-					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_StepCeiling-16.png" />
+					<Image Source="{tomb:Icon Sectortype/StepCeiling}" />
 					<TextBlock Text="{tombLib:Localize CeilingStep}" />
 				</StackPanel>
 			</Button>
@@ -337,7 +338,7 @@
 				Style="{DynamicResource ButtonWithIconAndText}"
 				ToolTip="{editor:CommandToolTip SetDiagonalWall, Key=DiagonalWallTooltip}">
 				<StackPanel Orientation="Horizontal">
-					<Image Source="/TombEditor;component/Resources/icons_sectortype/sectortype_DiagonalWall2-16.png" />
+					<Image Source="{tomb:Icon Sectortype/DiagonalWall2}" />
 					<TextBlock Text="{tombLib:Localize DiagonalWall}" />
 				</StackPanel>
 			</Button>

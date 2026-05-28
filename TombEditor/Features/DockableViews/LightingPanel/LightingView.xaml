@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	d:DesignHeight="120"
 	d:DesignWidth="375"
@@ -39,42 +40,42 @@
 					<ComboBox SelectedIndex="{Binding SelectedLightType}" ToolTip="{tombLib:Localize LightTypeTooltip}">
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_LightPoint-16.png" />
+								<Image Source="{tomb:Icon Objects/LightPoint}" />
 								<TextBlock Text="{tombLib:Localize TypePoint}" />
 							</StackPanel>
 						</ComboBoxItem>
 
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_Shadow-16.png" />
+								<Image Source="{tomb:Icon Objects/Shadow}" />
 								<TextBlock Text="{tombLib:Localize TypeShadow}" />
 							</StackPanel>
 						</ComboBoxItem>
 
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_Spotlight-16.png" />
+								<Image Source="{tomb:Icon Objects/Spotlight}" />
 								<TextBlock Text="{tombLib:Localize TypeSpot}" />
 							</StackPanel>
 						</ComboBoxItem>
 
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_Effect-16.png" />
+								<Image Source="{tomb:Icon Objects/Effect}" />
 								<TextBlock Text="{tombLib:Localize TypeEffect}" />
 							</StackPanel>
 						</ComboBoxItem>
 
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_sun-16.png" />
+								<Image Source="{tomb:Icon Objects/sun}" />
 								<TextBlock Text="{tombLib:Localize TypeSun}" />
 							</StackPanel>
 						</ComboBoxItem>
 
 						<ComboBoxItem Style="{DynamicResource ComboBoxItemWithIconAndText}">
 							<StackPanel Orientation="Horizontal">
-								<Image Source="/TombEditor;component/Resources/icons_objects/objects_Fog-16.png" />
+								<Image Source="{tomb:Icon Objects/Fog}" />
 								<TextBlock Text="{tombLib:Localize TypeFogBulb}" />
 							</StackPanel>
 						</ComboBoxItem>
@@ -85,7 +86,7 @@
 						Command="{Binding AddLightCommand}"
 						Style="{DynamicResource ButtonWithIconOnly}"
 						ToolTip="{tombLib:Localize AddLightTooltip}">
-						<Image Source="/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
+						<Image Source="{tomb:Icon General/plus_math}" />
 					</Button>
 				</controls:SpacedGrid>
 

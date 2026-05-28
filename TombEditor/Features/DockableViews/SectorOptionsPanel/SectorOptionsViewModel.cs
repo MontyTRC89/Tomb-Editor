@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Numerics;
 using System.Windows.Input;
+using System.Windows.Media;
+using TombLib.Icons;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.WPF;
@@ -14,22 +16,27 @@ public partial class SectorOptionsViewModel : ObservableObject
 {
 	private const float IconSwitchBrightnessThreshold = 0.8f;
 
-	private const string FloorIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Floor_1-16.png";
-	private const string FloorIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Floor_neg-16.png";
-	private const string CeilingIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Roof-16.png";
-	private const string CeilingIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Roof_neg-16.png";
-	private const string BoxIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Box-16.png";
-	private const string BoxIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Box_neg-16.png";
-	private const string NotWalkableIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_NotWalkable-16.png";
-	private const string NotWalkableIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_NotWalkable_neg-16.png";
-	private const string MonkeyIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Monkey-16.png";
-	private const string MonkeyIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Monkey_neg-16.png";
-	private const string DeathIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Death-16.png";
-	private const string DeathIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Death_neg-16.png";
-	private const string PortalIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Portal -16.png";
-	private const string PortalIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Portal_neg -16.png";
-	private const string WallIcon = "/TombEditor;component/Resources/icons_sectortype/sectortype_Wall_1-16.png";
-	private const string WallIconNegative = "/TombEditor;component/Resources/icons_sectortype/sectortype_Wall_neg-16.png";
+	private static readonly ImageSource FloorIcon = IconSources.Load("Sectortype/Floor_1");
+	private static readonly ImageSource FloorIconNegative = IconSources.Load("Sectortype/Floor_neg");
+	private static readonly ImageSource CeilingIcon = IconSources.Load("Sectortype/Roof");
+	private static readonly ImageSource CeilingIconNegative = IconSources.Load("Sectortype/Roof_neg");
+	private static readonly ImageSource BoxIcon = IconSources.Load("Sectortype/Box");
+	private static readonly ImageSource BoxIconNegative = IconSources.Load("Sectortype/Box_neg");
+	private static readonly ImageSource NotWalkableIcon = IconSources.Load("Sectortype/NotWalkable");
+	private static readonly ImageSource NotWalkableIconNegative = IconSources.Load("Sectortype/NotWalkable_neg");
+	private static readonly ImageSource MonkeyIcon = IconSources.Load("Sectortype/Monkey");
+	private static readonly ImageSource MonkeyIconNegative = IconSources.Load("Sectortype/Monkey_neg");
+	private static readonly ImageSource DeathIcon = IconSources.Load("Sectortype/Death");
+	private static readonly ImageSource DeathIconNegative = IconSources.Load("Sectortype/Death_neg");
+	private static readonly ImageSource PortalIcon = IconSources.Load("Sectortype/Portal");
+	private static readonly ImageSource PortalIconNegative = IconSources.Load("Sectortype/Portal_neg");
+	private static readonly ImageSource WallIcon = IconSources.Load("Sectortype/Wall_1");
+	private static readonly ImageSource WallIconNegative = IconSources.Load("Sectortype/Wall_neg");
+
+	private static readonly ImageSource TriggerTriggererIconTR4 = IconSources.Load("Sectortype/TriggerTriggerer");
+	private static readonly ImageSource TriggerTriggererIconTR3 = IconSources.Load("Sectortype/MinecartLeft");
+	private static readonly ImageSource BeetleIconTR4 = IconSources.Load("Sectortype/Beetle");
+	private static readonly ImageSource BeetleIconTR3 = IconSources.Load("Sectortype/MinecartRight");
 
 	[ObservableProperty] private Vector4 floorColor;
 	[ObservableProperty] private Vector4 boxColor;
@@ -39,27 +46,22 @@ public partial class SectorOptionsViewModel : ObservableObject
 	[ObservableProperty] private Vector4 portalColor;
 	[ObservableProperty] private Vector4 wallColor;
 
-	[ObservableProperty] private string floorIconSource = FloorIcon;
-	[ObservableProperty] private string ceilingIconSource = CeilingIcon;
-	[ObservableProperty] private string boxIconSource = BoxIcon;
-	[ObservableProperty] private string notWalkableIconSource = NotWalkableIcon;
-	[ObservableProperty] private string monkeyIconSource = MonkeyIcon;
-	[ObservableProperty] private string deathIconSource = DeathIcon;
-	[ObservableProperty] private string portalIconSource = PortalIcon;
-	[ObservableProperty] private string wallIconSource = WallIcon;
+	[ObservableProperty] private ImageSource floorIconSource = FloorIcon;
+	[ObservableProperty] private ImageSource ceilingIconSource = CeilingIcon;
+	[ObservableProperty] private ImageSource boxIconSource = BoxIcon;
+	[ObservableProperty] private ImageSource notWalkableIconSource = NotWalkableIcon;
+	[ObservableProperty] private ImageSource monkeyIconSource = MonkeyIcon;
+	[ObservableProperty] private ImageSource deathIconSource = DeathIcon;
+	[ObservableProperty] private ImageSource portalIconSource = PortalIcon;
+	[ObservableProperty] private ImageSource wallIconSource = WallIcon;
 
 	[ObservableProperty] private bool supportsClimbing;
 	[ObservableProperty] private bool supportsMonkeySwing;
 	[ObservableProperty] private bool supportsBeetleCheckpoint;
 	[ObservableProperty] private bool supportsTriggerTriggerer;
 
-	[ObservableProperty] private string triggerTriggererIcon = TriggerTriggererIconTR4;
-	[ObservableProperty] private string beetleIcon = BeetleIconTR4;
-
-	private const string TriggerTriggererIconTR4 = "/TombEditor;component/Resources/icons_sectortype/sectortype_TriggerTriggerer-16.png";
-	private const string TriggerTriggererIconTR3 = "/TombEditor;component/Resources/icons_sectortype/sectortype_MinecartLeft-16.png";
-	private const string BeetleIconTR4 = "/TombEditor;component/Resources/icons_sectortype/sectortype_Beetle-16.png";
-	private const string BeetleIconTR3 = "/TombEditor;component/Resources/icons_sectortype/sectortype_MinecartRight-16.png";
+	[ObservableProperty] private ImageSource triggerTriggererIcon = TriggerTriggererIconTR4;
+	[ObservableProperty] private ImageSource beetleIcon = BeetleIconTR4;
 
 	public ICommand SetFloorCommand { get; }
 	public ICommand SetCeilingCommand { get; }
@@ -146,7 +148,7 @@ public partial class SectorOptionsViewModel : ObservableObject
 		WallIconSource = GetContrastAwareIcon(WallColor, WallIcon, WallIconNegative);
 	}
 
-	private static string GetContrastAwareIcon(Vector4 color, string defaultIcon, string negativeIcon)
+	private static ImageSource GetContrastAwareIcon(Vector4 color, ImageSource defaultIcon, ImageSource negativeIcon)
 		=> color.ToWPFBrush().GetBrightness() > IconSwitchBrightnessThreshold ? negativeIcon : defaultIcon;
 
 	private void UpdateVersionSpecificControls()

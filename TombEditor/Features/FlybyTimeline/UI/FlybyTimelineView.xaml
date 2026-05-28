@@ -7,6 +7,7 @@
     xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
     xmlns:local="clr-namespace:TombEditor.Features.FlybyTimeline.UI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
     xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
     d:DesignHeight="80"
     d:DesignWidth="700"
@@ -54,7 +55,7 @@
                     Command="{Binding AddSequenceCommand}"
                     Style="{StaticResource ButtonWithIconOnly}"
                     ToolTip="{tombLib:Localize AddSequenceTooltip}">
-                    <Image Source="pack://application:,,,/TombEditor;component/Resources/icons_general/general_plus_math-16.png" />
+                    <Image Source="{tomb:Icon General/plus_math}" />
                 </Button>
 
                 <Button
@@ -63,7 +64,7 @@
                     IsEnabled="{Binding HasSequenceSelected}"
                     Style="{StaticResource ButtonWithIconOnly}"
                     ToolTip="{tombLib:Localize RemoveSequenceTooltip}">
-                    <Image Source="pack://application:,,,/TombEditor;component/Resources/icons_actions/actions_delete-16.png" />
+                    <Image Source="{tomb:Icon Actions/delete}" />
                 </Button>
             </controls:SpacedStack>
         </controls:SpacedGrid>
@@ -92,7 +93,7 @@
                 IsEnabled="{Binding HasSequenceSelected}"
                 Style="{StaticResource ButtonFlatLargeIconOnly}"
                 ToolTip="{tombLib:Localize AddCameraTooltip}">
-                <Image Source="pack://application:,,,/TombEditor;component/Resources/icons_transport/transport-plus.png" />
+                <Image Source="{tomb:Icon General/plus_math}" />
             </Button>
         </StackPanel>
     </controls:SpacedGrid>

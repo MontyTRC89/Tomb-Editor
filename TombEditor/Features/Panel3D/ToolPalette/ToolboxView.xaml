@@ -6,6 +6,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Panel3D.ToolPalette"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	d:DataContext="{d:DesignInstance Type=local:ToolboxViewModel}"
 	d:DesignHeight="400"
@@ -62,7 +63,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize CircleBrushShape}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_objects/objects_volume-sphere-16.png" />
+			<Image Source="{tomb:Icon Objects/volume-sphere}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SetBrushShapeSquareCommand}"
@@ -71,7 +72,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize SquareBrushShape}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_objects/objects_volume-box-16.png" />
+			<Image Source="{tomb:Icon Objects/volume-box}" />
 		</RadioButton>
 
 		<Border
@@ -86,7 +87,7 @@
 			IsChecked="{Binding IsSelectionChecked, Mode=OneWay}"
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Selection}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Selection-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Selection}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -95,7 +96,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize ObjectSelection}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_ObjectSelection-16.png" />
+			<Image Source="{tomb:Icon Toolbox/ObjectSelection}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -104,7 +105,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize ObjectDeselection}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Deselection-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Deselection}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -112,7 +113,7 @@
 			IsChecked="{Binding IsBrushChecked, Mode=OneWay}"
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Brush}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Paint-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Paint}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -121,7 +122,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Shovel}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Shovel-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Shovel}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -129,7 +130,7 @@
 			IsChecked="{Binding IsPencilChecked, Mode=OneWay}"
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Pencil}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Pencil-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Pencil}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -138,7 +139,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Line}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Ruler-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Ruler}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -147,7 +148,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Bulldozer}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Bulldozer_1-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Bulldozer_1}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -156,7 +157,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Smooth}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Smooth-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Smooth}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -165,7 +166,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Fill}"
 			Visibility="{Binding IsFillVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Fill-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Fill}" />
 		</RadioButton>
 		<RadioButton
 			x:Name="toolGridPaint"
@@ -185,7 +186,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize GroupTexturing}"
 			Visibility="{Binding IsFaceEditToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupTexture-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupTexture}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -194,7 +195,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Eraser}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Eraser-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Eraser}" />
 		</RadioButton>
 
 		<Border Height="1" Style="{StaticResource ToolSeparator}" />
@@ -207,7 +208,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Drag}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Drag-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Drag}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -216,7 +217,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Ramp}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupRamp-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupRamp}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -225,7 +226,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize QuarterPipe}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupQuaterPipe-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupQuaterPipe}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -234,7 +235,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize HalfPipe}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupHalfPipe-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupHalfPipe}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -243,7 +244,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Bowl}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupBowl-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupBowl}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -252,7 +253,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Pyramid}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupPyramid-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupPyramid}" />
 		</RadioButton>
 		<RadioButton
 			Command="{Binding SwitchToolCommand}"
@@ -261,7 +262,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize Terrain}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_GroupTerrain-16.png" />
+			<Image Source="{tomb:Icon Toolbox/GroupTerrain}" />
 		</RadioButton>
 
 		<!--  Face edit tools  -->
@@ -271,7 +272,7 @@
 			Style="{StaticResource ToolToggleButton}"
 			ToolTip="{tombLib:Localize TextureEraser}"
 			Visibility="{Binding IsFaceEditToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Eraser-16.png" />
+			<Image Source="{tomb:Icon Toolbox/Eraser}" />
 		</ToggleButton>
 		<ToggleButton
 			Command="{Binding SetTextureInvisibleCommand}"
@@ -279,7 +280,7 @@
 			Style="{StaticResource ToolToggleButton}"
 			ToolTip="{tombLib:Localize Invisibility}"
 			Visibility="{Binding IsFaceEditToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_Invisible-16.png" />
+			<Image Source="{tomb:Icon General/Invisible}" />
 		</ToggleButton>
 
 		<Border
@@ -294,7 +295,7 @@
 			Style="{StaticResource ToolRadioButton}"
 			ToolTip="{tombLib:Localize PortalDigger}"
 			Visibility="{Binding IsGeometryToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_PortalDigger-16.png" />
+			<Image Source="{tomb:Icon Toolbox/PortalDigger}" />
 		</RadioButton>
 		<ToggleButton
 			Command="{Binding ToggleUVFixerCommand}"
@@ -302,7 +303,7 @@
 			Style="{StaticResource ToolToggleButton}"
 			ToolTip="{tombLib:Localize FixTextureCoordinates}"
 			Visibility="{Binding IsFaceEditToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_toolbox/toolbox_UVFixer-16.png" />
+			<Image Source="{tomb:Icon Toolbox/UVFixer}" />
 		</ToggleButton>
 		<ToggleButton
 			Command="{Binding ToggleShowTexturesCommand}"
@@ -310,7 +311,7 @@
 			Style="{StaticResource ToolToggleButton}"
 			ToolTip="{tombLib:Localize ShowTextures}"
 			Visibility="{Binding IsObjectPlacementToolsVisible, Converter={StaticResource BoolToVisConverter}}">
-			<Image Source="/TombEditor;component/Resources/icons_actions/actions_TextureMode-16.png" />
+			<Image Source="{tomb:Icon Actions/TextureMode}" />
 		</ToggleButton>
 	</WrapPanel>
 </UserControl>

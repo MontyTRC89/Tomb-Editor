@@ -19,7 +19,9 @@ public partial class ToolboxViewModel : ObservableObject
 	private readonly Editor _editor;
 	private readonly ILocalizationService _localizationService;
 
-	private const string GridPaintIconBase = "/TombEditor;component/Resources/icons_toolbox/toolbox_GridPaint";
+	private static readonly System.Windows.Media.ImageSource GridPaintIcon2x2 = TombLib.Icons.IconSources.Load("Toolbox/GridPaint2x2");
+	private static readonly System.Windows.Media.ImageSource GridPaintIcon3x3 = TombLib.Icons.IconSources.Load("Toolbox/GridPaint3x3");
+	private static readonly System.Windows.Media.ImageSource GridPaintIcon4x4 = TombLib.Icons.IconSources.Load("Toolbox/GridPaint4x4");
 
 	public ToolboxViewModel(ILocalizationService? localizationService = null)
 	{
@@ -88,12 +90,12 @@ public partial class ToolboxViewModel : ObservableObject
 		_ => _localizationService["GridPaint"]
 	};
 
-	public string GridPaintIconSource => GridSize switch
+	public System.Windows.Media.ImageSource GridPaintIconSource => GridSize switch
 	{
-		PaintGridSize.Grid2x2 => $"{GridPaintIconBase}2x2-16.png",
-		PaintGridSize.Grid3x3 => $"{GridPaintIconBase}3x3-16.png",
-		PaintGridSize.Grid4x4 => $"{GridPaintIconBase}4x4-16.png",
-		_ => $"{GridPaintIconBase}2x2-16.png"
+		PaintGridSize.Grid2x2 => GridPaintIcon2x2,
+		PaintGridSize.Grid3x3 => GridPaintIcon3x3,
+		PaintGridSize.Grid4x4 => GridPaintIcon4x4,
+		_ => GridPaintIcon2x2
 	};
 
 	#endregion Grid Size

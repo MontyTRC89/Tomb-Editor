@@ -8,6 +8,7 @@
     xmlns:editor="clr-namespace:TombEditor"
     xmlns:local="clr-namespace:TombEditor.Features.DockableViews.PalettePanel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
     d:DesignHeight="120"
     d:DesignWidth="645"
     Background="{DynamicResource Brush_Background}"
@@ -25,21 +26,21 @@
                 IsEnabled="{Binding CanResetPalette}"
                 Style="{DynamicResource ButtonWithIconOnly}"
                 ToolTip="{editor:CommandToolTip ResetPalette, Key=ResetPaletteTooltip}">
-                <Image Source="/TombEditor;component/Resources/icons_actions/actions_refresh-16.png" />
+                <Image Source="{tomb:Icon Actions/refresh}" />
             </Button>
             <ToggleButton
                 Command="{Binding SampleFromTexturesCommand}"
                 IsChecked="{Binding IsTextureSamplingMode, Mode=OneWay}"
                 Style="{DynamicResource ToggleButtonWithIconOnly}"
                 ToolTip="{editor:CommandToolTip SamplePaletteFromTextures, Key=SamplePaletteFromTexturesTooltip}">
-                <Image Source="/TombEditor;component/Resources/icons_actions/actions_TextureMode-16.png" />
+                <Image Source="{tomb:Icon Actions/TextureMode}" />
             </ToggleButton>
             <Button
                 Command="{Binding EditObjectColorCommand}"
                 IsEnabled="{Binding CanEditColor}"
                 Style="{DynamicResource ButtonWithIconOnly}"
                 ToolTip="{editor:CommandToolTip EditObjectColor, Key=EditObjectColorTooltip}">
-                <Image Source="/TombEditor;component/Resources/icons_general/general_edit-16.png" />
+                <Image Source="{tomb:Icon General/edit}" />
             </Button>
         </controls:SpacedStack>
 

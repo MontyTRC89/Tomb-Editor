@@ -152,9 +152,10 @@ public partial class FlybyTimelineViewModel : ObservableObject
     /// <summary>
     /// Gets the icon resource used for the play or stop button.
     /// </summary>
-    public string PlayStopIcon => IsPlaying
-        ? "pack://application:,,,/TombEditor;component/Resources/icons_transport/transport-stop-24.png"
-        : "pack://application:,,,/TombEditor;component/Resources/icons_transport/transport-play-24.png";
+    private static readonly System.Windows.Media.ImageSource StopIconSource = TombLib.Icons.IconSources.Load("Misc/action_stop");
+    private static readonly System.Windows.Media.ImageSource PlayIconSource = TombLib.Icons.IconSources.Load("Actions/play");
+
+    public System.Windows.Media.ImageSource PlayStopIcon => IsPlaying ? StopIconSource : PlayIconSource;
 
     /// <summary>
     /// Gets the tooltip text used for the play or stop button.

@@ -8,6 +8,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.DockableViews.ContentBrowser"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	d:DataContext="{d:DesignInstance Type=local:ContentBrowserViewModel}"
@@ -124,7 +125,7 @@
 							<Image
 								x:Name="FavoriteStarImage"
 								RenderOptions.BitmapScalingMode="HighQuality"
-								Source="/Resources/icons_actions/actions_StarOutlined-16.png"
+								Source="{tomb:Icon Actions/StarOutlined}"
 								Stretch="Uniform" />
 						</Border>
 					</Grid>
@@ -153,7 +154,7 @@
 
 				<!--  Show filled star when item is a favorite.  -->
 				<DataTrigger Binding="{Binding IsFavorite}" Value="True">
-					<Setter TargetName="FavoriteStarImage" Property="Source" Value="/Resources/icons_actions/actions_StarFilled-16.png" />
+					<Setter TargetName="FavoriteStarImage" Property="Source" Value="{tomb:Icon Actions/StarFilled}" />
 					<Setter TargetName="FavoriteStar" Property="Opacity" Value="1" />
 				</DataTrigger>
 
