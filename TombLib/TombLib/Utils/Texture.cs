@@ -20,6 +20,8 @@ namespace TombLib.Utils
 		// This helps the texture packer of TombEngine compiler to have ready paths for doing sidecar loading
 		public string AbsolutePath { get; set; }
 
+		public string MaterialName { get; set; }
+
 		public abstract Texture Clone();
 
         object ICloneable.Clone()

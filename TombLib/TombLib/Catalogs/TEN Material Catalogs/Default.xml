@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<materialCatalog>
+  <material id="0" name="Default">
+    <property slot="0" name="SpecularIntensity" type="Float" defaultValue="1.0" description="Intensity multiplier applied to emissive lighting." />
+    <property slot="1" name="EmissiveIntensity" type="Float" defaultValue="1.0" description="Intensity multiplier applied to specular lighting." />
+  </material>
+  <material id="1" name="Reflective">
+    <property slot="0" name="Color" type="Color" defaultValue="TEN.Color(255,255,255)" description="Tint applied to the reflective contribution." />
+    <property slot="1" name="Strength" type="Float" defaultValue="1.0" description="Blend factor between the base surface and legacy reflection buffer." />
+    <property slot="2" name="VerticalOffset" type="Float" defaultValue="0.0" description="Vertical offset applied while sampling the reflection buffer." />
+  </material>
+  <material id="2" name="Skybox Reflective">
+    <property slot="0" name="Color" type="Color" defaultValue="TEN.Color(255,255,255)" description="Tint applied to the skybox reflection contribution." />
+    <property slot="1" name="Strength" type="Float" defaultValue="1.0" description="Blend factor between the base surface and skybox reflection buffer." />
+    <property slot="2" name="VerticalOffset" type="Float" defaultValue="0.0" description="Vertical offset applied while sampling the skybox reflection buffer." />
+  </material>
+</materialCatalog>

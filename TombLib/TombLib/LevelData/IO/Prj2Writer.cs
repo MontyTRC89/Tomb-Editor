@@ -219,6 +219,7 @@ namespace TombLib.LevelData.IO
                         {
                             chunkIO.WriteChunkInt(Prj2Chunks.LevelTextureIndex, index);
                             chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? string.Empty);
+                            chunkIO.WriteChunkString(Prj2Chunks.LevelTextureMaterialName, texture.MaterialName ?? string.Empty);
                             chunkIO.WriteChunkString(Prj2Chunks.LevelTextureCustomBumpmapPath, texture.BumpPath ?? string.Empty);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
                             chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
@@ -282,6 +283,27 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryTexAxisFlags, importedGeometry.Info.FlipUV_V ? 4 : 0);
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryMappedUV, importedGeometry.Info.MappedUV);
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryInvertFaces, importedGeometry.Info.InvertFaces);
+
+                            var materialTextures = importedGeometry.Textures
+                                .Where(texture => !string.IsNullOrWhiteSpace(texture.AbsolutePath) && !string.IsNullOrWhiteSpace(texture.MaterialName))
+                                .ToList();
+
+                            if (materialTextures.Count > 0)
+                            {
+                                using (var chunkImportedGeometryMaterialNames = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometryMaterialNames))
+                                {
+                                    foreach (var texture in materialTextures)
+                                        using (var chunkImportedGeometryMaterialName = chunkIO.WriteChunk(Prj2Chunks.ImportedGeometryMaterialName))
+                                        {
+                                            chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryMaterialPath, texture.AbsolutePath);
+                                            chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryMaterialValue, texture.MaterialName);
+                                            chunkIO.WriteChunkEnd();
+                                        }
+
+                                    chunkIO.WriteChunkEnd();
+                                }
+                            }
+
                             chunkIO.WriteChunkEnd();
                         }
                         levelSettingIds.ImportedGeometries.TryAdd(importedGeometry, index++);

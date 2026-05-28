@@ -43,6 +43,7 @@ namespace TombLib.LevelData
             {
                 UniqueID = UniqueID,
                 Image = Image,
+                MaterialName = MaterialName,
                 Path = Path,
                 BumpPath = BumpPath,
                 LoadException = LoadException,
@@ -56,6 +57,7 @@ namespace TombLib.LevelData
         public void Assign(LevelTexture other)
         {
             Image = other.Image;
+            MaterialName = other.MaterialName;
             Path = other.Path;
             BumpPath = other.BumpPath;
             LoadException = other.LoadException;

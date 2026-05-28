@@ -62,6 +62,7 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId LevelTexture = ChunkId.FromString("TeLvlTexture");
         /**********/public static readonly ChunkId LevelTextureIndex = ChunkId.FromString("TeI");
         /**********/public static readonly ChunkId LevelTexturePath = ChunkId.FromString("TePath");
+        /**********/public static readonly ChunkId LevelTextureMaterialName = ChunkId.FromString("TeMatName");
         /**********/public static readonly ChunkId LevelTextureConvert512PixelsToDoubleRows = ChunkId.FromString("Te512C");
         /**********/public static readonly ChunkId LevelTextureReplaceMagentaWithTransparency = ChunkId.FromString("TeMagentaR");
         /**********/public static readonly ChunkId LevelTextureFootStepSounds = ChunkId.FromString("TeTextureSounds");
@@ -77,6 +78,10 @@ namespace TombLib.LevelData.IO
         /********/public static readonly ChunkId ImportedGeometryTexAxisFlags = ChunkId.FromString("TeTexAxisFlags");
         /********/public static readonly ChunkId ImportedGeometryInvertFaces = ChunkId.FromString("TeInvertFaces");
         /********/public static readonly ChunkId ImportedGeometryMappedUV = ChunkId.FromString("TeMappedUV");
+        /********/public static readonly ChunkId ImportedGeometryMaterialNames = ChunkId.FromString("TeImpMatNames");
+        /**********/public static readonly ChunkId ImportedGeometryMaterialName = ChunkId.FromString("TeImpMatName");
+        /************/public static readonly ChunkId ImportedGeometryMaterialPath = ChunkId.FromString("TeImpMatPath");
+        /************/public static readonly ChunkId ImportedGeometryMaterialValue = ChunkId.FromString("TeImpMatValue");
         /**/public static readonly ChunkId AnimatedTextureSets = ChunkId.FromString("TeAnimatedTextureSets");
         /******/public static readonly ChunkId AnimatedTextureSet = ChunkId.FromString("TeAnimatedTextureSet");
         /**********/public static readonly ChunkId AnimatedTextureSetName = ChunkId.FromString("TeAnimatedTextureSetName");

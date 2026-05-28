@@ -87,11 +87,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     try
                     {
-                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        var materialData = MaterialData.TryLoadForTexture(texture, texture.Image.FileName);
                         _materialDictionary.Add(texture.Image.FileName, materialData);
                         _materialNames.Add(texture.Image.FileName);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         string externalMaterialDataPath = Path.Combine(
                                 Path.GetDirectoryName(texture.Image.FileName),
@@ -109,7 +109,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     if (!_materialDictionary.ContainsKey(texture.Image.FileName))
                     {
-                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.Image.FileName);
+                        var materialData = MaterialData.TryLoadForTexture(texture, texture.Image.FileName);
                         _materialDictionary.Add(texture.Image.FileName, materialData);
                         _materialNames.Add(texture.Image.FileName);
                     }
@@ -121,11 +121,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     if (!_materialDictionary.ContainsKey(texture.AbsolutePath))
                     {
-                        var materialData = MaterialData.TrySidecarLoadOrLoadExisting(texture.AbsolutePath);
+                        var materialData = MaterialData.TryLoadForTexture(texture, texture.AbsolutePath);
                         _materialDictionary.Add(texture.AbsolutePath, materialData);
                         _materialNames.Add(texture.AbsolutePath);
                     }
                 }
+
+            EnsureUniqueMaterialNames();
 
             // Make all level texturs paths absolute for comparing them with imported geometry textures
             // and Wad2 external textures.
@@ -136,6 +138,32 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 texture.AbsolutePath = _level.Settings.MakeAbsolute(texture.Path);
 
             ReportProgress(0, $"   Number of materials: {_materialDictionary.Count}");
+        }
+
+        private void EnsureUniqueMaterialNames()
+        {
+            var usedNames = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var material in _materialDictionary)
+            {
+                var baseName = string.IsNullOrWhiteSpace(material.Value.Name) ? Path.GetFileNameWithoutExtension(material.Key) : material.Value.Name.Trim();
+                if (string.IsNullOrWhiteSpace(baseName))
+                    baseName = "Material";
+
+                if (!usedNames.TryGetValue(baseName, out var count))
+                {
+                    usedNames[baseName] = 1;
+                    material.Value.Name = baseName;
+                    continue;
+                }
+
+                count++;
+                usedNames[baseName] = count;
+
+                var uniqueName = baseName + "_" + count;
+                _progressReporter.ReportWarn($"Duplicate material name '{baseName}' detected. Renamed compiled material to '{uniqueName}'.");
+                material.Value.Name = uniqueName;
+            }
         }
 
         private void BuildSprites()

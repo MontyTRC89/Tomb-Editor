@@ -40,6 +40,7 @@ namespace TombLib.LevelData
             DirectXTexture = other.DirectXTexture;
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
+            MaterialName = other.MaterialName;
         }
 
         public void Assign(ImportedGeometryTexture other)
@@ -47,6 +48,7 @@ namespace TombLib.LevelData
             AbsolutePath = other.AbsolutePath;
             Image = other.Image;
             DirectXTexture = other.DirectXTexture;
+            MaterialName = other.MaterialName;
         }
 
         public override Texture Clone() => new ImportedGeometryTexture(this);

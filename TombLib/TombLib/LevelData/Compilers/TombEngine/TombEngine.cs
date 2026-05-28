@@ -250,12 +250,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write((uint)_materialDictionary.Count);
                 foreach (var material in _materialDictionary)
                 {
-                    writer.Write(material.Key);
-                    writer.Write((int)material.Value.Type);
-                    writer.Write(material.Value.Parameters0);
-                    writer.Write(material.Value.Parameters1);
-                    writer.Write(material.Value.Parameters2);
-                    writer.Write(material.Value.Parameters3);
+                    writer.Write(material.Value.Name);
+                    writer.Write(material.Value.Type);
+
+                    var definition = material.Value.GetMaterialDefinition();
+                    for (int i = 0; i < MaterialData.PropertyCount; i++)
+                    {
+                        var propertyDefinition = definition.Properties[i];
+                        writer.Write(propertyDefinition?.Name ?? string.Empty);
+                        writer.Write((int)(propertyDefinition?.Type ?? MaterialPropertyType.None));
+                        writer.Write(material.Value.GetPropertyVector(i));
+                    }
+
                     writer.Write(material.Value.IsNormalMapFound);
                     writer.Write(material.Value.IsHeightMapFound);
                     writer.Write(material.Value.IsAmbientOcclusionMapFound);
