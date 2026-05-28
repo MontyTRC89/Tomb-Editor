@@ -294,7 +294,7 @@ namespace TombEditor.Forms
         private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
         private FormPreviewWad _previewWad = null;
-        private FormPreviewTexture _previewTexture = null;
+        private TombEditor.Views.TexturePreviewWindow _previewTexture = null;
 
         public FormLevelSettings(Editor editor)
         {
@@ -451,7 +451,7 @@ namespace TombEditor.Forms
             if (disposing)
             {
                 _previewWad?.Dispose();
-                _previewTexture?.Dispose();
+                _previewTexture?.Close();
                 _texturePreviewCache?.Dispose();
                 components?.Dispose();
                 _editor.EditorEventRaised -= EditorEventRaised;
@@ -805,6 +805,21 @@ namespace TombEditor.Forms
             form.Location = pos;
         }
 
+        // WPF-window overload mirroring FitPreview(Control, ...) — WPF uses doubles
+        // for Left/Top/Width/Height, no Location property.
+        private void FitPreview(System.Windows.Window window, Rectangle screenArea)
+        {
+            const int WindowBorderMargin = 5;
+            const int RightMargin = 5;
+            int x = screenArea.Location.X - (int)window.Width - RightMargin;
+            int y = screenArea.Location.Y + screenArea.Height / 2 - (int)window.Height / 2;
+            Rectangle parentWindowBounds = Bounds;
+            y = Math.Max(y, parentWindowBounds.Top + WindowBorderMargin);
+            y = Math.Min(y, parentWindowBounds.Bottom - (int)window.Height - WindowBorderMargin);
+            window.Left = x;
+            window.Top = y;
+        }
+
         private string GetLevelResourcePath(string file)
         {
             return LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + file;
@@ -1089,11 +1104,12 @@ namespace TombEditor.Forms
                     return;
 
                 // Open preview
-                _previewTexture?.Dispose();
-                _previewTexture = new FormPreviewTexture(texture);
+                _previewTexture?.Close();
+                _previewTexture = new TombEditor.Views.TexturePreviewWindow(texture);
+                _previewTexture.SetOwnerFromHwnd(Handle);
                 var screenArea = textureFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
                 FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
-                _previewTexture.Show(this);
+                _previewTexture.Show();
             }
         }
 

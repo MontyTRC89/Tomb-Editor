@@ -5891,23 +5891,28 @@ namespace TombEditor
 
             if (items.Count <= 1)
             {
-                using (var form = new FormQuickItemgroup(_editor))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK || form.SelectedValue == null)
-                        return;
+                var vm = new TombEditor.ViewModels.QuickItemGroupWindowViewModel(_editor);
+                var dialog = new TombEditor.Views.QuickItemGroupWindow { DataContext = vm };
 
-                    foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
+                if (owner is not null)
+                    dialog.SetOwner(owner);
+
+                dialog.ShowDialog();
+
+                if (vm.DialogResult != true || vm.SelectedValue is null)
+                    return;
+
+                foreach (var item in _editor.Level.GetAllObjects().OfType<ItemInstance>())
+                {
+                    if (item is StaticInstance && vm.SelectedValue is WadStaticId staticId)
                     {
-                        if (item is StaticInstance && form.SelectedValue is WadStaticId)
-                        {
-                            if ((item as StaticInstance).WadObjectId == ((WadStaticId)form.SelectedValue))
-                                items.Add(item);
-                        }
-                        else if (item is MoveableInstance && form.SelectedValue is WadMoveableId)
-                        {
-                            if ((item as MoveableInstance).WadObjectId == ((WadMoveableId)form.SelectedValue))
-                                items.Add(item);
-                        }
+                        if ((item as StaticInstance).WadObjectId == staticId)
+                            items.Add(item);
+                    }
+                    else if (item is MoveableInstance && vm.SelectedValue is WadMoveableId moveableId)
+                    {
+                        if ((item as MoveableInstance).WadObjectId == moveableId)
+                            items.Add(item);
                     }
                 }
             }

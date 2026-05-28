@@ -594,6 +594,11 @@
         "Strength": "Strength:"
     },
 
+    "QuickItemGroup": {
+        "Title": "Make quick itemgroup",
+        "SlotLabel": "Enter the slot you want to create an itemgroup of:"
+    },
+
     "SelectRoomByTags": {
         "Title": "Select rooms by tags",
         "Tags": "Tags:",
