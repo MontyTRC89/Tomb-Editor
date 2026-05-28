@@ -5,6 +5,7 @@
 	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.Features.DockableViews.TexturePanel"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
@@ -64,7 +65,7 @@
 			</Button>
 		</controls:SpacedGrid>
 
-		<WindowsFormsHost x:Name="ViewportHost" Grid.Row="1" />
+		<local:MainTextureMapView x:Name="MapView" Grid.Row="1" />
 
 		<controls:SpacedGrid Grid.Row="2" RowSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 			<Grid.RowDefinitions>

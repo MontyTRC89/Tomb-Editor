@@ -9,6 +9,7 @@ using TombEditor.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.WPF;
 
 namespace TombEditor.Features.DockableViews.TexturePanel
 {
@@ -182,17 +183,25 @@ namespace TombEditor.Features.DockableViews.TexturePanel
 		private void butTextureSounds_Click(object sender, EventArgs e)
 		{
 			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
-			if (texture != null)
-				using (var form = new FormFootStepSounds(_editor, texture))
-					form.ShowDialog(this);
+			if (texture is null)
+				return;
+
+			var vm = new ViewModels.FootStepSoundsWindowViewModel(texture, _editor);
+			var dialog = new Views.FootStepSoundsWindow { DataContext = vm };
+			dialog.SetOwner(this);
+			dialog.ShowDialog();
 		}
 
 		private void butBumpMaps_Click(object sender, EventArgs e)
 		{
 			LevelTexture texture = comboCurrentTexture.SelectedItem as LevelTexture;
-			if (texture != null)
-				using (var form = new FormBumpMaps(_editor, texture))
-					form.ShowDialog(this);
+			if (texture is null)
+				return;
+
+			var vm = new ViewModels.BumpMapsWindowViewModel(texture, _editor);
+			var dialog = new Views.BumpMapsWindow { DataContext = vm };
+			dialog.SetOwner(this);
+			dialog.ShowDialog();
 		}
 
 		private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)

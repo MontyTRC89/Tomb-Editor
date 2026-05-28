@@ -1442,20 +1442,33 @@ namespace TombEditor
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
-                using (var form = new FormTextureRemap(args.Editor))
-                    form.ShowDialog(args.Window);
+                {
+                    var vm = new TombEditor.ViewModels.TextureRemapWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Views.TextureRemapWindow { DataContext = vm };
+                    if (args.Window is not null)
+                        dialog.SetOwner(args.Window);
+                    dialog.ShowDialog();
+                }
             });
 
             AddCommand("SearchTextures", "Search textures...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormFindTextures)];
-                if (existingWindow == null)
+                var existingWpfWindow = System.Windows.Application.Current?.Windows
+                    .OfType<TombEditor.Views.FindTexturesWindow>()
+                    .FirstOrDefault();
+
+                if (existingWpfWindow is null)
                 {
-                    var findUntexturedForm = new FormFindTextures(args.Editor);
-                    findUntexturedForm.Show(args.Window);
+                    var vm = new TombEditor.ViewModels.FindTexturesWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Views.FindTexturesWindow { DataContext = vm };
+                    if (args.Window is not null)
+                        dialog.SetOwner(args.Window);
+                    dialog.Show();
                 }
                 else
-                    existingWindow.Focus();
+                {
+                    existingWpfWindow.Activate();
+                }
             });
 
             AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate (CommandArgs args)

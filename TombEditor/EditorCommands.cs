@@ -868,8 +868,11 @@ namespace TombEditor
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate ()
             {
-                using (var form = new Forms.FormTextureRemap(_editor))
-                    form.ShowDialog(_editorWindow);
+                var vm = new ViewModels.TextureRemapWindowViewModel(_editor);
+                var dialog = new Views.TextureRemapWindow { DataContext = vm };
+                if (_editorWindow is not null)
+                    dialog.SetOwner(_editorWindow);
+                dialog.ShowDialog();
             });
 
             AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate ()

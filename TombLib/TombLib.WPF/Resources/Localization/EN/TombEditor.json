@@ -601,19 +601,55 @@
         "AllTagsTooltip": "Only select rooms that contain all specified tags instead of any of them."
     },
 
-    "FindTexturesWindow": {
-        "FindTexturesTitle": "Search textures",
-        "FindTexturesGridColRoom": "Room",
-        "FindTexturesGridBlock": "Block",
-        "FindTexturesFind": "Find",
-        "UntexturedFaces": "Untextured faces",
-        "InvisibleFaces": "Invisible faces",
-        "TexturesMissing": "Textures missing or out of bounds",
-        "ExactMatch": "Exact match with selected texture",
-        "PartialMatch": "Partial match with selected texture",
-        "TextureSetOnly": "Texture set only",
-        "SelectedRooms": "Selected rooms only",
-        "NewSearch": "New search"
+    "FindTextures": {
+        "Title": "Search textures",
+        "ColumnRoom": "Room",
+        "ColumnSector": "Sector",
+        "Find": "Find:",
+        "NewSearch": "New search",
+        "OnlySelectedRooms": "Selected rooms only",
+        "TypeEmpty": "Untextured or default texture",
+        "TypeInvisible": "Invisible faces",
+        "TypeBroken": "Textures missing or out of bounds",
+        "TypeExactMatch": "Exact match with selected texture",
+        "TypePartialMatch": "Partial match with selected texture",
+        "TypeTextureSet": "Texture set only",
+        "StatusTooMany": "Search finished. Too many entries, showing first {0}.",
+        "StatusNoEntries": "Search finished. No entries found.",
+        "StatusFound": "Search finished. Found {0} entries."
+    },
+
+    "MainTextureMap": {
+        "SetAsDefaultTexture": "Set as default texture",
+        "ClearDefaultTexture": "Clear default texture"
+    },
+
+    "BumpMaps": {
+        "Title": "Bumpmaps",
+        "UseCustomFile": "Use custom file:",
+        "NoCustomFile": "custom file not selected",
+        "AssignBumpmap": "Assign bumpmap",
+        "BrowseCustomTitle": "Open custom bump/normal map image",
+        "WrongImageSize": "Selected image file has a different size. Please pick an image matching the original texture's dimensions."
+    },
+
+    "FootStepSounds": {
+        "Title": "Texture sounds",
+        "AssignSound": "Assign sound"
+    },
+
+    "TextureRemap": {
+        "Title": "Texture remap",
+        "SourceHeader": "Source",
+        "DestinationHeader": "Destination",
+        "Scaling": "Scaling factor:",
+        "UntextureCompletely": "Untexture completely",
+        "RemapAnimTextures": "Remap animated textures",
+        "RestrictToSelectedRooms": "Restrict to selected rooms",
+        "Apply": "Apply",
+        "MissingTextureMessage": "Source or destination texture is unset.",
+        "StatusRoomsOnly": "Successfully remapped {0} textures in rooms.",
+        "StatusWithAnims": "Successfully remapped {0} textures in rooms, {1} in texture animations."
     },
 
     "FlybyCamera": {

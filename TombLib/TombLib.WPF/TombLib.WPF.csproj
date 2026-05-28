@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\Localization\EN\Common.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
