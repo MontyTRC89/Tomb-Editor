@@ -2017,9 +2017,19 @@ namespace TombEditor
                     return;
                 }
 
-                using (var form = new FormTransform(args.Editor.SelectedObject as PositionBasedObjectInstance))
                 {
-                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
+                    var transformViewModel = new TombEditor.ViewModels.TransformWindowViewModel(
+                        (PositionBasedObjectInstance)args.Editor.SelectedObject,
+                        args.Editor);
+
+                    var transformDialog = new TombEditor.Views.TransformWindow { DataContext = transformViewModel };
+
+                    if (args.Window is not null)
+                        transformDialog.SetOwner(args.Window);
+
+                    transformDialog.ShowDialog();
+
+                    if (transformViewModel.DialogResult != true)
                         return;
 
                     args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);

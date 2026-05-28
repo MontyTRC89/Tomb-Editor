@@ -12,6 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Forms;
+using TombEditor.ViewModels;
+using TombEditor.Views;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
@@ -1097,9 +1099,17 @@ namespace TombEditor
                     EditColor(owner, (MoveableInstance)instance);
                 else
                 {
-                    using (var formMoveable = GetObjectSetupWindow((MoveableInstance)instance))
-                        if (formMoveable.ShowDialog(owner) != DialogResult.OK)
-                            return;
+                    var moveableViewModel = new MoveableWindowViewModel((MoveableInstance)instance);
+
+                    var moveableDialog = new MoveableWindow { DataContext = moveableViewModel };
+
+                    if (owner is not null)
+                        moveableDialog.SetOwner(owner);
+
+                    moveableDialog.ShowDialog();
+
+                    if (moveableViewModel.DialogResult != true)
+                        return;
                 }
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -1113,9 +1123,17 @@ namespace TombEditor
                 }
                 else if (_editor.Level.IsNG)
                 {
-                    using (var formStaticMesh = GetObjectSetupWindow((StaticInstance)instance))
-                        if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
-                            return;
+                    var staticViewModel = new StaticWindowViewModel((StaticInstance)instance);
+
+                    var staticDialog = new StaticWindow { DataContext = staticViewModel };
+
+                    if (owner is not null)
+                        staticDialog.SetOwner(owner);
+
+                    staticDialog.ShowDialog();
+
+                    if (staticViewModel.DialogResult != true)
+                        return;
                 }
                 else
                     _editor.SendMessage("Light mode for this static mesh was set to dynamic. Color can't be edited.", PopupType.Info);
@@ -1127,28 +1145,45 @@ namespace TombEditor
                 var undoInstance = new ChangeObjectPropertyUndoInstance(_editor.UndoManager, flybyCamera);
                 bool hasChanges = false;
 
-                using (var formFlyby = GetObjectSetupWindow(flybyCamera) as FormFlybyCamera)
                 {
-                    if (formFlyby is null)
+                    var flybyViewModel = new FlybyCameraWindowViewModel(flybyCamera);
+
+                    var flybyDialog = new FlybyCameraWindow { DataContext = flybyViewModel };
+
+                    if (owner is not null)
+                        flybyDialog.SetOwner(owner);
+
+                    flybyDialog.ShowDialog();
+
+                    if (flybyViewModel.DialogResult != true)
                         return;
 
-                    if (formFlyby.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                    hasChanges = flybyViewModel.HasChanges;
 
-                    hasChanges = formFlyby.HasChanges;
-
-                    if (formFlyby.HasChanges)
+                    if (flybyViewModel.HasChanges)
                         _editor.UndoManager.Push(undoInstance);
                 }
 
                 if (hasChanges)
                     _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is CameraInstance)
+            else if (instance is CameraInstance cameraInstance)
             {
-                using (var formCamera = GetObjectSetupWindow((CameraInstance)instance))
-                    if (formCamera.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                // CameraWindow is the first dialog ported to WPF. The reflection-based
+                // GetObjectSetupWindow path still returns DarkForm, so this branch instantiates
+                // the WPF Window directly and bridges ownership through WindowExtensions.SetOwner.
+                var viewModel = new CameraWindowViewModel(cameraInstance);
+
+                var cameraDialog = new CameraWindow { DataContext = viewModel };
+
+                if (owner is not null)
+                    cameraDialog.SetOwner(owner);
+
+                cameraDialog.ShowDialog();
+
+                if (viewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SpriteInstance)
@@ -1161,18 +1196,36 @@ namespace TombEditor
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is SinkInstance)
+            else if (instance is SinkInstance sinkInstance)
             {
-                using (var formSink = GetObjectSetupWindow((SinkInstance)instance))
-                    if (formSink.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var sinkViewModel = new SinkWindowViewModel(sinkInstance);
+
+                var sinkDialog = new SinkWindow { DataContext = sinkViewModel };
+
+                if (owner is not null)
+                    sinkDialog.SetOwner(owner);
+
+                sinkDialog.ShowDialog();
+
+                if (sinkViewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is SoundSourceInstance)
+            else if (instance is SoundSourceInstance soundSourceInstance)
             {
-                using (var formSoundSource = GetObjectSetupWindow((SoundSourceInstance)instance))
-                    if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var soundSourceViewModel = new SoundSourceWindowViewModel(soundSourceInstance);
+
+                var soundSourceDialog = new SoundSourceWindow { DataContext = soundSourceViewModel };
+
+                if (owner is not null)
+                    soundSourceDialog.SetOwner(owner);
+
+                soundSourceDialog.ShowDialog();
+
+                if (soundSourceViewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is TriggerInstance)
@@ -1207,20 +1260,39 @@ namespace TombEditor
 
                 EditEventSets(owner, false, (VolumeInstance)instance);
             }
-            else if (instance is MemoInstance)
+            else if (instance is MemoInstance memoInstance)
             {
-                using (var formMemo = new FormMemo((MemoInstance)instance))
-                    if (formMemo.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var memoViewModel = new MemoWindowViewModel(memoInstance);
+
+                var memoDialog = new MemoWindow { DataContext = memoViewModel };
+
+                if (owner is not null)
+                    memoDialog.SetOwner(owner);
+
+                memoDialog.ShowDialog();
+
+                if (memoViewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is PortalInstance)
+            else if (instance is PortalInstance portalInstance)
             {
                 if (!VersionCheck(_editor.Level.IsTombEngine, "Portal properties"))
                     return;
-                using (var formPortal = new FormPortal((PortalInstance)instance))
-                    if (formPortal.ShowDialog(owner) != DialogResult.OK)
-                        return;
+
+                var portalViewModel = new PortalWindowViewModel(portalInstance);
+
+                var portalDialog = new PortalWindow { DataContext = portalViewModel };
+
+                if (owner is not null)
+                    portalDialog.SetOwner(owner);
+
+                portalDialog.ShowDialog();
+
+                if (portalViewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
         }
@@ -2649,12 +2721,21 @@ namespace TombEditor
                 newArea = newArea.Inflate(1);
 
             bool useFloor;
-            using (FormResizeRoom form = new FormResizeRoom(_editor, room, newArea))
             {
-                if (form.ShowDialog(owner) != DialogResult.OK)
+                var resizeViewModel = new ResizeRoomWindowViewModel(_editor, room, newArea);
+
+                var resizeDialog = new ResizeRoomWindow { DataContext = resizeViewModel };
+
+                if (owner is not null)
+                    resizeDialog.SetOwner(owner);
+
+                resizeDialog.ShowDialog();
+
+                if (resizeViewModel.DialogResult != true)
                     return;
-                newArea = form.NewArea;
-                useFloor = form.UseFloor;
+
+                newArea = resizeViewModel.NewArea;
+                useFloor = resizeViewModel.UseFloor;
             }
 
             // Estimate wether triggers or portals must be removed
@@ -3148,13 +3229,22 @@ namespace TombEditor
 
             if (candidates.Count > 1)
             {
-                using (var form = new FormChooseRoom("More than one possible room found that can be connected. " +
-                    "Please choose one:", candidates.Select(candidate => candidate.Item2), selectedRoom => _editor.SelectedRoom = selectedRoom))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK || form.SelectedRoom == null)
-                        return;
-                    candidates.RemoveAll(candidate => candidate.Item2 != form.SelectedRoom);
-                }
+                var chooseRoomViewModel = new ChooseRoomWindowViewModel(
+                    "More than one possible room found that can be connected. Please choose one:",
+                    candidates.Select(candidate => candidate.Item2),
+                    selectedRoom => _editor.SelectedRoom = selectedRoom);
+
+                var chooseRoomDialog = new ChooseRoomWindow { DataContext = chooseRoomViewModel };
+
+                if (owner is not null)
+                    chooseRoomDialog.SetOwner(owner);
+
+                chooseRoomDialog.ShowDialog();
+
+                if (chooseRoomViewModel.DialogResult != true || chooseRoomViewModel.SelectedRoom is null)
+                    return;
+
+                candidates.RemoveAll(candidate => candidate.Item2 != chooseRoomViewModel.SelectedRoom);
             }
             if (candidates.Count != 1)
             {
@@ -5449,16 +5539,27 @@ namespace TombEditor
                     return;
             }
 
-            using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport))
-            {
-                if (formImport.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            var importViewModel = new ImportPrjWindowViewModel(
+                fileName,
+                _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport,
+                _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport);
 
+            var importDialog = new ImportPrjWindow { DataContext = importViewModel };
+
+            if (owner is not null)
+                importDialog.SetOwner(owner);
+
+            importDialog.ShowDialog();
+
+            if (importViewModel.DialogResult != true)
+                return;
+
+            {
                 Level newLevel = null;
                 using (var form = new FormOperationDialog("Import PRJ", false, false, (progressReporter, cancelToken) =>
-                    newLevel = PrjLoader.LoadFromPrj(formImport.PrjPath, formImport.SoundsPath,
-                    formImport.RespectMousepatchOnFlybyHandling,
-                    formImport.UseHalfPixelCorrection,
+                    newLevel = PrjLoader.LoadFromPrj(importViewModel.PrjPath, importViewModel.SoundsPath,
+                    importViewModel.RespectMousepatchOnFlybyHandling,
+                    importViewModel.UseHalfPixelCorrection,
                     progressReporter, cancelToken)))
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
@@ -5707,24 +5808,31 @@ namespace TombEditor
 
         public static void SelectRoomsByTags(IWin32Window owner)
         {
-            using (var formTags = new FormSelectRoomByTags(_editor))
+            var tagsViewModel = new SelectRoomByTagsWindowViewModel(_editor);
+
+            var tagsDialog = new SelectRoomByTagsWindow { DataContext = tagsViewModel };
+
+            if (owner is not null)
+                tagsDialog.SetOwner(owner);
+
+            tagsDialog.ShowDialog();
+
+            if (tagsViewModel.DialogResult != true)
+                return;
+
+            string[] tags = tagsViewModel.TagSearchText.Split(' ');
+            if (!tags.Any())
+                return;
+
+            bool findAllTags = tagsViewModel.FindAllTags;
+            var matchingRooms = _editor.Level.ExistingRooms.Where(r =>
             {
-                if (formTags.ShowDialog(owner) != DialogResult.OK)
-                    return;
-
-                string[] tags = formTags.tbTagSearch.Text.Split(' ');
-                if (!tags.Any())
-                    return;
-
-                bool findAllTags = formTags.findAllTags;
-                var matchingRooms = _editor.Level.ExistingRooms.Where(r => {
-                    if (findAllTags)
-                        return r.Properties.Tags.Intersect(tags).Count() == tags.Count();
-                    else
-                        return r.Properties.Tags.Intersect(tags).Any();
-                });
-                TrySelectRooms(matchingRooms);
-            }
+                if (findAllTags)
+                    return r.Properties.Tags.Intersect(tags).Count() == tags.Count();
+                else
+                    return r.Properties.Tags.Intersect(tags).Any();
+            });
+            TrySelectRooms(matchingRooms);
         }
 
         private static void TrySelectRooms(IEnumerable<Room> rooms)

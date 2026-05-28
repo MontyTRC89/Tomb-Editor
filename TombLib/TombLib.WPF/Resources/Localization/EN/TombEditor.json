@@ -500,18 +500,105 @@
         "AssignBumpmap": "Assign bumpmap"
     },
 
-    "CameraWindow": {
-        "CameraTitle": "Edit camera",
-        "CameraGlideTimer": "Glide timer:",
-        "CameraGlideOut": "Glide out",
-        "CameraMode": "Camera mode:",
-        "CameraDefault": "Default",
-        "CameraLocked": "Locked"
+    "Camera": {
+        "Title": "Edit camera",
+        "GlideTimer": "Glide timer:",
+        "GlideOut": "Glide out",
+        "Mode": "Camera mode:",
+        "ModeDefault": "Default",
+        "ModeLocked": "Locked",
+        "ModeSniper": "Sniper"
     },
 
-    "ChooseRoomWindow": {
-        "ChooseRoomTitle": "Choose a room",
-        "ChooseRoomtitleLabel": "titleLabel"
+    "ChooseRoom": {
+        "Title": "Choose a room"
+    },
+
+    "Moveable": {
+        "Title": "Moveable properties",
+        "Bit1": "Bit 1",
+        "Bit2": "Bit 2",
+        "Bit3": "Bit 3",
+        "Bit4": "Bit 4",
+        "Bit5": "Bit 5",
+        "Invisible": "Invisible",
+        "ClearBody": "Clear body",
+        "NoReflection": "No reflection",
+        "Ocb": "OCB:",
+        "Color": "Color:",
+        "ResetTint": "Reset tint",
+        "InvalidOcbMessage": "The OCB value is not a valid 16-bit integer."
+    },
+
+    "Static": {
+        "Title": "Static mesh properties",
+        "CollisionFlags": "Collision flags",
+        "BurnLaraOnCollision": "Burn Lara on collision",
+        "DamageLaraOnContact": "Damage Lara on contact",
+        "PoisonLaraOnCollision": "Poison Lara on collision",
+        "ExplodeKillingOnCollision": "Explode on killing collision",
+        "HeavyTriggerOnCollision": "Heavy trigger on collision",
+        "DisableCollision": "Disable collision",
+        "HugeCollision": "Huge collision",
+        "GlassTransparency": "Glass transparency",
+        "IceTransparency": "Ice transparency",
+        "HardShatter": "Hard shatter",
+        "SpecificShatter": "Specific shatter",
+        "Scalable": "Scalable",
+        "Ocb": "OCB:",
+        "Color": "Color:"
+    },
+
+    "Portal": {
+        "Title": "Portal properties",
+        "Effect": "Effect:",
+        "ClassicMirror": "Classic mirror reflections",
+        "ReflectMoveables": "Reflect moveables",
+        "ReflectStatics": "Reflect static meshes",
+        "ReflectSprites": "Reflect sprites",
+        "ReflectLights": "Reflect lights"
+    },
+
+    "ImportPrj": {
+        "Title": "Import PRJ",
+        "PrjFile": "PRJ file:",
+        "SoundsCatalog": "Sounds catalog:",
+        "SoundsCatalogTooltip": "Specify sound catalog (sounds.txt or .xml). If empty, legacy SFX/SAM provided with the WAD are used.",
+        "BrowseSoundsTitle": "Select sound catalog to import",
+        "RespectMousepatch": "Respect T4Larson's mousepatch flyby handling",
+        "RespectMousepatchTooltip": "If you've used a patch which increased the maximum amount of flyby sequences in winroomedit, enable this option, otherwise flyby indices will be corrupted.",
+        "UseHalfPixelCorrection": "Use half-pixel UV correction",
+        "UseHalfPixelCorrectionTooltip": "Legacy texture cropping to prevent border bleeding. Use only if you intend to disable advanced texture padding in Level settings."
+    },
+
+    "SoundSource": {
+        "Title": "Sound source",
+        "SoundToPlay": "Sound to play",
+        "Search": "Search",
+        "PlayMode": "Play mode:",
+        "PlaySound": "Play sound",
+        "PlayModeAlways": "Always",
+        "PlayModeFlipmapsOff": "Only when flipmaps are off",
+        "PlayModeFlipmapsOn": "Only when flipmaps are on",
+        "PlayModeAuto": "Auto-decide based on room type",
+        "PlayFailedMessage": "Unable to play sound: {0}"
+    },
+
+    "Memo": {
+        "Title": "Edit memo",
+        "AlwaysDisplay": "Always display text"
+    },
+
+    "Sink": {
+        "Title": "Edit sink",
+        "Strength": "Strength:"
+    },
+
+    "SelectRoomByTags": {
+        "Title": "Select rooms by tags",
+        "Tags": "Tags:",
+        "AllTags": "All tags instead of any",
+        "AllTagsTooltip": "Only select rooms that contain all specified tags instead of any of them."
     },
 
     "FindTexturesWindow": {
@@ -529,33 +616,64 @@
         "NewSearch": "New search"
     },
 
-    "FlybyCameraWindow": {
-        "FlybyCameraTitle": "Flyby Camera",
+    "FlybyCamera": {
+        "Title": "Flyby camera properties",
+        "FlagsHeader": "Behaviour flags",
         "Sequence": "Sequence:",
         "Number": "Number:",
         "Timer": "Timer:",
         "Speed": "Speed:",
-        "FOV": "FOV:",
+        "Fov": "FOV:",
         "Roll": "Roll:",
         "RotationX": "Rotation X:",
         "RotationY": "Rotation Y:",
-        "cbBit0": "Make a cut to flyby from Lara camera position",
-        "cbBit1": "Track entity position",
-        "cbBit1TR5": "Vignette",
-        "cbBit2": "Infinite loop",
-        "cbBit3": "Create tracking camera",
-        "cbBit4": "Focus on Lara's last head position",
-        "cbBit4TR5": "Hide Lara",
-        "cbBit5": "Focus on Lara's head",
-        "cbBit6": "Snap back to Lara at the end of sequence",
-        "cbBit7": "Jump to another camera in sequence (Timer field)",
-        "cbBit8": "Freeze camera (Timer field)",
-        "cbBit9": "Disable exit from sequence with 'Look At' key",
-        "cbBit10": "Cinematic mode",
-        "cbBit11": "Let Lara move in cinematic mode",
-        "cbBit12": "Make fade-in",
-        "cbBit13": "Make fade-out",
-        "cbBit14": "Activate heavy trigger"
+        "DofMode": "DOF mode:",
+        "DofDistance": "DOF distance:",
+        "DofRange": "DOF range:",
+        "DofStrength": "DOF strength:",
+        "DofModeNone": "None",
+        "DofModeFull": "Full",
+        "DofModeFront": "Front",
+        "DofModeBack": "Back",
+        "Bit0": "Make a cut to flyby from Lara camera position",
+        "Bit1": "Track entity position",
+        "Bit1TR5": "Vignette",
+        "Bit2": "Infinite loop",
+        "Bit3": "Create tracking camera",
+        "Bit4": "Focus on Lara's last head position",
+        "Bit4TR5": "Hide Lara",
+        "Bit5": "Focus on Lara's head",
+        "Bit6": "Snap back to Lara at the end of sequence",
+        "Bit7": "Jump to another camera in sequence (Timer field)",
+        "Bit8": "Freeze camera (Timer field)",
+        "Bit9": "Disable exit from sequence with 'Look At' key",
+        "Bit10": "Cinematic mode",
+        "Bit11": "Let Lara move in cinematic mode",
+        "Bit12": "Make fade-in",
+        "Bit12TR5": "Make fade-in",
+        "Bit13": "Make fade-out",
+        "Bit13TR5": "Make fade-out",
+        "Bit14": "Activate heavy trigger",
+        "Bit15": ""
+    },
+
+    "Transform": {
+        "Title": "Edit object transform",
+        "Translation": "Translation:",
+        "Rotation": "Rotation:",
+        "Scale": "Scale:"
+    },
+
+    "ResizeRoom": {
+        "Title": "Resize room",
+        "XNegative": "West (-X):",
+        "XPositive": "East (+X):",
+        "ZNegative": "South (-Z):",
+        "ZPositive": "North (+Z):",
+        "AllowOversizedRooms": "Allow oversized rooms",
+        "UseFloor": "Fill new sectors with floor",
+        "UseWalls": "Fill new sectors with walls",
+        "OversizedWarning": "Rooms bigger than {0} may have in-game rendering issues."
     },
 
     "FootStepSoundsWindow": {
