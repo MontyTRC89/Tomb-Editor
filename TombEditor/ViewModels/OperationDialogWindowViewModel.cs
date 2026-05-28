@@ -112,7 +112,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 				TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.Error);
 			else
 				TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow();
+			TaskbarProgress.FlashWindow(_hwnd);
 		}
 
 		Progress = 0;
@@ -126,7 +126,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		if (_hwnd != IntPtr.Zero)
 		{
 			TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow();
+			TaskbarProgress.FlashWindow(_hwnd);
 		}
 
 		Progress = 100;
