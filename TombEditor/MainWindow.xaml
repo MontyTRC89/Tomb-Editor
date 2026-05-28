@@ -20,7 +20,7 @@
 	xmlns:sectorOptionsPanel="clr-namespace:TombEditor.Features.DockableViews.SectorOptionsPanel"
 	xmlns:texturePanel="clr-namespace:TombEditor.Features.DockableViews.TexturePanel"
 	xmlns:triggerList="clr-namespace:TombEditor.Features.DockableViews.TriggerList"
-	Title="Tomb Editor (WPF Preview)"
+	Title="Tomb Editor"
 	Width="1280"
 	Height="800"
 	MinWidth="800"
@@ -465,9 +465,6 @@
 		<!--  Bottom: Status bar (placeholder)  -->
 		<StatusBar DockPanel.Dock="Bottom">
 			<StatusBarItem>Ready</StatusBarItem>
-			<StatusBarItem HorizontalAlignment="Right">
-				<TextBlock Text="WPF Preview — FormMain is still the main editor shell" />
-			</StatusBarItem>
 		</StatusBar>
 
 		<!--  Center: AvalonDock  -->
