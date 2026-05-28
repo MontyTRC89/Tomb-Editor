@@ -599,6 +599,17 @@
         "SlotLabel": "Enter the slot you want to create an itemgroup of:"
     },
 
+    "Sprite": {
+        "Title": "Edit sprite"
+    },
+
+    "RoomProperties": {
+        "Title": "Apply room properties",
+        "Description": "Choose properties to apply from current room to all selected rooms:",
+        "ColumnName": "Property name",
+        "Apply": "Apply"
+    },
+
     "SelectRoomByTags": {
         "Title": "Select rooms by tags",
         "Tags": "Tags:",

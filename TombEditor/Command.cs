@@ -1180,14 +1180,21 @@ namespace TombEditor
 
             AddCommand("ApplyRoomProperties", "Apply room properties...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormRoomProperties)];
-                if (existingWindow == null)
+                // Surface the existing window if one is already open instead of stacking duplicates.
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    var propForm = new FormRoomProperties(args.Editor);
-                    propForm.Show(args.Window);
+                    if (w is TombEditor.Views.RoomPropertiesWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
                 }
-                else
-                    existingWindow.Focus();
+
+                var vm = new TombEditor.ViewModels.RoomPropertiesWindowViewModel();
+                var dialog = new TombEditor.Views.RoomPropertiesWindow { DataContext = vm };
+                if (args.Window is not null)
+                    dialog.SetOwner(args.Window);
+                dialog.Show();
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)

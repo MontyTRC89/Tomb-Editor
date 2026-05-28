@@ -293,7 +293,7 @@ namespace TombEditor.Forms
         private readonly BindingList<WadSoundPath> _soundDataGridViewDataSource = new BindingList<WadSoundPath>();
         private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
-        private FormPreviewWad _previewWad = null;
+        private TombEditor.Views.WadPreviewWindow _previewWad = null;
         private TombEditor.Views.TexturePreviewWindow _previewTexture = null;
 
         public FormLevelSettings(Editor editor)
@@ -450,7 +450,7 @@ namespace TombEditor.Forms
         {
             if (disposing)
             {
-                _previewWad?.Dispose();
+                _previewWad?.Close();
                 _previewTexture?.Close();
                 _texturePreviewCache?.Dispose();
                 components?.Dispose();
@@ -1245,11 +1245,12 @@ namespace TombEditor.Forms
                     return;
 
                 // Open preview
-                _previewWad?.Dispose();
-                _previewWad = new FormPreviewWad(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
+                _previewWad?.Close();
+                _previewWad = new TombEditor.Views.WadPreviewWindow(wad.Wad, TombLib.Graphics.DeviceManager.DefaultDeviceManager.Device, _editor);
+                _previewWad.SetOwnerFromHwnd(Handle);
                 var screenArea = objectFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
                 FitPreview(_previewWad, new Rectangle(objectFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
-                _previewWad.Show(this);
+                _previewWad.Show();
             }
         }
 

@@ -1186,14 +1186,22 @@ namespace TombEditor
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is SpriteInstance)
+            else if (instance is SpriteInstance spriteInstance)
             {
                 if (!VersionCheck(_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2, "Room sprite"))
                     return;
 
-                using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
-                    if (formSprite.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var spriteViewModel = new TombEditor.ViewModels.SpriteWindowViewModel(spriteInstance);
+                var spriteDialog = new TombEditor.Views.SpriteWindow { DataContext = spriteViewModel };
+
+                if (owner is not null)
+                    spriteDialog.SetOwner(owner);
+
+                spriteDialog.ShowDialog();
+
+                if (spriteViewModel.DialogResult != true)
+                    return;
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SinkInstance sinkInstance)

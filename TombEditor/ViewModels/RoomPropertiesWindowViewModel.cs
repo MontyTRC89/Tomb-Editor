@@ -1,0 +1,126 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using TombLib.Forms;
+using TombLib.LevelData;
+using TombLib.Utils;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
+
+namespace TombEditor.ViewModels;
+
+public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposable
+{
+	public partial class PropertyRow : ObservableObject
+	{
+		[ObservableProperty] private bool _replace;
+		public string Name { get; init; } = string.Empty;
+		public string DisplayName { get; init; } = string.Empty;
+	}
+
+	private readonly Editor _editor;
+	private readonly IMessageService _messageService;
+
+	public ObservableCollection<PropertyRow> Rows { get; } = new();
+
+	[ObservableProperty] private bool _canApply;
+
+	public RoomPropertiesWindowViewModel(
+		IMessageService? messageService = null,
+		ILocalizationService? localizationService = null)
+	{
+		_editor = Editor.Instance;
+		_messageService = ServiceLocator.ResolveService(messageService);
+		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+
+		// Collect every property of RoomProperties exactly once (by DisplayName).
+		var seen = new HashSet<string>();
+		foreach (PropertyDescriptor p in TypeDescriptor.GetProperties(typeof(RoomProperties)))
+		{
+			if (!seen.Add(p.DisplayName))
+				continue;
+
+			var row = new PropertyRow { Name = p.Name, DisplayName = p.DisplayName };
+			row.PropertyChanged += OnRowChanged;
+			Rows.Add(row);
+		}
+
+		_editor.EditorEventRaised += OnEditorEvent;
+		Refresh();
+	}
+
+	private void OnRowChanged(object? sender, PropertyChangedEventArgs e) => Refresh();
+
+	private void OnEditorEvent(IEditorEvent obj)
+	{
+		if (obj is Editor.SelectedRoomChangedEvent
+			|| obj is Editor.SelectedRoomsChangedEvent
+			|| obj is Editor.RoomListChangedEvent
+			|| obj is Editor.LevelChangedEvent)
+		{
+			Refresh();
+		}
+	}
+
+	private void Refresh()
+		=> CanApply = Rows.Any(r => r.Replace) && _editor.SelectedRooms.Count > 1;
+
+	[RelayCommand]
+	private void Apply()
+	{
+		if (Rows.All(r => !r.Replace))
+		{
+			_editor.SendMessage("No properties were selected. Nothing was changed.", PopupType.Warning, true);
+			return;
+		}
+
+		var undoList = new List<UndoRedoInstance>();
+		var propInfo = typeof(RoomProperties).GetProperties();
+		var curr = _editor.SelectedRoom;
+
+		foreach (var r in _editor.SelectedRooms.Skip(1))
+		{
+			undoList.Add(new RoomPropertyUndoInstance(_editor.UndoManager, r));
+
+			// Clone so reference-type properties (e.g. room tags) don't get aliased across rooms.
+			var newProp = curr.Properties.Clone();
+
+			foreach (var row in Rows)
+			{
+				if (!row.Replace)
+					continue;
+
+				foreach (var prop in propInfo)
+				{
+					var attrib = prop.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault();
+					if (attrib is DisplayNameAttribute dna && dna.DisplayName == row.DisplayName)
+					{
+						prop.SetValue(r.Properties, prop.GetValue(newProp));
+
+						// HACK: rebuild lighting when AmbientLight changes.
+						if (prop.Name == nameof(r.Properties.AmbientLight))
+							r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+					}
+				}
+			}
+
+			_editor.RoomPropertiesChange(r);
+		}
+
+		_editor.UndoManager.Push(undoList);
+		_editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info, true);
+	}
+
+	public void Dispose()
+	{
+		foreach (var row in Rows)
+			row.PropertyChanged -= OnRowChanged;
+		_editor.EditorEventRaised -= OnEditorEvent;
+	}
+}
