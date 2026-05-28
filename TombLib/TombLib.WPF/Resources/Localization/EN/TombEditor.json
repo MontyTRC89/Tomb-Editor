@@ -632,6 +632,19 @@
         "Delete": "Delete"
     },
 
+    "ReplaceObject": {
+        "Title": "Search and replace objects",
+        "SourceLabel": "Source object to search:",
+        "DestLabel": "Destination object to replace with:",
+        "SelectInLevel": "Select in level",
+        "SearchType": "Search type:",
+        "ReplaceType": "Replace type:",
+        "SelectedRoomsOnly": "Selected rooms only",
+        "SwapSourceDest": "Swap source / destination",
+        "NewSearch": "New search",
+        "Replace": "Replace"
+    },
+
     "SelectRoomByTags": {
         "Title": "Select rooms by tags",
         "Tags": "Tags:",

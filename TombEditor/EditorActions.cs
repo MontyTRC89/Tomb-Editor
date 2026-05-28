@@ -5231,14 +5231,20 @@ namespace TombEditor
 
         public static void ReplaceObject(IWin32Window owner, bool fromContext = false)
         {
-            var existingWindow = Application.OpenForms[nameof(FormReplaceObject)];
-            if (existingWindow == null)
+            foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
             {
-                var searchAndReplaceForm = new FormReplaceObject(_editor, fromContext);
-                searchAndReplaceForm.Show(owner);
+                if (w is TombEditor.Views.ReplaceObjectWindow existing)
+                {
+                    existing.Activate();
+                    return;
+                }
             }
-            else
-                existingWindow.Focus();
+
+            var vm = new TombEditor.ViewModels.ReplaceObjectWindowViewModel(_editor, fromContext);
+            var dialog = new TombEditor.Views.ReplaceObjectWindow { DataContext = vm };
+            if (owner is not null)
+                dialog.SetOwner(owner);
+            dialog.Show();
         }
 
         public static void ExportCurrentRoom(IWin32Window owner)
