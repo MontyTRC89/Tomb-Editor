@@ -1,0 +1,225 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using TombLib.LevelData;
+using TombLib.Utils;
+using TombLib.Wad;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
+
+namespace TombEditor.ViewModels;
+
+public partial class SearchWindowViewModel : ObservableObject, IDisposable
+{
+	public enum ScopeMode
+	{
+		Everything,
+		Rooms,
+		AllObjects,
+		ObjectsInSelectedRooms,
+		ItemTypes,
+		Triggers
+	}
+
+	public sealed class SearchResultRow
+	{
+		public object Target { get; init; } = null!;
+		public string Name { get; init; } = string.Empty;
+		public string Room { get; init; } = string.Empty;
+		public string Type { get; init; } = string.Empty;
+		public int Rate { get; init; }
+	}
+
+	private readonly Editor _editor;
+	private readonly IMessageService _messageService;
+
+	[ObservableProperty] private ScopeMode _scope = ScopeMode.Everything;
+	[ObservableProperty] private string _keyword = string.Empty;
+	[ObservableProperty] private SearchResultRow? _selectedRow;
+
+	public ObservableCollection<SearchResultRow> Rows { get; } = new();
+
+	public IReadOnlyList<ScopeMode> Scopes { get; } = Enum.GetValues<ScopeMode>();
+
+	public SearchWindowViewModel(
+		Editor editor,
+		IMessageService? messageService = null,
+		ILocalizationService? localizationService = null)
+	{
+		_editor = editor;
+		_messageService = ServiceLocator.ResolveService(messageService);
+		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+
+		_editor.EditorEventRaised += OnEditorEvent;
+		Rebuild();
+	}
+
+	partial void OnScopeChanged(ScopeMode value) => Rebuild();
+	partial void OnKeywordChanged(string value) => Rebuild();
+
+	partial void OnSelectedRowChanged(SearchResultRow? value)
+	{
+		if (value is null)
+			return;
+
+		switch (value.Target)
+		{
+			case Room r:
+				_editor.SelectedRoom = r;
+				break;
+			case ObjectInstance oi:
+				_editor.ShowObject(oi);
+				break;
+			case ItemType itemType:
+				var wadObj = itemType.ToIWadObject(_editor.Level.Settings);
+				if (wadObj is not null)
+					_editor.ChosenItems = new[] { wadObj };
+				break;
+		}
+	}
+
+	private void OnEditorEvent(IEditorEvent obj)
+	{
+		// Conservative: any change that could shift results triggers a rebuild.
+		if (obj is Editor.LoadedWadsChangedEvent
+			|| obj is Editor.RoomListChangedEvent
+			|| (obj is Editor.SelectedRoomChangedEvent && Scope == ScopeMode.ObjectsInSelectedRooms)
+			|| obj is IEditorObjectChangedEvent)
+		{
+			Rebuild();
+		}
+	}
+
+	private void Rebuild()
+	{
+		Rows.Clear();
+
+		string lowerKeyword = (Keyword ?? string.Empty).ToLower();
+		var relevant = GetRelevant(Scope);
+
+		var ranked = new List<SearchResultRow>();
+		foreach (var target in relevant)
+		{
+			int levenshtein = Levenshtein.DistanceSubstring(target.ToString()!.ToLower(), lowerKeyword, out int startIndex);
+			int rate = Math.Min(levenshtein * 256 + Math.Min(startIndex, 255), 1 << 16);
+
+			Room? room = GetRoom(target);
+			string roomLabel = room is null
+				? "<Unknown>"
+				: _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.Name;
+
+			string name = target switch
+			{
+				Room r when r.Properties.Tags.Count > 0 => r.Name + " / " + string.Join(" ", r.Properties.Tags) + " /",
+				Room r => r.Name,
+				_ => target.ToString()!
+			};
+
+			ranked.Add(new SearchResultRow
+			{
+				Target = target,
+				Name = name,
+				Room = roomLabel,
+				Type = FormatType(target),
+				Rate = rate
+			});
+		}
+
+		foreach (var row in ranked.OrderBy(r => r.Rate))
+			Rows.Add(row);
+	}
+
+	private IEnumerable<object> GetRelevant(ScopeMode scope)
+	{
+		if (scope is ScopeMode.Everything or ScopeMode.Rooms)
+			foreach (var room in _editor.Level.ExistingRooms)
+				yield return room;
+
+		if (scope is ScopeMode.Everything or ScopeMode.AllObjects)
+		{
+			foreach (var room in _editor.Level.ExistingRooms)
+				foreach (var instance in room.AnyObjects)
+					yield return instance;
+		}
+		else if (scope == ScopeMode.ObjectsInSelectedRooms)
+		{
+			foreach (var instance in _editor.SelectedRooms.SelectMany(r => r.AnyObjects))
+				yield return instance;
+		}
+
+		if (scope is ScopeMode.Everything or ScopeMode.ItemTypes)
+		{
+			foreach (var obj in _editor.Level.Settings.WadGetAllMoveables().Values)
+				yield return new ItemType(obj.Id, _editor.Level.Settings);
+			foreach (var obj in _editor.Level.Settings.WadGetAllStatics().Values)
+				yield return new ItemType(obj.Id, _editor.Level.Settings);
+		}
+
+		if (scope == ScopeMode.Triggers)
+		{
+			foreach (var room in _editor.Level.ExistingRooms)
+				foreach (var trigger in room.AnyObjects.OfType<TriggerInstance>())
+					yield return trigger;
+		}
+	}
+
+	private static Room? GetRoom(object obj) => obj switch
+	{
+		Room r => r,
+		ObjectInstance oi => oi.Room,
+		_ => null
+	};
+
+	private static string FormatType(object obj)
+	{
+		string name = obj.GetType().Name;
+		if (name.EndsWith("Instance"))
+			name = name[..^"Instance".Length];
+
+		// Insert a space before each Capital that follows a lowercase letter.
+		bool lastWasUpper = true;
+		for (int i = 0; i < name.Length; i++)
+		{
+			bool isUpper = char.IsUpper(name[i]);
+			if (isUpper && !lastWasUpper)
+				name = name.Insert(i++, " ");
+			lastWasUpper = isUpper;
+		}
+
+		return name;
+	}
+
+	[RelayCommand]
+	private void DeleteSelected()
+	{
+		if (SelectedRow is null)
+			return;
+
+		bool ok = _messageService.ShowConfirmation(
+			"Do you want to delete the selected entry? This action can't be undone.",
+			"Delete selected entry");
+		if (!ok)
+			return;
+
+		switch (SelectedRow.Target)
+		{
+			case Room room:
+				EditorActions.DeleteRooms(new[] { room }, null);
+				break;
+			case TriggerInstance:
+			case ObjectInstance oi when oi is ISpatial:
+				EditorActions.DeleteObjects(new[] { (ObjectInstance)SelectedRow.Target }, null, false);
+				break;
+			default:
+				_messageService.ShowError("This entry can only be deleted from the map.");
+				break;
+		}
+	}
+
+	public void Dispose() => _editor.EditorEventRaised -= OnEditorEvent;
+}

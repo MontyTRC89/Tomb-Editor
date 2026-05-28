@@ -675,8 +675,20 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate ()
             {
-                Forms.FormSearch searchForm = new Forms.FormSearch(_editor);
-                searchForm.Show(_editorWindow); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
+                {
+                    if (w is TombEditor.Views.SearchWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
+                }
+
+                var searchVm = new TombEditor.ViewModels.SearchWindowViewModel(_editor);
+                var searchWindow = new TombEditor.Views.SearchWindow { DataContext = searchVm };
+                if (_editorWindow is not null)
+                    searchWindow.SetOwner(_editorWindow);
+                searchWindow.Show();
             });
 
             AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate ()
@@ -1012,8 +1024,11 @@ namespace TombEditor
 
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate ()
             {
-                using (var f = new FormKeyboardLayout(_editor))
-                    f.ShowDialog();
+                var kbVm = new TombEditor.ViewModels.KeyboardLayoutWindowViewModel(_editor);
+                var kbDialog = new TombEditor.Views.KeyboardLayoutWindow { DataContext = kbVm };
+                if (_editorWindow is not null)
+                    kbDialog.SetOwner(_editorWindow);
+                kbDialog.ShowDialog();
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate ()

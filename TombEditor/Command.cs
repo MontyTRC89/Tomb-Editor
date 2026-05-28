@@ -974,14 +974,20 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormSearch)];
-                if (existingWindow == null)
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    var searchForm = new FormSearch(args.Editor);
-                    searchForm.Show(args.Window);
+                    if (w is TombEditor.Views.SearchWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
                 }
-                else
-                    existingWindow.Focus();
+
+                var searchVm = new TombEditor.ViewModels.SearchWindowViewModel(args.Editor);
+                var searchWindow = new TombEditor.Views.SearchWindow { DataContext = searchVm };
+                if (args.Window is not null)
+                    searchWindow.SetOwner(args.Window);
+                searchWindow.Show();
             });
 
             AddCommand("EditVolumeEventSets", "Edit volume event sets...", CommandType.Edit, delegate (CommandArgs args)
@@ -1721,8 +1727,11 @@ namespace TombEditor
 
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (var f = new FormKeyboardLayout(args.Editor))
-                    f.ShowDialog(args.Window);
+                var kbVm = new TombEditor.ViewModels.KeyboardLayoutWindowViewModel(args.Editor);
+                var kbDialog = new TombEditor.Views.KeyboardLayoutWindow { DataContext = kbVm };
+                if (args.Window is not null)
+                    kbDialog.SetOwner(args.Window);
+                kbDialog.ShowDialog();
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate (CommandArgs args)

@@ -622,6 +622,16 @@
         "Apply": "Apply"
     },
 
+    "Search": {
+        "Title": "Search",
+        "Scope": "Scope:",
+        "Keyword": "Keyword:",
+        "ColumnName": "Name",
+        "ColumnRoom": "Room",
+        "ColumnType": "Type",
+        "Delete": "Delete"
+    },
+
     "SelectRoomByTags": {
         "Title": "Select rooms by tags",
         "Tags": "Tags:",
