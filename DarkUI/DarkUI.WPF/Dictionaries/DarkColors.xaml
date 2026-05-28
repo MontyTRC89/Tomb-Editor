@@ -8,6 +8,7 @@
 	<Color x:Key="Color_Text">#DCDCDC</Color>
 	<Color x:Key="Color_Text_Highlight">#FFFF00</Color>
 	<Color x:Key="Color_Text_Warning">#FFB200</Color>
+	<Color x:Key="Color_Text_OnHighlight">White</Color>
 
 	<Color x:Key="Color_Background">#3C3F41</Color>
 	<Color x:Key="Color_Background_Alternative">#393C3E</Color>
@@ -44,6 +45,7 @@
 	<SolidColorBrush x:Key="Brush_Text" Color="{DynamicResource Color_Text}" />
 	<SolidColorBrush x:Key="Brush_Text_Highlight" Color="{DynamicResource Color_Text_Highlight}" />
 	<SolidColorBrush x:Key="Brush_Text_Warning" Color="{DynamicResource Color_Text_Warning}" />
+	<SolidColorBrush x:Key="Brush_Text_OnHighlight" Color="{DynamicResource Color_Text_OnHighlight}" />
 
 	<SolidColorBrush x:Key="Brush_Background" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_Alternative" Color="{DynamicResource Color_Background_Alternative}" />

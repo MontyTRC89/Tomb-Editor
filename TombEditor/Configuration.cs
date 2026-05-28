@@ -1,4 +1,5 @@
 using DarkUI.Docking;
+using DarkUI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -199,6 +200,7 @@ namespace TombEditor
         public float UI_FormColor_Brightness { get; set; } = 100.0f;
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
+        public Theme UI_WpfTheme { get; set; } = Theme.Dark;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Toolbar button order

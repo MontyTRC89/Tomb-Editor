@@ -74,7 +74,7 @@ namespace TombEditor
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
-            var services = WPFInitializer.InitializeWPF();
+            var services = WPFInitializer.InitializeWPF(configuration.UI_WpfTheme);
             services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
             ServiceLocator.Configure(services.BuildServiceProvider());
 

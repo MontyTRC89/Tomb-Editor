@@ -5,6 +5,9 @@
 
 	<!--  Base Colors  -->
 	<Color x:Key="Color_Text">Black</Color>
+	<Color x:Key="Color_Text_Highlight">#0050C0</Color>
+	<Color x:Key="Color_Text_Warning">#C06800</Color>
+	<Color x:Key="Color_Text_OnHighlight">Black</Color>
 
 	<Color x:Key="Color_Background">White</Color>
 	<Color x:Key="Color_Background_Alternative">#F8F8F8</Color>
@@ -39,6 +42,9 @@
 
 	<!--  Brushes  -->
 	<SolidColorBrush x:Key="Brush_Text" Color="{DynamicResource Color_Text}" />
+	<SolidColorBrush x:Key="Brush_Text_Highlight" Color="{DynamicResource Color_Text_Highlight}" />
+	<SolidColorBrush x:Key="Brush_Text_Warning" Color="{DynamicResource Color_Text_Warning}" />
+	<SolidColorBrush x:Key="Brush_Text_OnHighlight" Color="{DynamicResource Color_Text_OnHighlight}" />
 
 	<SolidColorBrush x:Key="Brush_Background" Color="{DynamicResource Color_Background}" />
 	<SolidColorBrush x:Key="Brush_Background_Alternative" Color="{DynamicResource Color_Background_Alternative}" />
