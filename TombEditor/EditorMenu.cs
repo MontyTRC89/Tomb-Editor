@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Input;
+using TombLib.Icons;
 using TombLib.Utils;
 using TombLib.WPF;
 
@@ -68,5 +69,22 @@ public static class EditorMenu
 				Window = WPFUtils.GetWin32WindowOwner(),
 			});
 		});
+	}
+
+	public static readonly DependencyProperty IconProperty = DependencyProperty.RegisterAttached(
+		"Icon",
+		typeof(string),
+		typeof(EditorMenu),
+		new PropertyMetadata(null, OnIconChanged));
+
+	public static string? GetIcon(DependencyObject obj) => (string?)obj.GetValue(IconProperty);
+	public static void SetIcon(DependencyObject obj, string? value) => obj.SetValue(IconProperty, value);
+
+	private static void OnIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is not MenuItem menuItem || e.NewValue is not string iconPath || string.IsNullOrWhiteSpace(iconPath))
+			return;
+
+		menuItem.Icon = new Image { Source = IconSources.Load(iconPath) };
 	}
 }
