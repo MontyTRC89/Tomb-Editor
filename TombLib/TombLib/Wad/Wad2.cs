@@ -294,12 +294,12 @@ namespace TombLib.Wad
                 if (page == null || page.Placements.Count == 0)
                     throw new InvalidOperationException("Unable to pack textures into the requested export page size.");
 
-                var atlas = new WadTexture(ImageC.CreateNew(page.Scale, page.Scale));
-                atlas.Image.Fill(new ColorC(0, 0, 0, 0));
+                var atlasImage = ImageC.CreateNew(page.Scale, page.Scale);
+                atlasImage.Fill(new ColorC(0, 0, 0, 0));
 
                 foreach (var placement in page.Placements)
                 {
-                    DrawTextureToAtlas(atlas, placement);
+                    DrawTextureToAtlas(atlasImage, placement);
 
                     placement.TextureReference.Position = new VectorInt2(
                         placement.Position.X + placement.PaddingX,
@@ -307,6 +307,7 @@ namespace TombLib.Wad
                     placement.TextureReference.Atlas = textures.Count;
                 }
 
+                var atlas = new WadTexture(atlasImage);
                 textures.Add(atlas);
                 remainingTextures.RemoveRange(0, page.Placements.Count);
             }
@@ -391,43 +392,43 @@ namespace TombLib.Wad
             return result;
         }
 
-        private static void DrawTextureToAtlas(WadTexture atlas, PackedTexturePlacement placement)
+        private static void DrawTextureToAtlas(ImageC atlasImage, PackedTexturePlacement placement)
         {
             var texture = placement.TextureReference.Texture;
 
             for (int p = 0; p < placement.PaddingX; p++)
-                atlas.Image.CopyFrom(placement.Position.X + p, placement.Position.Y + placement.PaddingY, texture.Image, 0, 0, 1, texture.Image.Height);
+                atlasImage.CopyFrom(placement.Position.X + p, placement.Position.Y + placement.PaddingY, texture.Image, 0, 0, 1, texture.Image.Height);
 
             for (int p = 0; p < placement.PaddingX; p++)
-                atlas.Image.CopyFrom(placement.Position.X + placement.PaddingX + texture.Image.Width + p, placement.Position.Y + placement.PaddingY, texture.Image, texture.Image.Width - 1, 0, 1, texture.Image.Height);
+                atlasImage.CopyFrom(placement.Position.X + placement.PaddingX + texture.Image.Width + p, placement.Position.Y + placement.PaddingY, texture.Image, texture.Image.Width - 1, 0, 1, texture.Image.Height);
 
             for (int p = 0; p < placement.PaddingY; p++)
-                atlas.Image.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + p, texture.Image, 0, 0, texture.Image.Width, 1);
+                atlasImage.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + p, texture.Image, 0, 0, texture.Image.Width, 1);
 
             for (int p = 0; p < placement.PaddingY; p++)
-                atlas.Image.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + placement.PaddingY + texture.Image.Height + p, texture.Image, 0, texture.Image.Height - 1, texture.Image.Width, 1);
+                atlasImage.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + placement.PaddingY + texture.Image.Height + p, texture.Image, 0, texture.Image.Height - 1, texture.Image.Width, 1);
 
             var color = texture.Image.GetPixel(0, 0);
             for (int px = 0; px < placement.PaddingX; px++)
                 for (int py = 0; py < placement.PaddingY; py++)
-                    atlas.Image.SetPixel(placement.Position.X + px, placement.Position.Y + py, color);
+                    atlasImage.SetPixel(placement.Position.X + px, placement.Position.Y + py, color);
 
             color = texture.Image.GetPixel(texture.Image.Width - 1, 0);
             for (int px = 0; px < placement.PaddingX; px++)
                 for (int py = 0; py < placement.PaddingY; py++)
-                    atlas.Image.SetPixel(placement.Position.X + texture.Image.Width + placement.PaddingX + px, placement.Position.Y + py, color);
+                    atlasImage.SetPixel(placement.Position.X + texture.Image.Width + placement.PaddingX + px, placement.Position.Y + py, color);
 
             color = texture.Image.GetPixel(texture.Image.Width - 1, texture.Image.Height - 1);
             for (int px = 0; px < placement.PaddingX; px++)
                 for (int py = 0; py < placement.PaddingY; py++)
-                    atlas.Image.SetPixel(placement.Position.X + texture.Image.Width + placement.PaddingX + px, placement.Position.Y + texture.Image.Height + placement.PaddingY + py, color);
+                    atlasImage.SetPixel(placement.Position.X + texture.Image.Width + placement.PaddingX + px, placement.Position.Y + texture.Image.Height + placement.PaddingY + py, color);
 
             color = texture.Image.GetPixel(0, texture.Image.Height - 1);
             for (int px = 0; px < placement.PaddingX; px++)
                 for (int py = 0; py < placement.PaddingY; py++)
-                    atlas.Image.SetPixel(placement.Position.X + px, placement.Position.Y + texture.Image.Height + placement.PaddingY + py, color);
+                    atlasImage.SetPixel(placement.Position.X + px, placement.Position.Y + texture.Image.Height + placement.PaddingY + py, color);
 
-            atlas.Image.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + placement.PaddingY, texture.Image);
+            atlasImage.CopyFrom(placement.Position.X + placement.PaddingX, placement.Position.Y + placement.PaddingY, texture.Image);
         }
     }
 }
