@@ -300,10 +300,7 @@ namespace TombLib.Wad
                 foreach (var placement in page.Placements)
                 {
                     DrawTextureToAtlas(atlasImage, placement);
-
-                    placement.TextureReference.Position = new VectorInt2(
-                        placement.Position.X + placement.PaddingX,
-                        placement.Position.Y + placement.PaddingY);
+                    placement.TextureReference.Position = new VectorInt2(placement.Position.X + placement.PaddingX, placement.Position.Y + placement.PaddingY);
                     placement.TextureReference.Atlas = textures.Count;
                 }
 
