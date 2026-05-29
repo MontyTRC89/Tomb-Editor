@@ -209,7 +209,7 @@ namespace TombLib.LuaProperties
             }
 
             sb.AppendLine();
-            sb.AppendLine("-- Materials");
+            sb.AppendLine("-- Level 3: Materials");
             sb.AppendLine();
 
             if (materialProperties != null)

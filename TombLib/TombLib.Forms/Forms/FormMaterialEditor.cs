@@ -490,22 +490,22 @@ namespace TombLib.Forms
 
 				case MaterialPropertyType.Int:
 					layout.Type = ArgumentType.Numerical;
-					layout.CustomEnumeration.AddRange(new[] { "-1000000", "1000000", "0", "1", "10" });
+					layout.CustomEnumeration.AddRange(CreateNumericLayoutParameters(property, false));
 					break;
 
 				case MaterialPropertyType.Float:
 					layout.Type = ArgumentType.Numerical;
-					layout.CustomEnumeration.AddRange(new[] { "-1000000", "1000000", "3", "0.1", "1.0" });
+					layout.CustomEnumeration.AddRange(CreateNumericLayoutParameters(property, true));
 					break;
 
 				case MaterialPropertyType.Vec2:
 					layout.Type = ArgumentType.Vector2;
-					layout.CustomEnumeration.AddRange(new[] { "-1000000", "1000000", "3", "0.1", "1.0" });
+					layout.CustomEnumeration.AddRange(CreateNumericLayoutParameters(property, true));
 					break;
 
 				case MaterialPropertyType.Vec3:
 					layout.Type = ArgumentType.Vector3;
-					layout.CustomEnumeration.AddRange(new[] { "-1000000", "1000000", "3", "0.1", "1.0" });
+					layout.CustomEnumeration.AddRange(CreateNumericLayoutParameters(property, true));
 					break;
 
 				case MaterialPropertyType.Color:
@@ -518,6 +518,36 @@ namespace TombLib.Forms
 			}
 
 			return layout;
+		}
+
+		private string[] CreateNumericLayoutParameters(MaterialPropertyDefinition property, bool isFractional)
+		{
+			var min = property.MinValue ?? -1000000.0f;
+			var max = property.MaxValue ?? 1000000.0f;
+
+			if (min > max)
+				(min, max) = (max, min);
+
+			if (isFractional)
+			{
+				return new[]
+				{
+					min.ToString(CultureInfo.InvariantCulture),
+					max.ToString(CultureInfo.InvariantCulture),
+					"3",
+					"0.1",
+					"1.0"
+				};
+			}
+
+			return new[]
+			{
+				min.ToString(CultureInfo.InvariantCulture),
+				max.ToString(CultureInfo.InvariantCulture),
+				"0",
+				"1",
+				"10"
+			};
 		}
 
 		private ArgumentLayout CreateUnavailableLayout()

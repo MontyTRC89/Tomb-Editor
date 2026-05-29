@@ -30,6 +30,8 @@ namespace TombLib.LevelData
         public string Description { get; set; }
         public MaterialPropertyType Type { get; set; }
         public string DefaultValue { get; set; }
+        public float? MinValue { get; set; }
+        public float? MaxValue { get; set; }
 
         public bool IsDefined => Type != MaterialPropertyType.None;
 
@@ -40,7 +42,9 @@ namespace TombLib.LevelData
                 Name = Name,
                 Description = Description,
                 Type = Type,
-                DefaultValue = DefaultValue
+                DefaultValue = DefaultValue,
+                MinValue = MinValue,
+                MaxValue = MaxValue
             };
         }
     }
@@ -310,6 +314,8 @@ namespace TombLib.LevelData
 
             result.Type = propertyType;
             result.DefaultValue = NormalizeDefaultValue(propertyType, propertyNode.Attributes?["defaultValue"]?.Value);
+            result.MinValue = ParseOptionalSingle(propertyNode.Attributes?["minValue"]?.Value);
+            result.MaxValue = ParseOptionalSingle(propertyNode.Attributes?["maxValue"]?.Value);
 
             return result;
         }
@@ -371,6 +377,17 @@ namespace TombLib.LevelData
         private static float ParseSingle(string value)
         {
             return float.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+        }
+
+        private static float? ParseOptionalSingle(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
+                return result;
+
+            return null;
         }
 
         private static MaterialTypeDefinition CreateFallbackDefinition(int type)

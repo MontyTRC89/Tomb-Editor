@@ -99,6 +99,21 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(source.LuaName);
                 }
 
+                // Write materials
+                writer.Write((uint)_materialDictionary.Count);
+                foreach (var material in _materialDictionary)
+                {
+                    writer.Write(material.Value.Name);
+                    writer.Write(material.Value.Type);
+
+                    writer.Write(material.Value.IsNormalMapFound);
+                    writer.Write(material.Value.IsHeightMapFound);
+                    writer.Write(material.Value.IsAmbientOcclusionMapFound);
+                    writer.Write(material.Value.IsRoughnessMapFound);
+                    writer.Write(material.Value.IsSpecularMapFound);
+                    writer.Write(material.Value.IsEmissiveMapFound);
+                }
+
                 // Write event sets
                 int eventSetCount = _level.Settings.GlobalEventSets.Count + _level.Settings.VolumeEventSets.Count;
                 writer.Write((uint)eventSetCount);
@@ -264,21 +279,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         writer.Write(propertyDefinition?.Name ?? string.Empty);
                         writer.Write((int)(propertyDefinition?.Type ?? MaterialPropertyType.None));
                     }
-                }
-
-                // Write materials
-                writer.Write((uint)_materialDictionary.Count);
-                foreach (var material in _materialDictionary)
-                {
-                    writer.Write(material.Value.Name);
-                    writer.Write(material.Value.Type);
-
-                    writer.Write(material.Value.IsNormalMapFound);
-                    writer.Write(material.Value.IsHeightMapFound);
-                    writer.Write(material.Value.IsAmbientOcclusionMapFound);
-                    writer.Write(material.Value.IsRoughnessMapFound);
-                    writer.Write(material.Value.IsSpecularMapFound);
-                    writer.Write(material.Value.IsEmissiveMapFound);
                 }
 
                 geometryDataBuffer = geometryDataStream.ToArray();
