@@ -3,15 +3,9 @@
   <material id="0" name="Default">
     <property
       slot="0"
-      name="SpecularIntensity"
-      type="Float"
-      defaultValue="1.0"
-      description="Intensity multiplier applied to emissive lighting." />
-    <property
-      slot="1"
       name="EmissiveIntensity"
       type="Float"
       defaultValue="1.0"
-      description="Intensity multiplier applied to specular lighting." />
+      description="Intensity multiplier applied to emissive lighting." />
   </material>
 </materialCatalog>
