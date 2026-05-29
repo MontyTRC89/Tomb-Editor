@@ -190,8 +190,7 @@ public partial class ToolboxView : UserControl
 	{
 		var editor = Editor.Instance;
 		var owner = _winFormsHost as System.Windows.Forms.IWin32Window;
-		var menu = new Controls.ContextMenus.GridPaintContextMenu(editor, owner);
-		menu.Show(System.Windows.Forms.Cursor.Position);
+		Features.ContextMenus.GridPaintWpfContextMenu.Show(editor, owner, System.Windows.Forms.Cursor.Position);
 	}
 
 	#endregion Grid Paint

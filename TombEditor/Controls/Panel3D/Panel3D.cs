@@ -8,7 +8,6 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using TombEditor.Controls.ContextMenus;
 using TombEditor.Features.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Controls;
@@ -119,7 +118,11 @@ namespace TombEditor.Controls.Panel3D
         private bool _noSelectionConfirm;
         private Gizmo _gizmo;
         private bool _gizmoEnabled = false;
-        private BaseContextMenu _currentContextMenu;
+        // Hold a strong reference to the currently open WPF ContextMenu so
+        // the popup isn't GC'd before the user picks an item. All three
+        // right-click branches (object / sector / selected geometry) now
+        // use the WPF menus under TombEditor.Features.ContextMenus.
+        private System.Windows.Controls.ContextMenu _currentWpfContextMenu;
         private ToolHandler _toolHandler;
         private readonly MovementTimer _movementTimer;
         private bool _dragObjectPicked = false;
@@ -240,7 +243,8 @@ namespace TombEditor.Controls.Panel3D
                 _flyModeTimer?.Dispose();
                 _flybyPreview?.Dispose();
                 _rasterizerStateDepthBias?.Dispose();
-                _currentContextMenu?.Dispose();
+                if (_currentWpfContextMenu != null)
+                    _currentWpfContextMenu.IsOpen = false;
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);

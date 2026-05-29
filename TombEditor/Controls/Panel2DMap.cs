@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Controls.ContextMenus;
+using TombEditor.Features.ContextMenus;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
@@ -94,7 +94,7 @@ namespace TombEditor.Controls
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
         private const float _probeRadius = 18;
 
-        private BaseContextMenu _currentContextMenu;
+        private System.Windows.Controls.ContextMenu _currentContextMenu;
 
         public Panel2DMap()
         {
@@ -127,7 +127,8 @@ namespace TombEditor.Controls
 
             _movementTimer?.Dispose();
             _insertionContourLineData = null;
-            _currentContextMenu?.Dispose();
+            if (_currentContextMenu != null)
+                _currentContextMenu.IsOpen = false;
             base.Dispose(disposing);
         }
 
@@ -486,13 +487,14 @@ namespace TombEditor.Controls
                     var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(e.Location.X, e.Location.Y);
                     if (distance.Length() < 4.0f)
                     {
-                        _currentContextMenu?.Dispose();
+                        if (_currentContextMenu != null)
+                            _currentContextMenu.IsOpen = false;
                         Vector2 clickPos = FromVisualCoord(e.Location);
+                        var screen = PointToScreen(e.Location);
                         if (_editor.SelectedRooms.Contains(DoPicking(clickPos)))
-                            _currentContextMenu = new SelectedRoomContextMenu(_editor, this, clickPos);
+                            _currentContextMenu = SelectedRoomWpfContextMenu.Show(_editor, this, clickPos, screen);
                         else
-                            _currentContextMenu = new Space2DMapContextMenu(_editor, this, clickPos);
-                        _currentContextMenu.Show(PointToScreen(e.Location));
+                            _currentContextMenu = Space2DMapWpfContextMenu.Show(_editor, this, clickPos, screen);
                     }
 
                     _viewMoveMouseWorldCoord = null;

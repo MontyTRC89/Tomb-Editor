@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Controls.ContextMenus;
+using TombEditor.Features.ContextMenus;
 using TombEditor.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -279,8 +279,7 @@ namespace TombEditor.Features.DockableViews.TexturePanel
 					if ((newPos - _startPos.Value).Length() > 4.0f)
 						return;
 
-					var menu = new TextureMapContextMenu(_editor, this, FromVisualCoord(e.Location));
-					menu.Show(PointToScreen(e.Location));
+					TextureMapWpfContextMenu.Show(_editor, this, FromVisualCoord(e.Location), PointToScreen(e.Location));
 				}
 
 				base.OnMouseUp(e);
