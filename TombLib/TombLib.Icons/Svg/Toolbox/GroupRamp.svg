@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <!-- Isometric ramp mirrored on the vertical axis: apex on the RIGHT.
-       Front face hypotenuse is the interior crease at 80% opacity. -->
-  <g stroke="#FFFFFF" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-linecap="round">
+  <g stroke="#FFFFFF" stroke-width="0.88" fill="none" stroke-linejoin="round" stroke-linecap="round">
     <path d="M 12 10 L 8 13 L 4 10 L 8 4 L 12 6 Z"/>
     <line x1="8" y1="13" x2="12" y2="6" opacity="0.8"/>
   </g>

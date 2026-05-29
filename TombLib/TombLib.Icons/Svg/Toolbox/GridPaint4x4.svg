@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <text x="2.5" y="9.5" font-family="Segoe UI, Arial, sans-serif" font-size="9" font-weight="700" fill="#FFFFFF">4</text>
-  <g transform="translate(7 7) rotate(35)">
-    <rect x="0" y="-1.4" width="6" height="2.8" fill="#FFFFFF"/>
-    <path d="M0 -1.4 L-2 0 L0 1.4 Z" fill="#FFFFFF"/>
+  <text x="0.5" y="8" font-family="Segoe UI, Arial, sans-serif" font-size="7" font-weight="700" fill="#FFFFFF">4</text>
+  <g stroke="#FFFFFF" stroke-width="0.88" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="6" y="3" width="8" height="2.2" rx="1.1"/>
+    <line x1="10" y1="5.2" x2="10" y2="8.5"/>
+    <rect x="9.3" y="8.5" width="1.4" height="3.5" rx="0.3"/>
   </g>
 </svg>
