@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Features.Dialogs.Memo;
+using TombEditor.Features.Dialogs.Sink;
 using TombEditor.Forms;
 using TombEditor.ViewModels;
 using TombEditor.Views;
