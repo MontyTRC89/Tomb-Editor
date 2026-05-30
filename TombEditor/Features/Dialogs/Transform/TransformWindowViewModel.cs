@@ -9,13 +9,12 @@ using TombLib.Wad.Catalog;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Transform;
 
 public partial class TransformWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly PositionBasedObjectInstance _instance;
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
 
     private readonly Vector3 _backupPosition;
     private readonly Vector3 _backupRotation;
@@ -46,12 +45,10 @@ public partial class TransformWindowViewModel : ObservableObject, IModalDialogVi
     public TransformWindowViewModel(
         PositionBasedObjectInstance instance,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
         _instance = instance;
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         _backupPosition = instance.Position;
@@ -175,13 +172,11 @@ public partial class TransformWindowViewModel : ObservableObject, IModalDialogVi
     {
         SaveToInstance();
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
     private void Cancel()
     {
-        // Restore the snapshot taken in the constructor.
         _instance.Position = _backupPosition;
 
         if (_instance is IScaleable scaleable)
@@ -197,8 +192,6 @@ public partial class TransformWindowViewModel : ObservableObject, IModalDialogVi
             rotYXR.Roll = _backupRotation.Z;
 
         _editor.ObjectChange(_instance, ObjectChangeType.Change);
-
         DialogResult = false;
-        _dialogService.Close(this);
     }
 }

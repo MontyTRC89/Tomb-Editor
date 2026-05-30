@@ -2047,11 +2047,11 @@ namespace TombEditor
                 }
 
                 {
-                    var transformViewModel = new TombEditor.ViewModels.TransformWindowViewModel(
+                    var transformViewModel = new TombEditor.Features.Dialogs.Transform.TransformWindowViewModel(
                         (PositionBasedObjectInstance)args.Editor.SelectedObject,
                         args.Editor);
 
-                    var transformDialog = new TombEditor.Views.TransformWindow { DataContext = transformViewModel };
+                    var transformDialog = new TombEditor.Features.Dialogs.Transform.TransformWindow { DataContext = transformViewModel };
 
                     if (args.Window is not null)
                         transformDialog.SetOwner(args.Window);

@@ -1,16 +1,17 @@
 using System.Windows;
 using System.Windows.Input;
-using TombEditor.ViewModels;
 using TombLib.LevelData;
 using TombLib.Wad;
+using TombLib.WPF;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.ReplaceObject;
 
 public partial class ReplaceObjectWindow : Window
 {
 	public ReplaceObjectWindow()
 	{
 		InitializeComponent();
+		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormReplaceObject");
 		Closed += (_, _) =>
 		{
 			if (DataContext is ReplaceObjectWindowViewModel vm)
@@ -43,7 +44,6 @@ public partial class ReplaceObjectWindow : Window
 		if (instance is null)
 			return;
 
-		// Decide source vs dest based on which row the user dropped over.
 		var dropPos = e.GetPosition(this);
 		var sourceTop = tbSource.TransformToAncestor(this).Transform(new Point(0, 0)).Y;
 		var destTop = tbDest.TransformToAncestor(this).Transform(new Point(0, 0)).Y;
@@ -64,19 +64,10 @@ public partial class ReplaceObjectWindow : Window
 		return e.Data.GetData(formats[0]) as IWadObject;
 	}
 
-	private void OnSourceColorClick(object sender, MouseButtonEventArgs e)
-		=> EditLightColor(asSource: true);
-
-	private void OnDestColorClick(object sender, MouseButtonEventArgs e)
-		=> EditLightColor(asSource: false);
-
-	private void EditLightColor(bool asSource)
-	{
-		// Color editing on the floating swatches is a niche feature; punt until the
-		// WinForms RealtimeColorDialog has a WPF replacement bound to LightInstance.Color.
-		// Users can still change the light color the usual way (re-select a light with the
-		// desired color in the level) and use it as source/destination here.
-	}
+	// Color-editing on the floating swatches is a niche legacy feature; pending a WPF
+	// replacement for RealtimeColorDialog bound to LightInstance.Color.
+	private void OnSourceColorClick(object sender, MouseButtonEventArgs e) { }
+	private void OnDestColorClick(object sender, MouseButtonEventArgs e) { }
 
 	private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 }

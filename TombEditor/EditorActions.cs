@@ -15,6 +15,9 @@ using TombEditor.Features.Dialogs.Camera;
 using TombEditor.Features.Dialogs.ChooseRoom;
 using TombEditor.Features.Dialogs.Memo;
 using TombEditor.Features.Dialogs.QuickItemGroup;
+using TombEditor.Features.Dialogs.ReplaceObject;
+using TombEditor.Features.Dialogs.ToolBarLayout;
+using TombEditor.Features.Dialogs.Transform;
 using TombEditor.Features.Dialogs.SelectRoomByTags;
 using TombEditor.Features.Dialogs.Portal;
 using TombEditor.Features.Dialogs.Sink;
@@ -5241,15 +5244,15 @@ namespace TombEditor
         {
             foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
             {
-                if (w is TombEditor.Views.ReplaceObjectWindow existing)
+                if (w is TombEditor.Features.Dialogs.ReplaceObject.ReplaceObjectWindow existing)
                 {
                     existing.Activate();
                     return;
                 }
             }
 
-            var vm = new TombEditor.ViewModels.ReplaceObjectWindowViewModel(_editor, fromContext);
-            var dialog = new TombEditor.Views.ReplaceObjectWindow { DataContext = vm };
+            var vm = new TombEditor.Features.Dialogs.ReplaceObject.ReplaceObjectWindowViewModel(_editor, fromContext);
+            var dialog = new TombEditor.Features.Dialogs.ReplaceObject.ReplaceObjectWindow { DataContext = vm };
             if (owner is not null)
                 dialog.SetOwner(owner);
             dialog.Show();

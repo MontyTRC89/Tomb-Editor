@@ -15,7 +15,7 @@ using TombLib.WPF;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.ReplaceObject;
 
 public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposable
 {

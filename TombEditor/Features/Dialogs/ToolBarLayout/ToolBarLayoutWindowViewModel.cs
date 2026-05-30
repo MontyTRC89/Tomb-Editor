@@ -9,7 +9,7 @@ using MvvmDialogs;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.ToolBarLayout;
 
 public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDialogViewModel
 {
@@ -17,7 +17,6 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 	public const string SeparatorDisplay = "[ Separator ]";
 
 	private readonly Editor _editor;
-	private readonly IDialogService _dialogService;
 	private readonly IReadOnlyList<string> _universe;
 
 	[ObservableProperty] private bool? _dialogResult;
@@ -30,11 +29,9 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 	public ToolBarLayoutWindowViewModel(
 		Editor editor,
 		IEnumerable<string> availableButtonNames,
-		IDialogService? dialogService = null,
 		ILocalizationService? localizationService = null)
 	{
 		_editor = editor;
-		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		_universe = availableButtonNames.ToList();
@@ -134,13 +131,8 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 	{
 		Apply();
 		DialogResult = true;
-		_dialogService.Close(this);
 	}
 
 	[RelayCommand]
-	private void Cancel()
-	{
-		DialogResult = false;
-		_dialogService.Close(this);
-	}
+	private void Cancel() => DialogResult = false;
 }
