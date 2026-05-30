@@ -976,15 +976,15 @@ namespace TombEditor
             {
                 foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    if (w is TombEditor.Views.SearchWindow existing)
+                    if (w is TombEditor.Features.Dialogs.Search.SearchWindow existing)
                     {
                         existing.Activate();
                         return;
                     }
                 }
 
-                var searchVm = new TombEditor.ViewModels.SearchWindowViewModel(args.Editor);
-                var searchWindow = new TombEditor.Views.SearchWindow { DataContext = searchVm };
+                var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(args.Editor);
+                var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
                 if (args.Window is not null)
                     searchWindow.SetOwner(args.Window);
                 searchWindow.Show();

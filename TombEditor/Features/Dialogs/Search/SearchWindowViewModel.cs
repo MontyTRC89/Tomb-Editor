@@ -12,7 +12,7 @@ using TombLib.Wad;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Search;
 
 public partial class SearchWindowViewModel : ObservableObject, IDisposable
 {

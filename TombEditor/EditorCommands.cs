@@ -677,15 +677,15 @@ namespace TombEditor
             {
                 foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    if (w is TombEditor.Views.SearchWindow existing)
+                    if (w is TombEditor.Features.Dialogs.Search.SearchWindow existing)
                     {
                         existing.Activate();
                         return;
                     }
                 }
 
-                var searchVm = new TombEditor.ViewModels.SearchWindowViewModel(_editor);
-                var searchWindow = new TombEditor.Views.SearchWindow { DataContext = searchVm };
+                var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(_editor);
+                var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
                 if (_editorWindow is not null)
                     searchWindow.SetOwner(_editorWindow);
                 searchWindow.Show();

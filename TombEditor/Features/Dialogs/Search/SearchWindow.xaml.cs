@@ -1,14 +1,15 @@
 using System.Windows;
 using System.Windows.Input;
-using TombEditor.ViewModels;
+using TombLib.WPF;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.Search;
 
 public partial class SearchWindow : Window
 {
 	public SearchWindow()
 	{
 		InitializeComponent();
+		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormSearch");
 		Closed += (_, _) =>
 		{
 			if (DataContext is SearchWindowViewModel vm)
