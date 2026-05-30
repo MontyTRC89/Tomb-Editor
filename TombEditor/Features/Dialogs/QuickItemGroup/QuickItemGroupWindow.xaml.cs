@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.QuickItemGroup;
 
 public partial class QuickItemGroupWindow : Window
 {

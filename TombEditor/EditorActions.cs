@@ -12,7 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Features.Dialogs.Camera;
+using TombEditor.Features.Dialogs.ChooseRoom;
 using TombEditor.Features.Dialogs.Memo;
+using TombEditor.Features.Dialogs.QuickItemGroup;
+using TombEditor.Features.Dialogs.SelectRoomByTags;
 using TombEditor.Features.Dialogs.Portal;
 using TombEditor.Features.Dialogs.Sink;
 using TombEditor.Features.Dialogs.SoundSource;
@@ -5929,8 +5932,8 @@ namespace TombEditor
 
             if (items.Count <= 1)
             {
-                var vm = new TombEditor.ViewModels.QuickItemGroupWindowViewModel(_editor);
-                var dialog = new TombEditor.Views.QuickItemGroupWindow { DataContext = vm };
+                var vm = new QuickItemGroupWindowViewModel(_editor);
+                var dialog = new QuickItemGroupWindow { DataContext = vm };
 
                 if (owner is not null)
                     dialog.SetOwner(owner);
