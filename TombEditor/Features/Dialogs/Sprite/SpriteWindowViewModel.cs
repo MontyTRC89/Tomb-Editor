@@ -9,13 +9,12 @@ using TombLib.Wad.Catalog;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Sprite;
 
 public partial class SpriteWindowViewModel : ObservableObject, IModalDialogViewModel
 {
 	private readonly SpriteInstance _instance;
 	private readonly Editor _editor;
-	private readonly IDialogService _dialogService;
 
 	[ObservableProperty] private bool? _dialogResult;
 
@@ -28,14 +27,10 @@ public partial class SpriteWindowViewModel : ObservableObject, IModalDialogViewM
 	/// <summary>Index used by the WinForms preview panel. -1 → empty.</summary>
 	public int PreviewSpriteIndex => SelectedSpriteIndex < 0 ? 0 : SelectedSpriteIndex;
 
-	public SpriteWindowViewModel(
-		SpriteInstance instance,
-		IDialogService? dialogService = null,
-		ILocalizationService? localizationService = null)
+	public SpriteWindowViewModel(SpriteInstance instance, ILocalizationService? localizationService = null)
 	{
 		_instance = instance;
 		_editor = Editor.Instance;
-		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		_editor.EditorEventRaised += OnEditorEvent;
@@ -72,15 +67,9 @@ public partial class SpriteWindowViewModel : ObservableObject, IModalDialogViewM
 	{
 		if (SelectedSpriteIndex >= 0)
 			_instance.SetSequenceAndFrame(SelectedSpriteIndex);
-
 		DialogResult = true;
-		_dialogService.Close(this);
 	}
 
 	[RelayCommand]
-	private void Cancel()
-	{
-		DialogResult = false;
-		_dialogService.Close(this);
-	}
+	private void Cancel() => DialogResult = false;
 }

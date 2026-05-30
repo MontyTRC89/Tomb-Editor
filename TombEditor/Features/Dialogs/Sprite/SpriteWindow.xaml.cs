@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using System.Windows;
-using TombEditor.ViewModels;
+using TombLib.WPF;
 using WadTool.Controls;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.Sprite;
 
 public partial class SpriteWindow : Window
 {
@@ -22,6 +22,8 @@ public partial class SpriteWindow : Window
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
+		WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormSprite");
+
 		if (DataContext is not SpriteWindowViewModel vm)
 			return;
 

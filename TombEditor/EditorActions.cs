@@ -1205,8 +1205,8 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR2, "Room sprite"))
                     return;
 
-                var spriteViewModel = new TombEditor.ViewModels.SpriteWindowViewModel(spriteInstance);
-                var spriteDialog = new TombEditor.Views.SpriteWindow { DataContext = spriteViewModel };
+                var spriteViewModel = new TombEditor.Features.Dialogs.Sprite.SpriteWindowViewModel(spriteInstance);
+                var spriteDialog = new TombEditor.Features.Dialogs.Sprite.SpriteWindow { DataContext = spriteViewModel };
 
                 if (owner is not null)
                     spriteDialog.SetOwner(owner);
