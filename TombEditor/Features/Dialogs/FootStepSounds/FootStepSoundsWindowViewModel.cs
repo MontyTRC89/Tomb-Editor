@@ -13,7 +13,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.FootStepSounds;
 
 public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDialogViewModel
 {

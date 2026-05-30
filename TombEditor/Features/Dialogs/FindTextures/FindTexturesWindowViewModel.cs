@@ -11,7 +11,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.FindTextures;
 
 public sealed record TextureSearchTypeItem(TextureSearchType Type, string DisplayName);
 

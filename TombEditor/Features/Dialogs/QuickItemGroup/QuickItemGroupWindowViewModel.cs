@@ -10,7 +10,7 @@ using TombLib.Wad;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.QuickItemGroup;
 
 public partial class QuickItemGroupWindowViewModel : ObservableObject, IModalDialogViewModel
 {

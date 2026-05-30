@@ -294,7 +294,7 @@ namespace TombEditor.Forms
         private readonly BindingList<AutoStaticMeshMergeEntry> _staticMeshMergeGridViewDataSource = new BindingList<AutoStaticMeshMergeEntry>();
         private readonly Cache<TextureCachePreviewKey, Bitmap> _texturePreviewCache;
         private TombEditor.Features.Dialogs.WadPreview.WadPreviewWindow _previewWad = null;
-        private TombEditor.Views.TexturePreviewWindow _previewTexture = null;
+        private TombEditor.Features.Dialogs.TexturePreview.TexturePreviewWindow _previewTexture = null;
 
         public FormLevelSettings(Editor editor)
         {
@@ -1105,7 +1105,7 @@ namespace TombEditor.Forms
 
                 // Open preview
                 _previewTexture?.Close();
-                _previewTexture = new TombEditor.Views.TexturePreviewWindow(texture);
+                _previewTexture = new TombEditor.Features.Dialogs.TexturePreview.TexturePreviewWindow(texture);
                 _previewTexture.SetOwnerFromHwnd(Handle);
                 var screenArea = textureFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
                 FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));

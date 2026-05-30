@@ -10,7 +10,7 @@ using TombLib.LevelData;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.ChooseRoom;
 
 public partial class ChooseRoomWindowViewModel : ObservableObject, IModalDialogViewModel
 {

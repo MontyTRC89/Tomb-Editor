@@ -16,7 +16,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.TextureRemap;
 
 public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialogViewModel
 {

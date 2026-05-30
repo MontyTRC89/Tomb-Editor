@@ -1456,8 +1456,8 @@ namespace TombEditor
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
                 {
-                    var vm = new TombEditor.ViewModels.TextureRemapWindowViewModel(args.Editor);
-                    var dialog = new TombEditor.Views.TextureRemapWindow { DataContext = vm };
+                    var vm = new TombEditor.Features.Dialogs.TextureRemap.TextureRemapWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Features.Dialogs.TextureRemap.TextureRemapWindow { DataContext = vm };
                     if (args.Window is not null)
                         dialog.SetOwner(args.Window);
                     dialog.ShowDialog();
@@ -1467,13 +1467,13 @@ namespace TombEditor
             AddCommand("SearchTextures", "Search textures...", CommandType.Textures, delegate (CommandArgs args)
             {
                 var existingWpfWindow = System.Windows.Application.Current?.Windows
-                    .OfType<TombEditor.Views.FindTexturesWindow>()
+                    .OfType<TombEditor.Features.Dialogs.FindTextures.FindTexturesWindow>()
                     .FirstOrDefault();
 
                 if (existingWpfWindow is null)
                 {
-                    var vm = new TombEditor.ViewModels.FindTexturesWindowViewModel(args.Editor);
-                    var dialog = new TombEditor.Views.FindTexturesWindow { DataContext = vm };
+                    var vm = new TombEditor.Features.Dialogs.FindTextures.FindTexturesWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Features.Dialogs.FindTextures.FindTexturesWindow { DataContext = vm };
                     if (args.Window is not null)
                         dialog.SetOwner(args.Window);
                     dialog.Show();

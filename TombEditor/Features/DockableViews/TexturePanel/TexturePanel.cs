@@ -186,8 +186,8 @@ namespace TombEditor.Features.DockableViews.TexturePanel
 			if (texture is null)
 				return;
 
-			var vm = new ViewModels.FootStepSoundsWindowViewModel(texture, _editor);
-			var dialog = new Views.FootStepSoundsWindow { DataContext = vm };
+			var vm = new Features.Dialogs.FootStepSounds.FootStepSoundsWindowViewModel(texture, _editor);
+			var dialog = new Features.Dialogs.FootStepSounds.FootStepSoundsWindow { DataContext = vm };
 			dialog.SetOwner(this);
 			dialog.ShowDialog();
 		}
@@ -198,8 +198,8 @@ namespace TombEditor.Features.DockableViews.TexturePanel
 			if (texture is null)
 				return;
 
-			var vm = new ViewModels.BumpMapsWindowViewModel(texture, _editor);
-			var dialog = new Views.BumpMapsWindow { DataContext = vm };
+			var vm = new Features.Dialogs.BumpMaps.BumpMapsWindowViewModel(texture, _editor);
+			var dialog = new Features.Dialogs.BumpMaps.BumpMapsWindow { DataContext = vm };
 			dialog.SetOwner(this);
 			dialog.ShowDialog();
 		}

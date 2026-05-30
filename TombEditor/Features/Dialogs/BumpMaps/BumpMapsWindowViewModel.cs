@@ -14,7 +14,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.BumpMaps;
 
 public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogViewModel
 {

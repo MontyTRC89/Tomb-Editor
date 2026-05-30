@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Globalization;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Media;
@@ -10,23 +9,29 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.WPF;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.FootStepSounds;
 
 /// <summary>
-/// Texture map specialization that overlays bump-mapping level tiles on top of the texture
-/// and snaps selection to the bump-mapping granularity.
+/// Texture map specialization that overlays foot-step sound tiles on top of the texture and
+/// snaps selection to the foot-step-sound granularity. Free-corner editing is disabled.
 /// </summary>
-public sealed class BumpMapsTextureMapView : WpfTextureMapView
+public sealed class FootStepSoundsTextureMapView : WpfTextureMapView
 {
-    private static readonly Brush[] BumpBrushes = CreateBumpBrushes();
+    private const byte BrushAlpha = 212;
+    private static readonly Brush[] SoundBrushes = CreateSoundBrushes();
     private static readonly Brush CoverBrush = CreateFrozenBrush(Color.FromArgb(128, 15, 15, 200));
     private static readonly Pen TileBorderPen = CreateFrozenPen(Colors.White, 1.0);
 
-    private const double BumpStringSize = 0.4;
-    private const double BumpProportion = 1.0 / 4.0;
+    private const double LabelTextSize = 0.4;
+    private const double LabelProportion = 1.0 / 4.0;
+
+    public FootStepSoundsTextureMapView()
+    {
+        _allowFreeCornerEdit = false;
+    }
 
     protected override SelectionPrecisionType GetSelectionPrecision(bool singleVertexMovement = false)
-        => new(LevelTexture.BumpMappingGranularity, true);
+        => new(LevelTexture.FootStepSoundGranularity, true);
 
     protected override float MaxTextureSize => float.PositiveInfinity;
     protected override bool DrawTriangle => false;
@@ -36,45 +41,46 @@ public sealed class BumpMapsTextureMapView : WpfTextureMapView
         if (base.VisibleTexture is not LevelTexture texture)
             return;
 
-        // Visible tile range in texture space.
         Vector2 start = FromVisualCoord(new Point(0, 0));
         Vector2 end = FromVisualCoord(new Point(ActualWidth, ActualHeight));
 
         start = Vector2.Min(texture.Image.Size, Vector2.Max(Vector2.Zero, start));
         end = Vector2.Min(texture.Image.Size, Vector2.Max(Vector2.Zero, end));
 
-        int tileStartX = (int)Math.Floor(start.X / LevelTexture.BumpMappingGranularity);
-        int tileStartY = (int)Math.Floor(start.Y / LevelTexture.BumpMappingGranularity);
-        int tileEndX = (int)Math.Ceiling(end.X / LevelTexture.BumpMappingGranularity);
-        int tileEndY = (int)Math.Ceiling(end.Y / LevelTexture.BumpMappingGranularity);
+        int tileStartX = (int)Math.Floor(start.X / LevelTexture.FootStepSoundGranularity);
+        int tileStartY = (int)Math.Floor(start.Y / LevelTexture.FootStepSoundGranularity);
+        int tileEndX = (int)Math.Ceiling(end.X / LevelTexture.FootStepSoundGranularity);
+        int tileEndY = (int)Math.Ceiling(end.Y / LevelTexture.FootStepSoundGranularity);
 
         double pixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
-        double fontSize = Math.Max(6, BumpStringSize * BumpProportion * LevelTexture.BumpMappingGranularity * Math.Min(100, ViewScale));
+        double fontSize = Math.Max(6, LabelTextSize * LabelProportion * LevelTexture.FootStepSoundGranularity * Math.Min(100, ViewScale));
         var typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
 
         for (int y = tileStartY; y < tileEndY; y++)
         {
             for (int x = tileStartX; x < tileEndX; x++)
             {
-                if (x < 0 || x >= texture.BumpMappingWidth || y < 0 || y >= texture.BumpMappingHeight)
+                if (x < 0 || x >= texture.FootStepSoundWidth || y < 0 || y >= texture.FootStepSoundHeight)
                     continue;
 
-                BumpMappingLevel level = texture.GetBumpMapLevel(x, y);
+                TextureFootStep.Type sound = texture.GetFootStepSound(x, y);
+                Brush brush = SoundBrushes[(int)sound];
 
-                Vector2 tileStartTex = new Vector2(x, y) * LevelTexture.BumpMappingGranularity;
+                Vector2 tileStartTex = new Vector2(x, y) * LevelTexture.FootStepSoundGranularity;
                 Point tileStart = ToVisualCoord(tileStartTex);
-                Point tileEnd = ToVisualCoord(tileStartTex + new Vector2(LevelTexture.BumpMappingGranularity));
+                Point tileEnd = ToVisualCoord(tileStartTex + new Vector2(LevelTexture.FootStepSoundGranularity));
 
+                double labelTop = tileStart.Y * LabelProportion + tileEnd.Y * (1.0 - LabelProportion);
                 var labelArea = new Rect(
                     Math.Min(tileStart.X, tileEnd.X),
-                    tileStart.Y * BumpProportion + tileEnd.Y * (1.0 - BumpProportion),
+                    labelTop,
                     Math.Abs(tileEnd.X - tileStart.X),
-                    Math.Abs(tileEnd.Y - (tileStart.Y * BumpProportion + tileEnd.Y * (1.0 - BumpProportion))));
+                    Math.Abs(tileEnd.Y - labelTop));
 
-                drawingContext.DrawRectangle(BumpBrushes[(int)level], null, labelArea);
+                drawingContext.DrawRectangle(brush, null, labelArea);
 
                 drawingContext.DrawCenteredText(
-                    level.ToString(),
+                    sound.ToString().SplitCamelcase(),
                     labelArea,
                     typeface,
                     fontSize,
@@ -91,7 +97,7 @@ public sealed class BumpMapsTextureMapView : WpfTextureMapView
             }
         }
 
-        // Fill covered tiles for the current selection.
+        // Highlight the selection covered tiles.
         if (SelectedTexture.Texture is not null)
         {
             Vector2 p0 = SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity;
@@ -119,12 +125,30 @@ public sealed class BumpMapsTextureMapView : WpfTextureMapView
         base.OnPaintSelection(drawingContext);
     }
 
-    private static Brush[] CreateBumpBrushes() => new Brush[]
+    private static Brush[] CreateSoundBrushes() => new Brush[]
     {
-        CreateFrozenBrush(Color.FromArgb(200, 160, 160, 160)), // 0: None
-        CreateFrozenBrush(Color.FromArgb(200, 235, 200, 120)), // 1: Level 1
-        CreateFrozenBrush(Color.FromArgb(200, 245, 180, 100)), // 2: Level 2
-        CreateFrozenBrush(Color.FromArgb(200, 255, 160, 80))   // 3: Level 3
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 255, 188, 143)), // Mud
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 220, 224, 250)), // Snow
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 190, 190, 10)),  // Sand
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 128, 128, 128)), // Gravel
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 140, 170, 250)), // Ice
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 40, 80, 230)),   // Water
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 160, 160, 170)), // Stone
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 222, 184, 135)), // Wood
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 190, 180, 180)), // Metal
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 244, 164, 96)),  // Marble
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 34, 139, 34)),   // Grass
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 112, 128, 144)), // Concrete
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 111, 92, 67)),   // Old Wood
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 205, 133, 63)),  // Old Metal
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 114, 222, 231)), // Custom 1
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 139, 113, 255)), // Custom 2
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 240, 128, 164)), // Custom 3
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 249, 74, 92)),   // Custom 4
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 238, 139, 91)),  // Custom 5
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 114, 216, 129)), // Custom 6
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 88, 241, 169)),  // Custom 7
+        CreateFrozenBrush(Color.FromArgb(BrushAlpha, 170, 80, 169))   // Custom 8
     };
 
     private static Brush CreateFrozenBrush(Color color)

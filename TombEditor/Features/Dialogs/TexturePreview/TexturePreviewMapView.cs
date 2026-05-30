@@ -3,7 +3,7 @@
 using System.Windows.Media;
 using TombEditor.Controls;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.TexturePreview;
 
 /// <summary>
 /// Texture map view used by <see cref="TexturePreviewWindow"/>. Disables the

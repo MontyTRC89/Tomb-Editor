@@ -28,8 +28,8 @@ using TombEditor.Features.Dialogs.Sink;
 using TombEditor.Features.Dialogs.Static;
 using TombEditor.Features.Dialogs.SoundSource;
 using TombEditor.Forms;
-using TombEditor.ViewModels;
-using TombEditor.Views;
+
+
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;

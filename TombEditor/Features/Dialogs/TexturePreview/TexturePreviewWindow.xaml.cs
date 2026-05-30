@@ -2,7 +2,7 @@ using System.Windows;
 using System.Windows.Interop;
 using TombLib.LevelData;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.TexturePreview;
 
 /// <summary>
 /// Borderless pop-up that previews a <see cref="LevelTexture"/>. Closes when it

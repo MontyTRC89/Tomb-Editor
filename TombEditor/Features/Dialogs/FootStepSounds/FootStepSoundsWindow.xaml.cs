@@ -1,9 +1,8 @@
 #nullable enable
 
 using System.Windows;
-using TombEditor.ViewModels;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.FootStepSounds;
 
 public partial class FootStepSoundsWindow : Window
 {

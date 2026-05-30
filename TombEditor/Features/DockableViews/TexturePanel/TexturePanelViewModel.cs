@@ -8,7 +8,6 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TombEditor.Forms;
-using TombEditor.ViewModels;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -338,8 +337,8 @@ public partial class TexturePanelViewModel : ObservableObject
 		if (SelectedTexture is not { } tex)
 			return;
 
-		var vm = new FootStepSoundsWindowViewModel(tex, _editor);
-		var dialog = new TombEditor.Views.FootStepSoundsWindow { DataContext = vm };
+		var vm = new TombEditor.Features.Dialogs.FootStepSounds.FootStepSoundsWindowViewModel(tex, _editor);
+		var dialog = new TombEditor.Features.Dialogs.FootStepSounds.FootStepSoundsWindow { DataContext = vm };
 		dialog.SetOwner(WPFUtils.GetWin32WindowOwner());
 		dialog.ShowDialog();
 	}
@@ -349,8 +348,8 @@ public partial class TexturePanelViewModel : ObservableObject
 		if (SelectedTexture is not { } tex)
 			return;
 
-		var vm = new BumpMapsWindowViewModel(tex, _editor);
-		var dialog = new TombEditor.Views.BumpMapsWindow { DataContext = vm };
+		var vm = new TombEditor.Features.Dialogs.BumpMaps.BumpMapsWindowViewModel(tex, _editor);
+		var dialog = new TombEditor.Features.Dialogs.BumpMaps.BumpMapsWindow { DataContext = vm };
 		dialog.SetOwner(WPFUtils.GetWin32WindowOwner());
 		dialog.ShowDialog();
 	}

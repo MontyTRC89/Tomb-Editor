@@ -6,11 +6,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombEditor.Controls;
-using TombEditor.ViewModels;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.TextureRemap;
 
 /// <summary>
 /// Texture map specialization used by the texture-remap dialog. Replaces the standard quad
