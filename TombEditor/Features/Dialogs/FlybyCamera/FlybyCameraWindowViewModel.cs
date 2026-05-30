@@ -11,7 +11,7 @@ using TombLib.LevelData;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.FlybyCamera;
 
 public sealed record DofModeItem(DofMode Mode, string DisplayName);
 
@@ -22,7 +22,6 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
 
     private readonly FlybyCameraInstance _flyByCamera;
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     // Snapshot for cancel-restore + change detection.
@@ -68,12 +67,10 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     public FlybyCameraWindowViewModel(
         FlybyCameraInstance flyByCamera,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
         _flyByCamera = flyByCamera;
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         IsTombEngine = _editor.Level.IsTombEngine;
@@ -313,7 +310,6 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     {
         AcceptPendingChanges();
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
@@ -321,6 +317,5 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     {
         _restoreOriginalValues = true;
         DialogResult = false;
-        _dialogService.Close(this);
     }
 }

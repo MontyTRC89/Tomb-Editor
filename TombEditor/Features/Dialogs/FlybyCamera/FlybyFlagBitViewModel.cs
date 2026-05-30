@@ -2,7 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.FlybyCamera;
 
 public sealed partial class FlybyFlagBitViewModel : ObservableObject
 {

@@ -2,9 +2,9 @@
 
 using System.ComponentModel;
 using System.Windows;
-using TombEditor.ViewModels;
+using TombLib.WPF;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.FlybyCamera;
 
 public partial class FlybyCameraWindow : Window
 {
@@ -19,6 +19,8 @@ public partial class FlybyCameraWindow : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormFlybyCamera");
+
         if (DataContext is FlybyCameraWindowViewModel vm)
             vm.BeginPreview();
     }
