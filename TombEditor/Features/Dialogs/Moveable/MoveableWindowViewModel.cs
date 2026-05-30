@@ -9,13 +9,12 @@ using TombLib.LevelData;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Moveable;
 
 public partial class MoveableWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly MoveableInstance _moveable;
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
 
@@ -39,13 +38,11 @@ public partial class MoveableWindowViewModel : ObservableObject, IModalDialogVie
     public MoveableWindowViewModel(
         MoveableInstance moveable,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         IMessageService? messageService = null,
         ILocalizationService? localizationService = null)
     {
         _moveable = moveable;
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -103,18 +100,14 @@ public partial class MoveableWindowViewModel : ObservableObject, IModalDialogVie
         _moveable.ClearBody = ClearBody;
         _moveable.Ocb = ocb;
         _moveable.Color = ColorToVector3(DisplayColor) * 2.0f;
-
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         _moveable.Color = _originalColor;
-
         DialogResult = false;
-        _dialogService.Close(this);
     }
 
     private static Color Vector3ToColor(Vector3 value)

@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using TombEditor.Features.Dialogs.Camera;
 using TombEditor.Features.Dialogs.ChooseRoom;
 using TombEditor.Features.Dialogs.Memo;
+using TombEditor.Features.Dialogs.Moveable;
 using TombEditor.Features.Dialogs.QuickItemGroup;
 using TombEditor.Features.Dialogs.ReplaceObject;
 using TombEditor.Features.Dialogs.ToolBarLayout;
