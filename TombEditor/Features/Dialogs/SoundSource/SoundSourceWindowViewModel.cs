@@ -13,7 +13,7 @@ using TombLib.Wad;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.SoundSource;
 
 public sealed record SoundEntry(WadSoundInfo Info, string DisplayName);
 
@@ -25,7 +25,6 @@ public partial class SoundSourceWindowViewModel : ObservableObject, IModalDialog
 
     private readonly SoundSourceInstance _soundSource;
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
 
@@ -44,13 +43,11 @@ public partial class SoundSourceWindowViewModel : ObservableObject, IModalDialog
     public SoundSourceWindowViewModel(
         SoundSourceInstance soundSource,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         IMessageService? messageService = null,
         ILocalizationService? localizationService = null)
     {
         _soundSource = soundSource;
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -115,19 +112,14 @@ public partial class SoundSourceWindowViewModel : ObservableObject, IModalDialog
     {
         _soundSource.SoundId = SelectedSound?.Info.Id ?? -1;
         _soundSource.PlayMode = SelectedPlayMode.Mode;
-
         WadSoundPlayer.StopSample();
-
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         WadSoundPlayer.StopSample();
-
         DialogResult = false;
-        _dialogService.Close(this);
     }
 }
