@@ -22,6 +22,7 @@
 	xmlns:sectorOptionsPanel="clr-namespace:TombEditor.Features.DockableViews.SectorOptionsPanel"
 	xmlns:texturePanel="clr-namespace:TombEditor.Features.DockableViews.TexturePanel"
 	xmlns:triggerList="clr-namespace:TombEditor.Features.DockableViews.TriggerList"
+	xmlns:flybyTimeline="clr-namespace:TombEditor.Features.FlybyTimeline.UI"
 	Title="Tomb Editor"
 	Width="1280"
 	Height="800"
@@ -75,7 +76,6 @@
 				<MenuItem editor:EditorMenu.Command="EditGlobalEventSets" />
 				<MenuItem editor:EditorMenu.Command="Search" editor:EditorMenu.Icon="General/search" />
 				<MenuItem editor:EditorMenu.Command="SearchAndReplaceObjects" editor:EditorMenu.Icon="General/Find-and-replace" />
-				<MenuItem editor:EditorMenu.Command="ShowFlybyTimeline" editor:EditorMenu.Icon="Objects/movie_projector" />
 			</MenuItem>
 
 			<MenuItem Header="View">
@@ -235,7 +235,7 @@
 				<MenuItem editor:EditorMenu.Command="StartSoundTool" />
 			</MenuItem>
 
-			<MenuItem Header="Window">
+			<MenuItem Header="Window" SubmenuOpened="WindowMenu_SubmenuOpened">
 				<MenuItem Header="{tombLib:Localize Layouts_Header}" SubmenuOpened="LayoutsMenu_SubmenuOpened">
 					<!--  Placeholder so the SubmenuOpened event fires when the menu is opened.  -->
 					<MenuItem />
@@ -253,11 +253,12 @@
 				<MenuItem editor:EditorMenu.Command="ShowObjectList" />
 				<MenuItem editor:EditorMenu.Command="ShowStatistics" />
 				<MenuItem editor:EditorMenu.Command="ShowToolPalette" />
+				<MenuItem editor:EditorMenu.Command="ShowFlybyTimeline" editor:EditorMenu.Icon="Objects/movie_projector" />
 				<MenuItem Header="Tool Palette (floating)" IsCheckable="True" />
 			</MenuItem>
 
 			<MenuItem Header="Help">
-				<MenuItem Header="About Tomb Editor...">
+				<MenuItem Header="About Tomb Editor..." Click="AboutMenu_Click">
 					<MenuItem.Icon>
 						<Image Source="{tomb:Icon General/AboutIcon}" />
 					</MenuItem.Icon>
@@ -276,6 +277,11 @@
 			BorderThickness="0,0,0,1"
 			DockPanel.Dock="Top">
 			<ToolBarTray Orientation="Horizontal">
+				<ToolBarTray.ContextMenu>
+					<ContextMenu>
+						<MenuItem Header="Customize..." Click="CustomizeToolbar_Click" />
+					</ContextMenu>
+				</ToolBarTray.ContextMenu>
 				<ToolBar>
 					<!--
 						Editor modes — ToggleButtons backed by Editor.Mode so the active mode stays
@@ -528,25 +534,39 @@
 						</avalonDock:LayoutAnchorablePane>
 					</avalonDock:LayoutAnchorablePaneGroup>
 
-					<!--  Center: viewport area — 3D View and 2D Map as sibling document tabs  -->
-					<avalonDock:LayoutDocumentPaneGroup>
-						<avalonDock:LayoutDocumentPane>
-							<avalonDock:LayoutDocument
-								x:Name="mainViewDocument"
-								ContentId="mainView"
-								CanClose="False"
-								Title="3D View">
-								<wfi:WindowsFormsHost x:Name="panel3DHost" Background="{DynamicResource Brush_Background_Low}" />
-							</avalonDock:LayoutDocument>
-							<avalonDock:LayoutDocument
-								x:Name="map2DDocument"
-								ContentId="map2DView"
-								CanClose="False"
-								Title="2D Map">
-								<wfi:WindowsFormsHost x:Name="panel2DMapHost" Background="{DynamicResource Brush_Background_Low}" />
-							</avalonDock:LayoutDocument>
-						</avalonDock:LayoutDocumentPane>
-					</avalonDock:LayoutDocumentPaneGroup>
+					<!--  Center: viewport area — 3D/2D as sibling document tabs, FlybyTimeline anchored below  -->
+					<avalonDock:LayoutPanel Orientation="Vertical">
+						<avalonDock:LayoutDocumentPaneGroup>
+							<avalonDock:LayoutDocumentPane>
+								<avalonDock:LayoutDocument
+									x:Name="mainViewDocument"
+									ContentId="mainView"
+									CanClose="False"
+									Title="3D View">
+									<wfi:WindowsFormsHost x:Name="panel3DHost" Background="{DynamicResource Brush_Background_Low}" />
+								</avalonDock:LayoutDocument>
+								<avalonDock:LayoutDocument
+									x:Name="map2DDocument"
+									ContentId="map2DView"
+									CanClose="False"
+									Title="2D Map">
+									<wfi:WindowsFormsHost x:Name="panel2DMapHost" Background="{DynamicResource Brush_Background_Low}" />
+								</avalonDock:LayoutDocument>
+							</avalonDock:LayoutDocumentPane>
+						</avalonDock:LayoutDocumentPaneGroup>
+						<avalonDock:LayoutAnchorablePaneGroup DockHeight="180">
+							<avalonDock:LayoutAnchorablePane>
+								<avalonDock:LayoutAnchorable
+									x:Name="flybyTimelineAnchorable"
+									ContentId="flybyTimeline"
+									CanClose="False"
+									IconSource="{tomb:Icon Objects/movie_projector}"
+									Title="Flyby timeline">
+									<flybyTimeline:FlybyTimelineView x:Name="flybyTimelineView" />
+								</avalonDock:LayoutAnchorable>
+							</avalonDock:LayoutAnchorablePane>
+						</avalonDock:LayoutAnchorablePaneGroup>
+					</avalonDock:LayoutPanel>
 
 					<!--  Right side: anchorables placeholders  -->
 					<avalonDock:LayoutAnchorablePaneGroup DockWidth="280" Orientation="Vertical">

@@ -1,5 +1,7 @@
+using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -7,12 +9,25 @@ using System.Windows;
 using System.Windows.Controls;
 using TombEditor.Controls;
 using TombEditor.Controls.Panel3D;
+using TombEditor.Features.DockableViews.ContentBrowser;
+using TombEditor.Features.DockableViews.ImportedGeometryBrowser;
+using TombEditor.Features.DockableViews.ItemBrowser;
+using TombEditor.Features.DockableViews.LightingPanel;
+using TombEditor.Features.DockableViews.ObjectList;
+using TombEditor.Features.DockableViews.PalettePanel;
+using TombEditor.Features.DockableViews.RoomOptionsPanel;
+using TombEditor.Features.DockableViews.RoomsPanel;
+using TombEditor.Features.DockableViews.SectorOptionsPanel;
+using TombEditor.Features.DockableViews.TexturePanel;
+using TombEditor.Features.DockableViews.TriggerList;
 using TombEditor.Features.Panel3D.ObjectBrush;
 using TombEditor.Features.Panel3D.ToolPalette;
 using TombLib.Controls;
+using TombLib.Forms;
 using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.LevelData;
+using TombLib.WPF;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
@@ -88,6 +103,9 @@ public partial class MainWindow : Window
 		// (DrawAllRooms, DrawPortals, etc.) reflect the persisted state on first paint.
 		ApplyConfigurationToPanel3D(_editor.Configuration);
 
+		flybyTimelineView.Initialize();
+		ApplyFlybyTimelineVisibility();
+
 		// Capture the XAML-declared dock arrangement as the "Default" layout, then
 		// restore the user's previously-selected custom layout (if any). Loaded fires
 		// once the visual tree is realized, which is when AvalonDock's layout root
@@ -120,7 +138,13 @@ public partial class MainWindow : Window
 		// ConfigurationChangedEvent (see CommandHandler entries like "DrawAllRooms"). Mirror
 		// MainView.RefreshControls(...) so the hosted Panel3D actually picks up the change.
 		if (obj is Editor.ConfigurationChangedEvent || obj is Editor.InitEvent)
+		{
 			ApplyConfigurationToPanel3D(_editor.Configuration);
+			ApplyFlybyTimelineVisibility();
+		}
+
+		if (obj is Editor.ToolWindowToggleEvent toggle && _anchorableIdByType.TryGetValue(toggle.ContentType, out var id))
+			ToggleAnchorable(id);
 
 		// Bring the matching document tab forward when the editor mode switches between
 		// 3D-style modes and Map2D. Avoids requiring the user to also click the tab header.
@@ -237,8 +261,110 @@ public partial class MainWindow : Window
 		itemBrowserView?.Cleanup();
 		texturePanelView?.Cleanup();
 		contentBrowserView?.Cleanup();
+		flybyTimelineView?.Cleanup();
 
 		base.OnClosed(e);
+	}
+
+	#region Tool window toggle
+
+	// ToggleToolWindow(Type) → ContentId mapping. Keep in sync with the LayoutAnchorable ContentIds in XAML.
+	private static readonly Dictionary<Type, string> _anchorableIdByType = new()
+	{
+		[typeof(ObjectList)]              = "objectList",
+		[typeof(SectorOptions)]           = "sectorOptions",
+		[typeof(RoomOptions)]             = "roomOptions",
+		[typeof(TriggerList)]             = "triggerList",
+		[typeof(TexturePanel)]            = "texturePanel",
+		[typeof(ItemBrowser)]             = "itemBrowser",
+		[typeof(ImportedGeometryBrowser)] = "importedGeometryBrowser",
+		[typeof(ContentBrowser)]          = "contentBrowser",
+		[typeof(Lighting)]                = "lighting",
+		[typeof(Palette)]                 = "palette",
+	};
+
+	private void ToggleAnchorable(string contentId)
+	{
+		if (string.IsNullOrEmpty(contentId))
+			return;
+		if (FindAnchorable(contentId) is { } anchorable)
+		{
+			if (anchorable.IsHidden)
+				anchorable.Show();
+			else
+				anchorable.Hide();
+		}
+	}
+
+	private LayoutAnchorable FindAnchorable(string contentId)
+		=> dockManager.Layout.Descendents().OfType<LayoutAnchorable>().FirstOrDefault(a => a.ContentId == contentId);
+
+	private void ApplyFlybyTimelineVisibility()
+	{
+		bool shouldBeVisible = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
+		if (shouldBeVisible && flybyTimelineAnchorable.IsHidden)
+			flybyTimelineAnchorable.Show();
+		else if (!shouldBeVisible && !flybyTimelineAnchorable.IsHidden)
+			flybyTimelineAnchorable.Hide();
+	}
+
+	#endregion
+
+	private void AboutMenu_Click(object sender, RoutedEventArgs e)
+	{
+		using var form = new FormAbout(Properties.Resources.misc_AboutScreen_800);
+		form.ShowDialog(this.GetWin32Window());
+	}
+
+	private void WindowMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	{
+		if (sender is not MenuItem windowMenu)
+			return;
+
+		foreach (var item in windowMenu.Items.OfType<MenuItem>())
+		{
+			string commandName = EditorMenu.GetCommand(item);
+			if (string.IsNullOrEmpty(commandName))
+				continue;
+
+			CommandObj cmd;
+			try { cmd = CommandHandler.GetCommand(commandName); }
+			catch { continue; }
+			if (cmd is null || cmd.Type != CommandType.Windows)
+				continue;
+
+			item.IsCheckable = true;
+
+			if (commandName == "ShowFlybyTimeline")
+				item.IsChecked = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
+			else if (cmd.Execute is { } && _anchorableIdByType.Values.Contains(NormalizedContentIdFor(commandName)))
+				item.IsChecked = FindAnchorable(NormalizedContentIdFor(commandName)) is { IsHidden: false };
+		}
+	}
+
+	private static string NormalizedContentIdFor(string showCommandName)
+	{
+		// "ShowItemBrowser" → "itemBrowser" — first letter lowercased after stripping "Show".
+		var name = showCommandName.StartsWith("Show") ? showCommandName.Substring(4) : showCommandName;
+		if (string.IsNullOrEmpty(name))
+			return string.Empty;
+		return char.ToLowerInvariant(name[0]) + name.Substring(1);
+	}
+
+	private void CustomizeToolbar_Click(object sender, RoutedEventArgs e)
+	{
+		// The WPF toolbar's button set is currently hardcoded in XAML, so the
+		// reordering committed via this dialog only affects the WinForms shell
+		// (UI_ToolbarButtons in Configuration). Still surfaces the dialog so
+		// users can manage the persisted button list for the legacy shell.
+		var allCommands = CommandHandler.Commands.Select(c => c.Name).ToList();
+		var vm = new Features.Dialogs.ToolBarLayout.ToolBarLayoutWindowViewModel(_editor, allCommands);
+		var dialog = new Features.Dialogs.ToolBarLayout.ToolBarLayoutWindow
+		{
+			DataContext = vm,
+			Owner = this
+		};
+		dialog.ShowDialog();
 	}
 
 	#region Layout management
