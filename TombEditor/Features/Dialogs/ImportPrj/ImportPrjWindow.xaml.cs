@@ -2,7 +2,7 @@
 
 using System.Windows;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.ImportPrj;
 
 public partial class ImportPrjWindow : Window
 {

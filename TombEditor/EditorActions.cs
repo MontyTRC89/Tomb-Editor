@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Features.Dialogs.Camera;
 using TombEditor.Features.Dialogs.ChooseRoom;
+using TombEditor.Features.Dialogs.ImportPrj;
 using TombEditor.Features.Dialogs.Memo;
 using TombEditor.Features.Dialogs.Moveable;
 using TombEditor.Features.Dialogs.QuickItemGroup;

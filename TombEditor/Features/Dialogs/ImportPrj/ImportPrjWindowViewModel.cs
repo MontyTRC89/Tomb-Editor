@@ -8,11 +8,10 @@ using System.IO;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.ImportPrj;
 
 public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private bool? _dialogResult;
@@ -27,10 +26,8 @@ public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogVi
         string prjPath,
         bool respectMousepatch,
         bool useHalfPixelCorrection,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         PrjPath = prjPath;
@@ -54,16 +51,8 @@ public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogVi
     }
 
     [RelayCommand]
-    private void Confirm()
-    {
-        DialogResult = true;
-        _dialogService.Close(this);
-    }
+    private void Confirm() => DialogResult = true;
 
     [RelayCommand]
-    private void Cancel()
-    {
-        DialogResult = false;
-        _dialogService.Close(this);
-    }
+    private void Cancel() => DialogResult = false;
 }
