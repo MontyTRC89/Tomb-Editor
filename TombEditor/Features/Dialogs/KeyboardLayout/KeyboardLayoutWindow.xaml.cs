@@ -1,9 +1,8 @@
 using System.Windows;
 using System.Windows.Input;
-using TombEditor.ViewModels;
 using WinForms = System.Windows.Forms;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.KeyboardLayout;
 
 public partial class KeyboardLayoutWindow : Window
 {

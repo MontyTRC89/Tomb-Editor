@@ -12,7 +12,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.KeyboardLayout;
 
 public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDialogViewModel
 {
@@ -26,7 +26,6 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 	}
 
 	private readonly Editor _editor;
-	private readonly IDialogService _dialogService;
 	private readonly IMessageService _messageService;
 	private readonly ILocalizationService _localizationService;
 
@@ -47,12 +46,10 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 
 	public KeyboardLayoutWindowViewModel(
 		Editor editor,
-		IDialogService? dialogService = null,
 		IMessageService? messageService = null,
 		ILocalizationService? localizationService = null)
 	{
 		_editor = editor;
-		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -215,13 +212,8 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 		_editor.Configuration.UI_Hotkeys = _currConfig;
 		_editor.ConfigurationChange(true);
 		DialogResult = true;
-		_dialogService.Close(this);
 	}
 
 	[RelayCommand]
-	private void Cancel()
-	{
-		DialogResult = false;
-		_dialogService.Close(this);
-	}
+	private void Cancel() => DialogResult = false;
 }

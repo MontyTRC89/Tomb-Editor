@@ -1727,8 +1727,8 @@ namespace TombEditor
 
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
-                var kbVm = new TombEditor.ViewModels.KeyboardLayoutWindowViewModel(args.Editor);
-                var kbDialog = new TombEditor.Views.KeyboardLayoutWindow { DataContext = kbVm };
+                var kbVm = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindowViewModel(args.Editor);
+                var kbDialog = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindow { DataContext = kbVm };
                 if (args.Window is not null)
                     kbDialog.SetOwner(args.Window);
                 kbDialog.ShowDialog();
