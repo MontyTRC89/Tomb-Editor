@@ -230,6 +230,11 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 		SelectedReplaceTypeIndex = 0;
 	}
 
+	/// <summary>
+	/// Called by the View after editing a light swatch color, so the swatch brushes refresh.
+	/// </summary>
+	public void RefreshUI() => UpdateUI();
+
 	private void UpdateUI()
 	{
 		IsReplaceEnabled = _source is not null && _dest is not null;

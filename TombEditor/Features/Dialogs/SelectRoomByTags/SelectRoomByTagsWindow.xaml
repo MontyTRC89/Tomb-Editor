@@ -41,10 +41,12 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="{tombLib:Localize Tags}" />
-		<TextBox
+		<controls:AutoCompleteBox
 			Grid.Row="0"
 			Grid.Column="1"
 			VerticalAlignment="Center"
+			CharacterCasing="Lower"
+			ItemsSource="{Binding AutocompleteTags}"
 			Text="{Binding TagSearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 		<CheckBox
