@@ -9,14 +9,13 @@ using TombLib.LevelData;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Camera;
 
 public sealed record CameraModeItem(CameraInstanceMode Mode, string DisplayName);
 
 public partial class CameraWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly CameraInstance _instance;
-    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private bool? _dialogResult;
@@ -30,13 +29,9 @@ public partial class CameraWindowViewModel : ObservableObject, IModalDialogViewM
     public bool IsMoveTimerEnabled { get; }
     public bool IsGlideOutEnabled { get; }
 
-    public CameraWindowViewModel(
-        CameraInstance instance,
-        IDialogService? dialogService = null,
-        ILocalizationService? localizationService = null)
+    public CameraWindowViewModel(CameraInstance instance, ILocalizationService? localizationService = null)
     {
         _instance = instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService)
             .WithKeysFor(this);
 
@@ -76,15 +71,9 @@ public partial class CameraWindowViewModel : ObservableObject, IModalDialogViewM
         _instance.CameraMode = SelectedMode.Mode;
         _instance.MoveTimer = MoveTimer;
         _instance.GlideOut = GlideOut;
-
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
-    private void Cancel()
-    {
-        DialogResult = false;
-        _dialogService.Close(this);
-    }
+    private void Cancel() => DialogResult = false;
 }
