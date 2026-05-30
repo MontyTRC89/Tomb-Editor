@@ -1,5 +1,5 @@
 <Window
-	x:Class="TombEditor.Views.WadPreviewWindow"
+	x:Class="TombEditor.Features.Dialogs.WadPreview.WadPreviewWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"

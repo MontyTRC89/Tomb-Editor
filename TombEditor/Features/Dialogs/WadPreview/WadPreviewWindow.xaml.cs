@@ -9,7 +9,7 @@ using TombLib.Rendering;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.WadPreview;
 
 /// <summary>
 /// Borderless pop-up that previews a <see cref="Wad2"/>: a WAD tree on the left
