@@ -13,7 +13,7 @@ Tomb Editor:
  * Added multiple window layout support.
 
 WadTool:
- * Added an option to consolidate textures for an object into a single page.
+ * Added an option to consolidate textures for an object into a single set of texture pages.
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  
 TEN nodes:

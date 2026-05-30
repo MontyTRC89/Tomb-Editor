@@ -350,8 +350,17 @@ namespace TombLib.Wad
                 {
                     var poly = mesh.Polys[polyIndex];
                     var rect = poly.Texture.GetRect().Round();
-                    var image = ImageC.CreateNew((int)Math.Clamp(rect.Width, 1, int.MaxValue), (int)Math.Clamp(rect.Height, 1, int.MaxValue));
-                    image.CopyFrom(0, 0, poly.Texture.Texture.Image, (int)rect.Start.X, (int)rect.Start.Y, image.Width, image.Height);
+                    var sourceImage = poly.Texture.Texture.Image;
+
+                    int startX = (int)Math.Clamp(rect.Start.X, 0.0f, sourceImage.Width - 1.0f);
+                    int startY = (int)Math.Clamp(rect.Start.Y, 0.0f, sourceImage.Height - 1.0f);
+                    int endX = (int)Math.Clamp(rect.End.X, startX + 1.0f, (float)sourceImage.Width);
+                    int endY = (int)Math.Clamp(rect.End.Y, startY + 1.0f, (float)sourceImage.Height);
+
+                    rect = new Rectangle2(startX, startY, endX, endY);
+
+                    var image = ImageC.CreateNew(Math.Max(1, endX - startX), Math.Max(1, endY - startY));
+                    image.CopyFrom(0, 0, sourceImage, startX, startY, image.Width, image.Height);
 
                     var texture = poly.Texture;
                     texture.Texture = new WadTexture(image);
