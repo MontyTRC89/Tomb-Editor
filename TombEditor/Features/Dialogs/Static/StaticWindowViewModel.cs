@@ -10,12 +10,11 @@ using TombLib.LevelData;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Static;
 
 public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly StaticInstance _staticMesh;
-    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     private readonly Vector3 _originalColor;
@@ -53,17 +52,13 @@ public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewM
 
     public bool CanBeColored { get; }
 
-    public StaticWindowViewModel(
-        StaticInstance staticMesh,
-        IDialogService? dialogService = null,
-        ILocalizationService? localizationService = null)
+    public StaticWindowViewModel(StaticInstance staticMesh, ILocalizationService? localizationService = null)
     {
         _staticMesh = staticMesh;
         _newOcb = staticMesh.Ocb;
         _originalColor = staticMesh.Color;
         CanBeColored = staticMesh.CanBeColored();
 
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         _displayColor = Vector3ToColor(staticMesh.Color * 0.5f);
@@ -169,18 +164,14 @@ public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewM
         Editor.Instance.UndoManager.PushObjectPropertyChanged(_staticMesh);
         _staticMesh.Ocb = ocb;
         _staticMesh.Color = ColorToVector3(DisplayColor) * 2.0f;
-
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         _staticMesh.Color = _originalColor;
-
         DialogResult = false;
-        _dialogService.Close(this);
     }
 
     private static Color Vector3ToColor(Vector3 value)

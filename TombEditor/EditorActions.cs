@@ -22,6 +22,7 @@ using TombEditor.Features.Dialogs.Transform;
 using TombEditor.Features.Dialogs.SelectRoomByTags;
 using TombEditor.Features.Dialogs.Portal;
 using TombEditor.Features.Dialogs.Sink;
+using TombEditor.Features.Dialogs.Static;
 using TombEditor.Features.Dialogs.SoundSource;
 using TombEditor.Forms;
 using TombEditor.ViewModels;
