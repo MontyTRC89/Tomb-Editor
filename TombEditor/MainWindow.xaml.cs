@@ -106,6 +106,12 @@ public partial class MainWindow : Window
 		flybyTimelineView.Initialize();
 		ApplyFlybyTimelineVisibility();
 
+		// Mirror FormMain.cs:66 — raise InitEvent now that all child views/panels have
+		// subscribed, so they can pull initial state (depth bar bounds, toolbar checked
+		// states, browser content, etc.). Without this the WPF shell skips InitEvent
+		// entirely and several views never finish wiring up.
+		_editor.RaiseEvent(new Editor.InitEvent());
+
 		// Capture the XAML-declared dock arrangement as the "Default" layout, then
 		// restore the user's previously-selected custom layout (if any). Loaded fires
 		// once the visual tree is realized, which is when AvalonDock's layout root
