@@ -985,8 +985,7 @@ namespace TombEditor
 
                 var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(args.Editor);
                 var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
-                if (args.Window is not null)
-                    searchWindow.SetOwner(args.Window);
+                searchWindow.Owner = System.Windows.Application.Current.MainWindow;
                 searchWindow.Show();
             });
 
@@ -1198,8 +1197,7 @@ namespace TombEditor
 
                 var vm = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindowViewModel();
                 var dialog = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindow { DataContext = vm };
-                if (args.Window is not null)
-                    dialog.SetOwner(args.Window);
+                dialog.Owner = System.Windows.Application.Current.MainWindow;
                 dialog.Show();
             });
 

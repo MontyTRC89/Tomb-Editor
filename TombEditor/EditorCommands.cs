@@ -686,8 +686,7 @@ namespace TombEditor
 
                 var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(_editor);
                 var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
-                if (_editorWindow is not null)
-                    searchWindow.SetOwner(_editorWindow);
+                searchWindow.Owner = System.Windows.Application.Current.MainWindow;
                 searchWindow.Show();
             });
 
