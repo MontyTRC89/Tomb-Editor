@@ -9,11 +9,10 @@ using TombLib.Wad.Catalog;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.ResizeRoom;
 
 public partial class ResizeRoomWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     private bool _updatingBounds;
@@ -70,12 +69,10 @@ public partial class ResizeRoomWindowViewModel : ObservableObject, IModalDialogV
         Editor editor,
         Room roomToResize,
         RectangleInt2 newArea,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
         Editor = editor;
         Room = roomToResize;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         RecommendedDimensions = TrCatalog.GetLimit(editor.Level.Settings.GameVersion, Limit.RoomDimensions);
@@ -127,16 +124,8 @@ public partial class ResizeRoomWindowViewModel : ObservableObject, IModalDialogV
     }
 
     [RelayCommand]
-    private void Confirm()
-    {
-        DialogResult = true;
-        _dialogService.Close(this);
-    }
+    private void Confirm() => DialogResult = true;
 
     [RelayCommand]
-    private void Cancel()
-    {
-        DialogResult = false;
-        _dialogService.Close(this);
-    }
+    private void Cancel() => DialogResult = false;
 }

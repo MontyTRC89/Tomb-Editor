@@ -17,6 +17,7 @@ using TombEditor.Features.Dialogs.Memo;
 using TombEditor.Features.Dialogs.Moveable;
 using TombEditor.Features.Dialogs.QuickItemGroup;
 using TombEditor.Features.Dialogs.ReplaceObject;
+using TombEditor.Features.Dialogs.ResizeRoom;
 using TombEditor.Features.Dialogs.ToolBarLayout;
 using TombEditor.Features.Dialogs.Transform;
 using TombEditor.Features.Dialogs.SelectRoomByTags;

@@ -6,7 +6,7 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.ResizeRoom;
 
 // Standalone Panel2DGrid subclass extracted from FormResizeRoom for the WPF migration.
 // State is supplied via public properties (set by the hosting window code-behind) so the

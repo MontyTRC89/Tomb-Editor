@@ -2,9 +2,8 @@
 
 using System.ComponentModel;
 using System.Windows;
-using TombEditor.ViewModels;
 
-namespace TombEditor.Views;
+namespace TombEditor.Features.Dialogs.ResizeRoom;
 
 public partial class ResizeRoomWindow : Window
 {
@@ -48,8 +47,6 @@ public partial class ResizeRoomWindow : Window
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        // UseFloor swap is covered by AreaChanged; this guards against any other property
-        // that ought to repaint the preview.
         if (e.PropertyName is nameof(ResizeRoomWindowViewModel.UseFloor))
             OnAreaChanged();
     }
