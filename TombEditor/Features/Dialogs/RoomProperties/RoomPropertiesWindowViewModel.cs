@@ -13,7 +13,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.RoomProperties;
 
 public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposable
 {
@@ -41,7 +41,7 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 
 		// Collect every property of RoomProperties exactly once (by DisplayName).
 		var seen = new HashSet<string>();
-		foreach (PropertyDescriptor p in TypeDescriptor.GetProperties(typeof(RoomProperties)))
+		foreach (PropertyDescriptor p in TypeDescriptor.GetProperties(typeof(TombLib.LevelData.RoomProperties)))
 		{
 			if (!seen.Add(p.DisplayName))
 				continue;
@@ -81,7 +81,7 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 		}
 
 		var undoList = new List<UndoRedoInstance>();
-		var propInfo = typeof(RoomProperties).GetProperties();
+		var propInfo = typeof(TombLib.LevelData.RoomProperties).GetProperties();
 		var curr = _editor.SelectedRoom;
 
 		foreach (var r in _editor.SelectedRooms.Skip(1))

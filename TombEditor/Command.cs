@@ -1189,15 +1189,15 @@ namespace TombEditor
                 // Surface the existing window if one is already open instead of stacking duplicates.
                 foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    if (w is TombEditor.Views.RoomPropertiesWindow existing)
+                    if (w is TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindow existing)
                     {
                         existing.Activate();
                         return;
                     }
                 }
 
-                var vm = new TombEditor.ViewModels.RoomPropertiesWindowViewModel();
-                var dialog = new TombEditor.Views.RoomPropertiesWindow { DataContext = vm };
+                var vm = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindowViewModel();
+                var dialog = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindow { DataContext = vm };
                 if (args.Window is not null)
                     dialog.SetOwner(args.Window);
                 dialog.Show();
