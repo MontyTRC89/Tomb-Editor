@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Features.Dialogs.Camera;
 using TombEditor.Features.Dialogs.Memo;
+using TombEditor.Features.Dialogs.Portal;
 using TombEditor.Features.Dialogs.Sink;
 using TombEditor.Features.Dialogs.SoundSource;
 using TombEditor.Forms;

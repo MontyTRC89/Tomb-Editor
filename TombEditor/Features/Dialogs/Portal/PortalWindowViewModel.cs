@@ -11,14 +11,13 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Portal;
 
 public sealed record PortalEffectItem(PortalEffectType Effect, string DisplayName);
 
 public partial class PortalWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly PortalInstance _instance;
-    private readonly IDialogService _dialogService;
 
     [ObservableProperty] private bool? _dialogResult;
 
@@ -35,13 +34,9 @@ public partial class PortalWindowViewModel : ObservableObject, IModalDialogViewM
 
     public bool IsClassicMirror => SelectedEffect.Effect == PortalEffectType.ClassicMirror;
 
-    public PortalWindowViewModel(
-        PortalInstance instance,
-        IDialogService? dialogService = null,
-        ILocalizationService? localizationService = null)
+    public PortalWindowViewModel(PortalInstance instance, ILocalizationService? localizationService = null)
     {
         _instance = instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         Effects = Enum.GetValues<PortalEffectType>()
@@ -63,15 +58,9 @@ public partial class PortalWindowViewModel : ObservableObject, IModalDialogViewM
         _instance.Properties.ReflectStatics = ReflectStatics;
         _instance.Properties.ReflectSprites = ReflectSprites;
         _instance.Properties.ReflectLights = ReflectLights;
-
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
-    private void Cancel()
-    {
-        DialogResult = false;
-        _dialogService.Close(this);
-    }
+    private void Cancel() => DialogResult = false;
 }
