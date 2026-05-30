@@ -4363,7 +4363,7 @@ namespace TombEditor
                 _editor.SendMessage(whatLoaded, PopupType.Info);
 
             {
-                var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Build level", autoCloseWhenDone, false,
+                var operationVm = new TombEditor.Features.Dialogs.Operation.OperationDialogWindowViewModel("Build level", autoCloseWhenDone, false,
                     (progressReporter, cancelToken) =>
                     {
                         using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
@@ -4391,7 +4391,7 @@ namespace TombEditor
                         GC.Collect();
                     });
 
-                var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                var operationDialog = new TombEditor.Features.Dialogs.Operation.OperationDialogWindow { DataContext = operationVm };
 
                 if (owner is null)
                 {
@@ -5441,9 +5441,9 @@ namespace TombEditor
             var newLevel = string.Empty;
 
             {
-                var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("TombEngine level converter", false, true, (progressReporter, cancelToken) =>
+                var operationVm = new TombEditor.Features.Dialogs.Operation.OperationDialogWindowViewModel("TombEngine level converter", false, true, (progressReporter, cancelToken) =>
                     newLevel = TombEngineConverter.Start(fileName, owner, progressReporter, cancelToken));
-                var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                var operationDialog = new TombEditor.Features.Dialogs.Operation.OperationDialogWindow { DataContext = operationVm };
                 if (owner is not null)
                     operationDialog.SetOwner(owner);
                 operationDialog.ShowDialog();
@@ -5472,9 +5472,9 @@ namespace TombEditor
             try
             {
                 {
-                    var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Open level", true, true, (progressReporter, cancelToken) =>
+                    var operationVm = new TombEditor.Features.Dialogs.Operation.OperationDialogWindowViewModel("Open level", true, true, (progressReporter, cancelToken) =>
                         newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter, cancelToken, new Prj2Loader.Settings()));
-                    var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                    var operationDialog = new TombEditor.Features.Dialogs.Operation.OperationDialogWindow { DataContext = operationVm };
 
                     if (owner is null)
                     {
@@ -5585,12 +5585,12 @@ namespace TombEditor
             {
                 Level newLevel = null;
                 {
-                    var operationVm = new TombEditor.ViewModels.OperationDialogWindowViewModel("Import PRJ", false, false, (progressReporter, cancelToken) =>
+                    var operationVm = new TombEditor.Features.Dialogs.Operation.OperationDialogWindowViewModel("Import PRJ", false, false, (progressReporter, cancelToken) =>
                         newLevel = PrjLoader.LoadFromPrj(importViewModel.PrjPath, importViewModel.SoundsPath,
                             importViewModel.RespectMousepatchOnFlybyHandling,
                             importViewModel.UseHalfPixelCorrection,
                             progressReporter, cancelToken));
-                    var operationDialog = new TombEditor.Views.OperationDialogWindow { DataContext = operationVm };
+                    var operationDialog = new TombEditor.Features.Dialogs.Operation.OperationDialogWindow { DataContext = operationVm };
                     if (owner is not null)
                         operationDialog.SetOwner(owner);
                     operationDialog.ShowDialog();

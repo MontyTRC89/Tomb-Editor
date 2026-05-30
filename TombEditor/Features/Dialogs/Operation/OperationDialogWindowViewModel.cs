@@ -18,7 +18,7 @@ using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
-namespace TombEditor.ViewModels;
+namespace TombEditor.Features.Dialogs.Operation;
 
 public partial class OperationDialogWindowViewModel : ObservableObject, IModalDialogViewModel, IProgressReporter
 {
@@ -33,7 +33,6 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	private readonly Action<IProgressReporter, CancellationToken> _operation;
 	private readonly bool _autoCloseWhenDone;
 	private readonly CancellationTokenSource _cts = new();
-	private readonly IDialogService _dialogService;
 	private readonly Dispatcher _dispatcher;
 
 	private Task? _task;
@@ -54,14 +53,12 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		bool autoCloseWhenDone,
 		bool noProgressBar,
 		Action<IProgressReporter, CancellationToken> operation,
-		IDialogService? dialogService = null,
 		ILocalizationService? localizationService = null)
 	{
 		Title = operationName;
 		_autoCloseWhenDone = autoCloseWhenDone;
 		IsProgressVisible = !noProgressBar;
 		_operation = operation;
-		_dialogService = ServiceLocator.ResolveService(dialogService);
 		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 		_dispatcher = Dispatcher.CurrentDispatcher;
 	}
@@ -135,10 +132,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		LogBackground = Brushes.LightGreen;
 
 		if (_autoCloseWhenDone)
-		{
 			DialogResult = true;
-			_dialogService.Close(this);
-		}
 	}
 
 	private void AddMessage(float? progress, string message, bool isWarning)
@@ -189,19 +183,14 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	}
 
 	[RelayCommand]
-	private void Ok()
-	{
-		DialogResult = true;
-		_dialogService.Close(this);
-	}
+	private void Ok() => DialogResult = true;
 
 	[RelayCommand]
 	private void Cancel()
 	{
-		DialogResult = false;
 		if (_task is not null && _task.Status >= TaskStatus.RanToCompletion)
 		{
-			_dialogService.Close(this);
+			DialogResult = false;
 			return;
 		}
 		EndThread();
@@ -210,6 +199,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	private void EndThread()
 	{
 		_cts.Cancel();
+		DialogResult = false;
 		AppendLine("Stopping the process...", Brushes.Tomato);
 	}
 
