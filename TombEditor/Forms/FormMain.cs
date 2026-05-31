@@ -1,5 +1,6 @@
-using NLog;
 using DarkUI.Config;
+using DarkUI.Docking;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,8 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
-using DarkUI.Docking;
-using DarkUI.Forms;
+using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -20,6 +20,7 @@ namespace TombEditor.Forms
     public partial class FormMain : DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private readonly Editor _editor;
 
         // Dockable tool windows are placed on actual dock panel at runtime.
@@ -47,6 +48,8 @@ namespace TombEditor.Forms
         public FormMain(Editor editor)
         {
             InitializeComponent();
+            InitializeFixedDpiLayout();
+
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
@@ -355,6 +358,15 @@ namespace TombEditor.Forms
 
         private T GetWindow<T>() where T : DarkDockContent => toolWindows.FirstOrDefault(t => t.GetType().FullName == typeof(T).FullName) as T;
         private DarkDockContent GetWindow(string key) => toolWindows.FirstOrDefault(t => t.GetType().Name == key || t.GetType().FullName == key);
+
+        // Keep mixed WinForms and WPF dock content pinned to the 96-DPI layout DarkUI was designed for.
+        private void InitializeFixedDpiLayout()
+        {
+            float dpiScale = ElementHostScaling.GetSystemDpiScale();
+
+            ElementHostScaling.LockToReferenceDpi(this, dpiScale);
+            ElementHostScaling.LockToReferenceDpi(toolWindows, dpiScale);
+        }
 
         private void UpdateUIColours()
         {
@@ -741,6 +753,8 @@ namespace TombEditor.Forms
 
         private void ToolWindow_Added(object sender, DockContentEventArgs e)
         {
+            ElementHostScaling.LockToReferenceDpi(e.Content);
+
             if (dockArea.Contains(e.Content))
                 ToolWindow_BuildMenu();
         }
