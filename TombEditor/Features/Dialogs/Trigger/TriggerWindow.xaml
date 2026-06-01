@@ -1,0 +1,269 @@
+<Window
+	x:Class="TombEditor.Features.Dialogs.Trigger.TriggerWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	xmlns:vm="clr-namespace:TombEditor.Features.Dialogs.Trigger"
+	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+	Title="{Binding Title}"
+	Width="720"
+	MinWidth="600"
+	d:DataContext="{d:DesignInstance Type=vm:TriggerWindowViewModel}"
+	md:DialogServiceViews.IsRegistered="True"
+	Background="{DynamicResource Brush_Background}"
+	ResizeMode="CanResizeWithGrip"
+	ShowInTaskbar="False"
+	SizeToContent="Height"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowStartupLocation="CenterOwner"
+	mc:Ignorable="d">
+
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+	</Window.Resources>
+
+	<controls:SpacedGrid
+		Margin="{x:Static darkUI:Defaults.MediumThickness}"
+		ColumnSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}"
+		RowSpacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="26" />
+			<!--  Trigger type + Plugin  -->
+			<RowDefinition Height="26" />
+			<!--  Target type  -->
+			<RowDefinition Height="26" />
+			<!--  Target  -->
+			<RowDefinition Height="26" />
+			<!--  Timer  -->
+			<RowDefinition Height="26" />
+			<!--  Extra  -->
+			<RowDefinition Height="28" />
+			<!--  Code bits + Script export  -->
+			<RowDefinition Height="26" />
+			<!--  OneShot + RawMode  -->
+			<RowDefinition Height="Auto" />
+			<!--  OK / Cancel  -->
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="80" />
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="95" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<!--  Row 0: Trigger Type + Plugin  -->
+		<Label
+			Grid.Row="0"
+			Grid.Column="0"
+			VerticalAlignment="Center"
+			Content="Trigger Type:" />
+		<wfi:WindowsFormsHost
+			x:Name="hostTriggerType"
+			Grid.Row="0"
+			Grid.Column="1"
+			Grid.ColumnSpan="5" />
+		<Label
+			Grid.Row="0"
+			Grid.Column="6"
+			VerticalAlignment="Center"
+			Content="Plugin / Engine:"
+			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}" />
+		<wfi:WindowsFormsHost
+			x:Name="hostPlugin"
+			Grid.Row="0"
+			Grid.Column="7"
+			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}" />
+
+		<!--  Row 1: Target Type  -->
+		<Label
+			Grid.Row="1"
+			Grid.Column="0"
+			VerticalAlignment="Center"
+			Content="What:" />
+		<wfi:WindowsFormsHost
+			x:Name="hostTargetType"
+			Grid.Row="1"
+			Grid.Column="1"
+			Grid.ColumnSpan="7" />
+
+		<!--  Row 2: Target  -->
+		<Label
+			Grid.Row="2"
+			Grid.Column="0"
+			VerticalAlignment="Center"
+			Content="(#) Param:" />
+		<wfi:WindowsFormsHost
+			x:Name="hostTarget"
+			Grid.Row="2"
+			Grid.Column="1"
+			Grid.ColumnSpan="7" />
+
+		<!--  Row 3: Timer  -->
+		<Label
+			Grid.Row="3"
+			Grid.Column="0"
+			VerticalAlignment="Center"
+			Content="(&amp;&amp;) Timer:" />
+		<wfi:WindowsFormsHost
+			x:Name="hostTimer"
+			Grid.Row="3"
+			Grid.Column="1"
+			Grid.ColumnSpan="7" />
+
+		<!--  Row 4: Extra  -->
+		<Label
+			Grid.Row="4"
+			Grid.Column="0"
+			VerticalAlignment="Center"
+			Content="(E) Extra:" />
+		<wfi:WindowsFormsHost
+			x:Name="hostExtra"
+			Grid.Row="4"
+			Grid.Column="1"
+			Grid.ColumnSpan="7" />
+
+		<!--  Row 5: Code bits + Script export  -->
+		<CheckBox
+			Grid.Row="5"
+			Grid.Column="1"
+			VerticalAlignment="Center"
+			Content="Bit 1"
+			IsChecked="{Binding Bit1, Mode=TwoWay}" />
+		<CheckBox
+			Grid.Row="5"
+			Grid.Column="2"
+			VerticalAlignment="Center"
+			Content="Bit 2"
+			IsChecked="{Binding Bit2, Mode=TwoWay}" />
+		<CheckBox
+			Grid.Row="5"
+			Grid.Column="3"
+			VerticalAlignment="Center"
+			Content="Bit 3"
+			IsChecked="{Binding Bit3, Mode=TwoWay}" />
+		<CheckBox
+			Grid.Row="5"
+			Grid.Column="4"
+			VerticalAlignment="Center"
+			Content="Bit 4"
+			IsChecked="{Binding Bit4, Mode=TwoWay}" />
+		<CheckBox
+			Grid.Row="5"
+			Grid.Column="5"
+			VerticalAlignment="Center"
+			Content="Bit 5"
+			IsChecked="{Binding Bit5, Mode=TwoWay}" />
+
+		<Grid
+			Grid.Row="5"
+			Grid.Column="6"
+			Grid.ColumnSpan="2"
+			VerticalAlignment="Center"
+			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<Label
+				Grid.Column="0"
+				Margin="0,0,4,0"
+				VerticalAlignment="Center"
+				Content="Script:" />
+			<TextBox
+				Grid.Column="1"
+				VerticalAlignment="Center"
+				IsEnabled="{Binding ScriptEnabled}"
+				IsReadOnly="True"
+				Text="{Binding ScriptText, Mode=OneWay}" />
+			<Button
+				Grid.Column="2"
+				Width="24"
+				Margin="2,0,0,0"
+				Command="{Binding CopyToClipboardCommand}"
+				IsEnabled="{Binding ScriptEnabled}"
+				ToolTip="Copy to clipboard">
+				<Image Source="{tomb:Icon General/copy}" />
+			</Button>
+			<Button
+				Grid.Column="3"
+				Width="24"
+				Margin="2,0,0,0"
+				Command="{Binding CopyWithCommentsCommand}"
+				IsEnabled="{Binding ScriptEnabled}"
+				ToolTip="Copy to clipboard with comments">
+				<Image Source="{tomb:Icon General/copy_comments}" />
+			</Button>
+			<Button
+				Grid.Column="4"
+				Width="24"
+				Margin="2,0,0,0"
+				Command="{Binding SearchTriggerCommand}"
+				ToolTip="Import trigger">
+				<Image Source="{tomb:Icon General/Import}" />
+			</Button>
+			<Button
+				Grid.Column="5"
+				Width="24"
+				Margin="2,0,0,0"
+				Command="{Binding CopyAsAnimcommandCommand}"
+				IsEnabled="{Binding CopyAsAnimcommandEnabled}"
+				ToolTip="Export as animcommand">
+				<Image Source="{tomb:Icon General/animcommand}" />
+			</Button>
+		</Grid>
+
+		<!--  Row 6: OneShot + RawMode  -->
+		<CheckBox
+			Grid.Row="6"
+			Grid.Column="1"
+			Grid.ColumnSpan="5"
+			VerticalAlignment="Center"
+			Content="One Shot"
+			IsChecked="{Binding OneShot, Mode=TwoWay}"
+			IsEnabled="{Binding OneShotEnabled}" />
+		<CheckBox
+			Grid.Row="6"
+			Grid.Column="6"
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Center"
+			Content="Raw mode (show numeric values)"
+			IsChecked="{Binding RawMode, Mode=TwoWay}" />
+
+		<!--  Row 7: OK / Cancel  -->
+		<controls:SpacedStack
+			Grid.Row="7"
+			Grid.Column="0"
+			Grid.ColumnSpan="8"
+			Margin="0,8,0,0"
+			HorizontalAlignment="Right"
+			Orientation="Horizontal"
+			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<Button
+				Width="80"
+				Command="{Binding ConfirmCommand}"
+				Content="OK"
+				IsDefault="True" />
+			<Button
+				Width="80"
+				Command="{Binding CancelCommand}"
+				Content="Cancel"
+				IsCancel="True" />
+		</controls:SpacedStack>
+	</controls:SpacedGrid>
+</Window>

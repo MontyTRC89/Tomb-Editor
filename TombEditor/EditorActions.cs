@@ -758,11 +758,19 @@ namespace TombEditor
                 trigger.Timer = firstObject;
             }
 
-            // Display form for additional root trigger setup.
-            using (var formTrigger = GetObjectSetupWindow(trigger, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
-                                                     new Action<Room>(r => _editor.SelectRoom(r))))
+            // Display dialog for additional root trigger setup.
             {
-                if (formTrigger.ShowDialog(owner) != DialogResult.OK)
+                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel();
+                var triggerDialog = new TombEditor.Features.Dialogs.Trigger.TriggerWindow(
+                    trigger, _editor.Level,
+                    obj => _editor.ShowObject(obj),
+                    r => _editor.SelectRoom(r))
+                { DataContext = triggerVm };
+                if (owner is not null)
+                    triggerDialog.SetOwner(owner);
+                triggerDialog.ShowDialog();
+
+                if (triggerVm.DialogResult != true)
                     return;
             }
 
@@ -1252,12 +1260,20 @@ namespace TombEditor
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
-            else if (instance is TriggerInstance)
+            else if (instance is TriggerInstance triggerInstance)
             {
-                using (var formTrigger = GetObjectSetupWindow((TriggerInstance)instance, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
-                                                         new Action<Room>(r => _editor.SelectRoom(r))))
-                    if (formTrigger.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel();
+                var triggerDialog = new TombEditor.Features.Dialogs.Trigger.TriggerWindow(
+                    triggerInstance, _editor.Level,
+                    obj => _editor.ShowObject(obj),
+                    r => _editor.SelectRoom(r))
+                { DataContext = triggerVm };
+                if (owner is not null)
+                    triggerDialog.SetOwner(owner);
+                triggerDialog.ShowDialog();
+
+                if (triggerVm.DialogResult != true)
+                    return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is ImportedGeometryInstance)
