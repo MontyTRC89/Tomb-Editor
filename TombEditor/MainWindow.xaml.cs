@@ -357,6 +357,63 @@ public partial class MainWindow : Window
 		return char.ToLowerInvariant(name[0]) + name.Substring(1);
 	}
 
+	private void OpenRecentMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	{
+		if (sender is not MenuItem menu)
+			return;
+
+		menu.Items.Clear();
+
+		var recent = Properties.Settings.Default.RecentProjects;
+		var currentPath = _editor.Level?.Settings.LevelFilePath;
+		bool addedAny = false;
+
+		if (recent is not null)
+		{
+			foreach (var fileName in recent)
+			{
+				if (fileName == currentPath)
+					continue;
+				if (!File.Exists(fileName))
+					continue;
+
+				var item = new MenuItem { Header = fileName };
+				item.Click += (_, _) => EditorActions.OpenLevel(this.GetWin32Window(), fileName);
+				menu.Items.Add(item);
+				addedAny = true;
+			}
+		}
+
+		menu.Items.Add(new Separator());
+
+		var clearItem = new MenuItem { Header = "Clear recent file list" };
+		clearItem.Click += (_, _) =>
+		{
+			Properties.Settings.Default.RecentProjects?.Clear();
+			Properties.Settings.Default.Save();
+		};
+		menu.Items.Add(clearItem);
+	}
+
+	private void DrawObjectsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	{
+		if (sender is not MenuItem dropdown)
+			return;
+
+		foreach (var item in dropdown.Items.OfType<MenuItem>())
+		{
+			if (item.Tag is not string flagName || string.IsNullOrEmpty(flagName))
+				continue;
+
+			var prop = typeof(Configuration).GetProperty(flagName);
+			if (prop is null || prop.PropertyType != typeof(bool))
+				continue;
+
+			item.IsCheckable = true;
+			item.IsChecked = (bool)prop.GetValue(_editor.Configuration)!;
+		}
+	}
+
 	private void CustomizeToolbar_Click(object sender, RoutedEventArgs e)
 	{
 		// The WPF toolbar's button set is currently hardcoded in XAML, so the

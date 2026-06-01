@@ -44,7 +44,9 @@
 			<MenuItem Header="File">
 				<MenuItem editor:EditorMenu.Command="NewLevel" editor:EditorMenu.Icon="General/create_new" />
 				<MenuItem editor:EditorMenu.Command="OpenLevel" editor:EditorMenu.Icon="General/Open" />
-				<MenuItem Header="Open recent" />
+				<MenuItem x:Name="openRecentMenu" Header="Open recent" SubmenuOpened="OpenRecentMenu_SubmenuOpened">
+					<MenuItem /><!-- placeholder so SubmenuOpened fires -->
+				</MenuItem>
 				<MenuItem editor:EditorMenu.Command="SaveLevel" editor:EditorMenu.Icon="General/Save" />
 				<MenuItem editor:EditorMenu.Command="SaveLevelAs" editor:EditorMenu.Icon="General/Save_As" />
 				<Separator />
@@ -254,7 +256,6 @@
 				<MenuItem editor:EditorMenu.Command="ShowStatistics" />
 				<MenuItem editor:EditorMenu.Command="ShowToolPalette" />
 				<MenuItem editor:EditorMenu.Command="ShowFlybyTimeline" editor:EditorMenu.Icon="Objects/movie_projector" />
-				<MenuItem Header="Tool Palette (floating)" IsCheckable="True" />
 			</MenuItem>
 
 			<MenuItem Header="Help">
@@ -368,6 +369,23 @@
 					<ToggleButton editor:EditorToolButton.Command="DisableHiddenRoomPicking" editor:EditorToolButton.ConfigFlag="Rendering3D_DisablePickingForHiddenRooms">
 						<Image Source="{tomb:Icon Actions/HideHiddenRooms}" />
 					</ToggleButton>
+
+					<!--  "Draw objects" dropdown — mirrors butDrawObjects in MainView.Designer.cs.  -->
+					<Menu Background="Transparent" VerticalAlignment="Center">
+						<MenuItem ToolTip="Draw objects" SubmenuOpened="DrawObjectsMenu_SubmenuOpened">
+							<MenuItem.Header>
+								<Image Source="{tomb:Icon Actions/DrawObjects}" />
+							</MenuItem.Header>
+							<MenuItem editor:EditorMenu.Command="DrawMoveables" Tag="Rendering3D_ShowMoveables" />
+							<MenuItem editor:EditorMenu.Command="DrawStatics" Tag="Rendering3D_ShowStatics" />
+							<MenuItem editor:EditorMenu.Command="DrawImportedGeometry" Tag="Rendering3D_ShowImportedGeometry" />
+							<MenuItem editor:EditorMenu.Command="DrawGhostBlocks" Tag="Rendering3D_ShowGhostBlocks" />
+							<MenuItem editor:EditorMenu.Command="DrawVolumes" Tag="Rendering3D_ShowVolumes" />
+							<MenuItem editor:EditorMenu.Command="DrawBoundingBoxes" Tag="Rendering3D_ShowBoundingBoxes" />
+							<MenuItem editor:EditorMenu.Command="DrawOtherObjects" Tag="Rendering3D_ShowOtherObjects" />
+							<MenuItem editor:EditorMenu.Command="DrawLightRadius" Tag="Rendering3D_ShowLightRadius" />
+						</MenuItem>
+					</Menu>
 				</ToolBar>
 
 				<ToolBar>
