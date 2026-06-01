@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MvvmDialogs;
+using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interop;
 using IWinFormsWindow = System.Windows.Forms.IWin32Window;
@@ -50,5 +52,61 @@ public static class WindowExtensions
 			helper.EnsureHandle();
 
 		return new Win32WindowWrapper(helper.Handle);
+	}
+
+	/// <summary>
+	/// Closes <paramref name="window"/> when its <see cref="IModalDialogViewModel.DialogResult"/>
+	/// transitions to a value, mirroring the auto-close that <c>IDialogService.ShowDialog</c>
+	/// gives to MvvmDialogs-hosted dialogs. Manually-constructed dialogs
+	/// (<c>new XxxWindow { DataContext = vm }.ShowDialog()</c>) don't get that wiring;
+	/// calling this in the Window ctor restores it.
+	/// </summary>
+	public static void HookModalAutoClose(this Window window)
+	{
+		PropertyChangedEventHandler? handler = null;
+		IModalDialogViewModel? attached = null;
+
+		void detach()
+		{
+			if (attached is INotifyPropertyChanged old && handler is not null)
+				old.PropertyChanged -= handler;
+			attached = null;
+		}
+
+		void attach(IModalDialogViewModel vm)
+		{
+			detach();
+			attached = vm;
+			if (vm is not INotifyPropertyChanged npc)
+				return;
+
+			handler = (_, args) =>
+			{
+				if (args.PropertyName != nameof(IModalDialogViewModel.DialogResult) || vm.DialogResult is null)
+					return;
+
+				// For modal dialogs propagate to Window.DialogResult so ShowDialog() returns;
+				// modeless windows raise InvalidOperationException on that setter, fall back to Close().
+				if (window.IsLoaded)
+				{
+					try { window.DialogResult = vm.DialogResult; }
+					catch (InvalidOperationException) { window.Close(); }
+				}
+				else
+					window.Close();
+			};
+			npc.PropertyChanged += handler;
+		}
+
+		if (window.DataContext is IModalDialogViewModel initial)
+			attach(initial);
+
+		window.DataContextChanged += (_, args) =>
+		{
+			if (args.NewValue is IModalDialogViewModel vm)
+				attach(vm);
+		};
+
+		window.Closed += (_, _) => detach();
 	}
 }

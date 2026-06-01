@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.ResizeRoom;
 
@@ -12,6 +13,7 @@ public partial class ResizeRoomWindow : Window
     public ResizeRoomWindow()
     {
         InitializeComponent();
+		this.HookModalAutoClose();
 
         gridHost.Child = _gridControl;
         DataContextChanged += OnDataContextChanged;

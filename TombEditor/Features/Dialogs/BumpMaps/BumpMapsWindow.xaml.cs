@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Windows;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.BumpMaps;
 
@@ -9,6 +10,7 @@ public partial class BumpMapsWindow : Window
     public BumpMapsWindow()
     {
         InitializeComponent();
+		this.HookModalAutoClose();
         DataContextChanged += OnDataContextChanged;
         Closed += OnClosed;
     }

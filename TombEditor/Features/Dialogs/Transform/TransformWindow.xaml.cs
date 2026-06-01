@@ -10,6 +10,7 @@ public partial class TransformWindow : Window
 	public TransformWindow()
 	{
 		InitializeComponent();
+		this.HookModalAutoClose();
 		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormTransform");
 	}
 }

@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Windows;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.FootStepSounds;
 
@@ -9,6 +10,7 @@ public partial class FootStepSoundsWindow : Window
     public FootStepSoundsWindow()
     {
         InitializeComponent();
+		this.HookModalAutoClose();
         DataContextChanged += OnDataContextChanged;
     }
 

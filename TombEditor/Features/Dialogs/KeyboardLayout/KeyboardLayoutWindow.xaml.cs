@@ -1,4 +1,5 @@
 using System.Windows;
+using TombLib.WPF;
 using System.Windows.Input;
 using WinForms = System.Windows.Forms;
 
@@ -9,6 +10,7 @@ public partial class KeyboardLayoutWindow : Window
 	public KeyboardLayoutWindow()
 	{
 		InitializeComponent();
+		this.HookModalAutoClose();
 		PreviewKeyDown += OnPreviewKeyDown;
 		PreviewKeyUp += OnPreviewKeyUp;
 	}

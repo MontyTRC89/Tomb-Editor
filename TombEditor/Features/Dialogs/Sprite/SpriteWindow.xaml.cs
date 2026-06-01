@@ -12,6 +12,7 @@ public partial class SpriteWindow : Window
 	public SpriteWindow()
 	{
 		InitializeComponent();
+		this.HookModalAutoClose();
 
 		_panelRenderingSprite = new PanelRenderingSprite();
 		previewHost.Child = _panelRenderingSprite;
