@@ -13,6 +13,7 @@ Tomb Editor:
  * Added multiple window layout support.
  * Fixed "Map animated textures" checkbox not unchecking in Level Settings dialog.
  * Fixed occasional exceptions after closing Node Editor.
+ * Fixed exception while opening texture lists in Remap Texture dialog.
  
 WadTool:
  * Added mesh name display in the skeleton editor.
