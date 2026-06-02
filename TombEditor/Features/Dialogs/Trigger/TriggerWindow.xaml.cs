@@ -4,10 +4,7 @@ using NLog;
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms;
 using TombLib;
-using TombLib.Controls;
-using TombLib.Forms;
 using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.LevelData;
@@ -26,13 +23,6 @@ public partial class TriggerWindow : Window
 	private readonly Action<ObjectInstance> _selectObject;
 	private readonly Action<Room> _selectRoom;
 
-	private readonly TriggerParameterControl _paramTriggerType;
-	private readonly TriggerParameterControl _paramPlugin;
-	private readonly TriggerParameterControl _paramTargetType;
-	private readonly TriggerParameterControl _paramTarget;
-	private readonly TriggerParameterControl _paramTimer;
-	private readonly TriggerParameterControl _paramExtra;
-
 	private bool _dialogIsUpdating;
 	private TriggerWindowViewModel? _vm;
 	private string? _scriptWithComments;
@@ -48,26 +38,13 @@ public partial class TriggerWindow : Window
 		_selectObject = selectObject;
 		_selectRoom = selectRoom;
 
-		_paramTriggerType = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-		_paramPlugin      = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-		_paramTargetType  = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-		_paramTarget      = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-		_paramTimer       = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-		_paramExtra       = new TriggerParameterControl { Dock = DockStyle.Fill, Level = level };
-
-		foreach (var ctl in new[] { _paramTriggerType, _paramPlugin, _paramTargetType, _paramTarget, _paramTimer, _paramExtra })
+		foreach (var ctl in new[] { paramTriggerType, paramPlugin, paramTargetType, paramTarget, paramTimer, paramExtra })
 		{
+			ctl.Level = level;
 			ctl.ViewObject += selectObject;
 			ctl.ViewRoom += selectRoom;
 			ctl.ParameterChanged += (_, _) => UpdateDialog();
 		}
-
-		hostTriggerType.Child = _paramTriggerType;
-		hostPlugin.Child      = _paramPlugin;
-		hostTargetType.Child  = _paramTargetType;
-		hostTarget.Child      = _paramTarget;
-		hostTimer.Child       = _paramTimer;
-		hostExtra.Child       = _paramExtra;
 
 		Loaded += OnLoaded;
 		DataContextChanged += OnDataContextChanged;
@@ -103,16 +80,14 @@ public partial class TriggerWindow : Window
 		if (_dialogIsUpdating)
 			return;
 
-		switch (e.PropertyName)
+		if (e.PropertyName == nameof(TriggerWindowViewModel.RawMode))
 		{
-			case nameof(TriggerWindowViewModel.RawMode):
-				_paramTriggerType.RawMode = _vm!.RawMode;
-				_paramPlugin.RawMode      = _vm.RawMode;
-				_paramTargetType.RawMode  = _vm.RawMode;
-				_paramTarget.RawMode      = _vm.RawMode;
-				_paramTimer.RawMode       = _vm.RawMode;
-				_paramExtra.RawMode       = _vm.RawMode;
-				break;
+			paramTriggerType.RawMode = _vm!.RawMode;
+			paramPlugin.RawMode      = _vm.RawMode;
+			paramTargetType.RawMode  = _vm.RawMode;
+			paramTarget.RawMode      = _vm.RawMode;
+			paramTimer.RawMode       = _vm.RawMode;
+			paramExtra.RawMode       = _vm.RawMode;
 		}
 	}
 
@@ -134,23 +109,22 @@ public partial class TriggerWindow : Window
 				_vm.OneShot = trigger.OneShot;
 			}
 
-			_paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
-			_paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
-			_paramPlugin.Parameter = trigger.Plugin;
+			paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
+			paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
+			paramPlugin.Parameter = trigger.Plugin;
 
-			// Match FormTrigger HACK: populate timer-first when ConditionNg so dependent ranges resolve correctly.
 			if (trigger.TriggerType == TriggerType.ConditionNg)
 			{
-				_paramTimer.Parameter = trigger.Timer;
-				_paramTarget.Parameter = trigger.Target;
+				paramTimer.Parameter = trigger.Timer;
+				paramTarget.Parameter = trigger.Target;
 			}
 			else
 			{
-				_paramTarget.Parameter = trigger.Target;
-				_paramTimer.Parameter = trigger.Timer;
+				paramTarget.Parameter = trigger.Target;
+				paramTimer.Parameter = trigger.Timer;
 			}
 
-			_paramExtra.Parameter = trigger.Extra;
+			paramExtra.Parameter = trigger.Extra;
 		}
 		finally { _dialogIsUpdating = false; }
 
@@ -165,28 +139,28 @@ public partial class TriggerWindow : Window
 		_dialogIsUpdating = true;
 		try
 		{
-			_paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
-			_paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, CurrentTriggerType).ToParameterRange();
+			paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
+			paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, CurrentTriggerType).ToParameterRange();
 
 			bool isEvent = CurrentTargetType is TriggerTargetType.VolumeEvent or TriggerTargetType.GlobalEvent;
 			bool isConditionNg = isEvent || CurrentTriggerType == TriggerType.ConditionNg || CurrentTargetType == TriggerTargetType.ActionNg;
 
 			if (_level.IsNG)
-				_paramPlugin.ParameterRange = NgParameterInfo.GetPluginRange(_level.Settings);
+				paramPlugin.ParameterRange = NgParameterInfo.GetPluginRange(_level.Settings);
 
 			if (isConditionNg)
 			{
-				_paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, CurrentTriggerType, CurrentTargetType, _paramTarget.Parameter, _paramPlugin.Parameter);
-				_paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, CurrentTriggerType, CurrentTargetType, _paramTimer.Parameter, _paramPlugin.Parameter);
+				paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, CurrentTriggerType, CurrentTargetType, paramTarget.Parameter, paramPlugin.Parameter);
+				paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, CurrentTriggerType, CurrentTargetType, paramTimer.Parameter, paramPlugin.Parameter);
 			}
 			else
 			{
-				_paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, CurrentTriggerType, CurrentTargetType, _paramTimer.Parameter, _paramPlugin.Parameter);
-				_paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, CurrentTriggerType, CurrentTargetType, _paramTarget.Parameter, _paramPlugin.Parameter);
+				paramTarget.ParameterRange = NgParameterInfo.GetTargetRange(_level.Settings, CurrentTriggerType, CurrentTargetType, paramTimer.Parameter, paramPlugin.Parameter);
+				paramTimer.ParameterRange = NgParameterInfo.GetTimerRange(_level.Settings, CurrentTriggerType, CurrentTargetType, paramTarget.Parameter, paramPlugin.Parameter);
 			}
 
-			_paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(
-				_level.Settings, CurrentTriggerType, CurrentTargetType, _paramTarget.Parameter, _paramTimer.Parameter, _paramPlugin.Parameter,
+			paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(
+				_level.Settings, CurrentTriggerType, CurrentTargetType, paramTarget.Parameter, paramTimer.Parameter, paramPlugin.Parameter,
 				out bool isButtons);
 
 			if (_vm is not null)
@@ -194,7 +168,7 @@ public partial class TriggerWindow : Window
 
 			if (isButtons && _vm is not null)
 			{
-				ushort selectedExtraKey = _paramExtra.Parameter is TriggerParameterUshort extraParam
+				ushort selectedExtraKey = paramExtra.Parameter is TriggerParameterUshort extraParam
 					? extraParam.Key
 					: (ushort)0;
 
@@ -211,11 +185,11 @@ public partial class TriggerWindow : Window
 		UpdateExportToTrigger();
 	}
 
-	private TriggerType CurrentTriggerType => _paramTriggerType.Parameter is TriggerParameterUshort u
+	private TriggerType CurrentTriggerType => paramTriggerType.Parameter is TriggerParameterUshort u
 		? (TriggerType)u.Key
 		: TriggerType.Trigger;
 
-	private TriggerTargetType CurrentTargetType => _paramTargetType.Parameter is TriggerParameterUshort u
+	private TriggerTargetType CurrentTargetType => paramTargetType.Parameter is TriggerParameterUshort u
 		? (TriggerTargetType)u.Key
 		: TriggerTargetType.Object;
 
@@ -239,10 +213,10 @@ public partial class TriggerWindow : Window
 	{
 		TriggerType = CurrentTriggerType,
 		TargetType = CurrentTargetType,
-		Plugin = _paramPlugin.Parameter,
-		Target = _paramTarget.Parameter,
-		Timer = _paramTimer.Parameter,
-		Extra = _paramExtra.Parameter,
+		Plugin = paramPlugin.Parameter,
+		Target = paramTarget.Parameter,
+		Timer = paramTimer.Parameter,
+		Extra = paramExtra.Parameter,
 		CodeBits = CodeBits,
 		OneShot = _vm?.OneShot ?? false
 	};
@@ -251,7 +225,7 @@ public partial class TriggerWindow : Window
 	{
 		if (!NgParameterInfo.TriggerIsValid(_level.Settings, TestTrigger))
 		{
-			var result = System.Windows.MessageBox.Show(this,
+			var result = MessageBox.Show(this,
 				"The currently selected trigger data is not valid for the engine.",
 				"Trigger invalid",
 				MessageBoxButton.OKCancel,
@@ -262,10 +236,10 @@ public partial class TriggerWindow : Window
 
 		_trigger.TriggerType = CurrentTriggerType;
 		_trigger.TargetType = CurrentTargetType;
-		_trigger.Plugin = _paramPlugin.Parameter;
-		_trigger.Target = _paramTarget.Parameter;
-		_trigger.Timer = _paramTimer.Parameter;
-		_trigger.Extra = _paramExtra.Parameter;
+		_trigger.Plugin = paramPlugin.Parameter;
+		_trigger.Target = paramTarget.Parameter;
+		_trigger.Timer = paramTimer.Parameter;
+		_trigger.Extra = paramExtra.Parameter;
 		_trigger.CodeBits = CodeBits;
 		_trigger.OneShot = _vm?.OneShot ?? false;
 
@@ -321,26 +295,26 @@ public partial class TriggerWindow : Window
 		if (_level.Settings.GameVersion != TRVersion.Game.TRNG)
 			return;
 
-		if (_paramTarget.Parameter is IHasScriptID t && !t.ScriptId.HasValue)
+		if (paramTarget.Parameter is IHasScriptID t && !t.ScriptId.HasValue)
 			t.AllocateNewScriptId();
 
-		if (_paramTimer.Parameter is IHasScriptID timer && !timer.ScriptId.HasValue)
+		if (paramTimer.Parameter is IHasScriptID timer && !timer.ScriptId.HasValue)
 			timer.AllocateNewScriptId();
 
-		if (_paramExtra.Parameter is IHasScriptID extra && !extra.ScriptId.HasValue)
+		if (paramExtra.Parameter is IHasScriptID extra && !extra.ScriptId.HasValue)
 			extra.AllocateNewScriptId();
 	}
 
 	private void CopyToClipboard()
 	{
 		if (_vm is { ScriptText: { Length: > 0 } text })
-			System.Windows.Clipboard.SetText(text);
+			Clipboard.SetText(text);
 	}
 
 	private void CopyWithComments()
 	{
 		if (!string.IsNullOrEmpty(_scriptWithComments))
-			System.Windows.Clipboard.SetText(_scriptWithComments);
+			Clipboard.SetText(_scriptWithComments);
 	}
 
 	private void CopyAsAnimcommand()
@@ -352,7 +326,7 @@ public partial class TriggerWindow : Window
 		if (!ShowInputBox(frameVm) || !int.TryParse(frameVm.Value, out int frame) || frame < -1 || frame > 254)
 		{
 			if (frameVm.DialogResult == true)
-				System.Windows.MessageBox.Show(this, "Frame number is invalid. Maximum is 254.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(this, "Frame number is invalid. Maximum is 254.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			return;
 		}
 
@@ -376,7 +350,7 @@ public partial class TriggerWindow : Window
 		var imported = NgParameterInfo.ImportFromScriptTrigger(_level, vm.Value);
 		if (imported is null)
 		{
-			System.Windows.MessageBox.Show(this, "Script entry is invalid. Trigger can't be imported.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			MessageBox.Show(this, "Script entry is invalid. Trigger can't be imported.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			return;
 		}
 		Initialize(imported);

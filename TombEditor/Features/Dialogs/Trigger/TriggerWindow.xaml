@@ -9,8 +9,8 @@
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	xmlns:tombLibControls="clr-namespace:TombLib.WPF.CustomControls;assembly=TombLib.WPF"
 	xmlns:vm="clr-namespace:TombEditor.Features.Dialogs.Trigger"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="{Binding Title}"
 	Width="720"
 	MinWidth="600"
@@ -68,8 +68,8 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="Trigger Type:" />
-		<wfi:WindowsFormsHost
-			x:Name="hostTriggerType"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramTriggerType"
 			Grid.Row="0"
 			Grid.Column="1"
 			Grid.ColumnSpan="5" />
@@ -79,8 +79,8 @@
 			VerticalAlignment="Center"
 			Content="Plugin / Engine:"
 			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}" />
-		<wfi:WindowsFormsHost
-			x:Name="hostPlugin"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramPlugin"
 			Grid.Row="0"
 			Grid.Column="7"
 			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}" />
@@ -91,8 +91,8 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="What:" />
-		<wfi:WindowsFormsHost
-			x:Name="hostTargetType"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramTargetType"
 			Grid.Row="1"
 			Grid.Column="1"
 			Grid.ColumnSpan="7" />
@@ -103,8 +103,8 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="(#) Param:" />
-		<wfi:WindowsFormsHost
-			x:Name="hostTarget"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramTarget"
 			Grid.Row="2"
 			Grid.Column="1"
 			Grid.ColumnSpan="7" />
@@ -115,8 +115,8 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="(&amp;&amp;) Timer:" />
-		<wfi:WindowsFormsHost
-			x:Name="hostTimer"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramTimer"
 			Grid.Row="3"
 			Grid.Column="1"
 			Grid.ColumnSpan="7" />
@@ -127,8 +127,8 @@
 			Grid.Column="0"
 			VerticalAlignment="Center"
 			Content="(E) Extra:" />
-		<wfi:WindowsFormsHost
-			x:Name="hostExtra"
+		<tombLibControls:TriggerParameterView
+			x:Name="paramExtra"
 			Grid.Row="4"
 			Grid.Column="1"
 			Grid.ColumnSpan="7" />
