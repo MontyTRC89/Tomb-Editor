@@ -538,6 +538,7 @@
 								ContentId="roomOptions"
 								CanClose="False"
 								IconSource="{tomb:Icon General/options}"
+								IsSelected="True"
 								Title="Room options">
 								<roomOptionsPanel:RoomOptionsView x:Name="roomOptionsView" />
 							</avalonDock:LayoutAnchorable>
