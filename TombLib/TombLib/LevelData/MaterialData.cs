@@ -9,7 +9,8 @@ namespace TombLib.LevelData
 	{
 		Default,
 		Reflective,
-		SkyboxReflective
+		SkyboxReflective,
+		SnowSurface
 	}
 
 	public class MaterialData
