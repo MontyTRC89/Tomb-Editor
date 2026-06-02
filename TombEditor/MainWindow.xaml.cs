@@ -97,6 +97,10 @@ public partial class MainWindow : Window
 
 		_editor.EditorEventRaised += OnEditorEventRaised;
 
+		// Route global editor hotkeys (the WPF shell has no ProcessCmdKey). Without this, keys
+		// pressed while the hosted Panel3D has focus never reach the editor command system.
+		InstallHotkeyFilter();
+
 		// Apply the current configuration to the freshly-created Panel3D so toolbar toggles
 		// (DrawAllRooms, DrawPortals, etc.) reflect the persisted state on first paint.
 		ApplyConfigurationToPanel3D(_editor.Configuration);
@@ -250,6 +254,7 @@ public partial class MainWindow : Window
 		SaveCurrentStateToActiveLayout();
 
 		_editor.EditorEventRaised -= OnEditorEventRaised;
+		RemoveHotkeyFilter();
 
 		// Each migrated WPF view subscribes to Editor.EditorEventRaised in its constructor;
 		// Cleanup() unsubscribes and releases ViewModels. Without this the Editor leaks event
