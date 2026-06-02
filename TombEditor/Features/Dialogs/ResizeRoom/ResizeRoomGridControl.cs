@@ -13,7 +13,6 @@ namespace TombEditor.Features.Dialogs.ResizeRoom;
 // control no longer depends on a Form-typed Parent back-reference.
 public class ResizeRoomGridControl : Panel2DGrid
 {
-    public Room Room { get; set; }
     public RectangleInt2 NewArea { get; set; }
     public bool UseFloor { get; set; }
     public ColorScheme ColorScheme { get; set; }
