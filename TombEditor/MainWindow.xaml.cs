@@ -38,7 +38,6 @@ public partial class MainWindow : Window
 
 	private readonly Editor _editor;
 	private readonly Panel3D _panel3D;
-	private readonly Panel2DMap _panel2DMap;
 	private readonly ToolPaletteFloating _toolPalette;
 	private readonly ObjectBrushToolbox _objectBrushToolbox;
 
@@ -70,11 +69,10 @@ public partial class MainWindow : Window
 
 		panel3DHost.Child = _panel3D;
 
-		// The 2D map shares the document area with the 3D view as a sibling tab. The user can
-		// switch via the toolbar (Switch2DMode brings the tab forward) or by clicking the tab
-		// header directly.
-		_panel2DMap = new Panel2DMap();
-		panel2DMapHost.Child = _panel2DMap;
+		// The 2D map shares the document area with the 3D view as a sibling tab. It is now a
+		// native WPF FrameworkElement (panel2DMap, declared in XAML), so no WindowsFormsHost is
+		// needed. The user switches via the toolbar (Switch2DMode brings the tab forward) or by
+		// clicking the tab header directly.
 
 		// The imported geometry preview needs the rendering device too; it owns its WindowsFormsHost
 		// internally and exposes InitializeRendering to mirror the FormMain init path.
@@ -268,6 +266,7 @@ public partial class MainWindow : Window
 		texturePanelView?.Cleanup();
 		contentBrowserView?.Cleanup();
 		flybyTimelineView?.Cleanup();
+		panel2DMap?.Dispose();
 
 		base.OnClosed(e);
 	}
@@ -477,7 +476,7 @@ public partial class MainWindow : Window
 			"lighting" => lightingView,
 			"palette" => paletteView,
 			"mainView" => panel3DHost,
-			"map2DView" => panel2DMapHost,
+			"map2DView" => panel2DMap,
 			_ => null
 		};
 

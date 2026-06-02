@@ -23,6 +23,7 @@
 	xmlns:texturePanel="clr-namespace:TombEditor.Features.DockableViews.TexturePanel"
 	xmlns:triggerList="clr-namespace:TombEditor.Features.DockableViews.TriggerList"
 	xmlns:flybyTimeline="clr-namespace:TombEditor.Features.FlybyTimeline.UI"
+	xmlns:map2d="clr-namespace:TombEditor.Features.Map2D"
 	Title="Tomb Editor"
 	Width="1280"
 	Height="800"
@@ -568,7 +569,7 @@
 									ContentId="map2DView"
 									CanClose="False"
 									Title="2D Map">
-									<wfi:WindowsFormsHost x:Name="panel2DMapHost" Background="{DynamicResource Brush_Background_Low}" />
+									<map2d:Panel2DMap x:Name="panel2DMap" />
 								</avalonDock:LayoutDocument>
 							</avalonDock:LayoutDocumentPane>
 						</avalonDock:LayoutDocumentPaneGroup>
