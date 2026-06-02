@@ -508,17 +508,63 @@
 			</avalonDock:DockingManager.Theme>
 
 			<avalonDock:LayoutRoot>
+				<!--  Mirrors the legacy WinForms default (Configuration.Window_LayoutDefault):  -->
+				<!--  Left column: Sector options / Room options / Items+Imported geometry / Triggers+Objects.  -->
+				<!--  Right column: Textures. Center bottom: Lighting | Content browser+Palette.  -->
+				<!--  Rooms (a WPF-only panel) is tabbed with Room options; the flyby timeline strip  -->
+				<!--  (also WPF-only) sits directly under the viewport.  -->
 				<avalonDock:LayoutPanel Orientation="Horizontal">
 
-					<!--  Left side: anchorables placeholders  -->
-					<avalonDock:LayoutAnchorablePaneGroup DockWidth="260" Orientation="Vertical">
-						<avalonDock:LayoutAnchorablePane>
+					<!--  Left column  -->
+					<avalonDock:LayoutAnchorablePaneGroup DockWidth="286" Orientation="Vertical">
+						<avalonDock:LayoutAnchorablePane DockHeight="280">
+							<avalonDock:LayoutAnchorable
+								ContentId="sectorOptions"
+								CanClose="False"
+								IconSource="{tomb:Icon Sectortype/Floor_1}"
+								Title="Sector options">
+								<sectorOptionsPanel:SectorOptionsView x:Name="sectorOptionsView" />
+							</avalonDock:LayoutAnchorable>
+						</avalonDock:LayoutAnchorablePane>
+						<avalonDock:LayoutAnchorablePane DockHeight="236">
 							<avalonDock:LayoutAnchorable
 								ContentId="rooms"
 								CanClose="False"
 								IconSource="{tomb:Icon Actions/DrawAllRooms}"
 								Title="Rooms">
 								<roomsPanel:RoomsView x:Name="roomsView" />
+							</avalonDock:LayoutAnchorable>
+							<avalonDock:LayoutAnchorable
+								ContentId="roomOptions"
+								CanClose="False"
+								IconSource="{tomb:Icon General/options}"
+								Title="Room options">
+								<roomOptionsPanel:RoomOptionsView x:Name="roomOptionsView" />
+							</avalonDock:LayoutAnchorable>
+						</avalonDock:LayoutAnchorablePane>
+						<avalonDock:LayoutAnchorablePane DockHeight="259">
+							<avalonDock:LayoutAnchorable
+								ContentId="itemBrowser"
+								CanClose="False"
+								IconSource="{tomb:Icon Toolbox/ObjectPlacement}"
+								Title="Items">
+								<itemBrowser:ItemBrowserView x:Name="itemBrowserView" />
+							</avalonDock:LayoutAnchorable>
+							<avalonDock:LayoutAnchorable
+								ContentId="importedGeometryBrowser"
+								CanClose="False"
+								IconSource="{tomb:Icon Objects/custom-geometry}"
+								Title="Imported geometry">
+								<importedGeometryBrowser:ImportedGeometryBrowserView x:Name="importedGeometryBrowserView" />
+							</avalonDock:LayoutAnchorable>
+						</avalonDock:LayoutAnchorablePane>
+						<avalonDock:LayoutAnchorablePane DockHeight="174">
+							<avalonDock:LayoutAnchorable
+								ContentId="triggerList"
+								CanClose="False"
+								IconSource="{tomb:Icon Sectortype/TriggerTriggerer}"
+								Title="Triggers">
+								<triggerList:TriggerListView x:Name="triggerListView" />
 							</avalonDock:LayoutAnchorable>
 							<avalonDock:LayoutAnchorable
 								ContentId="objectList"
@@ -528,32 +574,9 @@
 								<objectList:ObjectListView x:Name="objectListView" />
 							</avalonDock:LayoutAnchorable>
 						</avalonDock:LayoutAnchorablePane>
-						<avalonDock:LayoutAnchorablePane>
-							<avalonDock:LayoutAnchorable
-								ContentId="sectorOptions"
-								CanClose="False"
-								IconSource="{tomb:Icon Sectortype/Floor_1}"
-								Title="Sector options">
-								<sectorOptionsPanel:SectorOptionsView x:Name="sectorOptionsView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="roomOptions"
-								CanClose="False"
-								IconSource="{tomb:Icon General/options}"
-								Title="Room options">
-								<roomOptionsPanel:RoomOptionsView x:Name="roomOptionsView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="triggerList"
-								CanClose="False"
-								IconSource="{tomb:Icon Sectortype/TriggerTriggerer}"
-								Title="Triggers">
-								<triggerList:TriggerListView x:Name="triggerListView" />
-							</avalonDock:LayoutAnchorable>
-						</avalonDock:LayoutAnchorablePane>
 					</avalonDock:LayoutAnchorablePaneGroup>
 
-					<!--  Center: viewport area — 3D/2D as sibling document tabs, FlybyTimeline anchored below  -->
+					<!--  Center: viewport (3D/2D tabs), flyby timeline strip, then the bottom dock region  -->
 					<avalonDock:LayoutPanel Orientation="Vertical">
 						<avalonDock:LayoutDocumentPaneGroup>
 							<avalonDock:LayoutDocumentPane>
@@ -573,7 +596,7 @@
 								</avalonDock:LayoutDocument>
 							</avalonDock:LayoutDocumentPane>
 						</avalonDock:LayoutDocumentPaneGroup>
-						<avalonDock:LayoutAnchorablePaneGroup DockHeight="180">
+						<avalonDock:LayoutAnchorablePaneGroup DockHeight="160">
 							<avalonDock:LayoutAnchorablePane>
 								<avalonDock:LayoutAnchorable
 									x:Name="flybyTimelineAnchorable"
@@ -585,10 +608,37 @@
 								</avalonDock:LayoutAnchorable>
 							</avalonDock:LayoutAnchorablePane>
 						</avalonDock:LayoutAnchorablePaneGroup>
+						<avalonDock:LayoutAnchorablePaneGroup DockHeight="150" Orientation="Horizontal">
+							<avalonDock:LayoutAnchorablePane DockWidth="371">
+								<avalonDock:LayoutAnchorable
+									ContentId="lighting"
+									CanClose="False"
+									IconSource="{tomb:Icon Actions/light_on}"
+									Title="Lighting">
+									<lightingPanel:LightingView x:Name="lightingView" />
+								</avalonDock:LayoutAnchorable>
+							</avalonDock:LayoutAnchorablePane>
+							<avalonDock:LayoutAnchorablePane DockWidth="645">
+								<avalonDock:LayoutAnchorable
+									ContentId="contentBrowser"
+									CanClose="False"
+									IconSource="{tomb:Icon General/folder}"
+									Title="Content browser">
+									<contentBrowser:ContentBrowserView x:Name="contentBrowserView" />
+								</avalonDock:LayoutAnchorable>
+								<avalonDock:LayoutAnchorable
+									ContentId="palette"
+									CanClose="False"
+									IconSource="{tomb:Icon Toolbox/Paint}"
+									Title="Palette">
+									<palettePanel:PaletteView x:Name="paletteView" />
+								</avalonDock:LayoutAnchorable>
+							</avalonDock:LayoutAnchorablePane>
+						</avalonDock:LayoutAnchorablePaneGroup>
 					</avalonDock:LayoutPanel>
 
-					<!--  Right side: anchorables placeholders  -->
-					<avalonDock:LayoutAnchorablePaneGroup DockWidth="280" Orientation="Vertical">
+					<!--  Right column  -->
+					<avalonDock:LayoutAnchorablePaneGroup DockWidth="286" Orientation="Vertical">
 						<avalonDock:LayoutAnchorablePane>
 							<avalonDock:LayoutAnchorable
 								ContentId="texturePanel"
@@ -596,43 +646,6 @@
 								IconSource="{tomb:Icon Actions/TextureMode}"
 								Title="Textures">
 								<texturePanel:TexturePanelView x:Name="texturePanelView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="itemBrowser"
-								CanClose="False"
-								IconSource="{tomb:Icon Toolbox/ObjectPlacement}"
-								Title="Items">
-								<itemBrowser:ItemBrowserView x:Name="itemBrowserView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="importedGeometryBrowser"
-								CanClose="False"
-								IconSource="{tomb:Icon Objects/custom-geometry}"
-								Title="Imported geometry">
-								<importedGeometryBrowser:ImportedGeometryBrowserView x:Name="importedGeometryBrowserView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="contentBrowser"
-								CanClose="False"
-								IconSource="{tomb:Icon General/folder}"
-								Title="Content browser">
-								<contentBrowser:ContentBrowserView x:Name="contentBrowserView" />
-							</avalonDock:LayoutAnchorable>
-						</avalonDock:LayoutAnchorablePane>
-						<avalonDock:LayoutAnchorablePane>
-							<avalonDock:LayoutAnchorable
-								ContentId="lighting"
-								CanClose="False"
-								IconSource="{tomb:Icon Actions/light_on}"
-								Title="Lighting">
-								<lightingPanel:LightingView x:Name="lightingView" />
-							</avalonDock:LayoutAnchorable>
-							<avalonDock:LayoutAnchorable
-								ContentId="palette"
-								CanClose="False"
-								IconSource="{tomb:Icon Toolbox/Paint}"
-								Title="Palette">
-								<palettePanel:PaletteView x:Name="paletteView" />
 							</avalonDock:LayoutAnchorable>
 						</avalonDock:LayoutAnchorablePane>
 					</avalonDock:LayoutAnchorablePaneGroup>
