@@ -78,6 +78,7 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static List<CommandObj> _commands = new List<CommandObj>();
+        private static TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow _animatedTexturesWindow;
         public static IEnumerable<CommandObj> Commands => _commands;
 
         public static CommandObj GetCommand(string name)
@@ -1512,21 +1513,24 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
-
-                if (existingWindow == null)
+                if (_animatedTexturesWindow != null)
                 {
-                    var context = new TombEditorAnimatedTexturesContext(args.Editor);
-                    var form = new FormAnimatedTextures(
-                        new PanelTextureMapForAnimations(),
-                        context,
-                        args.Editor.Configuration
-                    );
-
-                    form.Show(args.Window);
+                    _animatedTexturesWindow.Activate();
+                    return;
                 }
-                else
-                    existingWindow.Focus();
+
+                var context = new TombEditorAnimatedTexturesContext(args.Editor);
+                var adapter = new WpfTextureMapAdapter(new PanelTextureMapForAnimations());
+                var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, adapter);
+                var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
+
+                _animatedTexturesWindow = window;
+                window.Closed += (s, e) => _animatedTexturesWindow = null;
+
+                if (args.Window is not null)
+                    window.SetOwner(args.Window);
+
+                window.Show();
             });
 
             AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate (CommandArgs args)
