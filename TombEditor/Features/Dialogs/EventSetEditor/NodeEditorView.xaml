@@ -18,6 +18,24 @@
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 		<local:LinkBrushConverter x:Key="LinkBrushConverter" />
 
+		<!--  Grid lines overlay  -->
+		<DrawingBrush
+			x:Key="GridBrush"
+			TileMode="Tile"
+			Viewport="0,0,32,32"
+			ViewportUnits="Absolute">
+			<DrawingBrush.Drawing>
+				<GeometryDrawing>
+					<GeometryDrawing.Geometry>
+						<RectangleGeometry Rect="0,0,32,32" />
+					</GeometryDrawing.Geometry>
+					<GeometryDrawing.Pen>
+						<Pen Brush="#1AFFFFFF" Thickness="1" />
+					</GeometryDrawing.Pen>
+				</GeometryDrawing>
+			</DrawingBrush.Drawing>
+		</DrawingBrush>
+
 		<!--  Argument editors  -->
 		<DataTemplate x:Key="ArgBoolean">
 			<CheckBox Margin="0,2,0,0" Content="{Binding Caption}" IsChecked="{Binding BoolValue, Mode=TwoWay}" ToolTip="{Binding Description}" />
@@ -148,12 +166,25 @@
 
 		<!--  Node canvas  -->
 		<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
-			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+			<ScrollViewer
+				HorizontalScrollBarVisibility="Auto"
+				PreviewMouseWheel="OnPreviewMouseWheel"
+				VerticalScrollBarVisibility="Auto">
 				<Canvas
 					x:Name="rootCanvas"
 					Width="{Binding CanvasWidth}"
 					Height="{Binding CanvasHeight}"
 					Background="{DynamicResource Brush_Background_Low}">
+					<Canvas.LayoutTransform>
+						<ScaleTransform x:Name="zoomTransform" ScaleX="1" ScaleY="1" />
+					</Canvas.LayoutTransform>
+
+					<!--  Grid lines  -->
+					<Rectangle
+						Width="{Binding CanvasWidth}"
+						Height="{Binding CanvasHeight}"
+						Fill="{StaticResource GridBrush}"
+						IsHitTestVisible="False" />
 
 					<!--  Links  -->
 					<ItemsControl ItemsSource="{Binding Links}">
@@ -247,6 +278,10 @@
 
 											<!--  Body (arguments)  -->
 											<StackPanel Margin="6" IsEnabled="{Binding IsEditable}">
+												<TextBox
+													Margin="0,0,0,2"
+													Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+													ToolTip="Node name" />
 												<TextBlock
 													Foreground="{DynamicResource Brush_Text_Warning}"
 													Text="{Binding FunctionName}"

@@ -89,6 +89,20 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             ? "Edit " + (GlobalMode ? "global" : "volume") + " event sets"
             : "Edit volume: " + _instance!.ToShortString();
 
+        /// <summary>Follows the editor's 3D selection to another volume (mirrors FormEventSetEditor.ChangeVolume).</summary>
+        public void FollowVolume(VolumeInstance? instance)
+        {
+            if (GlobalMode)
+                return;
+
+            _instance = instance;
+            OnPropertyChanged(nameof(GenericMode));
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(EnableVolume));
+            OnPropertyChanged(nameof(DetectInAdjacentRooms));
+            SelectedSet = _instance?.EventSet ?? SelectedSet;
+        }
+
         // Selection.
 
         [ObservableProperty] private EventSet? _selectedSet;

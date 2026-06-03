@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows;
+using TombLib.LevelData;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -42,6 +43,10 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             {
                 _levelChanged = true;
                 Close();
+            }
+            else if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                _viewModel?.FollowVolume(_editor?.SelectedObject as VolumeInstance);
             }
         }
 

@@ -26,6 +26,18 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private NodeEditorViewModel? ViewModel => DataContext as NodeEditorViewModel;
 
+        private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control)
+                return;
+
+            double factor = e.Delta > 0 ? 1.1 : 1.0 / 1.1;
+            double scale = System.Math.Clamp(zoomTransform.ScaleX * factor, 0.3, 2.0);
+            zoomTransform.ScaleX = scale;
+            zoomTransform.ScaleY = scale;
+            e.Handled = true;
+        }
+
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (ViewModel == null)
