@@ -17,7 +17,6 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
     {
         private NodeViewModel? _pendingFrom;
         private bool _pendingElse;
-        private Ellipse? _pendingPort;
         private Line? _tempLine;
 
         public NodeEditorView()
@@ -129,7 +128,6 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             e.Handled = true;
             _pendingFrom = from;
             _pendingElse = (string?)port.Tag == "Else";
-            _pendingPort = port;
 
             double startX = _pendingElse ? from.ElseX : from.OutX;
             double startY = _pendingElse ? from.ElseY : from.OutY;
@@ -147,12 +145,13 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             };
             rootCanvas.Children.Add(_tempLine);
 
-            port.CaptureMouse();
-            port.MouseMove += Port_MouseMove;
-            port.MouseLeftButtonUp += Port_MouseUp;
+            // Capture on the canvas (reliable) rather than the tiny port ellipse.
+            rootCanvas.CaptureMouse();
+            rootCanvas.MouseMove += Canvas_PendingMove;
+            rootCanvas.MouseLeftButtonUp += Canvas_PendingUp;
         }
 
-        private void Port_MouseMove(object sender, MouseEventArgs e)
+        private void Canvas_PendingMove(object sender, MouseEventArgs e)
         {
             if (_tempLine == null)
                 return;
@@ -162,11 +161,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             _tempLine.Y2 = position.Y;
         }
 
-        private void Port_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Canvas_PendingUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is not Ellipse port)
-                return;
-
             Point position = e.GetPosition(rootCanvas);
             NodeViewModel? target = FindNodeAt(position);
 
@@ -178,15 +174,19 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                     ViewModel.Disconnect(_pendingFrom, _pendingElse);
             }
 
+            EndPendingConnection();
+        }
+
+        private void EndPendingConnection()
+        {
             if (_tempLine != null)
                 rootCanvas.Children.Remove(_tempLine);
             _tempLine = null;
             _pendingFrom = null;
-            _pendingPort = null;
 
-            port.ReleaseMouseCapture();
-            port.MouseMove -= Port_MouseMove;
-            port.MouseLeftButtonUp -= Port_MouseUp;
+            rootCanvas.ReleaseMouseCapture();
+            rootCanvas.MouseMove -= Canvas_PendingMove;
+            rootCanvas.MouseLeftButtonUp -= Canvas_PendingUp;
         }
 
         private NodeViewModel? FindNodeAt(Point position)
