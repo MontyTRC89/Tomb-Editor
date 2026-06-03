@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -160,14 +161,15 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 OnPropertyChanged(nameof(Supports16BitDithering));
                 OnPropertyChanged(nameof(SupportsFontAndSky));
                 OnPropertyChanged(nameof(IsTRX));
+                RaiseAllValidity();
                 PopulateSoundInfoList();
             }
         }
 
-        public string GameExecutableFilePath { get => _settings.GameExecutableFilePath; set => SetSetting(_settings.GameExecutableFilePath, value, v => _settings.GameExecutableFilePath = v); }
-        public string GameLevelFilePath { get => _settings.GameLevelFilePath; set => SetSetting(_settings.GameLevelFilePath, value, v => _settings.GameLevelFilePath = v); }
-        public string ScriptDirectory { get => _settings.ScriptDirectory; set => SetSetting(_settings.ScriptDirectory, value, v => _settings.ScriptDirectory = v); }
-        public string TenLuaScriptFile { get => _settings.TenLuaScriptFile; set => SetSetting(_settings.TenLuaScriptFile, value, v => _settings.TenLuaScriptFile = v); }
+        public string GameExecutableFilePath { get => _settings.GameExecutableFilePath; set { SetSetting(_settings.GameExecutableFilePath, value, v => _settings.GameExecutableFilePath = v); RaiseAllValidity(); } }
+        public string GameLevelFilePath { get => _settings.GameLevelFilePath; set { SetSetting(_settings.GameLevelFilePath, value, v => _settings.GameLevelFilePath = v); RaiseAllValidity(); } }
+        public string ScriptDirectory { get => _settings.ScriptDirectory; set { SetSetting(_settings.ScriptDirectory, value, v => _settings.ScriptDirectory = v); RaiseAllValidity(); } }
+        public string TenLuaScriptFile { get => _settings.TenLuaScriptFile; set { SetSetting(_settings.TenLuaScriptFile, value, v => _settings.TenLuaScriptFile = v); RaiseAllValidity(); } }
 
         public bool GameEnableQuickStartFeature { get => _settings.GameEnableQuickStartFeature; set => SetSetting(_settings.GameEnableQuickStartFeature, value, v => _settings.GameEnableQuickStartFeature = v); }
         public bool GameEnableExtraReverbPresets { get => _settings.GameEnableExtraReverbPresets; set => SetSetting(_settings.GameEnableExtraReverbPresets, value, v => _settings.GameEnableExtraReverbPresets = v); }
@@ -175,8 +177,34 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         // Paths tab.
 
-        public string LevelFilePath { get => _settings.LevelFilePath; set => SetSetting(_settings.LevelFilePath, value, v => _settings.LevelFilePath = v); }
-        public string GameDirectory { get => _settings.GameDirectory; set => SetSetting(_settings.GameDirectory, value, v => _settings.GameDirectory = v); }
+        public string LevelFilePath { get => _settings.LevelFilePath; set { SetSetting(_settings.LevelFilePath, value, v => _settings.LevelFilePath = v); RaiseAllValidity(); } }
+        public string GameDirectory { get => _settings.GameDirectory; set { SetSetting(_settings.GameDirectory, value, v => _settings.GameDirectory = v); RaiseAllValidity(); } }
+
+        // Path validity (true = path exists; bound to red highlight when false).
+
+        public bool LevelFilePathValid => Directory.Exists(PathC.GetDirectoryNameTry(_settings.LevelFilePath));
+        public bool GameDirectoryValid => Directory.Exists(_settings.MakeAbsolute(_settings.GameDirectory));
+        public bool GameLevelFilePathValid
+        {
+            get
+            {
+                string path = _settings.MakeAbsolute(_settings.GameLevelFilePath);
+                return Directory.Exists(PathC.GetDirectoryNameTry(path)) && !string.IsNullOrEmpty(Path.GetExtension(path));
+            }
+        }
+        public bool GameExecutableValid => File.Exists(_settings.MakeAbsolute(_settings.GameExecutableFilePath));
+        public bool ScriptDirectoryValid => Directory.Exists(_settings.MakeAbsolute(_settings.ScriptDirectory));
+        public bool LuaValid => File.Exists(_settings.MakeAbsolute(_settings.TenLuaScriptFile));
+
+        private void RaiseAllValidity()
+        {
+            OnPropertyChanged(nameof(LevelFilePathValid));
+            OnPropertyChanged(nameof(GameDirectoryValid));
+            OnPropertyChanged(nameof(GameLevelFilePathValid));
+            OnPropertyChanged(nameof(GameExecutableValid));
+            OnPropertyChanged(nameof(ScriptDirectoryValid));
+            OnPropertyChanged(nameof(LuaValid));
+        }
 
         // Version-dependent visibility.
 

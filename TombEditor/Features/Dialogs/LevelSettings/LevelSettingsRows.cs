@@ -35,8 +35,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Message));
                 OnPropertyChanged(nameof(Size));
+                OnPropertyChanged(nameof(IsValid));
             }
         }
+
+        public bool IsValid => Texture.LoadException == null;
 
         public bool ReplaceMagentaWithTransparency
         {
@@ -98,8 +101,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 Wad = new ReferencedWad(_settings, value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Message));
+                OnPropertyChanged(nameof(IsValid));
             }
         }
+
+        public bool IsValid => Wad.LoadException == null;
 
         public string Message
         {
@@ -147,9 +153,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Message));
                 OnPropertyChanged(nameof(SoundsCount));
+                OnPropertyChanged(nameof(IsValid));
             }
         }
 
+        public bool IsValid => Catalog.LoadException == null;
         public string Message => Catalog.LoadException == null ? "Successfully loaded" : Catalog.LoadException.Message + " (" + Catalog.LoadException.GetType().Name + ")";
         public int SoundsCount => Catalog.LoadException == null ? Catalog.Sounds.SoundInfos.Count : 0;
 
@@ -181,6 +189,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         }
 
         public string Name => Object.Info.Name;
+        public bool IsValid => Object.LoadException == null;
         public string ErrorMessage => Object.LoadException == null ? "Successfully loaded" : Object.LoadException.Message + " (" + Object.LoadException.GetType().Name + ")";
 
         public string Path { get => Object.Info.Path; set { if (Object.Info.Path == value) return; Update(i => { i.Path = value; return i; }); } }

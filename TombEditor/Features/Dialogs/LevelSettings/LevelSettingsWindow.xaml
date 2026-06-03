@@ -23,10 +23,69 @@
 	<Window.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 
+		<SolidColorBrush x:Key="ValidBrush" Color="#FF356B35" />
+		<SolidColorBrush x:Key="InvalidBrush" Color="#FF8B3A3A" />
+
 		<!--  A labeled "path text + browse button" row  -->
 		<Style x:Key="PathLabel" TargetType="TextBlock">
 			<Setter Property="Width" Value="150" />
 			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+
+		<!--  Path text boxes turn red when the path doesn't exist  -->
+		<Style x:Key="LevelFileBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding LevelFilePathValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="GameDirBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding GameDirectoryValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="GameExeBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding GameExecutableValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="GameLevelBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding GameLevelFilePathValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="ScriptBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding ScriptDirectoryValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="LuaBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding LuaValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<!--  Status cells: green when loaded, red on error  -->
+		<Style x:Key="StatusCell" BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="DataGridCell">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsValid}" Value="True">
+					<Setter Property="Background" Value="{StaticResource ValidBrush}" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding IsValid}" Value="False">
+					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
 		</Style>
 	</Window.Resources>
 
@@ -56,22 +115,22 @@
 						<DockPanel Margin="0,3">
 							<TextBlock Style="{StaticResource PathLabel}" Text="Game executable:" />
 							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameExecutableCommand}" Content="..." />
-							<TextBox Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							<TextBox Style="{StaticResource GameExeBox}" Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 						</DockPanel>
 						<DockPanel Margin="0,3">
 							<TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" />
 							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameLevelFileCommand}" Content="..." />
-							<TextBox Text="{Binding GameLevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							<TextBox Style="{StaticResource GameLevelBox}" Text="{Binding GameLevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 						</DockPanel>
 						<DockPanel Margin="0,3" Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
 							<TextBlock Style="{StaticResource PathLabel}" Text="Script folder:" />
 							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseScriptCommand}" Content="..." />
-							<TextBox Text="{Binding ScriptDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							<TextBox Style="{StaticResource ScriptBox}" Text="{Binding ScriptDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 						</DockPanel>
 						<DockPanel Margin="0,3" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
 							<TextBlock Style="{StaticResource PathLabel}" Text="Lua script file:" />
 							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLuaCommand}" Content="..." />
-							<TextBox Text="{Binding TenLuaScriptFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							<TextBox Style="{StaticResource LuaBox}" Text="{Binding TenLuaScriptFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 						</DockPanel>
 						<CheckBox Margin="0,6,0,3" Content="Enable quick start feature" IsChecked="{Binding GameEnableQuickStartFeature, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
 						<CheckBox Margin="0,3" Content="Enable extra reverb presets" IsChecked="{Binding GameEnableExtraReverbPresets, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
@@ -86,12 +145,12 @@
 					<DockPanel DockPanel.Dock="Top" Margin="0,3">
 						<TextBlock Style="{StaticResource PathLabel}" Text="Level file (.prj2):" />
 						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLevelFileCommand}" Content="..." />
-						<TextBox Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<TextBox Style="{StaticResource LevelFileBox}" Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					</DockPanel>
 					<DockPanel DockPanel.Dock="Top" Margin="0,3">
 						<TextBlock Style="{StaticResource PathLabel}" Text="Game directory:" />
 						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameDirectoryCommand}" Content="..." />
-						<TextBox Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						<TextBox Style="{StaticResource GameDirBox}" Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 					</DockPanel>
 					<TextBlock DockPanel.Dock="Top" Margin="0,8,0,4" Text="Path variables:" />
 					<DataGrid
@@ -135,7 +194,7 @@
 							<DataGridCheckBoxColumn Width="110" Binding="{Binding ReplaceMagentaWithTransparency, UpdateSourceTrigger=PropertyChanged}" Header="Magenta = alpha" />
 							<DataGridCheckBoxColumn Width="120" Binding="{Binding Convert512PixelsToDoubleRows, UpdateSourceTrigger=PropertyChanged}" Header="512 = double rows" />
 							<DataGridTextColumn Width="90" Binding="{Binding Size}" Header="Size" IsReadOnly="True" />
-							<DataGridTextColumn Width="160" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+							<DataGridTextColumn Width="160" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
 						</DataGrid.Columns>
 					</DataGrid>
 				</DockPanel>
@@ -163,7 +222,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-							<DataGridTextColumn Width="220" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+							<DataGridTextColumn Width="220" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
 						</DataGrid.Columns>
 					</DataGrid>
 				</DockPanel>
@@ -200,7 +259,7 @@
 							<DataGridCheckBoxColumn Width="60" Binding="{Binding MappedUV, UpdateSourceTrigger=PropertyChanged}" Header="UV map" />
 							<DataGridCheckBoxColumn Width="50" Binding="{Binding FlipUV_V, UpdateSourceTrigger=PropertyChanged}" Header="UV -V" />
 							<DataGridCheckBoxColumn Width="50" Binding="{Binding InvertFaces, UpdateSourceTrigger=PropertyChanged}" Header="Inv. F." />
-							<DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" Header="Status" IsReadOnly="True" />
+							<DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
 						</DataGrid.Columns>
 					</DataGrid>
 				</DockPanel>
@@ -297,7 +356,7 @@
 								</DataGridTemplateColumn>
 								<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
 								<DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
-								<DataGridTextColumn Width="180" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+								<DataGridTextColumn Width="180" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
 							</DataGrid.Columns>
 						</DataGrid>
 					</DockPanel>
@@ -335,8 +394,11 @@
 							<DataGrid.RowStyle>
 								<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
 									<Style.Triggers>
+										<DataTrigger Binding="{Binding Selected}" Value="True">
+											<Setter Property="Background" Value="{StaticResource ValidBrush}" />
+										</DataTrigger>
 										<DataTrigger Binding="{Binding IsMissing}" Value="True">
-											<Setter Property="Foreground" Value="{DynamicResource Brush_Text_Warning}" />
+											<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
 										</DataTrigger>
 									</Style.Triggers>
 								</Style>
