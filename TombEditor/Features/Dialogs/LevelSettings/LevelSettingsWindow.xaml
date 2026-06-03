@@ -169,7 +169,41 @@
 				</DockPanel>
 			</TabItem>
 			<TabItem Header="Imported geometry">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
+						<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding ImportedGeometries}"
+						SelectedItem="{Binding SelectedImportedGeometry, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTextColumn Width="120" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+							<DataGridTemplateColumn Width="32">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+							<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
+							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXY, UpdateSourceTrigger=PropertyChanged}" Header="X-Y" />
+							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXZ, UpdateSourceTrigger=PropertyChanged}" Header="X-Z" />
+							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapYZ, UpdateSourceTrigger=PropertyChanged}" Header="Y-Z" />
+							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipX, UpdateSourceTrigger=PropertyChanged}" Header="-X" />
+							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipY, UpdateSourceTrigger=PropertyChanged}" Header="-Y" />
+							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipZ, UpdateSourceTrigger=PropertyChanged}" Header="-Z" />
+							<DataGridCheckBoxColumn Width="60" Binding="{Binding MappedUV, UpdateSourceTrigger=PropertyChanged}" Header="UV map" />
+							<DataGridCheckBoxColumn Width="50" Binding="{Binding FlipUV_V, UpdateSourceTrigger=PropertyChanged}" Header="UV -V" />
+							<DataGridCheckBoxColumn Width="50" Binding="{Binding InvertFaces, UpdateSourceTrigger=PropertyChanged}" Header="Inv. F." />
+							<DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" Header="Status" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Static meshes">
 				<DockPanel Margin="6">

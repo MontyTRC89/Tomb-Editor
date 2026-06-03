@@ -1681,8 +1681,13 @@ namespace TombEditor
 
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (var form = new FormLevelSettings(args.Editor))
-                    form.ShowDialog(args.Window);
+                var levelSettingsViewModel = new TombEditor.Features.Dialogs.LevelSettings.LevelSettingsWindowViewModel(args.Editor);
+                var levelSettingsWindow = new TombEditor.Features.Dialogs.LevelSettings.LevelSettingsWindow { DataContext = levelSettingsViewModel };
+
+                if (args.Window is not null)
+                    levelSettingsWindow.SetOwner(args.Window);
+
+                levelSettingsWindow.ShowDialog();
             });
 
             AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)

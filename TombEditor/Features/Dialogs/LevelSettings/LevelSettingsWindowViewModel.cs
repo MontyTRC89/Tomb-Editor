@@ -9,6 +9,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
 using TombLib.Controls;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
+using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -57,6 +60,8 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 SoundCatalogs.Add(new SoundCatalogRow(_settings, catalog));
             foreach (var soundPath in _settings.WadSoundPaths)
                 SampleRows.Add(new SampleRow(_settings, soundPath.Clone()));
+            foreach (var geometry in _settings.ImportedGeometries)
+                ImportedGeometries.Add(new ImportedGeometryRow(_settings, geometry));
 
             PopulateSoundInfoList();
         }
@@ -349,6 +354,56 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 var existing = _settings.AutoStaticMeshMerges.FirstOrDefault(e => e.meshId.Equals(typeId));
                 StaticMeshMerges.Add(new StaticMeshMergeRow(existing ?? new AutoStaticMeshMergeEntry(typeId, false, false, false, false, _settings)));
             }
+        }
+
+        // Imported geometry tab.
+
+        public ObservableCollection<ImportedGeometryRow> ImportedGeometries { get; } = new();
+
+        [ObservableProperty] private ImportedGeometryRow? _selectedImportedGeometry;
+
+        [RelayCommand]
+        private void AddImportedGeometry()
+        {
+            var paths = LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select 3D files that you want to see imported.", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
+            var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
+            var config = _editor.Configuration;
+
+            foreach (string path in paths)
+            {
+                var ioViewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
+                ioViewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
+
+                var ioDialog = new GeometryIOSettingsWindow { DataContext = ioViewModel };
+                ioDialog.SetOwner(Owner);
+                ioDialog.ShowDialog();
+
+                if (ioViewModel.DialogResult != true)
+                    continue;
+
+                if (config != null)
+                    config.GeometryIO_LastUsedGeometryImportPresetName = ioViewModel.SelectedPreset?.Name;
+
+                var info = new ImportedGeometryInfo(_settings.MakeRelative(path, VariableType.LevelDirectory), ioViewModel.GetCurrentSettings());
+                importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
+            }
+
+            if (importInfos.Count == 0)
+                return;
+
+            _settings.ImportedGeometryUpdate(importInfos);
+            _settings.ImportedGeometries.AddRange(importInfos.Select(e => e.Key));
+            foreach (var entry in importInfos)
+                ImportedGeometries.Add(new ImportedGeometryRow(_settings, entry.Key));
+        }
+
+        [RelayCommand]
+        private void DeleteImportedGeometry()
+        {
+            if (SelectedImportedGeometry == null)
+                return;
+            _settings.ImportedGeometries.Remove(SelectedImportedGeometry.Object);
+            ImportedGeometries.Remove(SelectedImportedGeometry);
         }
 
         // Sound selection (Sound catalogs tab).

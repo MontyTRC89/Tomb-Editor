@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -156,6 +157,48 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         private void Browse()
         {
             string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Catalog.Path, "Select a sound catalog", WadSounds.FileExtensions, VariableType.LevelDirectory, false);
+            if (result != null)
+                Path = result;
+        }
+    }
+
+    /// <summary>Row view-model for the Imported geometry grid (wraps an <see cref="ImportedGeometry"/>).</summary>
+    public partial class ImportedGeometryRow : ObservableObject
+    {
+        private readonly LevelSettingsData _settings;
+        public ImportedGeometry Object { get; }
+
+        public ImportedGeometryRow(LevelSettingsData settings, ImportedGeometry obj)
+        {
+            _settings = settings;
+            Object = obj;
+        }
+
+        private void Update(System.Func<ImportedGeometryInfo, ImportedGeometryInfo> change)
+        {
+            _settings.ImportedGeometryUpdate(Object, change(Object.Info));
+            OnPropertyChanged(string.Empty); // refresh all displayed columns
+        }
+
+        public string Name => Object.Info.Name;
+        public string ErrorMessage => Object.LoadException == null ? "Successfully loaded" : Object.LoadException.Message + " (" + Object.LoadException.GetType().Name + ")";
+
+        public string Path { get => Object.Info.Path; set { if (Object.Info.Path == value) return; Update(i => { i.Path = value; return i; }); } }
+        public float Scale { get => Object.Info.Scale; set { if (Object.Info.Scale == value) return; Update(i => { i.Scale = value; return i; }); } }
+        public bool SwapXY { get => Object.Info.SwapXY; set { if (Object.Info.SwapXY == value) return; Update(i => { i.SwapXY = value; return i; }); } }
+        public bool SwapXZ { get => Object.Info.SwapXZ; set { if (Object.Info.SwapXZ == value) return; Update(i => { i.SwapXZ = value; return i; }); } }
+        public bool SwapYZ { get => Object.Info.SwapYZ; set { if (Object.Info.SwapYZ == value) return; Update(i => { i.SwapYZ = value; return i; }); } }
+        public bool FlipX { get => Object.Info.FlipX; set { if (Object.Info.FlipX == value) return; Update(i => { i.FlipX = value; return i; }); } }
+        public bool FlipY { get => Object.Info.FlipY; set { if (Object.Info.FlipY == value) return; Update(i => { i.FlipY = value; return i; }); } }
+        public bool FlipZ { get => Object.Info.FlipZ; set { if (Object.Info.FlipZ == value) return; Update(i => { i.FlipZ = value; return i; }); } }
+        public bool MappedUV { get => Object.Info.MappedUV; set { if (Object.Info.MappedUV == value) return; Update(i => { i.MappedUV = value; return i; }); } }
+        public bool FlipUV_V { get => Object.Info.FlipUV_V; set { if (Object.Info.FlipUV_V == value) return; Update(i => { i.FlipUV_V = value; return i; }); } }
+        public bool InvertFaces { get => Object.Info.InvertFaces; set { if (Object.Info.InvertFaces == value) return; Update(i => { i.InvertFaces = value; return i; }); } }
+
+        [RelayCommand]
+        private void Browse()
+        {
+            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Object.Info.Path, "Select a 3D file", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory, false);
             if (result != null)
                 Path = result;
         }
