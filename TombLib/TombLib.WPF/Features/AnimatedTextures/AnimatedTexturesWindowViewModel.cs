@@ -62,6 +62,8 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             Frames.CollectionChanged += OnFramesCollectionChanged;
 
+            SelectedPreset = ProceduralPresets.FirstOrDefault();
+
             RebuildSets();
             SelectedSet = Sets.FirstOrDefault();
 

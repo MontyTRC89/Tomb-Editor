@@ -97,6 +97,40 @@
 					</Grid>
 				</StackPanel>
 
+				<!--  Procedural animation generator  -->
+				<GroupBox DockPanel.Dock="Top" Margin="0,0,0,6" Header="Procedural animation">
+					<StackPanel>
+						<ComboBox
+							Margin="0,0,0,4"
+							DisplayMemberPath="Display"
+							ItemsSource="{Binding ProceduralPresets}"
+							SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+						<Grid Margin="0,0,0,4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0" Text="Frames:" />
+							<controls:NumericUpDown Grid.Column="1" Maximum="256" Minimum="1" Value="{Binding GenFrameCount, Mode=TwoWay}" />
+							<TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0" Text="Strength:" />
+							<controls:NumericUpDown Grid.Column="3" Maximum="100" Minimum="0" Value="{Binding GenStrength, Mode=TwoWay}" />
+						</Grid>
+						<controls:SpacedStack Margin="0,0,0,4" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+							<CheckBox Content="Smooth" IsChecked="{Binding GenSmooth, Mode=TwoWay}" />
+							<CheckBox Content="Loop" IsChecked="{Binding GenLoop, Mode=TwoWay}" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+							<Button Width="52" Command="{Binding GenerateNewCommand}" Content="New" />
+							<Button Width="52" Command="{Binding GenerateCloneCommand}" Content="Clone" IsEnabled="{Binding HasSelectedSet}" />
+							<Button Width="56" Command="{Binding GenerateMergeCommand}" Content="Merge" IsEnabled="{Binding HasSelectedSet}" />
+							<Button Width="60" Command="{Binding GenerateReplaceCommand}" Content="Replace" IsEnabled="{Binding HasSelectedSet}" />
+							<Button Width="44" Command="{Binding GenerateAddFramesCommand}" Content="Add" IsEnabled="{Binding HasSelectedSet}" />
+						</controls:SpacedStack>
+					</StackPanel>
+				</GroupBox>
+
 				<!--  Frame controls  -->
 				<controls:SpacedStack
 					DockPanel.Dock="Bottom"
