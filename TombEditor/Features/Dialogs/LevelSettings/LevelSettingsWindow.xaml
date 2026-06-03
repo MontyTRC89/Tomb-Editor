@@ -1,0 +1,138 @@
+<Window
+	x:Class="TombEditor.Features.Dialogs.LevelSettings.LevelSettingsWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.LevelSettings"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	Title="Level settings"
+	Width="720"
+	Height="560"
+	MinWidth="560"
+	MinHeight="420"
+	d:DataContext="{d:DesignInstance Type=local:LevelSettingsWindowViewModel}"
+	md:DialogServiceViews.IsRegistered="True"
+	Background="{DynamicResource Brush_Background}"
+	Style="{DynamicResource CustomWindowStyle}"
+	WindowStartupLocation="CenterOwner"
+	mc:Ignorable="d">
+
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+		<!--  A labeled "path text + browse button" row  -->
+		<Style x:Key="PathLabel" TargetType="TextBlock">
+			<Setter Property="Width" Value="150" />
+			<Setter Property="VerticalAlignment" Value="Center" />
+		</Style>
+	</Window.Resources>
+
+	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
+
+		<controls:SpacedStack
+			DockPanel.Dock="Bottom"
+			Margin="0,8,0,0"
+			HorizontalAlignment="Right"
+			Orientation="Horizontal"
+			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<Button Width="80" Command="{Binding ApplyCommand}" Content="Apply" />
+			<Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
+			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
+		</controls:SpacedStack>
+
+		<TabControl Style="{DynamicResource SidebarTabControlStyle}">
+
+			<!--  Game  -->
+			<TabItem Header="Game">
+				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Game version:" />
+							<ComboBox ItemsSource="{Binding GameVersions}" SelectedItem="{Binding GameVersion, Mode=TwoWay}" />
+						</DockPanel>
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Game executable:" />
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameExecutableCommand}" Content="..." />
+							<TextBox Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" />
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameLevelFileCommand}" Content="..." />
+							<TextBox Text="{Binding GameLevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+						<DockPanel Margin="0,3" Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Script folder:" />
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseScriptCommand}" Content="..." />
+							<TextBox Text="{Binding ScriptDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+						<DockPanel Margin="0,3" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Lua script file:" />
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLuaCommand}" Content="..." />
+							<TextBox Text="{Binding TenLuaScriptFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+						<CheckBox Margin="0,6,0,3" Content="Enable quick start feature" IsChecked="{Binding GameEnableQuickStartFeature, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+						<CheckBox Margin="0,3" Content="Enable extra reverb presets" IsChecked="{Binding GameEnableExtraReverbPresets, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+						<CheckBox Margin="0,3" Content="Enable extra blending modes" IsChecked="{Binding GameEnableExtraBlendingModes, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<!--  Paths  -->
+			<TabItem Header="Paths">
+				<DockPanel Margin="6">
+					<DockPanel DockPanel.Dock="Top" Margin="0,3">
+						<TextBlock Style="{StaticResource PathLabel}" Text="Level file (.prj2):" />
+						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLevelFileCommand}" Content="..." />
+						<TextBox Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+					</DockPanel>
+					<DockPanel DockPanel.Dock="Top" Margin="0,3">
+						<TextBlock Style="{StaticResource PathLabel}" Text="Game directory:" />
+						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameDirectoryCommand}" Content="..." />
+						<TextBox Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+					</DockPanel>
+					<TextBlock DockPanel.Dock="Top" Margin="0,8,0,4" Text="Path variables:" />
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						IsReadOnly="True"
+						ItemsSource="{Binding PathVariables}">
+						<DataGrid.Columns>
+							<DataGridTextColumn Width="200" Binding="{Binding Variable}" Header="Variable" />
+							<DataGridTextColumn Width="*" Binding="{Binding Value}" Header="Resolved value" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
+			</TabItem>
+
+			<!--  Tabs ported in later phases  -->
+			<TabItem Header="Textures">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Objects">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Imported geometry">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Static meshes">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Sky &amp; font">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Sound catalogs">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Samples">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+			<TabItem Header="Misc">
+				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+			</TabItem>
+		</TabControl>
+	</DockPanel>
+</Window>
