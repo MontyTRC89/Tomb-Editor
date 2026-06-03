@@ -1520,8 +1520,8 @@ namespace TombEditor
                 }
 
                 var context = new TombEditorAnimatedTexturesContext(args.Editor);
-                var adapter = new WpfTextureMapAdapter(new PanelTextureMapForAnimations());
-                var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, adapter);
+                var textureMap = new Controls.WpfAnimatedTextureMapView();
+                var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
                 var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
 
                 _animatedTexturesWindow = window;

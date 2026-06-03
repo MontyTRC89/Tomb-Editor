@@ -11,6 +11,7 @@ using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.WPF.Controls;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
@@ -24,7 +25,8 @@ namespace TombLib.WPF.Features.AnimatedTextures
     public partial class AnimatedTexturesWindowViewModel : ObservableObject
     {
         private readonly IAnimatedTexturesContext _context;
-        private readonly ITextureMapAdapter _textureMap;
+        private readonly TextureMapBase _textureMap;
+        private readonly IAnimatedTextureMap? _animatedMap;
         private readonly IMessageService _messageService;
         private readonly TRVersion.Game _version;
         private readonly List<AnimatedTextureSet> _sets;
@@ -32,7 +34,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         private bool _lockUi;
 
-        public ITextureMapAdapter TextureMap => _textureMap;
+        public TextureMapBase TextureMap => _textureMap;
 
         public ObservableCollection<AnimatedTextureSet> Sets { get; } = new();
         public ObservableCollection<AnimatedTextureFrame> Frames { get; } = new();
@@ -44,10 +46,11 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         public event EventHandler<bool>? RequestClose; // bool = cancelled
 
-        public AnimatedTexturesWindowViewModel(IAnimatedTexturesContext context, ITextureMapAdapter textureMap)
+        public AnimatedTexturesWindowViewModel(IAnimatedTexturesContext context, TextureMapBase textureMap)
         {
             _context = context;
             _textureMap = textureMap;
+            _animatedMap = textureMap as IAnimatedTextureMap;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
             _version = context.Version;
             _sets = context.AnimatedTextureSets;
@@ -157,6 +160,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
             OnPropertyChanged(nameof(HasSelectedSet));
             RefreshSettingsState();
             RefreshCommandStates();
+
+            if (_animatedMap != null)
+                _animatedMap.SelectedSet = value;
+            _textureMap.InvalidateVisual();
 
             _previewCurrentFrame = null;
             _previewCurrentRepeatTimes = 0;

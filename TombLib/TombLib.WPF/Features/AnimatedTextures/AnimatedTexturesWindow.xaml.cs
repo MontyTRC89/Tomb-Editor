@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Input;
 
 namespace TombLib.WPF.Features.AnimatedTextures
 {
@@ -26,14 +27,17 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 return;
 
             _viewModel.RequestClose += OnRequestClose;
-            textureMapHost.Child = _viewModel.TextureMap.Control;
-            _viewModel.TextureMap.DoubleClick += OnTextureMapDoubleClick;
+            textureMapContainer.Child = _viewModel.TextureMap;
+            _viewModel.TextureMap.MouseDown += OnTextureMapMouseDown;
         }
 
-        private void OnTextureMapDoubleClick(object? sender, EventArgs e)
+        private void OnTextureMapMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (_viewModel?.AddFrameCommand.CanExecute(null) == true)
+            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2 &&
+                _viewModel?.AddFrameCommand.CanExecute(null) == true)
+            {
                 _viewModel.AddFrameCommand.Execute(null);
+            }
         }
 
         private void OnRequestClose(object? sender, bool cancelled)
@@ -46,7 +50,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
         {
             _viewModel?.Closing(_cancelled);
             Detach();
-            textureMapHost.Child = null;
+            textureMapContainer.Child = null;
         }
 
         private void Detach()
@@ -55,8 +59,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 return;
 
             _viewModel.RequestClose -= OnRequestClose;
-            if (_viewModel.TextureMap != null)
-                _viewModel.TextureMap.DoubleClick -= OnTextureMapDoubleClick;
+            _viewModel.TextureMap.MouseDown -= OnTextureMapMouseDown;
         }
     }
 }

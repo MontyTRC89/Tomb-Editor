@@ -7,7 +7,6 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombLib.WPF.Features.AnimatedTextures"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="Animated textures"
 	Width="900"
 	Height="700"
@@ -49,9 +48,11 @@
 					Margin="0,0,0,4"
 					ItemsSource="{Binding AvailableTextures}"
 					SelectedItem="{Binding CurrentTexture, Mode=TwoWay}" />
-				<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
-					<wfi:WindowsFormsHost x:Name="textureMapHost" Background="{DynamicResource Brush_Background_Low}" />
-				</Border>
+				<Border
+					x:Name="textureMapContainer"
+					Background="{DynamicResource Brush_Background_Low}"
+					BorderBrush="{DynamicResource Brush_Border}"
+					BorderThickness="1" />
 			</DockPanel>
 
 			<GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" />
