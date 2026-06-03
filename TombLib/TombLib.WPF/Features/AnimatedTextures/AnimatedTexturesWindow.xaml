@@ -43,9 +43,16 @@
 			</Grid.ColumnDefinitions>
 
 			<!--  Texture map (hosted WinForms control)  -->
-			<Border Grid.Column="0" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
-				<wfi:WindowsFormsHost x:Name="textureMapHost" Background="{DynamicResource Brush_Background_Low}" />
-			</Border>
+			<DockPanel Grid.Column="0">
+				<ComboBox
+					DockPanel.Dock="Top"
+					Margin="0,0,0,4"
+					ItemsSource="{Binding AvailableTextures}"
+					SelectedItem="{Binding CurrentTexture, Mode=TwoWay}" />
+				<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
+					<wfi:WindowsFormsHost x:Name="textureMapHost" Background="{DynamicResource Brush_Background_Low}" />
+				</Border>
+			</DockPanel>
 
 			<GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" />
 
@@ -189,6 +196,36 @@
 							<Button Width="60" Command="{Binding GenerateReplaceCommand}" Content="Replace" IsEnabled="{Binding HasSelectedSet}" />
 							<Button Width="44" Command="{Binding GenerateAddFramesCommand}" Content="Add" IsEnabled="{Binding HasSelectedSet}" />
 						</controls:SpacedStack>
+					</StackPanel>
+				</GroupBox>
+
+				<!--  TRNG too-many-frames warning  -->
+				<TextBlock
+					DockPanel.Dock="Top"
+					Margin="0,0,0,6"
+					Foreground="{DynamicResource Brush_Text_Warning}"
+					Text="{Binding TooManyFramesText}"
+					TextWrapping="Wrap"
+					Visibility="{Binding TooManyFrames, Converter={StaticResource BoolToVis}}" />
+
+				<!--  Preview  -->
+				<GroupBox DockPanel.Dock="Bottom" Margin="0,6,0,0" Header="Preview">
+					<StackPanel>
+						<Border
+							Width="128"
+							Height="128"
+							HorizontalAlignment="Center"
+							Background="{DynamicResource Brush_Background_Low}"
+							BorderBrush="{DynamicResource Brush_Border}"
+							BorderThickness="1">
+							<Image Source="{Binding PreviewImage}" Stretch="None" />
+						</Border>
+						<ProgressBar
+							Height="16"
+							Margin="0,4,0,0"
+							Maximum="{Binding PreviewMaximum}"
+							Minimum="0"
+							Value="{Binding PreviewProgress}" />
 					</StackPanel>
 				</GroupBox>
 

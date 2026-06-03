@@ -18,6 +18,7 @@ namespace TombEditor
 
         public Control Control => _map;
         public TextureArea SelectedTexture => _map.SelectedTexture;
+        public Texture VisibleTexture => _map.VisibleTexture;
         public void ShowTexture(TextureArea area) => _map.ShowTexture(area);
         public void ResetVisibleTexture(Texture texture) => _map.ResetVisibleTexture(texture);
         public void Invalidate() => _map.Invalidate();

@@ -54,6 +54,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             AnimationTypes = BuildAnimationTypes();
             InitNgOptions();
+            InitPreview();
 
             foreach (var set in _sets)
                 _backupSets.Add(set.Clone());
@@ -73,6 +74,22 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 _textureMap.ResetVisibleTexture(_context.AvailableTextures.FirstOrDefault());
             else
                 _textureMap.ShowTexture(_context.SelectedTexture);
+
+            _currentTexture = _textureMap.VisibleTexture ?? _context.SelectedTexture.Texture ?? _context.AvailableTextures.FirstOrDefault();
+        }
+
+        // Current visible texture (combo above the map).
+        private Texture _currentTexture;
+        public Texture CurrentTexture
+        {
+            get => _currentTexture;
+            set
+            {
+                if (!SetProperty(ref _currentTexture, value) || value == null)
+                    return;
+                if (_textureMap.VisibleTexture != value)
+                    _textureMap.ResetVisibleTexture(value);
+            }
         }
 
         private IReadOnlyList<AnimatedTextureAnimationType> BuildAnimationTypes()
@@ -140,6 +157,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
             OnPropertyChanged(nameof(HasSelectedSet));
             RefreshSettingsState();
             RefreshCommandStates();
+
+            _previewCurrentFrame = null;
+            _previewCurrentRepeatTimes = 0;
+            UpdatePreviewState();
         }
 
         public bool HasSelectedSet => SelectedSet != null;
@@ -151,6 +172,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             SelectedSet.Frames = Frames.ToList();
             _context.OnAnimatedTexturesChanged?.Invoke();
+            UpdatePreviewState();
         }
 
         // Editable set name (inline; replaces the WinForms "edit name" input box).
@@ -184,6 +206,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                     return;
                 SelectedSet.AnimationType = value;
                 RefreshSettingsState();
+                UpdatePreviewState();
                 _context.OnAnimatedTexturesChanged?.Invoke();
             }
         }
@@ -197,6 +220,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 if (!SetProperty(ref _fps, value) || _lockUi || SelectedSet == null)
                     return;
                 SelectedSet.Fps = (float)value;
+                UpdatePreviewState();
             }
         }
 
@@ -297,6 +321,8 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         public void Closing(bool cancelled)
         {
+            StopPreview();
+
             if (cancelled)
             {
                 _sets.Clear();

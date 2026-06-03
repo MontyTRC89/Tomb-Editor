@@ -13,6 +13,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
     {
         System.Windows.Forms.Control Control { get; }
         TextureArea SelectedTexture { get; }
+        Texture VisibleTexture { get; }
         void ShowTexture(TextureArea area);
         void ResetVisibleTexture(Texture texture);
         void Invalidate();
