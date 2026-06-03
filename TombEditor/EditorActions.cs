@@ -1492,23 +1492,33 @@ namespace TombEditor
             }
         }
 
+        private static TombEditor.Features.Dialogs.EventSetEditor.EventSetEditorWindow _eventSetEditorWindow;
+
         public static void EditEventSets(IWin32Window owner, bool global, VolumeInstance targetVolume = null)
         {
-            var existingWindow = Application.OpenForms[nameof(FormEventSetEditor)];
-
-            if (existingWindow != null && (existingWindow as FormEventSetEditor).GlobalMode != global)
+            if (_eventSetEditorWindow != null)
             {
-                existingWindow.Close();
-                existingWindow = null;
+                if (((TombEditor.Features.Dialogs.EventSetEditor.EventSetEditorWindowViewModel)_eventSetEditorWindow.DataContext).GlobalMode != global)
+                {
+                    _eventSetEditorWindow.Close();
+                    _eventSetEditorWindow = null;
+                }
+                else
+                {
+                    _eventSetEditorWindow.Activate();
+                    return;
+                }
             }
 
-            if (existingWindow == null)
-            {
-                var propForm = new FormEventSetEditor(global, targetVolume);
-                propForm.Show(owner);
-            }
-            else
-                existingWindow.Focus();
+            var viewModel = new TombEditor.Features.Dialogs.EventSetEditor.EventSetEditorWindowViewModel(_editor, global, targetVolume);
+            var window = new TombEditor.Features.Dialogs.EventSetEditor.EventSetEditorWindow { DataContext = viewModel };
+
+            if (owner != null)
+                window.SetOwner(owner);
+
+            window.Closed += (s, e) => { if (_eventSetEditorWindow == window) _eventSetEditorWindow = null; };
+            _eventSetEditorWindow = window;
+            window.Show();
         }
 
         public static void DeleteEventSet(EventSet eventSet)
