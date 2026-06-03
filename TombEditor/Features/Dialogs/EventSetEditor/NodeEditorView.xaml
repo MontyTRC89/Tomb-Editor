@@ -17,6 +17,109 @@
 	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
 		<local:LinkBrushConverter x:Key="LinkBrushConverter" />
+
+		<!--  Argument editors  -->
+		<DataTemplate x:Key="ArgBoolean">
+			<CheckBox Margin="0,2,0,0" Content="{Binding Caption}" IsChecked="{Binding BoolValue, Mode=TwoWay}" ToolTip="{Binding Description}" />
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgNumerical">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<controls:NumericUpDown
+					DecimalPlaces="{Binding DecimalPlaces}"
+					Increment="{Binding Increment}"
+					LargeIncrement="{Binding LargeIncrement}"
+					Maximum="{Binding Maximum}"
+					Minimum="{Binding Minimum}"
+					Value="{Binding NumValue, Mode=TwoWay}" />
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgVector2">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<UniformGrid Columns="2">
+					<controls:NumericUpDown Margin="0,0,2,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding X, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,0,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding Y, Mode=TwoWay}" />
+				</UniformGrid>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgVector3">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<UniformGrid Columns="3">
+					<controls:NumericUpDown Margin="0,0,2,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding X, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,2,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding Y, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,0,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding Z, Mode=TwoWay}" />
+				</UniformGrid>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgColor">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<Button
+					Height="22"
+					Background="{Binding ColorBrush}"
+					Command="{Binding PickColorCommand}"
+					Content="" />
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgTime">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<UniformGrid Columns="4">
+					<controls:NumericUpDown Margin="0,0,2,0" Maximum="999" Minimum="0" ToolTip="Hours" Value="{Binding Hours, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="Minutes" Value="{Binding Minutes, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="Seconds" Value="{Binding Seconds, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,0,0" Maximum="99" Minimum="0" ToolTip="Centiseconds" Value="{Binding Cents, Mode=TwoWay}" />
+				</UniformGrid>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgString">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<TextBox
+					AcceptsReturn="{Binding IsMultiline}"
+					MaxHeight="80"
+					Text="{Binding StringValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					TextWrapping="Wrap"
+					VerticalScrollBarVisibility="Auto" />
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="ArgList">
+			<StackPanel Margin="0,2,0,0">
+				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
+				<DockPanel>
+					<Button
+						Width="24"
+						DockPanel.Dock="Right"
+						Command="{Binding RunActionCommand}"
+						Content="..."
+						Visibility="{Binding HasAction, Converter={StaticResource BoolToVis}}" />
+					<ComboBox
+						DisplayMemberPath="Display"
+						ItemsSource="{Binding Items}"
+						SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+				</DockPanel>
+			</StackPanel>
+		</DataTemplate>
+
+		<local:ArgumentTemplateSelector
+			x:Key="ArgSelector"
+			BooleanTemplate="{StaticResource ArgBoolean}"
+			ColorTemplate="{StaticResource ArgColor}"
+			ListTemplate="{StaticResource ArgList}"
+			NumericalTemplate="{StaticResource ArgNumerical}"
+			StringTemplate="{StaticResource ArgString}"
+			TimeTemplate="{StaticResource ArgTime}"
+			Vector2Template="{StaticResource ArgVector2}"
+			Vector3Template="{StaticResource ArgVector3}" />
 	</UserControl.Resources>
 
 	<DockPanel LastChildFill="True">
@@ -118,6 +221,11 @@
 												Foreground="{DynamicResource Brush_Text_Warning}"
 												Text="{Binding FunctionName}"
 												TextTrimming="CharacterEllipsis" />
+											<ItemsControl
+												Margin="0,4,0,0"
+												ItemTemplateSelector="{StaticResource ArgSelector}"
+												ItemsSource="{Binding Arguments}"
+												Visibility="{Binding HasArguments, Converter={StaticResource BoolToVis}}" />
 										</StackPanel>
 									</Border>
 

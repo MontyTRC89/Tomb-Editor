@@ -42,6 +42,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public List<NodeFunction> NodeFunctions => ScriptingUtils.NodeFunctions;
         public List<string> ScriptFunctions { get; }
 
+        private readonly ArgumentDataProvider _argumentProvider;
+
         public ObservableCollection<EventSet> Sets { get; } = new();
         public IReadOnlyList<EventType> EventTypes { get; }
 
@@ -56,6 +58,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
             EventTypes = global ? Event.GlobalEventTypes : Event.VolumeEventTypes;
             ScriptFunctions = ScriptingUtils.GetAllFunctionNames(editor.Level.Settings.MakeAbsolute(editor.Level.Settings.TenLuaScriptFile));
+            _argumentProvider = new ArgumentDataProvider(editor, ScriptFunctions);
 
             // Backup for Cancel.
             _backupList = _usedList.Select(s => s.Clone()).ToList();
@@ -139,7 +142,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         partial void OnCurrentEventChanged(Event? value)
         {
             NodeEditor = value != null
-                ? new NodeEditorViewModel(value, NodeFunctions, NodeGridSize, NodeGridStep)
+                ? new NodeEditorViewModel(value, NodeFunctions, _argumentProvider, NodeGridSize, NodeGridStep)
                 : null;
 
             OnPropertyChanged(nameof(HasCurrentEvent));

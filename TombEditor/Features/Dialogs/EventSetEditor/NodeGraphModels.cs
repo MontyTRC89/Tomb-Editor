@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TombLib.LevelData.VisualScripting;
@@ -18,16 +20,29 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly string _functionDisplay;
 
         public TriggerNode Node { get; }
+        public ObservableCollection<ArgumentViewModel> Arguments { get; } = new();
         public event Action? Moved;
 
-        public NodeViewModel(TriggerNode node, double gridStep, string functionDisplay)
+        public NodeViewModel(TriggerNode node, double gridStep, NodeFunction? function, ArgumentDataProvider provider)
         {
             Node = node;
             _gridStep = gridStep;
-            _functionDisplay = functionDisplay;
+            _functionDisplay = function?.Name ?? node.Function;
+
+            if (function != null)
+            {
+                node.FixArguments(function);
+                foreach (var layout in function.Arguments)
+                {
+                    int index = node.Arguments.FindIndex(a => a.Name == layout.Name);
+                    if (index >= 0)
+                        Arguments.Add(new ArgumentViewModel(node.Arguments, index, layout, provider));
+                }
+            }
         }
 
         public bool IsCondition => Node is TriggerNodeCondition;
+        public bool HasArguments => Arguments.Count > 0;
 
         public string Title
         {
