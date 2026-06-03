@@ -4,6 +4,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
+using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TombLib.LevelData.VisualScripting;
 
@@ -43,6 +45,38 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         public bool IsCondition => Node is TriggerNodeCondition;
         public bool HasArguments => Arguments.Count > 0;
+
+        public bool IsLocked
+        {
+            get => Node.Locked;
+            set
+            {
+                if (Node.Locked == value) return;
+                Node.Locked = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsEditable));
+            }
+        }
+
+        public bool IsEditable => !Node.Locked;
+
+        public Brush HeaderBrush
+        {
+            get
+            {
+                var c = Node.Color;
+                Color color = c == Vector3.Zero
+                    ? (IsCondition ? Color.FromRgb(110, 84, 56) : Color.FromRgb(60, 84, 110))
+                    : Color.FromRgb((byte)(c.X * 255), (byte)(c.Y * 255), (byte)(c.Z * 255));
+                return new SolidColorBrush(color);
+            }
+        }
+
+        public void SetColor(Color color)
+        {
+            Node.Color = new Vector3(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);
+            OnPropertyChanged(nameof(HeaderBrush));
+        }
 
         public string Title
         {
@@ -127,12 +161,28 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double X2 => To.InX;
         public double Y2 => To.InY;
 
+        /// <summary>Cubic-bezier "rope" between the output and input ports.</summary>
+        public Geometry Geometry
+        {
+            get
+            {
+                double dy = Math.Max(40.0, Math.Abs(Y2 - Y1) / 2.0);
+                var figure = new PathFigure { StartPoint = new Point(X1, Y1) };
+                figure.Segments.Add(new BezierSegment(new Point(X1, Y1 + dy), new Point(X2, Y2 - dy), new Point(X2, Y2), true));
+                var geometry = new PathGeometry();
+                geometry.Figures.Add(figure);
+                geometry.Freeze();
+                return geometry;
+            }
+        }
+
         private void RaiseEndpoints()
         {
             OnPropertyChanged(nameof(X1));
             OnPropertyChanged(nameof(Y1));
             OnPropertyChanged(nameof(X2));
             OnPropertyChanged(nameof(Y2));
+            OnPropertyChanged(nameof(Geometry));
         }
     }
 }

@@ -1,9 +1,11 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TombLib.LevelData.VisualScripting;
@@ -89,12 +91,93 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             node.Function = FunctionToAdd.Signature;
             node.FixArguments(FunctionToAdd);
 
-            int count = Nodes.Count;
-            node.ScreenPosition = new Vector2(40 + count % 8 * 6, 40 + count % 8 * 6);
+            PlaceNode(node);
 
             _event.Nodes.Add(node);
             SyncRootsAndRebuild();
             SelectedNode = Nodes.FirstOrDefault(n => n.Node == node);
+        }
+
+        /// <summary>Picks a non-overlapping position below the selected node (mirrors NodeEditor.GetBestPosition).</summary>
+        private void PlaceNode(TriggerNode node)
+        {
+            const double estimatedHeight = 120.0;
+            double width = node.Size;
+
+            double x, y;
+            if (SelectedNode != null)
+            {
+                x = SelectedNode.CanvasLeft + SelectedNode.Width / 2.0 - width / 2.0;
+                y = SelectedNode.CanvasTop + SelectedNode.Height + _gridStep * 4.0;
+            }
+            else
+            {
+                x = _gridStep * 40.0;
+                y = _gridStep * 5.0;
+            }
+
+            double limit = _gridSize * _gridStep;
+            bool colliding = true;
+            while (colliding)
+            {
+                colliding = false;
+                var rect = new Rect(x, y, width, estimatedHeight);
+                foreach (var other in Nodes)
+                {
+                    var otherRect = new Rect(other.CanvasLeft - _gridStep, other.CanvasTop - _gridStep * 2.0,
+                        other.Width + _gridStep * 2.0, other.Height + _gridStep * 4.0);
+                    if (rect.IntersectsWith(otherRect))
+                    {
+                        colliding = true;
+                        break;
+                    }
+                }
+
+                if (colliding)
+                    y += _gridStep * 4.0;
+                if (y > limit)
+                    break;
+            }
+
+            node.ScreenPosition = new Vector2(
+                (float)Math.Clamp(x / _gridStep, 0, 256),
+                (float)Math.Clamp(y / _gridStep, 0, 256));
+        }
+
+        // Clipboard (shared across events/instances within the session).
+
+        private static List<TriggerNode>? _clipboard;
+        public bool CanPaste => _clipboard != null && _clipboard.Count > 0;
+
+        public void CopySelected(bool cut)
+        {
+            if (SelectedNode == null)
+                return;
+
+            var clone = SelectedNode.Node.Clone();
+            clone.Previous = null;
+            _clipboard = new List<TriggerNode> { clone };
+
+            if (cut)
+                DeleteSelectedNode();
+        }
+
+        public void Paste()
+        {
+            if (_clipboard == null || _clipboard.Count == 0)
+                return;
+
+            foreach (var source in _clipboard)
+            {
+                var clone = source.Clone();
+                clone.Previous = null;
+                var p = clone.ScreenPosition;
+                clone.ScreenPosition = new Vector2(Math.Clamp(p.X + 4, 0, 256), Math.Clamp(p.Y + 4, 0, 256));
+                _event.Nodes.Add(clone);
+            }
+
+            SyncRootsAndRebuild();
+            SelectedNode = Nodes.LastOrDefault();
         }
 
         [RelayCommand]

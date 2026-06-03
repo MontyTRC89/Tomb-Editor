@@ -29,17 +29,70 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Delete && ViewModel?.DeleteSelectedNodeCommand.CanExecute(null) == true)
+            if (ViewModel == null)
+                return;
+
+            if (e.Key == Key.Delete)
             {
-                ViewModel.DeleteSelectedNodeCommand.Execute(null);
+                if (ViewModel.DeleteSelectedNodeCommand.CanExecute(null))
+                    ViewModel.DeleteSelectedNodeCommand.Execute(null);
                 e.Handled = true;
+            }
+            else if (Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                switch (e.Key)
+                {
+                    case Key.C:
+                        ViewModel.CopySelected(false);
+                        e.Handled = true;
+                        break;
+                    case Key.X:
+                        ViewModel.CopySelected(true);
+                        e.Handled = true;
+                        break;
+                    case Key.V:
+                        ViewModel.Paste();
+                        e.Handled = true;
+                        break;
+                }
             }
         }
 
         private void Node_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Focus();
             if (sender is FrameworkElement element && element.DataContext is NodeViewModel node && ViewModel != null)
                 SelectNode(node);
+        }
+
+        private void SetColor_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not FrameworkElement element || element.DataContext is not NodeViewModel node)
+                return;
+
+            var current = (node.HeaderBrush as System.Windows.Media.SolidColorBrush)?.Color ?? System.Windows.Media.Colors.Gray;
+            var oldColor = System.Drawing.Color.FromArgb(255, current.R, current.G, current.B);
+
+            using var dialog = new TombLib.Controls.RealtimeColorDialog(
+                onColorChange: c => node.SetColor(System.Windows.Media.Color.FromRgb(c.R, c.G, c.B)))
+            {
+                Color = oldColor,
+                FullOpen = true
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                node.SetColor(System.Windows.Media.Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B));
+            else
+                node.SetColor(System.Windows.Media.Color.FromRgb(oldColor.R, oldColor.G, oldColor.B));
+        }
+
+        private void DeleteNode_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.DataContext is NodeViewModel node && ViewModel != null)
+            {
+                SelectNode(node);
+                ViewModel.DeleteSelectedNodeCommand.Execute(null);
+            }
         }
 
         private void SelectNode(NodeViewModel node)

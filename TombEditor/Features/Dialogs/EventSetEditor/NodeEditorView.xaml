@@ -131,7 +131,7 @@
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 			<TextBlock VerticalAlignment="Center" Text="Function:" />
-			<ComboBox
+			<controls:SearchableComboBox
 				Width="240"
 				DisplayMemberPath="Name"
 				ItemsSource="{Binding Functions}"
@@ -164,13 +164,10 @@
 						</ItemsControl.ItemsPanel>
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="{x:Type local:LinkViewModel}">
-								<Line
+								<Path
+									Data="{Binding Geometry}"
 									Stroke="{Binding IsElse, Converter={StaticResource LinkBrushConverter}}"
-									StrokeThickness="2"
-									X1="{Binding X1}"
-									X2="{Binding X2}"
-									Y1="{Binding Y1}"
-									Y2="{Binding Y2}" />
+									StrokeThickness="2" />
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
@@ -194,6 +191,17 @@
 									Width="{Binding Width}"
 									PreviewMouseLeftButtonDown="Node_PreviewMouseDown"
 									SizeChanged="Node_SizeChanged">
+									<Grid.ContextMenu>
+										<ContextMenu>
+											<MenuItem Click="SetColor_Click" Header="Set color..." />
+											<MenuItem
+												Header="Locked"
+												IsCheckable="True"
+												IsChecked="{Binding IsLocked, Mode=TwoWay}" />
+											<Separator />
+											<MenuItem Click="DeleteNode_Click" Header="Delete" />
+										</ContextMenu>
+									</Grid.ContextMenu>
 
 									<!--  Body  -->
 									<Border
@@ -210,33 +218,47 @@
 												</Style.Triggers>
 											</Style>
 										</Border.Style>
-										<StackPanel Margin="6">
-											<TextBlock
-												FontWeight="Bold"
-												Foreground="{DynamicResource Brush_Text}"
-												Text="{Binding Title}"
-												TextTrimming="CharacterEllipsis" />
-											<TextBlock
-												Margin="0,2,0,0"
-												Foreground="{DynamicResource Brush_Text_Warning}"
-												Text="{Binding FunctionName}"
-												TextTrimming="CharacterEllipsis" />
-											<ItemsControl
-												Margin="0,4,0,0"
-												ItemTemplateSelector="{StaticResource ArgSelector}"
-												ItemsSource="{Binding Arguments}"
-												Visibility="{Binding HasArguments, Converter={StaticResource BoolToVis}}" />
-										</StackPanel>
-									</Border>
+										<DockPanel>
+											<!--  Header bar (drag handle)  -->
+											<Thumb
+												DockPanel.Dock="Top"
+												DragDelta="NodeThumb_DragDelta"
+												IsEnabled="{Binding IsEditable}">
+												<Thumb.Template>
+													<ControlTemplate TargetType="Thumb">
+														<Border Background="{Binding HeaderBrush}" CornerRadius="2,2,0,0" Cursor="SizeAll">
+															<StackPanel Margin="6,4" Orientation="Horizontal">
+																<TextBlock
+																	Margin="0,0,4,0"
+																	FontWeight="Bold"
+																	Foreground="White"
+																	Text="🔒"
+																	Visibility="{Binding IsLocked, Converter={StaticResource BoolToVis}}" />
+																<TextBlock
+																	FontWeight="Bold"
+																	Foreground="White"
+																	Text="{Binding Title}"
+																	TextTrimming="CharacterEllipsis" />
+															</StackPanel>
+														</Border>
+													</ControlTemplate>
+												</Thumb.Template>
+											</Thumb>
 
-									<!--  Drag surface (behind ports)  -->
-									<Thumb DragDelta="NodeThumb_DragDelta" Opacity="0">
-										<Thumb.Template>
-											<ControlTemplate TargetType="Thumb">
-												<Rectangle Fill="Transparent" />
-											</ControlTemplate>
-										</Thumb.Template>
-									</Thumb>
+											<!--  Body (arguments)  -->
+											<StackPanel Margin="6" IsEnabled="{Binding IsEditable}">
+												<TextBlock
+													Foreground="{DynamicResource Brush_Text_Warning}"
+													Text="{Binding FunctionName}"
+													TextTrimming="CharacterEllipsis" />
+												<ItemsControl
+													Margin="0,4,0,0"
+													ItemTemplateSelector="{StaticResource ArgSelector}"
+													ItemsSource="{Binding Arguments}"
+													Visibility="{Binding HasArguments, Converter={StaticResource BoolToVis}}" />
+											</StackPanel>
+										</DockPanel>
+									</Border>
 
 									<!--  Input port (top center)  -->
 									<Ellipse
