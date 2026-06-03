@@ -110,10 +110,63 @@
 
 			<!--  Tabs ported in later phases  -->
 			<TabItem Header="Textures">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="70" Command="{Binding AddTexturesCommand}" Content="Add..." />
+						<Button Width="70" Command="{Binding DeleteTextureCommand}" Content="Delete" />
+						<Button Width="36" Command="{Binding MoveTextureUpCommand}" Content="Up" />
+						<Button Width="36" Command="{Binding MoveTextureDownCommand}" Content="Down" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding Textures}"
+						SelectedItem="{Binding SelectedTexture, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="32">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+							<DataGridCheckBoxColumn Width="110" Binding="{Binding ReplaceMagentaWithTransparency, UpdateSourceTrigger=PropertyChanged}" Header="Magenta = alpha" />
+							<DataGridCheckBoxColumn Width="120" Binding="{Binding Convert512PixelsToDoubleRows, UpdateSourceTrigger=PropertyChanged}" Header="512 = double rows" />
+							<DataGridTextColumn Width="90" Binding="{Binding Size}" Header="Size" IsReadOnly="True" />
+							<DataGridTextColumn Width="160" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Objects">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="70" Command="{Binding AddWadsCommand}" Content="Add..." />
+						<Button Width="70" Command="{Binding DeleteWadCommand}" Content="Delete" />
+						<Button Width="36" Command="{Binding MoveWadUpCommand}" Content="Up" />
+						<Button Width="36" Command="{Binding MoveWadDownCommand}" Content="Down" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding WadRows}"
+						SelectedItem="{Binding SelectedWad, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="32">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+							<DataGridTextColumn Width="220" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Imported geometry">
 				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
@@ -178,10 +231,60 @@
 				</ScrollViewer>
 			</TabItem>
 			<TabItem Header="Sound catalogs">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
+						<Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
+						<Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
+						<Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding SoundCatalogs}"
+						SelectedItem="{Binding SelectedSoundCatalog, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="32">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+							<DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
+							<DataGridTextColumn Width="200" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Samples">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="70" Command="{Binding AddSampleCommand}" Content="Add..." />
+						<Button Width="70" Command="{Binding DeleteSampleCommand}" Content="Delete" />
+						<Button Width="36" Command="{Binding MoveSampleUpCommand}" Content="Up" />
+						<Button Width="36" Command="{Binding MoveSampleDownCommand}" Content="Down" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding SampleRows}"
+						SelectedItem="{Binding SelectedSample, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="32">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Sound folder" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Misc">
 				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">

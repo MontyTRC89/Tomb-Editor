@@ -11,6 +11,7 @@ using MvvmDialogs;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using static TombLib.LevelData.TRVersion;
@@ -47,6 +48,90 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 .ToList();
 
             BuildStaticMeshMerges();
+
+            foreach (var texture in _settings.Textures)
+                Textures.Add(new TextureRow(_settings, texture));
+            foreach (var wad in _settings.Wads)
+                WadRows.Add(new WadRow(_settings, wad));
+            foreach (var catalog in _settings.SoundCatalogs)
+                SoundCatalogs.Add(new SoundCatalogRow(_settings, catalog));
+            foreach (var soundPath in _settings.WadSoundPaths)
+                SampleRows.Add(new SampleRow(_settings, soundPath.Clone()));
+        }
+
+        // Editable resource grids (Textures / Objects / Sound catalogs / Samples).
+
+        public ObservableCollection<TextureRow> Textures { get; } = new();
+        public ObservableCollection<WadRow> WadRows { get; } = new();
+        public ObservableCollection<SoundCatalogRow> SoundCatalogs { get; } = new();
+        public ObservableCollection<SampleRow> SampleRows { get; } = new();
+
+        [ObservableProperty] private TextureRow? _selectedTexture;
+        [ObservableProperty] private WadRow? _selectedWad;
+        [ObservableProperty] private SoundCatalogRow? _selectedSoundCatalog;
+        [ObservableProperty] private SampleRow? _selectedSample;
+
+        [RelayCommand]
+        private void AddTextures()
+        {
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new texture files", ImageC.FileExtensions, VariableType.LevelDirectory))
+                Textures.Add(new TextureRow(_settings, new LevelTexture(_settings, path)));
+        }
+
+        [RelayCommand] private void DeleteTexture() => Remove(Textures, SelectedTexture);
+        [RelayCommand] private void MoveTextureUp() => Move(Textures, SelectedTexture, -1);
+        [RelayCommand] private void MoveTextureDown() => Move(Textures, SelectedTexture, 1);
+
+        [RelayCommand]
+        private void AddWads()
+        {
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new object files", Wad2.FileExtensions, VariableType.LevelDirectory))
+                WadRows.Add(new WadRow(_settings, new ReferencedWad(_settings, path)));
+        }
+
+        [RelayCommand] private void DeleteWad() => Remove(WadRows, SelectedWad);
+        [RelayCommand] private void MoveWadUp() => Move(WadRows, SelectedWad, -1);
+        [RelayCommand] private void MoveWadDown() => Move(WadRows, SelectedWad, 1);
+
+        [RelayCommand]
+        private void AddSoundCatalogs()
+        {
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new sound catalogs", WadSounds.FileExtensions, VariableType.LevelDirectory)
+                .Where(p => SoundCatalogs.All(c => c.Path != p)))
+                SoundCatalogs.Add(new SoundCatalogRow(_settings, new ReferencedSoundCatalog(_settings, path)));
+        }
+
+        [RelayCommand] private void DeleteSoundCatalog() => Remove(SoundCatalogs, SelectedSoundCatalog);
+        [RelayCommand] private void MoveSoundCatalogUp() => Move(SoundCatalogs, SelectedSoundCatalog, -1);
+        [RelayCommand] private void MoveSoundCatalogDown() => Move(SoundCatalogs, SelectedSoundCatalog, 1);
+
+        [RelayCommand]
+        private void AddSample()
+        {
+            string? result = LevelFileDialog.BrowseFolder(Owner, _settings, _settings.LevelFilePath, "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
+            if (result != null)
+                SampleRows.Add(new SampleRow(_settings, new WadSoundPath(result)));
+        }
+
+        [RelayCommand] private void DeleteSample() => Remove(SampleRows, SelectedSample);
+        [RelayCommand] private void MoveSampleUp() => Move(SampleRows, SelectedSample, -1);
+        [RelayCommand] private void MoveSampleDown() => Move(SampleRows, SelectedSample, 1);
+
+        private static void Remove<T>(ObservableCollection<T> list, T? item) where T : class
+        {
+            if (item != null)
+                list.Remove(item);
+        }
+
+        private static void Move<T>(ObservableCollection<T> list, T? item, int direction) where T : class
+        {
+            if (item == null)
+                return;
+            int index = list.IndexOf(item);
+            int target = index + direction;
+            if (index < 0 || target < 0 || target >= list.Count)
+                return;
+            list.Move(index, target);
         }
 
         // Game tab.
@@ -277,6 +362,18 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         private void CommitCollections()
         {
+            _settings.Textures.Clear();
+            _settings.Textures.AddRange(Textures.Select(r => r.Texture));
+
+            _settings.Wads.Clear();
+            _settings.Wads.AddRange(WadRows.Select(r => r.Wad));
+
+            _settings.SoundCatalogs.Clear();
+            _settings.SoundCatalogs.AddRange(SoundCatalogs.Select(r => r.Catalog));
+
+            _settings.WadSoundPaths.Clear();
+            _settings.WadSoundPaths.AddRange(SampleRows.Select(r => r.SoundPath.Clone()));
+
             _settings.AutoStaticMeshMerges.Clear();
             foreach (var row in StaticMeshMerges)
                 if (row.Merge)
