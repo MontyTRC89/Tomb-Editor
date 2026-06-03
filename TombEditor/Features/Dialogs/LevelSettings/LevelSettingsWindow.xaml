@@ -119,10 +119,63 @@
 				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
 			</TabItem>
 			<TabItem Header="Static meshes">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<DockPanel Margin="6">
+					<controls:SpacedStack
+						DockPanel.Dock="Top"
+						Margin="0,0,0,6"
+						Orientation="Horizontal"
+						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Command="{Binding SelectAllStaticsCommand}" Content="Select all" />
+						<Button Command="{Binding SelectAllButShatterStaticsCommand}" Content="Select all but shatterable" />
+						<Button Command="{Binding DeselectAllStaticsCommand}" Content="Deselect all" />
+					</controls:SpacedStack>
+					<DataGrid
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding StaticMeshMerges}">
+						<DataGrid.Columns>
+							<DataGridTextColumn Width="*" Binding="{Binding StaticMesh}" Header="Static mesh" IsReadOnly="True" />
+							<DataGridCheckBoxColumn Width="70" Binding="{Binding Merge, UpdateSourceTrigger=PropertyChanged}" Header="Merge" />
+							<DataGridCheckBoxColumn Width="120" Binding="{Binding InterpretShadesAsEffect, UpdateSourceTrigger=PropertyChanged}" Header="Shades as effect" />
+							<DataGridCheckBoxColumn Width="110" Binding="{Binding TintAsAmbient, UpdateSourceTrigger=PropertyChanged}" Header="Tint as ambient" />
+							<DataGridCheckBoxColumn Width="100" Binding="{Binding ClearShades, UpdateSourceTrigger=PropertyChanged}" Header="Clear shades" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</DockPanel>
 			</TabItem>
 			<TabItem Header="Sky &amp; font">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+					<StackPanel IsEnabled="{Binding SupportsFontAndSky}">
+						<CheckBox Margin="0,3" Content="Use custom font texture" IsChecked="{Binding FontUseCustom, Mode=TwoWay}" />
+						<DockPanel Margin="0,3" IsEnabled="{Binding FontUseCustom}">
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseFontCommand}" Content="..." />
+							<TextBox Text="{Binding FontTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+
+						<CheckBox Margin="0,9,0,3" Content="Use custom sky texture" IsChecked="{Binding SkyUseCustom, Mode=TwoWay}" />
+						<DockPanel Margin="0,3" IsEnabled="{Binding SkyUseCustom}">
+							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseSkyCommand}" Content="..." />
+							<TextBox Text="{Binding SkyTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+
+						<StackPanel Visibility="{Binding IsTR5, Converter={StaticResource BoolToVis}}">
+							<CheckBox Margin="0,9,0,3" Content="Use custom TR5 extra sprites texture" IsChecked="{Binding Tr5SpritesUseCustom, Mode=TwoWay}" />
+							<DockPanel Margin="0,3" IsEnabled="{Binding Tr5SpritesUseCustom}">
+								<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseTr5SpritesCommand}" Content="..." />
+								<TextBox Text="{Binding Tr5ExtraSpritesFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+							</DockPanel>
+							<DockPanel Margin="0,9,0,3">
+								<TextBlock Style="{StaticResource PathLabel}" Text="TR5 weather:" />
+								<ComboBox ItemsSource="{Binding Tr5WeatherTypes}" SelectedItem="{Binding Tr5WeatherType, Mode=TwoWay}" />
+							</DockPanel>
+							<DockPanel Margin="0,3">
+								<TextBlock Style="{StaticResource PathLabel}" Text="Lara type:" />
+								<ComboBox ItemsSource="{Binding Tr5LaraTypes}" SelectedItem="{Binding Tr5LaraType, Mode=TwoWay}" />
+							</DockPanel>
+						</StackPanel>
+					</StackPanel>
+				</ScrollViewer>
 			</TabItem>
 			<TabItem Header="Sound catalogs">
 				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
@@ -131,7 +184,50 @@
 				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
 			</TabItem>
 			<TabItem Header="Misc">
-				<TextBlock Margin="10" Foreground="{DynamicResource Brush_Text}" Opacity="0.6" Text="Ported in a later phase." />
+				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<TextBlock Margin="0,0,0,4" FontWeight="Bold" Text="Compiler options" />
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Texture padding:" />
+							<controls:NumericUpDown Width="100" HorizontalAlignment="Left" Maximum="128" Minimum="0" Value="{Binding TexturePadding, Mode=TwoWay}" />
+						</DockPanel>
+						<CheckBox Margin="0,3" Content="Dither 16-bit textures" IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}" IsEnabled="{Binding Supports16BitDithering}" />
+						<CheckBox Margin="0,3" Content="Compress textures" IsChecked="{Binding CompressTextures, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
+						<CheckBox Margin="0,3" Content="Aggressive texture packing" IsChecked="{Binding AgressiveTexturePacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+						<CheckBox Margin="0,3" Content="Aggressive floordata packing" IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+						<CheckBox Margin="0,3" Content="32-bit room lighting" IsChecked="{Binding Room32BitLighting, Mode=TwoWay}" IsEnabled="{Binding IsTRNG}" />
+						<CheckBox Margin="0,3" Content="Remap animated textures" IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
+						<CheckBox Margin="0,3" Content="Rearrange vertical rooms" IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+						<CheckBox Margin="0,3" Content="Remove unused objects" IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
+
+						<DockPanel Margin="0,9,0,3">
+							<CheckBox Style="{StaticResource PathLabel}" VerticalAlignment="Center" Content="Custom sample rate:" IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
+							<ComboBox Width="100" HorizontalAlignment="Left" IsEnabled="{Binding CanEditSampleRate}" ItemsSource="{Binding SampleRates}" SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
+						</DockPanel>
+
+						<TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Lighting" />
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Default ambient light:" />
+							<Button
+								Width="120"
+								Height="20"
+								HorizontalAlignment="Left"
+								Command="{Binding PickAmbientLightCommand}">
+								<Button.Background>
+									<SolidColorBrush Color="{Binding AmbientLightColor}" />
+								</Button.Background>
+							</Button>
+						</DockPanel>
+						<CheckBox Margin="0,3" Content="Override individual light quality settings" IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Default light quality:" />
+							<ComboBox Width="100" HorizontalAlignment="Left" ItemsSource="{Binding LightQualities}" SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
+						</DockPanel>
+
+						<TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Sounds" />
+						<CheckBox Margin="0,3" Content="Auto-assign sounds if none selected" IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
+					</StackPanel>
+				</ScrollViewer>
 			</TabItem>
 		</TabControl>
 	</DockPanel>
