@@ -989,12 +989,6 @@ namespace TombEditor
                     EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
             });
 
-            AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate ()
-            {
-                using (Forms.FormLevelSettings form = new Forms.FormLevelSettings(_editor))
-                    form.ShowDialog(_editorWindow);
-            });
-
             AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate ()
             {
                 try
