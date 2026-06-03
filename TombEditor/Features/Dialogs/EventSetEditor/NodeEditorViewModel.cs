@@ -41,6 +41,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             _provider = provider;
             _gridSize = gridSize;
             _gridStep = gridStep;
+
+            // Group the function picker by Section (the default view is shared, so add only once).
+            var functionsView = System.Windows.Data.CollectionViewSource.GetDefaultView(Functions);
+            if (functionsView != null && functionsView.GroupDescriptions.Count == 0)
+                functionsView.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription(nameof(NodeFunction.Section)));
+
             Rebuild();
         }
 

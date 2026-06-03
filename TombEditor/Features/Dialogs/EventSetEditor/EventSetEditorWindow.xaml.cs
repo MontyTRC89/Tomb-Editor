@@ -48,6 +48,10 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             {
                 _viewModel?.FollowVolume(_editor?.SelectedObject as VolumeInstance);
             }
+            else if (obj is Editor.EventSetsChangedEvent)
+            {
+                _viewModel?.RepopulateSets();
+            }
         }
 
         private void OnRequestClose(object? sender, bool cancelled)

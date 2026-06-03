@@ -65,7 +65,11 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ArgVector3">
-			<StackPanel Margin="0,2,0,0">
+			<StackPanel
+				Margin="0,2,0,0"
+				AllowDrop="True"
+				DragOver="OnArgDragOver"
+				Drop="OnArgDrop">
 				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
 				<UniformGrid Columns="3">
 					<controls:NumericUpDown Margin="0,0,2,0" DecimalPlaces="{Binding DecimalPlaces}" Increment="{Binding Increment}" Maximum="{Binding Maximum}" Minimum="{Binding Minimum}" Value="{Binding X, Mode=TwoWay}" />
@@ -76,7 +80,11 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ArgColor">
-			<StackPanel Margin="0,2,0,0">
+			<StackPanel
+				Margin="0,2,0,0"
+				AllowDrop="True"
+				DragOver="OnArgDragOver"
+				Drop="OnArgDrop">
 				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
 				<Button
 					Height="22"
@@ -111,7 +119,11 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ArgList">
-			<StackPanel Margin="0,2,0,0">
+			<StackPanel
+				Margin="0,2,0,0"
+				AllowDrop="True"
+				DragOver="OnArgDragOver"
+				Drop="OnArgDrop">
 				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
 				<DockPanel>
 					<Button
@@ -153,7 +165,21 @@
 				Width="240"
 				DisplayMemberPath="Name"
 				ItemsSource="{Binding Functions}"
-				SelectedItem="{Binding FunctionToAdd, Mode=TwoWay}" />
+				SelectedItem="{Binding FunctionToAdd, Mode=TwoWay}">
+				<controls:SearchableComboBox.GroupStyle>
+					<GroupStyle>
+						<GroupStyle.HeaderTemplate>
+							<DataTemplate>
+								<TextBlock
+									Margin="2,4,0,2"
+									FontWeight="Bold"
+									Foreground="{DynamicResource Brush_Text_Warning}"
+									Text="{Binding Name}" />
+							</DataTemplate>
+						</GroupStyle.HeaderTemplate>
+					</GroupStyle>
+				</controls:SearchableComboBox.GroupStyle>
+			</controls:SearchableComboBox>
 			<Button
 				Width="56"
 				Command="{Binding AddNodeCommand}"

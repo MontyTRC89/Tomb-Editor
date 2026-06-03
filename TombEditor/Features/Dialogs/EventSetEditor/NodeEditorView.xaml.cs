@@ -26,6 +26,25 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private NodeEditorViewModel? ViewModel => DataContext as NodeEditorViewModel;
 
+        private void OnArgDragOver(object sender, DragEventArgs e)
+        {
+            bool accepts = sender is FrameworkElement fe && fe.DataContext is ArgumentViewModel arg && arg.AcceptsDrop;
+            e.Effects = accepts ? DragDropEffects.Copy : DragDropEffects.None;
+            e.Handled = true;
+        }
+
+        private void OnArgDrop(object sender, DragEventArgs e)
+        {
+            if (sender is not FrameworkElement fe || fe.DataContext is not ArgumentViewModel arg)
+                return;
+
+            var formats = e.Data.GetFormats();
+            if (formats.Length > 0)
+                arg.HandleDrop(e.Data.GetData(formats[0]));
+
+            e.Handled = true;
+        }
+
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers != ModifierKeys.Control)

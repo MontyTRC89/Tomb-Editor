@@ -106,8 +106,9 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private void SetGridPosition(double gx, double gy)
         {
-            gx = Math.Clamp(gx, 0, 256);
-            gy = Math.Clamp(gy, 0, 256);
+            // Snap to the nearest grid unit.
+            gx = Math.Clamp(Math.Round(gx), 0, 256);
+            gy = Math.Clamp(Math.Round(gy), 0, 256);
             Node.ScreenPosition = new Vector2((float)gx, (float)gy);
             OnPropertyChanged(nameof(CanvasLeft));
             OnPropertyChanged(nameof(CanvasTop));

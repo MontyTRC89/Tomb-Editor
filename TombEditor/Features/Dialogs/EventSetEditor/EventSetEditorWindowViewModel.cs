@@ -103,6 +103,31 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedSet = _instance?.EventSet ?? SelectedSet;
         }
 
+        /// <summary>Rebuilds the set list after an external change (mirrors FormEventSetEditor on EventSetsChangedEvent).</summary>
+        public void RepopulateSets()
+        {
+            if (_repopulating)
+                return;
+
+            _repopulating = true;
+            var current = SelectedSet;
+
+            _lockUi = true;
+            Sets.Clear();
+            foreach (var set in _usedList)
+                Sets.Add(set);
+            _lockUi = false;
+
+            if (!GenericMode)
+                SelectedSet = _instance?.EventSet;
+            else
+                SelectedSet = current != null && _usedList.Contains(current) ? current : Sets.FirstOrDefault();
+
+            _repopulating = false;
+        }
+
+        private bool _repopulating;
+
         // Selection.
 
         [ObservableProperty] private EventSet? _selectedSet;

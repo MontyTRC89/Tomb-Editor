@@ -6,9 +6,13 @@ using System.Globalization;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using TombLib;
 using TombLib.Controls;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
+using TombLib.Wad;
+using TombLib.Wad.Catalog;
 using MediaColor = System.Windows.Media.Color;
 using WinFormsColor = System.Drawing.Color;
 
@@ -185,6 +189,58 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                     break;
             }
         }
+
+        // Drag-drop from the editor (ports the WinForms ArgumentEditor drop handlers).
+
+        public bool AcceptsDrop => _layout.Type is ArgumentType.Vector3 or ArgumentType.Color or ArgumentType.WadSlots || IsLuaNameDrop;
+
+        private bool IsLuaNameDrop => _layout.Type is ArgumentType.Moveables or ArgumentType.Cameras or
+            ArgumentType.FlybyCameras or ArgumentType.Sinks or ArgumentType.Statics or ArgumentType.Volumes;
+
+        public void HandleDrop(object? data)
+        {
+            if (data == null)
+                return;
+
+            switch (_layout.Type)
+            {
+                case ArgumentType.Vector3:
+                    if (data is PositionBasedObjectInstance position)
+                    {
+                        X = position.WorldPosition.X;
+                        Y = -position.WorldPosition.Y;
+                        Z = position.WorldPosition.Z;
+                    }
+                    break;
+
+                case ArgumentType.Color:
+                    if (data is IColorable colorable)
+                    {
+                        var color = colorable.Color * 0.5f;
+                        ColorValue = MediaColor.FromRgb(ToByte(color.X), ToByte(color.Y), ToByte(color.Z));
+                    }
+                    break;
+
+                case ArgumentType.WadSlots:
+                    if (data is WadMoveable moveable)
+                        SelectByValue(LuaSyntax.ObjectIDPrefix + LuaSyntax.Splitter + TrCatalog.GetMoveableName(TRVersion.Game.TombEngine, moveable.Id.TypeId));
+                    break;
+
+                default:
+                    if (IsLuaNameDrop && data is PositionAndScriptBasedObjectInstance instance && !string.IsNullOrEmpty(instance.LuaName))
+                        SelectByValue(TextExtensions.Quote(instance.LuaName));
+                    break;
+            }
+        }
+
+        private void SelectByValue(string value)
+        {
+            var item = Items.FirstOrDefault(i => i.Value == value);
+            if (item != null)
+                SelectedItem = item;
+        }
+
+        private static byte ToByte(float value) => (byte)Math.Clamp(value * 255.0f, 0, 255);
 
         // Boxing (view -> model Lua string).
 
