@@ -57,6 +57,8 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 SoundCatalogs.Add(new SoundCatalogRow(_settings, catalog));
             foreach (var soundPath in _settings.WadSoundPaths)
                 SampleRows.Add(new SampleRow(_settings, soundPath.Clone()));
+
+            PopulateSoundInfoList();
         }
 
         // Editable resource grids (Textures / Objects / Sound catalogs / Samples).
@@ -152,6 +154,8 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 OnPropertyChanged(nameof(IsTR5));
                 OnPropertyChanged(nameof(Supports16BitDithering));
                 OnPropertyChanged(nameof(SupportsFontAndSky));
+                OnPropertyChanged(nameof(IsTRX));
+                PopulateSoundInfoList();
             }
         }
 
@@ -178,6 +182,17 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         public bool IsTR5 => _settings.GameVersion == Game.TR5;
         public bool Supports16BitDithering => _settings.GameVersion.Supports16BitDithering();
         public bool SupportsFontAndSky => _settings.GameVersion.SupportsFontAndSkySettings();
+        public bool IsTRX => _settings.GameVersion.IsTRX();
+
+        // TRX tab.
+
+        public IReadOnlyList<string> TrxTextureDepths { get; } = new[] { "Default", "8-bit", "16-bit", "32-bit" };
+
+        public string SelectedTrxDepth
+        {
+            get => _settings.TrxTextureBitDepth switch { TrxTextureBitDepth.Bit8 => "8-bit", TrxTextureBitDepth.Bit16 => "16-bit", TrxTextureBitDepth.Bit32 => "32-bit", _ => "Default" };
+            set { _settings.TrxTextureBitDepth = value switch { "8-bit" => TrxTextureBitDepth.Bit8, "16-bit" => TrxTextureBitDepth.Bit16, "32-bit" => TrxTextureBitDepth.Bit32, _ => TrxTextureBitDepth.Default }; OnPropertyChanged(); }
+        }
 
         // Sky & font tab.
 
@@ -334,6 +349,107 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 var existing = _settings.AutoStaticMeshMerges.FirstOrDefault(e => e.meshId.Equals(typeId));
                 StaticMeshMerges.Add(new StaticMeshMergeRow(existing ?? new AutoStaticMeshMergeEntry(typeId, false, false, false, false, _settings)));
             }
+        }
+
+        // Sound selection (Sound catalogs tab).
+
+        public ObservableCollection<SoundInfoRow> SoundInfos { get; } = new();
+
+        [ObservableProperty] private string _soundStatistics = string.Empty;
+
+        private string _soundFilter = string.Empty;
+        public string SoundFilter { get => _soundFilter; set { if (SetProperty(ref _soundFilter, value)) PopulateSoundInfoList(); } }
+
+        [RelayCommand] private void AssignFromWads() { EditorActions.AssignWadSounds(_settings); PopulateSoundInfoList(); }
+        [RelayCommand] private void AssignFromSoundSources() { EditorActions.AssignSoundSourcesSounds(_settings); PopulateSoundInfoList(); }
+        [RelayCommand] private void AssignHardcodedSounds() { EditorActions.AssignHardcodedSounds(_settings); PopulateSoundInfoList(); }
+        [RelayCommand] private void AutodetectSounds() { EditorActions.AutodetectAndAssignSounds(_settings, Owner); PopulateSoundInfoList(); }
+
+        [RelayCommand]
+        private void AssignFromSelectedCatalog()
+        {
+            if (SelectedSoundCatalog != null)
+                EditorActions.AssignCatalogSounds(_settings, SelectedSoundCatalog.Catalog);
+            PopulateSoundInfoList();
+        }
+
+        [RelayCommand]
+        private void SelectAllSounds()
+        {
+            foreach (var catalog in _settings.SoundCatalogs)
+                if (catalog.Sounds != null)
+                    foreach (var sound in catalog.Sounds.SoundInfos)
+                        if (!_settings.SelectedSounds.Contains(sound.Id))
+                            _settings.SelectedSounds.Add(sound.Id);
+            PopulateSoundInfoList();
+        }
+
+        [RelayCommand]
+        private void DeselectAllSounds()
+        {
+            _settings.SelectedSounds.Clear();
+            PopulateSoundInfoList();
+        }
+
+        [RelayCommand]
+        private void RemoveMissingSounds()
+        {
+            _settings.SelectedSounds = _settings.SelectedSounds.Except(_settings.SelectedAndMissingSounds).ToList();
+            PopulateSoundInfoList();
+        }
+
+        private void PopulateSoundInfoList()
+        {
+            SoundInfos.Clear();
+            var paths = _settings.GetRecursiveListOfSoundPaths();
+
+            foreach (var info in _settings.GlobalSoundMap)
+            {
+                if (!string.IsNullOrEmpty(SoundFilter) && info.Name.IndexOf(SoundFilter, StringComparison.InvariantCultureIgnoreCase) < 0)
+                    continue;
+
+                string area = GetNgDescription(info.Id, out int originalId);
+                int sampleCount = info.SampleCount(_settings, paths);
+                string samples = sampleCount == 0 ? "[ missing ]" : sampleCount == -1 ? "[ none ]" : sampleCount.ToString();
+                SoundInfos.Add(new SoundInfoRow(_settings.SelectedSounds, UpdateSoundStatistics, info.Id, info.Name, info.SoundCatalog, samples, area, originalId, sampleCount == 0));
+            }
+
+            foreach (var missing in _settings.SelectedAndMissingSounds)
+            {
+                string name = TrCatalog.GetOriginalSoundName(_settings.GameVersion, (uint)missing);
+                if (!string.IsNullOrEmpty(SoundFilter) && name.IndexOf(SoundFilter, StringComparison.InvariantCultureIgnoreCase) < 0)
+                    continue;
+
+                string area = GetNgDescription(missing, out int originalId);
+                SoundInfos.Add(new SoundInfoRow(_settings.SelectedSounds, UpdateSoundStatistics, missing, name, "[ Not present in any of loaded catalogs ]", string.Empty, area, originalId, true));
+            }
+
+            UpdateSoundStatistics();
+        }
+
+        private void UpdateSoundStatistics()
+        {
+            int missing = _settings.SelectedAndMissingSounds.Count;
+            SoundStatistics = "Total sounds: " + _settings.GlobalSoundMap.Count +
+                              " | Selected sounds: " + _settings.SelectedSounds.Count +
+                              (missing == 0 ? string.Empty : " | Missing sounds: " + missing);
+        }
+
+        private string GetNgDescription(int id, out int originalId)
+        {
+            originalId = id;
+            if (_settings.GameVersion != Game.TRNG)
+                return string.Empty;
+
+            if (id < 370) { originalId = id; return "TR4"; }
+            if (id < 500) { originalId = id - 370; return "NGReserved"; }
+            if (id < 525) { originalId = id - 500; return "CustEnv"; }
+            if (id < 602) { originalId = id - 525; return "CustAnims"; }
+            if (id < 858) { originalId = id - 602; return "TR1"; }
+            if (id < 1228) { originalId = id - 858; return "TR2"; }
+            if (id < 1598) { originalId = id - 1228; return "TR3"; }
+            originalId = id - 1598;
+            return "TR5";
         }
 
         // Dialog commands.

@@ -161,6 +161,52 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         }
     }
 
+    /// <summary>Row view-model for the selected-sounds grid in the Sound catalogs tab.</summary>
+    public partial class SoundInfoRow : ObservableObject
+    {
+        private readonly System.Collections.Generic.List<int> _selectedSounds;
+        private readonly System.Action _onSelectionChanged;
+
+        public SoundInfoRow(System.Collections.Generic.List<int> selectedSounds, System.Action onSelectionChanged,
+            int id, string name, string catalog, string samples, string area, int originalId, bool isMissing)
+        {
+            _selectedSounds = selectedSounds;
+            _onSelectionChanged = onSelectionChanged;
+            Id = id;
+            Name = name;
+            Catalog = catalog;
+            Samples = samples;
+            Area = area;
+            OriginalId = originalId;
+            IsMissing = isMissing;
+        }
+
+        public int Id { get; }
+        public string Name { get; }
+        public string Catalog { get; }
+        public string Samples { get; }
+        public string Area { get; }
+        public int OriginalId { get; }
+        public bool IsMissing { get; }
+
+        public bool Selected
+        {
+            get => _selectedSounds.Contains(Id);
+            set
+            {
+                bool current = _selectedSounds.Contains(Id);
+                if (current == value)
+                    return;
+                if (value)
+                    _selectedSounds.Add(Id);
+                else
+                    _selectedSounds.Remove(Id);
+                OnPropertyChanged();
+                _onSelectionChanged();
+            }
+        }
+    }
+
     /// <summary>Row view-model for the Samples grid (wraps a sound folder <see cref="WadSoundPath"/>).</summary>
     public partial class SampleRow : ObservableObject
     {

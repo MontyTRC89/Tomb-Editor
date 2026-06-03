@@ -231,33 +231,87 @@
 				</ScrollViewer>
 			</TabItem>
 			<TabItem Header="Sound catalogs">
-				<DockPanel Margin="6">
-					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
-						<Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
-						<Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
-						<Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
-					</controls:SpacedStack>
-					<DataGrid
-						AutoGenerateColumns="False"
-						CanUserAddRows="False"
-						HeadersVisibility="Column"
-						ItemsSource="{Binding SoundCatalogs}"
-						SelectedItem="{Binding SelectedSoundCatalog, Mode=TwoWay}">
-						<DataGrid.Columns>
-							<DataGridTemplateColumn Width="32">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-							<DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
-							<DataGridTextColumn Width="200" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
+				<Grid Margin="6">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="2*" MinHeight="90" />
+						<RowDefinition Height="6" />
+						<RowDefinition Height="3*" MinHeight="120" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<!--  Catalogs grid  -->
+					<DockPanel Grid.Row="0">
+						<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+							<Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
+							<Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
+							<Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
+							<Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
+						</controls:SpacedStack>
+						<DataGrid
+							AutoGenerateColumns="False"
+							CanUserAddRows="False"
+							HeadersVisibility="Column"
+							ItemsSource="{Binding SoundCatalogs}"
+							SelectedItem="{Binding SelectedSoundCatalog, Mode=TwoWay}">
+							<DataGrid.Columns>
+								<DataGridTemplateColumn Width="32">
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+								<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+								<DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
+								<DataGridTextColumn Width="180" Binding="{Binding Message}" Header="Status" IsReadOnly="True" />
+							</DataGrid.Columns>
+						</DataGrid>
+					</DockPanel>
+
+					<GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" />
+
+					<!--  Sound selection  -->
+					<DockPanel Grid.Row="2">
+						<DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+							<TextBlock VerticalAlignment="Center" Margin="0,0,6,0" Text="Filter:" />
+							<TextBox Text="{Binding SoundFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+						</DockPanel>
+						<controls:SpacedStack DockPanel.Dock="Bottom" Margin="0,6,0,0" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+							<Button Command="{Binding SelectAllSoundsCommand}" Content="Select all" />
+							<Button Command="{Binding DeselectAllSoundsCommand}" Content="Deselect all" />
+							<Button Command="{Binding RemoveMissingSoundsCommand}" Content="Remove missing" />
+							<Button Command="{Binding AssignFromSelectedCatalogCommand}" Content="From catalog" />
+							<Button Command="{Binding AssignFromWadsCommand}" Content="From wads" />
+							<Button Command="{Binding AssignFromSoundSourcesCommand}" Content="From sources" />
+							<Button Command="{Binding AssignHardcodedSoundsCommand}" Content="Hardcoded" />
+							<Button Command="{Binding AutodetectSoundsCommand}" Content="Autodetect" />
+						</controls:SpacedStack>
+						<DataGrid
+							AutoGenerateColumns="False"
+							CanUserAddRows="False"
+							HeadersVisibility="Column"
+							ItemsSource="{Binding SoundInfos}">
+							<DataGrid.Columns>
+								<DataGridCheckBoxColumn Width="32" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Header="" />
+								<DataGridTextColumn Width="50" Binding="{Binding Id}" Header="ID" IsReadOnly="True" />
+								<DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+								<DataGridTextColumn Width="120" Binding="{Binding Catalog}" Header="Catalog" IsReadOnly="True" />
+								<DataGridTextColumn Width="80" Binding="{Binding Samples}" Header="Samples" IsReadOnly="True" />
+							</DataGrid.Columns>
+							<DataGrid.RowStyle>
+								<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+									<Style.Triggers>
+										<DataTrigger Binding="{Binding IsMissing}" Value="True">
+											<Setter Property="Foreground" Value="{DynamicResource Brush_Text_Warning}" />
+										</DataTrigger>
+									</Style.Triggers>
+								</Style>
+							</DataGrid.RowStyle>
+						</DataGrid>
+					</DockPanel>
+
+					<TextBlock Grid.Row="3" Margin="0,6,0,0" Text="{Binding SoundStatistics}" />
+				</Grid>
 			</TabItem>
 			<TabItem Header="Samples">
 				<DockPanel Margin="6">
@@ -329,6 +383,17 @@
 
 						<TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Sounds" />
 						<CheckBox Margin="0,3" Content="Auto-assign sounds if none selected" IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
+
+			<TabItem Header="TRX" Visibility="{Binding IsTRX, Converter={StaticResource BoolToVis}}">
+				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+					<StackPanel>
+						<DockPanel Margin="0,3">
+							<TextBlock Style="{StaticResource PathLabel}" Text="Texture bit depth:" />
+							<ComboBox Width="120" HorizontalAlignment="Left" ItemsSource="{Binding TrxTextureDepths}" SelectedItem="{Binding SelectedTrxDepth, Mode=TwoWay}" />
+						</DockPanel>
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
