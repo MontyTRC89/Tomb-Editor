@@ -191,17 +191,17 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private NodeViewModel? FindNodeAt(Point position)
         {
-            DependencyObject? hit = null;
-            VisualTreeHelper.HitTest(rootCanvas, null,
-                result => { hit = result.VisualHit; return HitTestResultBehavior.Stop; },
-                new PointHitTestParameters(position));
+            if (ViewModel == null)
+                return null;
 
-            DependencyObject? current = hit;
-            while (current != null)
+            // Geometric search in canvas coordinates. Visual-tree hit-testing is unreliable here because
+            // the nodes live in a zero-sized items panel. Iterate back-to-front so the topmost node wins.
+            for (int i = ViewModel.Nodes.Count - 1; i >= 0; i--)
             {
-                if (current is FrameworkElement element && element.DataContext is NodeViewModel node)
+                var node = ViewModel.Nodes[i];
+                if (position.X >= node.CanvasLeft && position.X <= node.CanvasLeft + node.Width &&
+                    position.Y >= node.CanvasTop && position.Y <= node.CanvasTop + node.Height)
                     return node;
-                current = VisualTreeHelper.GetParent(current);
             }
             return null;
         }
