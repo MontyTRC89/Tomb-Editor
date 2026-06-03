@@ -187,7 +187,7 @@ namespace TombLib.LevelData
     public abstract class EventSet : ICloneable, IEquatable<EventSet>
     {
         public EventType LastUsedEvent;
-        public string Name;
+        public string Name { get; set; }
 
         // Every volume's events can be reduced to these three.
         // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
