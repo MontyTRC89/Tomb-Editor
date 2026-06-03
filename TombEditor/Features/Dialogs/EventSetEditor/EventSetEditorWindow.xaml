@@ -7,7 +7,6 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="{Binding Title}"
 	Width="980"
 	Height="640"
@@ -102,10 +101,52 @@
 					</StackPanel>
 				</Border>
 
-				<!--  Event editor (temporarily the hosted WinForms node editor; replaced by pure WPF later)  -->
-				<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
-					<wfi:WindowsFormsHost x:Name="triggerManagerHost" Background="{DynamicResource Brush_Background_Low}" />
-				</Border>
+				<!--  Event editor: mode toggle + level-script panel or pure-WPF node canvas  -->
+				<Grid IsEnabled="{Binding HasCurrentEvent}">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<controls:SpacedStack
+						Grid.Row="0"
+						Margin="0,0,0,6"
+						Orientation="Horizontal"
+						Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+						<TextBlock VerticalAlignment="Center" Text="Mode:" />
+						<RadioButton
+							Content="Node editor"
+							GroupName="EventMode"
+							IsChecked="{Binding IsNodeEditorMode, Mode=TwoWay}" />
+						<RadioButton
+							Content="Level script"
+							GroupName="EventMode"
+							IsChecked="{Binding IsLevelScriptMode, Mode=TwoWay}" />
+					</controls:SpacedStack>
+
+					<!--  Node editor mode  -->
+					<local:NodeEditorView
+						Grid.Row="1"
+						DataContext="{Binding NodeEditor}"
+						Visibility="{Binding DataContext.IsNodeEditorMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BoolToVis}}" />
+
+					<!--  Level script mode  -->
+					<Border
+						Grid.Row="1"
+						BorderBrush="{DynamicResource Brush_Border}"
+						BorderThickness="1"
+						Visibility="{Binding IsLevelScriptMode, Converter={StaticResource BoolToVis}}">
+						<StackPanel Margin="8">
+							<TextBlock Margin="0,0,0,4" Text="Function:" />
+							<ComboBox
+								IsEditable="True"
+								ItemsSource="{Binding ScriptFunctions}"
+								Text="{Binding EventFunction, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+							<TextBlock Margin="0,8,0,4" Text="Argument:" />
+							<TextBox Text="{Binding EventArgument, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+						</StackPanel>
+					</Border>
+				</Grid>
 			</DockPanel>
 		</Grid>
 	</DockPanel>

@@ -127,6 +127,66 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             CurrentEvent = SelectedSet.Events.TryGetValue(value, out var evt) ? evt : null;
         }
 
+        // Per-event editor (node graph + level-script modes).
+
+        private const int NodeGridSize = 256;
+        private const double NodeGridStep = 8.0;
+
+        [ObservableProperty] private NodeEditorViewModel? _nodeEditor;
+
+        public bool HasCurrentEvent => CurrentEvent != null;
+
+        partial void OnCurrentEventChanged(Event? value)
+        {
+            NodeEditor = value != null
+                ? new NodeEditorViewModel(value, NodeFunctions, NodeGridSize, NodeGridStep)
+                : null;
+
+            OnPropertyChanged(nameof(HasCurrentEvent));
+            OnPropertyChanged(nameof(IsNodeEditorMode));
+            OnPropertyChanged(nameof(IsLevelScriptMode));
+            OnPropertyChanged(nameof(EventFunction));
+            OnPropertyChanged(nameof(EventArgument));
+        }
+
+        public bool IsNodeEditorMode
+        {
+            get => CurrentEvent != null && CurrentEvent.Mode == EventSetMode.NodeEditor;
+            set
+            {
+                if (CurrentEvent == null || !value)
+                    return;
+                CurrentEvent.Mode = EventSetMode.NodeEditor;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsLevelScriptMode));
+            }
+        }
+
+        public bool IsLevelScriptMode
+        {
+            get => CurrentEvent != null && CurrentEvent.Mode == EventSetMode.LevelScript;
+            set
+            {
+                if (CurrentEvent == null || !value)
+                    return;
+                CurrentEvent.Mode = EventSetMode.LevelScript;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsNodeEditorMode));
+            }
+        }
+
+        public string EventFunction
+        {
+            get => CurrentEvent?.Function ?? string.Empty;
+            set { if (CurrentEvent != null) { CurrentEvent.Function = value; OnPropertyChanged(); } }
+        }
+
+        public string EventArgument
+        {
+            get => CurrentEvent?.Argument ?? string.Empty;
+            set { if (CurrentEvent != null) { CurrentEvent.Argument = value; OnPropertyChanged(); } }
+        }
+
         // Name (with validation).
 
         private string _name = string.Empty;

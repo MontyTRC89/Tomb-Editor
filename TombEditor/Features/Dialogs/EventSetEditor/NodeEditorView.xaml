@@ -1,0 +1,180 @@
+<UserControl
+	x:Class="TombEditor.Features.Dialogs.EventSetEditor.NodeEditorView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:DarkUI.WPF.CustomControls;assembly=DarkUI.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
+	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	d:DataContext="{d:DesignInstance Type=local:NodeEditorViewModel}"
+	d:DesignHeight="400"
+	d:DesignWidth="640"
+	Focusable="True"
+	KeyDown="OnKeyDown"
+	mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+		<local:LinkBrushConverter x:Key="LinkBrushConverter" />
+	</UserControl.Resources>
+
+	<DockPanel LastChildFill="True">
+
+		<!--  Toolbar  -->
+		<controls:SpacedStack
+			DockPanel.Dock="Top"
+			Margin="0,0,0,6"
+			Orientation="Horizontal"
+			Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+			<TextBlock VerticalAlignment="Center" Text="Function:" />
+			<ComboBox
+				Width="240"
+				DisplayMemberPath="Name"
+				ItemsSource="{Binding Functions}"
+				SelectedItem="{Binding FunctionToAdd, Mode=TwoWay}" />
+			<Button
+				Width="56"
+				Command="{Binding AddNodeCommand}"
+				Content="Add" />
+			<Button
+				Width="64"
+				Command="{Binding DeleteSelectedNodeCommand}"
+				Content="Delete" />
+		</controls:SpacedStack>
+
+		<!--  Node canvas  -->
+		<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Canvas
+					x:Name="rootCanvas"
+					Width="{Binding CanvasWidth}"
+					Height="{Binding CanvasHeight}"
+					Background="{DynamicResource Brush_Background_Low}">
+
+					<!--  Links  -->
+					<ItemsControl ItemsSource="{Binding Links}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:LinkViewModel}">
+								<Line
+									Stroke="{Binding IsElse, Converter={StaticResource LinkBrushConverter}}"
+									StrokeThickness="2"
+									X1="{Binding X1}"
+									X2="{Binding X2}"
+									Y1="{Binding Y1}"
+									Y2="{Binding Y2}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<!--  Nodes  -->
+					<ItemsControl ItemsSource="{Binding Nodes}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Canvas />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemContainerStyle>
+							<Style TargetType="ContentPresenter">
+								<Setter Property="Canvas.Left" Value="{Binding CanvasLeft}" />
+								<Setter Property="Canvas.Top" Value="{Binding CanvasTop}" />
+							</Style>
+						</ItemsControl.ItemContainerStyle>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:NodeViewModel}">
+								<Grid
+									Width="{Binding Width}"
+									PreviewMouseLeftButtonDown="Node_PreviewMouseDown"
+									SizeChanged="Node_SizeChanged">
+
+									<!--  Body  -->
+									<Border
+										Background="{DynamicResource Brush_Background}"
+										BorderThickness="2"
+										CornerRadius="3">
+										<Border.Style>
+											<Style TargetType="Border">
+												<Setter Property="BorderBrush" Value="{DynamicResource Brush_Border}" />
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding IsSelected}" Value="True">
+														<Setter Property="BorderBrush" Value="{DynamicResource Brush_Selection}" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</Border.Style>
+										<StackPanel Margin="6">
+											<TextBlock
+												FontWeight="Bold"
+												Foreground="{DynamicResource Brush_Text}"
+												Text="{Binding Title}"
+												TextTrimming="CharacterEllipsis" />
+											<TextBlock
+												Margin="0,2,0,0"
+												Foreground="{DynamicResource Brush_Text_Warning}"
+												Text="{Binding FunctionName}"
+												TextTrimming="CharacterEllipsis" />
+										</StackPanel>
+									</Border>
+
+									<!--  Drag surface (behind ports)  -->
+									<Thumb DragDelta="NodeThumb_DragDelta" Opacity="0">
+										<Thumb.Template>
+											<ControlTemplate TargetType="Thumb">
+												<Rectangle Fill="Transparent" />
+											</ControlTemplate>
+										</Thumb.Template>
+									</Thumb>
+
+									<!--  Input port (top center)  -->
+									<Ellipse
+										Width="12"
+										Height="12"
+										Margin="0,-6,0,0"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Top"
+										Fill="{DynamicResource Brush_Border}"
+										Stroke="{DynamicResource Brush_Text}"
+										ToolTip="Input" />
+
+									<!--  Next output port (bottom center)  -->
+									<Ellipse
+										Width="12"
+										Height="12"
+										Margin="0,0,0,-6"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Bottom"
+										Cursor="Cross"
+										Fill="{DynamicResource Brush_Text}"
+										MouseLeftButtonDown="OutputPort_MouseDown"
+										Stroke="{DynamicResource Brush_Text}"
+										Tag="Next"
+										ToolTip="Drag to connect (Next)" />
+
+									<!--  Else output port (right center, conditions only)  -->
+									<Ellipse
+										Width="12"
+										Height="12"
+										Margin="0,0,-6,0"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Center"
+										Cursor="Cross"
+										Fill="#E0A030"
+										MouseLeftButtonDown="OutputPort_MouseDown"
+										Stroke="{DynamicResource Brush_Text}"
+										Tag="Else"
+										ToolTip="Drag to connect (Else)"
+										Visibility="{Binding IsCondition, Converter={StaticResource BoolToVis}}" />
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Canvas>
+			</ScrollViewer>
+		</Border>
+	</DockPanel>
+</UserControl>
