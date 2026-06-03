@@ -75,25 +75,86 @@
 					<TextBlock Margin="0,0,0,4" Text="Name:" />
 					<TextBox Margin="0,0,0,6" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 
-					<Grid Margin="0,0,0,6">
+					<!--  Effect  -->
+					<Grid Margin="0,0,0,4">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="70" />
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="90" />
 						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0" Text="Effect:" />
+						<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Effect:" />
 						<ComboBox
 							Grid.Column="1"
 							ItemsSource="{Binding AnimationTypes}"
 							SelectedItem="{Binding SelectedAnimationType, Mode=TwoWay}" />
-						<TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0" Text="FPS:" />
+					</Grid>
+
+					<!--  FPS (numeric)  -->
+					<Grid Margin="0,0,0,4" Visibility="{Binding ShowFpsNumeric, Converter={StaticResource BoolToVis}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="70" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="FPS:" />
 						<controls:NumericUpDown
-							Grid.Column="3"
+							Grid.Column="1"
 							DecimalPlaces="2"
+							IsEnabled="{Binding FpsNumericEnabled}"
 							Maximum="120"
 							Minimum="0"
 							Value="{Binding Fps, Mode=TwoWay}" />
+					</Grid>
+
+					<!--  FPS (TRNG predefined)  -->
+					<Grid Margin="0,0,0,4" Visibility="{Binding ShowNgFpsCombo, Converter={StaticResource BoolToVis}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="70" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="FPS:" />
+						<ComboBox
+							Grid.Column="1"
+							DisplayMemberPath="Display"
+							ItemsSource="{Binding NgFpsOptions}"
+							SelectedItem="{Binding SelectedNgFps, Mode=TwoWay}" />
+					</Grid>
+
+					<!--  UvRotate (TRNG)  -->
+					<Grid Margin="0,0,0,4" Visibility="{Binding ShowNgUvRotateCombo, Converter={StaticResource BoolToVis}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="70" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="UvRotate:" />
+						<ComboBox
+							Grid.Column="1"
+							DisplayMemberPath="Display"
+							IsEnabled="{Binding NgUvRotateEnabled}"
+							ItemsSource="{Binding NgUvRotateOptions}"
+							SelectedItem="{Binding SelectedNgUvRotate, Mode=TwoWay}" />
+					</Grid>
+
+					<!--  UVRotate (TombEngine)  -->
+					<Grid Margin="0,0,0,4" Visibility="{Binding ShowTeUvRotate, Converter={StaticResource BoolToVis}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="70" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="70" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Cycles/s:" />
+						<controls:NumericUpDown
+							Grid.Column="1"
+							DecimalPlaces="2"
+							Maximum="120"
+							Minimum="0"
+							Value="{Binding TenUvRotateSpeed, Mode=TwoWay}" />
+						<TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0" Text="Dir°:" />
+						<controls:NumericUpDown
+							Grid.Column="3"
+							DecimalPlaces="0"
+							Maximum="360"
+							Minimum="-360"
+							Value="{Binding TenUvRotateDirection, Mode=TwoWay}" />
 					</Grid>
 				</StackPanel>
 

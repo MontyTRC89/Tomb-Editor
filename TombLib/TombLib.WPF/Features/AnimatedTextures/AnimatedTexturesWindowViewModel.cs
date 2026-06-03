@@ -53,6 +53,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             _sets = context.AnimatedTextureSets;
 
             AnimationTypes = BuildAnimationTypes();
+            InitNgOptions();
 
             foreach (var set in _sets)
                 _backupSets.Add(set.Clone());
@@ -125,6 +126,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 _name = value.Name ?? string.Empty;
                 _selectedAnimationType = value.AnimationType;
                 _fps = value.Fps;
+                LoadSettings(value);
             }
             else
             {
@@ -136,6 +138,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             OnPropertyChanged(nameof(SelectedAnimationType));
             OnPropertyChanged(nameof(Fps));
             OnPropertyChanged(nameof(HasSelectedSet));
+            RefreshSettingsState();
             RefreshCommandStates();
         }
 
@@ -180,6 +183,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 if (!SetProperty(ref _selectedAnimationType, value) || _lockUi || SelectedSet == null)
                     return;
                 SelectedSet.AnimationType = value;
+                RefreshSettingsState();
                 _context.OnAnimatedTexturesChanged?.Invoke();
             }
         }
