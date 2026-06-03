@@ -1281,12 +1281,19 @@ namespace TombEditor
                 if (Control.ModifierKeys.HasFlag(Keys.Control))
                     EditColor(owner, (ImportedGeometryInstance)instance);
                 else
-                    using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
-                    {
-                        if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
-                            return;
-                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
-                    }
+                {
+                    var geometryViewModel = new TombEditor.Features.Dialogs.ImportedGeometryEditor.ImportedGeometryWindowViewModel((ImportedGeometryInstance)instance, _editor.Level.Settings);
+                    var geometryWindow = new TombEditor.Features.Dialogs.ImportedGeometryEditor.ImportedGeometryWindow { DataContext = geometryViewModel };
+
+                    if (owner is not null)
+                        geometryWindow.SetOwner(owner);
+
+                    geometryWindow.ShowDialog();
+
+                    if (geometryViewModel.DialogResult != true)
+                        return;
+                    _editor.UpdateLevelSettings(geometryViewModel.NewLevelSettings);
+                }
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
