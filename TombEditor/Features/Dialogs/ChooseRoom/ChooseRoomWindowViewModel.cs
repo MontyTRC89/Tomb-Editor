@@ -15,7 +15,6 @@ namespace TombEditor.Features.Dialogs.ChooseRoom;
 public partial class ChooseRoomWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly Action<Room>? _roomSelectionChanged;
-    private readonly IDialogService _dialogService;
 
     [ObservableProperty] private bool? _dialogResult;
 
@@ -31,13 +30,11 @@ public partial class ChooseRoomWindowViewModel : ObservableObject, IModalDialogV
         string prompt,
         IEnumerable<Room> rooms,
         Action<Room>? roomSelectionChanged = null,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
         Prompt = prompt;
         Rooms = new ObservableCollection<Room>(rooms);
         _roomSelectionChanged = roomSelectionChanged;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
     }
 
@@ -50,16 +47,8 @@ public partial class ChooseRoomWindowViewModel : ObservableObject, IModalDialogV
     private bool CanConfirm() => SelectedRoom is not null;
 
     [RelayCommand(CanExecute = nameof(CanConfirm))]
-    private void Confirm()
-    {
-        DialogResult = true;
-        _dialogService.Close(this);
-    }
+    private void Confirm() => DialogResult = true;
 
     [RelayCommand]
-    private void Cancel()
-    {
-        DialogResult = false;
-        _dialogService.Close(this);
-    }
+    private void Cancel() => DialogResult = false;
 }
