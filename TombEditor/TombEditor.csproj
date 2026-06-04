@@ -81,15 +81,6 @@
     <Compile Update="Features\Panel3D\ToolPalette\Toolbox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="Controls\ImportedGeometryManager.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\TriggerManager.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\PanelPalette.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
     </Compile>
