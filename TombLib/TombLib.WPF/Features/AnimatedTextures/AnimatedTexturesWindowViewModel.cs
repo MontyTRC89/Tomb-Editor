@@ -118,14 +118,21 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         private void RebuildSets()
         {
-            var previous = SelectedSet;
+            // Sync the observable list IN PLACE (never Clear) so the combo keeps its selection — a Clear
+            // would null SelectedSet and, if triggered during a Frames change, re-enter Frames.Clear().
             _lockUi = true;
-            Sets.Clear();
-            foreach (var set in _sets)
-                Sets.Add(set);
+
+            while (Sets.Count > _sets.Count)
+                Sets.RemoveAt(Sets.Count - 1);
+
+            for (int i = 0; i < Sets.Count; i++)
+                if (!ReferenceEquals(Sets[i], _sets[i]))
+                    Sets[i] = _sets[i];
+
+            while (Sets.Count < _sets.Count)
+                Sets.Add(_sets[Sets.Count]);
+
             _lockUi = false;
-            if (previous != null && _sets.Contains(previous))
-                SelectedSet = previous;
         }
 
         private void OnAnimatedTexturesChanged()
@@ -137,6 +144,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         partial void OnSelectedSetChanged(AnimatedTextureSet? value)
         {
+            // Ignore selection changes raised while we are rebuilding collections (prevents re-entrancy).
+            if (_lockUi)
+                return;
+
             _lockUi = true;
             Frames.Clear();
             if (value != null)
@@ -177,8 +188,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_lockUi || SelectedSet == null)
                 return;
 
+            // A frame add/remove does not change the set list, so only refresh the map + preview.
+            // (Rebuilding the set combo here would re-enter this collection's CollectionChanged.)
             SelectedSet.Frames = Frames.ToList();
-            _context.OnAnimatedTexturesChanged?.Invoke();
+            _textureMap.InvalidateVisual();
             UpdatePreviewState();
         }
 
