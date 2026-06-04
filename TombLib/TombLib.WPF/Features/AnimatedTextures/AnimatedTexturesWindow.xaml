@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombLib.WPF.Features.AnimatedTextures"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	Title="Animated textures"
 	Width="880"
 	Height="680"
@@ -69,9 +70,15 @@
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="48" Command="{Binding NewSetCommand}" Content="New" ToolTip="Add new animation set" />
-						<Button Width="52" Command="{Binding CloneSetCommand}" Content="Clone" ToolTip="Clone the current animation set" />
-						<Button Width="56" Command="{Binding DeleteSetCommand}" Content="Delete" ToolTip="Delete the current animation set" />
+						<Button Width="28" Command="{Binding NewSetCommand}" ToolTip="Add new animation set">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+						</Button>
+						<Button Width="28" Command="{Binding CloneSetCommand}" ToolTip="Clone the current animation set">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
+						</Button>
+						<Button Width="28" Command="{Binding DeleteSetCommand}" ToolTip="Delete the current animation set">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
+						</Button>
 					</controls:SpacedStack>
 					<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,6,0,0" VerticalAlignment="Center" Text="Name:" />
 					<TextBox
@@ -192,12 +199,22 @@
 								<CheckBox Content="Symmetric" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="Make animation symmetric" />
 								<CheckBox Content="Smooth" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="Ease-in and ease-out animation" />
 							</controls:SpacedStack>
-							<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-								<Button Width="62" Command="{Binding GenerateNewCommand}" Content="Generate" ToolTip="Generate new animation" />
-								<Button Width="52" Command="{Binding GenerateCloneCommand}" Content="Clone" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into copy of current animation" />
-								<Button Width="56" Command="{Binding GenerateMergeCommand}" Content="Merge" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into current animation" />
-								<Button Width="60" Command="{Binding GenerateReplaceCommand}" Content="Replace" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and replace current animation" />
-								<Button Width="44" Command="{Binding GenerateAddFramesCommand}" Content="Add" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and add frames after current sequence frame" />
+							<controls:SpacedStack HorizontalAlignment="Right" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+								<Button Width="28" Command="{Binding GenerateNewCommand}" ToolTip="Generate new animation">
+									<Image Width="16" Height="16" Source="{tomb:Icon General/create_new}" />
+								</Button>
+								<Button Width="28" Command="{Binding GenerateCloneCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into copy of current animation">
+									<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
+								</Button>
+								<Button Width="28" Command="{Binding GenerateMergeCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into current animation">
+									<Image Width="16" Height="16" Source="{tomb:Icon Actions/Merge}" />
+								</Button>
+								<Button Width="28" Command="{Binding GenerateReplaceCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and replace current animation">
+									<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
+								</Button>
+								<Button Width="28" Command="{Binding GenerateAddFramesCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and add frames after current sequence frame">
+									<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+								</Button>
 							</controls:SpacedStack>
 						</StackPanel>
 					</Border>
@@ -243,8 +260,12 @@
 						IsEnabled="{Binding HasSelectedSet}"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="90" Command="{Binding AddFrameCommand}" Content="Add frame" ToolTip="Add the selected texture region as a new frame" />
-						<Button Width="96" Command="{Binding UpdateFrameCommand}" Content="Update frame" ToolTip="Update the selected frame with the current texture region" />
+						<Button Width="28" Command="{Binding AddFrameCommand}" ToolTip="Add the selected texture region as a new frame">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+						</Button>
+						<Button Width="28" Command="{Binding UpdateFrameCommand}" ToolTip="Update the selected frame with the current texture region">
+							<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
+						</Button>
 					</controls:SpacedStack>
 				</Grid>
 
