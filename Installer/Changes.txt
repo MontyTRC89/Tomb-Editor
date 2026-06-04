@@ -14,6 +14,7 @@ Tomb Editor:
 
 WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
+ * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
  
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
