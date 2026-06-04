@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,12 @@ using TombLib.Utils;
 
 namespace TombLib.Wad.Catalog
 {
+    public enum ObjectKind
+    {
+        Moveable,
+        Static
+    }
+
     public enum Limit
     {
         TexPages,
@@ -38,12 +45,14 @@ namespace TombLib.Wad.Catalog
 
     public class TrCatalog
     {
-        private struct Item
+		private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+		private struct Item
         {
             public List<string> Names { get; set; }
             public string Description { get; set; }
             public string Category { get; set; }
-            public List<string> TombEngineSlots { get; set; }
+            public List<uint> TombEngineSlots { get; set; }
             public uint SkinId { get; set; }
             public int SubstituteId { get; set; }
             public bool AIObject { get; set; }
@@ -94,14 +103,91 @@ namespace TombLib.Wad.Catalog
 
         private static readonly Dictionary<TRVersion.Game, Game> Games = new Dictionary<TRVersion.Game, Game>();
 
-        private static List<string> ParseTombEngineSlots(string value)
+        /// <summary>
+        /// Parses a comma-separated list of IDs, ranges, and string names into a flat list of uint values.
+        /// String entries are resolved via GetItemIndex when a game version is provided.
+        /// Supports: "5", "1,2,3", "0-10", "0-5,73,100-105", "LARA", "LARA,SHOTGUN_ANIM",
+        /// "LARA-100", "LARA-SHOTGUN_ANIM", "100-SHOTGUN_ANIM".
+        /// </summary>
+        public static List<uint> ParseIdList(string idString, string filePath, ObjectKind kind, TRVersion.Game? gameVersion = null)
         {
-            return (value ?? string.Empty)
-                .Split(',')
-                .Select(slot => slot.Trim())
-                .Where(slot => !string.IsNullOrEmpty(slot))
-                .Distinct(StringComparer.InvariantCultureIgnoreCase)
-                .ToList();
+            var ids = new List<uint>();
+
+            foreach (var segment in idString.Split(','))
+            {
+                var trimmed = segment.Trim();
+                if (string.IsNullOrEmpty(trimmed))
+                    continue;
+
+                var dashIndex = trimmed.IndexOf('-');
+                if (dashIndex > 0 && dashIndex < trimmed.Length - 1)
+                {
+                    // Range: "start-end" (numeric, string, or mixed).
+                    var startStr = trimmed.Substring(0, dashIndex).Trim();
+                    var endStr = trimmed.Substring(dashIndex + 1).Trim();
+
+                    uint? rangeStart = ResolveIdOrName(startStr, gameVersion);
+                    uint? rangeEnd = ResolveIdOrName(endStr, gameVersion);
+
+                    if (rangeStart.HasValue && rangeEnd.HasValue)
+                    {
+                        if (rangeEnd.Value < rangeStart.Value)
+                        {
+                            logger.Warn("Invalid range '{0}' (end < start) in {1}", trimmed, filePath);
+                            continue;
+                        }
+
+                        if (rangeEnd.Value - rangeStart.Value > 1000)
+                        {
+                            logger.Warn("Range '{0}' is too large (>1000 entries) in {1}", trimmed, filePath);
+                            continue;
+                        }
+
+                        for (uint i = rangeStart.Value; i <= rangeEnd.Value; i++)
+                        {
+                            if (!ids.Contains(i))
+                                ids.Add(i);
+                        }
+                    }
+                    else
+                    {
+                        logger.Warn("Invalid range value '{0}' in {1}", trimmed, filePath);
+                    }
+                }
+                else
+                {
+                    // Single ID or name.
+                    uint? resolved = ResolveIdOrName(trimmed, gameVersion);
+                    if (resolved.HasValue)
+                    {
+                        if (!ids.Contains(resolved.Value))
+                            ids.Add(resolved.Value);
+                    }
+                    else
+                    {
+                        logger.Warn("Invalid ID value '{0}' in {1}", trimmed, filePath);
+                    }
+                }
+            }
+
+            return ids;
+        }
+
+        private static uint? ResolveIdOrName(string value, TRVersion.Game? gameVersion)
+        {
+            if (uint.TryParse(value, out uint numId))
+                return numId;
+
+            if (gameVersion.HasValue)
+            {
+                uint? resolvedId = GetItemIndex(gameVersion.Value, value, out bool _);
+                if (resolvedId.HasValue)
+                    return resolvedId;
+
+                logger.Warn("Unrecognized name '{0}'", value);
+            }
+
+            return null;
         }
 
         public static int PredictSoundMapSize(TRVersion.Game version, bool IsNg, int numDemoData)
@@ -137,26 +223,30 @@ namespace TombLib.Wad.Catalog
         public static bool IsEssential(TRVersion.Game version, uint id) => GetMoveable(version, id)?.IsEssential ?? false;
         public static bool IsFreelyRotateable(TRVersion.Game version, uint id) => GetMoveable(version, id)?.FreeRotation ?? false;
 
-		public static IReadOnlyList<string> GetMoveableTombEngineSlots(TRVersion.Game version, uint id)
+		public static IReadOnlyList<uint> GetMoveableTombEngineSlots(TRVersion.Game version, uint id)
 		{
 			var moveable = GetMoveable(version, id);
 			if (!moveable.HasValue || moveable.Value.TombEngineSlots == null)
-				return Array.Empty<string>();
+				return Array.Empty<uint>();
 
 			return moveable.Value.TombEngineSlots;
 		}
 
-		public static string GetSpriteSequenceTombEngineSlot(TRVersion.Game version, uint id)
+		public static uint? GetSpriteSequenceTombEngineSlot(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return string.Empty;
+                return null;
 
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
-                return string.Empty;
+                return null;
 
-            return game.SpriteSequences[id].TombEngineSlots.FirstOrDefault() ?? string.Empty;
+            var slots = game.SpriteSequences[id].TombEngineSlots;
+            if (slots == null || slots.Count == 0)
+                return null;
+
+            return slots[0];
         }
 
         public static uint GetTombEngineSound(TRVersion.Game version, uint id)
@@ -575,7 +665,7 @@ namespace TombLib.Wad.Catalog
                         bool isFreeRotation = bool.Parse(moveableNode.Attributes["freeRot"]?.Value ?? "false");
                         bool hidden = bool.Parse(moveableNode.Attributes["hidden"]?.Value ?? "false");
                         bool essential = bool.Parse(moveableNode.Attributes["essential"]?.Value ?? "true");
-                        var tombEngineSlots = ParseTombEngineSlots(moveableNode.Attributes["ten"]?.Value);
+                        var tombEngineSlots = ParseIdList(moveableNode.Attributes["ten"]?.Value ?? string.Empty, string.Empty, ObjectKind.Moveable, TRVersion.Game.TombEngine);
                         string category = moveableNode.Attributes["category"]?.Value ?? string.Empty;
 
                         game.Moveables.Add(id, new Item
@@ -637,7 +727,7 @@ namespace TombLib.Wad.Catalog
                         if (spriteSequenceNode.Name != "sprite_sequence")
                             continue;
 
-                        var tombEngineSlots = ParseTombEngineSlots(spriteSequenceNode.Attributes["ten"]?.Value);
+                        var tombEngineSlots = ParseIdList(spriteSequenceNode.Attributes["ten"]?.Value ?? string.Empty, string.Empty, ObjectKind.Moveable, TRVersion.Game.TombEngine);
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         string[] names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
                         game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlots = tombEngineSlots });
