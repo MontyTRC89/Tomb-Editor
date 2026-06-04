@@ -4,6 +4,6 @@ namespace TombEditor.Features.Dialogs.ChooseRoom;
 
 public partial class ChooseRoomWindow : Window
 {
-	public ChooseRoomWindow()
-		=> InitializeComponent();
+    public ChooseRoomWindow()
+        => InitializeComponent();
 }

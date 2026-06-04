@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Windows;
-using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.TextureRemap;
 
@@ -10,7 +9,6 @@ public partial class TextureRemapWindow : Window
     public TextureRemapWindow()
     {
         InitializeComponent();
-		this.HookModalAutoClose();
         DataContextChanged += OnDataContextChanged;
     }
 

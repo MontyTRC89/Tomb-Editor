@@ -13,7 +13,6 @@ namespace TombEditor.Features.Dialogs.SelectRoomByTags;
 
 public partial class SelectRoomByTagsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-    private readonly IDialogService _dialogService;
 
     [ObservableProperty] private bool? _dialogResult;
     [ObservableProperty] private string _tagSearchText = string.Empty;
@@ -23,10 +22,8 @@ public partial class SelectRoomByTagsWindowViewModel : ObservableObject, IModalD
 
     public SelectRoomByTagsWindowViewModel(
         Editor editor,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         AutocompleteTags = editor.Level.Rooms
@@ -41,13 +38,11 @@ public partial class SelectRoomByTagsWindowViewModel : ObservableObject, IModalD
     private void Confirm()
     {
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     [RelayCommand]
     private void Cancel()
     {
         DialogResult = false;
-        _dialogService.Close(this);
     }
 }

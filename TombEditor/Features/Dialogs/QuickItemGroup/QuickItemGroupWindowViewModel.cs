@@ -14,50 +14,45 @@ namespace TombEditor.Features.Dialogs.QuickItemGroup;
 
 public partial class QuickItemGroupWindowViewModel : ObservableObject, IModalDialogViewModel
 {
-	public sealed record QuickItem(IWadObjectId Id, string DisplayText);
+    public sealed record QuickItem(IWadObjectId Id, string DisplayText);
 
-	private readonly IDialogService _dialogService;
 
-	[ObservableProperty] private bool? _dialogResult;
-	[ObservableProperty] private QuickItem? _selectedItem;
+    [ObservableProperty] private bool? _dialogResult;
+    [ObservableProperty] private QuickItem? _selectedItem;
 
-	public IReadOnlyList<QuickItem> Items { get; }
+    public IReadOnlyList<QuickItem> Items { get; }
 
-	public IWadObjectId? SelectedValue => SelectedItem?.Id;
+    public IWadObjectId? SelectedValue => SelectedItem?.Id;
 
-	public QuickItemGroupWindowViewModel(
-		Editor editor,
-		IDialogService? dialogService = null,
-		ILocalizationService? localizationService = null)
-	{
-		_dialogService = ServiceLocator.ResolveService(dialogService);
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+    public QuickItemGroupWindowViewModel(
+        Editor editor,
+        ILocalizationService? localizationService = null)
+    {
+        _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
-		var settings = editor.Level.Settings;
-		var version = settings.GameVersion;
+        var settings = editor.Level.Settings;
+        var version = settings.GameVersion;
 
-		IEnumerable<IWadObjectId> ids = settings.WadGetAllMoveables().Keys
-			.Cast<IWadObjectId>()
-			.Concat(settings.WadGetAllStatics().Keys.Cast<IWadObjectId>());
+        IEnumerable<IWadObjectId> ids = settings.WadGetAllMoveables().Keys
+            .Cast<IWadObjectId>()
+            .Concat(settings.WadGetAllStatics().Keys.Cast<IWadObjectId>());
 
-		Items = ids
-			.Select(id => new QuickItem(id, id.ToString(version)))
-			.ToList();
+        Items = ids
+            .Select(id => new QuickItem(id, id.ToString(version)))
+            .ToList();
 
-		SelectedItem = Items.FirstOrDefault();
-	}
+        SelectedItem = Items.FirstOrDefault();
+    }
 
-	[RelayCommand]
-	private void Confirm()
-	{
-		DialogResult = true;
-		_dialogService.Close(this);
-	}
+    [RelayCommand]
+    private void Confirm()
+    {
+        DialogResult = true;
+    }
 
-	[RelayCommand]
-	private void Cancel()
-	{
-		DialogResult = false;
-		_dialogService.Close(this);
-	}
+    [RelayCommand]
+    private void Cancel()
+    {
+        DialogResult = false;
+    }
 }

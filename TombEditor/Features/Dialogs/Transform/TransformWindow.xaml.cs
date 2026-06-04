@@ -7,10 +7,9 @@ namespace TombEditor.Features.Dialogs.Transform;
 
 public partial class TransformWindow : Window
 {
-	public TransformWindow()
-	{
-		InitializeComponent();
-		this.HookModalAutoClose();
-		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormTransform");
-	}
+    public TransformWindow()
+    {
+        InitializeComponent();
+        Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormTransform");
+    }
 }

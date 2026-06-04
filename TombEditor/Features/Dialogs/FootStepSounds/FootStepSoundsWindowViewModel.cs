@@ -18,7 +18,6 @@ namespace TombEditor.Features.Dialogs.FootStepSounds;
 public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
 
     [ObservableProperty] private bool? _dialogResult;
 
@@ -36,11 +35,9 @@ public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDia
     public FootStepSoundsWindowViewModel(
         LevelTexture? texture,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         SoundTypes = TextureFootStep.GetNames(_editor.Level.Settings).ToList();
@@ -91,6 +88,5 @@ public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDia
     private void Confirm()
     {
         DialogResult = true;
-        _dialogService.Close(this);
     }
 }

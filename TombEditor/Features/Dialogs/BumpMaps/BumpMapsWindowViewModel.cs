@@ -19,7 +19,6 @@ namespace TombEditor.Features.Dialogs.BumpMaps;
 public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
     private bool _disposed;
@@ -51,12 +50,10 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     public BumpMapsWindowViewModel(
         LevelTexture? texture,
         Editor? editor = null,
-        IDialogService? dialogService = null,
         IMessageService? messageService = null,
         ILocalizationService? localizationService = null)
     {
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -150,7 +147,6 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     private void Confirm()
     {
         DialogResult = true;
-        _dialogService.Close(this);
     }
 
     public void Cleanup()

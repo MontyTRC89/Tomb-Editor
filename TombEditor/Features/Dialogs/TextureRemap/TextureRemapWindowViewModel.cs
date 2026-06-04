@@ -21,7 +21,6 @@ namespace TombEditor.Features.Dialogs.TextureRemap;
 public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly Editor _editor;
-    private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
 
@@ -61,12 +60,10 @@ public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialo
 
     public TextureRemapWindowViewModel(
         Editor? editor = null,
-        IDialogService? dialogService = null,
         IMessageService? messageService = null,
         ILocalizationService? localizationService = null)
     {
         _editor = editor ?? Editor.Instance;
-        _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -178,20 +175,36 @@ public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialo
             switch (i)
             {
                 case 0:
-                    if (source.TexCoord0.X != bounds.X0) source.TexCoord0.X = bounds.X0 + (source.TexCoord0.X - bounds.X0) * scale;
-                    if (source.TexCoord0.Y != bounds.Y0) source.TexCoord0.Y = bounds.Y0 + (source.TexCoord0.Y - bounds.Y0) * scale;
+                    if (source.TexCoord0.X != bounds.X0)
+                        source.TexCoord0.X = bounds.X0 + (source.TexCoord0.X - bounds.X0) * scale;
+
+                    if (source.TexCoord0.Y != bounds.Y0)
+                        source.TexCoord0.Y = bounds.Y0 + (source.TexCoord0.Y - bounds.Y0) * scale;
+
                     break;
                 case 1:
-                    if (source.TexCoord1.X != bounds.X0) source.TexCoord1.X = bounds.X0 + (source.TexCoord1.X - bounds.X0) * scale;
-                    if (source.TexCoord1.Y != bounds.Y0) source.TexCoord1.Y = bounds.Y0 + (source.TexCoord1.Y - bounds.Y0) * scale;
+                    if (source.TexCoord1.X != bounds.X0)
+                        source.TexCoord1.X = bounds.X0 + (source.TexCoord1.X - bounds.X0) * scale;
+
+                    if (source.TexCoord1.Y != bounds.Y0)
+                        source.TexCoord1.Y = bounds.Y0 + (source.TexCoord1.Y - bounds.Y0) * scale;
+
                     break;
                 case 2:
-                    if (source.TexCoord2.X != bounds.X0) source.TexCoord2.X = bounds.X0 + (source.TexCoord2.X - bounds.X0) * scale;
-                    if (source.TexCoord2.Y != bounds.Y0) source.TexCoord2.Y = bounds.Y0 + (source.TexCoord2.Y - bounds.Y0) * scale;
+                    if (source.TexCoord2.X != bounds.X0)
+                        source.TexCoord2.X = bounds.X0 + (source.TexCoord2.X - bounds.X0) * scale;
+
+                    if (source.TexCoord2.Y != bounds.Y0)
+                        source.TexCoord2.Y = bounds.Y0 + (source.TexCoord2.Y - bounds.Y0) * scale;
+
                     break;
                 case 3:
-                    if (source.TexCoord3.X != bounds.X0) source.TexCoord3.X = bounds.X0 + (source.TexCoord3.X - bounds.X0) * scale;
-                    if (source.TexCoord3.Y != bounds.Y0) source.TexCoord3.Y = bounds.Y0 + (source.TexCoord3.Y - bounds.Y0) * scale;
+                    if (source.TexCoord3.X != bounds.X0)
+                        source.TexCoord3.X = bounds.X0 + (source.TexCoord3.X - bounds.X0) * scale;
+
+                    if (source.TexCoord3.Y != bounds.Y0)
+                        source.TexCoord3.Y = bounds.Y0 + (source.TexCoord3.Y - bounds.Y0) * scale;
+
                     break;
             }
         }
@@ -309,6 +322,5 @@ public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialo
     private void Close()
     {
         DialogResult = true;
-        _dialogService.Close(this);
     }
 }

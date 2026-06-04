@@ -11,7 +11,6 @@ public partial class FlybyCameraWindow : Window
     public FlybyCameraWindow()
     {
         InitializeComponent();
-		this.HookModalAutoClose();
 
         Loaded += OnLoaded;
         Closing += OnClosing;
