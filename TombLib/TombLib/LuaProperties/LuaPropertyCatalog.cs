@@ -12,7 +12,7 @@ using TombLib.Wad.Catalog;
 // Reads XML files from "Catalogs/TEN Property Catalogs" folder, parses property definitions
 // per object type (moveable/static by ID), and validates all values against their declared types.
 // Supports multi-slot ID syntax: "0", "0,1,2", "0-5", "0-5, 73, 100-105",
-// and string names for Moveable objects: "LARA", "LARA,SHOTGUN_ANIM".
+// and string names for Moveable objects: "LARA", "LARA_SHOTGUN_ANIM".
 
 namespace TombLib.LuaProperties
 {
