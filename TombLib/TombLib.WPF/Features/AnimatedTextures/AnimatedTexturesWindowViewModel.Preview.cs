@@ -22,6 +22,12 @@ namespace TombLib.WPF.Features.AnimatedTextures
         private int _previewCurrentRepeatTimes;
         private static ImageC _checkerboard = BuildCheckerboard();
 
+        // UV-rotate scrolling state + cached base perspective image.
+        private double _lastX;
+        private double _lastY;
+        private ImageSource? _previewBaseImage;
+        private AnimatedTextureFrame? _previewBaseFrame;
+
         [ObservableProperty] private ImageSource? _previewImage;
         [ObservableProperty] private int _previewProgress;
         [ObservableProperty] private int _previewMaximum;
@@ -45,6 +51,11 @@ namespace TombLib.WPF.Features.AnimatedTextures
         {
             if (_previewTimer == null)
                 return;
+
+            // Reset scroll + cached base so the new set re-renders from scratch.
+            _lastX = 0;
+            _lastY = 0;
+            _previewBaseFrame = null;
 
             int frameCount = SelectedSet?.Frames.Count ?? 0;
             if (frameCount == 0 || SelectedSet == null)
@@ -109,7 +120,63 @@ namespace TombLib.WPF.Features.AnimatedTextures
             PreviewMaximum = frameCount - 1;
             PreviewProgress = frameIndex;
 
-            PreviewImage = RenderFrame(_previewCurrentFrame, PreviewSize);
+            // Cache the perspective preview; only re-render when the displayed frame changes.
+            if (!ReferenceEquals(_previewCurrentFrame, _previewBaseFrame))
+            {
+                _previewBaseFrame = _previewCurrentFrame;
+                _previewBaseImage = RenderFrame(_previewCurrentFrame, PreviewSize);
+            }
+
+            PreviewImage = _previewBaseImage != null && set.IsUvRotate
+                ? ComposeUvRotate(_previewBaseImage, set)
+                : _previewBaseImage;
+        }
+
+        /// <summary>Tiles and scrolls the frame to simulate UV-rotate (ports the WinForms preview Paint).</summary>
+        private ImageSource ComposeUvRotate(ImageSource baseImage, AnimatedTextureSet set)
+        {
+            const double tile = 64.0;
+            const double canvas = PreviewSize;
+
+            var visual = new DrawingVisual();
+            using (DrawingContext dc = visual.RenderOpen())
+            {
+                if (IsTrng)
+                {
+                    double y = Math.Floor(_lastY) * 2.0;
+                    dc.DrawImage(baseImage, new Rect(0, y - canvas, canvas, canvas));
+                    dc.DrawImage(baseImage, new Rect(0, y, canvas, canvas));
+
+                    _lastY += set.UvRotate;
+                    if (_lastY >= tile && set.UvRotate > 0) _lastY = 0;
+                    if (_lastY <= 0 && set.UvRotate < 0) _lastY = tile;
+                }
+                else
+                {
+                    double theta = (set.TenUvRotateDirection + 90.0) * (Math.PI / 180.0);
+                    double dirX = Math.Cos(theta);
+                    double dirY = Math.Sin(theta);
+                    double step = (canvas / 30.0) * set.TenUvRotateSpeed;
+
+                    _lastX = (_lastX + step * dirX) % tile;
+                    _lastY = (_lastY + step * dirY) % tile;
+                    if (_lastX < 0) _lastX += tile;
+                    if (_lastY < 0) _lastY += tile;
+
+                    double dx = _lastX * 2.0;
+                    double dy = _lastY * 2.0;
+
+                    dc.DrawImage(baseImage, new Rect(dx - canvas, dy - canvas, canvas, canvas));
+                    dc.DrawImage(baseImage, new Rect(dx, dy - canvas, canvas, canvas));
+                    dc.DrawImage(baseImage, new Rect(dx - canvas, dy, canvas, canvas));
+                    dc.DrawImage(baseImage, new Rect(dx, dy, canvas, canvas));
+                }
+            }
+
+            var bitmap = new RenderTargetBitmap(PreviewSize, PreviewSize, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(visual);
+            bitmap.Freeze();
+            return bitmap;
         }
 
         /// <summary>Renders a single frame's perspective preview at the given pixel size (used for the preview pane and grid thumbnails).</summary>
