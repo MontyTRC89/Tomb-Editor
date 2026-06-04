@@ -2,6 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -62,6 +63,11 @@ public partial class FindTexturesWindowViewModel : ObservableObject
 
         _editor.EditorEventRaised += OnEditorEventRaised;
     }
+
+    public event EventHandler? RequestClose;
+
+    [RelayCommand]
+    private void Close() => RequestClose?.Invoke(this, EventArgs.Empty);
 
     public void Cleanup()
     {

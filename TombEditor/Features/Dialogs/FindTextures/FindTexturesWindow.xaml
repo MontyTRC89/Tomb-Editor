@@ -99,7 +99,7 @@
 			<Button
 				Grid.Column="2"
 				Width="80"
-				Click="OnCloseClick"
+				Command="{Binding CloseCommand}"
 				Content="{tombLib:Localize ~Common.Close}"
 				IsCancel="True" />
 		</controls:SpacedGrid>

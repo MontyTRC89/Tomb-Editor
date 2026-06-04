@@ -1,24 +1,39 @@
 #nullable enable
 
+using System;
 using System.Windows;
-using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.FindTextures;
 
 public partial class FindTexturesWindow : Window
 {
+    private FindTexturesWindowViewModel? _viewModel;
+
     public FindTexturesWindow()
     {
         InitializeComponent();
-		this.HookModalAutoClose();
+        DataContextChanged += OnDataContextChanged;
         Closed += OnClosed;
     }
 
-    private void OnCloseClick(object sender, RoutedEventArgs e) => Close();
-
-    private void OnClosed(object? sender, System.EventArgs e)
+    private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (DataContext is FindTexturesWindowViewModel vm)
-            vm.Cleanup();
+        if (_viewModel is not null)
+            _viewModel.RequestClose -= OnRequestClose;
+
+        _viewModel = e.NewValue as FindTexturesWindowViewModel;
+
+        if (_viewModel is not null)
+            _viewModel.RequestClose += OnRequestClose;
+    }
+
+    private void OnRequestClose(object? sender, EventArgs e) => Close();
+
+    private void OnClosed(object? sender, EventArgs e)
+    {
+        if (_viewModel is not null)
+            _viewModel.RequestClose -= OnRequestClose;
+
+        _viewModel?.Cleanup();
     }
 }
