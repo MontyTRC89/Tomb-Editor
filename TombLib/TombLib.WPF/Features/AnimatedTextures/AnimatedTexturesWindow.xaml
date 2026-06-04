@@ -20,6 +20,7 @@
 
 	<Window.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+		<local:FrameThumbnailConverter x:Key="FrameThumb" />
 	</Window.Resources>
 
 	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
@@ -68,9 +69,9 @@
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="48" Command="{Binding NewSetCommand}" Content="New" />
-						<Button Width="52" Command="{Binding CloneSetCommand}" Content="Clone" />
-						<Button Width="56" Command="{Binding DeleteSetCommand}" Content="Delete" />
+						<Button Width="48" Command="{Binding NewSetCommand}" Content="New" ToolTip="Add new animation set" />
+						<Button Width="52" Command="{Binding CloneSetCommand}" Content="Clone" ToolTip="Clone the current animation set" />
+						<Button Width="56" Command="{Binding DeleteSetCommand}" Content="Delete" ToolTip="Delete the current animation set" />
 					</controls:SpacedStack>
 					<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,6,0,0" VerticalAlignment="Center" Text="Name:" />
 					<TextBox
@@ -83,14 +84,13 @@
 				</Grid>
 
 				<!--  Settings (bottom)  -->
-				<Border
-					DockPanel.Dock="Bottom"
-					Margin="0,6,0,0"
-					Padding="6"
-					BorderBrush="{DynamicResource Brush_Border}"
-					BorderThickness="1"
-					IsEnabled="{Binding HasSelectedSet}">
-					<Grid>
+				<StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0" IsEnabled="{Binding HasSelectedSet}">
+					<TextBlock Margin="0,0,0,2" Text="Settings" />
+					<Border
+						Padding="6"
+						BorderBrush="{DynamicResource Brush_Border}"
+						BorderThickness="1">
+						<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="*" />
@@ -145,6 +145,7 @@
 						</Grid>
 					</Grid>
 				</Border>
+				</StackPanel>
 
 				<!--  Procedural tool + preview band (bottom)  -->
 				<Grid DockPanel.Dock="Bottom" Margin="0,6,0,0">
@@ -172,7 +173,8 @@
 									Grid.Column="1"
 									DisplayMemberPath="Display"
 									ItemsSource="{Binding ProceduralPresets}"
-									SelectedItem="{Binding SelectedPreset, Mode=TwoWay}" />
+									SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
+									ToolTip="Animation type" />
 							</Grid>
 							<Grid Margin="0,0,0,4">
 								<Grid.ColumnDefinitions>
@@ -182,26 +184,27 @@
 									<ColumnDefinition Width="*" />
 								</Grid.ColumnDefinitions>
 								<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="Progress %:" />
-								<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" Value="{Binding GenStrength, Mode=TwoWay}" />
+								<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" ToolTip="Effect progress or strength" Value="{Binding GenStrength, Mode=TwoWay}" />
 								<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="Frames:" />
-								<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" Value="{Binding GenFrameCount, Mode=TwoWay}" />
+								<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" ToolTip="Amount of resulting animation frames" Value="{Binding GenFrameCount, Mode=TwoWay}" />
 							</Grid>
 							<controls:SpacedStack Margin="0,0,0,4" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-								<CheckBox Content="Symmetric" IsChecked="{Binding GenLoop, Mode=TwoWay}" />
-								<CheckBox Content="Smooth" IsChecked="{Binding GenSmooth, Mode=TwoWay}" />
+								<CheckBox Content="Symmetric" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="Make animation symmetric" />
+								<CheckBox Content="Smooth" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="Ease-in and ease-out animation" />
 							</controls:SpacedStack>
 							<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-								<Button Width="62" Command="{Binding GenerateNewCommand}" Content="Generate" />
-								<Button Width="52" Command="{Binding GenerateCloneCommand}" Content="Clone" IsEnabled="{Binding HasSelectedSet}" />
-								<Button Width="56" Command="{Binding GenerateMergeCommand}" Content="Merge" IsEnabled="{Binding HasSelectedSet}" />
-								<Button Width="60" Command="{Binding GenerateReplaceCommand}" Content="Replace" IsEnabled="{Binding HasSelectedSet}" />
-								<Button Width="44" Command="{Binding GenerateAddFramesCommand}" Content="Add" IsEnabled="{Binding HasSelectedSet}" />
+								<Button Width="62" Command="{Binding GenerateNewCommand}" Content="Generate" ToolTip="Generate new animation" />
+								<Button Width="52" Command="{Binding GenerateCloneCommand}" Content="Clone" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into copy of current animation" />
+								<Button Width="56" Command="{Binding GenerateMergeCommand}" Content="Merge" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and merge into current animation" />
+								<Button Width="60" Command="{Binding GenerateReplaceCommand}" Content="Replace" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and replace current animation" />
+								<Button Width="44" Command="{Binding GenerateAddFramesCommand}" Content="Add" IsEnabled="{Binding HasSelectedSet}" ToolTip="Generate and add frames after current sequence frame" />
 							</controls:SpacedStack>
 						</StackPanel>
 					</Border>
 
 					<!--  Preview  -->
 					<StackPanel Grid.Column="2">
+						<TextBlock Margin="0,0,0,2" Text="Preview" />
 						<Border
 							Width="135"
 							Height="135"
@@ -240,8 +243,8 @@
 						IsEnabled="{Binding HasSelectedSet}"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="90" Command="{Binding AddFrameCommand}" Content="Add frame" />
-						<Button Width="96" Command="{Binding UpdateFrameCommand}" Content="Update frame" />
+						<Button Width="90" Command="{Binding AddFrameCommand}" Content="Add frame" ToolTip="Add the selected texture region as a new frame" />
+						<Button Width="96" Command="{Binding UpdateFrameCommand}" Content="Update frame" ToolTip="Update the selected frame with the current texture region" />
 					</controls:SpacedStack>
 				</Grid>
 
@@ -255,6 +258,17 @@
 					ItemsSource="{Binding Frames}"
 					SelectedItem="{Binding SelectedFrame, Mode=TwoWay}">
 					<DataGrid.Columns>
+						<DataGridTemplateColumn Width="40" Header="Image">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Image
+										Width="32"
+										Height="32"
+										Source="{Binding Converter={StaticResource FrameThumb}}"
+										Stretch="Uniform" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 						<DataGridTemplateColumn Width="*" Header="Texture">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>

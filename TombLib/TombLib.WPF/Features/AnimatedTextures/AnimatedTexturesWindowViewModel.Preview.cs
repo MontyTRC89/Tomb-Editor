@@ -109,15 +109,16 @@ namespace TombLib.WPF.Features.AnimatedTextures
             PreviewMaximum = frameCount - 1;
             PreviewProgress = frameIndex;
 
-            PreviewImage = RenderFrame(_previewCurrentFrame);
+            PreviewImage = RenderFrame(_previewCurrentFrame, PreviewSize);
         }
 
-        private static ImageSource? RenderFrame(AnimatedTextureFrame frame)
+        /// <summary>Renders a single frame's perspective preview at the given pixel size (used for the preview pane and grid thumbnails).</summary>
+        public static ImageSource? RenderFrame(AnimatedTextureFrame frame, int size)
         {
             if (frame.Texture?.Image is not { } image)
                 return null;
 
-            ImageC preview = GetPerspectivePreview(image, frame.TexCoord0, frame.TexCoord1, frame.TexCoord2, frame.TexCoord3, PreviewSize, PreviewSize);
+            ImageC preview = GetPerspectivePreview(image, frame.TexCoord0, frame.TexCoord1, frame.TexCoord2, frame.TexCoord3, size, size);
 
             var bitmap = new WriteableBitmap(preview.Width, preview.Height, 96, 96, PixelFormats.Bgra32, null);
             byte[] bytes = preview.ToByteArray();
