@@ -183,7 +183,7 @@
     <moveable id="217" name="Placeholder" essential="false" />
     <moveable id="218" name="Dragon bones (front)" show_with="219" ten="DRAGON_BONE_FRONT" />
     <moveable id="219" name="Dragon bones (back)" show_with="218" ten="DRAGON_BONE_BACK" />
-    <moveable id="222" name="Aquatic Mine (Venice)" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="222" name="Aquatic Mine (Venice)" essential="false" ten="UNDERWATER_MINE" />
     <moveable id="223" name="Menu background" hidden="true" />
     <moveable id="225" name="Gong-hammering animation" use_body_from="0" hidden="true" />
     <moveable id="226" name="Gong (Ice Palace)" essential="false" ten="ANIMATING1 - ANIMATING128" />
