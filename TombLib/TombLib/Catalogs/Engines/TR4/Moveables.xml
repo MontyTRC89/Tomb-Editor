@@ -322,14 +322,14 @@
     <moveable id="319" name="JUMP_SWITCH" description="Jump Switch" ten="JUMP_SWITCH" />
     <moveable id="320" name="CROWBAR_SWITCH" description="Crowbar Switch" ten="CROWBAR_SWITCH" />
     <moveable id="321" name="PULLEY" description="Pulley" ten="PULLEY" />
-    <moveable id="322" name="DOOR_TYPE1" description="Door Type1" ten="DOOR_TYPE1" />
-    <moveable id="323" name="DOOR_TYPE2" description="Door Type2" ten="DOOR_TYPE2" />
-    <moveable id="324" name="DOOR_TYPE3" description="Door Type3" ten="DOOR_TYPE3" />
-    <moveable id="325" name="DOOR_TYPE4" description="Door Type4" ten="DOOR_TYPE4" />
-    <moveable id="326" name="DOOR_TYPE5" description="Door Type5" ten="DOOR_TYPE5" />
-    <moveable id="327" name="DOOR_TYPE6" description="Door Type6" ten="DOOR_TYPE6" />
-    <moveable id="328" name="DOOR_TYPE7" description="Door Type7" ten="DOOR_TYPE7" />
-    <moveable id="329" name="DOOR_TYPE8" description="Door Type8" ten="DOOR_TYPE8" />
+    <moveable id="322" name="DOOR_TYPE1" description="Door Type1" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="323" name="DOOR_TYPE2" description="Door Type2" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="324" name="DOOR_TYPE3" description="Door Type3" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="325" name="DOOR_TYPE4" description="Door Type4" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="326" name="DOOR_TYPE5" description="Door Type5" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="327" name="DOOR_TYPE6" description="Door Type6" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="328" name="DOOR_TYPE7" description="Door Type7" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="329" name="DOOR_TYPE8" description="Door Type8" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="330" name="PUSHPULL_DOOR1" description="Pushpull Door1" ten="PUSHPULL_DOOR1" />
     <moveable id="331" name="PUSHPULL_DOOR2" description="Pushpull Door2" ten="PUSHPULL_DOOR2" />
     <moveable id="332" name="KICK_DOOR1" description="Kick Door1" ten="KICK_DOOR1" />

@@ -100,14 +100,14 @@
     <moveable id="103" name="Above-water switch" essential="false" ten="SWITCH_TYPE3" />
     <moveable id="104" name="Above-water/underwater switch" essential="false" ten="SWITCH_TYPE4" />
     <moveable id="105" name="Underwater switch" essential="false" ten="WALL_SWITCH1" />
-    <moveable id="106" name="Door" essential="false" ten="DOOR_TYPE1" />
-    <moveable id="107" name="Door" essential="false" ten="DOOR_TYPE2" />
-    <moveable id="108" name="Door" essential="false" ten="DOOR_TYPE3" />
-    <moveable id="109" name="Door" essential="false" ten="DOOR_TYPE4" />
-    <moveable id="110" name="Door" essential="false" ten="DOOR_TYPE5" />
-    <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE6" />
-    <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE7" />
-    <moveable id="113" name="Door (pulled upward)" essential="false" ten="DOOR_TYPE8" />
+    <moveable id="106" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="107" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="108" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="109" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="110" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="113" name="Door (pulled upward)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="114" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1" />
     <moveable id="115" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR2" />
     <moveable id="116" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR3" />

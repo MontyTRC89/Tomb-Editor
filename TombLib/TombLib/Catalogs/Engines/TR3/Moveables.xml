@@ -110,14 +110,14 @@
     <moveable id="128" name="Above-water switch" essential="false" 	ten="SWITCH_TYPE3" />
     <moveable id="129" name="Above-water switch" essential="false" ten="SWITCH_TYPE4" />
     <moveable id="130" name="Underwater switch" essential="false" ten="WALL_SWITCH1"/>
-    <moveable id="131" name="Door" essential="false" ten="DOOR_TYPE1" />
-    <moveable id="132" name="Door" essential="false" ten="DOOR_TYPE2" />
-    <moveable id="133" name="Door" essential="false" ten="DOOR_TYPE3" />
-    <moveable id="134" name="Door" essential="false" ten="DOOR_TYPE4" />
-    <moveable id="135" name="Door" essential="false" ten="DOOR_TYPE5" />
-    <moveable id="136" name="Door" essential="false" ten="DOOR_TYPE6" />
-    <moveable id="137" name="Door" essential="false" ten="DOOR_TYPE7" />
-    <moveable id="138" name="Door" essential="false" ten="DOOR_TYPE8" />
+    <moveable id="131" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="132" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="133" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="134" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="135" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="136" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="137" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="138" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="139" name="Trapdoor" essential="false" ten="TRAPDOOR1"/>
     <moveable id="140" name="Trapdoor" essential="false" ten="TRAPDOOR2"/>
     <moveable id="141" name="Trapdoor" essential="false" ten="TRAPDOOR3"/>

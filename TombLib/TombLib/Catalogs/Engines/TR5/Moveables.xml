@@ -284,34 +284,34 @@
     <moveable id="281" name="Crowbar switch" ten="CROWBAR_SWITCH" />
     <moveable id="282" name="Pulley" ten="PULLEY" />
     <moveable id="283" name="Crowdove switch" ten="CROWDOVE_SWITCH" />
-    <moveable id="284" name="Door 1" ten="DOOR_TYPE1" />
-    <moveable id="285" name="Door 1_mip" ten="DOOR_TYPE1_MIP" hidden="true" />
-    <moveable id="286" name="Door 2" ten="DOOR_TYPE2" />
-    <moveable id="287" name="Door 2_mip" ten="DOOR_TYPE2_MIP" hidden="true" />
-    <moveable id="288" name="Door 3" ten="DOOR_TYPE3" />
-    <moveable id="289" name="Door 3_mip" ten="DOOR_TYPE3_MIP" hidden="true" />
-    <moveable id="290" name="Door 4" ten="DOOR_TYPE4" />
-    <moveable id="291" name="Door 4_mip" ten="DOOR_TYPE4_MIP" hidden="true" />
-    <moveable id="292" name="Door 5" ten="DOOR_TYPE5" />
-    <moveable id="293" name="Door 5_mip" ten="DOOR_TYPE5_MIP" hidden="true" />
-    <moveable id="294" name="Door 6" ten="DOOR_TYPE6" />
-    <moveable id="295" name="Door 6_mip" ten="DOOR_TYPE6_MIP" hidden="true" />
-    <moveable id="296" name="Door 7" ten="DOOR_TYPE7" />
-    <moveable id="297" name="Door 7_mip" ten="DOOR_TYPE7_MIP" hidden="true" />
-    <moveable id="298" name="Door 8" ten="DOOR_TYPE8" />
-    <moveable id="299" name="Door 8_mip" ten="DOOR_TYPE8_MIP" hidden="true" />
-    <moveable id="300" name="Door 9" ten="DOOR_TYPE9" />
-    <moveable id="301" name="Door 9_mip" ten="DOOR_TYPE10" hidden="true" />
-    <moveable id="302" name="Door 10" ten="DOOR_TYPE10" />
-    <moveable id="303" name="Door 10_mip" ten="DOOR_TYPE10_MIP" hidden="true" />
-    <moveable id="304" name="Door 11" ten="DOOR_TYPE11" />
-    <moveable id="305" name="Door 11_mip" ten="DOOR_TYPE11_MIP" hidden="true" />
-    <moveable id="306" name="Door 12" ten="DOOR_TYPE12" />
-    <moveable id="307" name="Door 12_mip" ten="DOOR_TYPE12_MIP" hidden="true" />
-    <moveable id="308" name="Door 13" ten="DOOR_TYPE13" />
-    <moveable id="309" name="Door 13_mip" ten="DOOR_TYPE13_MIP" hidden="true" />
-    <moveable id="310" name="Door 14" ten="DOOR_TYPE14" />
-    <moveable id="311" name="Door 14_mip" ten="DOOR_TYPE14_MIP" hidden="true" />
+    <moveable id="284" name="Door 1" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="285" name="Door 1_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="286" name="Door 2" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="287" name="Door 2_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="288" name="Door 3" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="289" name="Door 3_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="290" name="Door 4" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="291" name="Door 4_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="292" name="Door 5" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="293" name="Door 5_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="294" name="Door 6" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="295" name="Door 6_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="296" name="Door 7" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="297" name="Door 7_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="298" name="Door 8" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="299" name="Door 8_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="300" name="Door 9" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="301" name="Door 9_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="302" name="Door 10" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="303" name="Door 10_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="304" name="Door 11" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="305" name="Door 11_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="306" name="Door 12" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="307" name="Door 12_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="308" name="Door 13" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="309" name="Door 13_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="310" name="Door 14" ten="DOOR_TYPE1 - DOOR_TYPE30" />
+    <moveable id="311" name="Door 14_mip" hidden="true" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="312" name="Lift doors 1" ten="LIFT_DOORS1" />
     <moveable id="313" name="Lift doors 1 mip" hidden="true" />
     <moveable id="314" name="Lift doors 2" ten="LIFT_DOORS2" />
