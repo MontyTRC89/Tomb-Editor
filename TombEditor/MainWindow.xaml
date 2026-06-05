@@ -31,6 +31,7 @@
 	MinHeight="500"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowStartupLocation="CenterScreen"
+	WindowState="Maximized"
 	mc:Ignorable="d">
 
 	<DockPanel LastChildFill="True">
