@@ -211,14 +211,14 @@
     <moveable id="233" name="Lock 2" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
     <moveable id="234" name="Lock 3" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
     <moveable id="235" name="Lock 4" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
-    <moveable id="236" name="Pickup 1 (pickup)" essential="false" ten="PICKUP_ITEM1" />
-    <moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" ten="PICKUP_ITEM2"/>
+    <moveable id="236" name="Pickup 1 (pickup)" essential="false" ten="PICKUP_ITEM1 - PICKUP_ITEM16" />
+    <moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" ten="PICKUP_ITEM1 - PICKUP_ITEM16"/>
     <moveable id="238" name="Pickup 1 (menu item)" hidden="true" />
     <moveable id="239" name="Pickup 2? [unused] (menu item)" hidden="true" />
-    <moveable id="240" name="Infada stone (pickup)" essential="false" ten="PICKUP_ITEM3" />
-    <moveable id="241" name="Element 115 (pickup)" essential="false" ten="PICKUP_ITEM4" />
-    <moveable id="242" name="Eye of Isis (pickup)" essential="false" ten="PICKUP_ITEM5" />
-    <moveable id="243" name="Ora dagger (pickup)" essential="false"  ten="PICKUP_ITEM6" />
+    <moveable id="240" name="Infada stone (pickup)" essential="false" ten="PICKUP_ITEM1 - PICKUP_ITEM16" />
+    <moveable id="241" name="Element 115 (pickup)" essential="false" ten="PICKUP_ITEM1 - PICKUP_ITEM16" />
+    <moveable id="242" name="Eye of Isis (pickup)" essential="false" ten="PICKUP_ITEM1 - PICKUP_ITEM16" />
+    <moveable id="243" name="Ora dagger (pickup)" essential="false"  ten="PICKUP_ITEM1 - PICKUP_ITEM16" />
     <moveable id="244" name="Infada stone (menu item)" hidden="true" />
     <moveable id="245" name="Element 115 (menu item)" hidden="true" />
     <moveable id="246" name="Eye of Isis (menu item)" hidden="true" />
