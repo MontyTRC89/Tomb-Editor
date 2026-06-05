@@ -28,6 +28,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
         private readonly TextureMapBase _textureMap;
         private readonly IAnimatedTextureMap? _animatedMap;
         private readonly IMessageService _messageService;
+        private readonly ILocalizationService _localizationService;
         private readonly TRVersion.Game _version;
         private readonly List<AnimatedTextureSet> _sets;
         private readonly List<AnimatedTextureSet> _backupSets = new();
@@ -52,9 +53,11 @@ namespace TombLib.WPF.Features.AnimatedTextures
             _textureMap = textureMap;
             _animatedMap = textureMap as IAnimatedTextureMap;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
+            _localizationService = ServiceLocator.ResolveService<ILocalizationService>().WithKeysFor(this);
             _version = context.Version;
             _sets = context.AnimatedTextureSets;
 
+            ProceduralPresets = BuildProceduralPresets();
             AnimationTypes = BuildAnimationTypes();
             InitNgOptions();
             InitPreview();
@@ -274,7 +277,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 return;
 
             if (SelectedSet.Frames.Count > 0 &&
-                !_messageService.ShowConfirmation("Are you sure you want to delete the animation set '" + SelectedSet + "'?"))
+                !_messageService.ShowConfirmation(_localizationService.Format("DeleteSetConfirm", SelectedSet)))
                 return;
 
             int index = Sets.IndexOf(SelectedSet);
@@ -319,7 +322,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             TextureArea area = _textureMap.SelectedTexture;
             if (area.Texture is not LevelTexture && area.Texture is not WadTexture)
             {
-                _messageService.ShowError("No valid texture region selected.", "Invalid selection");
+                _messageService.ShowError(_localizationService["NoValidTextureRegion"], _localizationService["InvalidSelection"]);
                 return null;
             }
 

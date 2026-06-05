@@ -79,7 +79,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             TooManyFrames = IsTrng && totalFrames > MaxLegacyFrames;
             if (TooManyFrames)
-                TooManyFramesText = $"This animation uses {totalFrames} frames, more than {MaxLegacyFrames}! This will crash TRNG.";
+                TooManyFramesText = _localizationService.Format("TooManyFrames", totalFrames, MaxLegacyFrames);
         }
 
         private void PreviewTick()

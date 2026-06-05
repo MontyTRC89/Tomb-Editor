@@ -56,20 +56,23 @@ namespace TombLib.WPF.Features.AnimatedTextures
         private const int MaxLegacyFrames = 16;
         private const string AnimNameCombineString = " (with ";
 
-        public IReadOnlyList<ProceduralPreset> ProceduralPresets { get; } = new List<ProceduralPreset>
-        {
-            new("Stretch horizontal", ProceduralAnimationType.HorizontalStretch),
-            new("Stretch vertical", ProceduralAnimationType.VerticalStretch),
-            new("Scale", ProceduralAnimationType.Scale),
-            new("Skew horizontal ↖", ProceduralAnimationType.HorizontalSkew1),
-            new("Skew horizontal ↗", ProceduralAnimationType.HorizontalSkew2),
-            new("Skew vertical ↖", ProceduralAnimationType.VerticalSkew1),
-            new("Skew vertical ↗", ProceduralAnimationType.VerticalSkew2),
-            new("Spin", ProceduralAnimationType.Spin),
-            new("Pan horizontal", ProceduralAnimationType.HorizontalPan),
-            new("Pan vertical", ProceduralAnimationType.VerticalPan),
-            new("Shake", ProceduralAnimationType.Shake)
-        };
+        public IReadOnlyList<ProceduralPreset> ProceduralPresets { get; }
+
+        private IReadOnlyList<ProceduralPreset> BuildProceduralPresets() =>
+            new List<ProceduralPreset>
+            {
+                new(_localizationService["PresetStretchHorizontal"], ProceduralAnimationType.HorizontalStretch),
+                new(_localizationService["PresetStretchVertical"], ProceduralAnimationType.VerticalStretch),
+                new(_localizationService["PresetScale"], ProceduralAnimationType.Scale),
+                new(_localizationService["PresetSkewHorizontal1"], ProceduralAnimationType.HorizontalSkew1),
+                new(_localizationService["PresetSkewHorizontal2"], ProceduralAnimationType.HorizontalSkew2),
+                new(_localizationService["PresetSkewVertical1"], ProceduralAnimationType.VerticalSkew1),
+                new(_localizationService["PresetSkewVertical2"], ProceduralAnimationType.VerticalSkew2),
+                new(_localizationService["PresetSpin"], ProceduralAnimationType.Spin),
+                new(_localizationService["PresetPanHorizontal"], ProceduralAnimationType.HorizontalPan),
+                new(_localizationService["PresetPanVertical"], ProceduralAnimationType.VerticalPan),
+                new(_localizationService["PresetShake"], ProceduralAnimationType.Shake)
+            };
 
         [ObservableProperty] private ProceduralPreset? _selectedPreset;
         [ObservableProperty] private double _genFrameCount = MaxLegacyFrames;
@@ -107,7 +110,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             TextureArea textureArea = _textureMap.SelectedTexture;
             if (textureArea.Texture is not LevelTexture && textureArea.Texture is not WadTexture)
             {
-                _messageService.ShowError("No valid texture region selected.", "Invalid selection");
+                _messageService.ShowError(_localizationService["NoValidTextureRegion"], _localizationService["InvalidSelection"]);
                 return false;
             }
 
@@ -121,7 +124,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             {
                 if (SelectedSet == null)
                 {
-                    _messageService.ShowError("No valid animation selected!", "Invalid selection");
+                    _messageService.ShowError(_localizationService["NoValidAnimation"], _localizationService["InvalidSelection"]);
                     return false;
                 }
 
@@ -167,7 +170,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             if (resultingFrameCount <= 0)
             {
-                _messageService.ShowError("Selected animation has no frames!", "No frames");
+                _messageService.ShowError(_localizationService["NoFrames"], _localizationService["NoFramesTitle"]);
                 return false;
             }
 
@@ -359,7 +362,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 var existing = _sets.FirstOrDefault(s => s.Equals(targetSet));
                 if (existing != null)
                 {
-                    _messageService.ShowInformation("Animation with same properties already exists.");
+                    _messageService.ShowInformation(_localizationService["DuplicateAnimation"]);
                     RebuildSets();
                     SelectedSet = existing;
                     return false;

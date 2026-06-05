@@ -54,7 +54,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             for (int i = -64; i < 0; i++)
                 NgUvRotateOptions.Add(new NgSettingPair(i, "UvRotate = " + i));
-            NgUvRotateOptions.Add(new NgSettingPair(0, "Default (from script)"));
+            NgUvRotateOptions.Add(new NgSettingPair(0, _localizationService["DefaultFromScript"]));
             for (int i = 1; i <= 64; i++)
                 NgUvRotateOptions.Add(new NgSettingPair(i, "UvRotate = " + i));
 
