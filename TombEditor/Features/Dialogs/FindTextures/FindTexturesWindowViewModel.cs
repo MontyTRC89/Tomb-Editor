@@ -148,10 +148,5 @@ public partial class FindTexturesWindowViewModel : ObservableObject
         _editor.MoveCameraToSector(entry.Position);
     }
 
-    partial void OnSelectedResultChanged(FindTextureResult? value)
-    {
-        // Selection-change inside the grid mirrors the WinForms behaviour: each row click
-        // jumps to that room/sector in the main view.
-        NavigateTo();
-    }
+    partial void OnSelectedResultChanged(FindTextureResult? value) => NavigateTo();
 }

@@ -37,8 +37,7 @@ public partial class CameraWindowViewModel : ObservableObject, IModalDialogViewM
 
         var settings = instance.Room.Level.Settings;
 
-        // Filter the camera-mode list by engine support. Mirrors the WinForms-era
-        // comboCameraMode.Items.RemoveAt(...) chain.
+        // Filter the camera-mode list by engine support
         var modes = new List<CameraModeItem>
         {
             new(CameraInstanceMode.Default, _localizationService["ModeDefault"])
