@@ -122,14 +122,14 @@
     <moveable id="119" name="FALLING_BLOCK2" description="Falling Block2" ten="FALLING_BLOCK2" />
     <moveable id="120" name="SMASHABLE_BIKE_WALL" description="Smashable Bike Wall" ten="VEHICLE_SMASHABLE_WALL" />
     <moveable id="121" name="SMASHABLE_BIKE_FLOOR" description="Smashable Bike Floor" ten="VEHICLE_SMASHABLE_FLOOR" />
-    <moveable id="122" name="TRAPDOOR1" description="Trapdoor1" ten="TRAPDOOR1" />
-    <moveable id="123" name="TRAPDOOR2" description="Trapdoor2" ten="TRAPDOOR2" />
-    <moveable id="124" name="TRAPDOOR3" description="Trapdoor3" ten="TRAPDOOR3" />
-    <moveable id="125" name="FLOOR_TRAPDOOR1" description="Floor Trapdoor1" ten="FLOOR_TRAPDOOR1" />
-    <moveable id="126" name="FLOOR_TRAPDOOR2" description="Floor Trapdoor2" ten="FLOOR_TRAPDOOR2" />
-    <moveable id="127" name="CEILING_TRAPDOOR1" description="Ceiling Trapdoor1" ten="CEILING_TRAPDOOR1" />
-    <moveable id="128" name="CEILING_TRAPDOOR2" description="Ceiling Trapdoor2" ten="CEILING_TRAPDOOR2" />
-    <moveable id="129" name="SCALING_TRAPDOOR" description="Scaling Trapdoor" />
+    <moveable id="122" name="TRAPDOOR1" description="Trapdoor1" ten="TRAPDOOR1 - TRAPDOOR3" />
+    <moveable id="123" name="TRAPDOOR2" description="Trapdoor2" ten="TRAPDOOR1 - TRAPDOOR3" />
+    <moveable id="124" name="TRAPDOOR3" description="Trapdoor3" ten="TRAPDOOR1 - TRAPDOOR3" />
+    <moveable id="125" name="FLOOR_TRAPDOOR1" description="Floor Trapdoor1" ten="FLOOR_TRAPDOOR1 - FLOOR_TRAPDOOR2" />
+    <moveable id="126" name="FLOOR_TRAPDOOR2" description="Floor Trapdoor2" ten="FLOOR_TRAPDOOR1 - FLOOR_TRAPDOOR2" />
+    <moveable id="127" name="CEILING_TRAPDOOR1" description="Ceiling Trapdoor1" ten="CEILING_TRAPDOOR1 - CEILING_TRAPDOOR2" />
+    <moveable id="128" name="CEILING_TRAPDOOR2" description="Ceiling Trapdoor2" ten="CEILING_TRAPDOOR1 - CEILING_TRAPDOOR2" />
+    <moveable id="129" name="SCALING_TRAPDOOR" description="Scaling Trapdoor" ten="SCALING_TRAPDOOR" />
     <moveable id="130" name="ROLLINGBALL" description="Rollingball" ten="ROLLINGBALL" />
     <moveable id="131" name="SPIKEY_FLOOR" description="Spikey Floor" ten="SPIKY_FLOOR" />
     <moveable id="132" name="TEETH_SPIKES" description="Teeth Spikes" ten="TEETH_SPIKES" />

@@ -108,9 +108,9 @@
     <moveable id="111" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="112" name="Door (pulled upward in Temple of Xian)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="113" name="Door (pulled upward)" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
-    <moveable id="114" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1" />
-    <moveable id="115" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR2" />
-    <moveable id="116" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR3" />
+    <moveable id="114" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1 - TRAPDOOR3" />
+    <moveable id="115" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1 - TRAPDOOR3" />
+    <moveable id="116" name="Trapdoor (opens downward)" essential="false" ten="TRAPDOOR1 - TRAPDOOR3" />
     <moveable id="117" name="Bridge (flat)" essential="false" ten="BRIDGE_FLAT" />
     <moveable id="118" name="Bridge (tilt = 1)" essential="false" ten="BRIDGE_TILT1" />
     <moveable id="119" name="Bridge (tilt = 2)" essential="false" ten="BRIDGE_TILT2" />
