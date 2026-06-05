@@ -56,7 +56,7 @@
     <moveable id="54" name="Monk with knife-end stick" essential="false" ten="MONK2" />
     <moveable id="55" name="Collapsible floor" essential="false" ten="CRUMBLING_FLOOR" />
     <moveable id="57" name="Loose boards" essential="false" ten="CRUMBLING_FLOOR" />
-    <moveable id="58" name="Swinging sandbag / spiky ball" essential="false" /> <!-- Multiple Tomb Engine IDs, no definitive remap availiable -->
+    <moveable id="58" name="Swinging sandbag / spiky ball" essential="false" ten="SWINGING_SANDBAG, SWINGING_SPIKE_BAG" />
     <moveable id="59" name="Spikes / Glass shards" essential="false" ten="TEETH_SPIKES" />
     <moveable id="60" name="Boulder" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="61" name="Disk (like dart)" hidden="true" ten="DISK" />
@@ -75,7 +75,7 @@
     <moveable id="76" name="Airplane propeller" essential="false" ten="AIRPLANE_PROPELLER" />
     <moveable id="77" name="Power saw" essential="false" ten="CIRCULAR_SAW" />
     <moveable id="78" name="Overhead pulley hook" essential="false" ten="OVERHEAD_PULLY_HOOK" />
-    <moveable id="79" name="Sandbag / Ceiling fragments" essential="false" /> <!-- Multiple Tomb Engine IDs, no definitive remap availiable -->
+    <moveable id="79" name="Sandbag / Ceiling fragments" essential="false" ten="FALLING_SANDBAG, FALLING_CEILING" />
     <moveable id="80" name="Rolling spindle" essential="false" ten="ROLLING_SPINDLE" />
     <moveable id="81" name="Wall-mounted knife blade" essential="false" ten="WALL_MOUNTED_BLADE" />
     <moveable id="82" name="Statue with knife blade" essential="false" ten="STATUE_WITH_BLADE" />
@@ -90,7 +90,7 @@
     <moveable id="93" name="Above-water switch" essential="false" ten="SWITCH_TYPE2" />
     <moveable id="94" name="Underwater propeller" essential="false" ten="LARGE_FAN" />
     <moveable id="95" name="Air fan" essential="false" ten="ANIMATING1" />
-    <moveable id="96" name="Swinging box / spiky ball" essential="false" /> <!-- Multiple Tomb Engine IDs, no definitive remap availiable -->
+    <moveable id="96" name="Swinging box / spiky ball" essential="false" ten="SWINGING_BOX, SWINGING_SPIKE_BAG" />
     <moveable id="97" name="Cutscene Object 1" ten="ANIMATING101" />
     <moveable id="98" name="Cutscene Object 2" ten="ANIMATING102" />
     <moveable id="99" name="Cutscene Object 3" ten="ANIMATING103" />
