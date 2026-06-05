@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.SoundSource;
 
@@ -10,6 +11,7 @@ public partial class SoundSourceWindow : Window
     public SoundSourceWindow()
     {
         InitializeComponent();
+        this.HookModalAutoClose();
         Loaded += OnLoaded;
     }
 

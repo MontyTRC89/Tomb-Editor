@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Interop;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.Operation;
 
@@ -10,6 +11,7 @@ public partial class OperationDialogWindow : Window
     public OperationDialogWindow()
     {
         InitializeComponent();
+        this.HookModalAutoClose();
         Loaded += OnLoaded;
         Closing += OnClosing;
     }

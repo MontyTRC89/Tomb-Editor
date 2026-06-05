@@ -10,6 +10,7 @@ public partial class MemoWindow : Window
     public MemoWindow()
     {
         InitializeComponent();
+        this.HookModalAutoClose();
         Loaded += OnLoaded;
     }
 

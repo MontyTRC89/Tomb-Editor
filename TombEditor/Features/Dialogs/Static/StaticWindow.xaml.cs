@@ -10,6 +10,7 @@ public partial class StaticWindow : Window
     public StaticWindow()
     {
         InitializeComponent();
+        this.HookModalAutoClose();
         Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormStatic");
     }
 }

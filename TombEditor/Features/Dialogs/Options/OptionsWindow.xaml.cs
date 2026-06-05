@@ -12,7 +12,10 @@ namespace TombEditor.Features.Dialogs.Options;
 public partial class OptionsWindow : Window
 {
     public OptionsWindow()
-        => InitializeComponent();
+    {
+        InitializeComponent();
+        this.HookModalAutoClose();
+    }
 
     private void ColorSwatch_Click(object sender, RoutedEventArgs e)
     {

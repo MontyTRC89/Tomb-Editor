@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
+using TombLib.WPF;
 using WinForms = System.Windows.Forms;
 
 namespace TombEditor.Features.Dialogs.KeyboardLayout;
@@ -9,6 +10,7 @@ public partial class KeyboardLayoutWindow : Window
     public KeyboardLayoutWindow()
     {
         InitializeComponent();
+        this.HookModalAutoClose();
         PreviewKeyDown += OnPreviewKeyDown;
         PreviewKeyUp += OnPreviewKeyUp;
     }
