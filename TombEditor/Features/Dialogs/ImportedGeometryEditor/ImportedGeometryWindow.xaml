@@ -9,9 +9,9 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	Title="Imported geometry"
-	Width="860"
+	Width="920"
 	Height="520"
-	MinWidth="640"
+	MinWidth="820"
 	MinHeight="400"
 	d:DataContext="{d:DesignInstance Type=local:ImportedGeometryWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
@@ -32,70 +32,102 @@
 			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
 		</controls:SpacedStack>
 
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="8" />
-				<ColumnDefinition Width="260" MinWidth="220" />
-			</Grid.ColumnDefinitions>
+		<!--  Instance properties (bottom strip, full width)  -->
+		<Border
+			DockPanel.Dock="Bottom"
+			Margin="0,8,0,0"
+			Padding="6"
+			BorderBrush="{DynamicResource Brush_Border}"
+			BorderThickness="1">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
 
-			<!--  Geometry list  -->
-			<DockPanel Grid.Column="0">
-				<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-					<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
-					<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
-					<Button Width="70" Command="{Binding AssignCommand}" Content="Assign" />
-				</controls:SpacedStack>
-				<DataGrid
-					AutoGenerateColumns="False"
-					CanUserAddRows="False"
-					HeadersVisibility="Column"
-					ItemsSource="{Binding Geometries}"
-					SelectedItem="{Binding SelectedGeometry, Mode=TwoWay}">
-					<DataGrid.Columns>
-						<DataGridTextColumn Width="120" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
-						<DataGridTemplateColumn Width="32">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-						<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
-						<DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" Header="Status" IsReadOnly="True" />
-					</DataGrid.Columns>
-				</DataGrid>
-			</DockPanel>
-
-			<GridSplitter Grid.Column="1" Width="8" HorizontalAlignment="Stretch" />
-
-			<!--  Instance properties  -->
-			<StackPanel Grid.Column="2">
-				<TextBlock Margin="0,0,0,2" Text="Assigned model:" />
-				<TextBlock Margin="0,0,0,8" Text="{Binding AssignedModelDisplay}" TextWrapping="Wrap" />
-
-				<TextBlock Margin="0,0,0,2" Text="Lighting model:" />
-				<ComboBox Margin="0,0,0,8" ItemsSource="{Binding LightingModels}" SelectedItem="{Binding LightingModel, Mode=TwoWay}" />
-
-				<TextBlock Margin="0,0,0,2" Text="Color:" />
+				<!--  Row 0: assigned model + Assign  -->
+				<TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="Assigned model:" />
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="1"
+					VerticalAlignment="Center"
+					Text="{Binding AssignedModelDisplay}"
+					TextTrimming="CharacterEllipsis" />
 				<Button
-					Width="120"
-					Height="22"
-					Margin="0,0,0,8"
-					HorizontalAlignment="Left"
-					Command="{Binding PickColorCommand}">
-					<Button.Background>
-						<SolidColorBrush Color="{Binding Color}" />
-					</Button.Background>
-				</Button>
+					Grid.Row="0"
+					Grid.Column="2"
+					Width="98"
+					HorizontalAlignment="Right"
+					Command="{Binding AssignCommand}"
+					Content="Assign" />
 
-				<CheckBox Margin="0,3" Content="Sharp edges" IsChecked="{Binding SharpEdges, Mode=TwoWay}" />
-				<CheckBox Margin="0,3" Content="Hidden" IsChecked="{Binding Hidden, Mode=TwoWay}" />
-				<CheckBox Margin="0,3" Content="Use alpha test instead of alpha blend" IsChecked="{Binding UseAlphaTest, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
+				<!--  Row 1: lighting model, color, flags + Edit materials  -->
+				<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8,6,0" VerticalAlignment="Center" Text="Lighting model:" />
+				<controls:SpacedStack
+					Grid.Row="1"
+					Grid.Column="1"
+					Margin="0,8,0,0"
+					Orientation="Horizontal"
+					Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+					<ComboBox Width="150" ItemsSource="{Binding LightingModels}" SelectedItem="{Binding LightingModel, Mode=TwoWay}" />
+					<Button Width="48" Height="22" Command="{Binding PickColorCommand}" ToolTip="Color">
+						<Button.Background>
+							<SolidColorBrush Color="{Binding Color}" />
+						</Button.Background>
+					</Button>
+					<CheckBox VerticalAlignment="Center" Content="Sharp edges" IsChecked="{Binding SharpEdges, Mode=TwoWay}" />
+					<CheckBox VerticalAlignment="Center" Content="Hidden" IsChecked="{Binding Hidden, Mode=TwoWay}" />
+					<CheckBox VerticalAlignment="Center" Content="Use alpha test instead of alpha blend" IsChecked="{Binding UseAlphaTest, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
+				</controls:SpacedStack>
+				<Button
+					Grid.Row="1"
+					Grid.Column="2"
+					Width="98"
+					Margin="0,8,0,0"
+					HorizontalAlignment="Right"
+					Command="{Binding EditMaterialsCommand}"
+					Content="Edit materials..." />
+			</Grid>
+		</Border>
 
-				<Button Margin="0,12,0,0" Command="{Binding EditMaterialsCommand}" Content="Edit materials..." />
-			</StackPanel>
-		</Grid>
+		<!--  Instructions (top)  -->
+		<TextBlock
+			DockPanel.Dock="Top"
+			Margin="0,0,0,6"
+			Text="Select a model from the list or add a new one. Double-click an entry or press Assign to assign the loaded file to this imported geometry object."
+			TextWrapping="Wrap" />
+
+		<!--  List actions (top)  -->
+		<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+			<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
+			<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
+		</controls:SpacedStack>
+
+		<!--  Geometry list (fills, full width)  -->
+		<DataGrid
+			AutoGenerateColumns="False"
+			CanUserAddRows="False"
+			HeadersVisibility="Column"
+			ItemsSource="{Binding Geometries}"
+			SelectedItem="{Binding SelectedGeometry, Mode=TwoWay}">
+			<DataGrid.Columns>
+				<DataGridTextColumn Width="160" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+				<DataGridTemplateColumn Width="32">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+				<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
+				<DataGridTextColumn Width="160" Binding="{Binding ErrorMessage}" Header="Status" IsReadOnly="True" />
+			</DataGrid.Columns>
+		</DataGrid>
 	</DockPanel>
 </Window>
