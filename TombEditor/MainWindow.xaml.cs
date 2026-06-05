@@ -272,6 +272,7 @@ public partial class MainWindow : Window
 		contentBrowserView?.Cleanup();
 		flybyTimelineView?.Cleanup();
 		panel2DMap?.Dispose();
+		_panel3D?.Dispose();
 
 		base.OnClosed(e);
 	}

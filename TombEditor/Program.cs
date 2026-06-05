@@ -206,6 +206,11 @@ namespace TombEditor
                 SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
             else // Just bring editor to top, if user tries to launch another copy
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());
+
+            // The hosted native rendering device (DeviceManager singleton) keeps a foreground thread
+            // alive, so the process would otherwise linger after the main window closes. Configuration
+            // is already persisted (Editor.SaveTry on close) and logs are flushed, so terminate now.
+            Environment.Exit(0);
         }
     }
 }
