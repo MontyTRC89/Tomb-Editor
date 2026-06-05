@@ -275,6 +275,12 @@ public partial class MainWindow : Window
 		_panel3D?.Dispose();
 
 		base.OnClosed(e);
+
+		// The WPF Application is created with ShutdownMode.OnExplicitShutdown (WPFInitializer), so
+		// closing the main window does NOT end Application.Run on its own. Persist config and shut the
+		// app down explicitly; Program.Main then force-terminates to kill the native rendering thread.
+		_editor.Configuration.SaveTry();
+		System.Windows.Application.Current?.Shutdown();
 	}
 
 	#region Tool window toggle
