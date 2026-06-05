@@ -175,34 +175,34 @@
     <moveable id="172" name="SETH_BLADE" description="Seth Blade" ten="SETH_BLADE" />
     <moveable id="173" name="LIGHTNING_CONDUCTOR" description="Lightning Conductor" ten="LIGHTING_CONDUCTOR" />
     <moveable id="174" name="ELEMENT_PUZZLE" description="Element Puzzle" ten="ELEMENT_PUZZLE" />
-    <moveable id="175" name="PUZZLE_ITEM1" description="Puzzle Item1" ten="PUZZLE_ITEM1" />
-    <moveable id="176" name="PUZZLE_ITEM2" description="Puzzle Item2" ten="PUZZLE_ITEM2" />
-    <moveable id="177" name="PUZZLE_ITEM3" description="Puzzle Item3" ten="PUZZLE_ITEM3" />
-    <moveable id="178" name="PUZZLE_ITEM4" description="Puzzle Item4" ten="PUZZLE_ITEM4" />
-    <moveable id="179" name="PUZZLE_ITEM5" description="Puzzle Item5" ten="PUZZLE_ITEM5" />
-    <moveable id="180" name="PUZZLE_ITEM6" description="Puzzle Item6" ten="PUZZLE_ITEM6" />
-    <moveable id="181" name="PUZZLE_ITEM7" description="Puzzle Item7" ten="PUZZLE_ITEM7" />
-    <moveable id="182" name="PUZZLE_ITEM8" description="Puzzle Item8" ten="PUZZLE_ITEM8" />
-    <moveable id="183" name="PUZZLE_ITEM9" description="Puzzle Item9" ten="PUZZLE_ITEM9" />
-    <moveable id="184" name="PUZZLE_ITEM10" description="Puzzle Item10" ten="PUZZLE_ITEM10" />
-    <moveable id="185" name="PUZZLE_ITEM11" description="Puzzle Item11" ten="PUZZLE_ITEM11" />
-    <moveable id="186" name="PUZZLE_ITEM12" description="Puzzle Item12" ten="PUZZLE_ITEM12" />
-    <moveable id="187" name="PUZZLE_ITEM1_COMBO1" description="Puzzle Item1 Combo1" ten="PUZZLE_ITEM1_COMBO1" />
-    <moveable id="188" name="PUZZLE_ITEM1_COMBO2" description="Puzzle Item1 Combo2" ten="PUZZLE_ITEM1_COMBO2" />
-    <moveable id="189" name="PUZZLE_ITEM2_COMBO1" description="Puzzle Item2 Combo1" ten="PUZZLE_ITEM2_COMBO1" />
-    <moveable id="190" name="PUZZLE_ITEM2_COMBO2" description="Puzzle Item2 Combo2" ten="PUZZLE_ITEM2_COMBO2" />
-    <moveable id="191" name="PUZZLE_ITEM3_COMBO1" description="Puzzle Item3 Combo1" ten="PUZZLE_ITEM3_COMBO1" />
-    <moveable id="192" name="PUZZLE_ITEM3_COMBO2" description="Puzzle Item3 Combo2" ten="PUZZLE_ITEM3_COMBO2" />
-    <moveable id="193" name="PUZZLE_ITEM4_COMBO1" description="Puzzle Item4 Combo1" ten="PUZZLE_ITEM4_COMBO1" />
-    <moveable id="194" name="PUZZLE_ITEM4_COMBO2" description="Puzzle Item4 Combo2" ten="PUZZLE_ITEM4_COMBO2" />
-    <moveable id="195" name="PUZZLE_ITEM5_COMBO1" description="Puzzle Item5 Combo1" ten="PUZZLE_ITEM5_COMBO1" />
-    <moveable id="196" name="PUZZLE_ITEM5_COMBO2" description="Puzzle Item5 Combo2" ten="PUZZLE_ITEM5_COMBO2" />
-    <moveable id="197" name="PUZZLE_ITEM6_COMBO1" description="Puzzle Item6 Combo1" ten="PUZZLE_ITEM6_COMBO1" />
-    <moveable id="198" name="PUZZLE_ITEM6_COMBO2" description="Puzzle Item6 Combo2" ten="PUZZLE_ITEM6_COMBO2" />
-    <moveable id="199" name="PUZZLE_ITEM7_COMBO1" description="Puzzle Item7 Combo1" ten="PUZZLE_ITEM7_COMBO1" />
-    <moveable id="200" name="PUZZLE_ITEM7_COMBO2" description="Puzzle Item7 Combo2" ten="PUZZLE_ITEM7_COMBO2" />
-    <moveable id="201" name="PUZZLE_ITEM8_COMBO1" description="Puzzle Item8 Combo1" ten="PUZZLE_ITEM8_COMBO1" />
-    <moveable id="202" name="PUZZLE_ITEM8_COMBO2" description="Puzzle Item8 Combo2" ten="PUZZLE_ITEM8_COMBO2" />
+    <moveable id="175" name="PUZZLE_ITEM1" description="Puzzle Item1" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="176" name="PUZZLE_ITEM2" description="Puzzle Item2" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="177" name="PUZZLE_ITEM3" description="Puzzle Item3" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="178" name="PUZZLE_ITEM4" description="Puzzle Item4" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="179" name="PUZZLE_ITEM5" description="Puzzle Item5" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="180" name="PUZZLE_ITEM6" description="Puzzle Item6" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="181" name="PUZZLE_ITEM7" description="Puzzle Item7" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="182" name="PUZZLE_ITEM8" description="Puzzle Item8" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="183" name="PUZZLE_ITEM9" description="Puzzle Item9" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="184" name="PUZZLE_ITEM10" description="Puzzle Item10" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="185" name="PUZZLE_ITEM11" description="Puzzle Item11" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="186" name="PUZZLE_ITEM12" description="Puzzle Item12" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="187" name="PUZZLE_ITEM1_COMBO1" description="Puzzle Item1 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="188" name="PUZZLE_ITEM1_COMBO2" description="Puzzle Item1 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="189" name="PUZZLE_ITEM2_COMBO1" description="Puzzle Item2 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="190" name="PUZZLE_ITEM2_COMBO2" description="Puzzle Item2 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="191" name="PUZZLE_ITEM3_COMBO1" description="Puzzle Item3 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="192" name="PUZZLE_ITEM3_COMBO2" description="Puzzle Item3 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="193" name="PUZZLE_ITEM4_COMBO1" description="Puzzle Item4 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="194" name="PUZZLE_ITEM4_COMBO2" description="Puzzle Item4 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="195" name="PUZZLE_ITEM5_COMBO1" description="Puzzle Item5 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="196" name="PUZZLE_ITEM5_COMBO2" description="Puzzle Item5 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="197" name="PUZZLE_ITEM6_COMBO1" description="Puzzle Item6 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="198" name="PUZZLE_ITEM6_COMBO2" description="Puzzle Item6 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="199" name="PUZZLE_ITEM7_COMBO1" description="Puzzle Item7 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="200" name="PUZZLE_ITEM7_COMBO2" description="Puzzle Item7 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="201" name="PUZZLE_ITEM8_COMBO1" description="Puzzle Item8 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="202" name="PUZZLE_ITEM8_COMBO2" description="Puzzle Item8 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
     <moveable id="203" name="KEY_ITEM1" description="Key Item1" ten="KEY_ITEM1" />
     <moveable id="204" name="KEY_ITEM2" description="Key Item2" ten="KEY_ITEM2" />
     <moveable id="205" name="KEY_ITEM3" description="Key Item3" ten="KEY_ITEM3" />
@@ -260,30 +260,30 @@
     <moveable id="257" name="QUEST_ITEM6" description="Quest Item6" ten="PICKUP_ITEM10" />
     <moveable id="258" name="MAP" description="Map" ten="MAP" />
     <moveable id="259" name="SECRET_MAP" description="Secret Map" ten="SECRET_MAP" />
-    <moveable id="260" name="PUZZLE_HOLE1" description="Puzzle Hole1" ten="PUZZLE_HOLE1" />
-    <moveable id="261" name="PUZZLE_HOLE2" description="Puzzle Hole2" ten="PUZZLE_HOLE2" />
-    <moveable id="262" name="PUZZLE_HOLE3" description="Puzzle Hole3" ten="PUZZLE_HOLE3" />
-    <moveable id="263" name="PUZZLE_HOLE4" description="Puzzle Hole4" ten="PUZZLE_HOLE4" />
-    <moveable id="264" name="PUZZLE_HOLE5" description="Puzzle Hole5" ten="PUZZLE_HOLE5" />
-    <moveable id="265" name="PUZZLE_HOLE6" description="Puzzle Hole6" ten="PUZZLE_HOLE6" />
-    <moveable id="266" name="PUZZLE_HOLE7" description="Puzzle Hole7" ten="PUZZLE_HOLE7" />
-    <moveable id="267" name="PUZZLE_HOLE8" description="Puzzle Hole8" ten="PUZZLE_HOLE8" />
-    <moveable id="268" name="PUZZLE_HOLE9" description="Puzzle Hole9" ten="PUZZLE_HOLE9" />
-    <moveable id="269" name="PUZZLE_HOLE10" description="Puzzle Hole10" ten="PUZZLE_HOLE10" />
-    <moveable id="270" name="PUZZLE_HOLE11" description="Puzzle Hole11" ten="PUZZLE_HOLE11" />
-    <moveable id="271" name="PUZZLE_HOLE12" description="Puzzle Hole12" ten="PUZZLE_HOLE12" />
-    <moveable id="272" name="PUZZLE_DONE1" description="Puzzle Done1" ten="PUZZLE_DONE1" />
-    <moveable id="273" name="PUZZLE_DONE2" description="Puzzle Done2" ten="PUZZLE_DONE2" />
-    <moveable id="274" name="PUZZLE_DONE3" description="Puzzle Done3" ten="PUZZLE_DONE3" />
-    <moveable id="275" name="PUZZLE_DONE4" description="Puzzle Done4" ten="PUZZLE_DONE4" />
-    <moveable id="276" name="PUZZLE_DONE5" description="Puzzle Done5" ten="PUZZLE_DONE5" />
-    <moveable id="277" name="PUZZLE_DONE6" description="Puzzle Done6" ten="PUZZLE_DONE6" />
-    <moveable id="278" name="PUZZLE_DONE7" description="Puzzle Done7" ten="PUZZLE_DONE7" />
-    <moveable id="279" name="PUZZLE_DONE8" description="Puzzle Done8" ten="PUZZLE_DONE8" />
-    <moveable id="280" name="PUZZLE_DONE9" description="Puzzle Done9" ten="PUZZLE_DONE9" />
-    <moveable id="281" name="PUZZLE_DONE10" description="Puzzle Done10" ten="PUZZLE_DONE10" />
-    <moveable id="282" name="PUZZLE_DONE11" description="Puzzle Done11" ten="PUZZLE_DONE11" />
-    <moveable id="283" name="PUZZLE_DONE12" description="Puzzle Done12" ten="PUZZLE_DONE12" />
+    <moveable id="260" name="PUZZLE_HOLE1" description="Puzzle Hole1" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="261" name="PUZZLE_HOLE2" description="Puzzle Hole2" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="262" name="PUZZLE_HOLE3" description="Puzzle Hole3" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="263" name="PUZZLE_HOLE4" description="Puzzle Hole4" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="264" name="PUZZLE_HOLE5" description="Puzzle Hole5" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="265" name="PUZZLE_HOLE6" description="Puzzle Hole6" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="266" name="PUZZLE_HOLE7" description="Puzzle Hole7" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="267" name="PUZZLE_HOLE8" description="Puzzle Hole8" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="268" name="PUZZLE_HOLE9" description="Puzzle Hole9" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="269" name="PUZZLE_HOLE10" description="Puzzle Hole10" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="270" name="PUZZLE_HOLE11" description="Puzzle Hole11" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="271" name="PUZZLE_HOLE12" description="Puzzle Hole12" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="272" name="PUZZLE_DONE1" description="Puzzle Done1" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="273" name="PUZZLE_DONE2" description="Puzzle Done2" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="274" name="PUZZLE_DONE3" description="Puzzle Done3" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="275" name="PUZZLE_DONE4" description="Puzzle Done4" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="276" name="PUZZLE_DONE5" description="Puzzle Done5" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="277" name="PUZZLE_DONE6" description="Puzzle Done6" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="278" name="PUZZLE_DONE7" description="Puzzle Done7" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="279" name="PUZZLE_DONE8" description="Puzzle Done8" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="280" name="PUZZLE_DONE9" description="Puzzle Done9" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="281" name="PUZZLE_DONE10" description="Puzzle Done10" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="282" name="PUZZLE_DONE11" description="Puzzle Done11" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="283" name="PUZZLE_DONE12" description="Puzzle Done12" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="284" name="KEY_HOLE1" description="Key Hole1" ten="KEY_HOLE1" />
     <moveable id="285" name="KEY_HOLE2" description="Key Hole2" ten="KEY_HOLE2" />
     <moveable id="286" name="KEY_HOLE3" description="Key Hole3" ten="KEY_HOLE3" />

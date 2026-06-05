@@ -172,30 +172,30 @@
     <moveable id="169" name="Cupboard_mip" hidden="true" />
     <moveable id="170" name="Suitcase" ten="SEARCH_OBJECT4" />
     <moveable id="171" name="Suitcase_mip" hidden="true" />
-    <moveable id="172" name="Puzzle 1" ten="PUZZLE_ITEM1" />
-    <moveable id="173" name="Puzzle 2" ten="PUZZLE_ITEM2" />
-    <moveable id="174" name="Puzzle 3" ten="PUZZLE_ITEM3" />
-    <moveable id="175" name="Puzzle 4" ten="PUZZLE_ITEM4" />
-    <moveable id="176" name="Puzzle 5" ten="PUZZLE_ITEM5" />
-    <moveable id="177" name="Puzzle 6" ten="PUZZLE_ITEM6" />
-    <moveable id="178" name="Puzzle 7" ten="PUZZLE_ITEM7" />
-    <moveable id="179" name="Puzzle 8" ten="PUZZLE_ITEM8" />
-    <moveable id="180" name="Puzzle 1 Combo 1" ten="PUZZLE_ITEM1_COMBO1" />
-    <moveable id="181" name="Puzzle 1 Combo 2" ten="PUZZLE_ITEM1_COMBO2" />
-    <moveable id="182" name="Puzzle 2 Combo 1" ten="PUZZLE_ITEM2_COMBO1" />
-    <moveable id="183" name="Puzzle 2 Combo 2" ten="PUZZLE_ITEM2_COMBO2" />
-    <moveable id="184" name="Puzzle 3 Combo 1" ten="PUZZLE_ITEM3_COMBO1" />
-    <moveable id="185" name="Puzzle 3 Combo 2" ten="PUZZLE_ITEM3_COMBO2" />
-    <moveable id="186" name="Puzzle 4 Combo 1" ten="PUZZLE_ITEM4_COMBO1" />
-    <moveable id="187" name="Puzzle 4 Combo 2" ten="PUZZLE_ITEM4_COMBO2" />
-    <moveable id="188" name="Puzzle 5 Combo 1" ten="PUZZLE_ITEM5_COMBO1" />
-    <moveable id="189" name="Puzzle 5 Combo 2" ten="PUZZLE_ITEM5_COMBO2" />
-    <moveable id="190" name="Puzzle 6 Combo 1" ten="PUZZLE_ITEM6_COMBO1" />
-    <moveable id="191" name="Puzzle 6 Combo 2" ten="PUZZLE_ITEM6_COMBO2" />
-    <moveable id="192" name="Puzzle 7 Combo 1" ten="PUZZLE_ITEM7_COMBO1" />
-    <moveable id="193" name="Puzzle 7 Combo 2" ten="PUZZLE_ITEM7_COMBO2" />
-    <moveable id="194" name="Puzzle 8 Combo 1" ten="PUZZLE_ITEM8_COMBO1" />
-    <moveable id="195" name="Puzzle 8 Combo 2" ten="PUZZLE_ITEM8_COMBO2" />
+    <moveable id="172" name="Puzzle 1" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="173" name="Puzzle 2" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="174" name="Puzzle 3" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="175" name="Puzzle 4" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="176" name="Puzzle 5" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="177" name="Puzzle 6" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="178" name="Puzzle 7" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="179" name="Puzzle 8" ten="PUZZLE_ITEM_1 - PUZZLE_ITEM16" />
+    <moveable id="180" name="Puzzle 1 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="181" name="Puzzle 1 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="182" name="Puzzle 2 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="183" name="Puzzle 2 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="184" name="Puzzle 3 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="185" name="Puzzle 3 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="186" name="Puzzle 4 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="187" name="Puzzle 4 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="188" name="Puzzle 5 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="189" name="Puzzle 5 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="190" name="Puzzle 6 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="191" name="Puzzle 6 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="192" name="Puzzle 7 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="193" name="Puzzle 7 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="194" name="Puzzle 8 Combo 1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
+    <moveable id="195" name="Puzzle 8 Combo 2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
     <moveable id="196" name="Key 1" ten="KEY_ITEM1" />
     <moveable id="197" name="Key 2" ten="KEY_ITEM2" />
     <moveable id="198" name="Key 3" ten="KEY_ITEM3" />
@@ -242,22 +242,22 @@
     <moveable id="239" name="Hammer item" ten="HAMMER_ITEM" />
     <moveable id="240" name="Crowbar item" ten="CROWBAR_ITEM" />
     <moveable id="241" name="Torch item" y_adjust="0.03" ten="BURNING_TORCH_ITEM" />
-    <moveable id="242" name="Slot empty 1" ten="PUZZLE_HOLE1" />
-    <moveable id="243" name="Slot empty 2" ten="PUZZLE_HOLE2" />
-    <moveable id="244" name="Slot empty 3" ten="PUZZLE_HOLE3" />
-    <moveable id="245" name="Slot empty 4" ten="PUZZLE_HOLE4" />
-    <moveable id="246" name="Slot empty 5" ten="PUZZLE_HOLE5" />
-    <moveable id="247" name="Slot empty 6" ten="PUZZLE_HOLE6" />
-    <moveable id="248" name="Slot empty 7" ten="PUZZLE_HOLE7" />
-    <moveable id="249" name="Slot empty 8" ten="PUZZLE_HOLE8" />
-    <moveable id="250" name="Slot full 1" ten="PUZZLE_DONE1" />
-    <moveable id="251" name="Slot full 2" ten="PUZZLE_DONE2" />
-    <moveable id="252" name="Slot full 3" ten="PUZZLE_DONE3" />
-    <moveable id="253" name="Slot full 4" ten="PUZZLE_DONE4" />
-    <moveable id="254" name="Slot full 5" ten="PUZZLE_DONE5" />
-    <moveable id="255" name="Slot full 6" ten="PUZZLE_DONE6" />
-    <moveable id="256" name="Slot full 7" ten="PUZZLE_DONE7" />
-    <moveable id="257" name="Slot full 8" ten="PUZZLE_DONE8" />
+    <moveable id="242" name="Slot empty 1" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="243" name="Slot empty 2" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="244" name="Slot empty 3" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="245" name="Slot empty 4" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="246" name="Slot empty 5" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="247" name="Slot empty 6" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="248" name="Slot empty 7" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="249" name="Slot empty 8" ten="PUZZLE_HOLE_1 - PUZZLE_HOLE_16" />
+    <moveable id="250" name="Slot full 1" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="251" name="Slot full 2" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="252" name="Slot full 3" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="253" name="Slot full 4" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="254" name="Slot full 5" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="255" name="Slot full 6" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="256" name="Slot full 7" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
+    <moveable id="257" name="Slot full 8" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="258" name="Lock 1" ten="KEY_HOLE1" />
     <moveable id="259" name="Lock 2" ten="KEY_HOLE2" />
     <moveable id="260" name="Lock 3" ten="KEY_HOLE3" />
