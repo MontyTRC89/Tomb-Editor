@@ -54,8 +54,8 @@
     <moveable id="52" name="Movable tall block" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="53" name="Falling ceiling" essential="false" ten="FALLING_CEILING" />
     <moveable id="54" name="Sword of Damocles" essential="false" ten="DAMOCLES_SWORD" />
-    <moveable id="55" name="Above-water switch" essential="false" ten="SWITCH_TYPE10" />
-    <moveable id="56" name="Underwater switch" essential="false" ten="WALL_SWITCH1" />
+    <moveable id="55" name="Above-water switch" essential="false" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="56" name="Underwater switch" essential="false" ten="WALL_SWITCH1 - WALL_SWITCH2" />
     <moveable id="57" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="58" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="59" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />

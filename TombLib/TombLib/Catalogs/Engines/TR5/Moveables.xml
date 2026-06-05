@@ -266,17 +266,17 @@
     <moveable id="263" name="Lock 6" ten="KEY_HOLE6" />
     <moveable id="264" name="Lock 7" ten="KEY_HOLE7" />
     <moveable id="265" name="Lock 8" ten="KEY_HOLE8" />
-    <moveable id="266" name="Switch type 1" ten="SWITCH_TYPE1" />
-    <moveable id="267" name="Switch type 2" ten="SWITCH_TYPE2" />
-    <moveable id="268" name="Switch type 3" ten="SWITCH_TYPE3" />
-    <moveable id="269" name="Switch type 4" ten="SWITCH_TYPE4" />
-    <moveable id="270" name="Switch type 5" ten="SWITCH_TYPE5" />
-    <moveable id="271" name="Switch type 6" ten="SWITCH_TYPE6" />
+    <moveable id="266" name="Switch type 1" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="267" name="Switch type 2" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="268" name="Switch type 3" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="269" name="Switch type 4" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="270" name="Switch type 5" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="271" name="Switch type 6" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
     <moveable id="272" name="Shoot switch 1" ten="SHOOT_SWITCH3" />
     <moveable id="273" name="Shoot switch 2" ten="SHOOT_SWITCH4" />
     <moveable id="274" name="Airlock switch" ten="AIRLOCK_SWITCH" />
-    <moveable id="275" name="Underwater switch 1" ten="WALL_SWITCH1" />
-    <moveable id="276" name="Underwater switch 2" ten="WALL_SWITCH2" />
+    <moveable id="275" name="Underwater switch 1" ten="WALL_SWITCH1 - WALL_SWITCH2" />
+    <moveable id="276" name="Underwater switch 2" ten="WALL_SWITCH1 - WALL_SWITCH2" />
     <moveable id="277" name="Turn switch" ten="TURN_SWITCH" />
     <moveable id="278" name="Cog switch" x_adjust="-90" y_adjust="0.26" ten="COG_SWITCH" />
     <moveable id="279" name="Lever switch" ten="LEVER_SWITCH" />
@@ -329,9 +329,9 @@
     <moveable id="326" name="Double doors" ten="DOUBLE_DOORS" />
     <moveable id="327" name="Double doors mip" hidden="true" />
     <moveable id="328" name="Sequence door" ten="SEQUENCE_DOOR1" />
-    <moveable id="329" name="Sequence switch 1" ten="SEQUENCE_SWITCH1" />
-    <moveable id="330" name="Sequence switch 2" ten="SEQUENCE_SWITCH2" />
-    <moveable id="331" name="Sequence switch 3" ten="SEQUENCE_SWITCH3" />
+    <moveable id="329" name="Sequence switch 1" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
+    <moveable id="330" name="Sequence switch 2" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
+    <moveable id="331" name="Sequence switch 3" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
     <moveable id="332" name="Steel door" ten="STEEL_DOOR" />
     <moveable id="333" name="God head" ten="GOD_HEAD" />
     <moveable id="334" name="Pistols" y_adjust="0.1" ten="PISTOLS_ITEM" />

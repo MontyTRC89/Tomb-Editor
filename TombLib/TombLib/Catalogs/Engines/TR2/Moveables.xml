@@ -86,8 +86,8 @@
     <moveable id="87" name="Spiky ceiling segment" essential="false" ten="SPIKY_CEILING" />
     <moveable id="88" name="Tibetan bell" essential="false" ten="BELL" />
     <moveable id="91" name="Lara and a snowmobile" ten="SNOWMOBILE_LARA_ANIMS" />
-    <moveable id="92" name="Wheel knob" essential="false" ten="SWITCH_TYPE1" />
-    <moveable id="93" name="Above-water switch" essential="false" ten="SWITCH_TYPE2" />
+    <moveable id="92" name="Wheel knob" essential="false" ten="AIRLOCK_SWITCH" />
+    <moveable id="93" name="Above-water switch" essential="false" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
     <moveable id="94" name="Underwater propeller" essential="false" ten="LARGE_FAN" />
     <moveable id="95" name="Air fan" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="96" name="Swinging box / spiky ball" essential="false" ten="SWINGING_BOX, SWINGING_SPIKE_BAG" />
@@ -97,9 +97,9 @@
     <moveable id="100" name="Cutscene Object 4" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="101" name="Rolling storage drums" essential="false" ten="ROLLING_BARRELS" />
     <moveable id="102" name="Zipline handle" essential="false" ten="ZIPLINE_HANDLE" />
-    <moveable id="103" name="Above-water switch" essential="false" ten="SWITCH_TYPE3" />
-    <moveable id="104" name="Above-water/underwater switch" essential="false" ten="SWITCH_TYPE4" />
-    <moveable id="105" name="Underwater switch" essential="false" ten="WALL_SWITCH1" />
+    <moveable id="103" name="Above-water switch" essential="false" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="104" name="Above-water/underwater switch" essential="false" ten="SWITCH_TYPE1 - SWITCH_TYPE16, WALL_SWITCH1 - WALL_SWITCH2" />
+    <moveable id="105" name="Underwater switch" essential="false" ten="WALL_SWITCH1 - WALL_SWITCH2" />
     <moveable id="106" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="107" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />
     <moveable id="108" name="Door" essential="false" ten="DOOR_TYPE1 - DOOR_TYPE30" />

@@ -306,16 +306,16 @@
     <moveable id="303" name="WATERSKIN2_3" description="Waterskin2_3" ten="WATERSKIN2_3" />
     <moveable id="304" name="WATERSKIN2_4" description="Waterskin2_4" ten="WATERSKIN2_4" />
     <moveable id="305" name="WATERSKIN2_5" description="Waterskin2_5" ten="WATERSKIN2_5" />
-    <moveable id="306" name="SWITCH_TYPE1" description="Switch Type1" ten="SWITCH_TYPE1" />
-    <moveable id="307" name="SWITCH_TYPE2" description="Switch Type2" ten="SWITCH_TYPE2" />
-    <moveable id="308" name="SWITCH_TYPE3" description="Switch Type3" ten="SWITCH_TYPE3" />
-    <moveable id="309" name="SWITCH_TYPE4" description="Switch Type4" ten="SWITCH_TYPE4" />
-    <moveable id="310" name="SWITCH_TYPE5" description="Switch Type5" ten="SWITCH_TYPE5" />
-    <moveable id="311" name="SWITCH_TYPE6" description="Switch Type6" ten="SWITCH_TYPE6" />
+    <moveable id="306" name="SWITCH_TYPE1" description="Switch Type1" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="307" name="SWITCH_TYPE2" description="Switch Type2" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="308" name="SWITCH_TYPE3" description="Switch Type3" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="309" name="SWITCH_TYPE4" description="Switch Type4" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="310" name="SWITCH_TYPE5" description="Switch Type5" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
+    <moveable id="311" name="SWITCH_TYPE6" description="Switch Type6" ten="SWITCH_TYPE1 - SWITCH_TYPE16" />
     <moveable id="312" name="SWITCH_TYPE7" description="Switch Type7" ten="SHOOT_SWITCH1" />
     <moveable id="313" name="SWITCH_TYPE8" description="Switch Type8" ten="SHOOT_SWITCH2" />
-    <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" ten="WALL_SWITCH1" />
-    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="CEILING_SWITCH1" />
+    <moveable id="314" name="UNDERWATER_SWITCH1" description="Underwater Switch1" ten="WALL_SWITCH1 - WALL_SWITCH2" />
+    <moveable id="315" name="UNDERWATER_SWITCH2" description="Underwater Switch2" ten="CEILING_SWITCH1 - CEILING_SWITCH2" />
     <moveable id="316" name="TURN_SWITCH" description="Turn Switch" ten="TURN_SWITCH" />
     <moveable id="317" name="COG_SWITCH" description="Cog Switch" ten="COG_SWITCH" />
     <moveable id="318" name="LEVER_SWITCH" description="Lever Switch" ten="LEVER_SWITCH" />
@@ -341,9 +341,9 @@
     <moveable id="338" name="BRIDGE_TILT2" description="Bridge Tilt2" ten="BRIDGE_TILT2" />
     <moveable id="339" name="SARCOPHAGUS" description="Sarcophagus" ten="SARCOPHAGUS" />
     <moveable id="340" name="SEQUENCE_DOOR1" description="Sequence Door1" ten="SEQUENCE_DOOR1" />
-    <moveable id="341" name="SEQUENCE_SWITCH1" description="Sequence Switch1" ten="SEQUENCE_SWITCH1" />
-    <moveable id="342" name="SEQUENCE_SWITCH2" description="Sequence Switch2" ten="SEQUENCE_SWITCH2" />
-    <moveable id="343" name="SEQUENCE_SWITCH3" description="Sequence Switch3" ten="SEQUENCE_SWITCH3" />
+    <moveable id="341" name="SEQUENCE_SWITCH1" description="Sequence Switch1" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
+    <moveable id="342" name="SEQUENCE_SWITCH2" description="Sequence Switch2" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
+    <moveable id="343" name="SEQUENCE_SWITCH3" description="Sequence Switch3" ten="SEQUENCE_SWITCH1 - SEQUENCE_SWITCH3" />
     <moveable id="344" name="SARCOPHAGUS_CUT" description="Sarcophagus Cut" />
     <moveable id="345" name="HORUS_STATUE" description="Horus Statue" ten="HORUS_STATUE" />
     <moveable id="346" name="GOD_HEAD" description="God Head" ten="GOD_HEAD" />
