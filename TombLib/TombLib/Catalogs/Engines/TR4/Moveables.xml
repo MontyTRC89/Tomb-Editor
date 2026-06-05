@@ -203,34 +203,34 @@
     <moveable id="200" name="PUZZLE_ITEM7_COMBO2" description="Puzzle Item7 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
     <moveable id="201" name="PUZZLE_ITEM8_COMBO1" description="Puzzle Item8 Combo1" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
     <moveable id="202" name="PUZZLE_ITEM8_COMBO2" description="Puzzle Item8 Combo2" ten="PUZZLE_ITEM1_COMBO1 - PUZZLE_ITEM16_COMBO2" />
-    <moveable id="203" name="KEY_ITEM1" description="Key Item1" ten="KEY_ITEM1" />
-    <moveable id="204" name="KEY_ITEM2" description="Key Item2" ten="KEY_ITEM2" />
-    <moveable id="205" name="KEY_ITEM3" description="Key Item3" ten="KEY_ITEM3" />
-    <moveable id="206" name="KEY_ITEM4" description="Key Item4" ten="KEY_ITEM4" />
-    <moveable id="207" name="KEY_ITEM5" description="Key Item5" ten="KEY_ITEM5" />
-    <moveable id="208" name="KEY_ITEM6" description="Key Item6" ten="KEY_ITEM6" />
-    <moveable id="209" name="KEY_ITEM7" description="Key Item7" ten="KEY_ITEM7" />
-    <moveable id="210" name="KEY_ITEM8" description="Key Item8" ten="KEY_ITEM8" />
-    <moveable id="211" name="KEY_ITEM9" description="Key Item9" ten="KEY_ITEM9" />
-    <moveable id="212" name="KEY_ITEM10" description="Key Item10" ten="KEY_ITEM10" />
-    <moveable id="213" name="KEY_ITEM11" description="Key Item11" ten="KEY_ITEM11" />
-    <moveable id="214" name="KEY_ITEM12" description="Key Item12" ten="KEY_ITEM12" />
-    <moveable id="215" name="KEY_ITEM1_COMBO1" description="Key Item1 Combo1" ten="KEY_ITEM1_COMBO1" />
-    <moveable id="216" name="KEY_ITEM1_COMBO2" description="Key Item1 Combo2" ten="KEY_ITEM1_COMBO2" />
-    <moveable id="217" name="KEY_ITEM2_COMBO1" description="Key Item2 Combo1" ten="KEY_ITEM2_COMBO1" />
-    <moveable id="218" name="KEY_ITEM2_COMBO2" description="Key Item2 Combo2" ten="KEY_ITEM2_COMBO2" />
-    <moveable id="219" name="KEY_ITEM3_COMBO1" description="Key Item3 Combo1" ten="KEY_ITEM3_COMBO1" />
-    <moveable id="220" name="KEY_ITEM3_COMBO2" description="Key Item3 Combo2" ten="KEY_ITEM3_COMBO2" />
-    <moveable id="221" name="KEY_ITEM4_COMBO1" description="Key Item4 Combo1" ten="KEY_ITEM4_COMBO1" />
-    <moveable id="222" name="KEY_ITEM4_COMBO2" description="Key Item4 Combo2" ten="KEY_ITEM4_COMBO2" />
-    <moveable id="223" name="KEY_ITEM5_COMBO1" description="Key Item5 Combo1" ten="KEY_ITEM5_COMBO1" />
-    <moveable id="224" name="KEY_ITEM5_COMBO2" description="Key Item5 Combo2" ten="KEY_ITEM5_COMBO2" />
-    <moveable id="225" name="KEY_ITEM6_COMBO1" description="Key Item6 Combo1" ten="KEY_ITEM6_COMBO1" />
-    <moveable id="226" name="KEY_ITEM6_COMBO2" description="Key Item6 Combo2" ten="KEY_ITEM6_COMBO2" />
-    <moveable id="227" name="KEY_ITEM7_COMBO1" description="Key Item7 Combo1" ten="KEY_ITEM7_COMBO1" />
-    <moveable id="228" name="KEY_ITEM7_COMBO2" description="Key Item7 Combo2" ten="KEY_ITEM7_COMBO2" />
-    <moveable id="229" name="KEY_ITEM8_COMBO1" description="Key Item8 Combo1" ten="KEY_ITEM8_COMBO1" />
-    <moveable id="230" name="KEY_ITEM8_COMBO2" description="Key Item8 Combo2" ten="KEY_ITEM8_COMBO2" />
+    <moveable id="203" name="KEY_ITEM1" description="Key Item1" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="204" name="KEY_ITEM2" description="Key Item2" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="205" name="KEY_ITEM3" description="Key Item3" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="206" name="KEY_ITEM4" description="Key Item4" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="207" name="KEY_ITEM5" description="Key Item5" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="208" name="KEY_ITEM6" description="Key Item6" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="209" name="KEY_ITEM7" description="Key Item7" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="210" name="KEY_ITEM8" description="Key Item8" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="211" name="KEY_ITEM9" description="Key Item9" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="212" name="KEY_ITEM10" description="Key Item10" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="213" name="KEY_ITEM11" description="Key Item11" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="214" name="KEY_ITEM12" description="Key Item12" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="215" name="KEY_ITEM1_COMBO1" description="Key Item1 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="216" name="KEY_ITEM1_COMBO2" description="Key Item1 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="217" name="KEY_ITEM2_COMBO1" description="Key Item2 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="218" name="KEY_ITEM2_COMBO2" description="Key Item2 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="219" name="KEY_ITEM3_COMBO1" description="Key Item3 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="220" name="KEY_ITEM3_COMBO2" description="Key Item3 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="221" name="KEY_ITEM4_COMBO1" description="Key Item4 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="222" name="KEY_ITEM4_COMBO2" description="Key Item4 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="223" name="KEY_ITEM5_COMBO1" description="Key Item5 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="224" name="KEY_ITEM5_COMBO2" description="Key Item5 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="225" name="KEY_ITEM6_COMBO1" description="Key Item6 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="226" name="KEY_ITEM6_COMBO2" description="Key Item6 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="227" name="KEY_ITEM7_COMBO1" description="Key Item7 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="228" name="KEY_ITEM7_COMBO2" description="Key Item7 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="229" name="KEY_ITEM8_COMBO1" description="Key Item8 Combo1" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
+    <moveable id="230" name="KEY_ITEM8_COMBO2" description="Key Item8 Combo2" ten="KEY_ITEM1_COMBO1 - KEY_ITEM16_COMBO2" />
     <moveable id="231" name="PICKUP_ITEM1" description="Pickup Item1" ten="PICKUP_ITEM1" />
     <moveable id="232" name="PICKUP_ITEM2" description="Pickup Item2" ten="PICKUP_ITEM2" />
     <moveable id="233" name="PICKUP_ITEM3" description="Pickup Item3" ten="PICKUP_ITEM3" />
@@ -284,18 +284,18 @@
     <moveable id="281" name="PUZZLE_DONE10" description="Puzzle Done10" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="282" name="PUZZLE_DONE11" description="Puzzle Done11" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="283" name="PUZZLE_DONE12" description="Puzzle Done12" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
-    <moveable id="284" name="KEY_HOLE1" description="Key Hole1" ten="KEY_HOLE1" />
-    <moveable id="285" name="KEY_HOLE2" description="Key Hole2" ten="KEY_HOLE2" />
-    <moveable id="286" name="KEY_HOLE3" description="Key Hole3" ten="KEY_HOLE3" />
-    <moveable id="287" name="KEY_HOLE4" description="Key Hole4" ten="KEY_HOLE4" />
-    <moveable id="288" name="KEY_HOLE5" description="Key Hole5" ten="KEY_HOLE5" />
-    <moveable id="289" name="KEY_HOLE6" description="Key Hole6" ten="KEY_HOLE6" />
-    <moveable id="290" name="KEY_HOLE7" description="Key Hole7" ten="KEY_HOLE7" />
-    <moveable id="291" name="KEY_HOLE8" description="Key Hole8" ten="KEY_HOLE8" />
-    <moveable id="292" name="KEY_HOLE9" description="Key Hole9" ten="KEY_HOLE9" />
-    <moveable id="293" name="KEY_HOLE10" description="Key Hole10" ten="KEY_HOLE10" />
-    <moveable id="294" name="KEY_HOLE11" description="Key Hole11" ten="KEY_HOLE11" />
-    <moveable id="295" name="KEY_HOLE12" description="Key Hole12" ten="KEY_HOLE12" />
+    <moveable id="284" name="KEY_HOLE1" description="Key Hole1" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="285" name="KEY_HOLE2" description="Key Hole2" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="286" name="KEY_HOLE3" description="Key Hole3" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="287" name="KEY_HOLE4" description="Key Hole4" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="288" name="KEY_HOLE5" description="Key Hole5" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="289" name="KEY_HOLE6" description="Key Hole6" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="290" name="KEY_HOLE7" description="Key Hole7" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="291" name="KEY_HOLE8" description="Key Hole8" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="292" name="KEY_HOLE9" description="Key Hole9" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="293" name="KEY_HOLE10" description="Key Hole10" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="294" name="KEY_HOLE11" description="Key Hole11" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="295" name="KEY_HOLE12" description="Key Hole12" ten="KEY_HOLE1 - KEY_HOLE16" />
     <moveable id="296" name="WATERSKIN1_EMPTY" description="Waterskin1 Empty" ten="WATERSKIN1_EMPTY" />
     <moveable id="297" name="WATERSKIN1_1" description="Waterskin1_1" ten="WATERSKIN1_1" />
     <moveable id="298" name="WATERSKIN1_2" description="Waterskin1_2" ten="WATERSKIN1_2" />

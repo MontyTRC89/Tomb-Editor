@@ -162,14 +162,14 @@
     <moveable id="187" name="Slot 2 full" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="188" name="Slot 3 full ?" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
     <moveable id="189" name="Slot 4 full" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" />
-    <moveable id="197" name="Key 1" id2="193" essential="false" ten="KEY_ITEM1" />
-    <moveable id="198" name="Key 2" id2="194" essential="false" ten="KEY_ITEM2" />
-    <moveable id="199" name="Key 3" id2="195" essential="false" ten="KEY_ITEM3" />
-    <moveable id="200" name="Key 4" id2="196" essential="false" ten="KEY_ITEM4" />
-    <moveable id="201" name="Lock 1" ten="KEY_HOLE1" />
-    <moveable id="202" name="Lock 2" ten="KEY_HOLE2" />
-    <moveable id="203" name="Lock 3" ten="KEY_HOLE3" />
-    <moveable id="204" name="Lock 4" ten="KEY_HOLE4" />
+    <moveable id="197" name="Key 1" id2="193" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="198" name="Key 2" id2="194" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="199" name="Key 3" id2="195" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="200" name="Key 4" id2="196" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="201" name="Lock 1" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="202" name="Lock 2" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="203" name="Lock 3" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="204" name="Lock 4" ten="KEY_HOLE1 - KEY_HOLE16" />
     <moveable id="207" name="Pickup 1" id2="205" ten="PICKUP_ITEM1" />
     <moveable id="208" name="Pickup 2" id2="206" ten="PICKUP_ITEM2" />
     <moveable id="209" name="Dragon explosion effect (expanding netted bubble)" hidden="true" ten="SPHERE_OF_DOOM" />

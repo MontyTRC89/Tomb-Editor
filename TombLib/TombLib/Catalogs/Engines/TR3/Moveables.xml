@@ -199,18 +199,18 @@
     <moveable id="218" name="Slot 2 full" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" /> 
     <moveable id="219" name="Slot 3 full" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" /> 
     <moveable id="220" name="Slot 4 full" ten="PUZZLE_DONE_1 - PUZZLE_DONE_16" /> 
-    <moveable id="224" name="Key 1 (pickup)" essential="false" ten="KEY_ITEM1" />
-    <moveable id="225" name="Key 2 (pickup)" essential="false" ten="KEY_ITEM2" />
-    <moveable id="226" name="Key 3 (pickup)" essential="false" ten="KEY_ITEM3" />
-    <moveable id="227" name="Key 4 (pickup)" essential="false" ten="KEY_ITEM4" />
+    <moveable id="224" name="Key 1 (pickup)" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="225" name="Key 2 (pickup)" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="226" name="Key 3 (pickup)" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
+    <moveable id="227" name="Key 4 (pickup)" essential="false" ten="KEY_ITEM1 - KEY_ITEM16" />
     <moveable id="228" name="Key 1 (menu item)" hidden="true" />
     <moveable id="229" name="Key 2 (menu item)" hidden="true" />
     <moveable id="230" name="Key 3 (menu item)" hidden="true" />
     <moveable id="231" name="Key 4 (menu item)" hidden="true" />
-    <moveable id="232" name="Lock 1" essential="false" ten="KEY_HOLE1" />
-    <moveable id="233" name="Lock 2" essential="false" ten="KEY_HOLE2" />
-    <moveable id="234" name="Lock 3" essential="false" ten="KEY_HOLE3" />
-    <moveable id="235" name="Lock 4" essential="false" ten="KEY_HOLE4" />
+    <moveable id="232" name="Lock 1" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="233" name="Lock 2" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="234" name="Lock 3" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
+    <moveable id="235" name="Lock 4" essential="false" ten="KEY_HOLE1 - KEY_HOLE16" />
     <moveable id="236" name="Pickup 1 (pickup)" essential="false" ten="PICKUP_ITEM1" />
     <moveable id="237" name="Pickup 2? [unused] (pickup)" essential="false" ten="PICKUP_ITEM2"/>
     <moveable id="238" name="Pickup 1 (menu item)" hidden="true" />
