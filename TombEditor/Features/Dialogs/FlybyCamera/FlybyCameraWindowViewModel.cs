@@ -142,14 +142,14 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     private string GetBitLabel(int index)
     {
         // Four flags swap meaning in TR5 / TombEngine. Mirrors the original FormFlybyCamera load logic.
-        bool tr5Or = _editor.Level.Settings.GameVersion is TRVersion.Game.TR5 or TRVersion.Game.TombEngine;
+        bool tr5OrTen = _editor.Level.Settings.GameVersion is TRVersion.Game.TR5 or TRVersion.Game.TombEngine;
 
         return index switch
         {
-            1 when tr5Or => _localizationService["Bit1TR5"],
-            4 when tr5Or => _localizationService["Bit4TR5"],
-            12 when tr5Or => _localizationService["Bit12TR5"],
-            13 when tr5Or => _localizationService["Bit13TR5"],
+            1 when tr5OrTen => _localizationService["Bit1TR5"],
+            4 when tr5OrTen => _localizationService["Bit4TR5"],
+            12 when tr5OrTen => _localizationService["Bit12TR5"],
+            13 when tr5OrTen => _localizationService["Bit13TR5"],
             _ => _localizationService[$"Bit{index}"]
         };
     }
