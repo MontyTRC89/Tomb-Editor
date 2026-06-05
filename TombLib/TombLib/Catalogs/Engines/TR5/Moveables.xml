@@ -232,10 +232,10 @@
     <moveable id="229" name="Pickup item 3 combo 2" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
     <moveable id="230" name="Gold rose combo 1" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
     <moveable id="231" name="Gold rose combo 2" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
-    <moveable id="232" name="Examine 1" ten="EXAMINE1" />
-    <moveable id="233" name="Examine 2" ten="EXAMINE2" />
-    <moveable id="234" name="Examine 3" ten="EXAMINE3" />
-    <moveable id="235" name="Chloroform bottle" />
+    <moveable id="232" name="Examine 1" ten="EXAMINE1 - EXAMINE8" />
+    <moveable id="233" name="Examine 2" ten="EXAMINE1 - EXAMINE8" />
+    <moveable id="234" name="Examine 3" ten="EXAMINE1 - EXAMINE8" />
+    <moveable id="235" name="Chloroform bottle"  />
     <moveable id="236" name="Chloroform cloth" />
     <moveable id="237" name="Chloroform soaked cloth" />
     <moveable id="238" name="Cosh" />

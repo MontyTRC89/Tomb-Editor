@@ -243,9 +243,9 @@
     <moveable id="240" name="PICKUP_ITEM3_COMBO2" description="Pickup Item3 Combo2" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
     <moveable id="241" name="PICKUP_ITEM4_COMBO1" description="Pickup Item4 Combo1" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
     <moveable id="242" name="PICKUP_ITEM4_COMBO2" description="Pickup Item4 Combo2" ten="PICKUP_ITEM1_COMBO1 - PICKUP_ITEM16_COMBO2" />
-    <moveable id="243" name="EXAMINE1" description="Examine1" ten="EXAMINE1" />
-    <moveable id="244" name="EXAMINE2" description="Examine2" ten="EXAMINE2" />
-    <moveable id="245" name="EXAMINE3" description="Examine3" ten="EXAMINE3" />
+    <moveable id="243" name="EXAMINE1" description="Examine1" ten="EXAMINE1 - EXAMINE8" />
+    <moveable id="244" name="EXAMINE2" description="Examine2" ten="EXAMINE1 - EXAMINE8" />
+    <moveable id="245" name="EXAMINE3" description="Examine3" ten="EXAMINE1 - EXAMINE8" />
     <moveable id="246" name="CROWBAR_ITEM" description="Crowbar Item" ten="CROWBAR_ITEM" />
     <moveable id="247" name="BURNING_TORCH_ITEM" description="Burning Torch Item" ten="BURNING_TORCH_ITEM" />
     <moveable id="248" name="CLOCKWORK_BEETLE" description="Clockwork Beetle" ten="CLOCKWORK_BEETLE" />
