@@ -648,6 +648,50 @@
         "AssignSound": "Assign sound"
     },
 
+    "EventSetEditor": {
+        "TitleGlobal": "Edit global event sets",
+        "TitleVolume": "Edit volume event sets",
+        "TitleVolumeSpecific": "Edit volume: {0}",
+        "EventSets": "Event sets:",
+        "New": "New",
+        "Clone": "Clone",
+        "Delete": "Delete",
+        "Unassign": "Unassign",
+        "Name": "Name:",
+        "Event": "Event:",
+        "Activators": "Activators:",
+        "Lara": "Lara",
+        "Npcs": "NPCs",
+        "OtherMoveables": "Other moveables",
+        "Statics": "Statics",
+        "Flyby": "Flyby",
+        "EnableVolume": "Enable volume",
+        "DetectInAdjacentRooms": "Detect in adjacent rooms",
+        "Mode": "Mode:",
+        "NodeEditorMode": "Node editor",
+        "LevelScriptMode": "Level script",
+        "Function": "Function:",
+        "Argument": "Argument:",
+        "NameEmpty": "Event set name can't be empty.",
+        "NameExists": "An event set with the same name already exists."
+    },
+
+    "NodeEditor": {
+        "Function": "Function:",
+        "Add": "Add",
+        "Delete": "Delete",
+        "SetColor": "Set color...",
+        "Locked": "Locked",
+        "NodeName": "Node name",
+        "PortInput": "Input",
+        "PortNext": "Drag to connect (Next)",
+        "PortElse": "Drag to connect (Else)",
+        "Hours": "Hours",
+        "Minutes": "Minutes",
+        "Seconds": "Seconds",
+        "Centiseconds": "Centiseconds"
+    },
+
     "TextureRemap": {
         "Title": "Texture remap",
         "SourceHeader": "Source",

@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	d:DataContext="{d:DesignInstance Type=local:NodeEditorViewModel}"
 	d:DesignHeight="400"
 	d:DesignWidth="640"
@@ -98,10 +99,10 @@
 			<StackPanel Margin="0,2,0,0">
 				<TextBlock Text="{Binding Caption}" ToolTip="{Binding Description}" />
 				<UniformGrid Columns="4">
-					<controls:NumericUpDown Margin="0,0,2,0" Maximum="999" Minimum="0" ToolTip="Hours" Value="{Binding Hours, Mode=TwoWay}" />
-					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="Minutes" Value="{Binding Minutes, Mode=TwoWay}" />
-					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="Seconds" Value="{Binding Seconds, Mode=TwoWay}" />
-					<controls:NumericUpDown Margin="2,0,0,0" Maximum="99" Minimum="0" ToolTip="Centiseconds" Value="{Binding Cents, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="0,0,2,0" Maximum="999" Minimum="0" ToolTip="{tombLib:Localize Hours}" Value="{Binding Hours, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="{tombLib:Localize Minutes}" Value="{Binding Minutes, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,2,0" Maximum="59" Minimum="0" ToolTip="{tombLib:Localize Seconds}" Value="{Binding Seconds, Mode=TwoWay}" />
+					<controls:NumericUpDown Margin="2,0,0,0" Maximum="99" Minimum="0" ToolTip="{tombLib:Localize Centiseconds}" Value="{Binding Cents, Mode=TwoWay}" />
 				</UniformGrid>
 			</StackPanel>
 		</DataTemplate>
@@ -160,7 +161,7 @@
 			Margin="0,0,0,6"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-			<TextBlock VerticalAlignment="Center" Text="Function:" />
+			<TextBlock VerticalAlignment="Center" Text="{tombLib:Localize Function}" />
 			<controls:SearchableComboBox
 				Width="240"
 				DisplayMemberPath="Name"
@@ -183,11 +184,11 @@
 			<Button
 				Width="56"
 				Command="{Binding AddNodeCommand}"
-				Content="Add" />
+				Content="{tombLib:Localize Add}" />
 			<Button
 				Width="64"
 				Command="{Binding DeleteSelectedNodeCommand}"
-				Content="Delete" />
+				Content="{tombLib:Localize Delete}" />
 		</controls:SpacedStack>
 
 		<!--  Node canvas  -->
@@ -250,13 +251,13 @@
 									SizeChanged="Node_SizeChanged">
 									<Grid.ContextMenu>
 										<ContextMenu>
-											<MenuItem Click="SetColor_Click" Header="Set color..." />
+											<MenuItem Click="SetColor_Click" Header="{tombLib:Localize SetColor}" />
 											<MenuItem
-												Header="Locked"
+												Header="{tombLib:Localize Locked}"
 												IsCheckable="True"
 												IsChecked="{Binding IsLocked, Mode=TwoWay}" />
 											<Separator />
-											<MenuItem Click="DeleteNode_Click" Header="Delete" />
+											<MenuItem Click="DeleteNode_Click" Header="{tombLib:Localize Delete}" />
 										</ContextMenu>
 									</Grid.ContextMenu>
 
@@ -307,7 +308,7 @@
 												<TextBox
 													Margin="0,0,0,2"
 													Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-													ToolTip="Node name" />
+													ToolTip="{tombLib:Localize NodeName}" />
 												<TextBlock
 													Foreground="{DynamicResource Brush_Text_Warning}"
 													Text="{Binding FunctionName}"
@@ -330,7 +331,7 @@
 										VerticalAlignment="Top"
 										Fill="{DynamicResource Brush_Border}"
 										Stroke="{DynamicResource Brush_Text}"
-										ToolTip="Input" />
+										ToolTip="{tombLib:Localize PortInput}" />
 
 									<!--  Next output port (bottom center)  -->
 									<Ellipse
@@ -344,7 +345,7 @@
 										MouseLeftButtonDown="OutputPort_MouseDown"
 										Stroke="{DynamicResource Brush_Text}"
 										Tag="Next"
-										ToolTip="Drag to connect (Next)" />
+										ToolTip="{tombLib:Localize PortNext}" />
 
 									<!--  Else output port (right center, conditions only)  -->
 									<Ellipse
@@ -358,7 +359,7 @@
 										MouseLeftButtonDown="OutputPort_MouseDown"
 										Stroke="{DynamicResource Brush_Text}"
 										Tag="Else"
-										ToolTip="Drag to connect (Else)"
+										ToolTip="{tombLib:Localize PortElse}"
 										Visibility="{Binding IsCondition, Converter={StaticResource BoolToVis}}" />
 								</Grid>
 							</DataTemplate>

@@ -30,6 +30,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly bool[] _backupVolumeState = new bool[2];
 
         private readonly IMessageService _messageService;
+        private readonly ILocalizationService _localizationService;
 
         private bool _lockUi;
         public bool Cancelled { get; private set; }
@@ -51,6 +52,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         {
             _editor = editor;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
+            _localizationService = ServiceLocator.ResolveService<ILocalizationService>().WithKeysFor(this);
 
             _usedList = global ? editor.Level.Settings.GlobalEventSets : editor.Level.Settings.VolumeEventSets;
             _instance = instance;
@@ -86,8 +88,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public bool HasSelectedSet => SelectedSet != null;
 
         public string Title => GenericMode
-            ? "Edit " + (GlobalMode ? "global" : "volume") + " event sets"
-            : "Edit volume: " + _instance!.ToShortString();
+            ? _localizationService[GlobalMode ? "TitleGlobal" : "TitleVolume"]
+            : _localizationService.Format("TitleVolumeSpecific", _instance!.ToShortString());
 
         /// <summary>Follows the editor's 3D selection to another volume (mirrors FormEventSetEditor.ChangeVolume).</summary>
         public void FollowVolume(VolumeInstance? instance)
@@ -245,14 +247,14 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
                 if (string.IsNullOrEmpty(value))
                 {
-                    _messageService.ShowError("Event set name can't be empty.");
+                    _messageService.ShowError(_localizationService["NameEmpty"]);
                     SetProperty(ref _name, SelectedSet.Name);
                     return;
                 }
 
                 if (_usedList.Any(s => s.Name == value))
                 {
-                    _messageService.ShowError("An event set with the same name already exists.");
+                    _messageService.ShowError(_localizationService["NameExists"]);
                     SetProperty(ref _name, SelectedSet.Name);
                     return;
                 }

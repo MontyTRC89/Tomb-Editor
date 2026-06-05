@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	Title="{Binding Title}"
 	Width="980"
 	Height="640"
@@ -31,8 +32,8 @@
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-			<Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
-			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
+			<Button Width="80" Command="{Binding OkCommand}" Content="{tombLib:Localize ~Common.OK}" IsDefault="True" />
+			<Button Width="80" Command="{Binding CancelCommand}" Content="{tombLib:Localize ~Common.Cancel}" IsCancel="True" />
 		</controls:SpacedStack>
 
 		<Grid>
@@ -45,12 +46,12 @@
 			<!--  Event set list  -->
 			<DockPanel Grid.Column="0">
 				<controls:SpacedStack DockPanel.Dock="Bottom" Margin="0,6,0,0" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-					<Button Width="48" Command="{Binding NewSetCommand}" Content="New" />
-					<Button Width="48" Command="{Binding CloneSetCommand}" Content="Clone" />
-					<Button Width="52" Command="{Binding DeleteSetCommand}" Content="Delete" />
-					<Button Width="64" Command="{Binding UnassignSetCommand}" Content="Unassign" Visibility="{Binding ShowVolumeOptions, Converter={StaticResource BoolToVis}}" />
+					<Button Width="48" Command="{Binding NewSetCommand}" Content="{tombLib:Localize New}" />
+					<Button Width="48" Command="{Binding CloneSetCommand}" Content="{tombLib:Localize Clone}" />
+					<Button Width="52" Command="{Binding DeleteSetCommand}" Content="{tombLib:Localize Delete}" />
+					<Button Width="64" Command="{Binding UnassignSetCommand}" Content="{tombLib:Localize Unassign}" Visibility="{Binding ShowVolumeOptions, Converter={StaticResource BoolToVis}}" />
 				</controls:SpacedStack>
-				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="Event sets:" />
+				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="{tombLib:Localize EventSets}" />
 				<ListBox
 					DisplayMemberPath="Name"
 					ItemsSource="{Binding Sets}"
@@ -68,9 +69,9 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="180" />
 					</Grid.ColumnDefinitions>
-					<TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0" Text="Name:" />
+					<TextBlock Grid.Column="0" VerticalAlignment="Center" Margin="0,0,6,0" Text="{tombLib:Localize Name}" />
 					<TextBox Grid.Column="1" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-					<TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0" Text="Event:" />
+					<TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0,6,0" Text="{tombLib:Localize Event}" />
 					<ComboBox
 						Grid.Column="3"
 						ItemsSource="{Binding EventTypes}"
@@ -87,16 +88,16 @@
 				<Border DockPanel.Dock="Bottom" Margin="0,6,0,0" Visibility="{Binding ShowVolumeOptions, Converter={StaticResource BoolToVis}}">
 					<StackPanel>
 						<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<TextBlock VerticalAlignment="Center" Text="Activators:" />
-							<CheckBox Content="Lara" IsChecked="{Binding ActivatorLara, Mode=TwoWay}" />
-							<CheckBox Content="NPCs" IsChecked="{Binding ActivatorNpc, Mode=TwoWay}" />
-							<CheckBox Content="Other moveables" IsChecked="{Binding ActivatorOtherMoveables, Mode=TwoWay}" />
-							<CheckBox Content="Statics" IsChecked="{Binding ActivatorStatics, Mode=TwoWay}" />
-							<CheckBox Content="Flyby" IsChecked="{Binding ActivatorFlyBy, Mode=TwoWay}" />
+							<TextBlock VerticalAlignment="Center" Text="{tombLib:Localize Activators}" />
+							<CheckBox Content="{tombLib:Localize Lara}" IsChecked="{Binding ActivatorLara, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize Npcs}" IsChecked="{Binding ActivatorNpc, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize OtherMoveables}" IsChecked="{Binding ActivatorOtherMoveables, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize Statics}" IsChecked="{Binding ActivatorStatics, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize Flyby}" IsChecked="{Binding ActivatorFlyBy, Mode=TwoWay}" />
 						</controls:SpacedStack>
 						<controls:SpacedStack Margin="0,4,0,0" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-							<CheckBox Content="Enable volume" IsChecked="{Binding EnableVolume, Mode=TwoWay}" />
-							<CheckBox Content="Detect in adjacent rooms" IsChecked="{Binding DetectInAdjacentRooms, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize EnableVolume}" IsChecked="{Binding EnableVolume, Mode=TwoWay}" />
+							<CheckBox Content="{tombLib:Localize DetectInAdjacentRooms}" IsChecked="{Binding DetectInAdjacentRooms, Mode=TwoWay}" />
 						</controls:SpacedStack>
 					</StackPanel>
 				</Border>
@@ -113,13 +114,13 @@
 						Margin="0,0,0,6"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-						<TextBlock VerticalAlignment="Center" Text="Mode:" />
+						<TextBlock VerticalAlignment="Center" Text="{tombLib:Localize Mode}" />
 						<RadioButton
-							Content="Node editor"
+							Content="{tombLib:Localize NodeEditorMode}"
 							GroupName="EventMode"
 							IsChecked="{Binding IsNodeEditorMode, Mode=TwoWay}" />
 						<RadioButton
-							Content="Level script"
+							Content="{tombLib:Localize LevelScriptMode}"
 							GroupName="EventMode"
 							IsChecked="{Binding IsLevelScriptMode, Mode=TwoWay}" />
 					</controls:SpacedStack>
@@ -137,12 +138,12 @@
 						BorderThickness="1"
 						Visibility="{Binding IsLevelScriptMode, Converter={StaticResource BoolToVis}}">
 						<StackPanel Margin="8">
-							<TextBlock Margin="0,0,0,4" Text="Function:" />
+							<TextBlock Margin="0,0,0,4" Text="{tombLib:Localize Function}" />
 							<ComboBox
 								IsEditable="True"
 								ItemsSource="{Binding ScriptFunctions}"
 								Text="{Binding EventFunction, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-							<TextBlock Margin="0,8,0,4" Text="Argument:" />
+							<TextBlock Margin="0,8,0,4" Text="{tombLib:Localize Argument}" />
 							<TextBox Text="{Binding EventArgument, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 						</StackPanel>
 					</Border>
