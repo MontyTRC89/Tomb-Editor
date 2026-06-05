@@ -127,15 +127,15 @@
     <moveable id="145" name="Passport (opening up)" ten="INVENTORY_PASSPORT" hidden="true" />
     <moveable id="146" name="Stopwatch" hidden="true" />
     <moveable id="147" name="Lara and butler picture" ten="INVENTORY_POLAROID" hidden="true" />
-    <moveable id="148" name="Cutscene Object 1" ten="ANIMATING101" />
-    <moveable id="149" name="Cutscene Object 2" ten="ANIMATING102" />
-    <moveable id="150" name="Cutscene Object 3" ten="ANIMATING103" />
-    <moveable id="151" name="Cutscene Object 4" ten="ANIMATING104" />
-    <moveable id="152" name="Cutscene Object 5" ten="ANIMATING105" />
-    <moveable id="153" name="Cutscene Object 6" ten="ANIMATING106" />
-    <moveable id="154" name="Cutscene Object 7" ten="ANIMATING107" />
-    <moveable id="155" name="Cutscene Object 8" ten="ANIMATING108" />
-    <moveable id="156" name="Cutscene Object 9" ten="ANIMATING109" />
+    <moveable id="148" name="Cutscene Object 1" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="149" name="Cutscene Object 2" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="150" name="Cutscene Object 3" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="151" name="Cutscene Object 4" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="152" name="Cutscene Object 5" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="153" name="Cutscene Object 6" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="154" name="Cutscene Object 7" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="155" name="Cutscene Object 8" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="156" name="Cutscene Object 9" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="158" name="Passport (closed)" hidden="true" />
     <moveable id="159" name="Bar with 'N' logo" hidden="true" />
     <moveable id="160" name="Pistols (pickup)" essential="false" ten="PISTOL_ITEM"  />
@@ -229,7 +229,7 @@
     <moveable id="277" name="Element 115" />
     <moveable id="278" name="Eye of Isis" />
     <moveable id="279" name="Ora dagger" />
-    <moveable id="282" name="Fire-breathing dragon statue" essential="false" ten="ANIMATING2" /> 
+    <moveable id="282" name="Fire-breathing dragon statue" essential="false" ten="ANIMATING1 - ANIMATING128" /> 
     <moveable id="285" name="Unknown visible #285" />
     <moveable id="287" name="Tyrannosaur" essential="false" ten="TYRANNOSAUR"/>
     <moveable id="288" name="Raptor" essential="false" ten="RAPTOR"/>
@@ -269,12 +269,12 @@
     <moveable id="338" name="Pirahnas" essential="false" /> 
     <moveable id="339" name="Fish" essential="false" ten="FISH_EMITTER" />
     <moveable id="347" name="Bat swarm" essential="false" ten="BAT_EMMITER" />
-    <moveable id="349" name="Animating 1" essential="false" ten="ANIMATING5" />
-    <moveable id="350" name="Animating 2" essential="false" ten="ANIMATING6" />
-    <moveable id="351" name="Animating 3" essential="false" ten="ANIMATING7" />
-    <moveable id="352" name="Animating 4" essential="false" ten="ANIMATING8" />
-    <moveable id="353" name="Animating 5" essential="false" ten="ANIMATING9" />
-    <moveable id="354" name="Animating 6" essential="false" ten="ANIMATING10" />
+    <moveable id="349" name="Animating 1" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="350" name="Animating 2" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="351" name="Animating 3" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="352" name="Animating 4" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="353" name="Animating 5" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="354" name="Animating 6" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="355" name="Skybox" hidden="true" ten="HORIZON" />
     <moveable id="357" name="Unknown id #357" />
     <moveable id="358" name="Unknown id #358" />

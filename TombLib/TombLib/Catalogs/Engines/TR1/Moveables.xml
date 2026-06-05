@@ -5,7 +5,7 @@
     <moveable id="2" name="Lara shotgun animation" use_body_from="0" hidden="true" ten="SHOTGUN_ANIM" />
     <moveable id="3" name="Lara magnum animation" use_body_from="0" hidden="true" />
     <moveable id="4" name="Lara Uzi animation" use_body_from="0" hidden="true" ten="UZI_ANIM" />
-    <moveable id="5" name="Lara misc animations" use_body_from="0" hidden="true" ten="ANIMATING33" />
+    <moveable id="5" name="Lara misc animations" use_body_from="0" hidden="true" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="6" name="Lara's evil twin mutant" essential="false" ten="DOPPELGANGER" />
     <moveable id="7" name="Wolf" essential="false" ten="WOLF" />
     <moveable id="8" name="Bear" essential="false" ten="BEAR" />
@@ -51,7 +51,7 @@
     <moveable id="49" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
     <moveable id="50" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
     <moveable id="51" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
-    <moveable id="52" name="Movable tall block" essential="false" ten="ANIMATING_100" />
+    <moveable id="52" name="Movable tall block" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="53" name="Falling ceiling" essential="false" ten="FALLING_CEILING" />
     <moveable id="54" name="Sword of Damocles" essential="false" ten="DAMOCLES_SWORD" />
     <moveable id="55" name="Above-water switch" essential="false" ten="SWITCH_TYPE10" />
@@ -72,20 +72,20 @@
     <moveable id="71" name="Passport (opening up)" hidden="true" ten="INVENTORY_PASSPORT" />
     <moveable id="72" name="Compass" hidden="true" ten="COMPASS_ITEM" />
     <moveable id="73" name="Lara's home polaroid" hidden="true" ten="INVENTORY_POLAROID" />
-    <moveable id="74" name="Cogs (animated)" essential="false" ten="ANIMATING101" />
-    <moveable id="75" name="Cogs (animated)" essential="false" ten="ANIMATING102" />
-    <moveable id="76" name="Cogs (animated)" essential="false" ten="ANIMATING103" />
-    <moveable id="77" name="Cutscene Object 1" essential="false" ten="ANIMATING_104" />
-    <moveable id="78" name="Cutscene Object 2" essential="false" ten="ANIMATING_105" />
-    <moveable id="79" name="Cutscene Object 3" essential="false" ten="ANIMATING_106" />
-    <moveable id="80" name="Cutscene Object 4" essential="false" ten="ANIMATING_107" />
+    <moveable id="74" name="Cogs (animated)" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="75" name="Cogs (animated)" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="76" name="Cogs (animated)" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="77" name="Cutscene Object 1" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="78" name="Cutscene Object 2" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="79" name="Cutscene Object 3" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="80" name="Cutscene Object 4" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="81" name="Passport (closed)" hidden="true" ten="PC_SAVE_INV_ITEM" />
-    <moveable id="82" name="Natla's logo" essential="false" hidden="true" ten="ANIMATING80" />
-    <moveable id="83" name="Save crystal" ten="ANIMATING81" />
+    <moveable id="82" name="Natla's logo" essential="false" hidden="true" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="83" name="Save crystal" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="95" name="Sunglasses" hidden="true" ten="INVENTORY_SUNGLASSES" />
     <moveable id="96" name="Cassette player and headphones" hidden="true" ten="INVENTORY_HEADPHONES" />
-    <moveable id="97" name="Direction keys" hidden="true" ten="ANIMATING83" />
-    <moveable id="98" name="Flashlight" hidden="true" ten="ANIMATING84" />
+    <moveable id="97" name="Direction keys" hidden="true" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="98" name="Flashlight" hidden="true" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="99" name="Pistol" id2="84" ten="PISTOLS_ITEM" />
     <moveable id="100" name="Shotgun" id2="85" ten="SHOTGUN_ITEM" />
     <moveable id="101" name="Magnum" id2="86" />
@@ -120,13 +120,13 @@
     <moveable id="140" name="Lock 4" essential="false" ten="KEY_HOLE4" />
     <moveable id="145" name="Complete Scion" ten="KEY_ITEM1" />
     <moveable id="146" name="Complete Scion" ten="KEY_ITEM2" />
-    <moveable id="147" name="Scion Holder" essential="false" ten="ANIMATING103" />
+    <moveable id="147" name="Scion Holder" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="148" name="Pickup 1" id2="141" essential="false" ten="PICKUP_ITEM1" />
     <moveable id="149" name="Pickup 2" id2="142" essential="false" ten="PICKUP_ITEM2" />
     <moveable id="150" name="Scion Piece" id2="143" id3="144" ten="KEY_ITEM_COMBO1" />
-    <moveable id="161" name="Centaur statue" essential="false" ten="ANIMATING106" />
-    <moveable id="162" name="Shack suspended from wire rope" essential="false" ten="ANIMATING104" />
-    <moveable id="163" name="Mutant egg and holder (normal size)" essential="false" ten="ANIMATING105" />
+    <moveable id="161" name="Centaur statue" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="162" name="Shack suspended from wire rope" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="163" name="Mutant egg and holder (normal size)" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="166" name="Gunflare" hidden="true" ten="GUN_FLASH" />
     <moveable id="169" name="Camera target" ten="CAMERA_TARGET" />
     <moveable id="170" name="Waterfall mist" essential="false" ten="WATERFALLMIST" />
@@ -136,7 +136,7 @@
     <moveable id="179" name="Flame emitter" essential="false" ten="FLAME_EMITTER1" />
     <moveable id="180" name="Flowing Atlantean lava" essential="false" />
     <moveable id="181" name="Mutant egg and holder (big)" essential="false" />
-    <moveable id="182" name="Motorboat" essential="false" ten="ANIMATING102" />
+    <moveable id="182" name="Motorboat" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="183" name="Earthquake" essential="false" ten="EARTHQUAKE" />
     <moveable id="189" name="Lara's ponytail" hidden="true" ten="HAIR" />
     <moveable id="207" name="Gunflare" hidden="true" ten="GUN_FLASH" />

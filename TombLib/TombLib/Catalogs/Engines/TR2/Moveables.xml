@@ -24,7 +24,7 @@
     <moveable id="21" name="Rat" essential="false" ten="RAT" />
     <moveable id="22" name="Dragon (front)" show_with="23" essential="false" ten="DRAGON_FRONT" />
     <moveable id="23" name="Dragon (back)" show_with="22" essential="false" ten="DRAGON_BACK" />
-    <moveable id="24" name="Gondola (Venetian boat)" essential="false" ten="ANIMATING100" />
+    <moveable id="24" name="Gondola (Venetian boat)" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="25" name="Shark" essential="false" ten="SHARK" />
     <moveable id="26" name="Yellow moray eel" essential="false" ten="BARRACUDA" />
     <moveable id="27" name="Black moray eel" essential="false" ten="BARRACUDA" />
@@ -69,7 +69,7 @@
     <moveable id="68" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
     <moveable id="69" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
     <moveable id="70" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1 - PUSHABLE_OBJECT_CLIMBABLE10" />
-    <moveable id="71" name="Big bowl (Ice Palace)" essential="false" ten="ANIMATING1" />
+    <moveable id="71" name="Big bowl (Ice Palace)" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="72" name="Breakable window (can shoot out)" essential="false" ten="SMASH_OBJECT1" />
     <moveable id="73" name="Breakable window (must jump through)" essential="false" ten="SMASH_OBJECT2" />
     <moveable id="76" name="Airplane propeller" essential="false" ten="AIRPLANE_PROPELLER" />
@@ -89,12 +89,12 @@
     <moveable id="92" name="Wheel knob" essential="false" ten="SWITCH_TYPE1" />
     <moveable id="93" name="Above-water switch" essential="false" ten="SWITCH_TYPE2" />
     <moveable id="94" name="Underwater propeller" essential="false" ten="LARGE_FAN" />
-    <moveable id="95" name="Air fan" essential="false" ten="ANIMATING1" />
+    <moveable id="95" name="Air fan" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="96" name="Swinging box / spiky ball" essential="false" ten="SWINGING_BOX, SWINGING_SPIKE_BAG" />
-    <moveable id="97" name="Cutscene Object 1" ten="ANIMATING101" />
-    <moveable id="98" name="Cutscene Object 2" ten="ANIMATING102" />
-    <moveable id="99" name="Cutscene Object 3" ten="ANIMATING103" />
-    <moveable id="100" name="Cutscene Object 4" ten="ANIMATING104" />
+    <moveable id="97" name="Cutscene Object 1" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="98" name="Cutscene Object 2" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="99" name="Cutscene Object 3" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="100" name="Cutscene Object 4" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="101" name="Rolling storage drums" essential="false" ten="ROLLING_BARRELS" />
     <moveable id="102" name="Zipline handle" essential="false" ten="ZIPLINE_HANDLE" />
     <moveable id="103" name="Above-water switch" essential="false" ten="SWITCH_TYPE3" />
@@ -117,16 +117,16 @@
     <moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
     <moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
     <moveable id="122" name="Lara and butler picture" hidden="true" ten="INVENTORY_POLAROID" />
-    <moveable id="123" name="Cutscene_Object 5" ten="ANIMATING105" />
-    <moveable id="124" name="Cutscene Object 6" ten="ANIMATING106" />
-    <moveable id="125" name="Cutscene Object 7" ten="ANIMATING107" />
-    <moveable id="126" name="Cutscene Object 8" ten="ANIMATING108" />
-    <moveable id="127" name="Cutscene Object 9" ten="ANIMATING109" />
-    <moveable id="128" name="Cutscene Object 10" ten="ANIMATING110" />
-    <moveable id="129" name="Cutscene Object 11" ten="ANIMATING111" />
-    <moveable id="130" name="Cutscene Object 12" ten="ANIMATING112" />
-    <moveable id="131" name="Cutscene Object 13" ten="ANIMATING113" />
-    <moveable id="132" name="Cutscene Object 14" ten="ANIMATING114" />
+    <moveable id="123" name="Cutscene_Object 5" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="124" name="Cutscene Object 6" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="125" name="Cutscene Object 7" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="126" name="Cutscene Object 8" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="127" name="Cutscene Object 9" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="128" name="Cutscene Object 10" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="129" name="Cutscene Object 11" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="130" name="Cutscene Object 12" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="131" name="Cutscene Object 13" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="132" name="Cutscene Object 14" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="133" name="Secret #3" id2="192" use_body_from="248" />
     <moveable id="134" name="Natla's logo" hidden="true" />
     <moveable id="152" name="Flare" ten="FLARE_ITEM" />
@@ -179,16 +179,16 @@
     <moveable id="213" name="Dripping water" essential="false"  />
     <moveable id="214" name="Tyrannosaur" essential="false" ten="TYRANNOSAUR" />
     <moveable id="215" name="Singing birds" essential="false" ten="ANIMATING1" />
-    <moveable id="216" name="Bartoli's Hideout clock" essential="false" ten="ANIMATING2" />
+    <moveable id="216" name="Bartoli's Hideout clock" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="217" name="Placeholder" essential="false" />
     <moveable id="218" name="Dragon bones (front)" show_with="219" ten="DRAGON_BONE_FRONT" />
     <moveable id="219" name="Dragon bones (back)" show_with="218" ten="DRAGON_BONE_BACK" />
-    <moveable id="222" name="Aquatic Mine (Venice)" essential="false" ten="ANIMATING10" />
+    <moveable id="222" name="Aquatic Mine (Venice)" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="223" name="Menu background" hidden="true" />
     <moveable id="225" name="Gong-hammering animation" use_body_from="0" hidden="true" />
-    <moveable id="226" name="Gong (Ice Palace)" essential="false" ten="ANIMATING1" />
-    <moveable id="227" name="Detonator box" essential="false" ten="ANIMATING1" />
-    <moveable id="228" name="Helicopter (Diving Area)" essential="false" ten="ANIMATING1" />
+    <moveable id="226" name="Gong (Ice Palace)" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="227" name="Detonator box" essential="false" ten="ANIMATING1 - ANIMATING128" />
+    <moveable id="228" name="Helicopter (Diving Area)" essential="false" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="235" name="Flare burning?" hidden="true" />
     <moveable id="240" name="Gunflare" hidden="true" />
     <moveable id="241" name="Gunflare (spiky)" hidden="true" />
@@ -207,6 +207,6 @@
     <moveable id="259" name="Helicopter" essential="false"  />
     <moveable id="260" name="The butler" essential="false" ten="WINSTON" />
     <moveable id="262" name="Lara cutscene placement" ten="LARA_START_POS" />
-    <moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" ten="ANIMATING1" />
+    <moveable id="263" name="Shotgun animation (Home Sweet Home)" use_body_from="0" hidden="true" ten="ANIMATING1 - ANIMATING128" />
     <moveable id="264" name="Dragon explosion emitter" />
 </moveables>
