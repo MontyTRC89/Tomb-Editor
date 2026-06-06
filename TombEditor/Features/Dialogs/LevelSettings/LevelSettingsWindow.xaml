@@ -147,7 +147,7 @@
                         <!-- Script folder (TRNG only) -->
                         <StackPanel Margin="0,3"
                         Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Script folder:" HorizontalAlignment="Left" Width="500"/>
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Path of TXT files for script (Optional)" HorizontalAlignment="Left" Width="500"/>
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
@@ -162,7 +162,7 @@
                         <!-- Lua script file (TombEngine only) -->
                         <StackPanel Margin="0,3"
                         Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Lua script file:" HorizontalAlignment="Left" Width="500" />
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Path of Lua level script file:" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
