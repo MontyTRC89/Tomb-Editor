@@ -27,6 +27,7 @@ using TombLib.Forms;
 using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.LevelData;
+using TombLib.Utils;
 using TombLib.WPF;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
@@ -151,6 +152,17 @@ public partial class MainWindow : Window
 			ApplyFlybyTimelineVisibility();
 		}
 
+		// Keep the window title in sync with the open level + dirty state, mirroring
+		// FormMain ("Tomb Editor <ver> - <level name>[*]"). The custom window chrome's
+		// title bar TextBlock binds to Window.Title, so updating it is enough.
+		if (obj is Editor.LevelFileNameChangedEvent
+			or Editor.HasUnsavedChangesChangedEvent
+			or Editor.LevelChangedEvent
+			or Editor.InitEvent)
+		{
+			UpdateWindowTitle();
+		}
+
 		if (obj is Editor.ToolWindowToggleEvent toggle && _anchorableIdByType.TryGetValue(toggle.ContentType, out var id))
 			ToggleAnchorable(id);
 
@@ -166,6 +178,16 @@ public partial class MainWindow : Window
 
 		if (obj is Editor.SwitchLayoutEvent layoutEvent)
 			ApplyLayoutByIndex(layoutEvent.LayoutIndex);
+	}
+
+	private void UpdateWindowTitle()
+	{
+		var level = _editor.Level;
+		string levelName = level is null || string.IsNullOrEmpty(level.Settings.LevelFilePath)
+			? "Untitled"
+			: PathC.GetFileNameWithoutExtensionTry(level.Settings.LevelFilePath);
+
+		Title = "Tomb Editor " + System.Windows.Forms.Application.ProductVersion + " - " + levelName + (_editor.HasUnsavedChanges ? "*" : "");
 	}
 
 	private void OnEditorEventForFloatingToolboxes(IEditorEvent obj)
