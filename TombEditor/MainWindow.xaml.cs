@@ -42,6 +42,10 @@ public partial class MainWindow : Window
 	private readonly ToolPaletteFloating _toolPalette;
 	private readonly ObjectBrushToolbox _objectBrushToolbox;
 
+	// Floating info/warning/error popup that animates in at the bottom-right of the 3D viewport.
+	// Same WinForms control FormMain/MainView used; reused here since the viewport is still hosted.
+	private readonly PopUpInfo _popup = new();
+
 	private readonly IMessageService _messageService;
 	private readonly ILocalizationService _localizationService;
 
@@ -162,6 +166,15 @@ public partial class MainWindow : Window
 		{
 			UpdateWindowTitle();
 		}
+
+		// Floating info/warning/error popup over the 3D viewport, mirroring MainView. Owner is
+		// null so it always shows (the static guard only gates WinForms owners); messages are
+		// dismissed when the level changes.
+		if (obj is Editor.MessageEvent message)
+			PopUpInfo.Show(_popup, null, _panel3D, message.Message, message.Type);
+
+		if (obj is Editor.LevelChangedEvent)
+			_popup.Hide();
 
 		if (obj is Editor.ToolWindowToggleEvent toggle && _anchorableIdByType.TryGetValue(toggle.ContentType, out var id))
 			ToggleAnchorable(id);
@@ -295,6 +308,7 @@ public partial class MainWindow : Window
 		flybyTimelineView?.Cleanup();
 		statisticsBarView?.Cleanup();
 		panel2DMap?.Dispose();
+		_popup?.Dispose();
 		_panel3D?.Dispose();
 
 		base.OnClosed(e);
