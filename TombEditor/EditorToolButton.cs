@@ -141,6 +141,78 @@ public static class EditorToolButton
 
 	#endregion
 
+	#region PortalOpacity / PortalEffect (ToggleButton ↔ selected portal)
+
+	public static readonly DependencyProperty PortalOpacityProperty = DependencyProperty.RegisterAttached(
+		"PortalOpacity",
+		typeof(PortalOpacity?),
+		typeof(EditorToolButton),
+		new PropertyMetadata(null, OnPortalOpacityChanged));
+
+	public static PortalOpacity? GetPortalOpacity(DependencyObject obj) => (PortalOpacity?)obj.GetValue(PortalOpacityProperty);
+	public static void SetPortalOpacity(DependencyObject obj, PortalOpacity? value) => obj.SetValue(PortalOpacityProperty, value);
+
+	private static void OnPortalOpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is not ToggleButton toggle || e.NewValue is not PortalOpacity opacity)
+			return;
+
+		ApplyPortalOpacity(toggle, opacity);
+		SubscribeWeak(toggle, ev =>
+		{
+			if (ev is Editor.SelectedObjectChangedEvent or Editor.ObjectChangedEvent or Editor.InitEvent)
+				ApplyPortalOpacity(toggle, opacity);
+		});
+	}
+
+	private static void ApplyPortalOpacity(ToggleButton toggle, PortalOpacity opacity)
+	{
+		// Mirrors MainView.RefreshControls: the opacity buttons highlight the selected portal's
+		// current mode and are only usable while a portal is selected.
+		var portal = Editor.Instance.SelectedObject as PortalInstance;
+		toggle.IsEnabled = portal is not null;
+
+		var active = portal is not null && portal.Opacity == opacity;
+		if (toggle.IsChecked != active)
+			toggle.IsChecked = active;
+	}
+
+	public static readonly DependencyProperty PortalEffectProperty = DependencyProperty.RegisterAttached(
+		"PortalEffect",
+		typeof(PortalEffectType?),
+		typeof(EditorToolButton),
+		new PropertyMetadata(null, OnPortalEffectChanged));
+
+	public static PortalEffectType? GetPortalEffect(DependencyObject obj) => (PortalEffectType?)obj.GetValue(PortalEffectProperty);
+	public static void SetPortalEffect(DependencyObject obj, PortalEffectType? value) => obj.SetValue(PortalEffectProperty, value);
+
+	private static void OnPortalEffectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is not ToggleButton toggle || e.NewValue is not PortalEffectType effect)
+			return;
+
+		ApplyPortalEffect(toggle, effect);
+		SubscribeWeak(toggle, ev =>
+		{
+			if (ev is Editor.SelectedObjectChangedEvent or Editor.ObjectChangedEvent or Editor.InitEvent
+				or Editor.LevelChangedEvent or Editor.GameVersionChangedEvent)
+				ApplyPortalEffect(toggle, effect);
+		});
+	}
+
+	private static void ApplyPortalEffect(ToggleButton toggle, PortalEffectType effect)
+	{
+		// The classic mirror effect is TombEngine-only, matching butMirror's enable rule in MainView.
+		var portal = Editor.Instance.SelectedObject as PortalInstance;
+		toggle.IsEnabled = portal is not null && (Editor.Instance.Level?.IsTombEngine ?? false);
+
+		var active = portal is not null && portal.Effect == effect;
+		if (toggle.IsChecked != active)
+			toggle.IsChecked = active;
+	}
+
+	#endregion
+
 	#region Weak event subscription
 
 	/// <summary>

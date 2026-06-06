@@ -142,19 +142,21 @@
 			</ToolBar>
 
 			<ToolBar>
-				<!--  Opacity toggles (one-shot — opacity is per-face state, not a global flag)  -->
-				<Button editor:EditorToolButton.Command="ToggleNoOpacity">
+				<!--  Portal opacity / effect — ToggleButtons that highlight the selected portal's current
+					mode and are enabled only while a portal is selected (mirror is TombEngine-only),
+					matching the WinForms butOpacity*/butMirror Checked + Enabled logic.  -->
+				<ToggleButton editor:EditorToolButton.Command="ToggleNoOpacity" editor:EditorToolButton.PortalOpacity="None">
 					<Image Source="{tomb:Icon Texture/Solid}" />
-				</Button>
-				<Button editor:EditorToolButton.Command="ToggleOpacity">
+				</ToggleButton>
+				<ToggleButton editor:EditorToolButton.Command="ToggleOpacity" editor:EditorToolButton.PortalOpacity="SolidFaces">
 					<Image Source="{tomb:Icon Texture/ToggleOpacity}" />
-				</Button>
-				<Button editor:EditorToolButton.Command="ToggleOpacity2">
+				</ToggleButton>
+				<ToggleButton editor:EditorToolButton.Command="ToggleOpacity2" editor:EditorToolButton.PortalOpacity="TraversableFaces">
 					<Image Source="{tomb:Icon Texture/ToggleOpacity2}" />
-				</Button>
-				<Button editor:EditorToolButton.Command="ToggleClassicPortalMirror">
+				</ToggleButton>
+				<ToggleButton editor:EditorToolButton.Command="ToggleClassicPortalMirror" editor:EditorToolButton.PortalEffect="ClassicMirror">
 					<Image Source="{tomb:Icon Texture/MirrorPortal}" />
-				</Button>
+				</ToggleButton>
 			</ToolBar>
 
 			<ToolBar>
