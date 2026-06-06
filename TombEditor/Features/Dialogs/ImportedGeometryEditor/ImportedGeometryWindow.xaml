@@ -16,6 +16,7 @@
 	d:DataContext="{d:DesignInstance Type=local:ImportedGeometryWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
 	Background="{DynamicResource Brush_Background}"
+	ShowInTaskbar="False"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowStartupLocation="CenterOwner"
 	mc:Ignorable="d">

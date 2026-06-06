@@ -16,6 +16,7 @@
 	MinHeight="560"
 	d:DataContext="{d:DesignInstance Type=local:AnimatedTexturesWindowViewModel}"
 	Background="{DynamicResource Brush_Background}"
+	ShowInTaskbar="False"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowStartupLocation="CenterOwner"
 	mc:Ignorable="d">

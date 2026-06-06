@@ -15,6 +15,7 @@
 	md:DialogServiceViews.IsRegistered="True"
 	Background="{DynamicResource Brush_Background}"
 	ResizeMode="CanMinimize"
+	ShowInTaskbar="False"
 	SizeToContent="Height"
 	Style="{DynamicResource CustomWindowStyle}"
 	WindowStartupLocation="CenterScreen"
