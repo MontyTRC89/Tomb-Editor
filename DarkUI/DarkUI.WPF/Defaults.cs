@@ -175,7 +175,7 @@ public static class Defaults
 	public static readonly double TitleBar_PathIconStrokeWidth = 1;
 	public static readonly double TitleBar_ButtonWidth = 45;
 	public static readonly double TitleBar_FontSize = 12;
-	public static readonly double TitleBar_IconWidth = 64;
+	public static readonly double TitleBar_IconWidth = 18;
 	public static readonly double TitleBar_IconVerticalOffset = -12;
 
 	public static readonly double TabControl_SelectedTabMarginOffset = -2;

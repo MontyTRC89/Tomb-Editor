@@ -60,11 +60,13 @@
 										</Grid.ColumnDefinitions>
 
 										<Image
+											Width="{x:Static local:Defaults.TitleBar_IconWidth}"
 											Height="{x:Static local:Defaults.TitleBar_IconWidth}"
+											VerticalAlignment="Center"
 											Opacity="{DynamicResource Opacity_DisabledContent}"
 											Source="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}">
 											<Image.Margin>
-												<Thickness Top="{x:Static local:Defaults.TitleBar_IconVerticalOffset}" />
+												<Thickness Left="{x:Static local:Defaults.MediumThicknessWidth}" />
 											</Image.Margin>
 										</Image>
 										<TextBlock

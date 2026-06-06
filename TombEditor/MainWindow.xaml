@@ -26,6 +26,7 @@
 	xmlns:map2d="clr-namespace:TombEditor.Features.Map2D"
 	xmlns:statisticsBar="clr-namespace:TombEditor.Features.StatisticsBar"
 	Title="Tomb Editor"
+	Icon="pack://application:,,,/TE.ico"
 	Width="1280"
 	Height="800"
 	MinWidth="800"

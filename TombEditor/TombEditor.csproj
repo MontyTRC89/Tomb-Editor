@@ -111,7 +111,7 @@
     <ProjectReference Include="..\TombLib\TombLib\TombLib.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TE.ico" />
+    <Resource Include="TE.ico" />
     <Resource Include="Resources\icons_actions\*.png" />
     <Resource Include="Resources\icons_general\*.png" />
     <Resource Include="Resources\icons_objects\*.png" />
