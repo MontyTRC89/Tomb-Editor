@@ -147,6 +147,15 @@ public partial class MainWindow : Window
 	{
 		OnEditorEventForFloatingToolboxes(obj);
 
+		// Suspend/resume Panel3D painting around geometry rebuilds (e.g. SmartBuildGeometry while
+		// dragging geometry, and geometry undo). Mirrors MainView's Suspend/ResumeRenderingEvent
+		// handling — without it the panel keeps painting half-rebuilt geometry on the shared D3D
+		// immediate context, which shows up as the 3D view fragmenting into horizontal stripes.
+		if (obj is Editor.SuspendRenderingEvent)
+			_panel3D.AllowRendering = false;
+		else if (obj is Editor.ResumeRenderingEvent)
+			_panel3D.AllowRendering = true;
+
 		// Toolbar toggle commands flip a flag on Editor.Configuration and then raise
 		// ConfigurationChangedEvent (see CommandHandler entries like "DrawAllRooms"). Mirror
 		// MainView.RefreshControls(...) so the hosted Panel3D actually picks up the change.
