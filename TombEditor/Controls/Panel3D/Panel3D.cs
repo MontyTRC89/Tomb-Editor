@@ -187,6 +187,9 @@ namespace TombEditor.Controls.Panel3D
 
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetAncestor(IntPtr hwnd, uint flags);
+        private const uint GA_ROOT = 2; // Root window obtained by walking the chain of parent windows.
         private IntPtr _lastWindow { get; set; }
 
         public Panel3D()
