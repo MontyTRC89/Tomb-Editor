@@ -24,6 +24,7 @@
 	xmlns:triggerList="clr-namespace:TombEditor.Features.DockableViews.TriggerList"
 	xmlns:flybyTimeline="clr-namespace:TombEditor.Features.FlybyTimeline.UI"
 	xmlns:map2d="clr-namespace:TombEditor.Features.Map2D"
+	xmlns:statisticsBar="clr-namespace:TombEditor.Features.StatisticsBar"
 	Title="Tomb Editor"
 	Width="1280"
 	Height="800"
@@ -497,10 +498,10 @@
 			</ToolBarTray>
 		</Border>
 
-		<!--  Bottom: Status bar (placeholder)  -->
-		<StatusBar DockPanel.Dock="Bottom">
-			<StatusBarItem>Ready</StatusBarItem>
-		</StatusBar>
+		<!--  Bottom: statistics bar. Mirrors the WinForms MainView tbStats (rooms / objects /
+			statics / triggers / lights / cameras / flybys on line 1; room geometry + last compile
+			output on line 2), with limit-exceeded figures highlighted and a warning tooltip.  -->
+		<statisticsBar:StatisticsBarView x:Name="statisticsBarView" DockPanel.Dock="Bottom" />
 
 		<!--  Center: AvalonDock  -->
 		<avalonDock:DockingManager x:Name="dockManager">

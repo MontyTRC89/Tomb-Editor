@@ -271,6 +271,7 @@ public partial class MainWindow : Window
 		texturePanelView?.Cleanup();
 		contentBrowserView?.Cleanup();
 		flybyTimelineView?.Cleanup();
+		statisticsBarView?.Cleanup();
 		panel2DMap?.Dispose();
 		_panel3D?.Dispose();
 
