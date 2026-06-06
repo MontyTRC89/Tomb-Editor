@@ -434,7 +434,10 @@
                             <DataGrid.RowStyle>
                                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Selected}" Value="True">
+                                        <!--  Colour every row by sample availability — green when the sample is
+                                            found, red when it is missing — independent of the Selected (assigned)
+                                            checkbox, so a row is never left at the default grey background.  -->
+                                        <DataTrigger Binding="{Binding IsMissing}" Value="False">
                                             <Setter Property="Background" Value="{StaticResource ValidBrush}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsMissing}" Value="True">
