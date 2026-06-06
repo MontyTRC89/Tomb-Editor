@@ -25,6 +25,8 @@
 	xmlns:flybyTimeline="clr-namespace:TombEditor.Features.FlybyTimeline.UI"
 	xmlns:map2d="clr-namespace:TombEditor.Features.Map2D"
 	xmlns:statisticsBar="clr-namespace:TombEditor.Features.StatisticsBar"
+	xmlns:statusBar="clr-namespace:TombEditor.Features.StatusBar"
+	xmlns:toolbar="clr-namespace:TombEditor.Features.Toolbar"
 	Title="Tomb Editor"
 	Icon="pack://application:,,,/TE.ico"
 	Width="1280"
@@ -271,238 +273,10 @@
 			</MenuItem>
 		</Menu>
 
-		<!--
-			Top: editor toolbar. Mirrors the WinForms MainView toolbar (~50 buttons) one-for-one
-			via CommandHandler — each Button's Command is resolved from the same registered
-			TombEditor command name that the legacy WinForms toolbar binds via Tag.
-		-->
-		<Border
-			Background="{DynamicResource Brush_Background_Low}"
-			BorderBrush="{DynamicResource Brush_Border}"
-			BorderThickness="0,0,0,1"
-			DockPanel.Dock="Top">
-			<ToolBarTray Orientation="Horizontal">
-				<ToolBarTray.ContextMenu>
-					<ContextMenu>
-						<MenuItem Header="Customize..." Click="CustomizeToolbar_Click" />
-					</ContextMenu>
-				</ToolBarTray.ContextMenu>
-				<ToolBar>
-					<!--
-						Editor modes — ToggleButtons backed by Editor.Mode so the active mode stays
-						visually pressed, matching the WinForms `butXxx.Checked = mode == EditorMode.X` pattern.
-					-->
-					<ToggleButton editor:EditorToolButton.Command="Switch2DMode" editor:EditorToolButton.ActiveMode="Map2D">
-						<Image Source="{tomb:Icon Actions/2DView}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="SwitchGeometryMode" editor:EditorToolButton.ActiveMode="Geometry">
-						<Image Source="{tomb:Icon Actions/3DView}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="SwitchFaceEditMode" editor:EditorToolButton.ActiveMode="FaceEdit">
-						<Image Source="{tomb:Icon Actions/TextureMode}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="SwitchObjectPlacementMode" editor:EditorToolButton.ActiveMode="ObjectPlacement">
-						<Image Source="{tomb:Icon Toolbox/ObjectPlacement}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="SwitchLightingMode" editor:EditorToolButton.ActiveMode="Lighting">
-						<Image Source="{tomb:Icon Actions/light_on}" />
-					</ToggleButton>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Undo / Redo (one-shot)  -->
-					<Button editor:EditorToolButton.Command="Undo">
-						<Image Source="{tomb:Icon General/undo}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="Redo">
-						<Image Source="{tomb:Icon General/redo}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Camera (Center is one-shot; FlyMode is a toggle but has no persisted config flag)  -->
-					<Button editor:EditorToolButton.Command="ResetCamera">
-						<Image Source="{tomb:Icon Actions/center_direction}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="ToggleFlyMode">
-						<Image Source="{tomb:Icon General/airplane}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Draw flags — ToggleButtons reflect the persisted Rendering3D_* flags  -->
-					<ToggleButton editor:EditorToolButton.Command="DrawPortals" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowPortals">
-						<Image Source="{tomb:Icon Actions/DrawPortals}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawAllRooms" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowAllRooms">
-						<Image Source="{tomb:Icon Actions/DrawAllRooms}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawHorizon" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowHorizon">
-						<Image Source="{tomb:Icon Actions/horizon}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawRoomNames" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowRoomNames">
-						<Image Source="{tomb:Icon Actions/generic_text}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawCardinalDirections" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowCardinalDirections">
-						<Image Source="{tomb:Icon Actions/DrawCardinalDirections}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawExtraBlendingModes" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowExtraBlendingModes">
-						<Image Source="{tomb:Icon Texture/Transparent_1}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="HideTransparentFaces" editor:EditorToolButton.ConfigFlag="Rendering3D_HideTransparentFaces">
-						<Image Source="{tomb:Icon Actions/AlphaTest}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="BilinearFilter" editor:EditorToolButton.ConfigFlag="Rendering3D_BilinearFilter">
-						<Image Source="{tomb:Icon General/blur}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawWhiteTextureLightingOnly" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowLightingWhiteTextureOnly">
-						<Image Source="{tomb:Icon Actions/DrawUntexturedLights}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="ShowRealTintForObjects" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowRealTintForObjects">
-						<Image Source="{tomb:Icon Actions/StaticTint}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawIllegalSlopes" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowIllegalSlopes">
-						<Image Source="{tomb:Icon General/Warning}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DrawSlideDirections" editor:EditorToolButton.ConfigFlag="Rendering3D_ShowSlideDirections">
-						<Image Source="{tomb:Icon Actions/Slide}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DisableGeometryPicking" editor:EditorToolButton.ConfigFlag="Rendering3D_DisablePickingForImportedGeometry">
-						<Image Source="{tomb:Icon Actions/HideCustomGeometry_1}" />
-					</ToggleButton>
-					<ToggleButton editor:EditorToolButton.Command="DisableHiddenRoomPicking" editor:EditorToolButton.ConfigFlag="Rendering3D_DisablePickingForHiddenRooms">
-						<Image Source="{tomb:Icon Actions/HideHiddenRooms}" />
-					</ToggleButton>
-
-					<!--  "Draw objects" dropdown — mirrors butDrawObjects in MainView.Designer.cs.  -->
-					<Menu Background="Transparent" VerticalAlignment="Center">
-						<MenuItem ToolTip="Draw objects" SubmenuOpened="DrawObjectsMenu_SubmenuOpened">
-							<MenuItem.Header>
-								<Image Source="{tomb:Icon Actions/DrawObjects}" />
-							</MenuItem.Header>
-							<MenuItem editor:EditorMenu.Command="DrawMoveables" Tag="Rendering3D_ShowMoveables" />
-							<MenuItem editor:EditorMenu.Command="DrawStatics" Tag="Rendering3D_ShowStatics" />
-							<MenuItem editor:EditorMenu.Command="DrawImportedGeometry" Tag="Rendering3D_ShowImportedGeometry" />
-							<MenuItem editor:EditorMenu.Command="DrawGhostBlocks" Tag="Rendering3D_ShowGhostBlocks" />
-							<MenuItem editor:EditorMenu.Command="DrawVolumes" Tag="Rendering3D_ShowVolumes" />
-							<MenuItem editor:EditorMenu.Command="DrawBoundingBoxes" Tag="Rendering3D_ShowBoundingBoxes" />
-							<MenuItem editor:EditorMenu.Command="DrawOtherObjects" Tag="Rendering3D_ShowOtherObjects" />
-							<MenuItem editor:EditorMenu.Command="DrawLightRadius" Tag="Rendering3D_ShowLightRadius" />
-						</MenuItem>
-					</Menu>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Flipmap + clipboard (one-shot)  -->
-					<Button editor:EditorToolButton.Command="ToggleFlipMap">
-						<Image Source="{tomb:Icon General/copy_link}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="Copy">
-						<Image Source="{tomb:Icon General/copy}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="Paste">
-						<Image Source="{tomb:Icon General/clipboard}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="StampObject">
-						<Image Source="{tomb:Icon Actions/rubber_stamp}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Opacity toggles (one-shot — opacity is per-face state, not a global flag)  -->
-					<Button editor:EditorToolButton.Command="ToggleNoOpacity">
-						<Image Source="{tomb:Icon Texture/Solid}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="ToggleOpacity">
-						<Image Source="{tomb:Icon Texture/ToggleOpacity}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="ToggleOpacity2">
-						<Image Source="{tomb:Icon Texture/ToggleOpacity2}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="ToggleClassicPortalMirror">
-						<Image Source="{tomb:Icon Texture/MirrorPortal}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Add object  -->
-					<Button editor:EditorToolButton.Command="AddCamera">
-						<Image Source="{tomb:Icon Objects/Camera}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddSprite">
-						<Image Source="{tomb:Icon Objects/Sprite}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddFlybyCamera">
-						<Image Source="{tomb:Icon Objects/movie_projector}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddSink">
-						<Image Source="{tomb:Icon Objects/tornado}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddSoundSource">
-						<Image Source="{tomb:Icon Objects/speaker}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddImportedGeometry">
-						<Image Source="{tomb:Icon Objects/custom-geometry}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddGhostBlock">
-						<Image Source="{tomb:Icon Objects/geometry-override}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddMemo">
-						<Image Source="{tomb:Icon Objects/Memo}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddBoxVolume">
-						<Image Source="{tomb:Icon Objects/volume-box}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="AddSphereVolume">
-						<Image Source="{tomb:Icon Objects/volume-sphere}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Build  -->
-					<Button editor:EditorToolButton.Command="BuildLevel">
-						<Image Source="{tomb:Icon Actions/compile}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="BuildAndPlay">
-						<Image Source="{tomb:Icon Actions/play}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="BuildAndPlayPreview">
-						<Image Source="{tomb:Icon Actions/play_fast}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Quick texture targets  -->
-					<Button editor:EditorToolButton.Command="TextureFloor">
-						<Image Source="{tomb:Icon Texture/Floor2}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="TextureCeiling">
-						<Image Source="{tomb:Icon Texture/Ceiling2}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="TextureWalls">
-						<Image Source="{tomb:Icon Texture/Walls2}" />
-					</Button>
-				</ToolBar>
-
-				<ToolBar>
-					<!--  Misc tools  -->
-					<Button editor:EditorToolButton.Command="EditLevelSettings">
-						<Image Source="{tomb:Icon General/settings}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="Search">
-						<Image Source="{tomb:Icon General/search}" />
-					</Button>
-					<Button editor:EditorToolButton.Command="SearchAndReplaceObjects">
-						<Image Source="{tomb:Icon General/Find-and-replace}" />
-					</Button>
-				</ToolBar>
-			</ToolBarTray>
-		</Border>
-
-		<!--  Bottom: statistics bar. Mirrors the WinForms MainView tbStats (rooms / objects /
-			statics / triggers / lights / cameras / flybys on line 1; room geometry + last compile
-			output on line 2), with limit-exceeded figures highlighted and a warning tooltip.  -->
-		<statisticsBar:StatisticsBarView x:Name="statisticsBarView" DockPanel.Dock="Bottom" />
+		<!--  Bottom-most: status bar (selected room | selection area | selection size | autosave).
+			Port of the WinForms FormMain DarkStatusStrip; docked at the very bottom of the window,
+			matching the legacy layout.  -->
+		<statusBar:StatusBarView x:Name="statusBarView" DockPanel.Dock="Bottom" />
 
 		<!--  Center: AvalonDock  -->
 		<avalonDock:DockingManager x:Name="dockManager">
@@ -580,23 +354,50 @@
 						</avalonDock:LayoutAnchorablePane>
 					</avalonDock:LayoutAnchorablePaneGroup>
 
-					<!--  Center: viewport (3D/2D tabs), flyby timeline strip, then the bottom dock region  -->
+					<!--  Center: single editor area (3D view / 2D map switch by mode), flyby timeline strip, then the bottom dock region  -->
 					<avalonDock:LayoutPanel Orientation="Vertical">
 						<avalonDock:LayoutDocumentPaneGroup>
-							<avalonDock:LayoutDocumentPane>
+							<avalonDock:LayoutDocumentPane ShowHeader="False">
 								<avalonDock:LayoutDocument
-									x:Name="mainViewDocument"
+									x:Name="editorDocument"
 									ContentId="mainView"
 									CanClose="False"
-									Title="3D View">
-									<wfi:WindowsFormsHost x:Name="panel3DHost" Background="{DynamicResource Brush_Background_Low}" />
-								</avalonDock:LayoutDocument>
-								<avalonDock:LayoutDocument
-									x:Name="map2DDocument"
-									ContentId="map2DView"
-									CanClose="False"
-									Title="2D Map">
-									<map2d:Panel2DMap x:Name="panel2DMap" />
+									Title="Editor">
+									<!--  Single editor area: one toolbar and one statistics bar shared by the 3D view and the
+										2D map, which live in their own nested DockingManager below. This keeps the toolbar/stats a
+										single instance directly above the viewport (never above the side panels) while still
+										letting the 3D and 2D views be tabbed or split side by side.  -->
+									<DockPanel x:Name="editorAreaHost" LastChildFill="True">
+										<toolbar:EditorToolbarView DockPanel.Dock="Top" />
+										<statisticsBar:StatisticsBarView x:Name="statisticsBarView" DockPanel.Dock="Bottom" />
+										<avalonDock:DockingManager x:Name="editorDockManager">
+											<avalonDock:DockingManager.Theme>
+												<darkDock:DarkUIDockTheme />
+											</avalonDock:DockingManager.Theme>
+											<avalonDock:LayoutRoot>
+												<avalonDock:LayoutPanel>
+													<avalonDock:LayoutDocumentPaneGroup>
+														<avalonDock:LayoutDocumentPane>
+															<avalonDock:LayoutDocument
+																x:Name="view3DDocument"
+																ContentId="view3D"
+																CanClose="False"
+																Title="3D View">
+																<wfi:WindowsFormsHost x:Name="panel3DHost" Background="{DynamicResource Brush_Background_Low}" />
+															</avalonDock:LayoutDocument>
+															<avalonDock:LayoutDocument
+																x:Name="view2DDocument"
+																ContentId="view2D"
+																CanClose="False"
+																Title="2D Map">
+																<map2d:Panel2DMap x:Name="panel2DMap" />
+															</avalonDock:LayoutDocument>
+														</avalonDock:LayoutDocumentPane>
+													</avalonDock:LayoutDocumentPaneGroup>
+												</avalonDock:LayoutPanel>
+											</avalonDock:LayoutRoot>
+										</avalonDock:DockingManager>
+									</DockPanel>
 								</avalonDock:LayoutDocument>
 							</avalonDock:LayoutDocumentPane>
 						</avalonDock:LayoutDocumentPaneGroup>

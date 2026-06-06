@@ -179,14 +179,15 @@ public partial class MainWindow : Window
 		if (obj is Editor.ToolWindowToggleEvent toggle && _anchorableIdByType.TryGetValue(toggle.ContentType, out var id))
 			ToggleAnchorable(id);
 
-		// Bring the matching document tab forward when the editor mode switches between
-		// 3D-style modes and Map2D. Avoids requiring the user to also click the tab header.
+		// Bring the 3D view or the 2D map forward inside the nested editor dock when the mode switches.
+		// They live in their own DockingManager under the shared toolbar, so the user can tab them or
+		// split them side by side while the toolbar and statistics bar above stay a single instance.
 		if (obj is Editor.ModeChangedEvent)
 		{
 			if (_editor.Mode == EditorMode.Map2D)
-				map2DDocument.IsActive = true;
+				view2DDocument.IsActive = true;
 			else
-				mainViewDocument.IsActive = true;
+				view3DDocument.IsActive = true;
 		}
 
 		if (obj is Editor.SwitchLayoutEvent layoutEvent)
@@ -307,6 +308,7 @@ public partial class MainWindow : Window
 		contentBrowserView?.Cleanup();
 		flybyTimelineView?.Cleanup();
 		statisticsBarView?.Cleanup();
+		statusBarView?.Cleanup();
 		panel2DMap?.Dispose();
 		_popup?.Dispose();
 		_panel3D?.Dispose();
@@ -443,41 +445,6 @@ public partial class MainWindow : Window
 		menu.Items.Add(clearItem);
 	}
 
-	private void DrawObjectsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
-	{
-		if (sender is not MenuItem dropdown)
-			return;
-
-		foreach (var item in dropdown.Items.OfType<MenuItem>())
-		{
-			if (item.Tag is not string flagName || string.IsNullOrEmpty(flagName))
-				continue;
-
-			var prop = typeof(Configuration).GetProperty(flagName);
-			if (prop is null || prop.PropertyType != typeof(bool))
-				continue;
-
-			item.IsCheckable = true;
-			item.IsChecked = (bool)prop.GetValue(_editor.Configuration)!;
-		}
-	}
-
-	private void CustomizeToolbar_Click(object sender, RoutedEventArgs e)
-	{
-		// The WPF toolbar's button set is currently hardcoded in XAML, so the
-		// reordering committed via this dialog only affects the WinForms shell
-		// (UI_ToolbarButtons in Configuration). Still surfaces the dialog so
-		// users can manage the persisted button list for the legacy shell.
-		var allCommands = CommandHandler.Commands.Select(c => c.Name).ToList();
-		var vm = new Features.Dialogs.ToolBarLayout.ToolBarLayoutWindowViewModel(_editor, allCommands);
-		var dialog = new Features.Dialogs.ToolBarLayout.ToolBarLayoutWindow
-		{
-			DataContext = vm,
-			Owner = this
-		};
-		dialog.ShowDialog();
-	}
-
 	#region Layout management
 
 	private string SerializeDockState()
@@ -524,8 +491,7 @@ public partial class MainWindow : Window
 			"contentBrowser" => contentBrowserView,
 			"lighting" => lightingView,
 			"palette" => paletteView,
-			"mainView" => panel3DHost,
-			"map2DView" => panel2DMap,
+			"mainView" => editorAreaHost,
 			_ => null
 		};
 
