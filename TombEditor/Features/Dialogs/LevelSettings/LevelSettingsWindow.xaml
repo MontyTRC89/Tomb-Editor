@@ -8,7 +8,7 @@
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.LevelSettings"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
-	Title="Level settings"
+	Title="Level Settings"
 	Width="720"
 	Height="560"
 	MinWidth="560"
@@ -20,406 +20,463 @@
 	WindowStartupLocation="CenterOwner"
 	mc:Ignorable="d">
 
-	<Window.Resources>
-		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-		<SolidColorBrush x:Key="ValidBrush" Color="#FF356B35" />
-		<SolidColorBrush x:Key="InvalidBrush" Color="#FF8B3A3A" />
+        <SolidColorBrush x:Key="ValidBrush" Color="#FF356B35" />
+        <SolidColorBrush x:Key="InvalidBrush" Color="#FF8B3A3A" />
 
-		<!--  A labeled "path text + browse button" row  -->
-		<Style x:Key="PathLabel" TargetType="TextBlock">
-			<Setter Property="Width" Value="150" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
+        <!--  A labeled "path text + browse button" row  -->
+        <Style x:Key="PathLabel" TargetType="TextBlock">
+            <Setter Property="Width" Value="150" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
 
-		<!--  Path text boxes turn red when the path doesn't exist  -->
-		<Style x:Key="LevelFileBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding LevelFilePathValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-		<Style x:Key="GameDirBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding GameDirectoryValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-		<Style x:Key="GameExeBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding GameExecutableValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-		<Style x:Key="GameLevelBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding GameLevelFilePathValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-		<Style x:Key="ScriptBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding ScriptDirectoryValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-		<Style x:Key="LuaBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding LuaValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
+        <!--  Path text boxes turn red when the path doesn't exist  -->
+        <Style x:Key="LevelFileBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding LevelFilePathValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GameDirBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding GameDirectoryValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GameExeBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding GameExecutableValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GameLevelBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding GameLevelFilePathValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ScriptBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ScriptDirectoryValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="LuaBox" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding LuaValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
 
-		<!--  Status cells: green when loaded, red on error  -->
-		<Style x:Key="StatusCell" BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="DataGridCell">
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding IsValid}" Value="True">
-					<Setter Property="Background" Value="{StaticResource ValidBrush}" />
-				</DataTrigger>
-				<DataTrigger Binding="{Binding IsValid}" Value="False">
-					<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
-	</Window.Resources>
+        <!--  Status cells: green when loaded, red on error  -->
+        <Style x:Key="StatusCell" BasedOn="{StaticResource {x:Type DataGridCell}}" TargetType="DataGridCell">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsValid}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ValidBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                    <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
-	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
+    <DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
 
-		<controls:SpacedStack
+        <controls:SpacedStack
 			DockPanel.Dock="Bottom"
 			Margin="0,8,0,0"
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-			<Button Width="80" Command="{Binding ApplyCommand}" Content="Apply" />
-			<Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
-			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
-		</controls:SpacedStack>
+            <Button Width="80" Command="{Binding ApplyCommand}" Content="Apply" />
+            <Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
+            <Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
+        </controls:SpacedStack>
 
-		<TabControl Style="{DynamicResource SidebarTabControlStyle}">
+        <TabControl Style="{DynamicResource SidebarTabControlStyle}">
 
-			<!--  Game  -->
-			<TabItem Header="Game">
-				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
-					<StackPanel>
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Game version:" />
-							<ComboBox ItemsSource="{Binding GameVersions}" SelectedItem="{Binding GameVersion, Mode=TwoWay}" />
-						</DockPanel>
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Game executable:" />
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameExecutableCommand}" Content="..." />
-							<TextBox Style="{StaticResource GameExeBox}" Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" />
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameLevelFileCommand}" Content="..." />
-							<TextBox Style="{StaticResource GameLevelBox}" Text="{Binding GameLevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
-						<DockPanel Margin="0,3" Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Script folder:" />
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseScriptCommand}" Content="..." />
-							<TextBox Style="{StaticResource ScriptBox}" Text="{Binding ScriptDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
-						<DockPanel Margin="0,3" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Lua script file:" />
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLuaCommand}" Content="..." />
-							<TextBox Style="{StaticResource LuaBox}" Text="{Binding TenLuaScriptFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
-						<CheckBox Margin="0,6,0,3" Content="Enable quick start feature" IsChecked="{Binding GameEnableQuickStartFeature, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
-						<CheckBox Margin="0,3" Content="Enable extra reverb presets" IsChecked="{Binding GameEnableExtraReverbPresets, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
-						<CheckBox Margin="0,3" Content="Enable extra blending modes" IsChecked="{Binding GameEnableExtraBlendingModes, Mode=TwoWay}" Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
-					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
-            
-			<!--  Texture Files -->
-			<TabItem Header="Texture Files">
-				<DockPanel Margin="6">
-					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="70" Command="{Binding AddTexturesCommand}" Content="Add..." />
-						<Button Width="70" Command="{Binding DeleteTextureCommand}" Content="Delete" />
-						<Button Width="36" Command="{Binding MoveTextureUpCommand}" Content="Up" />
-						<Button Width="36" Command="{Binding MoveTextureDownCommand}" Content="Down" />
-					</controls:SpacedStack>
-					<DataGrid
+            <!--  Game  -->
+            <TabItem Header="Game">
+                <ScrollViewer Margin="0,6,0,6" VerticalScrollBarVisibility="Auto" Width="520">
+                    <StackPanel>
+
+                        <!-- Game version -->
+                        <StackPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Game version to target:" HorizontalAlignment="Left" Width="500" />
+                            <ComboBox ItemsSource="{Binding GameVersions}" Margin="10,10"
+                          SelectedItem="{Binding GameVersion, Mode=TwoWay}" HorizontalAlignment="Left" Width="207" />
+                        </StackPanel>
+                        
+                        <!-- Game executable -->
+                        <StackPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Game executable:" HorizontalAlignment="Left" Width="500" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                            Width="103"
+                            Margin="4,0,0,0"
+                            Command="{Binding BrowseGameExecutableCommand}"
+                            Content="Browse" />
+                                <TextBox Style="{StaticResource GameExeBox}"
+                             Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
+                            </DockPanel>
+                        </StackPanel>
+
+                        <!-- Compiled level file -->
+                        <StackPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" HorizontalAlignment="Left" Width="500" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                            Width="103"
+                            Margin="4,0,0,0"
+                            Command="{Binding BrowseGameLevelFileCommand}"
+                            Content="Browse" />
+                                <TextBox Style="{StaticResource GameLevelBox}"
+                             Text="{Binding GameLevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
+                            </DockPanel>
+                        </StackPanel>
+
+                        <!-- Script folder (TRNG only) -->
+                        <StackPanel Margin="0,3"
+                        Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Script folder:" HorizontalAlignment="Left" Width="500"/>
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                            Width="103"
+                            Margin="4,0,0,0"
+                            Command="{Binding BrowseScriptCommand}"
+                            Content="Browse" />
+                                <TextBox Style="{StaticResource ScriptBox}"
+                             Text="{Binding ScriptDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
+                            </DockPanel>
+                        </StackPanel>
+
+                        <!-- Lua script file (TombEngine only) -->
+                        <StackPanel Margin="0,3"
+                        Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Lua script file:" HorizontalAlignment="Left" Width="500" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                            Width="103"
+                            Margin="4,0,0,0"
+                            Command="{Binding BrowseLuaCommand}"
+                            Content="Browse" />
+                                <TextBox Style="{StaticResource LuaBox}"
+                             Text="{Binding TenLuaScriptFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
+                            </DockPanel>
+                        </StackPanel>
+
+                        <!-- Checkboxes -->
+
+                        <CheckBox Margin="10,3"
+                      Content="Show extra blending modes"
+                      IsChecked="{Binding GameEnableExtraBlendingModes, Mode=TwoWay}"
+                      Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+                        
+                        <CheckBox Margin="10,3"
+                      Content="Show FLEP reverb presets"
+                      IsChecked="{Binding GameEnableExtraReverbPresets, Mode=TwoWay}"
+                      Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+
+                        <CheckBox Margin="10,3"
+                      Content="Enable Tomb4.exe quick start feature"
+                      IsChecked="{Binding GameEnableQuickStartFeature, Mode=TwoWay}"
+                      Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
+
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+
+            <!--  Texture Files -->
+            <TabItem Header="Texture Files">
+                <DockPanel Margin="6">
+                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                        <Button Width="70" Command="{Binding AddTexturesCommand}" Content="Add..." />
+                        <Button Width="70" Command="{Binding DeleteTextureCommand}" Content="Delete" />
+                        <Button Width="36" Command="{Binding MoveTextureUpCommand}" Content="Up" />
+                        <Button Width="36" Command="{Binding MoveTextureDownCommand}" Content="Down" />
+                    </controls:SpacedStack>
+                    <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
 						HeadersVisibility="Column"
 						ItemsSource="{Binding Textures}"
 						SelectedItem="{Binding SelectedTexture, Mode=TwoWay}">
-						<DataGrid.Columns>
-							<DataGridTemplateColumn Width="32">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-							<DataGridCheckBoxColumn Width="110" Binding="{Binding ReplaceMagentaWithTransparency, UpdateSourceTrigger=PropertyChanged}" Header="Magenta = alpha" />
-							<DataGridCheckBoxColumn Width="120" Binding="{Binding Convert512PixelsToDoubleRows, UpdateSourceTrigger=PropertyChanged}" Header="512 = double rows" />
-							<DataGridTextColumn Width="90" Binding="{Binding Size}" Header="Size" IsReadOnly="True" />
-							<DataGridTextColumn Width="160" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="32">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+                            <DataGridCheckBoxColumn Width="110" Binding="{Binding ReplaceMagentaWithTransparency, UpdateSourceTrigger=PropertyChanged}" Header="Magenta = alpha" />
+                            <DataGridCheckBoxColumn Width="120" Binding="{Binding Convert512PixelsToDoubleRows, UpdateSourceTrigger=PropertyChanged}" Header="512 = double rows" />
+                            <DataGridTextColumn Width="90" Binding="{Binding Size}" Header="Size" IsReadOnly="True" />
+                            <DataGridTextColumn Width="160" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
 
             <!--  Object Files -->
             <TabItem Header="Object Files">
-				<DockPanel Margin="6">
-					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="70" Command="{Binding AddWadsCommand}" Content="Add..." />
-						<Button Width="70" Command="{Binding DeleteWadCommand}" Content="Delete" />
-						<Button Width="36" Command="{Binding MoveWadUpCommand}" Content="Up" />
-						<Button Width="36" Command="{Binding MoveWadDownCommand}" Content="Down" />
-					</controls:SpacedStack>
-					<DataGrid
+                <DockPanel Margin="6">
+                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                        <Button Width="70" Command="{Binding AddWadsCommand}" Content="Add..." />
+                        <Button Width="70" Command="{Binding DeleteWadCommand}" Content="Delete" />
+                        <Button Width="36" Command="{Binding MoveWadUpCommand}" Content="Up" />
+                        <Button Width="36" Command="{Binding MoveWadDownCommand}" Content="Down" />
+                    </controls:SpacedStack>
+                    <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
 						HeadersVisibility="Column"
 						ItemsSource="{Binding WadRows}"
 						SelectedItem="{Binding SelectedWad, Mode=TwoWay}">
-						<DataGrid.Columns>
-							<DataGridTemplateColumn Width="32">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-							<DataGridTextColumn Width="220" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="32">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+                            <DataGridTextColumn Width="220" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
 
             <!--  Imported Geometry -->
             <TabItem Header="Imported Geometry">
-				<DockPanel Margin="6">
-					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
-						<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
-					</controls:SpacedStack>
-					<DataGrid
+                <DockPanel Margin="6">
+                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                        <Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
+                        <Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
+                    </controls:SpacedStack>
+                    <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
 						HeadersVisibility="Column"
 						ItemsSource="{Binding ImportedGeometries}"
 						SelectedItem="{Binding SelectedImportedGeometry, Mode=TwoWay}">
-						<DataGrid.Columns>
-							<DataGridTextColumn Width="120" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
-							<DataGridTemplateColumn Width="32">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-							<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
-							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXY, UpdateSourceTrigger=PropertyChanged}" Header="X-Y" />
-							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXZ, UpdateSourceTrigger=PropertyChanged}" Header="X-Z" />
-							<DataGridCheckBoxColumn Width="44" Binding="{Binding SwapYZ, UpdateSourceTrigger=PropertyChanged}" Header="Y-Z" />
-							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipX, UpdateSourceTrigger=PropertyChanged}" Header="-X" />
-							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipY, UpdateSourceTrigger=PropertyChanged}" Header="-Y" />
-							<DataGridCheckBoxColumn Width="36" Binding="{Binding FlipZ, UpdateSourceTrigger=PropertyChanged}" Header="-Z" />
-							<DataGridCheckBoxColumn Width="60" Binding="{Binding MappedUV, UpdateSourceTrigger=PropertyChanged}" Header="UV map" />
-							<DataGridCheckBoxColumn Width="50" Binding="{Binding FlipUV_V, UpdateSourceTrigger=PropertyChanged}" Header="UV -V" />
-							<DataGridCheckBoxColumn Width="50" Binding="{Binding InvertFaces, UpdateSourceTrigger=PropertyChanged}" Header="Inv. F." />
-							<DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="120" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+                            <DataGridTemplateColumn Width="32">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+                            <DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
+                            <DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXY, UpdateSourceTrigger=PropertyChanged}" Header="X-Y" />
+                            <DataGridCheckBoxColumn Width="44" Binding="{Binding SwapXZ, UpdateSourceTrigger=PropertyChanged}" Header="X-Z" />
+                            <DataGridCheckBoxColumn Width="44" Binding="{Binding SwapYZ, UpdateSourceTrigger=PropertyChanged}" Header="Y-Z" />
+                            <DataGridCheckBoxColumn Width="36" Binding="{Binding FlipX, UpdateSourceTrigger=PropertyChanged}" Header="-X" />
+                            <DataGridCheckBoxColumn Width="36" Binding="{Binding FlipY, UpdateSourceTrigger=PropertyChanged}" Header="-Y" />
+                            <DataGridCheckBoxColumn Width="36" Binding="{Binding FlipZ, UpdateSourceTrigger=PropertyChanged}" Header="-Z" />
+                            <DataGridCheckBoxColumn Width="60" Binding="{Binding MappedUV, UpdateSourceTrigger=PropertyChanged}" Header="UV map" />
+                            <DataGridCheckBoxColumn Width="50" Binding="{Binding FlipUV_V, UpdateSourceTrigger=PropertyChanged}" Header="UV -V" />
+                            <DataGridCheckBoxColumn Width="50" Binding="{Binding InvertFaces, UpdateSourceTrigger=PropertyChanged}" Header="Inv. F." />
+                            <DataGridTextColumn Width="140" Binding="{Binding ErrorMessage}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
 
             <!--  Static Meshes -->
             <TabItem Header="Static Meshes">
-				<DockPanel Margin="6">
-					<controls:SpacedStack
+                <DockPanel Margin="6">
+                    <controls:SpacedStack
 						DockPanel.Dock="Top"
 						Margin="0,0,0,6"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Command="{Binding SelectAllStaticsCommand}" Content="Select all" />
-						<Button Command="{Binding SelectAllButShatterStaticsCommand}" Content="Select all but shatterable" />
-						<Button Command="{Binding DeselectAllStaticsCommand}" Content="Deselect all" />
-					</controls:SpacedStack>
-					<DataGrid
+                        <Button Command="{Binding SelectAllStaticsCommand}" Content="Select all" />
+                        <Button Command="{Binding SelectAllButShatterStaticsCommand}" Content="Select all but shatterable" />
+                        <Button Command="{Binding DeselectAllStaticsCommand}" Content="Deselect all" />
+                    </controls:SpacedStack>
+                    <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
 						HeadersVisibility="Column"
 						ItemsSource="{Binding StaticMeshMerges}">
-						<DataGrid.Columns>
-							<DataGridTextColumn Width="*" Binding="{Binding StaticMesh}" Header="Static mesh" IsReadOnly="True" />
-							<DataGridCheckBoxColumn Width="70" Binding="{Binding Merge, UpdateSourceTrigger=PropertyChanged}" Header="Merge" />
-							<DataGridCheckBoxColumn Width="120" Binding="{Binding InterpretShadesAsEffect, UpdateSourceTrigger=PropertyChanged}" Header="Shades as effect" />
-							<DataGridCheckBoxColumn Width="110" Binding="{Binding TintAsAmbient, UpdateSourceTrigger=PropertyChanged}" Header="Tint as ambient" />
-							<DataGridCheckBoxColumn Width="100" Binding="{Binding ClearShades, UpdateSourceTrigger=PropertyChanged}" Header="Clear shades" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="*" Binding="{Binding StaticMesh}" Header="Static mesh" IsReadOnly="True" />
+                            <DataGridCheckBoxColumn Width="70" Binding="{Binding Merge, UpdateSourceTrigger=PropertyChanged}" Header="Merge" />
+                            <DataGridCheckBoxColumn Width="120" Binding="{Binding InterpretShadesAsEffect, UpdateSourceTrigger=PropertyChanged}" Header="Shades as effect" />
+                            <DataGridCheckBoxColumn Width="110" Binding="{Binding TintAsAmbient, UpdateSourceTrigger=PropertyChanged}" Header="Tint as ambient" />
+                            <DataGridCheckBoxColumn Width="100" Binding="{Binding ClearShades, UpdateSourceTrigger=PropertyChanged}" Header="Clear shades" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
 
             <!--  Sky and Font -->
             <TabItem Header="Sky &amp; Font">
-				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
-					<StackPanel IsEnabled="{Binding SupportsFontAndSky}">
-						<CheckBox Margin="0,3" Content="Use custom font texture" IsChecked="{Binding FontUseCustom, Mode=TwoWay}" />
-						<DockPanel Margin="0,3" IsEnabled="{Binding FontUseCustom}">
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseFontCommand}" Content="..." />
-							<TextBox Text="{Binding FontTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
+                <ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+                    <StackPanel IsEnabled="{Binding SupportsFontAndSky}">
+                        <CheckBox Margin="0,3" Content="Use custom font texture" IsChecked="{Binding FontUseCustom, Mode=TwoWay}" />
+                        <DockPanel Margin="0,3" IsEnabled="{Binding FontUseCustom}">
+                            <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseFontCommand}" Content="..." />
+                            <TextBox Text="{Binding FontTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
 
-						<CheckBox Margin="0,9,0,3" Content="Use custom sky texture" IsChecked="{Binding SkyUseCustom, Mode=TwoWay}" />
-						<DockPanel Margin="0,3" IsEnabled="{Binding SkyUseCustom}">
-							<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseSkyCommand}" Content="..." />
-							<TextBox Text="{Binding SkyTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
+                        <CheckBox Margin="0,9,0,3" Content="Use custom sky texture" IsChecked="{Binding SkyUseCustom, Mode=TwoWay}" />
+                        <DockPanel Margin="0,3" IsEnabled="{Binding SkyUseCustom}">
+                            <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseSkyCommand}" Content="..." />
+                            <TextBox Text="{Binding SkyTextureFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
 
-						<StackPanel Visibility="{Binding IsTR5, Converter={StaticResource BoolToVis}}">
-							<CheckBox Margin="0,9,0,3" Content="Use custom TR5 extra sprites texture" IsChecked="{Binding Tr5SpritesUseCustom, Mode=TwoWay}" />
-							<DockPanel Margin="0,3" IsEnabled="{Binding Tr5SpritesUseCustom}">
-								<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseTr5SpritesCommand}" Content="..." />
-								<TextBox Text="{Binding Tr5ExtraSpritesFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-							</DockPanel>
-							<DockPanel Margin="0,9,0,3">
-								<TextBlock Style="{StaticResource PathLabel}" Text="TR5 weather:" />
-								<ComboBox ItemsSource="{Binding Tr5WeatherTypes}" SelectedItem="{Binding Tr5WeatherType, Mode=TwoWay}" />
-							</DockPanel>
-							<DockPanel Margin="0,3">
-								<TextBlock Style="{StaticResource PathLabel}" Text="Lara type:" />
-								<ComboBox ItemsSource="{Binding Tr5LaraTypes}" SelectedItem="{Binding Tr5LaraType, Mode=TwoWay}" />
-							</DockPanel>
-						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
+                        <StackPanel Visibility="{Binding IsTR5, Converter={StaticResource BoolToVis}}">
+                            <CheckBox Margin="0,9,0,3" Content="Use custom TR5 extra sprites texture" IsChecked="{Binding Tr5SpritesUseCustom, Mode=TwoWay}" />
+                            <DockPanel Margin="0,3" IsEnabled="{Binding Tr5SpritesUseCustom}">
+                                <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseTr5SpritesCommand}" Content="..." />
+                                <TextBox Text="{Binding Tr5ExtraSpritesFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,9,0,3">
+                                <TextBlock Style="{StaticResource PathLabel}" Text="TR5 weather:" />
+                                <ComboBox ItemsSource="{Binding Tr5WeatherTypes}" SelectedItem="{Binding Tr5WeatherType, Mode=TwoWay}" />
+                            </DockPanel>
+                            <DockPanel Margin="0,3">
+                                <TextBlock Style="{StaticResource PathLabel}" Text="Lara type:" />
+                                <ComboBox ItemsSource="{Binding Tr5LaraTypes}" SelectedItem="{Binding Tr5LaraType, Mode=TwoWay}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
 
             <!--  Sound Infos -->
             <TabItem Header="Sound Infos">
-				<Grid Margin="6">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="2*" MinHeight="90" />
-						<RowDefinition Height="6" />
-						<RowDefinition Height="3*" MinHeight="120" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
+                <Grid Margin="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" MinHeight="90" />
+                        <RowDefinition Height="6" />
+                        <RowDefinition Height="3*" MinHeight="120" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-					<!--  Catalogs grid  -->
-					<DockPanel Grid.Row="0">
-						<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-							<Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
-							<Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
-							<Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
-							<Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
-						</controls:SpacedStack>
-						<DataGrid
+                    <!--  Catalogs grid  -->
+                    <DockPanel Grid.Row="0">
+                        <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                            <Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
+                            <Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
+                            <Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
+                            <Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
+                        </controls:SpacedStack>
+                        <DataGrid
 							AutoGenerateColumns="False"
 							CanUserAddRows="False"
 							HeadersVisibility="Column"
 							ItemsSource="{Binding SoundCatalogs}"
 							SelectedItem="{Binding SelectedSoundCatalog, Mode=TwoWay}">
-							<DataGrid.Columns>
-								<DataGridTemplateColumn Width="32">
-									<DataGridTemplateColumn.CellTemplate>
-										<DataTemplate>
-											<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-										</DataTemplate>
-									</DataGridTemplateColumn.CellTemplate>
-								</DataGridTemplateColumn>
-								<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-								<DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
-								<DataGridTextColumn Width="180" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
-							</DataGrid.Columns>
-						</DataGrid>
-					</DockPanel>
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Width="32">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
+                                <DataGridTextColumn Width="70" Binding="{Binding SoundsCount}" Header="Sounds" IsReadOnly="True" />
+                                <DataGridTextColumn Width="180" Binding="{Binding Message}" CellStyle="{StaticResource StatusCell}" Header="Status" IsReadOnly="True" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
 
-					<GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" />
+                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" />
 
-					<!--  Sound selection  -->
-					<DockPanel Grid.Row="2">
-						<DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-							<TextBlock VerticalAlignment="Center" Margin="0,0,6,0" Text="Filter:" />
-							<TextBox Text="{Binding SoundFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-						</DockPanel>
-						<controls:SpacedStack DockPanel.Dock="Bottom" Margin="0,6,0,0" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-							<Button Command="{Binding SelectAllSoundsCommand}" Content="Select all" />
-							<Button Command="{Binding DeselectAllSoundsCommand}" Content="Deselect all" />
-							<Button Command="{Binding RemoveMissingSoundsCommand}" Content="Remove missing" />
-							<Button Command="{Binding AssignFromSelectedCatalogCommand}" Content="From catalog" />
-							<Button Command="{Binding AssignFromWadsCommand}" Content="From wads" />
-							<Button Command="{Binding AssignFromSoundSourcesCommand}" Content="From sources" />
-							<Button Command="{Binding AssignHardcodedSoundsCommand}" Content="Hardcoded" />
-							<Button Command="{Binding AutodetectSoundsCommand}" Content="Autodetect" />
-						</controls:SpacedStack>
-						<DataGrid
+                    <!--  Sound selection  -->
+                    <DockPanel Grid.Row="2">
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                            <TextBlock VerticalAlignment="Center" Margin="0,0,6,0" Text="Filter:" />
+                            <TextBox Text="{Binding SoundFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <controls:SpacedStack DockPanel.Dock="Bottom" Margin="0,6,0,0" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                            <Button Command="{Binding SelectAllSoundsCommand}" Content="Select all" />
+                            <Button Command="{Binding DeselectAllSoundsCommand}" Content="Deselect all" />
+                            <Button Command="{Binding RemoveMissingSoundsCommand}" Content="Remove missing" />
+                            <Button Command="{Binding AssignFromSelectedCatalogCommand}" Content="From catalog" />
+                            <Button Command="{Binding AssignFromWadsCommand}" Content="From wads" />
+                            <Button Command="{Binding AssignFromSoundSourcesCommand}" Content="From sources" />
+                            <Button Command="{Binding AssignHardcodedSoundsCommand}" Content="Hardcoded" />
+                            <Button Command="{Binding AutodetectSoundsCommand}" Content="Autodetect" />
+                        </controls:SpacedStack>
+                        <DataGrid
 							AutoGenerateColumns="False"
 							CanUserAddRows="False"
 							HeadersVisibility="Column"
 							ItemsSource="{Binding SoundInfos}">
-							<DataGrid.Columns>
-								<DataGridCheckBoxColumn Width="32" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Header="" />
-								<DataGridTextColumn Width="50" Binding="{Binding Id}" Header="ID" IsReadOnly="True" />
-								<DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
-								<DataGridTextColumn Width="120" Binding="{Binding Catalog}" Header="Catalog" IsReadOnly="True" />
-								<DataGridTextColumn Width="80" Binding="{Binding Samples}" Header="Samples" IsReadOnly="True" />
-							</DataGrid.Columns>
-							<DataGrid.RowStyle>
-								<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
-									<Style.Triggers>
-										<DataTrigger Binding="{Binding Selected}" Value="True">
-											<Setter Property="Background" Value="{StaticResource ValidBrush}" />
-										</DataTrigger>
-										<DataTrigger Binding="{Binding IsMissing}" Value="True">
-											<Setter Property="Background" Value="{StaticResource InvalidBrush}" />
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</DataGrid.RowStyle>
-						</DataGrid>
-					</DockPanel>
+                            <DataGrid.Columns>
+                                <DataGridCheckBoxColumn Width="32" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" Header="" />
+                                <DataGridTextColumn Width="50" Binding="{Binding Id}" Header="ID" IsReadOnly="True" />
+                                <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+                                <DataGridTextColumn Width="120" Binding="{Binding Catalog}" Header="Catalog" IsReadOnly="True" />
+                                <DataGridTextColumn Width="80" Binding="{Binding Samples}" Header="Samples" IsReadOnly="True" />
+                            </DataGrid.Columns>
+                            <DataGrid.RowStyle>
+                                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Selected}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource ValidBrush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMissing}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource InvalidBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+                        </DataGrid>
+                    </DockPanel>
 
-					<TextBlock Grid.Row="3" Margin="0,6,0,0" Text="{Binding SoundStatistics}" />
-				</Grid>
-			</TabItem>
+                    <TextBlock Grid.Row="3" Margin="0,6,0,0" Text="{Binding SoundStatistics}" />
+                </Grid>
+            </TabItem>
 
             <!--  Sound Sample Paths -->
             <TabItem Header="Sound Sample Paths">
-				<DockPanel Margin="6">
-					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="70" Command="{Binding AddSampleCommand}" Content="Add..." />
-						<Button Width="70" Command="{Binding DeleteSampleCommand}" Content="Delete" />
-						<Button Width="36" Command="{Binding MoveSampleUpCommand}" Content="Up" />
-						<Button Width="36" Command="{Binding MoveSampleDownCommand}" Content="Down" />
-					</controls:SpacedStack>
-					<DataGrid
+                <DockPanel Margin="6">
+                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+                        <Button Width="70" Command="{Binding AddSampleCommand}" Content="Add..." />
+                        <Button Width="70" Command="{Binding DeleteSampleCommand}" Content="Delete" />
+                        <Button Width="36" Command="{Binding MoveSampleUpCommand}" Content="Up" />
+                        <Button Width="36" Command="{Binding MoveSampleDownCommand}" Content="Down" />
+                    </controls:SpacedStack>
+                    <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
 						HeadersVisibility="Column"
 						ItemsSource="{Binding SampleRows}"
 						SelectedItem="{Binding SelectedSample, Mode=TwoWay}">
-						<DataGrid.Columns>
-							<DataGridTemplateColumn Width="32">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate>
-										<Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-							<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Sound folder" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="32">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="1" Command="{Binding BrowseCommand}" Content="..." />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Sound folder" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
 
             <!--  TRX -->
             <TabItem Header="TRX" Visibility="{Binding IsTRX, Converter={StaticResource BoolToVis}}">
@@ -435,51 +492,51 @@
 
             <!--  Misc -->
             <TabItem Header="Misc">
-				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
-					<StackPanel>
-						<TextBlock Margin="0,0,0,4" FontWeight="Bold" Text="Compiler options" />
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Texture padding:" />
-							<controls:NumericUpDown Width="100" HorizontalAlignment="Left" Maximum="128" Minimum="0" Value="{Binding TexturePadding, Mode=TwoWay}" />
-						</DockPanel>
-						<CheckBox Margin="0,3" Content="Dither 16-bit textures" IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}" IsEnabled="{Binding Supports16BitDithering}" />
-						<CheckBox Margin="0,3" Content="Compress textures" IsChecked="{Binding CompressTextures, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
-						<CheckBox Margin="0,3" Content="Aggressive texture packing" IsChecked="{Binding AgressiveTexturePacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-						<CheckBox Margin="0,3" Content="Aggressive floordata packing" IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-						<CheckBox Margin="0,3" Content="32-bit room lighting" IsChecked="{Binding Room32BitLighting, Mode=TwoWay}" IsEnabled="{Binding IsTRNG}" />
-						<CheckBox Margin="0,3" Content="Remap animated textures" IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
-						<CheckBox Margin="0,3" Content="Rearrange vertical rooms" IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-						<CheckBox Margin="0,3" Content="Remove unused objects" IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
+                <ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Margin="0,0,0,4" FontWeight="Bold" Text="Compiler options" />
+                        <DockPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Texture padding:" />
+                            <controls:NumericUpDown Width="100" HorizontalAlignment="Left" Maximum="128" Minimum="0" Value="{Binding TexturePadding, Mode=TwoWay}" />
+                        </DockPanel>
+                        <CheckBox Margin="0,3" Content="Dither 16-bit textures" IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}" IsEnabled="{Binding Supports16BitDithering}" />
+                        <CheckBox Margin="0,3" Content="Compress textures" IsChecked="{Binding CompressTextures, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
+                        <CheckBox Margin="0,3" Content="Aggressive texture packing" IsChecked="{Binding AgressiveTexturePacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox Margin="0,3" Content="Aggressive floordata packing" IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox Margin="0,3" Content="32-bit room lighting" IsChecked="{Binding Room32BitLighting, Mode=TwoWay}" IsEnabled="{Binding IsTRNG}" />
+                        <CheckBox Margin="0,3" Content="Remap animated textures" IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
+                        <CheckBox Margin="0,3" Content="Rearrange vertical rooms" IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox Margin="0,3" Content="Remove unused objects" IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
 
-						<DockPanel Margin="0,9,0,3">
-							<CheckBox Width="150" VerticalAlignment="Center" Content="Custom sample rate:" IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
-							<ComboBox Width="100" HorizontalAlignment="Left" IsEnabled="{Binding CanEditSampleRate}" ItemsSource="{Binding SampleRates}" SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
-						</DockPanel>
+                        <DockPanel Margin="0,9,0,3">
+                            <CheckBox Width="150" VerticalAlignment="Center" Content="Custom sample rate:" IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
+                            <ComboBox Width="100" HorizontalAlignment="Left" IsEnabled="{Binding CanEditSampleRate}" ItemsSource="{Binding SampleRates}" SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
+                        </DockPanel>
 
-						<TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Lighting" />
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Default ambient light:" />
-							<Button
+                        <TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Lighting" />
+                        <DockPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Default ambient light:" />
+                            <Button
 								Width="120"
 								Height="20"
 								HorizontalAlignment="Left"
 								Command="{Binding PickAmbientLightCommand}">
-								<Button.Background>
-									<SolidColorBrush Color="{Binding AmbientLightColor}" />
-								</Button.Background>
-							</Button>
-						</DockPanel>
-						<CheckBox Margin="0,3" Content="Override individual light quality settings" IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Default light quality:" />
-							<ComboBox Width="100" HorizontalAlignment="Left" ItemsSource="{Binding LightQualities}" SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
-						</DockPanel>
+                                <Button.Background>
+                                    <SolidColorBrush Color="{Binding AmbientLightColor}" />
+                                </Button.Background>
+                            </Button>
+                        </DockPanel>
+                        <CheckBox Margin="0,3" Content="Override individual light quality settings" IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
+                        <DockPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Default light quality:" />
+                            <ComboBox Width="100" HorizontalAlignment="Left" ItemsSource="{Binding LightQualities}" SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
+                        </DockPanel>
 
-						<TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Sounds" />
-						<CheckBox Margin="0,3" Content="Auto-assign sounds if none selected" IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
-					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
+                        <TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Sounds" />
+                        <CheckBox Margin="0,3" Content="Auto-assign sounds if none selected" IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
 
             <!--  Path Placeholders  -->
             <TabItem Header="Path Placeholders">
@@ -508,7 +565,7 @@
                     </DataGrid>
                 </DockPanel>
             </TabItem>
-                        
-		</TabControl>
-	</DockPanel>
+
+        </TabControl>
+    </DockPanel>
 </Window>
