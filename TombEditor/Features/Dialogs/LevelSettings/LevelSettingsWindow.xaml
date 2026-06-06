@@ -138,37 +138,9 @@
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
-
-			<!--  Paths  -->
-			<TabItem Header="Paths">
-				<DockPanel Margin="6">
-					<DockPanel DockPanel.Dock="Top" Margin="0,3">
-						<TextBlock Style="{StaticResource PathLabel}" Text="Level file (.prj2):" />
-						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLevelFileCommand}" Content="..." />
-						<TextBox Style="{StaticResource LevelFileBox}" Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					</DockPanel>
-					<DockPanel DockPanel.Dock="Top" Margin="0,3">
-						<TextBlock Style="{StaticResource PathLabel}" Text="Game directory:" />
-						<Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameDirectoryCommand}" Content="..." />
-						<TextBox Style="{StaticResource GameDirBox}" Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-					</DockPanel>
-					<TextBlock DockPanel.Dock="Top" Margin="0,8,0,4" Text="Path variables:" />
-					<DataGrid
-						AutoGenerateColumns="False"
-						CanUserAddRows="False"
-						HeadersVisibility="Column"
-						IsReadOnly="True"
-						ItemsSource="{Binding PathVariables}">
-						<DataGrid.Columns>
-							<DataGridTextColumn Width="200" Binding="{Binding Variable}" Header="Variable" />
-							<DataGridTextColumn Width="*" Binding="{Binding Value}" Header="Resolved value" />
-						</DataGrid.Columns>
-					</DataGrid>
-				</DockPanel>
-			</TabItem>
-
-			<!--  Tabs ported in later phases  -->
-			<TabItem Header="Textures">
+            
+			<!--  Texture Files -->
+			<TabItem Header="Texture Files">
 				<DockPanel Margin="6">
 					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 						<Button Width="70" Command="{Binding AddTexturesCommand}" Content="Add..." />
@@ -199,7 +171,9 @@
 					</DataGrid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Objects">
+
+            <!--  Object Files -->
+            <TabItem Header="Object Files">
 				<DockPanel Margin="6">
 					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 						<Button Width="70" Command="{Binding AddWadsCommand}" Content="Add..." />
@@ -227,7 +201,9 @@
 					</DataGrid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Imported geometry">
+
+            <!--  Imported Geometry -->
+            <TabItem Header="Imported Geometry">
 				<DockPanel Margin="6">
 					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 						<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
@@ -264,7 +240,9 @@
 					</DataGrid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Static meshes">
+
+            <!--  Static Meshes -->
+            <TabItem Header="Static Meshes">
 				<DockPanel Margin="6">
 					<controls:SpacedStack
 						DockPanel.Dock="Top"
@@ -290,7 +268,9 @@
 					</DataGrid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Sky &amp; font">
+
+            <!--  Sky and Font -->
+            <TabItem Header="Sky &amp; Font">
 				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
 					<StackPanel IsEnabled="{Binding SupportsFontAndSky}">
 						<CheckBox Margin="0,3" Content="Use custom font texture" IsChecked="{Binding FontUseCustom, Mode=TwoWay}" />
@@ -323,7 +303,9 @@
 					</StackPanel>
 				</ScrollViewer>
 			</TabItem>
-			<TabItem Header="Sound catalogs">
+
+            <!--  Sound Infos -->
+            <TabItem Header="Sound Infos">
 				<Grid Margin="6">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="2*" MinHeight="90" />
@@ -409,7 +391,9 @@
 					<TextBlock Grid.Row="3" Margin="0,6,0,0" Text="{Binding SoundStatistics}" />
 				</Grid>
 			</TabItem>
-			<TabItem Header="Samples">
+
+            <!--  Sound Sample Paths -->
+            <TabItem Header="Sound Sample Paths">
 				<DockPanel Margin="6">
 					<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 						<Button Width="70" Command="{Binding AddSampleCommand}" Content="Add..." />
@@ -436,7 +420,21 @@
 					</DataGrid>
 				</DockPanel>
 			</TabItem>
-			<TabItem Header="Misc">
+
+            <!--  TRX -->
+            <TabItem Header="TRX" Visibility="{Binding IsTRX, Converter={StaticResource BoolToVis}}">
+                <ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <DockPanel Margin="0,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Texture bit depth:" />
+                            <ComboBox Width="120" HorizontalAlignment="Left" ItemsSource="{Binding TrxTextureDepths}" SelectedItem="{Binding SelectedTrxDepth, Mode=TwoWay}" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!--  Misc -->
+            <TabItem Header="Misc">
 				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
 					<StackPanel>
 						<TextBlock Margin="0,0,0,4" FontWeight="Bold" Text="Compiler options" />
@@ -483,16 +481,34 @@
 				</ScrollViewer>
 			</TabItem>
 
-			<TabItem Header="TRX" Visibility="{Binding IsTRX, Converter={StaticResource BoolToVis}}">
-				<ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
-					<StackPanel>
-						<DockPanel Margin="0,3">
-							<TextBlock Style="{StaticResource PathLabel}" Text="Texture bit depth:" />
-							<ComboBox Width="120" HorizontalAlignment="Left" ItemsSource="{Binding TrxTextureDepths}" SelectedItem="{Binding SelectedTrxDepth, Mode=TwoWay}" />
-						</DockPanel>
-					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
+            <!--  Path Placeholders  -->
+            <TabItem Header="Path Placeholders">
+                <DockPanel Margin="6">
+                    <DockPanel DockPanel.Dock="Top" Margin="0,3">
+                        <TextBlock Style="{StaticResource PathLabel}" Text="Level file (.prj2):" />
+                        <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLevelFileCommand}" Content="..." />
+                        <TextBox Style="{StaticResource LevelFileBox}" Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <DockPanel DockPanel.Dock="Top" Margin="0,3">
+                        <TextBlock Style="{StaticResource PathLabel}" Text="Game directory:" />
+                        <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameDirectoryCommand}" Content="..." />
+                        <TextBox Style="{StaticResource GameDirBox}" Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Margin="0,8,0,4" Text="Path variables:" />
+                    <DataGrid
+			AutoGenerateColumns="False"
+			CanUserAddRows="False"
+			HeadersVisibility="Column"
+			IsReadOnly="True"
+			ItemsSource="{Binding PathVariables}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Width="200" Binding="{Binding Variable}" Header="Variable" />
+                            <DataGridTextColumn Width="*" Binding="{Binding Value}" Header="Resolved value" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+                        
 		</TabControl>
 	</DockPanel>
 </Window>
