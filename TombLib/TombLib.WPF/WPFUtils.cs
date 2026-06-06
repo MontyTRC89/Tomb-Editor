@@ -22,7 +22,39 @@ public static class WPFUtils
 				return form;
 		}
 
+		// No WinForms Form can own dialogs (the host app is WPF). Fall back to the active — or
+		// failing that the main — WPF window. Without a valid owner, non-modal windows shown via
+		// SetOwner() end up ownerless and drop behind the editor when the main window is activated
+		// (e.g. clicking the 3D viewport), instead of staying on top.
+		if (TryGetActiveWpfWindowHandle(out IntPtr hwnd))
+			return new Win32WindowHandle(hwnd);
+
 		return EmptyWin32Window;
+	}
+
+	private static bool TryGetActiveWpfWindowHandle(out IntPtr handle)
+	{
+		handle = IntPtr.Zero;
+
+		if (System.Windows.Application.Current is not { } app)
+			return false;
+
+		System.Windows.Window? target = null;
+		foreach (System.Windows.Window window in app.Windows)
+		{
+			if (window.IsActive)
+			{
+				target = window;
+				break;
+			}
+		}
+
+		target ??= app.MainWindow;
+		if (target is null)
+			return false;
+
+		handle = new System.Windows.Interop.WindowInteropHelper(target).Handle;
+		return handle != IntPtr.Zero;
 	}
 
 	public static Color ToWPFColor(this Vector3 color) => Color.FromRgb((byte)(color.X * 255.0f), (byte)(color.Y * 255.0f), (byte)(color.Z * 255.0f));
@@ -82,6 +114,13 @@ public static class WPFUtils
 	private sealed class EmptyWindow : System.Windows.Forms.IWin32Window
 	{
 		public IntPtr Handle => IntPtr.Zero;
+	}
+
+	private sealed class Win32WindowHandle : System.Windows.Forms.IWin32Window
+	{
+		public IntPtr Handle { get; }
+
+		public Win32WindowHandle(IntPtr handle) => Handle = handle;
 	}
 
 	private static bool CanOwnDialogs(System.Windows.Forms.Form form)
