@@ -8,10 +8,11 @@
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.LevelSettings"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	Title="Level Settings"
-	Width="720"
+	Width="1000"
 	Height="560"
-	MinWidth="560"
+	MinWidth="720"
 	MinHeight="420"
 	d:DataContext="{d:DesignInstance Type=local:LevelSettingsWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
@@ -107,7 +108,7 @@
 
             <!--  Game  -->
             <TabItem Header="Game">
-                <ScrollViewer Margin="0,6,0,6" VerticalScrollBarVisibility="Auto" Width="520">
+                <ScrollViewer Margin="0,6,0,6" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
 
                         <!-- Game version -->
@@ -374,12 +375,21 @@
 
                     <!--  Catalogs grid  -->
                     <DockPanel Grid.Row="0">
-                        <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-                            <Button Width="70" Command="{Binding AddSoundCatalogsCommand}" Content="Add..." />
-                            <Button Width="70" Command="{Binding DeleteSoundCatalogCommand}" Content="Delete" />
-                            <Button Width="36" Command="{Binding MoveSoundCatalogUpCommand}" Content="Up" />
-                            <Button Width="36" Command="{Binding MoveSoundCatalogDownCommand}" Content="Down" />
-                        </controls:SpacedStack>
+                        <!--  Vertical icon-button strip on the right, mirroring the WinForms DarkDataGridViewControls.  -->
+                        <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0">
+                            <Button Command="{Binding AddSoundCatalogsCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add...">
+                                <Image Source="{tomb:Icon General/plus_math}" />
+                            </Button>
+                            <Button Margin="0,4,0,0" Command="{Binding DeleteSoundCatalogCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete">
+                                <Image Source="{tomb:Icon General/trash}" />
+                            </Button>
+                            <Button Margin="0,4,0,0" Command="{Binding MoveSoundCatalogUpCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move up">
+                                <Image Source="{tomb:Icon General/ArrowUp}" />
+                            </Button>
+                            <Button Margin="0,4,0,0" Command="{Binding MoveSoundCatalogDownCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move down">
+                                <Image Source="{tomb:Icon General/ArrowDown}" />
+                            </Button>
+                        </StackPanel>
                         <DataGrid
 							AutoGenerateColumns="False"
 							CanUserAddRows="False"
@@ -401,7 +411,11 @@
                         </DataGrid>
                     </DockPanel>
 
-                    <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" />
+                    <GridSplitter
+                        Grid.Row="1"
+                        Height="6"
+                        HorizontalAlignment="Stretch"
+                        Background="{DynamicResource Brush_Border}" />
 
                     <!--  Sound selection  -->
                     <DockPanel Grid.Row="2">
@@ -456,12 +470,21 @@
             <!--  Sound Sample Paths -->
             <TabItem Header="Sound Sample Paths">
                 <DockPanel Margin="6">
-                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-                        <Button Width="70" Command="{Binding AddSampleCommand}" Content="Add..." />
-                        <Button Width="70" Command="{Binding DeleteSampleCommand}" Content="Delete" />
-                        <Button Width="36" Command="{Binding MoveSampleUpCommand}" Content="Up" />
-                        <Button Width="36" Command="{Binding MoveSampleDownCommand}" Content="Down" />
-                    </controls:SpacedStack>
+                    <!--  Vertical icon-button strip on the right, mirroring the WinForms DarkDataGridViewControls.  -->
+                    <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0">
+                        <Button Command="{Binding AddSampleCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add...">
+                            <Image Source="{tomb:Icon General/plus_math}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding DeleteSampleCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete">
+                            <Image Source="{tomb:Icon General/trash}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveSampleUpCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move up">
+                            <Image Source="{tomb:Icon General/ArrowUp}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveSampleDownCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move down">
+                            <Image Source="{tomb:Icon General/ArrowDown}" />
+                        </Button>
+                    </StackPanel>
                     <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
