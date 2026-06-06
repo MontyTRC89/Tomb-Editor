@@ -201,12 +201,20 @@
             <!--  Texture Files -->
             <TabItem Header="Texture Files">
                 <DockPanel Margin="6">
-                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-                        <Button Width="70" Command="{Binding AddTexturesCommand}" Content="Add..." />
-                        <Button Width="70" Command="{Binding DeleteTextureCommand}" Content="Delete" />
-                        <Button Width="36" Command="{Binding MoveTextureUpCommand}" Content="Up" />
-                        <Button Width="36" Command="{Binding MoveTextureDownCommand}" Content="Down" />
-                    </controls:SpacedStack>
+                    <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0">
+                        <Button Command="{Binding AddTexturesCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add...">
+                            <Image Source="{tomb:Icon General/plus_math}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding DeleteTextureCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete">
+                            <Image Source="{tomb:Icon General/trash}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveTextureUpCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move up">
+                            <Image Source="{tomb:Icon General/ArrowUp}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveTextureDownCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move down">
+                            <Image Source="{tomb:Icon General/ArrowDown}" />
+                        </Button>
+                    </StackPanel>
                     <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
@@ -234,12 +242,20 @@
             <!--  Object Files -->
             <TabItem Header="Object Files">
                 <DockPanel Margin="6">
-                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-                        <Button Width="70" Command="{Binding AddWadsCommand}" Content="Add..." />
-                        <Button Width="70" Command="{Binding DeleteWadCommand}" Content="Delete" />
-                        <Button Width="36" Command="{Binding MoveWadUpCommand}" Content="Up" />
-                        <Button Width="36" Command="{Binding MoveWadDownCommand}" Content="Down" />
-                    </controls:SpacedStack>
+                    <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0">
+                        <Button Command="{Binding AddWadsCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add...">
+                            <Image Source="{tomb:Icon General/plus_math}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding DeleteWadCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete">
+                            <Image Source="{tomb:Icon General/trash}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveWadUpCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move up">
+                            <Image Source="{tomb:Icon General/ArrowUp}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding MoveWadDownCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Move down">
+                            <Image Source="{tomb:Icon General/ArrowDown}" />
+                        </Button>
+                    </StackPanel>
                     <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
@@ -264,10 +280,14 @@
             <!--  Imported Geometry -->
             <TabItem Header="Imported Geometry">
                 <DockPanel Margin="6">
-                    <controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-                        <Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
-                        <Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
-                    </controls:SpacedStack>
+                    <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0">
+                        <Button Command="{Binding AddImportedGeometryCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add...">
+                            <Image Source="{tomb:Icon General/plus_math}" />
+                        </Button>
+                        <Button Margin="0,4,0,0" Command="{Binding DeleteImportedGeometryCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete">
+                            <Image Source="{tomb:Icon General/trash}" />
+                        </Button>
+                    </StackPanel>
                     <DataGrid
 						AutoGenerateColumns="False"
 						CanUserAddRows="False"
@@ -431,7 +451,12 @@
                             <Button Command="{Binding AssignFromWadsCommand}" Content="From wads" />
                             <Button Command="{Binding AssignFromSoundSourcesCommand}" Content="From sources" />
                             <Button Command="{Binding AssignHardcodedSoundsCommand}" Content="Hardcoded" />
-                            <Button Command="{Binding AutodetectSoundsCommand}" Content="Autodetect" />
+                            <Button Command="{Binding AutodetectSoundsCommand}" Style="{DynamicResource ButtonWithIconAndText}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{tomb:Icon Actions/light_on}" />
+                                    <TextBlock Text="Autodetect" />
+                                </StackPanel>
+                            </Button>
                         </controls:SpacedStack>
                         <DataGrid
 							AutoGenerateColumns="False"
