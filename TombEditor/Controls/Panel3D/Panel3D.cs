@@ -196,6 +196,11 @@ namespace TombEditor.Controls.Panel3D
         {
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
 
+            // The viewport is a drop target for objects dragged from the browsers and for files.
+            // The old WinForms MainView set this via its designer; the WPF host creates the panel
+            // in code, so enable it here to keep drag-and-drop working in both hosts.
+            AllowDrop = true;
+
             if (Editor.Instance is not null)
             {
                 _getViewportCamera = () => Camera;
