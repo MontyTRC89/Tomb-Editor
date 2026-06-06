@@ -576,6 +576,12 @@ public abstract class TextureMapBase : Control
 
         try
         {
+            // Fill the whole surface so the entire control is hit-testable. A templateless Control
+            // does not render its Background, so without this only the drawn texture / message glyphs
+            // would receive mouse input - meaning the empty "click here to load" hint area, and the
+            // margins around a loaded texture, would silently swallow clicks.
+            drawingContext.DrawRectangle(Background ?? Brushes.Transparent, null, clip);
+
             if (VisibleTexture?.IsAvailable ?? false)
             {
                 RenderTexture(drawingContext);
