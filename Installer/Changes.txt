@@ -19,6 +19,9 @@ WadTool:
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
  
+TEN property system updates
+ * Starting HP for all creatures. 
+ 
 Version 1.11
 ============
 
