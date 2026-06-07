@@ -115,7 +115,7 @@
 	  type="Int"
 	  defaultValue="692"
 	  category="Sounds"
-	  description="Sound played Puna's chair has finished turning."
+	  description="Sound played when Puna's chair has finished turning."
 	/>		
   </moveable>
 </propertyCatalog>

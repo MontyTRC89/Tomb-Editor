@@ -429,6 +429,9 @@
     <None Update="Catalogs\TEN Property Catalogs\TR3\ID_PUNA.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Property Catalogs\TR3\ID_PUNA_BOSS.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Catalogs\Engines\TRNG\CLICK_DISTANCE_32.txt">
