@@ -551,7 +551,10 @@
                     <StackPanel>
 
                         <DockPanel Margin="0,3">
-                            <Label VerticalAlignment="Center" Content="Default ambient light:" />
+                            <Label
+                                VerticalAlignment="Center"
+                                Content="Default ambient light:">
+                            </Label>
                             <Button Width="120"
                         Height="20"
                         HorizontalAlignment="Left"
@@ -564,70 +567,104 @@
 
                         <DockPanel Margin="0,3">
                             <Label VerticalAlignment="Center" Content="Default light quality:" />
-                            <ComboBox Width="100"
-                          HorizontalAlignment="Left"
-                          ItemsSource="{Binding LightQualities}"
-                          SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
+                            <ComboBox 
+                                Width="119"
+                                HorizontalAlignment="Left"
+                                ItemsSource="{Binding LightQualities}"
+                                SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" 
+                                ToolTip="Raytracing quality for all lights with `Default` light quality setting"
+                            />
                         </DockPanel>
 
                         <DockPanel Margin="0,3">
                             <Label VerticalAlignment="Center" Content="Texture padding:" />
-                            <controls:NumericUpDown Width="100"
-                                        HorizontalAlignment="Left"
-                                        Maximum="128"
-                                        Minimum="0"
-                                        Value="{Binding TexturePadding, Mode=TwoWay}" />
+                            <controls:NumericUpDown
+                                Width="100"
+                                HorizontalAlignment="Left"
+                                Maximum="128"
+                                Minimum="0"
+                                Value="{Binding TexturePadding, Mode=TwoWay}"
+                                ToolTip="Edge pixel padding to prevent texture border bleeding.&#10;If set to 0, seams between textures may become visible."
+                            />
                         </DockPanel>
 
-                        <CheckBox Margin="0,3"
-                      Content="Aggressive texture packing (merge object and room textures)"
-                      IsChecked="{Binding AgressiveTexturePacking}"
-                      IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox 
+                            Margin="0,3"
+                            Content="Aggressive texture packing (merge object and room textures)"
+                            IsChecked="{Binding AgressiveTexturePacking}"
+                            IsEnabled="{Binding IsNotTombEngine}"
+                            ToolTip="Pack both object and room textures in the same texture pages.&#10;Recommended mode for TR1-TR3 targets."
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="Aggressive floordata packing"
-                      IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}"
-                      IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox
+                            Margin="0,3"
+                            Content="Aggressive floordata packing"
+                            IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}"
+                            IsEnabled="{Binding IsNotTombEngine}"
+                            ToolTip="Scan and mege similar floordata sequences.&#10;Recommended mode for TR1-TR3 targets."
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="32-bit room lighting (requires FLEP patch)"
-                      IsChecked="{Binding Room32BitLighting, Mode=TwoWay}"
-                      IsEnabled="{Binding IsTRNG}" />
+                        <CheckBox
+                            Margin="0,3"
+                            Content="32-bit room lighting (requires FLEP patch)"
+                            IsChecked="{Binding Room32BitLighting, Mode=TwoWay}"
+                            IsEnabled="{Binding IsTRNG}"
+                            ToolTip=
+                            "Changes room lighting format from 16-bit to 32-bit, which fixes rainbow bug.&#10;Requires specific FLEP patch to be activated, otherwise lighting will not look correct." 
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="Dither 16-bit textures"
-                      IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}"
-                      IsEnabled="{Binding Supports16BitDithering}" />
+                        <CheckBox 
+                            Margin="0,3"
+                            Content="Dither 16-bit textures"
+                            IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}"
+                            IsEnabled="{Binding Supports16BitDithering}"
+                            ToolTip="Apply dithering and premultiply alpha channel to brightness for 16-bit textures."
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="Compress textures"
-                      IsChecked="{Binding CompressTextures, Mode=TwoWay}"
-                      IsEnabled="{Binding IsTombEngine}" />
+                        <CheckBox
+                            Margin="0,3"
+                            Content="Compress textures"
+                            IsChecked="{Binding CompressTextures, Mode=TwoWay}"
+                            IsEnabled="{Binding IsTombEngine}"
+                            ToolTip="Use DirectX texture compression for all level textures.&#10; Use with caution, as it may cause artifacts on legacy small texture fragments."
+                        />                        
 
-                        <CheckBox Margin="0,3"
-                      Content="Map animated textures to imported geometry,objects and static meshes"
-                      IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
+                        <CheckBox 
+                            Margin="0,3"
+                            Content="Map animated textures to imported geometry,objects and static meshes"
+                            IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}"
+                            ToolTip="Scan all objects for textures which are similar to any animated frame and apply animations to them."
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="Rearrange vertically connected rooms if necessary"
-                      IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}"
-                      IsEnabled="{Binding IsNotTombEngine}" />
+                        <CheckBox
+                            Margin="0,3"
+                            Content="Rearrange vertically connected rooms if necessary"
+                            IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}"
+                            IsEnabled="{Binding IsNotTombEngine}"
+                            ToolTip="Prioritize vertically connected rooms during compilation.&#10;Allows to safely make more rooms until overall amount of vertically connected ones won't hit absolute limit."
+                        />
 
-                        <CheckBox Margin="0,3"
-                      Content="Remove unused objects from compiled level"
-                      IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
+                        <CheckBox
+                            Margin="0,3"
+                            Content="Remove unused objects from compiled level"
+                            IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}"
+                            ToolTip="Removes moveables and statics that are in the WADs, but not placed in the level.&#10;Use with caution in the case of dynamic object creation with scripts!"    
+                        />
 
                         <DockPanel Margin="0,3">
-                            <CheckBox Width="150"
-                          VerticalAlignment="Center"
-                          Content="Custom sample rate:"
-                          IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
-
-                            <ComboBox Width="100"
-                          HorizontalAlignment="Left"
-                          IsEnabled="{Binding CanEditSampleRate}"
-                          ItemsSource="{Binding SampleRates}"
-                          SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
+                            <CheckBox
+                                Width="150"
+                                VerticalAlignment="Center"
+                                Content="Custom sample rate:"
+                                ToolTip="Override original game sample rate with custom one.&#10;May be necessary if level builder uses samples with custom sample rate."
+                                IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}"
+                            />
+                            <ComboBox
+                                Width="100"
+                                HorizontalAlignment="Left"
+                                IsEnabled="{Binding CanEditSampleRate}"
+                                ItemsSource="{Binding SampleRates}"
+                                SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
                         </DockPanel>
 
                         <CheckBox Margin="0,3"
