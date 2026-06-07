@@ -111,7 +111,7 @@
 	/>
 	<property
 	  internalName="PunaChairTurnEndSound"
-	  displayName="Chair turning sound"
+	  displayName="Chair turning end sound"
 	  type="Int"
 	  defaultValue="692"
 	  category="Sounds"
