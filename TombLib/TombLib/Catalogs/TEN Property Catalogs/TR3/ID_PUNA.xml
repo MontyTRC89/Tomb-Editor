@@ -85,5 +85,37 @@
       category="Visuals"
       description="Secondary color of the explosion sparks during Puna's death sequence."
     />
+	<property
+	  internalName="PunaHitSound"
+	  displayName="Hit sound"
+	  type="Int"
+	  defaultValue="695"
+	  category="Sounds"
+	  description="Sound played when Puna is hit."
+	/>
+	<property
+	  internalName="PunaDeathSound"
+	  displayName="Death sound"
+	  type="Int"
+	  defaultValue="693"
+	  category="Sounds"
+	  description="Sound played when Puna is dying."
+	/>
+	<property
+	  internalName="PunaChairTurnSound"
+	  displayName="Chair turning sound"
+	  type="Int"
+	  defaultValue="696"
+	  category="Sounds"
+	  description="Sound played when Puna's chair is turning."
+	/>
+	<property
+	  internalName="PunaChairTurnEndSound"
+	  displayName="Chair turning sound"
+	  type="Int"
+	  defaultValue="692"
+	  category="Sounds"
+	  description="Sound played Puna's chair has finished turning."
+	/>		
   </moveable>
 </propertyCatalog>
