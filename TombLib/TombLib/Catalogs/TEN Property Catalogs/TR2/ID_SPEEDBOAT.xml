@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<propertyCatalog>
+  <moveable id="55">
+		<property
+		  internalName="SpeedboatMist"
+		  displayName="Render mist"
+		  type="Bool"
+		  defaultValue="false"
+		  category="Speedboat Mist"
+		  description="Add mist effect."
+		/>
+		<property
+		  internalName="SpeedboatMistStartColor"
+		  displayName="Mist start color"
+		  type="Color"
+		  defaultValue="0,0,0"
+		  category="Speedboat Mist"
+		  description="Starting color of mist particles."
+		/>
+		<property
+		  internalName="SpeedboatMistEndColor"
+		  displayName="Mist end color"
+		  type="Color"
+		  defaultValue="64,64,64"
+		  category="Speedboat Mist"
+		  description="Ending color of mist particles."
+		/>
+		<property
+		  internalName="SpeedboatMistLife"
+		  displayName="Mist life"
+		  type="Float"
+		  defaultValue="20"
+		  category="Speedboat Mist"
+		  description="Determines the lifespan length of a particle."
+		/>
+		<property
+		  internalName="SpeedboatFoam"
+		  displayName="Render foam"
+		  type="Bool"
+		  defaultValue="false"
+		  category="Speedboat Foam"
+		  description="Add foam effect"
+		/>
+		<property
+		  internalName="SpeedboatWake"
+		  displayName="Render wake"
+		  type="Bool"
+		  defaultValue="false"
+		  category="Speedboat Wake"
+		  description="Add wake effect"
+		/>
+	</moveable>
+</propertyCatalog>
