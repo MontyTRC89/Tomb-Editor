@@ -594,15 +594,11 @@ namespace WadTool
 
             foreach (var moveable in src.Moveables)
             {
-                string compatibleSlot = TrCatalog.GetMoveableTombEngineSlots(src.GameVersion, moveable.Key.TypeId).FirstOrDefault() ?? string.Empty;
-                if (compatibleSlot == string.Empty)
+                var compatibleSlots = TrCatalog.GetMoveableTombEngineSlots(src.GameVersion, moveable.Key.TypeId);
+                if (compatibleSlots.Count == 0)
                     continue;
 
-                uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
-                if (!destId.HasValue)
-                    continue;
-
-                var newId = new WadMoveableId(destId.Value);
+                var newId = new WadMoveableId(compatibleSlots[0]);
 
 				WadMoveable mov;
 				if (newId.TypeId == 0) // Copy Lara object directly from reference wad.
@@ -620,15 +616,11 @@ namespace WadTool
 
             foreach (var sequence in src.SpriteSequences)
             {
-                string compatibleSlot = TrCatalog.GetSpriteSequenceTombEngineSlot(src.GameVersion, sequence.Key.TypeId);
-                if (compatibleSlot == "")
+                uint? compatibleSlot = TrCatalog.GetSpriteSequenceTombEngineSlot(src.GameVersion, sequence.Key.TypeId);
+                if (!compatibleSlot.HasValue)
                     continue;
 
-                uint? destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out bool isMoveable);
-                if (!destId.HasValue)
-                    continue;
-
-                var newId = new WadSpriteSequenceId(destId.Value);
+                var newId = new WadSpriteSequenceId(compatibleSlot.Value);
 
                 dest.Add(newId, sequence.Value);
             }
@@ -773,15 +765,7 @@ namespace WadTool
                         if (compatibleSlots.Count == 0)
                             continue;
 
-                        var allowedSlots = new HashSet<uint>();
-                        foreach (var compatibleSlot in compatibleSlots)
-                        {
-                            uint? mappedId = TrCatalog.GetItemIndex(destinationWad.GameVersion, compatibleSlot, out bool isMoveable);
-                            if (mappedId.HasValue && isMoveable)
-                            {
-                                allowedSlots.Add(mappedId.Value);
-                            }
-                        }
+                        var allowedSlots = new HashSet<uint>(compatibleSlots);
 
                         if (allowedSlots.Count == 0)
                             continue;
@@ -980,6 +964,18 @@ namespace WadTool
 
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
+        }
+
+        public static void EditLuaProperties(WadToolClass tool, IWin32Window owner, IWadObjectId focusObjectId = null)
+        {
+            if (tool.DestinationWad == null)
+            {
+                tool.SendMessage("No destination wad is loaded.", PopupType.Info);
+                return;
+            }
+
+            using (var form = new FormLuaProperties(tool, tool.DestinationWad, focusObjectId))
+                form.ShowDialog(owner);
         }
 
         public static void DeleteObjects(WadToolClass tool, IWin32Window owner, WadArea wadArea, List<IWadObjectId> ObjectIdsToDelete)
