@@ -114,17 +114,15 @@
                         <!-- Game version -->
                         <StackPanel 
                             Margin="10,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Game version to target:" HorizontalAlignment="Left" Width="500" />
+                            <Label Content="Game version to target:" HorizontalAlignment="Left" Width="500" />
                             <ComboBox ItemsSource="{Binding GameVersions}" Margin="10,10"
                           SelectedItem="{Binding GameVersion, Mode=TwoWay}" HorizontalAlignment="Left" Width="372" />
-                        </StackPanel>
-                        
-
+                        </StackPanel>        
 
                         <!-- Compiled level file -->
                         <StackPanel 
                             Margin="10,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" HorizontalAlignment="Left" Width="500" />
+                            <Label Content="Compiled level file:" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
@@ -140,7 +138,7 @@
                         <StackPanel 
                             Margin="10,3"
                             Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Path of TXT files for script (Optional)" HorizontalAlignment="Left" Width="500"/>
+                            <Label Content="Path of TXT files for script (Optional)" HorizontalAlignment="Left" Width="500"/>
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
@@ -155,7 +153,7 @@
                         <!-- Lua script file (TombEngine only) -->
                         <StackPanel Margin="10,3"
                         Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Path of Lua level script file:" HorizontalAlignment="Left" Width="500" />
+                            <Label Content="Path of Lua level script file:" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
@@ -169,7 +167,7 @@
 
                         <!-- Game executable -->
                         <StackPanel Margin="10,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Target executable that is started with the `Build and Play` button" HorizontalAlignment="Left" Width="500" />
+                            <Label Content="Target executable that is started with the `Build and Play` button" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
                             Width="103"
@@ -376,11 +374,11 @@
                                 <TextBox Text="{Binding Tr5ExtraSpritesFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </DockPanel>
                             <DockPanel Margin="0,9,0,3">
-                                <TextBlock Style="{StaticResource PathLabel}" Text="TR5 weather:" />
+                                <Label Content="TR5 weather:" />
                                 <ComboBox ItemsSource="{Binding Tr5WeatherTypes}" SelectedItem="{Binding Tr5WeatherType, Mode=TwoWay}" />
                             </DockPanel>
                             <DockPanel Margin="0,3">
-                                <TextBlock Style="{StaticResource PathLabel}" Text="Lara type:" />
+                                <Label Content="Lara type:" />
                                 <ComboBox ItemsSource="{Binding Tr5LaraTypes}" SelectedItem="{Binding Tr5LaraType, Mode=TwoWay}" />
                             </DockPanel>
                         </StackPanel>
@@ -540,7 +538,7 @@
                 <ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <DockPanel Margin="0,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Texture bit depth:" />
+                            <Label Content="Texture bit depth:" />
                             <ComboBox Width="120" HorizontalAlignment="Left" ItemsSource="{Binding TrxTextureDepths}" SelectedItem="{Binding SelectedTrxDepth, Mode=TwoWay}" />
                         </DockPanel>
                     </StackPanel>
@@ -553,11 +551,11 @@
                     <StackPanel>
 
                         <DockPanel Margin="0,3">
-                            <TextBlock Text="Default ambient light:" />
+                            <Label VerticalAlignment="Center" Content="Default ambient light:" />
                             <Button Width="120"
-                    Height="20"
-                    HorizontalAlignment="Left"
-                    Command="{Binding PickAmbientLightCommand}">
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Command="{Binding PickAmbientLightCommand}">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding AmbientLightColor}" />
                                 </Button.Background>
@@ -565,16 +563,15 @@
                         </DockPanel>
 
                         <DockPanel Margin="0,3">
-                            <TextBlock Text="Default light quality:" />
+                            <Label VerticalAlignment="Center" Content="Default light quality:" />
                             <ComboBox Width="100"
-                              HorizontalAlignment="Left"
-                              ItemsSource="{Binding LightQualities}"
-                              SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}"
-                            />
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding LightQualities}"
+                          SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
                         </DockPanel>
 
                         <DockPanel Margin="0,3">
-                            <TextBlock Text="Texture padding:" />
+                            <Label VerticalAlignment="Center" Content="Texture padding:" />
                             <controls:NumericUpDown Width="100"
                                         HorizontalAlignment="Left"
                                         Maximum="128"
@@ -631,13 +628,11 @@
                           IsEnabled="{Binding CanEditSampleRate}"
                           ItemsSource="{Binding SampleRates}"
                           SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
-                        </DockPanel>    
+                        </DockPanel>
 
                         <CheckBox Margin="0,3"
                       Content="Override individual light quality settings"
                       IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
-
-                        
 
                         <TextBlock Margin="0,9,0,4" Text="Sounds" />
 
@@ -649,17 +644,16 @@
                 </ScrollViewer>
             </TabItem>
 
-
             <!--  Path Placeholders  -->
             <TabItem Header="Path Placeholders">
                 <DockPanel Margin="6">
                     <DockPanel DockPanel.Dock="Top" Margin="0,3">
-                        <TextBlock Style="{StaticResource PathLabel}" Text="Level file (.prj2):" />
+                        <Label Content="Level file (.prj2):" />
                         <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseLevelFileCommand}" Content="..." />
                         <TextBox Style="{StaticResource LevelFileBox}" Text="{Binding LevelFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
                     <DockPanel DockPanel.Dock="Top" Margin="0,3">
-                        <TextBlock Style="{StaticResource PathLabel}" Text="Game directory:" />
+                        <Label Content="Game directory:" />
                         <Button DockPanel.Dock="Right" Width="28" Margin="4,0,0,0" Command="{Binding BrowseGameDirectoryCommand}" Content="..." />
                         <TextBox Style="{StaticResource GameDirBox}" Text="{Binding GameDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </DockPanel>
