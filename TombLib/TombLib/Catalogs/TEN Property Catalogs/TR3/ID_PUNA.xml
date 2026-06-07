@@ -15,7 +15,7 @@
       type="Int"
       defaultValue="4"
       category="Attack Parameters"
-      description="Number of lightning attacks Puna performs before summoning a lizard. Requires lizards to be present in the room."
+      description="Number of lightning attacks Puna performs before summoning a lizard. Requires lizards to be present on the map."
     />
     <property
       internalName="PunaAlertRange"
