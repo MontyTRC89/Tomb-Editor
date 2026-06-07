@@ -112,28 +112,18 @@
                     <StackPanel>
 
                         <!-- Game version -->
-                        <StackPanel Margin="0,3">
+                        <StackPanel 
+                            Margin="10,3">
                             <TextBlock Style="{StaticResource PathLabel}" Text="Game version to target:" HorizontalAlignment="Left" Width="500" />
                             <ComboBox ItemsSource="{Binding GameVersions}" Margin="10,10"
-                          SelectedItem="{Binding GameVersion, Mode=TwoWay}" HorizontalAlignment="Left" Width="207" />
+                          SelectedItem="{Binding GameVersion, Mode=TwoWay}" HorizontalAlignment="Left" Width="372" />
                         </StackPanel>
                         
-                        <!-- Game executable -->
-                        <StackPanel Margin="0,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Game executable:" HorizontalAlignment="Left" Width="500" />
-                            <DockPanel>
-                                <Button DockPanel.Dock="Right"
-                            Width="103"
-                            Margin="4,0,0,0"
-                            Command="{Binding BrowseGameExecutableCommand}"
-                            Content="Browse" />
-                                <TextBox Style="{StaticResource GameExeBox}"
-                             Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
-                            </DockPanel>
-                        </StackPanel>
+
 
                         <!-- Compiled level file -->
-                        <StackPanel Margin="0,3">
+                        <StackPanel 
+                            Margin="10,3">
                             <TextBlock Style="{StaticResource PathLabel}" Text="Compiled level file:" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
@@ -147,8 +137,9 @@
                         </StackPanel>
 
                         <!-- Script folder (TRNG only) -->
-                        <StackPanel Margin="0,3"
-                        Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
+                        <StackPanel 
+                            Margin="10,3"
+                            Visibility="{Binding IsTRNG, Converter={StaticResource BoolToVis}}">
                             <TextBlock Style="{StaticResource PathLabel}" Text="Path of TXT files for script (Optional)" HorizontalAlignment="Left" Width="500"/>
                             <DockPanel>
                                 <Button DockPanel.Dock="Right"
@@ -162,7 +153,7 @@
                         </StackPanel>
 
                         <!-- Lua script file (TombEngine only) -->
-                        <StackPanel Margin="0,3"
+                        <StackPanel Margin="10,3"
                         Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
                             <TextBlock Style="{StaticResource PathLabel}" Text="Path of Lua level script file:" HorizontalAlignment="Left" Width="500" />
                             <DockPanel>
@@ -176,19 +167,33 @@
                             </DockPanel>
                         </StackPanel>
 
+                        <!-- Game executable -->
+                        <StackPanel Margin="10,3">
+                            <TextBlock Style="{StaticResource PathLabel}" Text="Target executable that is started with the `Build and Play` button" HorizontalAlignment="Left" Width="500" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right"
+                            Width="103"
+                            Margin="4,0,0,0"
+                            Command="{Binding BrowseGameExecutableCommand}"
+                            Content="Browse" />
+                                <TextBox Style="{StaticResource GameExeBox}"
+                             Text="{Binding GameExecutableFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,10,10,10" />
+                            </DockPanel>
+                        </StackPanel>
+
                         <!-- Checkboxes -->
 
-                        <CheckBox Margin="10,3"
+                        <CheckBox Margin="20,3"
                       Content="Show extra blending modes"
                       IsChecked="{Binding GameEnableExtraBlendingModes, Mode=TwoWay}"
                       Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
                         
-                        <CheckBox Margin="10,3"
+                        <CheckBox Margin="20,3"
                       Content="Show FLEP reverb presets"
                       IsChecked="{Binding GameEnableExtraReverbPresets, Mode=TwoWay}"
                       Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
 
-                        <CheckBox Margin="10,3"
+                        <CheckBox Margin="20,3"
                       Content="Enable Tomb4.exe quick start feature"
                       IsChecked="{Binding GameEnableQuickStartFeature, Mode=TwoWay}"
                       Visibility="{Binding IsTR4Native, Converter={StaticResource BoolToVis}}" />
@@ -546,49 +551,104 @@
             <TabItem Header="Misc">
                 <ScrollViewer Margin="6" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Margin="0,0,0,4" FontWeight="Bold" Text="Compiler options" />
-                        <DockPanel Margin="0,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Texture padding:" />
-                            <controls:NumericUpDown Width="100" HorizontalAlignment="Left" Maximum="128" Minimum="0" Value="{Binding TexturePadding, Mode=TwoWay}" />
-                        </DockPanel>
-                        <CheckBox Margin="0,3" Content="Dither 16-bit textures" IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}" IsEnabled="{Binding Supports16BitDithering}" />
-                        <CheckBox Margin="0,3" Content="Compress textures" IsChecked="{Binding CompressTextures, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
-                        <CheckBox Margin="0,3" Content="Aggressive texture packing" IsChecked="{Binding AgressiveTexturePacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-                        <CheckBox Margin="0,3" Content="Aggressive floordata packing" IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-                        <CheckBox Margin="0,3" Content="32-bit room lighting" IsChecked="{Binding Room32BitLighting, Mode=TwoWay}" IsEnabled="{Binding IsTRNG}" />
-                        <CheckBox Margin="0,3" Content="Remap animated textures" IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
-                        <CheckBox Margin="0,3" Content="Rearrange vertical rooms" IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}" IsEnabled="{Binding IsNotTombEngine}" />
-                        <CheckBox Margin="0,3" Content="Remove unused objects" IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
 
-                        <DockPanel Margin="0,9,0,3">
-                            <CheckBox Width="150" VerticalAlignment="Center" Content="Custom sample rate:" IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
-                            <ComboBox Width="100" HorizontalAlignment="Left" IsEnabled="{Binding CanEditSampleRate}" ItemsSource="{Binding SampleRates}" SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
-                        </DockPanel>
-
-                        <TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Lighting" />
                         <DockPanel Margin="0,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Default ambient light:" />
-                            <Button
-								Width="120"
-								Height="20"
-								HorizontalAlignment="Left"
-								Command="{Binding PickAmbientLightCommand}">
+                            <TextBlock Text="Default ambient light:" />
+                            <Button Width="120"
+                    Height="20"
+                    HorizontalAlignment="Left"
+                    Command="{Binding PickAmbientLightCommand}">
                                 <Button.Background>
                                     <SolidColorBrush Color="{Binding AmbientLightColor}" />
                                 </Button.Background>
                             </Button>
                         </DockPanel>
-                        <CheckBox Margin="0,3" Content="Override individual light quality settings" IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
+
                         <DockPanel Margin="0,3">
-                            <TextBlock Style="{StaticResource PathLabel}" Text="Default light quality:" />
-                            <ComboBox Width="100" HorizontalAlignment="Left" ItemsSource="{Binding LightQualities}" SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}" />
+                            <TextBlock Text="Default light quality:" />
+                            <ComboBox Width="100"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding LightQualities}"
+                              SelectedIndex="{Binding DefaultLightQualityIndex, Mode=TwoWay}"
+                            />
                         </DockPanel>
 
-                        <TextBlock Margin="0,9,0,4" FontWeight="Bold" Text="Sounds" />
-                        <CheckBox Margin="0,3" Content="Auto-assign sounds if none selected" IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
+                        <DockPanel Margin="0,3">
+                            <TextBlock Text="Texture padding:" />
+                            <controls:NumericUpDown Width="100"
+                                        HorizontalAlignment="Left"
+                                        Maximum="128"
+                                        Minimum="0"
+                                        Value="{Binding TexturePadding, Mode=TwoWay}" />
+                        </DockPanel>
+
+                        <CheckBox Margin="0,3"
+                      Content="Aggressive texture packing (merge object and room textures)"
+                      IsChecked="{Binding AgressiveTexturePacking}"
+                      IsEnabled="{Binding IsNotTombEngine}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Aggressive floordata packing"
+                      IsChecked="{Binding AgressiveFloordataPacking, Mode=TwoWay}"
+                      IsEnabled="{Binding IsNotTombEngine}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="32-bit room lighting (requires FLEP patch)"
+                      IsChecked="{Binding Room32BitLighting, Mode=TwoWay}"
+                      IsEnabled="{Binding IsTRNG}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Dither 16-bit textures"
+                      IsChecked="{Binding Dither16BitTextures, Mode=TwoWay}"
+                      IsEnabled="{Binding Supports16BitDithering}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Compress textures"
+                      IsChecked="{Binding CompressTextures, Mode=TwoWay}"
+                      IsEnabled="{Binding IsTombEngine}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Map animated textures to imported geometry,objects and static meshes"
+                      IsChecked="{Binding RemapAnimatedTextures, Mode=TwoWay}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Rearrange vertically connected rooms if necessary"
+                      IsChecked="{Binding RearrangeVerticalRooms, Mode=TwoWay}"
+                      IsEnabled="{Binding IsNotTombEngine}" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Remove unused objects from compiled level"
+                      IsChecked="{Binding RemoveUnusedObjects, Mode=TwoWay}" />
+
+                        <DockPanel Margin="0,3">
+                            <CheckBox Width="150"
+                          VerticalAlignment="Center"
+                          Content="Custom sample rate:"
+                          IsChecked="{Binding EnableCustomSampleRate, Mode=TwoWay}" />
+
+                            <ComboBox Width="100"
+                          HorizontalAlignment="Left"
+                          IsEnabled="{Binding CanEditSampleRate}"
+                          ItemsSource="{Binding SampleRates}"
+                          SelectedItem="{Binding SelectedSampleRate, Mode=TwoWay}" />
+                        </DockPanel>    
+
+                        <CheckBox Margin="0,3"
+                      Content="Override individual light quality settings"
+                      IsChecked="{Binding OverrideIndividualLightQualitySettings, Mode=TwoWay}" />
+
+                        
+
+                        <TextBlock Margin="0,9,0,4" Text="Sounds" />
+
+                        <CheckBox Margin="0,3"
+                      Content="Auto-assign sounds if none selected"
+                      IsChecked="{Binding AutoAssignSoundsIfNoSelection, Mode=TwoWay}" />
+
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+
 
             <!--  Path Placeholders  -->
             <TabItem Header="Path Placeholders">
