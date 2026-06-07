@@ -19,6 +19,9 @@ WadTool:
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
  
+ TEN property system updates:
+ * Added properties for customising PUNA_BOSS lightning colours, hardcoded sounds, attack damage and behavior. 
+ 
 Version 1.11
 ============
 
