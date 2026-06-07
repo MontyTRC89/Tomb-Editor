@@ -2,7 +2,7 @@
 <propertyCatalog>
   <moveable id="252">
     <property
-      internalName="puna_lightning_damage"
+      internalName="PunaLightningDamage"
       displayName="Lightning Attack Damage"
       type="Int"
       defaultValue="350"
@@ -10,7 +10,7 @@
       description="Damage dealt by Puna's direct lightning strike."
     />
     <property
-      internalName="puna_attack_count"
+      internalName="PunaAttackCount"
       displayName="Attacks Before Lizard Summon"
       type="Int"
       defaultValue="4"
@@ -18,7 +18,7 @@
       description="Number of lightning attacks Puna performs before summoning a lizard. Requires lizards to be present in the room."
     />
     <property
-      internalName="puna_alert_range"
+      internalName="PunaAlertRange"
       displayName="Alert Range (blocks)"
       type="Float"
       defaultValue="2.5"
@@ -26,7 +26,7 @@
       description="Distance in blocks at which Puna becomes alerted and begins attacking the player."
     />
     <property
-      internalName="puna_turn_rate"
+      internalName="PunaTurnRate"
       displayName="Turn Rate (degrees)"
       type="Float"
       defaultValue="3.0"
@@ -34,7 +34,7 @@
       description="Maximum rotation speed of Puna's body per frame, in degrees."
     />
     <property
-      internalName="puna_lightning_color"
+      internalName="PunaLightningColor"
       displayName="Lightning Color"
       type="Color"
       defaultValue="20, 160, 160"
@@ -42,7 +42,7 @@
       description="Color of the direct lightning attack fired at the player."
     />
     <property
-      internalName="puna_summon_color"
+      internalName="PunaSummonColor"
       displayName="Summon Lightning Color"
       type="Color"
       defaultValue="0, 255, 128"
@@ -50,7 +50,7 @@
       description="Color of the lightning bolt fired to summon a lizard."
     />
     <property
-      internalName="puna_shield_color"
+      internalName="PunaShieldColor"
       displayName="Shield Color"
       type="Color"
       defaultValue="0, 64, 64, 166"
@@ -59,7 +59,7 @@
       description="Color of the energy shield that deflects shots while Puna is not attacking."
     />
     <property
-      internalName="puna_effect_color"
+      internalName="PunaEffectColor"
       displayName="Death Effect Color"
       type="Color"
       defaultValue="0, 102, 128, 128"
@@ -68,7 +68,7 @@
       description="Color of the shockwave and dynamic light emitted during Puna's death explosion sequence."
     />
     <property
-      internalName="puna_explosion_color_1"
+      internalName="PunaExplosionColor1"
       displayName="Explosion Spark Color 1"
       type="Color"
       defaultValue="0, 179, 77, 128"
@@ -77,7 +77,7 @@
       description="Primary color of the explosion sparks during Puna's death sequence."
     />
     <property
-      internalName="puna_explosion_color_2"
+      internalName="PunaExplosionColor2"
       displayName="Explosion Spark Color 2"
       type="Color"
       defaultValue="26, 77, 179, 128"
