@@ -148,19 +148,19 @@ namespace WadTool
             }
 
             // Determine kind and type ID
-            LuaPropertyObjectKind kind;
+            ObjectKind kind;
             uint typeId;
             string objectName;
 
             if (wadObject is WadMoveable)
             {
-                kind = LuaPropertyObjectKind.Moveable;
+                kind = ObjectKind.Moveable;
                 typeId = ((WadMoveableId)objectId).TypeId;
                 objectName = TrCatalog.GetMoveableName(_wad.GameVersion, typeId);
             }
             else if (wadObject is WadStatic)
             {
-                kind = LuaPropertyObjectKind.Static;
+                kind = ObjectKind.Static;
                 typeId = ((WadStaticId)objectId).TypeId;
                 objectName = TrCatalog.GetStaticName(_wad.GameVersion, typeId);
             }

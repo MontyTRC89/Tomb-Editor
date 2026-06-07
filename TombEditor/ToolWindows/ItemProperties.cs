@@ -6,6 +6,7 @@ using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.LevelData;
 using TombLib.LuaProperties;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.ToolWindows
 {
@@ -102,7 +103,7 @@ namespace TombEditor.ToolWindows
             {
                 _currentObject = moveable;
                 var typeId = moveable.WadObjectId.TypeId;
-                var definitions = LuaPropertyCatalog.GetDefinitions(LuaPropertyObjectKind.Moveable, typeId);
+                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, typeId);
 
                 // Get wad2 global defaults for this moveable type (if available).
                 var wadMoveable = _editor.Level.Settings.WadTryGetMoveable(moveable.WadObjectId);
@@ -116,7 +117,7 @@ namespace TombEditor.ToolWindows
             {
                 _currentObject = staticObj;
                 var typeId = staticObj.WadObjectId.TypeId;
-                var definitions = LuaPropertyCatalog.GetDefinitions(LuaPropertyObjectKind.Static, typeId);
+                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId);
 
                 // Get wad2 global defaults for this static type (if available).
                 var wadStatic = _editor.Level.Settings.WadTryGetStatic(staticObj.WadObjectId);

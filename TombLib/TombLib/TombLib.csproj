@@ -485,6 +485,9 @@
     <Content Include="Catalogs\TEN Property Catalogs\README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\TEN Material Catalogs\*.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />

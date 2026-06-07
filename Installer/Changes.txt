@@ -1,3 +1,24 @@
+Version 2.0
+===========
+
+Tomb Editor:
+ * Added new Object Placement editor mode with a new set of tools for easy object placement and selection.
+ * Added Content Browser tool window for more streamlined object management.
+ * Added Flyby Timeline control to edit and preview flyby sequences.
+ * Added "Preview flyby sequence" and "Preview camera" context menus for cameras.
+ * Added flyby camera depth of field controls and indication for TEN target.
+ * Added ability to group event sets into categories.
+ * Added indication of the nodes not supported by the current event type.
+ * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
+ * Added multiple window layout support.
+
+WadTool:
+ * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
+ * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
+ 
+TEN nodes:
+ * Added a node to unswap a previously swapped mesh.
+ 
 Version 1.11
 ============
 
@@ -10,9 +31,12 @@ Tomb Editor:
  * Added support for triangular geometry in TR1X and TR2X levels.
  * Added a texture depth option (8/16/32-bit) for TR1X and TR2X levels.
  * Added support for TR1X and TR2X levels to use more sound slots (maximum 1000 samples in total per level).
+ * Added support for monkeyswing in TR1X and TR2X levels.
  * Added support for no caustics room flag in TEN.
  * Changed TR2X levels to embed sound effects rather than using main.sfx.
  * Fixed node parameter corruption after changing node background color.
+ * Fixed unintended room deletion in 3D mode when no objects are selected.
+ * Fixed enemy monkeyswing pathfinding being added to TR3 levels.
 
 WadTool:
  * Added indication of missing external texture file.
@@ -26,10 +50,10 @@ WadTool:
  * Fixed exception while exporting meshes with degenerate textures.
 
 TombIDE:
- * Updated TR1X and TR2X presets to TRX 1.2.2.
+ * Updated "Ready to Play" archive creation dialog.
+ * Updated TR1X and TR2X presets to TRX 1.3.1.
  * Updated PLAY.exe to fix TEN console window not showing in `-debug` mode.
  * Updated FLEP.
- * Updated "Ready to Play" archive creation dialog.
 
 TEN nodes:
  * Added nodes to check the color of a moveable or static mesh.

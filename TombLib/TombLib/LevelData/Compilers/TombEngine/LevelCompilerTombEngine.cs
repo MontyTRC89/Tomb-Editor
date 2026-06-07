@@ -314,6 +314,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     DirectionX = (int) Math.Round(position.X + Level.SectorSizeUnit * direction.X),
                     DirectionY = (int)-Math.Round(position.Y + Level.SectorSizeUnit * direction.Y),
                     DirectionZ = (int) Math.Round(position.Z + Level.SectorSizeUnit * direction.Z),
+					DofMode = (int)instance.DofMode,
+					DofDistance = instance.DofDistance,
+                    DofRange = instance.DofRange,
+                    DofStrength = instance.DofStrength
                 });
             }
             _flyByCameras.Sort(new TombEngineFlybyCamera.ComparerFlyBy());
@@ -493,7 +497,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Yaw = ToTrAngle(instance.RotationY),
                             Pitch = ToTrAngle(instance.RotationX),
                             Roll = ToTrAngle(-instance.Roll),
-                            Color = new Vector4(instance.Color.X, instance.Color.Y, instance.Color.Z, 1.0f),
+                            Color = new Vector4(NormalizeColorRange(instance.Color), 1.0f),
                             OCB = instance.Ocb,
                             Flags = unchecked((ushort)flags),
                             LuaName = instance.LuaName ?? string.Empty
@@ -577,7 +581,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (globalMovProps.ContainsKey(slotName))
                         continue;
 
-                    var definitions = LuaPropertyCatalog.GetDefinitions(LuaPropertyObjectKind.Moveable, mov.Key.TypeId);
+                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, mov.Key.TypeId);
                     if (definitions.Count == 0)
                         continue;
 
@@ -603,7 +607,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (globalStaticProps.ContainsKey(typeId))
                         continue;
 
-                    var definitions = LuaPropertyCatalog.GetDefinitions(LuaPropertyObjectKind.Static, typeId);
+                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId);
 
                     if (definitions.Count == 0)
                         continue;
@@ -620,23 +624,50 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             var instanceMovProps = new Dictionary<string, LuaPropertyContainer>();
             var instanceStaticProps = new Dictionary<string, LuaPropertyContainer>();
+            var materialProps = new Dictionary<string, LuaPropertyContainer>();
 
             foreach (var room in _level.ExistingRooms)
             {
                 foreach (var obj in room.Objects)
                 {
-                    if (obj is MoveableInstance mov && mov.LuaProperties?.HasProperties == true && !string.IsNullOrEmpty(mov.LuaName))
+                    if (obj is MoveableInstance mov && _level.Settings.WadTryGetMoveable(mov.WadObjectId) != null &&
+                        mov.LuaProperties?.HasProperties == true && !string.IsNullOrEmpty(mov.LuaName))
                     {
                         instanceMovProps[mov.LuaName] = mov.LuaProperties;
                     }
-                    else if (obj is StaticInstance stat && stat.LuaProperties?.HasProperties == true && !string.IsNullOrEmpty(stat.LuaName))
+                    else if (obj is StaticInstance stat && _level.Settings.WadTryGetStatic(stat.WadObjectId) != null &&
+                        stat.LuaProperties?.HasProperties == true && !string.IsNullOrEmpty(stat.LuaName))
                     {
                         instanceStaticProps[stat.LuaName] = stat.LuaProperties;
                     }
                 }
             }
 
-            bool hasAnyProperties = globalMovProps.Count > 0 || globalStaticProps.Count > 0 || instanceMovProps.Count > 0 || instanceStaticProps.Count > 0;
+            foreach (var material in _materialDictionary.Values.OrderBy(material => material.Name))
+            {
+                if (string.IsNullOrEmpty(material.Name))
+                    continue;
+
+                var container = new LuaPropertyContainer();
+                for (int i = 0; i < MaterialData.PropertyCount; i++)
+                {
+                    var definition = material.GetPropertyDefinition(i);
+                    if (definition == null || !definition.IsDefined || string.IsNullOrEmpty(definition.Name))
+                        continue;
+
+                    var value = material.Properties[i];
+                    if (string.IsNullOrWhiteSpace(value))
+                        value = MaterialCatalog.GetDefaultValue(definition);
+
+                    container.SetValue(definition.Name, value);
+                }
+
+                if (container.HasProperties)
+                    materialProps[material.Name] = container;
+            }
+
+            bool hasAnyProperties = globalMovProps.Count > 0 || globalStaticProps.Count > 0 ||
+                instanceMovProps.Count > 0 || instanceStaticProps.Count > 0 || materialProps.Count > 0;
 
             if (!hasAnyProperties)
             {
@@ -644,7 +675,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return;
             }
 
-            _luaPropertyScriptBlob = LuaPropertyScriptBuilder.BuildFullPropertyScript(globalMovProps, globalStaticProps, instanceMovProps, instanceStaticProps);
+            _luaPropertyScriptBlob = LuaPropertyScriptBuilder.BuildFullPropertyScript(globalMovProps, globalStaticProps, instanceMovProps, instanceStaticProps, materialProps);
         }
 
         public bool CheckTombEngineVersion()

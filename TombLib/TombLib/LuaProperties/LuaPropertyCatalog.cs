@@ -1,36 +1,31 @@
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using NLog;
+using TombLib.LevelData;
+using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 // XML catalog loader for Lua property definitions.
 // Reads XML files from "Catalogs/TEN Property Catalogs" folder, parses property definitions
 // per object type (moveable/static by ID), and validates all values against their declared types.
-// Supports multi-slot ID syntax: "0", "0,1,2", "0-5", "0-5, 73, 100-105".
+// Supports multi-slot ID syntax: "0", "0,1,2", "0-5", "0-5, 73, 100-105",
+// and string names for Moveable objects: "LARA", "LARA_SHOTGUN_ANIM".
 
 namespace TombLib.LuaProperties
 {
-    /// <summary>
-    /// Specifies whether a property catalog entry targets a moveable or a static object type.
-    /// </summary>
-    public enum LuaPropertyObjectKind
-    {
-        Moveable,
-        Static
-    }
-
     /// <summary>
     /// A key identifying an object type for property definitions.
     /// Combines the object's kind (moveable/static) with its numeric slot ID.
     /// </summary>
     public struct LuaPropertyObjectKey : IEquatable<LuaPropertyObjectKey>
     {
-        public LuaPropertyObjectKind Kind;
+        public ObjectKind Kind;
         public uint TypeId;
 
-        public LuaPropertyObjectKey(LuaPropertyObjectKind kind, uint typeId)
+        public LuaPropertyObjectKey(ObjectKind kind, uint typeId)
         {
             Kind = kind;
             TypeId = typeId;
@@ -91,7 +86,7 @@ namespace TombLib.LuaProperties
         /// Gets property definitions for a specific object type.
         /// Returns an empty list if no definitions exist.
         /// </summary>
-        public static List<LuaPropertyDefinition> GetDefinitions(LuaPropertyObjectKind kind, uint typeId)
+        public static List<LuaPropertyDefinition> GetDefinitions(ObjectKind kind, uint typeId)
         {
             var key = new LuaPropertyObjectKey(kind, typeId);
 
@@ -157,19 +152,20 @@ namespace TombLib.LuaProperties
 
             // Process <moveable> entries.
             foreach (XmlNode moveableNode in root.SelectNodes("//moveable"))
-                ParseObjectNode(moveableNode, LuaPropertyObjectKind.Moveable, filePath, result);
+                ParseObjectNode(moveableNode, ObjectKind.Moveable, filePath, result);
 
             // Process <static> entries.
             foreach (XmlNode staticNode in root.SelectNodes("//static"))
-                ParseObjectNode(staticNode, LuaPropertyObjectKind.Static, filePath, result);
+                ParseObjectNode(staticNode, ObjectKind.Static, filePath, result);
         }
 
         /// <summary>
         /// Parses a single &lt;moveable&gt; or &lt;static&gt; XML node and extracts its
         /// child &lt;property&gt; definitions.
-        /// Supports multi-slot id formats: "0", "0,1,2", "0-5", "0-5, 73, 100-105".
+        /// Supports multi-slot id formats: "0", "0,1,2", "0-5", "0-5, 73, 100-105",
+        /// and string names for Moveable objects: "LARA", "LARA,SHOTGUN_ANIM".
         /// </summary>
-        private static void ParseObjectNode(XmlNode objectNode, LuaPropertyObjectKind kind, string filePath, Dictionary<LuaPropertyObjectKey, List<LuaPropertyDefinition>> result)
+        private static void ParseObjectNode(XmlNode objectNode, ObjectKind kind, string filePath, Dictionary<LuaPropertyObjectKey, List<LuaPropertyDefinition>> result)
         {
             var idAttr = objectNode.Attributes?["id"];
             if (idAttr == null || string.IsNullOrWhiteSpace(idAttr.Value))
@@ -178,7 +174,7 @@ namespace TombLib.LuaProperties
                 return;
             }
 
-            var typeIds = ParseIdList(idAttr.Value, filePath);
+            var typeIds = TrCatalog.ParseIdList(idAttr.Value, filePath, kind, TRVersion.Game.TombEngine);
             if (typeIds.Count == 0)
             {
                 logger.Warn("Property catalog entry has no valid IDs in '{0}' in {1}", idAttr.Value, filePath);
@@ -216,70 +212,6 @@ namespace TombLib.LuaProperties
         }
 
         /// <summary>
-        /// Parses a comma-separated list of IDs and ranges into a flat list of uint values.
-        /// Supports: "5", "1,2,3", "0-10", "0-5,73,100-105".
-        /// </summary>
-        private static List<uint> ParseIdList(string idString, string filePath)
-        {
-            var ids = new List<uint>();
-
-            foreach (var segment in idString.Split(','))
-            {
-                var trimmed = segment.Trim();
-                if (string.IsNullOrEmpty(trimmed))
-                    continue;
-
-                var dashIndex = trimmed.IndexOf('-');
-                if (dashIndex > 0 && dashIndex < trimmed.Length - 1)
-                {
-                    // Range: "start-end".
-                    var startStr = trimmed.Substring(0, dashIndex).Trim();
-                    var endStr = trimmed.Substring(dashIndex + 1).Trim();
-
-                    if (uint.TryParse(startStr, out uint rangeStart) && uint.TryParse(endStr, out uint rangeEnd))
-                    {
-                        if (rangeEnd < rangeStart)
-                        {
-                            logger.Warn("Invalid range '{0}' (end < start) in {1}", trimmed, filePath);
-                            continue;
-                        }
-
-                        if (rangeEnd - rangeStart > 1000)
-                        {
-                            logger.Warn("Range '{0}' is too large (>1000 entries) in {1}", trimmed, filePath);
-                            continue;
-                        }
-
-                        for (uint i = rangeStart; i <= rangeEnd; i++)
-                        {
-                            if (!ids.Contains(i))
-                                ids.Add(i);
-                        }
-                    }
-                    else
-                    {
-                        logger.Warn("Invalid range value '{0}' in {1}", trimmed, filePath);
-                    }
-                }
-                else
-                {
-                    // Single ID.
-                    if (uint.TryParse(trimmed, out uint singleId))
-                    {
-                        if (!ids.Contains(singleId))
-                            ids.Add(singleId);
-                    }
-                    else
-                    {
-                        logger.Warn("Invalid ID value '{0}' in {1}", trimmed, filePath);
-                    }
-                }
-            }
-
-            return ids;
-        }
-
-        /// <summary>
         /// Parses a single &lt;property&gt; XML node into a <see cref="LuaPropertyDefinition"/>.
         /// Returns null if the node is malformed beyond recovery.
         /// </summary>
@@ -299,7 +231,7 @@ namespace TombLib.LuaProperties
             definition.DisplayName = propNode.Attributes?["displayName"]?.Value?.Trim() ?? definition.InternalName;
 
             // Optional: description.
-            definition.Description = propNode.Attributes?["description"]?.Value?.Trim() ?? string.Empty;
+            definition.Description = TextExtensions.SingleLineToMultiLine(propNode.Attributes?["description"]?.Value?.Trim() ?? string.Empty);
 
             // Optional: category
             definition.Category = propNode.Attributes?["category"]?.Value?.Trim() ?? string.Empty;

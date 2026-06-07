@@ -533,6 +533,8 @@ namespace TombLib.LevelData.IO
                                 eventSetIndex = chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetName)
                                 eventSet.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.EventSetFolder)
+                                eventSet.Folder = chunkIO.ReadChunkString(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetLastUsedEventIndex)
                                 eventSet.LastUsedEvent = (EventType)chunkIO.ReadChunkInt(chunkSize3);
                             else if (id3 == Prj2Chunks.EventSetActivators)
@@ -718,6 +720,35 @@ namespace TombLib.LevelData.IO
                         colorList.Add(new ColorC(r, g, b));
                     }
                     settings.Palette = colorList;
+                }
+                else if (id == Prj2Chunks.Favorites)
+                {
+                    settings.Favorites.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.Favorite)
+                        {
+                            settings.Favorites.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
+                }
+                else if (id == Prj2Chunks.CollapsedGlobalEventSetFolders ||
+                         id == Prj2Chunks.CollapsedVolumeEventSetFolders)
+                {
+                    var target = id == Prj2Chunks.CollapsedGlobalEventSetFolders ? settings.CollapsedGlobalEventSetFolders : settings.CollapsedVolumeEventSetFolders;
+
+                    target.Clear();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 == Prj2Chunks.CollapsedEventSetFolder)
+                        {
+                            target.Add(chunkIO.ReadChunkString(chunkSize2));
+                            return true;
+                        }
+                        else return false;
+                    });
                 }
                 else
                     return false;
@@ -1187,7 +1218,7 @@ namespace TombLib.LevelData.IO
                 CancellationToken = cancelToken,
             };
             progressReporter?.ReportInfo("Building world geometry");
-            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, parallelOptions, room => room.Rebuild(relight: true, highQualityLighting: true));
             return true;
         }
 
@@ -1439,6 +1470,27 @@ namespace TombLib.LevelData.IO
                         }
                         return false;
                     });
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectFlyBy3)
+                {
+                    var instance = new FlybyCameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Roll = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Speed = chunkIO.Raw.ReadSingle();
+                    instance.Fov = chunkIO.Raw.ReadSingle();
+                    instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Number = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
+                    instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                    instance.DofDistance = chunkIO.Raw.ReadSingle();
+                    instance.DofRange = chunkIO.Raw.ReadSingle();
+                    instance.DofStrength = chunkIO.Raw.ReadSingle();
+                    instance.DofMode = (DofMode)chunkIO.Raw.ReadInt32();
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
