@@ -317,6 +317,33 @@ namespace TombLib.WPF.Features.AnimatedTextures
             _context.OnAnimatedTexturesChanged?.Invoke();
         }
 
+        [RelayCommand]
+        private void DeleteFrame()
+        {
+            if (SelectedFrame == null)
+                return;
+
+            int index = Frames.IndexOf(SelectedFrame);
+            Frames.Remove(SelectedFrame);
+            SelectedFrame = Frames.Count > 0 ? Frames[Math.Min(index, Frames.Count - 1)] : null;
+        }
+
+        [RelayCommand]
+        private void MoveFrameUp()
+        {
+            int index = SelectedFrame == null ? -1 : Frames.IndexOf(SelectedFrame);
+            if (index > 0)
+                Frames.Move(index, index - 1);
+        }
+
+        [RelayCommand]
+        private void MoveFrameDown()
+        {
+            int index = SelectedFrame == null ? -1 : Frames.IndexOf(SelectedFrame);
+            if (index >= 0 && index < Frames.Count - 1)
+                Frames.Move(index, index + 1);
+        }
+
         private AnimatedTextureFrame? GetSelectedFrame()
         {
             TextureArea area = _textureMap.SelectedTexture;
