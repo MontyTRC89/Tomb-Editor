@@ -462,6 +462,7 @@
                             </Button>
                         </controls:SpacedStack>
                         <DataGrid
+							AlternationCount="0"
 							AutoGenerateColumns="False"
 							CanUserAddRows="False"
 							HeadersVisibility="Column"
