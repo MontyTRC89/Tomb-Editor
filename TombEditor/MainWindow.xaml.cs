@@ -124,6 +124,7 @@ public partial class MainWindow : Window
 		// once the visual tree is realized, which is when AvalonDock's layout root
 		// is in its initial state.
 		Loaded += OnLoaded;
+		ContentRendered += OnContentRendered;
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -137,13 +138,21 @@ public partial class MainWindow : Window
 			return;
 
 		var active = _editor.Configuration.Window_CustomLayouts.FirstOrDefault(l => l.Name == activeName);
-		if (active is null)
-			return;
-
-		if (!string.IsNullOrEmpty(active.AvalonDockState))
+		if (active is not null && !string.IsNullOrEmpty(active.AvalonDockState))
 			LoadDockState(active.AvalonDockState);
 
-		ApplyToolboxPositionsFrom(active);
+		// Toolbox positions are applied in OnContentRendered, once Panel3D actually has its size.
+	}
+
+	private void OnContentRendered(object sender, System.EventArgs e)
+	{
+		ContentRendered -= OnContentRendered;
+
+		// Apply the floating toolbox positions only after the editor area has been rendered and
+		// therefore has its real size. Doing it earlier (ctor / Loaded) positions them while Panel3D
+		// is still 0-sized, which makes DarkFloatingToolbox auto-anchor them into the bottom-right
+		// corner — the user then has to reload the default layout to move them back.
+		ApplyToolboxPositionsFrom(ActiveLayout());
 	}
 
 	private void OnEditorEventRaised(IEditorEvent obj)

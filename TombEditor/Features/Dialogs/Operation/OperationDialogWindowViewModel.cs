@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -20,13 +21,27 @@ namespace TombEditor.Features.Dialogs.Operation;
 
 public partial class OperationDialogWindowViewModel : ObservableObject, IModalDialogViewModel, IProgressReporter
 {
-	public enum LogSeverity { Info, Warning, Error }
-
 	public sealed class LogEntry
 	{
 		public string Text { get; init; } = string.Empty;
-		public LogSeverity Severity { get; init; } = LogSeverity.Info;
+		// Full-width row background; the text itself is always white (see the view), so warnings/errors
+		// read as solid coloured rows rather than the old partial-width "striped" highlights.
+		public Brush Background { get; init; } = Brushes.Transparent;
 	}
+
+	private static Brush Frozen(byte r, byte g, byte b)
+	{
+		var brush = new SolidColorBrush(Color.FromRgb(r, g, b));
+		brush.Freeze();
+		return brush;
+	}
+
+	// Dark, white-text-readable equivalents of the legacy WinForms log colours.
+	private static readonly Brush DefaultLogBrush = Frozen(0x2D, 0x2D, 0x30);
+	private static readonly Brush WarningRowBrush = Frozen(0x8F, 0x7A, 0x1E);
+	private static readonly Brush ErrorRowBrush = Frozen(0x8B, 0x3A, 0x3A);
+	private static readonly Brush SuccessLogBrush = Frozen(0x35, 0x6B, 0x35);
+	private static readonly Brush FailureLogBrush = Frozen(0x6E, 0x3A, 0x3A);
 
 	private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -45,6 +60,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	[ObservableProperty] private int _progress;
 	[ObservableProperty] private bool _isOkEnabled;
 	[ObservableProperty] private bool _isCancelEnabled = true;
+	[ObservableProperty] private Brush _logBackground = DefaultLogBrush;
 
 	public ObservableCollection<LogEntry> LogEntries { get; } = new();
 
@@ -100,7 +116,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			if (ex.InnerException is not null)
 				message += " : " + ex.InnerException.Message;
 
-			AppendLine(message, LogSeverity.Error);
+			AppendLine(message, ErrorRowBrush);
 #if DEBUG
 			throw;
 #endif
@@ -121,6 +137,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		Progress = 0;
 		IsCancelEnabled = true;
 		IsOkEnabled = false;
+		LogBackground = FailureLogBrush;
 	}
 
 	private void OnSuccess()
@@ -134,6 +151,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		Progress = 100;
 		IsOkEnabled = true;
 		IsCancelEnabled = false;
+		LogBackground = SuccessLogBrush;
 
 		if (_autoCloseWhenDone)
 			DialogResult = true;
@@ -154,12 +172,12 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			}
 
 			if (!string.IsNullOrEmpty(message))
-				AppendLine(message, isWarning ? LogSeverity.Warning : LogSeverity.Info);
+				AppendLine(message, isWarning ? WarningRowBrush : Brushes.Transparent);
 		});
 	}
 
-	private void AppendLine(string message, LogSeverity severity)
-		=> LogEntries.Add(new LogEntry { Text = message, Severity = severity });
+	private void AppendLine(string message, Brush background)
+		=> LogEntries.Add(new LogEntry { Text = message, Background = background });
 
 	void IProgressReporter.ReportWarn(string message)
 	{
@@ -204,7 +222,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	{
 		_cts.Cancel();
 		DialogResult = false;
-		AppendLine("Stopping the process...", LogSeverity.Warning);
+		AppendLine("Stopping the process...", ErrorRowBrush);
 	}
 
 	/// <summary>Called by the View when the user attempts to close while running.</summary>

@@ -40,29 +40,23 @@
 			x:Name="LogList"
 			Grid.Row="0"
 			AlternationCount="0"
-			Background="{DynamicResource Brush_Background_Low}"
+			Background="{Binding LogBackground}"
+			HorizontalContentAlignment="Stretch"
 			ItemsSource="{Binding LogEntries}"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto"
 			ScrollViewer.VerticalScrollBarVisibility="Auto">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<!--  Uniform dark background; severity is shown via text colour, not a per-line
-						background, so warnings/errors no longer look like coloured stripes.  -->
-					<TextBlock Text="{Binding Text}" TextWrapping="Wrap">
-						<TextBlock.Style>
-							<Style TargetType="TextBlock">
-								<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding Severity}" Value="Warning">
-										<Setter Property="Foreground" Value="#FFE6C34C" />
-									</DataTrigger>
-									<DataTrigger Binding="{Binding Severity}" Value="Error">
-										<Setter Property="Foreground" Value="#FFE66C6C" />
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</TextBlock.Style>
-					</TextBlock>
+					<!--  Full-width coloured row (red = error, yellow = warning) with white text.
+						HorizontalContentAlignment=Stretch on the ListBox lets the border fill the whole
+						row, so coloured rows are solid bars rather than partial-width stripes.  -->
+					<Border Background="{Binding Background}">
+						<TextBlock
+							Margin="2,0"
+							Foreground="White"
+							Text="{Binding Text}"
+							TextWrapping="Wrap" />
+					</Border>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
