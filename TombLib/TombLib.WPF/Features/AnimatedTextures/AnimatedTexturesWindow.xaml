@@ -26,11 +26,10 @@
 		<local:FrameThumbnailConverter x:Key="FrameThumb" />
 
 		<!--
-			This window is shown modeless and owned by the WPF main window. Under per-monitor DPI
-			the default DarkUI ComboBox dropdown (a transparent/layered Popup) inherits the owner's
-			DPI context and opens in a screen corner instead of under the box. Re-template the popup
-			with AllowsTransparency="False" (a plain child window) so it places correctly. Scoped to
-			this window only, so other dialogs keep the shadowed dropdown.
+			Shown modeless and owned by the WPF main window. Under per-monitor DPI the default
+			DarkUI ComboBox dropdown (a transparent/layered Popup) inherits the owner's DPI context
+			and opens in a screen corner. Re-template with AllowsTransparency="False" (a plain child
+			window) so it places under the box. Scoped to this window only.
 		-->
 		<Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="{x:Type ComboBox}">
 			<Setter Property="Template">
@@ -82,7 +81,6 @@
 							<Trigger Property="IsEnabled" Value="False">
 								<Setter TargetName="contentPresenter" Property="Opacity" Value="{DynamicResource Opacity_DisabledContent}" />
 							</Trigger>
-
 							<Trigger Property="HasItems" Value="False">
 								<Setter TargetName="dropDownBorder" Property="Height" Value="{x:Static darkUI:Defaults.ComboBox_Popup_NoItemsHeight}" />
 							</Trigger>
@@ -95,6 +93,7 @@
 
 	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
 
+		<!--  OK / Cancel  -->
 		<controls:SpacedStack
 			DockPanel.Dock="Bottom"
 			Margin="0,8,0,0"
@@ -112,25 +111,23 @@
 				<ColumnDefinition Width="43*" MinWidth="280" />
 			</Grid.ColumnDefinitions>
 
-			<!--  LEFT: controls  -->
+			<!--  ========================  LEFT: controls  ========================  -->
 			<DockPanel Grid.Column="0">
 
-				<!--  Set selection (top)  -->
+				<!--  Animation set selector (top)  -->
 				<Grid DockPanel.Dock="Top" Margin="0,0,0,6">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="86" />
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					<TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{tombLib:Localize AnimationSet}" />
+					<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{tombLib:Localize AnimationSet}" />
 					<ComboBox
-						Grid.Row="0"
 						Grid.Column="1"
 						DisplayMemberPath="Name"
 						ItemsSource="{Binding Sets}"
 						SelectedItem="{Binding SelectedSet, Mode=TwoWay}" />
 					<controls:SpacedStack
-						Grid.Row="0"
 						Grid.Column="2"
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
@@ -147,71 +144,68 @@
 					</controls:SpacedStack>
 				</Grid>
 
-				<!--  Settings (bottom)  -->
+				<!--  Settings (very bottom)  -->
 				<StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0" IsEnabled="{Binding HasSelectedSet}">
 					<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize Settings}" />
-					<Border
-						Padding="6"
-						BorderBrush="{DynamicResource Brush_Border}"
-						BorderThickness="1">
+					<Border Padding="6" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
 						<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="90" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="120" />
-						</Grid.ColumnDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="90" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="120" />
+							</Grid.ColumnDefinitions>
 
-						<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Type}" />
-						<ComboBox
-							Grid.Column="1"
-							ItemsSource="{Binding AnimationTypes}"
-							SelectedItem="{Binding SelectedAnimationType, Mode=TwoWay}" />
-
-						<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Fps}" />
-						<Grid Grid.Column="3">
-							<controls:NumericUpDown
-								DecimalPlaces="2"
-								IsEnabled="{Binding FpsNumericEnabled}"
-								Maximum="120"
-								Minimum="0"
-								Value="{Binding Fps, Mode=TwoWay}"
-								Visibility="{Binding ShowFpsNumeric, Converter={StaticResource BoolToVis}}" />
+							<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Type}" />
 							<ComboBox
-								DisplayMemberPath="Display"
-								ItemsSource="{Binding NgFpsOptions}"
-								SelectedItem="{Binding SelectedNgFps, Mode=TwoWay}"
-								Visibility="{Binding ShowNgFpsCombo, Converter={StaticResource BoolToVis}}" />
-							<controls:NumericUpDown
-								DecimalPlaces="2"
-								Maximum="120"
-								Minimum="0"
-								Value="{Binding TenUvRotateSpeed, Mode=TwoWay}"
-								Visibility="{Binding ShowTeUvRotate, Converter={StaticResource BoolToVis}}" />
-						</Grid>
+								Grid.Column="1"
+								ItemsSource="{Binding AnimationTypes}"
+								SelectedItem="{Binding SelectedAnimationType, Mode=TwoWay}" />
 
-						<TextBlock Grid.Column="4" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize UvRotate}" />
-						<Grid Grid.Column="5">
-							<ComboBox
-								DisplayMemberPath="Display"
-								IsEnabled="{Binding NgUvRotateEnabled}"
-								ItemsSource="{Binding NgUvRotateOptions}"
-								SelectedItem="{Binding SelectedNgUvRotate, Mode=TwoWay}"
-								Visibility="{Binding ShowNgUvRotateCombo, Converter={StaticResource BoolToVis}}" />
-							<controls:NumericUpDown
-								DecimalPlaces="0"
-								Maximum="360"
-								Minimum="-360"
-								Value="{Binding TenUvRotateDirection, Mode=TwoWay}"
-								Visibility="{Binding ShowTeUvRotate, Converter={StaticResource BoolToVis}}" />
+							<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Fps}" />
+							<Grid Grid.Column="3">
+								<controls:NumericUpDown
+									DecimalPlaces="2"
+									IsEnabled="{Binding FpsNumericEnabled}"
+									Maximum="120"
+									Minimum="0"
+									Value="{Binding Fps, Mode=TwoWay}"
+									Visibility="{Binding ShowFpsNumeric, Converter={StaticResource BoolToVis}}" />
+								<ComboBox
+									DisplayMemberPath="Display"
+									ItemsSource="{Binding NgFpsOptions}"
+									SelectedItem="{Binding SelectedNgFps, Mode=TwoWay}"
+									Visibility="{Binding ShowNgFpsCombo, Converter={StaticResource BoolToVis}}" />
+								<controls:NumericUpDown
+									DecimalPlaces="2"
+									Maximum="120"
+									Minimum="0"
+									Value="{Binding TenUvRotateSpeed, Mode=TwoWay}"
+									Visibility="{Binding ShowTeUvRotate, Converter={StaticResource BoolToVis}}" />
+							</Grid>
+
+							<TextBlock Grid.Column="4" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize UvRotate}" />
+							<Grid Grid.Column="5">
+								<ComboBox
+									DisplayMemberPath="Display"
+									IsEnabled="{Binding NgUvRotateEnabled}"
+									ItemsSource="{Binding NgUvRotateOptions}"
+									SelectedItem="{Binding SelectedNgUvRotate, Mode=TwoWay}"
+									Visibility="{Binding ShowNgUvRotateCombo, Converter={StaticResource BoolToVis}}" />
+								<controls:NumericUpDown
+									DecimalPlaces="0"
+									Maximum="360"
+									Minimum="-360"
+									Value="{Binding TenUvRotateDirection, Mode=TwoWay}"
+									Visibility="{Binding ShowTeUvRotate, Converter={StaticResource BoolToVis}}" />
+							</Grid>
 						</Grid>
-					</Grid>
-				</Border>
+					</Border>
 				</StackPanel>
 
-				<!--  Procedural tool + preview band (bottom)  -->
+				<!--  Procedural animation tool + Preview (above settings)  -->
 				<Grid DockPanel.Dock="Bottom" Margin="0,6,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
@@ -220,61 +214,61 @@
 					</Grid.ColumnDefinitions>
 
 					<!--  Procedural animation tool  -->
-					<Border
-						Grid.Column="0"
-						Padding="6"
-						BorderBrush="{DynamicResource Brush_Border}"
-						BorderThickness="1">
-						<StackPanel>
-							<TextBlock Margin="0,0,0,4" Text="{tombLib:Localize ProcAnimTool}" />
-							<Grid Margin="0,0,0,4">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="64" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{tombLib:Localize Animator}" />
-								<ComboBox
-									Grid.Column="1"
-									DisplayMemberPath="Display"
-									ItemsSource="{Binding ProceduralPresets}"
-									SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
-									ToolTip="Animation type" />
-							</Grid>
-							<Grid Margin="0,0,0,4">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition Width="*" />
-								</Grid.ColumnDefinitions>
-								<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize ProgressPercent}" />
-								<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" ToolTip="Effect progress or strength" Value="{Binding GenStrength, Mode=TwoWay}" />
-								<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Frames}" />
-								<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" ToolTip="Amount of resulting animation frames" Value="{Binding GenFrameCount, Mode=TwoWay}" />
-							</Grid>
-							<controls:SpacedStack Margin="0,0,0,4" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-								<CheckBox Content="{tombLib:Localize Symmetric}" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="Make animation symmetric" />
-								<CheckBox Content="{tombLib:Localize Smooth}" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="Ease-in and ease-out animation" />
-							</controls:SpacedStack>
-							<controls:SpacedStack HorizontalAlignment="Right" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-								<Button Width="28" Command="{Binding GenerateNewCommand}" ToolTip="{tombLib:Localize GenerateTooltip}">
-									<Image Width="16" Height="16" Source="{tomb:Icon General/create_new}" />
-								</Button>
-								<Button Width="28" Command="{Binding GenerateCloneCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize CloneTooltip}">
-									<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
-								</Button>
-								<Button Width="28" Command="{Binding GenerateMergeCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize MergeTooltip}">
-									<Image Width="16" Height="16" Source="{tomb:Icon Actions/Merge}" />
-								</Button>
-								<Button Width="28" Command="{Binding GenerateReplaceCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize ReplaceTooltip}">
-									<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
-								</Button>
-								<Button Width="28" Command="{Binding GenerateAddFramesCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize AddFramesTooltip}">
-									<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
-								</Button>
-							</controls:SpacedStack>
-						</StackPanel>
-					</Border>
+					<StackPanel Grid.Column="0">
+						<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize ProcAnimTool}" />
+						<Border Padding="6" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
+							<StackPanel IsEnabled="{Binding HasSelectedSet}">
+								<Grid Margin="0,0,0,4">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="64" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{tombLib:Localize Animator}" />
+									<ComboBox
+										Grid.Column="1"
+										DisplayMemberPath="Display"
+										ItemsSource="{Binding ProceduralPresets}"
+										SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
+										ToolTip="Animation type" />
+								</Grid>
+								<Grid Margin="0,0,0,4">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize ProgressPercent}" />
+									<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" ToolTip="Effect progress or strength" Value="{Binding GenStrength, Mode=TwoWay}" />
+									<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Frames}" />
+									<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" ToolTip="Amount of resulting animation frames" Value="{Binding GenFrameCount, Mode=TwoWay}" />
+								</Grid>
+								<Grid Margin="0,0,0,4">
+									<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+										<CheckBox Content="{tombLib:Localize Symmetric}" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="Make animation symmetric" />
+										<CheckBox Content="{tombLib:Localize Smooth}" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="Ease-in and ease-out animation" />
+									</controls:SpacedStack>
+									<controls:SpacedStack HorizontalAlignment="Right" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+										<Button Width="28" Command="{Binding GenerateNewCommand}" ToolTip="{tombLib:Localize GenerateTooltip}">
+											<Image Width="16" Height="16" Source="{tomb:Icon General/create_new}" />
+										</Button>
+										<Button Width="28" Command="{Binding GenerateCloneCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize CloneTooltip}">
+											<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
+										</Button>
+										<Button Width="28" Command="{Binding GenerateMergeCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize MergeTooltip}">
+											<Image Width="16" Height="16" Source="{tomb:Icon Actions/Merge}" />
+										</Button>
+										<Button Width="28" Command="{Binding GenerateAddFramesCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize AddFramesTooltip}">
+											<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+										</Button>
+										<Button Width="28" Command="{Binding GenerateReplaceCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize ReplaceTooltip}">
+											<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
+										</Button>
+									</controls:SpacedStack>
+								</Grid>
+							</StackPanel>
+						</Border>
+					</StackPanel>
 
 					<!--  Preview  -->
 					<StackPanel Grid.Column="2">
@@ -296,7 +290,7 @@
 					</StackPanel>
 				</Grid>
 
-				<!--  TRNG too-many-frames warning (bottom)  -->
+				<!--  TRNG too-many-frames warning  -->
 				<TextBlock
 					DockPanel.Dock="Bottom"
 					Margin="0,6,0,0"
@@ -305,15 +299,65 @@
 					TextWrapping="Wrap"
 					Visibility="{Binding TooManyFrames, Converter={StaticResource BoolToVis}}" />
 
-				<!--  Frames header (top of remaining area)  -->
+				<!--  Frames header  -->
 				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="{tombLib:Localize FramesHeader}" />
 
-				<!--  Frames grid + vertical button strip (fills the centre)  -->
+				<!--  Frames grid + vertical button strip  -->
 				<Grid IsEnabled="{Binding HasSelectedSet}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
+
+					<DataGrid
+						x:Name="framesGrid"
+						Grid.Column="0"
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						CanUserDeleteRows="True"
+						ItemsSource="{Binding Frames}"
+						SelectedItem="{Binding SelectedFrame, Mode=TwoWay}">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="44" Header="{tombLib:Localize ColumnImage}">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<Image
+											Width="32"
+											Height="32"
+											Source="{Binding Converter={StaticResource FrameThumb}}"
+											Stretch="Uniform" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn
+								Width="60"
+								Binding="{Binding Repeat, Mode=TwoWay}"
+								Header="{tombLib:Localize ColumnRepeat}" />
+							<DataGridTemplateColumn Width="*" Header="{tombLib:Localize ColumnTexture}">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding Texture}" TextTrimming="CharacterEllipsis" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+								<DataGridTemplateColumn.CellEditingTemplate>
+									<DataTemplate>
+										<ComboBox
+											ItemsSource="{Binding DataContext.AvailableTextures, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+											SelectedItem="{Binding Texture, UpdateSourceTrigger=PropertyChanged}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellEditingTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn
+								Width="Auto"
+								Binding="{Binding Area}"
+								Header="{tombLib:Localize ColumnArea}"
+								IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord0}" Header="Edge 0" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord1}" Header="Edge 1" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord2}" Header="Edge 2" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord3}" Header="Edge 3" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
 
 					<controls:SpacedStack
 						Grid.Column="1"
@@ -337,56 +381,6 @@
 							<Image Width="16" Height="16" Source="{tomb:Icon General/ArrowDown}" />
 						</Button>
 					</controls:SpacedStack>
-
-					<DataGrid
-						x:Name="framesGrid"
-						Grid.Column="0"
-						AutoGenerateColumns="False"
-						CanUserAddRows="False"
-						CanUserDeleteRows="True"
-						ItemsSource="{Binding Frames}"
-						SelectedItem="{Binding SelectedFrame, Mode=TwoWay}">
-						<DataGrid.Columns>
-						<DataGridTemplateColumn Width="40" Header="{tombLib:Localize ColumnImage}">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<Image
-										Width="32"
-										Height="32"
-										Source="{Binding Converter={StaticResource FrameThumb}}"
-										Stretch="Uniform" />
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTextColumn
-							Width="60"
-							Binding="{Binding Repeat, Mode=TwoWay}"
-							Header="{tombLib:Localize ColumnRepeat}" />
-						<DataGridTemplateColumn Width="*" Header="{tombLib:Localize ColumnTexture}">
-							<DataGridTemplateColumn.CellTemplate>
-								<DataTemplate>
-									<TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding Texture}" TextTrimming="CharacterEllipsis" />
-								</DataTemplate>
-							</DataGridTemplateColumn.CellTemplate>
-							<DataGridTemplateColumn.CellEditingTemplate>
-								<DataTemplate>
-									<ComboBox
-										ItemsSource="{Binding DataContext.AvailableTextures, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-										SelectedItem="{Binding Texture, UpdateSourceTrigger=PropertyChanged}" />
-								</DataTemplate>
-							</DataGridTemplateColumn.CellEditingTemplate>
-						</DataGridTemplateColumn>
-						<DataGridTextColumn
-							Width="Auto"
-							Binding="{Binding Area}"
-							Header="{tombLib:Localize ColumnArea}"
-							IsReadOnly="True" />
-						<DataGridTextColumn Width="70" Binding="{Binding TexCoord0}" Header="Edge 0" IsReadOnly="True" />
-						<DataGridTextColumn Width="70" Binding="{Binding TexCoord1}" Header="Edge 1" IsReadOnly="True" />
-						<DataGridTextColumn Width="70" Binding="{Binding TexCoord2}" Header="Edge 2" IsReadOnly="True" />
-						<DataGridTextColumn Width="70" Binding="{Binding TexCoord3}" Header="Edge 3" IsReadOnly="True" />
-					</DataGrid.Columns>
-				</DataGrid>
 				</Grid>
 			</DockPanel>
 
@@ -396,7 +390,7 @@
 				HorizontalAlignment="Stretch"
 				Background="{DynamicResource Brush_Border}" />
 
-			<!--  RIGHT: texture map  -->
+			<!--  ========================  RIGHT: texture map  ========================  -->
 			<DockPanel Grid.Column="2">
 				<controls:SearchableComboBox
 					DockPanel.Dock="Top"
