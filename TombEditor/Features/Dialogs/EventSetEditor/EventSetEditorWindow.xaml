@@ -67,7 +67,11 @@
 					SelectedItem="{Binding SelectedSet, Mode=TwoWay}" />
 			</DockPanel>
 
-			<GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" />
+			<GridSplitter
+				Grid.Column="1"
+				Width="6"
+				HorizontalAlignment="Stretch"
+				Background="{DynamicResource Brush_Border}" />
 
 			<!--  Selected set editor  -->
 			<DockPanel Grid.Column="2" IsEnabled="{Binding HasSelectedSet}">
