@@ -40,6 +40,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly int _index;
         private readonly ArgumentLayout _layout;
         private readonly ArgumentDataProvider _provider;
+        private readonly double _nodeWidth;
         private bool _loading;
 
         public ArgumentEditorKind Kind { get; }
@@ -48,6 +49,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public bool NewLine => _layout.NewLine;
         public double FieldWidth => _layout.Width;
 
+        /// <summary>
+        /// Pixel width of the field, derived from the catalogue's percentage <see cref="ArgumentLayout.Width"/>
+        /// (0-100) relative to the node body, so fields respect the length declared in the XML catalogues.
+        /// </summary>
+        public double PixelWidth => Math.Max(24.0, (_nodeWidth - 16.0) * (_layout.Width / 100.0));
+
         // Numerical limits (shared by Numerical / Vector2 / Vector3).
         public double Minimum { get; private set; } = -1000000.0;
         public double Maximum { get; private set; } = 1000000.0;
@@ -55,12 +62,13 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double LargeIncrement { get; private set; } = 5.0;
         public int DecimalPlaces { get; private set; }
 
-        public ArgumentViewModel(System.Collections.Generic.List<TriggerNodeArgument> arguments, int index, ArgumentLayout layout, ArgumentDataProvider provider)
+        public ArgumentViewModel(System.Collections.Generic.List<TriggerNodeArgument> arguments, int index, ArgumentLayout layout, ArgumentDataProvider provider, double nodeWidth)
         {
             _arguments = arguments;
             _index = index;
             _layout = layout;
             _provider = provider;
+            _nodeWidth = nodeWidth;
             Kind = MapKind(layout.Type);
 
             ParseNumericLimits();

@@ -115,6 +115,25 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedNode = Nodes.FirstOrDefault(n => n.Node == node);
         }
 
+        /// <summary>Creates a node for <paramref name="func"/> at a specific canvas position (right-click add).</summary>
+        public void AddNodeAtPosition(NodeFunction func, double canvasX, double canvasY)
+        {
+            TriggerNode node = func.Conditional
+                ? new TriggerNodeCondition { Name = "If " + (Nodes.Count(n => n.IsCondition) + 1) }
+                : new TriggerNodeAction { Name = "Action " + (Nodes.Count(n => !n.IsCondition) + 1) };
+
+            node.Size = TriggerNode.DefaultSize;
+            node.Function = func.Signature;
+            node.FixArguments(func);
+            node.ScreenPosition = new Vector2(
+                (float)Math.Clamp(canvasX / _gridStep, 0, 256),
+                (float)Math.Clamp(canvasY / _gridStep, 0, 256));
+
+            _event.Nodes.Add(node);
+            SyncRootsAndRebuild();
+            SelectedNode = Nodes.FirstOrDefault(n => n.Node == node);
+        }
+
         /// <summary>Picks a non-overlapping position below the selected node (mirrors NodeEditor.GetBestPosition).</summary>
         private void PlaceNode(TriggerNode node)
         {

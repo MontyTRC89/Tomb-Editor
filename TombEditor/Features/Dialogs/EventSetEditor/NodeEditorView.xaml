@@ -241,7 +241,8 @@
 					x:Name="rootCanvas"
 					Width="{Binding CanvasWidth}"
 					Height="{Binding CanvasHeight}"
-					Background="{DynamicResource Brush_Background_Low}">
+					Background="{DynamicResource Brush_Background_Low}"
+					MouseRightButtonUp="Canvas_MouseRightButtonUp">
 					<Canvas.LayoutTransform>
 						<ScaleTransform x:Name="zoomTransform" ScaleX="1" ScaleY="1" />
 					</Canvas.LayoutTransform>
@@ -343,21 +344,32 @@
 												</Thumb.Template>
 											</Thumb>
 
-											<!--  Body (arguments)  -->
+											<!--  Body: the function the node runs (its primary content) + its arguments.
+												The node name is shown in the header bar / edited via the Rename button.  -->
 											<StackPanel Margin="6" IsEnabled="{Binding IsEditable}">
-												<TextBox
-													Margin="0,0,0,2"
-													Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-													ToolTip="{tombLib:Localize NodeName}" />
 												<TextBlock
-													Foreground="{DynamicResource Brush_Text_Warning}"
+													FontWeight="Bold"
+													Foreground="{DynamicResource Brush_Text}"
 													Text="{Binding FunctionName}"
-													TextTrimming="CharacterEllipsis" />
+													TextTrimming="CharacterEllipsis"
+													ToolTip="{Binding FunctionName}" />
 												<ItemsControl
 													Margin="0,4,0,0"
 													ItemTemplateSelector="{StaticResource ArgSelector}"
 													ItemsSource="{Binding Arguments}"
-													Visibility="{Binding HasArguments, Converter={StaticResource BoolToVis}}" />
+													Visibility="{Binding HasArguments, Converter={StaticResource BoolToVis}}">
+													<ItemsControl.ItemsPanel>
+														<ItemsPanelTemplate>
+															<WrapPanel />
+														</ItemsPanelTemplate>
+													</ItemsControl.ItemsPanel>
+													<!--  Each field's width comes from the catalogue Width (%) via PixelWidth.  -->
+													<ItemsControl.ItemContainerStyle>
+														<Style TargetType="ContentPresenter">
+															<Setter Property="Width" Value="{Binding PixelWidth}" />
+														</Style>
+													</ItemsControl.ItemContainerStyle>
+												</ItemsControl>
 											</StackPanel>
 										</DockPanel>
 									</Border>

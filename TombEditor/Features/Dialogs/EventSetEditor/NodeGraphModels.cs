@@ -38,7 +38,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 {
                     int index = node.Arguments.FindIndex(a => a.Name == layout.Name);
                     if (index >= 0)
-                        Arguments.Add(new ArgumentViewModel(node.Arguments, index, layout, provider));
+                        Arguments.Add(new ArgumentViewModel(node.Arguments, index, layout, provider, node.Size));
                 }
             }
         }

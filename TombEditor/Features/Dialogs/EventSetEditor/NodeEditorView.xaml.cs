@@ -91,6 +91,35 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             }
         }
 
+        private void Canvas_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ViewModel == null)
+                return;
+
+            var position = e.GetPosition(rootCanvas);
+
+            // Right-click on a node falls through to that node's own context menu.
+            if (FindNodeAt(position) != null)
+                return;
+
+            var menu = new ContextMenu();
+            foreach (var group in System.Linq.Enumerable.GroupBy(ViewModel.Functions, f => f.Section))
+            {
+                var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? "Misc" : group.Key };
+                foreach (var function in group)
+                {
+                    var func = function;
+                    var item = new MenuItem { Header = func.Name };
+                    item.Click += (_, _) => ViewModel.AddNodeAtPosition(func, position.X, position.Y);
+                    section.Items.Add(item);
+                }
+                menu.Items.Add(section);
+            }
+
+            menu.IsOpen = true;
+            e.Handled = true;
+        }
+
         private void Node_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             Focus();

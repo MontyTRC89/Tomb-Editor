@@ -669,7 +669,7 @@
         "DetectInAdjacentRooms": "Detect in adjacent rooms",
         "Mode": "Mode:",
         "NodeEditorMode": "Node editor",
-        "LevelScriptMode": "Level script",
+        "LevelScriptMode": "Level script functions",
         "Function": "Function:",
         "Argument": "Argument:",
         "NameEmpty": "Event set name can't be empty.",
