@@ -42,10 +42,12 @@
 							</Grid.ColumnDefinitions>
 
 							<Popup
+								x:Name="PART_Popup"
 								MaxHeight="{x:Static darkUI:Defaults.ComboBox_Popup_MaxHeight}"
-								AllowsTransparency="False"
+								AllowsTransparency="True"
 								IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-								Placement="Bottom">
+								Placement="Bottom"
+								PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
 								<Border
 									x:Name="dropDownBorder"
 									MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
