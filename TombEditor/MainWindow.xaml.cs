@@ -137,10 +137,13 @@ public partial class MainWindow : Window
 			return;
 
 		var active = _editor.Configuration.Window_CustomLayouts.FirstOrDefault(l => l.Name == activeName);
-		if (active is null || string.IsNullOrEmpty(active.AvalonDockState))
+		if (active is null)
 			return;
 
-		LoadDockState(active.AvalonDockState);
+		if (!string.IsNullOrEmpty(active.AvalonDockState))
+			LoadDockState(active.AvalonDockState);
+
+		ApplyToolboxPositionsFrom(active);
 	}
 
 	private void OnEditorEventRaised(IEditorEvent obj)
@@ -222,11 +225,11 @@ public partial class MainWindow : Window
 			if (showBrush && _objectBrushToolbox.Parent is null)
 			{
 				_panel3D.Controls.Add(_objectBrushToolbox);
-				_objectBrushToolbox.Location = _editor.Configuration.Window_Layout.ObjectBrushToolboxPosition;
+				_objectBrushToolbox.Location = ActiveLayout().ObjectBrushToolboxPosition;
 			}
 			else if (!showBrush && _objectBrushToolbox.Parent is not null)
 			{
-				_editor.Configuration.Window_Layout.ObjectBrushToolboxPosition = _objectBrushToolbox.Location;
+				ActiveLayout().ObjectBrushToolboxPosition = _objectBrushToolbox.Location;
 				_panel3D.Controls.Remove(_objectBrushToolbox);
 			}
 		}
@@ -290,12 +293,8 @@ public partial class MainWindow : Window
 
 	protected override void OnClosed(System.EventArgs e)
 	{
-		// Persist floating toolbox positions before disposing them (matches FormMain save path).
-		_editor.Configuration.Window_Layout.ToolboxPosition = _toolPalette.Location;
-		if (_objectBrushToolbox.Parent is not null)
-			_editor.Configuration.Window_Layout.ObjectBrushToolboxPosition = _objectBrushToolbox.Location;
-
-		// Snapshot the user's tweaks back into the active custom layout so they survive restart.
+		// Snapshot the user's tweaks (dock layout + floating toolbox positions) into the active
+		// layout before disposing the toolboxes, so they survive restart.
 		SaveCurrentStateToActiveLayout();
 
 		_editor.EditorEventRaised -= OnEditorEventRaised;
@@ -519,6 +518,7 @@ public partial class MainWindow : Window
 		{
 			config.Window_ActiveLayoutName = string.Empty;
 			LoadDockState(_defaultDockState);
+			ApplyToolboxPositionsFrom(config.Window_Layout);
 			return;
 		}
 
@@ -528,19 +528,52 @@ public partial class MainWindow : Window
 		var target = config.Window_CustomLayouts[index];
 		config.Window_ActiveLayoutName = target.Name;
 		LoadDockState(string.IsNullOrEmpty(target.AvalonDockState) ? _defaultDockState : target.AvalonDockState);
+		ApplyToolboxPositionsFrom(target);
 	}
 
 	private void SaveCurrentStateToActiveLayout()
 	{
+		var active = ActiveLayout();
+
+		// The dock layout is only persisted for named custom layouts; the default falls back to the
+		// XAML baseline. The floating toolbox positions, however, belong to every layout (incl. default).
+		if (!string.IsNullOrEmpty(_editor.Configuration.Window_ActiveLayoutName))
+			active.AvalonDockState = SerializeDockState();
+
+		SaveToolboxPositionsTo(active);
+	}
+
+	/// <summary>
+	/// The <see cref="NamedLayout"/> backing the currently active layout — the default
+	/// <see cref="Configuration.Window_Layout"/> when no custom layout is selected, otherwise the
+	/// matching entry in <see cref="Configuration.Window_CustomLayouts"/>.
+	/// </summary>
+	private NamedLayout ActiveLayout()
+	{
 		var config = _editor.Configuration;
 		if (string.IsNullOrEmpty(config.Window_ActiveLayoutName))
-			return;
+			return config.Window_Layout;
 
-		var active = config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName);
-		if (active is null)
-			return;
+		return config.Window_CustomLayouts.FirstOrDefault(l => l.Name == config.Window_ActiveLayoutName)
+			?? config.Window_Layout;
+	}
 
-		active.AvalonDockState = SerializeDockState();
+	private void SaveToolboxPositionsTo(NamedLayout layout)
+	{
+		layout.ToolboxPosition = _toolPalette.Location;
+
+		// The object-brush toolbox only exists in ObjectPlacement mode; when it is hidden its last
+		// position was already written into the active layout by OnEditorEventForFloatingToolboxes.
+		if (_objectBrushToolbox.Parent is not null)
+			layout.ObjectBrushToolboxPosition = _objectBrushToolbox.Location;
+	}
+
+	private void ApplyToolboxPositionsFrom(NamedLayout layout)
+	{
+		_toolPalette.Location = layout.ToolboxPosition;
+
+		if (_objectBrushToolbox.Parent is not null)
+			_objectBrushToolbox.Location = layout.ObjectBrushToolboxPosition;
 	}
 
 	private void LayoutsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
