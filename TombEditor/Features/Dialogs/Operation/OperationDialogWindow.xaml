@@ -39,6 +39,7 @@
 		<ListBox
 			x:Name="LogList"
 			Grid.Row="0"
+			AlternationCount="0"
 			Background="{DynamicResource Brush_Background_Low}"
 			ItemsSource="{Binding LogEntries}"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto"
