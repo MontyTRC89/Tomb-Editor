@@ -78,7 +78,6 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private static List<CommandObj> _commands = new List<CommandObj>();
-        private static TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow _animatedTexturesWindow;
         public static IEnumerable<CommandObj> Commands => _commands;
 
         public static CommandObj GetCommand(string name)
@@ -1513,28 +1512,18 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                if (_animatedTexturesWindow != null)
-                {
-                    _animatedTexturesWindow.Activate();
-                    return;
-                }
-
                 var context = new TombEditorAnimatedTexturesContext(args.Editor);
                 var textureMap = new Controls.WpfAnimatedTextureMapView();
                 var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
                 var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
 
-                _animatedTexturesWindow = window;
-                window.Closed += (s, e) => _animatedTexturesWindow = null;
-
-                // Own the window with the WPF main window so its ComboBox popups place correctly
-                // (a bare HWND owner leaves the modeless window outside WPF's window hierarchy).
-                if (System.Windows.Application.Current?.MainWindow is not null)
-                    window.Owner = System.Windows.Application.Current.MainWindow;
-                else if (args.Window is not null)
+                // Shown modally, like the legacy FormAnimatedTextures and every other WPF dialog
+                // (e.g. TriggerWindow): a modeless Show() makes the ComboBox popups open in a screen
+                // corner instead of under the box.
+                if (args.Window is not null)
                     window.SetOwner(args.Window);
 
-                window.Show();
+                window.ShowDialog();
             });
 
             AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate (CommandArgs args)
