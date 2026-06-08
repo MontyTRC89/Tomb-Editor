@@ -15,6 +15,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
+            Loaded += OnLoaded;
             Closed += OnClosed;
         }
 
@@ -27,8 +28,16 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 return;
 
             _viewModel.RequestClose += OnRequestClose;
-            textureMapContainer.Child = _viewModel.TextureMap;
             _viewModel.TextureMap.MouseDown += OnTextureMapMouseDown;
+        }
+
+        // Attach the externally-created texture map only once the window has its HwndSource, so the
+        // hosted control (and the window) get the correct per-monitor DPI context. Attaching it earlier
+        // (in DataContextChanged, before the window is shown) corrupted the popup coordinate transform.
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel != null && !ReferenceEquals(textureMapContainer.Child, _viewModel.TextureMap))
+                textureMapContainer.Child = _viewModel.TextureMap;
         }
 
         private void OnRenameSet(object sender, RoutedEventArgs e)
