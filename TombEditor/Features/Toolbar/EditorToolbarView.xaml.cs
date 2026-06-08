@@ -3,55 +3,143 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using TombEditor.Features.Dialogs.ToolBarLayout;
+using TombLib.Icons;
 
 namespace TombEditor.Features.Toolbar;
 
 /// <summary>
-/// The editor's main button toolbar (port of the WinForms <c>MainView</c> tool strip). Hosted above
-/// both the 3D view and the 2D map so it stays in the builder's expected spot regardless of which
-/// document tab is active. Button commands resolve through <see cref="CommandHandler"/> exactly like
-/// the legacy WinForms toolbar, so the control is purely declarative and stateless.
+/// The editor's main button toolbar. Buttons are generated at runtime from
+/// <c>Configuration.UI_ToolbarButtons</c> via <see cref="ToolbarButtonRegistry"/> and rebuilt when the
+/// Customize dialog changes that list, so customization actually affects the layout (the WinForms
+/// equivalent is <c>MainView.UpdateToolStripLayout</c>).
 /// </summary>
 public partial class EditorToolbarView : UserControl
 {
-    public EditorToolbarView()
-    {
-        InitializeComponent();
-    }
+	// "Draw objects" dropdown sub-items: (command, persisted config flag). Mirrors butDrawObjects.
+	private static readonly (string Command, string Flag)[] DrawObjectsItems =
+	{
+		("DrawMoveables", "Rendering3D_ShowMoveables"),
+		("DrawStatics", "Rendering3D_ShowStatics"),
+		("DrawImportedGeometry", "Rendering3D_ShowImportedGeometry"),
+		("DrawGhostBlocks", "Rendering3D_ShowGhostBlocks"),
+		("DrawVolumes", "Rendering3D_ShowVolumes"),
+		("DrawBoundingBoxes", "Rendering3D_ShowBoundingBoxes"),
+		("DrawOtherObjects", "Rendering3D_ShowOtherObjects"),
+		("DrawLightRadius", "Rendering3D_ShowLightRadius"),
+	};
 
-    private void DrawObjectsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
-    {
-        if (sender is not MenuItem dropdown)
-            return;
+	public EditorToolbarView()
+	{
+		InitializeComponent();
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
+	}
 
-        foreach (var item in dropdown.Items.OfType<MenuItem>())
-        {
-            if (item.Tag is not string flagName || string.IsNullOrEmpty(flagName))
-                continue;
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		Editor.Instance.EditorEventRaised -= OnEditorEventRaised;
+		Editor.Instance.EditorEventRaised += OnEditorEventRaised;
+		BuildToolbar();
+	}
 
-            var prop = typeof(Configuration).GetProperty(flagName);
-            if (prop is null || prop.PropertyType != typeof(bool))
-                continue;
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+		=> Editor.Instance.EditorEventRaised -= OnEditorEventRaised;
 
-            item.IsCheckable = true;
-            item.IsChecked = (bool)prop.GetValue(Editor.Instance.Configuration)!;
-        }
-    }
+	private void OnEditorEventRaised(IEditorEvent obj)
+	{
+		if (obj is Editor.ConfigurationChangedEvent { UpdateToolbarLayout: true })
+			BuildToolbar();
+	}
 
-    private void CustomizeToolbar_Click(object sender, RoutedEventArgs e)
-    {
-        // The WPF toolbar's button set is currently hardcoded in XAML, so the
-        // reordering committed via this dialog only affects the WinForms shell
-        // (UI_ToolbarButtons in Configuration). Still surfaces the dialog so
-        // users can manage the persisted button list for the legacy shell.
-        var allCommands = CommandHandler.Commands.Select(c => c.Name).ToList();
-        var vm = new ToolBarLayoutWindowViewModel(Editor.Instance, allCommands);
-        var dialog = new ToolBarLayoutWindow
-        {
-            DataContext = vm,
-            Owner = Window.GetWindow(this)
-        };
-        dialog.ShowDialog();
-    }
+	private void BuildToolbar()
+	{
+		ToolBarTray.ToolBars.Clear();
+
+		ToolBar? current = null;
+
+		foreach (var token in Editor.Instance.Configuration.UI_ToolbarButtons)
+		{
+			if (token == ToolbarButtonRegistry.SeparatorToken)
+			{
+				current = null; // the next button opens a fresh ToolBar group (a visual separator)
+				continue;
+			}
+
+			if (!ToolbarButtonRegistry.TryGet(token, out var spec))
+				continue;
+
+			FrameworkElement? element = spec.Kind == ToolbarButtonKind.DrawObjectsMenu
+				? CreateDrawObjectsMenu()
+				: ToolbarButtonRegistry.CreateButton(spec);
+
+			if (element is null)
+				continue;
+
+			current ??= AddToolBar();
+			current.Items.Add(element);
+		}
+	}
+
+	private ToolBar AddToolBar()
+	{
+		var toolBar = new ToolBar();
+		ToolBarTray.ToolBars.Add(toolBar);
+		return toolBar;
+	}
+
+	private FrameworkElement CreateDrawObjectsMenu()
+	{
+		var menu = new Menu { Background = Brushes.Transparent, VerticalAlignment = VerticalAlignment.Center };
+
+		var dropdown = new MenuItem
+		{
+			ToolTip = "Draw objects",
+			Header = new Image { Source = IconSources.Load("Actions/DrawObjects") },
+		};
+		dropdown.SubmenuOpened += DrawObjectsMenu_SubmenuOpened;
+
+		foreach (var (command, flag) in DrawObjectsItems)
+		{
+			var item = new MenuItem { Tag = flag };
+			EditorMenu.SetCommand(item, command);
+			dropdown.Items.Add(item);
+		}
+
+		menu.Items.Add(dropdown);
+		return menu;
+	}
+
+	private void DrawObjectsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	{
+		if (sender is not MenuItem dropdown)
+			return;
+
+		foreach (var item in dropdown.Items.OfType<MenuItem>())
+		{
+			if (item.Tag is not string flagName || string.IsNullOrEmpty(flagName))
+				continue;
+
+			var prop = typeof(Configuration).GetProperty(flagName);
+			if (prop is null || prop.PropertyType != typeof(bool))
+				continue;
+
+			item.IsCheckable = true;
+			item.IsChecked = (bool)prop.GetValue(Editor.Instance.Configuration)!;
+		}
+	}
+
+	private void CustomizeToolbar_Click(object sender, RoutedEventArgs e)
+	{
+		// Edit the live UI_ToolbarButtons. Applying raises ConfigurationChangedEvent(UpdateToolbarLayout:
+		// true), which rebuilds this toolbar. The dialog universe is the set of known toolbar tokens.
+		var vm = new ToolBarLayoutWindowViewModel(Editor.Instance, ToolbarButtonRegistry.AllTokens.ToList());
+		var dialog = new ToolBarLayoutWindow
+		{
+			DataContext = vm,
+			Owner = Window.GetWindow(this),
+		};
+		dialog.ShowDialog();
+	}
 }
