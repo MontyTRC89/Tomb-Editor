@@ -135,11 +135,11 @@
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
+						<Button Width="28" Click="OnRenameSet" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize RenameSetTooltip}">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/edit}" />
+						</Button>
 						<Button Width="28" Command="{Binding NewSetCommand}" ToolTip="{tombLib:Localize NewSetTooltip}">
 							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
-						</Button>
-						<Button Width="28" Command="{Binding CloneSetCommand}" ToolTip="{tombLib:Localize CloneSetTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
 						</Button>
 						<Button Width="28" Command="{Binding DeleteSetCommand}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
 							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
@@ -358,6 +358,10 @@
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
+						<DataGridTextColumn
+							Width="60"
+							Binding="{Binding Repeat, Mode=TwoWay}"
+							Header="{tombLib:Localize ColumnRepeat}" />
 						<DataGridTemplateColumn Width="*" Header="{tombLib:Localize ColumnTexture}">
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
@@ -377,10 +381,10 @@
 							Binding="{Binding Area}"
 							Header="{tombLib:Localize ColumnArea}"
 							IsReadOnly="True" />
-						<DataGridTextColumn
-							Width="60"
-							Binding="{Binding Repeat, Mode=TwoWay}"
-							Header="{tombLib:Localize ColumnRepeat}" />
+						<DataGridTextColumn Width="70" Binding="{Binding TexCoord0}" Header="Edge 0" IsReadOnly="True" />
+						<DataGridTextColumn Width="70" Binding="{Binding TexCoord1}" Header="Edge 1" IsReadOnly="True" />
+						<DataGridTextColumn Width="70" Binding="{Binding TexCoord2}" Header="Edge 2" IsReadOnly="True" />
+						<DataGridTextColumn Width="70" Binding="{Binding TexCoord3}" Header="Edge 3" IsReadOnly="True" />
 					</DataGrid.Columns>
 				</DataGrid>
 				</Grid>
@@ -394,7 +398,7 @@
 
 			<!--  RIGHT: texture map  -->
 			<DockPanel Grid.Column="2">
-				<ComboBox
+				<controls:SearchableComboBox
 					DockPanel.Dock="Top"
 					Margin="0,0,0,4"
 					ItemsSource="{Binding AvailableTextures}"

@@ -31,6 +31,16 @@ namespace TombLib.WPF.Features.AnimatedTextures
             _viewModel.TextureMap.MouseDown += OnTextureMapMouseDown;
         }
 
+        private void OnRenameSet(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel == null || !_viewModel.HasSelectedSet)
+                return;
+
+            var dialog = new InputDialog("Rename animation set", "Name:", _viewModel.Name) { Owner = this };
+            if (dialog.ShowDialog() == true)
+                _viewModel.Name = dialog.Value;
+        }
+
         private void OnTextureMapMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2 &&

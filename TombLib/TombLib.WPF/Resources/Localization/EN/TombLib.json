@@ -50,6 +50,7 @@
 		"Title": "Animated textures",
 		"AnimationSet": "Animation set:",
 		"NewSetTooltip": "Add new animation set",
+		"RenameSetTooltip": "Rename the current animation set",
 		"CloneSetTooltip": "Clone the current animation set",
 		"DeleteSetTooltip": "Delete the current animation set",
 		"Name": "Name:",
