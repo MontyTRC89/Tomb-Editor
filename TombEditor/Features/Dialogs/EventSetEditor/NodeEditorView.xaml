@@ -185,15 +185,55 @@
 				Width="56"
 				Command="{Binding AddNodeCommand}"
 				Content="{tombLib:Localize Add}" />
+
+			<!--  Node actions (operate on the last selected node).  -->
 			<Button
-				Width="64"
+				Click="RenameSelected_Click"
+				Content="Rename"
+				IsEnabled="{Binding HasSelectedNode}"
+				ToolTip="Rename last selected node" />
+			<Button
+				Click="ColorSelected_Click"
+				Content="Colour"
+				IsEnabled="{Binding HasSelectedNode}"
+				ToolTip="Change colour of last selected node" />
+			<Button
+				Click="LockSelected_Click"
+				Content="Lock"
+				IsEnabled="{Binding HasSelectedNode}"
+				ToolTip="Lock / unlock last selected node" />
+			<Button
 				Command="{Binding DeleteSelectedNodeCommand}"
-				Content="{tombLib:Localize Delete}" />
+				Content="{tombLib:Localize Delete}"
+				ToolTip="Delete last selected node" />
+			<Button
+				Click="ExportSelected_Click"
+				Content="Export"
+				IsEnabled="{Binding HasSelectedNode}"
+				ToolTip="Export node to clipboard" />
+			<Button
+				Click="ClearNodes_Click"
+				Content="Clear"
+				ToolTip="Clear all nodes" />
+			<Button
+				Click="FindNode_Click"
+				Content="Find"
+				ToolTip="Find node by name" />
+
+			<TextBlock VerticalAlignment="Center" Text="Call count:" />
+			<controls:NumericUpDown
+				Width="72"
+				DecimalPlaces="0"
+				Maximum="99999"
+				Minimum="0"
+				ToolTip="How many times the event may fire (0 = unlimited)"
+				Value="{Binding CallCounter, Mode=TwoWay}" />
 		</controls:SpacedStack>
 
 		<!--  Node canvas  -->
 		<Border BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
 			<ScrollViewer
+				x:Name="canvasScroll"
 				HorizontalScrollBarVisibility="Auto"
 				PreviewMouseWheel="OnPreviewMouseWheel"
 				VerticalScrollBarVisibility="Auto">

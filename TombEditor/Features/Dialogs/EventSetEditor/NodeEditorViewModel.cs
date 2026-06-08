@@ -31,6 +31,17 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         [ObservableProperty] private NodeViewModel? _selectedNode;
         [ObservableProperty] private NodeFunction? _functionToAdd;
 
+        /// <summary>Drives the enabled state of the node-action toolbar buttons.</summary>
+        public bool HasSelectedNode => SelectedNode != null;
+        partial void OnSelectedNodeChanged(NodeViewModel? value) => OnPropertyChanged(nameof(HasSelectedNode));
+
+        /// <summary>How many times the event may fire (0 = unlimited), edited via the call-count box.</summary>
+        public int CallCounter
+        {
+            get => _event.CallCounter;
+            set { if (_event.CallCounter == value) return; _event.CallCounter = value; OnPropertyChanged(); }
+        }
+
         public double CanvasWidth => _gridSize * _gridStep;
         public double CanvasHeight => _gridSize * _gridStep;
 
@@ -221,6 +232,18 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedNode = null;
             SyncRootsAndRebuild();
         }
+
+        /// <summary>Removes every node in the event (the "Clear" toolbar action).</summary>
+        public void ClearAllNodes()
+        {
+            _event.Nodes = new List<TriggerNode>();
+            SelectedNode = null;
+            SyncRootsAndRebuild();
+        }
+
+        /// <summary>Finds a node by its (case-insensitive) name for the "Find" toolbar action.</summary>
+        public NodeViewModel? FindByName(string name)
+            => Nodes.FirstOrDefault(n => string.Equals(n.Title, name, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>Connects <paramref name="from"/>'s Next (or Else) output to <paramref name="to"/>.</summary>
         public void Connect(NodeViewModel from, NodeViewModel to, bool asElse)

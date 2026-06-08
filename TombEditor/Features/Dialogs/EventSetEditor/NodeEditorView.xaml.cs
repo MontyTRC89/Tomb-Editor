@@ -6,6 +6,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TombLib.Forms.ViewModels;
+using TombLib.Forms.Views;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -97,23 +100,106 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private void SetColor_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not FrameworkElement element || element.DataContext is not NodeViewModel node)
-                return;
+            if (sender is FrameworkElement element && element.DataContext is NodeViewModel node)
+                ApplyColor(node);
+        }
 
-            var current = (node.HeaderBrush as System.Windows.Media.SolidColorBrush)?.Color ?? System.Windows.Media.Colors.Gray;
+        private void ApplyColor(NodeViewModel node)
+        {
+            var current = (node.HeaderBrush as SolidColorBrush)?.Color ?? Colors.Gray;
             var oldColor = System.Drawing.Color.FromArgb(255, current.R, current.G, current.B);
 
             using var dialog = new TombLib.Controls.RealtimeColorDialog(
-                onColorChange: c => node.SetColor(System.Windows.Media.Color.FromRgb(c.R, c.G, c.B)))
+                onColorChange: c => node.SetColor(Color.FromRgb(c.R, c.G, c.B)))
             {
                 Color = oldColor,
                 FullOpen = true
             };
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                node.SetColor(System.Windows.Media.Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B));
+                node.SetColor(Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B));
             else
-                node.SetColor(System.Windows.Media.Color.FromRgb(oldColor.R, oldColor.G, oldColor.B));
+                node.SetColor(Color.FromRgb(oldColor.R, oldColor.G, oldColor.B));
+        }
+
+        // --- Node-action toolbar buttons (operate on the last selected node) ---
+
+        private void RenameSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel?.SelectedNode is not { } node)
+                return;
+
+            var vm = new InputBoxWindowViewModel(title: "Rename node", label: "New name:", placeholder: node.Title);
+            ShowInputBox(vm);
+            if (vm.DialogResult == true)
+                node.Title = vm.Value;
+        }
+
+        private void ColorSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel?.SelectedNode is { } node)
+                ApplyColor(node);
+        }
+
+        private void LockSelected_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel?.SelectedNode is { } node)
+                node.IsLocked = !node.IsLocked;
+        }
+
+        private void ExportSelected_Click(object sender, RoutedEventArgs e)
+            => ViewModel?.CopySelected(false);
+
+        private void ClearNodes_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel is null || ViewModel.Nodes.Count == 0)
+                return;
+
+            if (MessageBox.Show("Remove all nodes from this event?", "Clear nodes",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                ViewModel.ClearAllNodes();
+        }
+
+        private void FindNode_Click(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel is null)
+                return;
+
+            var vm = new InputBoxWindowViewModel(title: "Find node", label: "Node name:");
+            ShowInputBox(vm);
+            if (vm.DialogResult != true)
+                return;
+
+            var node = ViewModel.FindByName(vm.Value);
+            if (node is null)
+            {
+                MessageBox.Show("No node named '" + vm.Value + "' was found.", "Find node",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            SelectNode(node);
+            ScrollToNode(node);
+        }
+
+        private void ShowInputBox(InputBoxWindowViewModel vm)
+        {
+            var dialog = new InputBoxWindow
+            {
+                DataContext = vm,
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            };
+            // Manually-constructed (not via IDialogService), so wire the DialogResult auto-close.
+            dialog.HookModalAutoClose();
+            dialog.ShowDialog();
+        }
+
+        private void ScrollToNode(NodeViewModel node)
+        {
+            double scale = zoomTransform.ScaleX;
+            canvasScroll.ScrollToHorizontalOffset(node.CanvasLeft * scale - canvasScroll.ViewportWidth / 2.0);
+            canvasScroll.ScrollToVerticalOffset(node.CanvasTop * scale - canvasScroll.ViewportHeight / 2.0);
         }
 
         private void DeleteNode_Click(object sender, RoutedEventArgs e)
