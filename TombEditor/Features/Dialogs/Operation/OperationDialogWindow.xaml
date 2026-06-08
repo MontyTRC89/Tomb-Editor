@@ -39,13 +39,29 @@
 		<ListBox
 			x:Name="LogList"
 			Grid.Row="0"
-			Background="{Binding LogBackground}"
+			Background="{DynamicResource Brush_Background_Low}"
 			ItemsSource="{Binding LogEntries}"
 			ScrollViewer.HorizontalScrollBarVisibility="Auto"
 			ScrollViewer.VerticalScrollBarVisibility="Auto">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Background="{Binding Background}" Text="{Binding Text}" TextWrapping="Wrap" />
+					<!--  Uniform dark background; severity is shown via text colour, not a per-line
+						background, so warnings/errors no longer look like coloured stripes.  -->
+					<TextBlock Text="{Binding Text}" TextWrapping="Wrap">
+						<TextBlock.Style>
+							<Style TargetType="TextBlock">
+								<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding Severity}" Value="Warning">
+										<Setter Property="Foreground" Value="#FFE6C34C" />
+									</DataTrigger>
+									<DataTrigger Binding="{Binding Severity}" Value="Error">
+										<Setter Property="Foreground" Value="#FFE66C6C" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows;
@@ -20,7 +21,13 @@ public partial class OperationDialogWindow : Window
     {
         if (DataContext is OperationDialogWindowViewModel vm)
         {
-            vm.SetWindowHandle(new WindowInteropHelper(this).Handle);
+            var interop = new WindowInteropHelper(this);
+            vm.SetWindowHandle(interop.Handle);
+
+            // The dialog is hidden from the taskbar, so build/open progress must be shown on the
+            // owning (main) window's taskbar button instead of this dialog's own handle.
+            vm.SetTaskbarWindowHandle(interop.Owner != IntPtr.Zero ? interop.Owner : interop.Handle);
+
             vm.LogEntries.CollectionChanged += OnLogChanged;
             vm.PropertyChanged += OnVmPropertyChanged;
             vm.Start();

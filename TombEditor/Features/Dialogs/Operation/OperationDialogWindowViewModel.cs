@@ -4,9 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -22,10 +20,12 @@ namespace TombEditor.Features.Dialogs.Operation;
 
 public partial class OperationDialogWindowViewModel : ObservableObject, IModalDialogViewModel, IProgressReporter
 {
+	public enum LogSeverity { Info, Warning, Error }
+
 	public sealed class LogEntry
 	{
 		public string Text { get; init; } = string.Empty;
-		public Brush Background { get; init; } = Brushes.Transparent;
+		public LogSeverity Severity { get; init; } = LogSeverity.Info;
 	}
 
 	private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
@@ -37,6 +37,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 
 	private Task? _task;
 	private IntPtr _hwnd = IntPtr.Zero;
+	private IntPtr _taskbarHwnd = IntPtr.Zero;
 
 	[ObservableProperty] private bool? _dialogResult;
 	[ObservableProperty] private string _title = string.Empty;
@@ -44,7 +45,6 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	[ObservableProperty] private int _progress;
 	[ObservableProperty] private bool _isOkEnabled;
 	[ObservableProperty] private bool _isCancelEnabled = true;
-	[ObservableProperty] private Brush _logBackground = Brushes.Transparent;
 
 	public ObservableCollection<LogEntry> LogEntries { get; } = new();
 
@@ -63,8 +63,14 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		_dispatcher = Dispatcher.CurrentDispatcher;
 	}
 
-	/// <summary>Provided by the View on Loaded so taskbar feedback targets the right window.</summary>
+	/// <summary>Provided by the View on Loaded; owns sub-dialogs raised during the operation.</summary>
 	public void SetWindowHandle(IntPtr hwnd) => _hwnd = hwnd;
+
+	/// <summary>
+	/// The window whose taskbar button reflects build/open progress. The operation dialog itself is
+	/// hidden from the taskbar (ShowInTaskbar=False), so progress must target the owning main window.
+	/// </summary>
+	public void SetTaskbarWindowHandle(IntPtr hwnd) => _taskbarHwnd = hwnd;
 
 	public async void Start()
 	{
@@ -73,8 +79,8 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			IsCancelEnabled = true;
 			IsOkEnabled = false;
 
-			if (IsProgressVisible && _hwnd != IntPtr.Zero)
-				TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.Normal);
+			if (IsProgressVisible && _taskbarHwnd != IntPtr.Zero)
+				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.Normal);
 
 			_task = Task.Run(() =>
 			{
@@ -94,7 +100,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			if (ex.InnerException is not null)
 				message += " : " + ex.InnerException.Message;
 
-			AppendLine(message, Brushes.Tomato);
+			AppendLine(message, LogSeverity.Error);
 #if DEBUG
 			throw;
 #endif
@@ -103,33 +109,31 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 
 	private void OnFailure(Exception ex)
 	{
-		if (_hwnd != IntPtr.Zero)
+		if (_taskbarHwnd != IntPtr.Zero)
 		{
 			if (ex is not OperationCanceledException)
-				TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.Error);
+				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.Error);
 			else
-				TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow(_hwnd);
+				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
+			TaskbarProgress.FlashWindow(_taskbarHwnd);
 		}
 
 		Progress = 0;
 		IsCancelEnabled = true;
 		IsOkEnabled = false;
-		LogBackground = Brushes.LightPink;
 	}
 
 	private void OnSuccess()
 	{
-		if (_hwnd != IntPtr.Zero)
+		if (_taskbarHwnd != IntPtr.Zero)
 		{
-			TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow(_hwnd);
+			TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
+			TaskbarProgress.FlashWindow(_taskbarHwnd);
 		}
 
 		Progress = 100;
 		IsOkEnabled = true;
 		IsCancelEnabled = false;
-		LogBackground = Brushes.LightGreen;
 
 		if (_autoCloseWhenDone)
 			DialogResult = true;
@@ -145,17 +149,17 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			if (progress.HasValue)
 			{
 				Progress = (int)Math.Round(MathC.Clamp(progress.Value, 0, 100), 0);
-				if (_hwnd != IntPtr.Zero)
-					TaskbarProgress.SetValue(_hwnd, progress.Value, 100);
+				if (_taskbarHwnd != IntPtr.Zero)
+					TaskbarProgress.SetValue(_taskbarHwnd, progress.Value, 100);
 			}
 
 			if (!string.IsNullOrEmpty(message))
-				AppendLine(message, isWarning ? Brushes.Yellow : Brushes.Transparent);
+				AppendLine(message, isWarning ? LogSeverity.Warning : LogSeverity.Info);
 		});
 	}
 
-	private void AppendLine(string message, Brush background)
-		=> LogEntries.Add(new LogEntry { Text = message, Background = background });
+	private void AppendLine(string message, LogSeverity severity)
+		=> LogEntries.Add(new LogEntry { Text = message, Severity = severity });
 
 	void IProgressReporter.ReportWarn(string message)
 	{
@@ -200,7 +204,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	{
 		_cts.Cancel();
 		DialogResult = false;
-		AppendLine("Stopping the process...", Brushes.Tomato);
+		AppendLine("Stopping the process...", LogSeverity.Warning);
 	}
 
 	/// <summary>Called by the View when the user attempts to close while running.</summary>
@@ -216,8 +220,8 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			return false;
 		}
 
-		if (_hwnd != IntPtr.Zero)
-			TaskbarProgress.SetState(_hwnd, TaskbarProgress.TaskbarStates.NoProgress);
+		if (_taskbarHwnd != IntPtr.Zero)
+			TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
 		return true;
 	}
 
