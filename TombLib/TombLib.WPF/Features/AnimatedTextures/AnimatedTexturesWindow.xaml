@@ -50,10 +50,6 @@
 
 				<!--  Set selection (top)  -->
 				<Grid DockPanel.Dock="Top" Margin="0,0,0,6">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="86" />
 						<ColumnDefinition Width="*" />
@@ -82,14 +78,6 @@
 							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
 						</Button>
 					</controls:SpacedStack>
-					<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,6,0,0" VerticalAlignment="Center" Text="{tombLib:Localize Name}" />
-					<TextBox
-						Grid.Row="1"
-						Grid.Column="1"
-						Grid.ColumnSpan="2"
-						Margin="0,6,0,0"
-						IsEnabled="{Binding HasSelectedSet}"
-						Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
 				</Grid>
 
 				<!--  Settings (bottom)  -->

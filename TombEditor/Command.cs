@@ -1527,7 +1527,11 @@ namespace TombEditor
                 _animatedTexturesWindow = window;
                 window.Closed += (s, e) => _animatedTexturesWindow = null;
 
-                if (args.Window is not null)
+                // Own the window with the WPF main window so its ComboBox popups place correctly
+                // (a bare HWND owner leaves the modeless window outside WPF's window hierarchy).
+                if (System.Windows.Application.Current?.MainWindow is not null)
+                    window.Owner = System.Windows.Application.Current.MainWindow;
+                else if (args.Window is not null)
                     window.SetOwner(args.Window);
 
                 window.Show();
