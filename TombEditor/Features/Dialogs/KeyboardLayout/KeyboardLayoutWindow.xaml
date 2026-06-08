@@ -110,7 +110,7 @@
 					<DataGridTextColumn Width="220" Binding="{Binding HotkeysText}" Header="{tombLib:Localize Hotkeys}" />
 				</DataGrid.Columns>
 				<DataGrid.RowStyle>
-					<Style TargetType="DataGridRow">
+					<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding IsConflicting}" Value="True">
 								<Setter Property="Background" Value="#80331111" />
