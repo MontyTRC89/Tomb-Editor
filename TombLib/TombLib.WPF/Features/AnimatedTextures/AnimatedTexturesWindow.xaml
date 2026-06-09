@@ -79,7 +79,7 @@
 				</Grid>
 
 				<!--  Settings (very bottom)  -->
-				<StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0" IsEnabled="{Binding HasSelectedSet}">
+				<StackPanel DockPanel.Dock="Bottom" Margin="0,6,0,0">
 					<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize Settings}" />
 					<Border Padding="6" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
 						<Grid>
@@ -151,7 +151,7 @@
 					<StackPanel Grid.Column="0">
 						<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize ProcAnimTool}" />
 						<Border Padding="6" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1">
-							<StackPanel IsEnabled="{Binding HasSelectedSet}">
+							<StackPanel>
 								<Grid Margin="0,0,0,4">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="64" />
@@ -204,13 +204,14 @@
 						</Border>
 					</StackPanel>
 
+
 				</Grid>
 
 				<!--  Frames header  -->
 				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="{tombLib:Localize FramesHeader}" />
 
 				<!--  Frames grid + vertical button strip  -->
-				<Grid IsEnabled="{Binding HasSelectedSet}">
+				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
