@@ -38,6 +38,12 @@ namespace TombLib.WPF.Features.AnimatedTextures
         {
             if (_viewModel != null && !ReferenceEquals(textureMapContainer.Child, _viewModel.TextureMap))
                 textureMapContainer.Child = _viewModel.TextureMap;
+
+            // Make sure the first available set is selected on first show. The VM ctor already
+            // does this, but binding evaluation order can leave the ComboBox with no selection
+            // when ItemsSource resolves after SelectedItem.
+            if (_viewModel != null && _viewModel.SelectedSet == null && _viewModel.Sets.Count > 0)
+                _viewModel.SelectedSet = _viewModel.Sets[0];
         }
 
         private void OnRenameSet(object sender, RoutedEventArgs e)

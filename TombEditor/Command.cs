@@ -1517,13 +1517,8 @@ namespace TombEditor
                 var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
                 var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
 
-                // Own the dialog with the same resolved owner the other working WPF dialogs use
-                // (e.g. BumpMaps). In the WPF shell there is no WinForms Form, so args.Window can be a
-                // wrong/hosted HWND (the 3D panel host, etc.); owning the dialog by it made the
-                // ComboBox popups open in a screen corner. GetWin32WindowOwner() resolves the real
-                // active/main WPF window HWND.
-                window.SetOwner(TombLib.WPF.WPFUtils.GetWin32WindowOwner());
-
+                if (args.Window is not null)
+                    window.SetOwner(args.Window);
                 window.ShowDialog();
             });
 

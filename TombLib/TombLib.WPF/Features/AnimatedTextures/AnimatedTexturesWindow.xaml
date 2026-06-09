@@ -18,7 +18,7 @@
 	Background="{DynamicResource Brush_Background}"
 	ShowInTaskbar="False"
 	Style="{DynamicResource CustomWindowStyle}"
-	WindowStartupLocation="CenterOwner"
+	WindowStartupLocation="CenterScreen"
 	mc:Ignorable="d">
 
 	<Window.Resources>
@@ -59,7 +59,6 @@
 					<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{tombLib:Localize AnimationSet}" />
 					<ComboBox
 						Grid.Column="1"
-						DisplayMemberPath="Name"
 						ItemsSource="{Binding Sets}"
 						SelectedItem="{Binding SelectedSet, Mode=TwoWay}" />
 					<controls:SpacedStack
@@ -205,34 +204,7 @@
 						</Border>
 					</StackPanel>
 
-					<!--  Preview  -->
-					<StackPanel Grid.Column="2">
-						<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize Preview}" />
-						<Border
-							Width="135"
-							Height="135"
-							Background="{DynamicResource Brush_Background_Low}"
-							BorderBrush="{DynamicResource Brush_Border}"
-							BorderThickness="1">
-							<Image Source="{Binding PreviewImage}" Stretch="None" />
-						</Border>
-						<ProgressBar
-							Height="16"
-							Margin="0,4,0,0"
-							Maximum="{Binding PreviewMaximum}"
-							Minimum="0"
-							Value="{Binding PreviewProgress}" />
-					</StackPanel>
 				</Grid>
-
-				<!--  TRNG too-many-frames warning  -->
-				<TextBlock
-					DockPanel.Dock="Bottom"
-					Margin="0,6,0,0"
-					Foreground="{DynamicResource Brush_Text_Warning}"
-					Text="{Binding TooManyFramesText}"
-					TextWrapping="Wrap"
-					Visibility="{Binding TooManyFrames, Converter={StaticResource BoolToVis}}" />
 
 				<!--  Frames header  -->
 				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="{tombLib:Localize FramesHeader}" />
