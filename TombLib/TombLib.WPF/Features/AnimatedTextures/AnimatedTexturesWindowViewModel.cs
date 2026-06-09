@@ -60,6 +60,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             ProceduralPresets = BuildProceduralPresets();
             AnimationTypes = BuildAnimationTypes();
             InitNgOptions();
+            InitPreview();
 
             foreach (var set in _sets)
                 _backupSets.Add(set.Clone());
@@ -177,6 +178,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_animatedMap != null)
                 _animatedMap.SelectedSet = value;
             _textureMap.InvalidateVisual();
+
+            _previewCurrentFrame = null;
+            _previewCurrentRepeatTimes = 0;
+            UpdatePreviewState();
         }
 
         public bool HasSelectedSet => SelectedSet != null;
@@ -186,10 +191,11 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_lockUi || SelectedSet == null)
                 return;
 
-            // A frame add/remove does not change the set list, so only refresh the map.
+            // A frame add/remove does not change the set list, so only refresh the map + preview.
             // (Rebuilding the set combo here would re-enter this collection's CollectionChanged.)
             SelectedSet.Frames = Frames.ToList();
             _textureMap.InvalidateVisual();
+            UpdatePreviewState();
         }
 
         // Editable set name (inline; replaces the WinForms "edit name" input box).
@@ -223,6 +229,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                     return;
                 SelectedSet.AnimationType = value;
                 RefreshSettingsState();
+                UpdatePreviewState();
                 _context.OnAnimatedTexturesChanged?.Invoke();
             }
         }
@@ -236,6 +243,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 if (!SetProperty(ref _fps, value) || _lockUi || SelectedSet == null)
                     return;
                 SelectedSet.Fps = (float)value;
+                UpdatePreviewState();
             }
         }
 
@@ -363,6 +371,8 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         public void Closing(bool cancelled)
         {
+            StopPreview();
+
             if (cancelled)
             {
                 _sets.Clear();
