@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<propertyCatalog>
+  <moveable id="51,53,55,57,59,61,63,65,67">
+  		<property
+		  internalName="VehicleWake"
+		  displayName="Render wake"
+		  type="Bool"
+		  defaultValue="false"
+		  category="Vehicle Wake"
+		  description="Add wake effect"
+		/>
+		<property
+		  internalName="WakeStartColor"
+		  displayName="Wake start color"
+		  type="Color"
+		  defaultValue="191,191,191,191"
+		  hasAlpha = "true"
+		  category="Vehicle Wake"
+		  description="Vehicle wake starting color."
+		/>
+		<property
+		  internalName="WakeEndColor"
+		  displayName="Wake end color"
+		  type="Color"
+		  defaultValue="0,0,0,0"
+		  hasAlpha = "true"
+		  category="Vehicle Wake"
+		  description="Vehicle wake ending color."
+		/>
+	</moveable>
+</propertyCatalog>

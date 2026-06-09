@@ -14,6 +14,7 @@
 		  displayName="Mist start color"
 		  type="Color"
 		  defaultValue="0,0,0"
+		  hasAlpha = "true"
 		  category="Speedboat Mist"
 		  description="Starting color of mist particles."
 		/>
@@ -22,16 +23,9 @@
 		  displayName="Mist end color"
 		  type="Color"
 		  defaultValue="64,64,64"
+		  hasAlpha = "true"
 		  category="Speedboat Mist"
 		  description="Ending color of mist particles."
-		/>
-		<property
-		  internalName="SpeedboatMistLife"
-		  displayName="Mist life"
-		  type="Float"
-		  defaultValue="20"
-		  category="Speedboat Mist"
-		  description="Determines the lifespan length of a particle."
 		/>
 		<property
 		  internalName="SpeedboatFoam"
@@ -40,14 +34,6 @@
 		  defaultValue="false"
 		  category="Speedboat Foam"
 		  description="Add foam effect"
-		/>
-		<property
-		  internalName="SpeedboatWake"
-		  displayName="Render wake"
-		  type="Bool"
-		  defaultValue="false"
-		  category="Speedboat Wake"
-		  description="Add wake effect"
 		/>
 	</moveable>
 </propertyCatalog>
