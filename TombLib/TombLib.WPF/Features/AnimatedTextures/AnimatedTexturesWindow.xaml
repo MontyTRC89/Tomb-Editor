@@ -204,6 +204,23 @@
 						</Border>
 					</StackPanel>
 
+						<!--  Preview (placeholder, no live animation)  -->
+						<StackPanel Grid.Column="2">
+							<TextBlock Margin="0,0,0,2" Text="{tombLib:Localize Preview}" />
+							<Border
+								Width="135"
+								Height="135"
+								Background="{DynamicResource Brush_Background_Low}"
+								BorderBrush="{DynamicResource Brush_Border}"
+								BorderThickness="1" />
+							<ProgressBar
+								Height="16"
+								Margin="0,4,0,0"
+								Maximum="1"
+								Minimum="0"
+								Value="0" />
+						</StackPanel>
+
 
 				</Grid>
 
