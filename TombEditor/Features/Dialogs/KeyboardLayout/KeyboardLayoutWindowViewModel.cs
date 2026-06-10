@@ -83,7 +83,7 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 		if (HasConflicts)
 		{
 			var first = conflictPairs[0];
-			ConflictsText = $"Possible conflict(s) found: {first.Item1} and {first.Item2}. Check red highlights.";
+			ConflictsText = _localizationService.Format("PossibleConflicts", first.Item1, first.Item2);
 		}
 	}
 
@@ -148,7 +148,7 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 
 		if (WinFormsUtils.DirectionalCameraKeys.Contains(_listeningKeys))
 		{
-			_messageService.ShowError("This key is reserved for camera movement. Please define another key.");
+			_messageService.ShowError(_localizationService["ReservedCameraKey"]);
 			StopListening();
 			return;
 		}
@@ -199,7 +199,7 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 	[RelayCommand]
 	private void RestoreDefaults()
 	{
-		if (!_messageService.ShowConfirmation("Do you really want to restore ALL key bindings to their default?"))
+		if (!_messageService.ShowConfirmation(_localizationService["RestoreDefaultsConfirm"]))
 			return;
 
 		_currConfig = new HotkeySets();

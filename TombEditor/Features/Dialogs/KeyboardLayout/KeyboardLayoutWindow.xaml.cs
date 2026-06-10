@@ -50,7 +50,4 @@ public partial class KeyboardLayoutWindow : Window
             e.Handled = true;
         }
     }
-
-    private void ListenOverlay_MouseDown(object sender, MouseButtonEventArgs e)
-        => Vm?.StopListeningCommand.Execute(null);
 }

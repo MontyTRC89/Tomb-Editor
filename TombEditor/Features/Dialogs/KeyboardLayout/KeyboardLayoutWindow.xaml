@@ -109,7 +109,11 @@
 							</DataTemplate>
 						</DataGridTemplateColumn.CellTemplate>
 					</DataGridTemplateColumn>
-					<DataGridTextColumn Width="220" Binding="{Binding HotkeysText}" Header="{tombLib:Localize Hotkeys}" />
+					<DataGridTextColumn
+						Width="220"
+						Binding="{Binding HotkeysText}"
+						Header="{tombLib:Localize Hotkeys}"
+						IsReadOnly="True" />
 				</DataGrid.Columns>
 				<DataGrid.RowStyle>
 					<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
@@ -126,8 +130,10 @@
 				Background="DarkGreen"
 				BorderBrush="{DynamicResource Brush_Border}"
 				BorderThickness="{x:Static darkUI:Defaults.BorderThickness}"
-				MouseDown="ListenOverlay_MouseDown"
 				Visibility="{Binding IsListening, Converter={StaticResource BoolToVis}}">
+				<Border.InputBindings>
+					<MouseBinding Command="{Binding StopListeningCommand}" MouseAction="LeftClick" />
+				</Border.InputBindings>
 				<TextBlock
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
