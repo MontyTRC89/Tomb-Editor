@@ -2,7 +2,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
+using MvvmDialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,7 +22,7 @@ public sealed record FindTextureResult(Room Room, VectorInt2 Position)
     public string Coordinates => $"{Position.X}, {Position.Y}";
 }
 
-public partial class FindTexturesWindowViewModel : ObservableObject
+public partial class FindTexturesWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private const uint MaxEntries = 1000;
 
@@ -31,6 +31,7 @@ public partial class FindTexturesWindowViewModel : ObservableObject
     private bool _suppressNavigation = true;
     private bool _disposed;
 
+    [ObservableProperty] private bool? _dialogResult;
     [ObservableProperty] private TextureSearchTypeItem _selectedSearchType;
     [ObservableProperty] private bool _onlySelectedRooms = true;
     [ObservableProperty] private string _statusText = string.Empty;
@@ -64,10 +65,8 @@ public partial class FindTexturesWindowViewModel : ObservableObject
         _editor.EditorEventRaised += OnEditorEventRaised;
     }
 
-    public event EventHandler? RequestClose;
-
     [RelayCommand]
-    private void Close() => RequestClose?.Invoke(this, EventArgs.Empty);
+    private void Close() => DialogResult = false;
 
     public void Cleanup()
     {
