@@ -74,8 +74,11 @@
 				Background="{Binding SourceColor}"
 				BorderBrush="{DynamicResource Brush_Border}"
 				BorderThickness="1"
-				MouseDown="OnSourceColorClick"
-				Visibility="{Binding IsSourceColorVisible, Converter={StaticResource BoolToVis}}" />
+				Visibility="{Binding IsSourceColorVisible, Converter={StaticResource BoolToVis}}">
+				<Border.InputBindings>
+					<MouseBinding Command="{Binding EditSourceLightColorCommand}" MouseAction="LeftClick" />
+				</Border.InputBindings>
+			</Border>
 			<Button
 				Grid.Row="1"
 				Grid.Column="2"
@@ -112,8 +115,11 @@
 				Background="{Binding DestColor}"
 				BorderBrush="{DynamicResource Brush_Border}"
 				BorderThickness="1"
-				MouseDown="OnDestColorClick"
-				Visibility="{Binding IsDestColorVisible, Converter={StaticResource BoolToVis}}" />
+				Visibility="{Binding IsDestColorVisible, Converter={StaticResource BoolToVis}}">
+				<Border.InputBindings>
+					<MouseBinding Command="{Binding EditDestLightColorCommand}" MouseAction="LeftClick" />
+				</Border.InputBindings>
+			</Border>
 			<Button
 				Grid.Row="5"
 				Grid.Column="2"

@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using TombLib.WPF.Services;
@@ -27,6 +28,7 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 
 	private readonly Editor _editor;
 	private readonly IMessageService _messageService;
+	private readonly IColorPickerService _colorPickerService;
 	private PositionBasedObjectInstance? _source;
 	private PositionBasedObjectInstance? _dest;
 
@@ -50,17 +52,16 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 	public ObservableCollection<string> SearchTypes { get; } = new();
 	public ObservableCollection<string> ReplaceTypes { get; } = new();
 
-	public PositionBasedObjectInstance? SourceObject => _source;
-	public PositionBasedObjectInstance? DestObject => _dest;
-
 	public ReplaceObjectWindowViewModel(
 		Editor editor,
 		bool fromContext = false,
 		IMessageService? messageService = null,
-		ILocalizationService? localizationService = null)
+		ILocalizationService? localizationService = null,
+		IColorPickerService? colorPickerService = null)
 	{
 		_editor = editor;
 		_messageService = ServiceLocator.ResolveService(messageService);
+		_colorPickerService = ServiceLocator.ResolveService(colorPickerService);
 		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		_editor.EditorEventRaised += OnEditorEvent;
@@ -136,6 +137,26 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 				}
 				break;
 		}
+	}
+
+	/// <summary>
+	/// Called by the View when a wad object is dropped onto the window,
+	/// turning it into the matching object instance before toggling it.
+	/// </summary>
+	public void ToggleWadObject(IWadObject wadObject, ObjectSelectionType type)
+	{
+		PositionBasedObjectInstance? instance = wadObject switch
+		{
+			WadStatic ws => new StaticInstance { WadObjectId = ws.Id },
+			WadMoveable wm => new MoveableInstance { WadObjectId = wm.Id },
+			ImportedGeometry ig => new ImportedGeometryInstance { Model = ig },
+			_ => null
+		};
+
+		if (instance is null)
+			return;
+
+		ToggleItem(instance, type);
 	}
 
 	private void SetSource(PositionBasedObjectInstance? value)
@@ -230,11 +251,6 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 		SelectedReplaceTypeIndex = 0;
 	}
 
-	/// <summary>
-	/// Called by the View after editing a light swatch color, so the swatch brushes refresh.
-	/// </summary>
-	public void RefreshUI() => UpdateUI();
-
 	private void UpdateUI()
 	{
 		IsReplaceEnabled = _source is not null && _dest is not null;
@@ -288,6 +304,25 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 
 	[RelayCommand]
 	private void SelectDest() => SelectionType = ObjectSelectionType.Destination;
+
+	[RelayCommand]
+	private void EditSourceLightColor() => EditLightColor(asSource: true);
+
+	[RelayCommand]
+	private void EditDestLightColor() => EditLightColor(asSource: false);
+
+	private void EditLightColor(bool asSource)
+	{
+		if ((asSource ? _source : _dest) is not LightInstance light)
+			return;
+
+		Vector3? result = _colorPickerService.PickColor(light.Color * 0.5f);
+		if (result is null)
+			return;
+
+		light.Color = result.Value * 2.0f;
+		UpdateUI();
+	}
 
 	[RelayCommand]
 	private void NewSearch() => InitializeNewSearch();
