@@ -15,6 +15,8 @@ namespace TombEditor.Features.Dialogs.Static;
 public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly StaticInstance _staticMesh;
+    private readonly Editor _editor;
+    private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
 
     private readonly Vector3 _originalColor;
@@ -52,13 +54,19 @@ public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewM
 
     public bool CanBeColored { get; }
 
-    public StaticWindowViewModel(StaticInstance staticMesh, ILocalizationService? localizationService = null)
+    public StaticWindowViewModel(
+        StaticInstance staticMesh,
+        Editor? editor = null,
+        IMessageService? messageService = null,
+        ILocalizationService? localizationService = null)
     {
         _staticMesh = staticMesh;
+        _editor = editor ?? Editor.Instance;
         _newOcb = staticMesh.Ocb;
         _originalColor = staticMesh.Color;
         CanBeColored = staticMesh.CanBeColored();
 
+        _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         _displayColor = Vector3ToColor(staticMesh.Color * 0.5f);
@@ -159,9 +167,12 @@ public partial class StaticWindowViewModel : ObservableObject, IModalDialogViewM
     private void Confirm()
     {
         if (!short.TryParse(OcbText, out short ocb))
+        {
+            _messageService.ShowError(_localizationService["InvalidOcbMessage"]);
             return;
+        }
 
-        Editor.Instance.UndoManager.PushObjectPropertyChanged(_staticMesh);
+        _editor.UndoManager.PushObjectPropertyChanged(_staticMesh);
         _staticMesh.Ocb = ocb;
         _staticMesh.Color = ColorToVector3(DisplayColor) * 2.0f;
         DialogResult = true;

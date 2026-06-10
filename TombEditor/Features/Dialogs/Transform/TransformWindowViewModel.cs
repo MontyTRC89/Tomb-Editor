@@ -62,7 +62,7 @@ public partial class TransformWindowViewModel : ObservableObject, IModalDialogVi
 
         IsRotationYEnabled = instance is IRotateableY;
 
-        if (_editor.SelectedObject is MoveableInstance moveable)
+        if (instance is MoveableInstance moveable)
         {
             bool freelyRotateable = TrCatalog.IsFreelyRotateable(_editor.Level.Settings.GameVersion, moveable.WadObjectId.TypeId);
             IsRotationXEnabled = freelyRotateable;

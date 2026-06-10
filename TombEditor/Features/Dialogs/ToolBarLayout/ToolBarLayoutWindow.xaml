@@ -90,36 +90,39 @@
 				ToolTip="{tombLib:Localize MoveDownTooltip}" />
 		</controls:SpacedStack>
 
-		<controls:SpacedStack
+		<Grid
 			Grid.Row="2"
 			Grid.Column="0"
-			Grid.ColumnSpan="4"
-			Orientation="Horizontal"
-			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			Grid.ColumnSpan="4">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
 			<Button
+				Grid.Column="0"
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
 				Command="{Binding RestoreDefaultsCommand}"
 				Content="{tombLib:Localize Defaults}" />
-			<TextBlock Width="0" />
 			<controls:SpacedStack
+				Grid.Column="1"
 				HorizontalAlignment="Right"
 				Orientation="Horizontal"
 				Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 				<Button
-					Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+					Width="80"
 					Command="{Binding ApplyCommand}"
 					Content="{tombLib:Localize Apply}" />
 				<Button
-					Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+					Width="80"
 					Command="{Binding OkCommand}"
 					Content="{tombLib:Localize ~Common.OK}"
 					IsDefault="True" />
 				<Button
-					Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+					Width="80"
 					Command="{Binding CancelCommand}"
 					Content="{tombLib:Localize ~Common.Cancel}"
 					IsCancel="True" />
 			</controls:SpacedStack>
-		</controls:SpacedStack>
+		</Grid>
 	</controls:SpacedGrid>
 </Window>

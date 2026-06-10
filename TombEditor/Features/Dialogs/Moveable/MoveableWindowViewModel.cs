@@ -73,8 +73,8 @@ public partial class MoveableWindowViewModel : ObservableObject, IModalDialogVie
     [RelayCommand]
     private void ResetTint()
     {
+        // Only update the swatch; Confirm applies DisplayColor to the moveable.
         DisplayColor = Colors.Gray;
-        _moveable.Color = ColorToVector3(Colors.Gray) * 2.0f;
     }
 
     [RelayCommand]

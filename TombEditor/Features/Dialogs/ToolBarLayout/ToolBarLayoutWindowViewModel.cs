@@ -14,14 +14,22 @@ namespace TombEditor.Features.Dialogs.ToolBarLayout;
 public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDialogViewModel
 {
 	public const string SeparatorMarker = "|";
-	public const string SeparatorDisplay = "[ Separator ]";
+	public string SeparatorDisplay { get; }
 
 	private readonly Editor _editor;
 	private readonly IReadOnlyList<string> _universe;
 
 	[ObservableProperty] private bool? _dialogResult;
-	[ObservableProperty] private string? _selectedAvailable;
-	[ObservableProperty] private string? _selectedCurrent;
+
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(AddCommand))]
+	private string? _selectedAvailable;
+
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(RemoveCommand))]
+	[NotifyCanExecuteChangedFor(nameof(MoveUpCommand))]
+	[NotifyCanExecuteChangedFor(nameof(MoveDownCommand))]
+	private string? _selectedCurrent;
 
 	public ObservableCollection<string> Available { get; } = new();
 	public ObservableCollection<string> Current { get; } = new();
@@ -32,7 +40,8 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 		ILocalizationService? localizationService = null)
 	{
 		_editor = editor;
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		ILocalizationService localization = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		SeparatorDisplay = localization["Separator"];
 
 		_universe = availableButtonNames.ToList();
 
@@ -64,7 +73,9 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 				Available.Add(name);
 	}
 
-	[RelayCommand]
+	private bool CanAdd() => SelectedAvailable is not null;
+
+	[RelayCommand(CanExecute = nameof(CanAdd))]
 	private void Add()
 	{
 		if (SelectedAvailable is null)
@@ -80,7 +91,9 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 			Available.Remove(SelectedAvailable);
 	}
 
-	[RelayCommand]
+	private bool HasSelectedCurrent() => SelectedCurrent is not null;
+
+	[RelayCommand(CanExecute = nameof(HasSelectedCurrent))]
 	private void Remove()
 	{
 		if (SelectedCurrent is null)
@@ -92,7 +105,7 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 			Available.Add(item);
 	}
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(HasSelectedCurrent))]
 	private void MoveUp()
 	{
 		if (SelectedCurrent is null)
@@ -103,7 +116,7 @@ public partial class ToolBarLayoutWindowViewModel : ObservableObject, IModalDial
 		Current.Move(idx, idx - 1);
 	}
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(HasSelectedCurrent))]
 	private void MoveDown()
 	{
 		if (SelectedCurrent is null)

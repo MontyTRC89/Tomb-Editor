@@ -35,7 +35,6 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
@@ -100,7 +99,7 @@
 		</Grid>
 
 		<controls:SpacedStack
-			Grid.Row="4"
+			Grid.Row="3"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
 			HorizontalAlignment="Right"
