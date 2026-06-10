@@ -179,6 +179,10 @@ namespace TombEditor
                         // can already observe Editor events on first paint.
                         var wpfApp = System.Windows.Application.Current;
 
+                        // Shared editor code shows DarkMessageBox (WinForms); route it onto the
+                        // WPF CMessageBox so message boxes match the shell.
+                        WpfMessageBoxBridge.Install();
+
                         // Without this handler, exceptions thrown during MainWindow construction or
                         // any later WPF-dispatched callback are swallowed silently — the process
                         // dies but neither the console nor NLog see anything. Route them through
