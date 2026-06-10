@@ -91,29 +91,56 @@ public partial class EditorToolbarView : UserControl
 
 	private FrameworkElement CreateDrawObjectsMenu()
 	{
-		var menu = new Menu { Background = Brushes.Transparent, VerticalAlignment = VerticalAlignment.Center };
+		// A Menu hosted in a ToolBar gets restyled with the system ToolBar.MenuStyleKey style
+		// (white popup, immune to the DarkUI theme). Use a regular toolbar Button that opens a
+		// ContextMenu instead — ContextMenus pick up the DarkUI implicit style everywhere.
+		// Icon + small down-arrow (same glyph the DarkUI ComboBox uses), so the button reads as
+		// a dropdown like the legacy ToolStripDropDownButton did.
+		var arrow = new System.Windows.Shapes.Path
+		{
+			Width = 7,
+			Stretch = Stretch.Uniform,
+			VerticalAlignment = VerticalAlignment.Center,
+			Margin = new Thickness(3, 0, 0, 0),
+		};
+		arrow.SetResourceReference(System.Windows.Shapes.Path.DataProperty, "WideArrowDown");
+		arrow.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, "Brush_Text");
 
-		var dropdown = new MenuItem
+		var button = new Button
 		{
 			ToolTip = "Draw objects",
-			Header = new Image { Source = IconSources.Load("Actions/DrawObjects") },
+			Content = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				Children =
+				{
+					new Image { Source = IconSources.Load("Actions/DrawObjects") },
+					arrow,
+				},
+			},
 		};
-		dropdown.SubmenuOpened += DrawObjectsMenu_SubmenuOpened;
+
+		var menu = new ContextMenu
+		{
+			PlacementTarget = button,
+			Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom,
+		};
 
 		foreach (var (command, flag) in DrawObjectsItems)
 		{
 			var item = new MenuItem { Tag = flag };
 			EditorMenu.SetCommand(item, command);
-			dropdown.Items.Add(item);
+			menu.Items.Add(item);
 		}
 
-		menu.Items.Add(dropdown);
-		return menu;
+		menu.Opened += DrawObjectsMenu_Opened;
+		button.Click += (_, _) => menu.IsOpen = true;
+		return button;
 	}
 
-	private void DrawObjectsMenu_SubmenuOpened(object sender, RoutedEventArgs e)
+	private void DrawObjectsMenu_Opened(object sender, RoutedEventArgs e)
 	{
-		if (sender is not MenuItem dropdown)
+		if (sender is not ContextMenu dropdown)
 			return;
 
 		foreach (var item in dropdown.Items.OfType<MenuItem>())
