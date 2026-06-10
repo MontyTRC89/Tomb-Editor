@@ -2,8 +2,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
 using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs.OpenFile;
 using System.IO;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
@@ -12,6 +12,7 @@ namespace TombEditor.Features.Dialogs.ImportPrj;
 
 public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogViewModel
 {
+    private readonly IDialogService _dialogService;
     private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private bool? _dialogResult;
@@ -26,8 +27,10 @@ public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogVi
         string prjPath,
         bool respectMousepatch,
         bool useHalfPixelCorrection,
+        IDialogService? dialogService = null,
         ILocalizationService? localizationService = null)
     {
+        _dialogService = ServiceLocator.ResolveService(dialogService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         PrjPath = prjPath;
@@ -39,15 +42,15 @@ public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogVi
     [RelayCommand]
     private void BrowseSoundsCatalog()
     {
-        var dialog = new OpenFileDialog
+        var settings = new OpenFileDialogSettings
         {
             Title = _localizationService["BrowseSoundsTitle"],
             Filter = "Sound catalogs|*.xml;*.txt|All files|*.*",
             CheckFileExists = true
         };
 
-        if (dialog.ShowDialog() == true)
-            SoundsPath = dialog.FileName;
+        if (_dialogService.ShowOpenFileDialog(this, settings) == true)
+            SoundsPath = settings.FileName;
     }
 
     [RelayCommand]
