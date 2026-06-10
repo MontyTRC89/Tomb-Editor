@@ -19,6 +19,15 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.Dialogs.Operation;
 
+/// <summary>Lifecycle of the running operation; the View mirrors it onto the taskbar button.</summary>
+public enum OperationState
+{
+	Running,
+	Succeeded,
+	Cancelled,
+	Failed
+}
+
 public partial class OperationDialogWindowViewModel : ObservableObject, IModalDialogViewModel, IProgressReporter
 {
 	public sealed class LogEntry
@@ -53,12 +62,12 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 
 	private Task? _task;
 	private IntPtr _hwnd = IntPtr.Zero;
-	private IntPtr _taskbarHwnd = IntPtr.Zero;
 
 	[ObservableProperty] private bool? _dialogResult;
 	[ObservableProperty] private string _title = string.Empty;
 	[ObservableProperty] private bool _isProgressVisible = true;
 	[ObservableProperty] private int _progress;
+	[ObservableProperty] private OperationState _state = OperationState.Running;
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(OkCommand))] private bool _isOkEnabled;
 	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(CancelCommand))] private bool _isCancelEnabled = true;
 	[ObservableProperty] private Brush _logBackground = DefaultLogBrush;
@@ -83,21 +92,12 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	/// <summary>Provided by the View on Loaded; owns sub-dialogs raised during the operation.</summary>
 	public void SetWindowHandle(IntPtr hwnd) => _hwnd = hwnd;
 
-	/// <summary>
-	/// The window whose taskbar button reflects build/open progress. The operation dialog itself is
-	/// hidden from the taskbar (ShowInTaskbar=False), so progress must target the owning main window.
-	/// </summary>
-	public void SetTaskbarWindowHandle(IntPtr hwnd) => _taskbarHwnd = hwnd;
-
 	public async void Start()
 	{
 		try
 		{
 			IsCancelEnabled = true;
 			IsOkEnabled = false;
-
-			if (IsProgressVisible && _taskbarHwnd != IntPtr.Zero)
-				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.Normal);
 
 			_task = Task.Run(() =>
 			{
@@ -126,14 +126,9 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 
 	private void OnFailure(Exception ex)
 	{
-		if (_taskbarHwnd != IntPtr.Zero)
-		{
-			if (ex is not OperationCanceledException)
-				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.Error);
-			else
-				TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow(_taskbarHwnd);
-		}
+		// State first: the View stops mirroring Progress onto the taskbar once the operation
+		// has ended, so the red error bar keeps its last value (like the legacy dialog).
+		State = ex is not OperationCanceledException ? OperationState.Failed : OperationState.Cancelled;
 
 		Progress = 0;
 		IsCancelEnabled = true;
@@ -143,11 +138,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 
 	private void OnSuccess()
 	{
-		if (_taskbarHwnd != IntPtr.Zero)
-		{
-			TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
-			TaskbarProgress.FlashWindow(_taskbarHwnd);
-		}
+		State = OperationState.Succeeded;
 
 		Progress = 100;
 		IsOkEnabled = true;
@@ -166,11 +157,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		_dispatcher.BeginInvoke(() =>
 		{
 			if (progress.HasValue)
-			{
 				Progress = (int)Math.Round(MathC.Clamp(progress.Value, 0, 100), 0);
-				if (_taskbarHwnd != IntPtr.Zero)
-					TaskbarProgress.SetValue(_taskbarHwnd, progress.Value, 100);
-			}
 
 			if (!string.IsNullOrEmpty(message))
 				AppendLine(message, isWarning ? WarningRowBrush : Brushes.Transparent);
@@ -239,8 +226,6 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			return false;
 		}
 
-		if (_taskbarHwnd != IntPtr.Zero)
-			TaskbarProgress.SetState(_taskbarHwnd, TaskbarProgress.TaskbarStates.NoProgress);
 		return true;
 	}
 

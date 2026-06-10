@@ -82,15 +82,15 @@ namespace TombLib.Utils
 
         public static void FlashWindow(IntPtr fallbackHandle)
         {
+            // Don't flash if any of our own windows is already the foreground. A process-wide
+            // check is needed because WPF windows (e.g. the operation dialog itself) never appear
+            // in Application.OpenForms.
             var activatedHandle = GetForegroundWindow();
 
             if (activatedHandle != IntPtr.Zero)
             {
-                // Don't flash if our own window is already the foreground.
-                for (int i = 0; i < Application.OpenForms.Count; i++)
-                    if (activatedHandle == Application.OpenForms[i].Handle)
-                        return;
-                if (activatedHandle == fallbackHandle)
+                GetWindowThreadProcessId(activatedHandle, out int activatedProcessId);
+                if (activatedProcessId == Environment.ProcessId)
                     return;
             }
 
