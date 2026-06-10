@@ -760,7 +760,7 @@ namespace TombEditor
 
             // Display dialog for additional root trigger setup.
             {
-                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel();
+                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel(trigger, _editor.Level);
                 var triggerDialog = new TombEditor.Features.Dialogs.Trigger.TriggerWindow(
                     trigger, _editor.Level,
                     obj => _editor.ShowObject(obj),
@@ -1262,7 +1262,7 @@ namespace TombEditor
             }
             else if (instance is TriggerInstance triggerInstance)
             {
-                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel();
+                var triggerVm = new TombEditor.Features.Dialogs.Trigger.TriggerWindowViewModel(triggerInstance, _editor.Level);
                 var triggerDialog = new TombEditor.Features.Dialogs.Trigger.TriggerWindow(
                     triggerInstance, _editor.Level,
                     obj => _editor.ShowObject(obj),
