@@ -17,7 +17,10 @@ public partial class TextureRemapWindow : Window
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (e.OldValue is TextureRemapWindowViewModel old)
+        {
             old.RemapRectanglesChanged -= OnRectanglesChanged;
+            old.PropertyChanged -= OnViewModelPropertyChanged;
+        }
 
         if (e.NewValue is TextureRemapWindowViewModel vm)
         {
@@ -27,14 +30,19 @@ public partial class TextureRemapWindow : Window
             DestinationMapView.ResetVisibleTexture(vm.DestinationTexture);
 
             vm.RemapRectanglesChanged += OnRectanglesChanged;
-            vm.PropertyChanged += (_, args) =>
-            {
-                if (args.PropertyName == nameof(vm.SourceTexture))
-                    SourceMapView.ResetVisibleTexture(vm.SourceTexture);
-                else if (args.PropertyName == nameof(vm.DestinationTexture))
-                    DestinationMapView.ResetVisibleTexture(vm.DestinationTexture);
-            };
+            vm.PropertyChanged += OnViewModelPropertyChanged;
         }
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (sender is not TextureRemapWindowViewModel vm)
+            return;
+
+        if (e.PropertyName == nameof(vm.SourceTexture))
+            SourceMapView.ResetVisibleTexture(vm.SourceTexture);
+        else if (e.PropertyName == nameof(vm.DestinationTexture))
+            DestinationMapView.ResetVisibleTexture(vm.DestinationTexture);
     }
 
     private void OnRectanglesChanged(object? sender, System.EventArgs e)
