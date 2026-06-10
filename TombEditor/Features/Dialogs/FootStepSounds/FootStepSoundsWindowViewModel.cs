@@ -21,8 +21,13 @@ public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDia
 
     [ObservableProperty] private bool? _dialogResult;
 
-    [ObservableProperty] private LevelTexture? _selectedTexture;
-    [ObservableProperty] private int _selectedSoundIndex;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanAssign))]
+    private LevelTexture? _selectedTexture;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanAssign))]
+    private int _selectedSoundIndex;
 
     public ObservableCollection<LevelTexture> Textures { get; } = new();
     public IReadOnlyList<string> SoundTypes { get; }
