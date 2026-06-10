@@ -612,8 +612,15 @@ public partial class MainWindow : Window
 			// Save tweaks to whatever layout was active before switching.
 			SaveCurrentStateToActiveLayout();
 			config.Window_ActiveLayoutName = string.Empty;
+
+			// Mirror FormMain.Layout_RestoreDefault: Window_Layout is the *current* layout state
+			// (panel flags, toolbox positions); restoring the default resets it wholesale.
+			config.Window_Layout = new NamedLayout();
 			LoadDockState(_defaultDockState);
 			ApplyToolboxPositionsFrom(config.Window_Layout);
+
+			// Let flag-driven views (statistics bar, timeline checkbox, …) pick up the change.
+			_editor.ConfigurationChange();
 			return;
 		}
 
@@ -629,8 +636,13 @@ public partial class MainWindow : Window
 			SaveCurrentStateToActiveLayout();
 
 		config.Window_ActiveLayoutName = target.Name;
+
+		// Mirror FormMain.Layout_SwitchTo: the chosen layout becomes the current state, so its
+		// ShowStats/ShowFlybyTimeline flags actually take effect on switch.
+		config.Window_Layout = target.Clone();
 		LoadDockState(string.IsNullOrEmpty(target.AvalonDockState) ? _defaultDockState : target.AvalonDockState);
 		ApplyToolboxPositionsFrom(target);
+		_editor.ConfigurationChange();
 	}
 
 	private void SaveCurrentStateToActiveLayout()
@@ -640,7 +652,14 @@ public partial class MainWindow : Window
 		// The dock layout is only persisted for named custom layouts; the default falls back to the
 		// XAML baseline. The floating toolbox positions, however, belong to every layout (incl. default).
 		if (!string.IsNullOrEmpty(_editor.Configuration.Window_ActiveLayoutName))
+		{
 			active.AvalonDockState = SerializeDockState();
+
+			// Panel flags live on Window_Layout (the current-state layout); snapshot them into
+			// the named layout so they round-trip on the next switch (FormMain parity).
+			active.ShowStats = _editor.Configuration.Window_Layout.ShowStats;
+			active.ShowFlybyTimeline = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
+		}
 
 		SaveToolboxPositionsTo(active);
 	}
@@ -786,11 +805,18 @@ public partial class MainWindow : Window
 			return;
 		}
 
-		config.Window_CustomLayouts.Add(new NamedLayout
+		// Capture the full current state, not just the dock arrangement — panel flags and toolbox
+		// positions are part of a layout too (FormMain.SaveCurrentStateToLayout parity).
+		var newLayout = new NamedLayout
 		{
 			Name = name,
-			AvalonDockState = SerializeDockState()
-		});
+			AvalonDockState = SerializeDockState(),
+			ShowStats = config.Window_Layout.ShowStats,
+			ShowFlybyTimeline = config.Window_Layout.ShowFlybyTimeline,
+		};
+		SaveToolboxPositionsTo(newLayout);
+
+		config.Window_CustomLayouts.Add(newLayout);
 		config.Window_ActiveLayoutName = name;
 	}
 
