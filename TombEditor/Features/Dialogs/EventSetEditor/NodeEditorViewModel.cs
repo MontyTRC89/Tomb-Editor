@@ -6,9 +6,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
+using TombLib.Forms.ViewModels;
 using TombLib.LevelData.VisualScripting;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -23,6 +28,9 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly int _gridSize;
         private readonly double _gridStep;
         private readonly ArgumentDataProvider _provider;
+        private readonly IDialogService _dialogService;
+        private readonly IMessageService _messageService;
+        private readonly IColorPickerService _colorPickerService;
 
         public IReadOnlyList<NodeFunction> Functions { get; }
         public ObservableCollection<NodeViewModel> Nodes { get; } = new();
@@ -33,7 +41,18 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         /// <summary>Drives the enabled state of the node-action toolbar buttons.</summary>
         public bool HasSelectedNode => SelectedNode != null;
-        partial void OnSelectedNodeChanged(NodeViewModel? value) => OnPropertyChanged(nameof(HasSelectedNode));
+
+        partial void OnSelectedNodeChanged(NodeViewModel? value)
+        {
+            // Keep each node's IsSelected flag (drives the selection border) in sync with the selection.
+            foreach (var node in Nodes)
+                node.IsSelected = node == value;
+
+            OnPropertyChanged(nameof(HasSelectedNode));
+        }
+
+        /// <summary>Asks the view to scroll the given node into view (a purely visual concern).</summary>
+        public event Action<NodeViewModel>? BringNodeIntoViewRequested;
 
         /// <summary>How many times the event may fire (0 = unlimited), edited via the call-count box.</summary>
         public int CallCounter
@@ -45,13 +64,17 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double CanvasWidth => _gridSize * _gridStep;
         public double CanvasHeight => _gridSize * _gridStep;
 
-        public NodeEditorViewModel(TombLib.LevelData.Event evt, IReadOnlyList<NodeFunction> functions, ArgumentDataProvider provider, int gridSize, double gridStep)
+        public NodeEditorViewModel(TombLib.LevelData.Event evt, IReadOnlyList<NodeFunction> functions, ArgumentDataProvider provider, int gridSize, double gridStep,
+            IDialogService? dialogService = null, IMessageService? messageService = null, IColorPickerService? colorPickerService = null)
         {
             _event = evt;
             Functions = functions;
             _provider = provider;
             _gridSize = gridSize;
             _gridStep = gridStep;
+            _dialogService = ServiceLocator.ResolveService(dialogService);
+            _messageService = ServiceLocator.ResolveService(messageService);
+            _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
 
             // Group the function picker by Section (the default view is shared, so add only once).
             var functionsView = System.Windows.Data.CollectionViewSource.GetDefaultView(Functions);
@@ -115,9 +138,17 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedNode = Nodes.FirstOrDefault(n => n.Node == node);
         }
 
-        /// <summary>Creates a node for <paramref name="func"/> at a specific canvas position (right-click add).</summary>
-        public void AddNodeAtPosition(NodeFunction func, double canvasX, double canvasY)
+        /// <summary>Parameter of <see cref="AddNodeAtPositionCommand"/>: a function plus the canvas position to drop it at.</summary>
+        public sealed record AddNodeRequest(NodeFunction Function, double CanvasX, double CanvasY);
+
+        /// <summary>Creates a node for a function at a specific canvas position (right-click add).</summary>
+        [RelayCommand]
+        private void AddNodeAtPosition(AddNodeRequest? request)
         {
+            if (request == null)
+                return;
+
+            NodeFunction func = request.Function;
             TriggerNode node = func.Conditional
                 ? new TriggerNodeCondition { Name = "If " + (Nodes.Count(n => n.IsCondition) + 1) }
                 : new TriggerNodeAction { Name = "Action " + (Nodes.Count(n => !n.IsCondition) + 1) };
@@ -126,8 +157,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             node.Function = func.Signature;
             node.FixArguments(func);
             node.ScreenPosition = new Vector2(
-                (float)Math.Clamp(canvasX / _gridStep, 0, 256),
-                (float)Math.Clamp(canvasY / _gridStep, 0, 256));
+                (float)Math.Clamp(request.CanvasX / _gridStep, 0, 256),
+                (float)Math.Clamp(request.CanvasY / _gridStep, 0, 256));
 
             _event.Nodes.Add(node);
             SyncRootsAndRebuild();
@@ -252,17 +283,103 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SyncRootsAndRebuild();
         }
 
-        /// <summary>Removes every node in the event (the "Clear" toolbar action).</summary>
-        public void ClearAllNodes()
+        /// <summary>Deletes a specific node (context-menu action), selecting it first.</summary>
+        [RelayCommand]
+        private void DeleteNode(NodeViewModel? node)
         {
+            if (node == null)
+                return;
+
+            SelectedNode = node;
+            DeleteSelectedNode();
+        }
+
+        // --- Node-action toolbar commands (operate on the last selected node) ---
+
+        [RelayCommand]
+        private void RenameSelected()
+        {
+            if (SelectedNode is not { } node)
+                return;
+
+            var inputBox = new InputBoxWindowViewModel(title: "Rename node", label: "New name:", placeholder: node.Title);
+            if (_dialogService.ShowDialog(this, inputBox) == true)
+                node.Title = inputBox.Value;
+        }
+
+        [RelayCommand]
+        private void ColorSelected()
+        {
+            if (SelectedNode is { } node)
+                PickNodeColor(node);
+        }
+
+        /// <summary>Picks a color for a specific node (context-menu action).</summary>
+        [RelayCommand]
+        private void SetColor(NodeViewModel? node)
+        {
+            if (node != null)
+                PickNodeColor(node);
+        }
+
+        private void PickNodeColor(NodeViewModel node)
+        {
+            var current = (node.HeaderBrush as SolidColorBrush)?.Color ?? Colors.Gray;
+            var oldColor = new Vector3(current.R, current.G, current.B) / 255.0f;
+
+            // Live-preview while picking; restore the old color on cancel.
+            Vector3? picked = _colorPickerService.PickColor(oldColor, c => node.SetColor(ToMediaColor(c)));
+            node.SetColor(ToMediaColor(picked ?? oldColor));
+        }
+
+        private static Color ToMediaColor(Vector3 color) => Color.FromRgb(
+            (byte)Math.Clamp(Math.Round(color.X * 255.0), 0.0, 255.0),
+            (byte)Math.Clamp(Math.Round(color.Y * 255.0), 0.0, 255.0),
+            (byte)Math.Clamp(Math.Round(color.Z * 255.0), 0.0, 255.0));
+
+        [RelayCommand]
+        private void LockSelected()
+        {
+            if (SelectedNode is { } node)
+                node.IsLocked = !node.IsLocked;
+        }
+
+        [RelayCommand]
+        private void ExportSelected() => CopySelected(false);
+
+        /// <summary>Removes every node in the event (the "Clear" toolbar action).</summary>
+        [RelayCommand]
+        private void ClearNodes()
+        {
+            if (Nodes.Count == 0)
+                return;
+
+            if (!_messageService.ShowConfirmation("Remove all nodes from this event?", "Clear nodes", isRisky: true))
+                return;
+
             _event.Nodes = new List<TriggerNode>();
             SelectedNode = null;
             SyncRootsAndRebuild();
         }
 
-        /// <summary>Finds a node by its (case-insensitive) name for the "Find" toolbar action.</summary>
-        public NodeViewModel? FindByName(string name)
-            => Nodes.FirstOrDefault(n => string.Equals(n.Title, name, StringComparison.OrdinalIgnoreCase));
+        /// <summary>Finds a node by its (case-insensitive) name (the "Find" toolbar action) and brings it into view.</summary>
+        [RelayCommand]
+        private void FindNode()
+        {
+            var inputBox = new InputBoxWindowViewModel(title: "Find node", label: "Node name:");
+            if (_dialogService.ShowDialog(this, inputBox) != true)
+                return;
+
+            var node = Nodes.FirstOrDefault(n => string.Equals(n.Title, inputBox.Value, StringComparison.OrdinalIgnoreCase));
+            if (node is null)
+            {
+                _messageService.ShowInformation("No node named '" + inputBox.Value + "' was found.", "Find node");
+                return;
+            }
+
+            SelectedNode = node;
+            BringNodeIntoViewRequested?.Invoke(node);
+        }
 
         /// <summary>Connects <paramref name="from"/>'s Next (or Else) output to <paramref name="to"/>.</summary>
         public void Connect(NodeViewModel from, NodeViewModel to, bool asElse)

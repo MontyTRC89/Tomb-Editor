@@ -6,9 +6,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TombLib.Forms.ViewModels;
-using TombLib.Forms.Views;
-using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -25,9 +22,19 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public NodeEditorView()
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
         }
 
         private NodeEditorViewModel? ViewModel => DataContext as NodeEditorViewModel;
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Scrolling a node into view is the only visual concern the view-model needs from us.
+            if (e.OldValue is NodeEditorViewModel oldViewModel)
+                oldViewModel.BringNodeIntoViewRequested -= ScrollToNode;
+            if (e.NewValue is NodeEditorViewModel newViewModel)
+                newViewModel.BringNodeIntoViewRequested += ScrollToNode;
+        }
 
         private void OnArgDragOver(object sender, DragEventArgs e)
         {
@@ -102,16 +109,20 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (FindNodeAt(position) != null)
                 return;
 
+            // The menu is composed here because it depends on the click position; every item
+            // delegates the actual work to the view-model's AddNodeAtPositionCommand.
             var menu = new ContextMenu();
             foreach (var group in System.Linq.Enumerable.GroupBy(ViewModel.Functions, f => f.Section))
             {
                 var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? "Misc" : group.Key };
                 foreach (var function in group)
                 {
-                    var func = function;
-                    var item = new MenuItem { Header = func.Name };
-                    item.Click += (_, _) => ViewModel.AddNodeAtPosition(func, position.X, position.Y);
-                    section.Items.Add(item);
+                    section.Items.Add(new MenuItem
+                    {
+                        Header = function.Name,
+                        Command = ViewModel.AddNodeAtPositionCommand,
+                        CommandParameter = new NodeEditorViewModel.AddNodeRequest(function, position.X, position.Y)
+                    });
                 }
                 menu.Items.Add(section);
             }
@@ -124,104 +135,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         {
             Focus();
             if (sender is FrameworkElement element && element.DataContext is NodeViewModel node && ViewModel != null)
-                SelectNode(node);
-        }
-
-        private void SetColor_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement element && element.DataContext is NodeViewModel node)
-                ApplyColor(node);
-        }
-
-        private void ApplyColor(NodeViewModel node)
-        {
-            var current = (node.HeaderBrush as SolidColorBrush)?.Color ?? Colors.Gray;
-            var oldColor = System.Drawing.Color.FromArgb(255, current.R, current.G, current.B);
-
-            using var dialog = new TombLib.Controls.RealtimeColorDialog(
-                onColorChange: c => node.SetColor(Color.FromRgb(c.R, c.G, c.B)))
-            {
-                Color = oldColor,
-                FullOpen = true
-            };
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                node.SetColor(Color.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B));
-            else
-                node.SetColor(Color.FromRgb(oldColor.R, oldColor.G, oldColor.B));
-        }
-
-        // --- Node-action toolbar buttons (operate on the last selected node) ---
-
-        private void RenameSelected_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel?.SelectedNode is not { } node)
-                return;
-
-            var vm = new InputBoxWindowViewModel(title: "Rename node", label: "New name:", placeholder: node.Title);
-            ShowInputBox(vm);
-            if (vm.DialogResult == true)
-                node.Title = vm.Value;
-        }
-
-        private void ColorSelected_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel?.SelectedNode is { } node)
-                ApplyColor(node);
-        }
-
-        private void LockSelected_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel?.SelectedNode is { } node)
-                node.IsLocked = !node.IsLocked;
-        }
-
-        private void ExportSelected_Click(object sender, RoutedEventArgs e)
-            => ViewModel?.CopySelected(false);
-
-        private void ClearNodes_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel is null || ViewModel.Nodes.Count == 0)
-                return;
-
-            if (MessageBox.Show("Remove all nodes from this event?", "Clear nodes",
-                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                ViewModel.ClearAllNodes();
-        }
-
-        private void FindNode_Click(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel is null)
-                return;
-
-            var vm = new InputBoxWindowViewModel(title: "Find node", label: "Node name:");
-            ShowInputBox(vm);
-            if (vm.DialogResult != true)
-                return;
-
-            var node = ViewModel.FindByName(vm.Value);
-            if (node is null)
-            {
-                MessageBox.Show("No node named '" + vm.Value + "' was found.", "Find node",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            SelectNode(node);
-            ScrollToNode(node);
-        }
-
-        private void ShowInputBox(InputBoxWindowViewModel vm)
-        {
-            var dialog = new InputBoxWindow
-            {
-                DataContext = vm,
-                Owner = Window.GetWindow(this),
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            };
-            // Manually-constructed (not via IDialogService), so wire the DialogResult auto-close.
-            dialog.HookModalAutoClose();
-            dialog.ShowDialog();
+                ViewModel.SelectedNode = node;
         }
 
         private void ScrollToNode(NodeViewModel node)
@@ -229,26 +143,6 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             double scale = zoomTransform.ScaleX;
             canvasScroll.ScrollToHorizontalOffset(node.CanvasLeft * scale - canvasScroll.ViewportWidth / 2.0);
             canvasScroll.ScrollToVerticalOffset(node.CanvasTop * scale - canvasScroll.ViewportHeight / 2.0);
-        }
-
-        private void DeleteNode_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement element && element.DataContext is NodeViewModel node && ViewModel != null)
-            {
-                SelectNode(node);
-                ViewModel.DeleteSelectedNodeCommand.Execute(null);
-            }
-        }
-
-        private void SelectNode(NodeViewModel node)
-        {
-            if (ViewModel == null)
-                return;
-
-            foreach (var other in ViewModel.Nodes)
-                other.IsSelected = other == node;
-
-            ViewModel.SelectedNode = node;
         }
 
         private void Node_SizeChanged(object sender, SizeChangedEventArgs e)

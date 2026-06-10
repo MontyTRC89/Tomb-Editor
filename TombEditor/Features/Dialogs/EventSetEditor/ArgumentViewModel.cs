@@ -4,17 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TombLib;
-using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 using MediaColor = System.Windows.Media.Color;
-using WinFormsColor = System.Drawing.Color;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -41,6 +42,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly ArgumentLayout _layout;
         private readonly ArgumentDataProvider _provider;
         private readonly double _nodeWidth;
+        private readonly IColorPickerService _colorPickerService;
         private bool _loading;
 
         public ArgumentEditorKind Kind { get; }
@@ -62,13 +64,15 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double LargeIncrement { get; private set; } = 5.0;
         public int DecimalPlaces { get; private set; }
 
-        public ArgumentViewModel(System.Collections.Generic.List<TriggerNodeArgument> arguments, int index, ArgumentLayout layout, ArgumentDataProvider provider, double nodeWidth)
+        public ArgumentViewModel(System.Collections.Generic.List<TriggerNodeArgument> arguments, int index, ArgumentLayout layout, ArgumentDataProvider provider, double nodeWidth,
+            IColorPickerService? colorPickerService = null)
         {
             _arguments = arguments;
             _index = index;
             _layout = layout;
             _provider = provider;
             _nodeWidth = nodeWidth;
+            _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
             Kind = MapKind(layout.Type);
 
             ParseNumericLimits();
@@ -162,18 +166,20 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         [RelayCommand]
         private void PickColor()
         {
-            var oldColor = WinFormsColor.FromArgb(255, ColorValue.R, ColorValue.G, ColorValue.B);
-            using var dialog = new RealtimeColorDialog(onColorChange: c => ColorValue = MediaColor.FromRgb(c.R, c.G, c.B))
-            {
-                Color = oldColor,
-                FullOpen = true
-            };
+            MediaColor oldColor = ColorValue;
 
-            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                ColorValue = MediaColor.FromRgb(oldColor.R, oldColor.G, oldColor.B);
-            else
-                ColorValue = MediaColor.FromRgb(dialog.Color.R, dialog.Color.G, dialog.Color.B);
+            // Live-preview while picking; restore the old color on cancel.
+            Vector3? picked = _colorPickerService.PickColor(
+                new Vector3(oldColor.R, oldColor.G, oldColor.B) / 255.0f,
+                c => ColorValue = ToMediaColor(c));
+
+            ColorValue = picked is { } color ? ToMediaColor(color) : oldColor;
         }
+
+        private static MediaColor ToMediaColor(Vector3 color) => MediaColor.FromRgb(
+            (byte)Math.Clamp(Math.Round(color.X * 255.0), 0.0, 255.0),
+            (byte)Math.Clamp(Math.Round(color.Y * 255.0), 0.0, 255.0),
+            (byte)Math.Clamp(Math.Round(color.Z * 255.0), 0.0, 255.0));
 
         // List.
 

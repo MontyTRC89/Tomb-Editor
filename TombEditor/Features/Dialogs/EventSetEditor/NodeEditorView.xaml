@@ -7,10 +7,12 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	d:DataContext="{d:DesignInstance Type=local:NodeEditorViewModel}"
 	d:DesignHeight="400"
 	d:DesignWidth="640"
+	md:DialogServiceViews.IsRegistered="True"
 	Focusable="True"
 	KeyDown="OnKeyDown"
 	mc:Ignorable="d">
@@ -188,17 +190,17 @@
 
 			<!--  Node actions (operate on the last selected node).  -->
 			<Button
-				Click="RenameSelected_Click"
+				Command="{Binding RenameSelectedCommand}"
 				Content="Rename"
 				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="Rename last selected node" />
 			<Button
-				Click="ColorSelected_Click"
+				Command="{Binding ColorSelectedCommand}"
 				Content="Colour"
 				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="Change colour of last selected node" />
 			<Button
-				Click="LockSelected_Click"
+				Command="{Binding LockSelectedCommand}"
 				Content="Lock"
 				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="Lock / unlock last selected node" />
@@ -207,16 +209,16 @@
 				Content="{tombLib:Localize Delete}"
 				ToolTip="Delete last selected node" />
 			<Button
-				Click="ExportSelected_Click"
+				Command="{Binding ExportSelectedCommand}"
 				Content="Export"
 				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="Export node to clipboard" />
 			<Button
-				Click="ClearNodes_Click"
+				Command="{Binding ClearNodesCommand}"
 				Content="Clear"
 				ToolTip="Clear all nodes" />
 			<Button
-				Click="FindNode_Click"
+				Command="{Binding FindNodeCommand}"
 				Content="Find"
 				ToolTip="Find node by name" />
 
@@ -289,16 +291,24 @@
 								<Grid
 									Width="{Binding Width}"
 									PreviewMouseLeftButtonDown="Node_PreviewMouseDown"
-									SizeChanged="Node_SizeChanged">
+									SizeChanged="Node_SizeChanged"
+									Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:NodeEditorView}}">
+									<!--  The menu's DataContext is the node; the editor view-model is reached via the placement target's Tag.  -->
 									<Grid.ContextMenu>
 										<ContextMenu>
-											<MenuItem Click="SetColor_Click" Header="{tombLib:Localize SetColor}" />
+											<MenuItem
+												Command="{Binding PlacementTarget.Tag.SetColorCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+												CommandParameter="{Binding}"
+												Header="{tombLib:Localize SetColor}" />
 											<MenuItem
 												Header="{tombLib:Localize Locked}"
 												IsCheckable="True"
 												IsChecked="{Binding IsLocked, Mode=TwoWay}" />
 											<Separator />
-											<MenuItem Click="DeleteNode_Click" Header="{tombLib:Localize Delete}" />
+											<MenuItem
+												Command="{Binding PlacementTarget.Tag.DeleteNodeCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+												CommandParameter="{Binding}"
+												Header="{tombLib:Localize Delete}" />
 										</ContextMenu>
 									</Grid.ContextMenu>
 
