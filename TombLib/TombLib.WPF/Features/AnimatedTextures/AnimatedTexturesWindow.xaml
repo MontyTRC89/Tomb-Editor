@@ -65,17 +65,17 @@
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="28" Command="{Binding RenameSetCommand}" ToolTip="{tombLib:Localize RenameSetTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/edit}" />
+						<Button Command="{Binding RenameSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize RenameSetTooltip}">
+							<Image Source="{tomb:Icon General/edit}" />
 						</Button>
-						<Button Width="28" Command="{Binding NewSetCommand}" ToolTip="{tombLib:Localize NewSetTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+						<Button Command="{Binding NewSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize NewSetTooltip}">
+							<Image Source="{tomb:Icon General/plus_math}" />
 						</Button>
-						<Button Width="28" Command="{Binding CloneSetCommand}" ToolTip="{tombLib:Localize CloneSetTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
+						<Button Command="{Binding CloneSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize CloneSetTooltip}">
+							<Image Source="{tomb:Icon General/copy}" />
 						</Button>
-						<Button Width="28" Command="{Binding DeleteSetCommand}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
+						<Button Command="{Binding DeleteSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
+							<Image Source="{tomb:Icon General/trash}" />
 						</Button>
 					</controls:SpacedStack>
 				</Grid>
@@ -185,20 +185,20 @@
 										<CheckBox Content="{tombLib:Localize Smooth}" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="{tombLib:Localize SmoothTooltip}" />
 									</controls:SpacedStack>
 									<controls:SpacedStack HorizontalAlignment="Right" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-										<Button Width="28" Command="{Binding GenerateNewCommand}" ToolTip="{tombLib:Localize GenerateTooltip}">
-											<Image Width="16" Height="16" Source="{tomb:Icon General/create_new}" />
+										<Button Command="{Binding GenerateNewCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize GenerateTooltip}">
+											<Image Source="{tomb:Icon General/create_new}" />
 										</Button>
-										<Button Width="28" Command="{Binding GenerateCloneCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize CloneTooltip}">
-											<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
+										<Button Command="{Binding GenerateCloneCommand}" IsEnabled="{Binding HasSelectedSet}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize CloneTooltip}">
+											<Image Source="{tomb:Icon General/copy}" />
 										</Button>
-										<Button Width="28" Command="{Binding GenerateMergeCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize MergeTooltip}">
-											<Image Width="16" Height="16" Source="{tomb:Icon Actions/Merge}" />
+										<Button Command="{Binding GenerateMergeCommand}" IsEnabled="{Binding HasSelectedSet}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize MergeTooltip}">
+											<Image Source="{tomb:Icon Actions/Merge}" />
 										</Button>
-										<Button Width="28" Command="{Binding GenerateAddFramesCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize AddFramesTooltip}">
-											<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+										<Button Command="{Binding GenerateAddFramesCommand}" IsEnabled="{Binding HasSelectedSet}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize AddFramesTooltip}">
+											<Image Source="{tomb:Icon General/plus_math}" />
 										</Button>
-										<Button Width="28" Command="{Binding GenerateReplaceCommand}" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize ReplaceTooltip}">
-											<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
+										<Button Command="{Binding GenerateReplaceCommand}" IsEnabled="{Binding HasSelectedSet}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize ReplaceTooltip}">
+											<Image Source="{tomb:Icon Actions/refresh}" />
 										</Button>
 									</controls:SpacedStack>
 								</Grid>
@@ -307,20 +307,20 @@
 						VerticalAlignment="Top"
 						Orientation="Vertical"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="28" Command="{Binding AddFrameCommand}" ToolTip="{tombLib:Localize AddFrameTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+						<Button Command="{Binding AddFrameCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize AddFrameTooltip}">
+							<Image Source="{tomb:Icon General/plus_math}" />
 						</Button>
-						<Button Width="28" Command="{Binding DeleteFrameCommand}" ToolTip="{tombLib:Localize DeleteFrameTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
+						<Button Command="{Binding DeleteFrameCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize DeleteFrameTooltip}">
+							<Image Source="{tomb:Icon General/trash}" />
 						</Button>
-						<Button Width="28" Command="{Binding UpdateFrameCommand}" ToolTip="{tombLib:Localize UpdateFrameTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon Actions/refresh}" />
+						<Button Command="{Binding UpdateFrameCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize UpdateFrameTooltip}">
+							<Image Source="{tomb:Icon Actions/refresh}" />
 						</Button>
-						<Button Width="28" Margin="0,8,0,0" Command="{Binding MoveFrameUpCommand}" ToolTip="{tombLib:Localize MoveUpTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/ArrowUp}" />
+						<Button Margin="0,8,0,0" Command="{Binding MoveFrameUpCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize MoveUpTooltip}">
+							<Image Source="{tomb:Icon General/ArrowUp}" />
 						</Button>
-						<Button Width="28" Command="{Binding MoveFrameDownCommand}" ToolTip="{tombLib:Localize MoveDownTooltip}">
-							<Image Width="16" Height="16" Source="{tomb:Icon General/ArrowDown}" />
+						<Button Command="{Binding MoveFrameDownCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize MoveDownTooltip}">
+							<Image Source="{tomb:Icon General/ArrowDown}" />
 						</Button>
 					</controls:SpacedStack>
 				</Grid>

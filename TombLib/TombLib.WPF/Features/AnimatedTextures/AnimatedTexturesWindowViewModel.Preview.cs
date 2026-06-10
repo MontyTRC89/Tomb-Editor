@@ -22,11 +22,16 @@ namespace TombLib.WPF.Features.AnimatedTextures
         private int _previewCurrentRepeatTimes;
         private static ImageC _checkerboard = BuildCheckerboard();
 
-        // UV-rotate scrolling state + cached base perspective image.
+        // UV-rotate scrolling state.
         private double _lastX;
         private double _lastY;
-        private ImageSource? _previewBaseImage;
-        private AnimatedTextureFrame? _previewBaseFrame;
+
+        // Rendered-frame cache, value-keyed like the WinForms _imageCache: each unique frame is
+        // rendered only once, so a normal tick is just a dictionary lookup. (Re-rendering the
+        // 128x128 perspective preview on every tick made the animation sluggish.)
+        private readonly record struct PreviewFrameKey(ImageC Image, Vector2 TexCoord0, Vector2 TexCoord1, Vector2 TexCoord2, Vector2 TexCoord3);
+        private readonly Cache<PreviewFrameKey, ImageSource> _previewFrameCache = new(512,
+            key => RenderImage(key.Image, key.TexCoord0, key.TexCoord1, key.TexCoord2, key.TexCoord3, PreviewSize));
 
         [ObservableProperty] private ImageSource? _previewImage;
         [ObservableProperty] private int _previewProgress;
@@ -36,14 +41,18 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         private void InitPreview()
         {
-            _previewTimer = new DispatcherTimer();
+            // Render priority: the default (Background) only fires once the dispatcher is otherwise
+            // idle, which delays/coalesces ticks and makes the animation visibly sluggish.
+            _previewTimer = new DispatcherTimer(DispatcherPriority.Render);
             _previewTimer.Tick += (s, e) => PreviewTick();
         }
 
         private void StopPreview()
         {
-            if (_previewTimer != null)
-                _previewTimer.Stop();
+            // Drop the timer so later OnAnimatedTexturesChanged calls (e.g. the final one raised
+            // while the window closes) cannot restart it; UpdatePreviewState guards against null.
+            _previewTimer?.Stop();
+            _previewTimer = null;
         }
 
         /// <summary>Recomputes the timer interval, progress range and TRNG frame-count warning for the current set.</summary>
@@ -52,10 +61,9 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_previewTimer == null)
                 return;
 
-            // Reset scroll + cached base so the new set re-renders from scratch.
+            // Reset the UV-rotate scroll position.
             _lastX = 0;
             _lastY = 0;
-            _previewBaseFrame = null;
 
             int frameCount = SelectedSet?.Frames.Count ?? 0;
             if (frameCount == 0 || SelectedSet == null)
@@ -120,16 +128,13 @@ namespace TombLib.WPF.Features.AnimatedTextures
             PreviewMaximum = frameCount - 1;
             PreviewProgress = frameIndex;
 
-            // Cache the perspective preview; only re-render when the displayed frame changes.
-            if (!ReferenceEquals(_previewCurrentFrame, _previewBaseFrame))
-            {
-                _previewBaseFrame = _previewCurrentFrame;
-                _previewBaseImage = RenderFrame(_previewCurrentFrame, PreviewSize);
-            }
+            ImageSource? baseImage = _previewCurrentFrame.Texture?.Image is { } image
+                ? _previewFrameCache[new PreviewFrameKey(image, _previewCurrentFrame.TexCoord0, _previewCurrentFrame.TexCoord1, _previewCurrentFrame.TexCoord2, _previewCurrentFrame.TexCoord3)]
+                : null;
 
-            PreviewImage = _previewBaseImage != null && set.IsUvRotate
-                ? ComposeUvRotate(_previewBaseImage, set)
-                : _previewBaseImage;
+            PreviewImage = baseImage != null && set.IsUvRotate
+                ? ComposeUvRotate(baseImage, set)
+                : baseImage;
         }
 
         /// <summary>Tiles and scrolls the frame to simulate UV-rotate (ports the WinForms preview Paint).</summary>
@@ -185,7 +190,12 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (frame.Texture?.Image is not { } image)
                 return null;
 
-            ImageC preview = GetPerspectivePreview(image, frame.TexCoord0, frame.TexCoord1, frame.TexCoord2, frame.TexCoord3, size, size);
+            return RenderImage(image, frame.TexCoord0, frame.TexCoord1, frame.TexCoord2, frame.TexCoord3, size);
+        }
+
+        private static ImageSource RenderImage(ImageC image, Vector2 texCoord0, Vector2 texCoord1, Vector2 texCoord2, Vector2 texCoord3, int size)
+        {
+            ImageC preview = GetPerspectivePreview(image, texCoord0, texCoord1, texCoord2, texCoord3, size, size);
 
             var bitmap = new WriteableBitmap(preview.Width, preview.Height, 96, 96, PixelFormats.Bgra32, null);
             byte[] bytes = preview.ToByteArray();

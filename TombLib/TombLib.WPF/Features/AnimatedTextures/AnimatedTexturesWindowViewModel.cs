@@ -148,6 +148,10 @@ namespace TombLib.WPF.Features.AnimatedTextures
             RebuildSets();
             if (SelectedSet == null)
                 SelectedSet = Sets.LastOrDefault();
+
+            // The legacy form re-ran UpdateCurrentAnimationDisplay here, so FPS/effect edits
+            // (e.g. the TRNG combos) retune the preview timer interval immediately.
+            UpdatePreviewState();
         }
 
         partial void OnSelectedSetChanged(AnimatedTextureSet? value)
