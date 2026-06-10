@@ -98,10 +98,34 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         public ObservableCollection<SoundCatalogRow> SoundCatalogs { get; } = new();
         public ObservableCollection<SampleRow> SampleRows { get; } = new();
 
-        [ObservableProperty] private TextureRow? _selectedTexture;
-        [ObservableProperty] private WadRow? _selectedWad;
-        [ObservableProperty] private SoundCatalogRow? _selectedSoundCatalog;
-        [ObservableProperty] private SampleRow? _selectedSample;
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteTextureCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveTextureUpCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveTextureDownCommand))]
+        private TextureRow? _selectedTexture;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteWadCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveWadUpCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveWadDownCommand))]
+        private WadRow? _selectedWad;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteSoundCatalogCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveSoundCatalogUpCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveSoundCatalogDownCommand))]
+        private SoundCatalogRow? _selectedSoundCatalog;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteSampleCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveSampleUpCommand))]
+        [NotifyCanExecuteChangedFor(nameof(MoveSampleDownCommand))]
+        private SampleRow? _selectedSample;
+
+        public bool HasSelectedTexture => SelectedTexture != null;
+        public bool HasSelectedWad => SelectedWad != null;
+        public bool HasSelectedSoundCatalog => SelectedSoundCatalog != null;
+        public bool HasSelectedSample => SelectedSample != null;
 
         [RelayCommand]
         private void AddTextures()
@@ -110,9 +134,9 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 Textures.Add(new TextureRow(_settings, new LevelTexture(_settings, path)));
         }
 
-        [RelayCommand] private void DeleteTexture() => Remove(Textures, SelectedTexture);
-        [RelayCommand] private void MoveTextureUp() => Move(Textures, SelectedTexture, -1);
-        [RelayCommand] private void MoveTextureDown() => Move(Textures, SelectedTexture, 1);
+        [RelayCommand(CanExecute = nameof(HasSelectedTexture))] private void DeleteTexture() => Remove(Textures, SelectedTexture);
+        [RelayCommand(CanExecute = nameof(HasSelectedTexture))] private void MoveTextureUp() => Move(Textures, SelectedTexture, -1);
+        [RelayCommand(CanExecute = nameof(HasSelectedTexture))] private void MoveTextureDown() => Move(Textures, SelectedTexture, 1);
 
         [RelayCommand]
         private void AddWads()
@@ -121,9 +145,9 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 WadRows.Add(new WadRow(_settings, new ReferencedWad(_settings, path)));
         }
 
-        [RelayCommand] private void DeleteWad() => Remove(WadRows, SelectedWad);
-        [RelayCommand] private void MoveWadUp() => Move(WadRows, SelectedWad, -1);
-        [RelayCommand] private void MoveWadDown() => Move(WadRows, SelectedWad, 1);
+        [RelayCommand(CanExecute = nameof(HasSelectedWad))] private void DeleteWad() => Remove(WadRows, SelectedWad);
+        [RelayCommand(CanExecute = nameof(HasSelectedWad))] private void MoveWadUp() => Move(WadRows, SelectedWad, -1);
+        [RelayCommand(CanExecute = nameof(HasSelectedWad))] private void MoveWadDown() => Move(WadRows, SelectedWad, 1);
 
         [RelayCommand]
         private void AddSoundCatalogs()
@@ -133,9 +157,9 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 SoundCatalogs.Add(new SoundCatalogRow(_settings, new ReferencedSoundCatalog(_settings, path)));
         }
 
-        [RelayCommand] private void DeleteSoundCatalog() => Remove(SoundCatalogs, SelectedSoundCatalog);
-        [RelayCommand] private void MoveSoundCatalogUp() => Move(SoundCatalogs, SelectedSoundCatalog, -1);
-        [RelayCommand] private void MoveSoundCatalogDown() => Move(SoundCatalogs, SelectedSoundCatalog, 1);
+        [RelayCommand(CanExecute = nameof(HasSelectedSoundCatalog))] private void DeleteSoundCatalog() => Remove(SoundCatalogs, SelectedSoundCatalog);
+        [RelayCommand(CanExecute = nameof(HasSelectedSoundCatalog))] private void MoveSoundCatalogUp() => Move(SoundCatalogs, SelectedSoundCatalog, -1);
+        [RelayCommand(CanExecute = nameof(HasSelectedSoundCatalog))] private void MoveSoundCatalogDown() => Move(SoundCatalogs, SelectedSoundCatalog, 1);
 
         [RelayCommand]
         private void AddSample()
@@ -145,9 +169,9 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 SampleRows.Add(new SampleRow(_settings, new WadSoundPath(result)));
         }
 
-        [RelayCommand] private void DeleteSample() => Remove(SampleRows, SelectedSample);
-        [RelayCommand] private void MoveSampleUp() => Move(SampleRows, SelectedSample, -1);
-        [RelayCommand] private void MoveSampleDown() => Move(SampleRows, SelectedSample, 1);
+        [RelayCommand(CanExecute = nameof(HasSelectedSample))] private void DeleteSample() => Remove(SampleRows, SelectedSample);
+        [RelayCommand(CanExecute = nameof(HasSelectedSample))] private void MoveSampleUp() => Move(SampleRows, SelectedSample, -1);
+        [RelayCommand(CanExecute = nameof(HasSelectedSample))] private void MoveSampleDown() => Move(SampleRows, SelectedSample, 1);
 
         private static void Remove<T>(ObservableCollection<T> list, T? item) where T : class
         {
@@ -333,27 +357,27 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         [RelayCommand]
         private void BrowseLevelFile()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseLevelFileTitle"], LevelSettingsData.FileFormatsLevel, null, true), nameof(LevelFilePath), v => LevelFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseLevelFileTitle"], LevelSettingsData.FileFormatsLevel, null, true), v => LevelFilePath = v);
 
         [RelayCommand]
         private void BrowseGameDirectory()
-            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.GameDirectory, _localizationService["BrowseGameDirectoryTitle"], VariableType.LevelDirectory), nameof(GameDirectory), v => GameDirectory = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.GameDirectory, _localizationService["BrowseGameDirectoryTitle"], VariableType.LevelDirectory), v => GameDirectory = v);
 
         [RelayCommand]
         private void BrowseGameLevelFile()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameLevelFilePath, _localizationService["BrowseGameLevelFileTitle"], LevelSettingsData.FileFormatsLevelCompiled, VariableType.GameDirectory, true), nameof(GameLevelFilePath), v => GameLevelFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameLevelFilePath, _localizationService["BrowseGameLevelFileTitle"], LevelSettingsData.FileFormatsLevelCompiled, VariableType.GameDirectory, true), v => GameLevelFilePath = v);
 
         [RelayCommand]
         private void BrowseGameExecutable()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameExecutableFilePath, _localizationService["BrowseGameExecutableTitle"], new[] { new FileFormat("Windows executables", "exe") }, VariableType.GameDirectory, false), nameof(GameExecutableFilePath), v => GameExecutableFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameExecutableFilePath, _localizationService["BrowseGameExecutableTitle"], new[] { new FileFormat("Windows executables", "exe") }, VariableType.GameDirectory, false), v => GameExecutableFilePath = v);
 
         [RelayCommand]
         private void BrowseScript()
-            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.ScriptDirectory, _localizationService["BrowseScriptTitle"], VariableType.LevelDirectory), nameof(ScriptDirectory), v => ScriptDirectory = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.ScriptDirectory, _localizationService["BrowseScriptTitle"], VariableType.LevelDirectory), v => ScriptDirectory = v);
 
         [RelayCommand]
         private void BrowseLua()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.TenLuaScriptFile, _localizationService["BrowseLuaTitle"], new[] { new FileFormat("Lua script", "lua") }, VariableType.LevelDirectory, false), nameof(TenLuaScriptFile), v => TenLuaScriptFile = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.TenLuaScriptFile, _localizationService["BrowseLuaTitle"], new[] { new FileFormat("Lua script", "lua") }, VariableType.LevelDirectory, false), v => TenLuaScriptFile = v);
 
         [RelayCommand]
         private void BrowseFont() => BrowseResource(() => _settings.FontTextureFilePath, p => _settings.FontTextureFilePath = p, _localizationService["BrowseFontTitle"], nameof(FontTextureFilePath), nameof(FontUseCustom));
@@ -408,7 +432,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         public ObservableCollection<ImportedGeometryRow> ImportedGeometries { get; } = new();
 
-        [ObservableProperty] private ImportedGeometryRow? _selectedImportedGeometry;
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteImportedGeometryCommand))]
+        private ImportedGeometryRow? _selectedImportedGeometry;
+
+        public bool HasSelectedImportedGeometry => SelectedImportedGeometry != null;
 
         [RelayCommand]
         private void AddImportedGeometry()
@@ -441,7 +469,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 ImportedGeometries.Add(new ImportedGeometryRow(_settings, entry.Key));
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedImportedGeometry))]
         private void DeleteImportedGeometry()
         {
             if (SelectedImportedGeometry == null)
@@ -633,7 +661,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
             return true;
         }
 
-        private static void SetIfBrowsed(string? result, string propertyName, System.Action<string> apply)
+        private static void SetIfBrowsed(string? result, System.Action<string> apply)
         {
             if (result != null)
                 apply(result);

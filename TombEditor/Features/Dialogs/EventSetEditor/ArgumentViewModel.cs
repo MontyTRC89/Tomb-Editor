@@ -108,11 +108,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (_layout.Type is not (ArgumentType.Numerical or ArgumentType.Vector2 or ArgumentType.Vector3) || custom.Count < 2)
                 return;
 
-            if (float.TryParse(custom[0], out float min)) Minimum = min;
-            if (float.TryParse(custom[1], out float max)) Maximum = max;
+            // Catalogue values are written with invariant decimal points, so parse them culture-independently.
+            if (float.TryParse(custom[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float min)) Minimum = min;
+            if (float.TryParse(custom[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float max)) Maximum = max;
             if (custom.Count >= 3 && int.TryParse(custom[2], out int dec)) DecimalPlaces = dec;
-            if (custom.Count >= 4 && float.TryParse(custom[3], out float step1)) Increment = step1;
-            if (custom.Count >= 5 && float.TryParse(custom[4], out float step2)) LargeIncrement = step2;
+            if (custom.Count >= 4 && float.TryParse(custom[3], NumberStyles.Float, CultureInfo.InvariantCulture, out float step1)) Increment = step1;
+            if (custom.Count >= 5 && float.TryParse(custom[4], NumberStyles.Float, CultureInfo.InvariantCulture, out float step2)) LargeIncrement = step2;
         }
 
         // Boolean.
@@ -279,7 +280,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             _arguments[_index] = argument;
         }
 
-        private static string F(double value) => ((float)value).ToString();
+        // Lua scripts require invariant decimal points, so never serialize with the current culture.
+        private static string F(double value) => ((float)value).ToString(CultureInfo.InvariantCulture);
 
         // Unboxing (model Lua string -> view).
 
@@ -291,7 +293,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 switch (Kind)
                 {
                     case ArgumentEditorKind.Boolean:
-                        if (float.TryParse(source, out float bf))
+                        if (float.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out float bf))
                             BoolValue = bf != 0.0f;
                         else if (bool.TryParse(source, out bool bb))
                             BoolValue = bb;
@@ -303,7 +305,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                         double n;
                         if (bool.TryParse(source, out bool pb))
                             n = pb ? 1.0 : 0.0;
-                        else if (!double.TryParse(source, out n))
+                        else if (!double.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out n))
                             n = 0.0;
                         NumValue = Clamp(Math.Round(n, DecimalPlaces));
                         break;
@@ -361,7 +363,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                                 float index;
                                 if (bool.TryParse(source, out bool pv))
                                     index = pv ? 1 : 0;
-                                else if (!float.TryParse(source, out index))
+                                else if (!float.TryParse(source, NumberStyles.Float, CultureInfo.InvariantCulture, out index))
                                     index = -1;
 
                                 if (index >= 0 && index < Items.Count)
@@ -397,7 +399,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private static double[] UnboxVector(string source)
         {
             return source.Split(new[] { LuaSyntax.Separator }, StringSplitOptions.None)
-                .Select(x => double.TryParse(x.Trim(), out double r) ? r : 0.0)
+                .Select(x => double.TryParse(x.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double r) ? r : 0.0)
                 .ToArray();
         }
     }

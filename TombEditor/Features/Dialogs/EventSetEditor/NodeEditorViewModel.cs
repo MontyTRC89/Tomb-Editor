@@ -50,6 +50,16 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 node.IsSelected = node == value;
 
             OnPropertyChanged(nameof(HasSelectedNode));
+            RefreshCommandStates();
+        }
+
+        private void RefreshCommandStates()
+        {
+            RenameSelectedCommand.NotifyCanExecuteChanged();
+            ColorSelectedCommand.NotifyCanExecuteChanged();
+            LockSelectedCommand.NotifyCanExecuteChanged();
+            DeleteSelectedNodeCommand.NotifyCanExecuteChanged();
+            ExportSelectedCommand.NotifyCanExecuteChanged();
         }
 
         /// <summary>Asks the view to scroll the given node into view (a purely visual concern).</summary>
@@ -217,7 +227,6 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         // Clipboard (shared across events/instances within the session).
 
         private static List<TriggerNode>? _clipboard;
-        public bool CanPaste => _clipboard != null && _clipboard.Count > 0;
 
         public void CopySelected(bool cut)
         {
@@ -250,7 +259,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedNode = Nodes.LastOrDefault();
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedNode))]
         private void DeleteSelectedNode()
         {
             if (SelectedNode == null)
@@ -299,18 +308,18 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         // --- Node-action toolbar commands (operate on the last selected node) ---
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedNode))]
         private void RenameSelected()
         {
             if (SelectedNode is not { } node)
                 return;
 
-            var inputBox = new InputBoxWindowViewModel(title: _localizationService["RenameNodeTitle"], label: _localizationService["RenameNodeLabel"], placeholder: node.Title);
+            var inputBox = new InputBoxWindowViewModel(title: _localizationService["RenameNodeTitle"], label: _localizationService["RenameNodeLabel"], initialValue: node.Title);
             if (_dialogService.ShowDialog(this, inputBox) == true)
                 node.Title = inputBox.Value;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedNode))]
         private void ColorSelected()
         {
             if (SelectedNode is { } node)
@@ -340,14 +349,14 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             (byte)Math.Clamp(Math.Round(color.Y * 255.0), 0.0, 255.0),
             (byte)Math.Clamp(Math.Round(color.Z * 255.0), 0.0, 255.0));
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedNode))]
         private void LockSelected()
         {
             if (SelectedNode is { } node)
                 node.IsLocked = !node.IsLocked;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedNode))]
         private void ExportSelected() => CopySelected(false);
 
         /// <summary>Removes every node in the event (the "Clear" toolbar action).</summary>

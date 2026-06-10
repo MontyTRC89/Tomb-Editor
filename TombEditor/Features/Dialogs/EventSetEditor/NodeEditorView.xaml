@@ -192,17 +192,14 @@
 			<Button
 				Command="{Binding RenameSelectedCommand}"
 				Content="{tombLib:Localize Rename}"
-				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="{tombLib:Localize RenameTooltip}" />
 			<Button
 				Command="{Binding ColorSelectedCommand}"
 				Content="{tombLib:Localize Colour}"
-				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="{tombLib:Localize ColourTooltip}" />
 			<Button
 				Command="{Binding LockSelectedCommand}"
 				Content="{tombLib:Localize Lock}"
-				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="{tombLib:Localize LockTooltip}" />
 			<Button
 				Command="{Binding DeleteSelectedNodeCommand}"
@@ -211,7 +208,6 @@
 			<Button
 				Command="{Binding ExportSelectedCommand}"
 				Content="{tombLib:Localize Export}"
-				IsEnabled="{Binding HasSelectedNode}"
 				ToolTip="{tombLib:Localize ExportTooltip}" />
 			<Button
 				Command="{Binding ClearNodesCommand}"
