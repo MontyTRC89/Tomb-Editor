@@ -49,6 +49,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	private readonly bool _autoCloseWhenDone;
 	private readonly CancellationTokenSource _cts = new();
 	private readonly Dispatcher _dispatcher;
+	private readonly ILocalizationService _localizationService;
 
 	private Task? _task;
 	private IntPtr _hwnd = IntPtr.Zero;
@@ -75,7 +76,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		_autoCloseWhenDone = autoCloseWhenDone;
 		IsProgressVisible = !noProgressBar;
 		_operation = operation;
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 		_dispatcher = Dispatcher.CurrentDispatcher;
 	}
 
@@ -112,7 +113,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 			OnFailure(ex);
 			_logger.Error(ex, "Operation failed: " + Title);
 
-			string message = "There was an error. Message: " + ex.Message;
+			string message = _localizationService.Format("ErrorMessage", ex.Message);
 			if (ex.InnerException is not null)
 				message += " : " + ex.InnerException.Message;
 
@@ -222,7 +223,7 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	{
 		_cts.Cancel();
 		DialogResult = false;
-		AppendLine("Stopping the process...", ErrorRowBrush);
+		AppendLine(_localizationService["StoppingProcess"], ErrorRowBrush);
 	}
 
 	/// <summary>Called by the View when the user attempts to close while running.</summary>
