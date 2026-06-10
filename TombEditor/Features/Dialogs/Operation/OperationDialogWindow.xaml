@@ -37,7 +37,7 @@
 		</Grid.RowDefinitions>
 
 		<ListBox
-			x:Name="LogList"
+			x:Name="logList"
 			Grid.Row="0"
 			AlternationCount="0"
 			Background="{Binding LogBackground}"
@@ -75,18 +75,16 @@
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 			<Button
-				x:Name="OkButton"
+				x:Name="okButton"
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
 				Command="{Binding OkCommand}"
 				Content="{tombLib:Localize ~Common.OK}"
-				IsDefault="True"
-				IsEnabled="{Binding IsOkEnabled}" />
+				IsDefault="True" />
 			<Button
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
 				Command="{Binding CancelCommand}"
 				Content="{tombLib:Localize ~Common.Cancel}"
-				IsCancel="True"
-				IsEnabled="{Binding IsCancelEnabled}" />
+				IsCancel="True" />
 		</controls:SpacedStack>
 	</controls:SpacedGrid>
 </Window>

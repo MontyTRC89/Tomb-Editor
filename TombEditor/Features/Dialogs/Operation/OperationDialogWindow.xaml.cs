@@ -46,8 +46,8 @@ public partial class OperationDialogWindow : Window
     // Match the legacy lstLog.ScrollToCaret(): auto-scroll on new log entry.
     private void OnLogChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.Action == NotifyCollectionChangedAction.Add && LogList.Items.Count > 0)
-            LogList.ScrollIntoView(LogList.Items[LogList.Items.Count - 1]);
+        if (e.Action == NotifyCollectionChangedAction.Add && logList.Items.Count > 0)
+            logList.ScrollIntoView(logList.Items[logList.Items.Count - 1]);
     }
 
     // Match the legacy butOk.Focus(): focus OK as soon as the operation reports success.
@@ -55,6 +55,6 @@ public partial class OperationDialogWindow : Window
     {
         if (e.PropertyName == nameof(OperationDialogWindowViewModel.IsOkEnabled)
             && DataContext is OperationDialogWindowViewModel { IsOkEnabled: true })
-            OkButton.Focus();
+            okButton.Focus();
     }
 }

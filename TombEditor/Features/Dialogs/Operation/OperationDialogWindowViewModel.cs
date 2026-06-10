@@ -59,8 +59,8 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 	[ObservableProperty] private string _title = string.Empty;
 	[ObservableProperty] private bool _isProgressVisible = true;
 	[ObservableProperty] private int _progress;
-	[ObservableProperty] private bool _isOkEnabled;
-	[ObservableProperty] private bool _isCancelEnabled = true;
+	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(OkCommand))] private bool _isOkEnabled;
+	[ObservableProperty, NotifyCanExecuteChangedFor(nameof(CancelCommand))] private bool _isCancelEnabled = true;
 	[ObservableProperty] private Brush _logBackground = DefaultLogBrush;
 
 	public ObservableCollection<LogEntry> LogEntries { get; } = new();
@@ -205,10 +205,10 @@ public partial class OperationDialogWindowViewModel : ObservableObject, IModalDi
 		GraphicalDialogHandler.HandleDialog(description, owner);
 	}
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(IsOkEnabled))]
 	private void Ok() => DialogResult = true;
 
-	[RelayCommand]
+	[RelayCommand(CanExecute = nameof(IsCancelEnabled))]
 	private void Cancel()
 	{
 		if (_task is not null && _task.Status >= TaskStatus.RanToCompletion)

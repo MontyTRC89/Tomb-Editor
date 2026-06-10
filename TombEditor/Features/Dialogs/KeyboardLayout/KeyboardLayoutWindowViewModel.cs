@@ -100,9 +100,11 @@ public partial class KeyboardLayoutWindowViewModel : ObservableObject, IModalDia
 		IsListening = true;
 	}
 
-	public void StartListeningReplace(HotkeyRow row)
+	// Legacy double-click-on-row behaviour: replace all hotkeys of the command with the new one.
+	[RelayCommand]
+	private void StartListeningReplace(HotkeyRow? row)
 	{
-		if (IsListening)
+		if (row is null || IsListening)
 			return;
 
 		_listeningTarget = row;

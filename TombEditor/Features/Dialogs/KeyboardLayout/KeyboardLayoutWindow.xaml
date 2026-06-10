@@ -68,7 +68,6 @@
 
 		<Grid Grid.Row="1">
 			<DataGrid
-				x:Name="grid"
 				AutoGenerateColumns="False"
 				CanUserAddRows="False"
 				CanUserDeleteRows="False"
@@ -76,6 +75,14 @@
 				ItemsSource="{Binding Rows}"
 				SelectedItem="{Binding SelectedRow, Mode=TwoWay}"
 				SelectionMode="Single">
+				<DataGrid.InputBindings>
+					<!--  Legacy double-click behaviour: listen for a hotkey that replaces the row's existing ones.
+						The grid is disabled while listening, so this cannot re-trigger mid-capture.  -->
+					<MouseBinding
+						Command="{Binding StartListeningReplaceCommand}"
+						CommandParameter="{Binding SelectedRow}"
+						MouseAction="LeftDoubleClick" />
+				</DataGrid.InputBindings>
 				<DataGrid.Columns>
 					<DataGridTextColumn
 						Width="80"
@@ -119,6 +126,7 @@
 					<Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding IsConflicting}" Value="True">
+								<!--  Hardcoded: DarkUI has no semantic error-background brush.  -->
 								<Setter Property="Background" Value="#80331111" />
 							</DataTrigger>
 						</Style.Triggers>
@@ -126,6 +134,8 @@
 				</DataGrid.RowStyle>
 			</DataGrid>
 
+			<!--  Hardcoded colours: DarkUI has no semantic success-background brush, and the text must
+				stay white over the fixed DarkGreen backdrop regardless of the active theme.  -->
 			<Border
 				Background="DarkGreen"
 				BorderBrush="{DynamicResource Brush_Border}"
