@@ -8,9 +8,7 @@ using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
-using TombLib.Forms;
 using TombLib.Forms.ViewModels;
-using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -33,6 +31,8 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
     {
         private readonly ImportedGeometryInstance _instance;
         private readonly IMessageService _messageService;
+        private readonly IDialogService _dialogService;
+        private readonly IColorPickerService _colorPickerService;
         private readonly Vector3 _oldColor;
         private ImportedGeometry.UniqueIDType? _currentModel;
 
@@ -54,10 +54,22 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
 
         public bool IsTombEngine => OldLevelSettings.GameVersion == TRVersion.Game.TombEngine;
 
-        public ImportedGeometryWindowViewModel(ImportedGeometryInstance instance, LevelSettingsData levelSettings)
+        /// <summary>
+        /// Raised when the user requests the material editor for the assigned model.
+        /// The view handles this by showing the WinForms material editor.
+        /// </summary>
+        public event EventHandler<ImportedGeometry>? EditMaterialsRequested;
+
+        public ImportedGeometryWindowViewModel(
+            ImportedGeometryInstance instance,
+            LevelSettingsData levelSettings,
+            IDialogService? dialogService = null,
+            IColorPickerService? colorPickerService = null)
         {
             _instance = instance;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
+            _dialogService = ServiceLocator.ResolveService(dialogService);
+            _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
 
             OldLevelSettings = levelSettings;
             NewLevelSettings = levelSettings.Clone();
@@ -107,11 +119,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
                 var ioViewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
                 ioViewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
 
-                var ioDialog = new GeometryIOSettingsWindow { DataContext = ioViewModel };
-                ioDialog.SetOwner(Owner);
-                ioDialog.ShowDialog();
-
-                if (ioViewModel.DialogResult != true)
+                if (_dialogService.ShowDialog(this, ioViewModel) != true)
                     continue;
 
                 if (config != null)
@@ -142,7 +150,37 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         [RelayCommand]
         private void PickColor()
         {
-            EditorActions.EditColor(Owner, _instance, newColor => Color = newColor.ToWPFColor());
+            // Mirrors EditorActions.EditColor: realtime preview on the instance while the dialog
+            // is open, selection temporarily hidden, undo pushed only when the user confirms.
+            var editor = Editor.Instance;
+            Vector3 oldColor = _instance.Color;
+
+            editor.ToggleHiddenSelection(true);
+
+            Vector3? pickedColor = _colorPickerService.PickColor(oldColor * 0.5f, c =>
+            {
+                _instance.Color = c * 2.0f;
+                editor.ObjectChange(_instance, ObjectChangeType.Change);
+            });
+
+            editor.ToggleHiddenSelection(false);
+
+            if (pickedColor == null)
+            {
+                // Cancelled: roll back any realtime preview changes.
+                _instance.Color = oldColor;
+                editor.ObjectChange(_instance, ObjectChangeType.Change);
+                Color = (oldColor * 0.5f).ToWPFColor();
+                return;
+            }
+
+            // Confirmed: push undo against the original color, then apply the picked one.
+            _instance.Color = oldColor;
+            editor.UndoManager.PushObjectPropertyChanged(_instance);
+
+            _instance.Color = pickedColor.Value * 2.0f;
+            editor.ObjectChange(_instance, ObjectChangeType.Change);
+            Color = pickedColor.Value.ToWPFColor();
         }
 
         [RelayCommand]
@@ -161,8 +199,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
                 return;
             }
 
-            using var form = new FormMaterialEditor(model.Textures, Editor.Instance.Configuration);
-            form.ShowDialog();
+            EditMaterialsRequested?.Invoke(this, model);
         }
 
         [RelayCommand]
