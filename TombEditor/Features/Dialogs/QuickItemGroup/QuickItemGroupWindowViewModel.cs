@@ -16,18 +16,21 @@ public partial class QuickItemGroupWindowViewModel : ObservableObject, IModalDia
 {
     public sealed record QuickItem(IWadObjectId Id, string DisplayText);
 
-
     [ObservableProperty] private bool? _dialogResult;
-    [ObservableProperty] private QuickItem? _selectedItem;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
+    private QuickItem? _selectedItem;
 
     public IReadOnlyList<QuickItem> Items { get; }
 
     public IWadObjectId? SelectedValue => SelectedItem?.Id;
 
     public QuickItemGroupWindowViewModel(
-        Editor editor,
+        Editor? editor = null,
         ILocalizationService? localizationService = null)
     {
+        editor ??= Editor.Instance;
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         var settings = editor.Level.Settings;
@@ -44,7 +47,9 @@ public partial class QuickItemGroupWindowViewModel : ObservableObject, IModalDia
         SelectedItem = Items.FirstOrDefault();
     }
 
-    [RelayCommand]
+    private bool CanConfirm() => SelectedItem is not null;
+
+    [RelayCommand(CanExecute = nameof(CanConfirm))]
     private void Confirm()
     {
         DialogResult = true;

@@ -42,8 +42,10 @@
 			Grid.Row="0"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="{tombLib:Localize GlideTimer}" />
+			Content="{tombLib:Localize GlideTimer}"
+			Target="{Binding ElementName=glideTimerNumericUpDown}" />
 		<controls:NumericUpDown
+			x:Name="glideTimerNumericUpDown"
 			Grid.Row="0"
 			Grid.Column="1"
 			VerticalAlignment="Center"
@@ -65,8 +67,10 @@
 			Grid.Row="1"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="{tombLib:Localize Mode}" />
+			Content="{tombLib:Localize Mode}"
+			Target="{Binding ElementName=modeComboBox}" />
 		<ComboBox
+			x:Name="modeComboBox"
 			Grid.Row="1"
 			Grid.Column="1"
 			Grid.ColumnSpan="2"

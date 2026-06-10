@@ -66,7 +66,7 @@
 					Content="{tombLib:Localize Search}" />
 
 				<ListBox
-					x:Name="SoundList"
+					x:Name="soundList"
 					Grid.Row="1"
 					Grid.Column="0"
 					Grid.ColumnSpan="2"
@@ -93,8 +93,10 @@
 					<Label
 						Grid.Column="0"
 						VerticalAlignment="Center"
-						Content="{tombLib:Localize PlayMode}" />
+						Content="{tombLib:Localize PlayMode}"
+						Target="{Binding ElementName=playModeComboBox}" />
 					<ComboBox
+						x:Name="playModeComboBox"
 						Grid.Column="1"
 						Margin="{x:Static darkUI:Defaults.SmallThickness}"
 						VerticalAlignment="Center"

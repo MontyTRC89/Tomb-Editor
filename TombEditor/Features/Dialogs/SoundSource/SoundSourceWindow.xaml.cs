@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.ComponentModel;
 using System.Windows;
 using TombLib.WPF;
@@ -13,6 +14,7 @@ public partial class SoundSourceWindow : Window
         InitializeComponent();
         this.HookModalAutoClose();
         Loaded += OnLoaded;
+        Closed += OnClosed;
     }
 
     // Match legacy OnShown lstSounds.EnsureVisible(): scroll the current selection
@@ -21,7 +23,17 @@ public partial class SoundSourceWindow : Window
     {
         ScrollToSelection();
         if (DataContext is INotifyPropertyChanged vm)
+        {
+            // Unsubscribe first so a repeated Loaded never double-subscribes.
+            vm.PropertyChanged -= OnVmPropertyChanged;
             vm.PropertyChanged += OnVmPropertyChanged;
+        }
+    }
+
+    private void OnClosed(object? sender, EventArgs e)
+    {
+        if (DataContext is INotifyPropertyChanged vm)
+            vm.PropertyChanged -= OnVmPropertyChanged;
     }
 
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -32,7 +44,7 @@ public partial class SoundSourceWindow : Window
 
     private void ScrollToSelection()
     {
-        if (SoundList.SelectedItem is not null)
-            SoundList.ScrollIntoView(SoundList.SelectedItem);
+        if (soundList.SelectedItem is not null)
+            soundList.ScrollIntoView(soundList.SelectedItem);
     }
 }

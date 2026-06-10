@@ -40,8 +40,10 @@
 			Grid.Row="0"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="{tombLib:Localize Effect}" />
+			Content="{tombLib:Localize Effect}"
+			Target="{Binding ElementName=effectComboBox}" />
 		<ComboBox
+			x:Name="effectComboBox"
 			Grid.Row="0"
 			Grid.Column="1"
 			VerticalAlignment="Center"

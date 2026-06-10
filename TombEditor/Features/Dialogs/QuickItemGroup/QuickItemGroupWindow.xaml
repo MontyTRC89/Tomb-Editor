@@ -45,12 +45,12 @@
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 			<Button
-				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+				Width="80"
 				Command="{Binding ConfirmCommand}"
 				Content="{tombLib:Localize ~Common.OK}"
 				IsDefault="True" />
 			<Button
-				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
+				Width="80"
 				Command="{Binding CancelCommand}"
 				Content="{tombLib:Localize ~Common.Cancel}"
 				IsCancel="True" />

@@ -39,8 +39,10 @@
 			Grid.Row="0"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="{tombLib:Localize Strength}" />
+			Content="{tombLib:Localize Strength}"
+			Target="{Binding ElementName=strengthNumericUpDown}" />
 		<controls:NumericUpDown
+			x:Name="strengthNumericUpDown"
 			Grid.Row="0"
 			Grid.Column="1"
 			VerticalAlignment="Center"
