@@ -39,11 +39,9 @@ public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialo
     [ObservableProperty] private Vector2 _destinationStart = Vector2.Zero;
     [ObservableProperty] private float _scaling = 1.0f;
 
-    [ObservableProperty] private bool _untextureCompletely;
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDestinationPanelEnabled))]
-    private bool _untextureCompletelyEnabled = true;
+    private bool _untextureCompletely;
 
     [ObservableProperty] private bool _restrictToSelectedRooms;
     [ObservableProperty] private bool _remapAnimTextures;
