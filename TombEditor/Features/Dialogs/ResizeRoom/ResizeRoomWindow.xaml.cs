@@ -17,6 +17,16 @@ public partial class ResizeRoomWindow : Window
 
         gridHost.Child = _gridControl;
         DataContextChanged += OnDataContextChanged;
+        Closed += OnClosed;
+    }
+
+    private void OnClosed(object? sender, System.EventArgs e)
+    {
+        if (DataContext is ResizeRoomWindowViewModel vm)
+        {
+            vm.AreaChanged -= OnAreaChanged;
+            vm.PropertyChanged -= OnViewModelPropertyChanged;
+        }
     }
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

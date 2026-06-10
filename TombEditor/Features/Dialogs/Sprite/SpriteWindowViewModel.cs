@@ -24,7 +24,7 @@ public partial class SpriteWindowViewModel : ObservableObject, IModalDialogViewM
 
 	public ObservableCollection<string> Sprites { get; } = new();
 
-	/// <summary>Index used by the WinForms preview panel. -1 → empty.</summary>
+	/// <summary>Index used by the WinForms preview panel. Negative values are clamped to 0.</summary>
 	public int PreviewSpriteIndex => SelectedSpriteIndex < 0 ? 0 : SelectedSpriteIndex;
 
 	public SpriteWindowViewModel(SpriteInstance instance, ILocalizationService? localizationService = null)

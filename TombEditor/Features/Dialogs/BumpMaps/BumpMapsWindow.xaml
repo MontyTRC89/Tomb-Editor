@@ -9,13 +9,12 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
-	xmlns:vm="clr-namespace:TombEditor.Features.Dialogs.BumpMaps"
 	Title="{tombLib:Localize Title}"
 	Width="440"
 	Height="600"
 	MinWidth="380"
 	MinHeight="420"
-	d:DataContext="{d:DesignInstance Type=vm:BumpMapsWindowViewModel}"
+	d:DataContext="{d:DesignInstance Type=local:BumpMapsWindowViewModel}"
 	md:DialogServiceViews.IsRegistered="True"
 	Background="{DynamicResource Brush_Background}"
 	ShowInTaskbar="False"
@@ -40,7 +39,7 @@
 			ItemsSource="{Binding Textures}"
 			SelectedItem="{Binding SelectedTexture, Mode=TwoWay}" />
 
-		<local:BumpMapsTextureMapView x:Name="MapView" Grid.Row="1" />
+		<local:BumpMapsTextureMapView x:Name="mapView" Grid.Row="1" />
 
 		<controls:SpacedGrid
 			Grid.Row="2"

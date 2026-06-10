@@ -45,7 +45,7 @@ public partial class ImportPrjWindowViewModel : ObservableObject, IModalDialogVi
         var settings = new OpenFileDialogSettings
         {
             Title = _localizationService["BrowseSoundsTitle"],
-            Filter = "Sound catalogs|*.xml;*.txt|All files|*.*",
+            Filter = _localizationService["SoundCatalogsFilter"],
             CheckFileExists = true
         };
 

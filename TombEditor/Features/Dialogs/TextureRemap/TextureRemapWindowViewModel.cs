@@ -319,6 +319,6 @@ public partial class TextureRemapWindowViewModel : ObservableObject, IModalDialo
     [RelayCommand]
     private void Close()
     {
-        DialogResult = true;
+        DialogResult = false;
     }
 }

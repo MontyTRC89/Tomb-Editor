@@ -61,7 +61,6 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     public IReadOnlyList<DofModeItem> DofModes { get; }
 
     public bool IsTombEngine { get; }
-    public bool IsCompactLayout { get; }
     public bool HasChanges { get; private set; }
 
     public FlybyCameraWindowViewModel(
@@ -74,7 +73,6 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         IsTombEngine = _editor.Level.IsTombEngine;
-        IsCompactLayout = _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR3;
 
         _originalFlags = flyByCamera.Flags;
         _originalSequence = flyByCamera.Sequence;
@@ -132,10 +130,7 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
             string label = GetBitLabel(i);
             bool isChecked = FlybySequenceHelper.GetFlagBit(_flyByCamera.Flags, i);
 
-            var bit = new FlybyFlagBitViewModel(i, label, isChecked);
-            bit.PropertyChanged += (_, _) => OnFlagBitChanged();
-
-            Flags.Add(bit);
+            Flags.Add(new FlybyFlagBitViewModel(i, label, isChecked));
         }
     }
 
@@ -164,11 +159,6 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
     partial void OnDofRangeChanged(decimal value) => PreviewParameterChanged();
     partial void OnDofStrengthChanged(decimal value) => PreviewParameterChanged();
     partial void OnSelectedDofModeChanged(DofModeItem value) => PreviewParameterChanged();
-
-    private void OnFlagBitChanged()
-    {
-        // Flag bits don't drive the live preview, but propagate so HasChanges is consistent.
-    }
 
     private void PreviewParameterChanged()
     {

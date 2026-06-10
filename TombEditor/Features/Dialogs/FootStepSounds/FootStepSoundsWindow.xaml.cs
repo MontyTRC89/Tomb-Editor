@@ -26,13 +26,13 @@ public partial class FootStepSoundsWindow : Window
         {
             vm.RequestResetVisibleTexture += OnResetVisible;
             vm.RequestInvalidate += OnInvalidate;
-            MapView.ResetVisibleTexture(vm.SelectedTexture);
+            mapView.ResetVisibleTexture(vm.SelectedTexture);
         }
     }
 
     private void OnResetVisible(object? sender, TombLib.LevelData.LevelTexture? texture)
-        => MapView.ResetVisibleTexture(texture);
+        => mapView.ResetVisibleTexture(texture);
 
     private void OnInvalidate(object? sender, System.EventArgs e)
-        => MapView.InvalidateVisual();
+        => mapView.InvalidateVisual();
 }

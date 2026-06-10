@@ -22,7 +22,6 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
-    private bool _disposed;
 
     [ObservableProperty] private bool? _dialogResult;
 
@@ -151,12 +150,5 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     private void Confirm()
     {
         DialogResult = true;
-    }
-
-    public void Cleanup()
-    {
-        if (_disposed)
-            return;
-        _disposed = true;
     }
 }
