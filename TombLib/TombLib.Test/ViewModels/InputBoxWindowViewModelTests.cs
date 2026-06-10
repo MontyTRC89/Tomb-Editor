@@ -45,13 +45,13 @@ public class InputBoxWindowViewModelTests
 	private InputBoxWindowViewModel CreateViewModel(
 		string? title = null,
 		string? label = null,
-		string? placeholder = null,
+		string? initialValue = null,
 		IEnumerable<string>? invalidNames = null)
 	{
 		return new InputBoxWindowViewModel(
 			title,
 			label,
-			placeholder,
+			initialValue,
 			invalidNames,
 			_mockMessageService.Object,
 			_mockLocalizationService.Object
@@ -104,16 +104,16 @@ public class InputBoxWindowViewModelTests
 	}
 
 	[TestMethod]
-	public void Constructor_WithPlaceholder_SetsValue()
+	public void Constructor_WithInitialValue_SetsValue()
 	{
 		// Arrange
-		const string placeholder = "Test Placeholder";
+		const string initialValue = "Test Initial Value";
 
 		// Act
-		var viewModel = CreateViewModel(placeholder: placeholder);
+		var viewModel = CreateViewModel(initialValue: initialValue);
 
 		// Assert
-		Assert.AreEqual(placeholder, viewModel.Value);
+		Assert.AreEqual(initialValue, viewModel.Value);
 		Assert.IsTrue(viewModel.IsValueNotEmpty);
 	}
 
