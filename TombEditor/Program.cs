@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
+using TombLib.Forms.Services;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Services;
@@ -18,6 +19,7 @@ using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor
 {
@@ -76,6 +78,7 @@ namespace TombEditor
 
             var services = WPFInitializer.InitializeWPF(configuration.UI_WpfTheme);
             services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            services.AddSingleton<IColorPickerService>(_ => new ColorPickerService(() => configuration.UI_ColorScheme));
             ServiceLocator.Configure(services.BuildServiceProvider());
 
             if (configuration.Editor_AllowMultipleInstances || doBatchCompile ||
