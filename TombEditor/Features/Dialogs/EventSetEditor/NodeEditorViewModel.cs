@@ -31,6 +31,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly IDialogService _dialogService;
         private readonly IMessageService _messageService;
         private readonly IColorPickerService _colorPickerService;
+        private readonly ILocalizationService _localizationService;
 
         public IReadOnlyList<NodeFunction> Functions { get; }
         public ObservableCollection<NodeViewModel> Nodes { get; } = new();
@@ -65,7 +66,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double CanvasHeight => _gridSize * _gridStep;
 
         public NodeEditorViewModel(TombLib.LevelData.Event evt, IReadOnlyList<NodeFunction> functions, ArgumentDataProvider provider, int gridSize, double gridStep,
-            IDialogService? dialogService = null, IMessageService? messageService = null, IColorPickerService? colorPickerService = null)
+            IDialogService? dialogService = null, IMessageService? messageService = null, IColorPickerService? colorPickerService = null,
+            ILocalizationService? localizationService = null)
         {
             _event = evt;
             Functions = functions;
@@ -75,6 +77,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             _dialogService = ServiceLocator.ResolveService(dialogService);
             _messageService = ServiceLocator.ResolveService(messageService);
             _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
+            _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
             // Group the function picker by Section (the default view is shared, so add only once).
             var functionsView = System.Windows.Data.CollectionViewSource.GetDefaultView(Functions);
@@ -124,8 +127,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 return;
 
             TriggerNode node = FunctionToAdd.Conditional
-                ? new TriggerNodeCondition { Name = "If " + (Nodes.Count(n => n.IsCondition) + 1) }
-                : new TriggerNodeAction { Name = "Action " + (Nodes.Count(n => !n.IsCondition) + 1) };
+                ? new TriggerNodeCondition { Name = _localizationService.Format("IfNodeName", Nodes.Count(n => n.IsCondition) + 1) }
+                : new TriggerNodeAction { Name = _localizationService.Format("ActionNodeName", Nodes.Count(n => !n.IsCondition) + 1) };
 
             node.Size = TriggerNode.DefaultSize;
             node.Function = FunctionToAdd.Signature;
@@ -150,8 +153,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
             NodeFunction func = request.Function;
             TriggerNode node = func.Conditional
-                ? new TriggerNodeCondition { Name = "If " + (Nodes.Count(n => n.IsCondition) + 1) }
-                : new TriggerNodeAction { Name = "Action " + (Nodes.Count(n => !n.IsCondition) + 1) };
+                ? new TriggerNodeCondition { Name = _localizationService.Format("IfNodeName", Nodes.Count(n => n.IsCondition) + 1) }
+                : new TriggerNodeAction { Name = _localizationService.Format("ActionNodeName", Nodes.Count(n => !n.IsCondition) + 1) };
 
             node.Size = TriggerNode.DefaultSize;
             node.Function = func.Signature;
@@ -302,7 +305,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (SelectedNode is not { } node)
                 return;
 
-            var inputBox = new InputBoxWindowViewModel(title: "Rename node", label: "New name:", placeholder: node.Title);
+            var inputBox = new InputBoxWindowViewModel(title: _localizationService["RenameNodeTitle"], label: _localizationService["RenameNodeLabel"], placeholder: node.Title);
             if (_dialogService.ShowDialog(this, inputBox) == true)
                 node.Title = inputBox.Value;
         }
@@ -354,7 +357,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (Nodes.Count == 0)
                 return;
 
-            if (!_messageService.ShowConfirmation("Remove all nodes from this event?", "Clear nodes", isRisky: true))
+            if (!_messageService.ShowConfirmation(_localizationService["ClearNodesMessage"], _localizationService["ClearNodesTitle"], isRisky: true))
                 return;
 
             _event.Nodes = new List<TriggerNode>();
@@ -366,14 +369,14 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         [RelayCommand]
         private void FindNode()
         {
-            var inputBox = new InputBoxWindowViewModel(title: "Find node", label: "Node name:");
+            var inputBox = new InputBoxWindowViewModel(title: _localizationService["FindNodeTitle"], label: _localizationService["FindNodeLabel"]);
             if (_dialogService.ShowDialog(this, inputBox) != true)
                 return;
 
             var node = Nodes.FirstOrDefault(n => string.Equals(n.Title, inputBox.Value, StringComparison.OrdinalIgnoreCase));
             if (node is null)
             {
-                _messageService.ShowInformation("No node named '" + inputBox.Value + "' was found.", "Find node");
+                _messageService.ShowInformation(_localizationService.Format("FindNodeNotFound", inputBox.Value), _localizationService["FindNodeTitle"]);
                 return;
             }
 

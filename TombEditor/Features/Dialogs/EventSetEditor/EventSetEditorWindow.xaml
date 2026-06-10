@@ -50,13 +50,13 @@
 				<TextBlock DockPanel.Dock="Top" Margin="0,0,0,4" Text="{tombLib:Localize EventSets}" />
 				<!--  Management buttons at the top of the list (icon buttons, mirroring the legacy editor).  -->
 				<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-					<Button Command="{Binding NewSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Add new event set">
+					<Button Command="{Binding NewSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize NewSetTooltip}">
 						<Image Source="{tomb:Icon General/plus_math}" />
 					</Button>
-					<Button Command="{Binding CloneSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Copy event set">
+					<Button Command="{Binding CloneSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize CloneSetTooltip}">
 						<Image Source="{tomb:Icon General/copy}" />
 					</Button>
-					<Button Command="{Binding DeleteSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="Delete event set">
+					<Button Command="{Binding DeleteSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
 						<Image Source="{tomb:Icon General/trash}" />
 					</Button>
 					<Button Command="{Binding UnassignSetCommand}" Content="{tombLib:Localize Unassign}" Visibility="{Binding ShowVolumeOptions, Converter={StaticResource BoolToVis}}" />

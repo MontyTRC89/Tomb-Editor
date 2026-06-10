@@ -191,44 +191,44 @@
 			<!--  Node actions (operate on the last selected node).  -->
 			<Button
 				Command="{Binding RenameSelectedCommand}"
-				Content="Rename"
+				Content="{tombLib:Localize Rename}"
 				IsEnabled="{Binding HasSelectedNode}"
-				ToolTip="Rename last selected node" />
+				ToolTip="{tombLib:Localize RenameTooltip}" />
 			<Button
 				Command="{Binding ColorSelectedCommand}"
-				Content="Colour"
+				Content="{tombLib:Localize Colour}"
 				IsEnabled="{Binding HasSelectedNode}"
-				ToolTip="Change colour of last selected node" />
+				ToolTip="{tombLib:Localize ColourTooltip}" />
 			<Button
 				Command="{Binding LockSelectedCommand}"
-				Content="Lock"
+				Content="{tombLib:Localize Lock}"
 				IsEnabled="{Binding HasSelectedNode}"
-				ToolTip="Lock / unlock last selected node" />
+				ToolTip="{tombLib:Localize LockTooltip}" />
 			<Button
 				Command="{Binding DeleteSelectedNodeCommand}"
 				Content="{tombLib:Localize Delete}"
-				ToolTip="Delete last selected node" />
+				ToolTip="{tombLib:Localize DeleteTooltip}" />
 			<Button
 				Command="{Binding ExportSelectedCommand}"
-				Content="Export"
+				Content="{tombLib:Localize Export}"
 				IsEnabled="{Binding HasSelectedNode}"
-				ToolTip="Export node to clipboard" />
+				ToolTip="{tombLib:Localize ExportTooltip}" />
 			<Button
 				Command="{Binding ClearNodesCommand}"
-				Content="Clear"
-				ToolTip="Clear all nodes" />
+				Content="{tombLib:Localize Clear}"
+				ToolTip="{tombLib:Localize ClearTooltip}" />
 			<Button
 				Command="{Binding FindNodeCommand}"
-				Content="Find"
-				ToolTip="Find node by name" />
+				Content="{tombLib:Localize Find}"
+				ToolTip="{tombLib:Localize FindTooltip}" />
 
-			<TextBlock VerticalAlignment="Center" Text="Call count:" />
+			<TextBlock VerticalAlignment="Center" Text="{tombLib:Localize CallCount}" />
 			<controls:NumericUpDown
 				Width="72"
 				DecimalPlaces="0"
 				Maximum="99999"
 				Minimum="0"
-				ToolTip="How many times the event may fire (0 = unlimited)"
+				ToolTip="{tombLib:Localize CallCountTooltip}"
 				Value="{Binding CallCounter, Mode=TwoWay}" />
 		</controls:SpacedStack>
 

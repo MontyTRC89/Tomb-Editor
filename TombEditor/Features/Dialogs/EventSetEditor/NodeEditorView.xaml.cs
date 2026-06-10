@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -114,7 +115,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             var menu = new ContextMenu();
             foreach (var group in System.Linq.Enumerable.GroupBy(ViewModel.Functions, f => f.Section))
             {
-                var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? "Misc" : group.Key };
+                var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? Localizer.Instance["TombEditor.NodeEditor.Misc"] : group.Key };
                 foreach (var function in group)
                 {
                     section.Items.Add(new MenuItem

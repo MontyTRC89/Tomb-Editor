@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
@@ -19,7 +20,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
     /// mirroring the WinForms form). The per-event node graph is, for now, edited by the hosted WinForms
     /// <c>TriggerManager</c>; that area is replaced by a pure-WPF node editor in later steps.
     /// </summary>
-    public partial class EventSetEditorWindowViewModel : ObservableObject
+    public partial class EventSetEditorWindowViewModel : ObservableObject, IModalDialogViewModel
     {
         private readonly Editor _editor;
         private readonly List<EventSet> _usedList;
@@ -33,9 +34,11 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly ILocalizationService _localizationService;
 
         private bool _lockUi;
+        private bool _levelChanged;
         public bool Cancelled { get; private set; }
 
-        public Editor Editor => _editor;
+        [ObservableProperty] private bool? _dialogResult;
+
         public bool GlobalMode { get; }
         public bool GenericMode => GlobalMode || _instance == null;
         public bool ShowVolumeOptions => !GlobalMode;
@@ -83,6 +86,26 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 SelectedSet = _instance!.EventSet;
             else
                 SelectedSet = Sets.FirstOrDefault();
+
+            _editor.EditorEventRaised += OnEditorEventRaised;
+        }
+
+        private void OnEditorEventRaised(IEditorEvent obj)
+        {
+            // The backup we hold belongs to the old level, so a level switch must close without restoring.
+            if (obj is Editor.LevelChangedEvent)
+            {
+                _levelChanged = true;
+                DialogResult = true;
+            }
+            else if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                FollowVolume(_editor.SelectedObject as VolumeInstance);
+            }
+            else if (obj is Editor.EventSetsChangedEvent)
+            {
+                RepopulateSets();
+            }
         }
 
         public bool HasSelectedSet => SelectedSet != null;
@@ -92,7 +115,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             : _localizationService.Format("TitleVolumeSpecific", _instance!.ToShortString());
 
         /// <summary>Follows the editor's 3D selection to another volume (mirrors FormEventSetEditor.ChangeVolume).</summary>
-        public void FollowVolume(VolumeInstance? instance)
+        private void FollowVolume(VolumeInstance? instance)
         {
             if (GlobalMode)
                 return;
@@ -106,7 +129,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         }
 
         /// <summary>Rebuilds the set list after an external change (mirrors FormEventSetEditor on EventSetsChangedEvent).</summary>
-        public void RepopulateSets()
+        private void RepopulateSets()
         {
             if (_repopulating)
                 return;
@@ -327,7 +350,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         [RelayCommand]
         private void NewSet()
         {
-            string name = "New " + (GlobalMode ? "global" : "volume") + " event set " + (Sets.Count + 1);
+            string name = _localizationService.Format(GlobalMode ? "NewGlobalSetName" : "NewVolumeSetName", Sets.Count + 1);
             EventSet newSet = GlobalMode
                 ? new GlobalEventSet { Name = name, LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit] }
                 : new VolumeEventSet { Name = name, LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit] };
@@ -340,19 +363,19 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             SelectedSet = newSet;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
         private void CloneSet()
         {
             if (SelectedSet == null)
                 return;
             var clone = SelectedSet.Clone();
-            clone.Name = SelectedSet.Name + " (copy)";
+            clone.Name = SelectedSet.Name + _localizationService["CopySuffix"];
             _usedList.Add(clone);
             Sets.Add(clone);
             SelectedSet = clone;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
         private void DeleteSet()
         {
             if (SelectedSet == null)
@@ -377,16 +400,24 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         }
 
         [RelayCommand]
-        private void Ok() => RequestClose?.Invoke(this, false);
+        private void Ok() => DialogResult = true;
 
         [RelayCommand]
-        private void Cancel() => RequestClose?.Invoke(this, true);
+        private void Cancel() => DialogResult = false;
 
-        public event System.EventHandler<bool>? RequestClose; // bool = cancelled
-
-        public void Closing(bool cancelled)
+        /// <summary>
+        /// Called by the view after the window has closed (any close path). Closing without a verdict
+        /// (title-bar X or an external <c>Close()</c>, i.e. <see cref="DialogResult"/> still null) commits,
+        /// like the OK button; only an explicit Cancel restores the backup.
+        /// </summary>
+        public void OnWindowClosed()
         {
-            if (cancelled)
+            _editor.EditorEventRaised -= OnEditorEventRaised;
+
+            if (_levelChanged)
+                return;
+
+            if (DialogResult == false)
             {
                 Cancelled = true;
                 RestoreState();

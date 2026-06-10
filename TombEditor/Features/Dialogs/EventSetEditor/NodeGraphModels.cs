@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TombLib.LevelData.VisualScripting;
+using TombLib.WPF;
 
 namespace TombEditor.Features.Dialogs.EventSetEditor
 {
@@ -84,7 +85,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             set { if (Node.Name == value) return; Node.Name = value; OnPropertyChanged(); }
         }
 
-        public string FunctionName => string.IsNullOrEmpty(_functionDisplay) ? "(no function)" : _functionDisplay;
+        public string FunctionName => string.IsNullOrEmpty(_functionDisplay) ? Localizer.Instance["TombEditor.NodeEditor.NoFunction"] : _functionDisplay;
         public double Width => Node.Size;
 
         [ObservableProperty] private double _height = 64;
