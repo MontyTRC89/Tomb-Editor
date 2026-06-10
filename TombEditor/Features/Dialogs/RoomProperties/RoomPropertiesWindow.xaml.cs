@@ -8,6 +8,7 @@ public partial class RoomPropertiesWindow : Window
 	public RoomPropertiesWindow()
 	{
 		InitializeComponent();
+		this.HookModalAutoClose();
 		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormRoomProperties");
 		Closed += (_, _) =>
 		{
@@ -15,6 +16,4 @@ public partial class RoomPropertiesWindow : Window
 				vm.Dispose();
 		};
 	}
-
-	private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 }

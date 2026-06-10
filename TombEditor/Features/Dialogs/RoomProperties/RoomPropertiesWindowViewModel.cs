@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -15,7 +16,7 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.Dialogs.RoomProperties;
 
-public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposable
+public partial class RoomPropertiesWindowViewModel : ObservableObject, IModalDialogViewModel, IDisposable
 {
 	public partial class PropertyRow : ObservableObject
 	{
@@ -26,9 +27,11 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 
 	private readonly Editor _editor;
 	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
 
 	public ObservableCollection<PropertyRow> Rows { get; } = new();
 
+	[ObservableProperty] private bool? _dialogResult;
 	[ObservableProperty] private bool _canApply;
 
 	public RoomPropertiesWindowViewModel(
@@ -37,7 +40,7 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 	{
 		_editor = Editor.Instance;
 		_messageService = ServiceLocator.ResolveService(messageService);
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		// Collect every property of RoomProperties exactly once (by DisplayName).
 		var seen = new HashSet<string>();
@@ -76,7 +79,7 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 	{
 		if (Rows.All(r => !r.Replace))
 		{
-			_editor.SendMessage("No properties were selected. Nothing was changed.", PopupType.Warning, true);
+			_editor.SendMessage(_localizationService["NoPropertiesSelectedMessage"], PopupType.Warning, true);
 			return;
 		}
 
@@ -114,8 +117,11 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IDisposab
 		}
 
 		_editor.UndoManager.Push(undoList);
-		_editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info, true);
+		_editor.SendMessage(_localizationService["PropertiesAppliedMessage"], PopupType.Info, true);
 	}
+
+	[RelayCommand]
+	private void Close() => DialogResult = false;
 
 	public void Dispose()
 	{
