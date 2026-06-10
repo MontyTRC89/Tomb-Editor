@@ -177,7 +177,7 @@
 				<Button
 					Grid.Column="5"
 					Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
-					Click="CloseButton_Click"
+					Command="{Binding CloseCommand}"
 					Content="{tombLib:Localize ~Common.Close}"
 					IsCancel="True" />
 			</controls:SpacedGrid>

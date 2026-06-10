@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -18,21 +19,23 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.Dialogs.ReplaceObject;
 
-public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposable
+public partial class ReplaceObjectWindowViewModel : ObservableObject, IModalDialogViewModel, IDisposable
 {
 	public enum ObjectSelectionType { None, Source, Destination }
 
 	private enum ObjectSearchType { PrimaryAttributeOnly = 0, Full = 1 }
 
-	private const string SelectNewObjPrompt = " [ Select object in level or drag-n-drop it from item browser ]";
+	private string SelectNewObjPrompt => _localizationService["SelectNewObjPrompt"];
 
 	private readonly Editor _editor;
 	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
 	private readonly IColorPickerService _colorPickerService;
 	private PositionBasedObjectInstance? _source;
 	private PositionBasedObjectInstance? _dest;
 
-	[ObservableProperty] private string _sourceText = SelectNewObjPrompt;
+	[ObservableProperty] private bool? _dialogResult;
+	[ObservableProperty] private string _sourceText = string.Empty;
 	[ObservableProperty] private string _destText = string.Empty;
 	[ObservableProperty] private ObjectSelectionType _selectionType = ObjectSelectionType.Source;
 	[ObservableProperty] private bool _isSelectSourceEnabled = true;
@@ -62,7 +65,7 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 		_editor = editor;
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_colorPickerService = ServiceLocator.ResolveService(colorPickerService);
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		_editor.EditorEventRaised += OnEditorEvent;
 
@@ -237,8 +240,8 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 
 		var options = new[]
 		{
-			string.IsNullOrEmpty(primary) ? string.Empty : "Only " + primary,
-			primary + " and " + secondary
+			string.IsNullOrEmpty(primary) ? string.Empty : _localizationService.Format("OnlyAttribute", primary),
+			_localizationService.Format("PrimaryAndSecondary", primary, secondary)
 		};
 
 		foreach (var opt in options)
@@ -385,11 +388,16 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IDisposabl
 		if (replCount > 0)
 		{
 			_editor.UndoManager.Push(undoList);
-			ResultText = $"Replacement finished. Replaced {replCount} objects in {roomCount} room{(roomCount > 1 ? "s" : string.Empty)}.";
+			ResultText = roomCount > 1
+				? _localizationService.Format("ResultReplacedMultipleRooms", replCount, roomCount)
+				: _localizationService.Format("ResultReplacedSingleRoom", replCount, roomCount);
 		}
 		else
-			ResultText = "No matching objects found. No replacements were made.";
+			ResultText = _localizationService["ResultNoMatches"];
 	}
+
+	[RelayCommand]
+	private void Close() => DialogResult = false;
 
 	public void Dispose() => _editor.EditorEventRaised -= OnEditorEvent;
 }

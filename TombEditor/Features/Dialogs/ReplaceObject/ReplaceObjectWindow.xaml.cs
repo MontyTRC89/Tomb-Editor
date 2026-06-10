@@ -9,6 +9,7 @@ public partial class ReplaceObjectWindow : Window
 	public ReplaceObjectWindow()
 	{
 		InitializeComponent();
+		this.HookModalAutoClose();
 		Loaded += (_, _) => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormReplaceObject");
 		Closed += (_, _) =>
 		{
@@ -50,6 +51,4 @@ public partial class ReplaceObjectWindow : Window
 			return null;
 		return e.Data.GetData(formats[0]) as IWadObject;
 	}
-
-	private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 }
