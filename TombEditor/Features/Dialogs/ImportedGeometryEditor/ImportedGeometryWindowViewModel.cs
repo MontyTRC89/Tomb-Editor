@@ -33,6 +33,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         private readonly IMessageService _messageService;
         private readonly IDialogService _dialogService;
         private readonly IColorPickerService _colorPickerService;
+        private readonly ILocalizationService _localizationService;
         private readonly Vector3 _oldColor;
         private ImportedGeometry.UniqueIDType? _currentModel;
 
@@ -45,7 +46,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
 
         [ObservableProperty] private bool? _dialogResult;
         [ObservableProperty] private ImportedGeometryRow? _selectedGeometry;
-        [ObservableProperty] private string _assignedModelDisplay = "None";
+        [ObservableProperty] private string _assignedModelDisplay = string.Empty;
         [ObservableProperty] private ImportedGeometryLightingModel _lightingModel;
         [ObservableProperty] private WpfColor _color;
         [ObservableProperty] private bool _sharpEdges;
@@ -64,12 +65,15 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
             ImportedGeometryInstance instance,
             LevelSettingsData levelSettings,
             IDialogService? dialogService = null,
-            IColorPickerService? colorPickerService = null)
+            IColorPickerService? colorPickerService = null,
+            ILocalizationService? localizationService = null)
         {
             _instance = instance;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
             _dialogService = ServiceLocator.ResolveService(dialogService);
             _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
+            _localizationService = ServiceLocator.ResolveService(localizationService)
+                .WithKeysFor(this);
 
             OldLevelSettings = levelSettings;
             NewLevelSettings = levelSettings.Clone();
@@ -95,7 +99,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         private void UpdateAssignedModelDisplay()
         {
             var model = NewLevelSettings.ImportedGeometryFromID(_currentModel);
-            AssignedModelDisplay = model == null ? "None" : model.Info.Name + "   (" + model.Info.Path + ")";
+            AssignedModelDisplay = model == null ? _localizationService["AssignedModelNone"] : model.Info.Name + "   (" + model.Info.Path + ")";
         }
 
         [RelayCommand]
@@ -110,7 +114,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         [RelayCommand]
         private void AddImportedGeometry()
         {
-            var paths = LevelFileDialog.BrowseFiles(Owner, NewLevelSettings, NewLevelSettings.LevelFilePath, "Select 3D files that you want to see imported.", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
+            var paths = LevelFileDialog.BrowseFiles(Owner, NewLevelSettings, NewLevelSettings.LevelFilePath, _localizationService["BrowseFilesTitle"], BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
             var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
             var config = Editor.Instance?.Configuration;
 
@@ -189,13 +193,13 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
             var model = NewLevelSettings.ImportedGeometryFromID(_currentModel);
             if (model == null)
             {
-                _messageService.ShowError("You need to assign a model before opening the Material Editor.");
+                _messageService.ShowError(_localizationService["AssignModelMessage"]);
                 return;
             }
 
             if (model.Textures.Count == 0 || model.LoadException != null)
             {
-                _messageService.ShowError("Assigned model has no textures or was not loaded.");
+                _messageService.ShowError(_localizationService["NoTexturesMessage"]);
                 return;
             }
 

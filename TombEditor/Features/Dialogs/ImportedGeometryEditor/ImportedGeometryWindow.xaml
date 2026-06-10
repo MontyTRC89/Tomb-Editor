@@ -8,7 +8,8 @@
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.ImportedGeometryEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
-	Title="Imported geometry"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	Title="{tombLib:Localize Title}"
 	Width="920"
 	Height="520"
 	MinWidth="820"
@@ -29,8 +30,8 @@
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-			<Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
-			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
+			<Button Width="80" Command="{Binding OkCommand}" Content="{tombLib:Localize ~Common.OK}" IsDefault="True" />
+			<Button Width="80" Command="{Binding CancelCommand}" Content="{tombLib:Localize ~Common.Cancel}" IsCancel="True" />
 		</controls:SpacedStack>
 
 		<!--  Instance properties (bottom strip, full width)  -->
@@ -52,7 +53,7 @@
 				</Grid.ColumnDefinitions>
 
 				<!--  Row 0: assigned model + Assign  -->
-				<TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="Assigned model:" />
+				<TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize AssignedModel}" />
 				<TextBlock
 					Grid.Row="0"
 					Grid.Column="1"
@@ -65,10 +66,10 @@
 					Width="98"
 					HorizontalAlignment="Right"
 					Command="{Binding AssignCommand}"
-					Content="Assign" />
+					Content="{tombLib:Localize Assign}" />
 
 				<!--  Row 1: lighting model, color, flags + Edit materials  -->
-				<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8,6,0" VerticalAlignment="Center" Text="Lighting model:" />
+				<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,8,6,0" VerticalAlignment="Center" Text="{tombLib:Localize LightingModel}" />
 				<controls:SpacedStack
 					Grid.Row="1"
 					Grid.Column="1"
@@ -81,9 +82,9 @@
 							<SolidColorBrush Color="{Binding Color}" />
 						</Button.Background>
 					</Button>
-					<CheckBox VerticalAlignment="Center" Content="Sharp edges" IsChecked="{Binding SharpEdges, Mode=TwoWay}" />
-					<CheckBox VerticalAlignment="Center" Content="Hidden" IsChecked="{Binding Hidden, Mode=TwoWay}" />
-					<CheckBox VerticalAlignment="Center" Content="Use alpha test instead of alpha blend" IsChecked="{Binding UseAlphaTest, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
+					<CheckBox VerticalAlignment="Center" Content="{tombLib:Localize SharpEdges}" IsChecked="{Binding SharpEdges, Mode=TwoWay}" />
+					<CheckBox VerticalAlignment="Center" Content="{tombLib:Localize Hidden}" IsChecked="{Binding Hidden, Mode=TwoWay}" />
+					<CheckBox VerticalAlignment="Center" Content="{tombLib:Localize UseAlphaTest}" IsChecked="{Binding UseAlphaTest, Mode=TwoWay}" IsEnabled="{Binding IsTombEngine}" />
 				</controls:SpacedStack>
 				<Button
 					Grid.Row="1"
@@ -92,7 +93,7 @@
 					Margin="0,8,0,0"
 					HorizontalAlignment="Right"
 					Command="{Binding EditMaterialsCommand}"
-					Content="Edit materials..." />
+					Content="{tombLib:Localize EditMaterials}" />
 			</Grid>
 		</Border>
 
@@ -100,13 +101,13 @@
 		<TextBlock
 			DockPanel.Dock="Top"
 			Margin="0,0,0,6"
-			Text="Select a model from the list or add a new one. Double-click an entry or press Assign to assign the loaded file to this imported geometry object."
+			Text="{tombLib:Localize Instructions}"
 			TextWrapping="Wrap" />
 
 		<!--  List actions (top)  -->
 		<controls:SpacedStack DockPanel.Dock="Top" Margin="0,0,0,6" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-			<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="Add..." />
-			<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="Delete" />
+			<Button Width="70" Command="{Binding AddImportedGeometryCommand}" Content="{tombLib:Localize Add}" />
+			<Button Width="70" Command="{Binding DeleteImportedGeometryCommand}" Content="{tombLib:Localize Delete}" />
 		</controls:SpacedStack>
 
 		<!--  Geometry list (fills, full width)  -->
@@ -116,8 +117,11 @@
 			HeadersVisibility="Column"
 			ItemsSource="{Binding Geometries}"
 			SelectedItem="{Binding SelectedGeometry, Mode=TwoWay}">
+			<DataGrid.InputBindings>
+				<MouseBinding Command="{Binding AssignCommand}" MouseAction="LeftDoubleClick" />
+			</DataGrid.InputBindings>
 			<DataGrid.Columns>
-				<DataGridTextColumn Width="160" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+				<DataGridTextColumn Width="160" Binding="{Binding Name}" Header="{tombLib:Localize ColumnName}" IsReadOnly="True" />
 				<DataGridTemplateColumn Width="32">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
@@ -125,9 +129,9 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
-				<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="Path" />
-				<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="Scale" />
-				<DataGridTextColumn Width="160" Binding="{Binding ErrorMessage}" Header="Status" IsReadOnly="True" />
+				<DataGridTextColumn Width="*" Binding="{Binding Path, UpdateSourceTrigger=LostFocus}" Header="{tombLib:Localize ColumnPath}" />
+				<DataGridTextColumn Width="60" Binding="{Binding Scale, UpdateSourceTrigger=LostFocus}" Header="{tombLib:Localize ColumnScale}" />
+				<DataGridTextColumn Width="160" Binding="{Binding ErrorMessage}" Header="{tombLib:Localize ColumnStatus}" IsReadOnly="True" />
 			</DataGrid.Columns>
 		</DataGrid>
 	</DockPanel>
