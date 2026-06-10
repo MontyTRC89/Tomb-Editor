@@ -67,7 +67,7 @@
 			Grid.Row="0"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="Trigger Type:" />
+			Content="{tombLib:Localize TriggerType}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramTriggerType"
 			Grid.Row="0"
@@ -77,7 +77,7 @@
 			Grid.Row="0"
 			Grid.Column="6"
 			VerticalAlignment="Center"
-			Content="Plugin / Engine:"
+			Content="{tombLib:Localize PluginEngine}"
 			Visibility="{Binding IsNG, Converter={StaticResource BoolToVis}}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramPlugin"
@@ -90,7 +90,7 @@
 			Grid.Row="1"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="What:" />
+			Content="{tombLib:Localize What}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramTargetType"
 			Grid.Row="1"
@@ -102,7 +102,7 @@
 			Grid.Row="2"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="(#) Param:" />
+			Content="{tombLib:Localize Param}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramTarget"
 			Grid.Row="2"
@@ -114,7 +114,7 @@
 			Grid.Row="3"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="(&amp;&amp;) Timer:" />
+			Content="{tombLib:Localize Timer}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramTimer"
 			Grid.Row="3"
@@ -126,7 +126,7 @@
 			Grid.Row="4"
 			Grid.Column="0"
 			VerticalAlignment="Center"
-			Content="(E) Extra:" />
+			Content="{tombLib:Localize Extra}" />
 		<tombLibControls:TriggerParameterView
 			x:Name="paramExtra"
 			Grid.Row="4"
@@ -138,31 +138,31 @@
 			Grid.Row="5"
 			Grid.Column="1"
 			VerticalAlignment="Center"
-			Content="Bit 1"
+			Content="{tombLib:Localize Bit1}"
 			IsChecked="{Binding Bit1, Mode=TwoWay}" />
 		<CheckBox
 			Grid.Row="5"
 			Grid.Column="2"
 			VerticalAlignment="Center"
-			Content="Bit 2"
+			Content="{tombLib:Localize Bit2}"
 			IsChecked="{Binding Bit2, Mode=TwoWay}" />
 		<CheckBox
 			Grid.Row="5"
 			Grid.Column="3"
 			VerticalAlignment="Center"
-			Content="Bit 3"
+			Content="{tombLib:Localize Bit3}"
 			IsChecked="{Binding Bit3, Mode=TwoWay}" />
 		<CheckBox
 			Grid.Row="5"
 			Grid.Column="4"
 			VerticalAlignment="Center"
-			Content="Bit 4"
+			Content="{tombLib:Localize Bit4}"
 			IsChecked="{Binding Bit4, Mode=TwoWay}" />
 		<CheckBox
 			Grid.Row="5"
 			Grid.Column="5"
 			VerticalAlignment="Center"
-			Content="Bit 5"
+			Content="{tombLib:Localize Bit5}"
 			IsChecked="{Binding Bit5, Mode=TwoWay}" />
 
 		<Grid
@@ -183,7 +183,7 @@
 				Grid.Column="0"
 				Margin="0,0,4,0"
 				VerticalAlignment="Center"
-				Content="Script:" />
+				Content="{tombLib:Localize Script}" />
 			<TextBox
 				Grid.Column="1"
 				VerticalAlignment="Center"
@@ -196,7 +196,7 @@
 				Margin="2,0,0,0"
 				Command="{Binding CopyToClipboardCommand}"
 				IsEnabled="{Binding ScriptEnabled}"
-				ToolTip="Copy to clipboard">
+				ToolTip="{tombLib:Localize CopyToClipboardTooltip}">
 				<Image Source="{tomb:Icon General/copy}" />
 			</Button>
 			<Button
@@ -205,7 +205,7 @@
 				Margin="2,0,0,0"
 				Command="{Binding CopyWithCommentsCommand}"
 				IsEnabled="{Binding ScriptEnabled}"
-				ToolTip="Copy to clipboard with comments">
+				ToolTip="{tombLib:Localize CopyWithCommentsTooltip}">
 				<Image Source="{tomb:Icon General/copy_comments}" />
 			</Button>
 			<Button
@@ -213,7 +213,7 @@
 				Width="24"
 				Margin="2,0,0,0"
 				Command="{Binding SearchTriggerCommand}"
-				ToolTip="Import trigger">
+				ToolTip="{tombLib:Localize ImportTriggerTooltip}">
 				<Image Source="{tomb:Icon General/Import}" />
 			</Button>
 			<Button
@@ -222,7 +222,7 @@
 				Margin="2,0,0,0"
 				Command="{Binding CopyAsAnimcommandCommand}"
 				IsEnabled="{Binding CopyAsAnimcommandEnabled}"
-				ToolTip="Export as animcommand">
+				ToolTip="{tombLib:Localize CopyAsAnimcommandTooltip}">
 				<Image Source="{tomb:Icon General/animcommand}" />
 			</Button>
 		</Grid>
@@ -233,7 +233,7 @@
 			Grid.Column="1"
 			Grid.ColumnSpan="5"
 			VerticalAlignment="Center"
-			Content="One Shot"
+			Content="{tombLib:Localize OneShot}"
 			IsChecked="{Binding OneShot, Mode=TwoWay}"
 			IsEnabled="{Binding OneShotEnabled}" />
 		<CheckBox
@@ -242,7 +242,7 @@
 			Grid.ColumnSpan="2"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Center"
-			Content="Raw mode (show numeric values)"
+			Content="{tombLib:Localize RawMode}"
 			IsChecked="{Binding RawMode, Mode=TwoWay}" />
 
 		<!--  Row 7: OK / Cancel  -->
@@ -257,12 +257,12 @@
 			<Button
 				Width="80"
 				Command="{Binding ConfirmCommand}"
-				Content="OK"
+				Content="{tombLib:Localize ~Common.OK}"
 				IsDefault="True" />
 			<Button
 				Width="80"
 				Command="{Binding CancelCommand}"
-				Content="Cancel"
+				Content="{tombLib:Localize ~Common.Cancel}"
 				IsCancel="True" />
 		</controls:SpacedStack>
 	</controls:SpacedGrid>

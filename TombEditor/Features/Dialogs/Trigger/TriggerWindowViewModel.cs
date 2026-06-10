@@ -24,6 +24,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
 
     private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
+    private readonly ILocalizationService _localizationService;
 
     // Snapshot of the six parameter controls, pushed in by the view whenever they change.
     private TriggerType _currentTriggerType = TriggerType.Trigger;
@@ -36,7 +37,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
     private string? _scriptWithComments;
 
     [ObservableProperty] private bool? _dialogResult;
-    [ObservableProperty] private string _title = "Trigger editor";
+    [ObservableProperty] private string _title = string.Empty;
 
     [ObservableProperty] private bool _isNG;
     [ObservableProperty] private bool _isTombEngine;
@@ -66,11 +67,13 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         TriggerInstance trigger,
         Level level,
         IDialogService? dialogService = null,
-        IMessageService? messageService = null)
+        IMessageService? messageService = null,
+        ILocalizationService? localizationService = null)
     {
         // Services
         _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
+        _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         // Properties and Fields
         _trigger = trigger;
@@ -78,7 +81,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
 
         IsNG = level.IsNG;
         IsTombEngine = level.IsTombEngine;
-        Title = level.IsTombEngine ? "Classic trigger editor" : "Trigger editor";
+        Title = level.IsTombEngine ? _localizationService["ClassicTitle"] : _localizationService["Title"];
     }
 
     #region State pushed in by the view
@@ -226,21 +229,21 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         }
         catch (NgParameterInfo.ExceptionScriptNotSupported)
         {
-            ScriptText = "Not supported";
+            ScriptText = _localizationService["ScriptNotSupported"];
             _scriptWithComments = null;
             ScriptEnabled = false;
             CopyAsAnimcommandEnabled = false;
         }
         catch (NgParameterInfo.ExceptionScriptIdMissing)
         {
-            ScriptText = "Click to generate";
+            ScriptText = _localizationService["ScriptClickToGenerate"];
             _scriptWithComments = null;
             ScriptEnabled = false;
             CopyAsAnimcommandEnabled = false;
         }
         catch (Exception exc)
         {
-            ScriptText = "Check all fields";
+            ScriptText = _localizationService["ScriptCheckAllFields"];
             _scriptWithComments = null;
             ScriptEnabled = false;
             CopyAsAnimcommandEnabled = false;
@@ -258,8 +261,8 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         if (!NgParameterInfo.TriggerIsValid(_level.Settings, MakeTestTrigger()))
         {
             bool proceed = _messageService.ShowConfirmation(
-                "The currently selected trigger data is not valid for the engine.",
-                "Trigger invalid",
+                _localizationService["TriggerInvalidMessage"],
+                _localizationService["TriggerInvalidTitle"],
                 defaultValue: true,
                 isRisky: true);
 
@@ -300,8 +303,8 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
     private void CopyAsAnimcommand()
     {
         var frameVm = new InputBoxWindowViewModel(
-            title: "Specify animcommand frame number",
-            label: "Enter value from -1 (any frame) to 254:",
+            title: _localizationService["AnimcommandFrameTitle"],
+            label: _localizationService["AnimcommandFrameLabel"],
             placeholder: "-1");
 
         bool confirmed = _dialogService.ShowDialog(this, frameVm) == true;
@@ -309,7 +312,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         if (!confirmed || !int.TryParse(frameVm.Value, out int frame) || frame < -1 || frame > 254)
         {
             if (frameVm.DialogResult == true)
-                _messageService.ShowError("Frame number is invalid. Maximum is 254.");
+                _messageService.ShowError(_localizationService["AnimcommandFrameInvalidMessage"]);
             return;
         }
 
@@ -319,8 +322,8 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
             return;
 
         var outVm = new InputBoxWindowViewModel(
-            title: "Export as SetPosition animcommand",
-            label: "Put these values into X, Y and Z fields in WadTool:",
+            title: _localizationService["AnimcommandExportTitle"],
+            label: _localizationService["AnimcommandExportLabel"],
             placeholder: result);
 
         _dialogService.ShowDialog(this, outVm);
@@ -330,8 +333,8 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
     private void SearchTrigger()
     {
         var inputVm = new InputBoxWindowViewModel(
-            title: "Import trigger from script",
-            label: "Enter a script command:");
+            title: _localizationService["ImportTriggerTitle"],
+            label: _localizationService["ImportTriggerLabel"]);
 
         if (_dialogService.ShowDialog(this, inputVm) != true)
             return;
@@ -340,7 +343,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
 
         if (imported is null)
         {
-            _messageService.ShowError("Script entry is invalid. Trigger can't be imported.");
+            _messageService.ShowError(_localizationService["ImportTriggerInvalidMessage"]);
             return;
         }
 
