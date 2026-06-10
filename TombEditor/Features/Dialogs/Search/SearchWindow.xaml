@@ -20,6 +20,10 @@
 	WindowStartupLocation="CenterOwner"
 	mc:Ignorable="d">
 
+	<Window.InputBindings>
+		<KeyBinding Key="Delete" Command="{Binding DeleteSelectedCommand}" />
+	</Window.InputBindings>
+
 	<controls:SpacedGrid
 		Margin="{x:Static darkUI:Defaults.MediumThickness}"
 		RowSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
@@ -101,7 +105,7 @@
 				Content="{tombLib:Localize Delete}" />
 			<Button
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
-				Click="CloseButton_Click"
+				Command="{Binding CloseCommand}"
 				Content="{tombLib:Localize ~Common.Close}"
 				IsCancel="True" />
 		</controls:SpacedStack>

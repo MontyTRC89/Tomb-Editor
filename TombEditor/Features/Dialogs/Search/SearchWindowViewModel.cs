@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -14,7 +15,7 @@ using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Features.Dialogs.Search;
 
-public partial class SearchWindowViewModel : ObservableObject, IDisposable
+public partial class SearchWindowViewModel : ObservableObject, IModalDialogViewModel, IDisposable
 {
 	public enum ScopeMode
 	{
@@ -37,7 +38,9 @@ public partial class SearchWindowViewModel : ObservableObject, IDisposable
 
 	private readonly Editor _editor;
 	private readonly IMessageService _messageService;
+	private readonly ILocalizationService _localizationService;
 
+	[ObservableProperty] private bool? _dialogResult;
 	[ObservableProperty] private ScopeMode _scope = ScopeMode.Everything;
 	[ObservableProperty] private string _keyword = string.Empty;
 	[ObservableProperty] private SearchResultRow? _selectedRow;
@@ -53,7 +56,7 @@ public partial class SearchWindowViewModel : ObservableObject, IDisposable
 	{
 		_editor = editor;
 		_messageService = ServiceLocator.ResolveService(messageService);
-		_ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		_editor.EditorEventRaised += OnEditorEvent;
 		Rebuild();
@@ -110,7 +113,7 @@ public partial class SearchWindowViewModel : ObservableObject, IDisposable
 
 			Room? room = GetRoom(target);
 			string roomLabel = room is null
-				? "<Unknown>"
+				? _localizationService["UnknownRoom"]
 				: _editor.Level.Rooms.ReferenceIndexOf(room) + ":   " + room.Name;
 
 			string name = target switch
@@ -201,8 +204,8 @@ public partial class SearchWindowViewModel : ObservableObject, IDisposable
 			return;
 
 		bool ok = _messageService.ShowConfirmation(
-			"Do you want to delete the selected entry? This action can't be undone.",
-			"Delete selected entry");
+			_localizationService["DeleteConfirmationMessage"],
+			_localizationService["DeleteConfirmationTitle"]);
 		if (!ok)
 			return;
 
@@ -216,10 +219,13 @@ public partial class SearchWindowViewModel : ObservableObject, IDisposable
 				EditorActions.DeleteObjects(new[] { (ObjectInstance)SelectedRow.Target }, null, false);
 				break;
 			default:
-				_messageService.ShowError("This entry can only be deleted from the map.");
+				_messageService.ShowError(_localizationService["MapOnlyDeleteMessage"]);
 				break;
 		}
 	}
+
+	[RelayCommand]
+	private void Close() => DialogResult = false;
 
 	public void Dispose() => _editor.EditorEventRaised -= OnEditorEvent;
 }
