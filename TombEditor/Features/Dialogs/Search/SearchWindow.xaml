@@ -48,8 +48,10 @@
 				Content="{tombLib:Localize Scope}" />
 			<ComboBox
 				Grid.Column="1"
+				DisplayMemberPath="DisplayName"
 				ItemsSource="{Binding Scopes}"
-				SelectedItem="{Binding Scope, Mode=TwoWay}" />
+				SelectedValue="{Binding Scope, Mode=TwoWay}"
+				SelectedValuePath="Mode" />
 		</controls:SpacedGrid>
 
 		<controls:SpacedGrid

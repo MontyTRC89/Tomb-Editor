@@ -64,8 +64,7 @@
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
 				Command="{Binding ApplyCommand}"
 				Content="{tombLib:Localize Apply}"
-				IsDefault="True"
-				IsEnabled="{Binding CanApply}" />
+				IsDefault="True" />
 			<Button
 				Width="{x:Static darkUI:Defaults.StandardButtonWidth}"
 				Command="{Binding CloseCommand}"

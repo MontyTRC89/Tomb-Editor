@@ -28,7 +28,6 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IModalDial
 	private string SelectNewObjPrompt => _localizationService["SelectNewObjPrompt"];
 
 	private readonly Editor _editor;
-	private readonly IMessageService _messageService;
 	private readonly ILocalizationService _localizationService;
 	private readonly IColorPickerService _colorPickerService;
 	private PositionBasedObjectInstance? _source;
@@ -58,12 +57,10 @@ public partial class ReplaceObjectWindowViewModel : ObservableObject, IModalDial
 	public ReplaceObjectWindowViewModel(
 		Editor editor,
 		bool fromContext = false,
-		IMessageService? messageService = null,
 		ILocalizationService? localizationService = null,
 		IColorPickerService? colorPickerService = null)
 	{
 		_editor = editor;
-		_messageService = ServiceLocator.ResolveService(messageService);
 		_colorPickerService = ServiceLocator.ResolveService(colorPickerService);
 		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 

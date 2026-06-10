@@ -27,6 +27,8 @@ public partial class SearchWindowViewModel : ObservableObject, IModalDialogViewM
 		Triggers
 	}
 
+	public sealed record ScopeItem(ScopeMode Mode, string DisplayName);
+
 	public sealed class SearchResultRow
 	{
 		public object Target { get; init; } = null!;
@@ -43,11 +45,13 @@ public partial class SearchWindowViewModel : ObservableObject, IModalDialogViewM
 	[ObservableProperty] private bool? _dialogResult;
 	[ObservableProperty] private ScopeMode _scope = ScopeMode.Everything;
 	[ObservableProperty] private string _keyword = string.Empty;
-	[ObservableProperty] private SearchResultRow? _selectedRow;
+	[ObservableProperty]
+	[NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
+	private SearchResultRow? _selectedRow;
 
 	public ObservableCollection<SearchResultRow> Rows { get; } = new();
 
-	public IReadOnlyList<ScopeMode> Scopes { get; } = Enum.GetValues<ScopeMode>();
+	public IReadOnlyList<ScopeItem> Scopes { get; }
 
 	public SearchWindowViewModel(
 		Editor editor,
@@ -57,6 +61,16 @@ public partial class SearchWindowViewModel : ObservableObject, IModalDialogViewM
 		_editor = editor;
 		_messageService = ServiceLocator.ResolveService(messageService);
 		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+
+		Scopes = new List<ScopeItem>
+		{
+			new(ScopeMode.Everything, _localizationService["ScopeEverything"]),
+			new(ScopeMode.Rooms, _localizationService["ScopeRooms"]),
+			new(ScopeMode.AllObjects, _localizationService["ScopeAllObjects"]),
+			new(ScopeMode.ObjectsInSelectedRooms, _localizationService["ScopeObjectsInSelectedRooms"]),
+			new(ScopeMode.ItemTypes, _localizationService["ScopeItemTypes"]),
+			new(ScopeMode.Triggers, _localizationService["ScopeTriggers"])
+		};
 
 		_editor.EditorEventRaised += OnEditorEvent;
 		Rebuild();
@@ -197,7 +211,9 @@ public partial class SearchWindowViewModel : ObservableObject, IModalDialogViewM
 		return name;
 	}
 
-	[RelayCommand]
+	private bool CanDeleteSelected() => SelectedRow is not null;
+
+	[RelayCommand(CanExecute = nameof(CanDeleteSelected))]
 	private void DeleteSelected()
 	{
 		if (SelectedRow is null)

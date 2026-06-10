@@ -21,9 +21,10 @@ public partial class SelectRoomByTagsWindowViewModel : ObservableObject, IModalD
     public IReadOnlyList<string> AutocompleteTags { get; }
 
     public SelectRoomByTagsWindowViewModel(
-        Editor editor,
+        Editor? editor = null,
         ILocalizationService? localizationService = null)
     {
+        editor ??= Editor.Instance;
         _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
         AutocompleteTags = editor.Level.Rooms

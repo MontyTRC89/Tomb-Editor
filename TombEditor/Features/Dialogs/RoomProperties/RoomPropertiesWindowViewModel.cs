@@ -26,20 +26,17 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IModalDia
 	}
 
 	private readonly Editor _editor;
-	private readonly IMessageService _messageService;
 	private readonly ILocalizationService _localizationService;
 
 	public ObservableCollection<PropertyRow> Rows { get; } = new();
 
 	[ObservableProperty] private bool? _dialogResult;
-	[ObservableProperty] private bool _canApply;
 
 	public RoomPropertiesWindowViewModel(
-		IMessageService? messageService = null,
+		Editor? editor = null,
 		ILocalizationService? localizationService = null)
 	{
-		_editor = Editor.Instance;
-		_messageService = ServiceLocator.ResolveService(messageService);
+		_editor = editor ?? Editor.Instance;
 		_localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
 		// Collect every property of RoomProperties exactly once (by DisplayName).
@@ -72,17 +69,14 @@ public partial class RoomPropertiesWindowViewModel : ObservableObject, IModalDia
 	}
 
 	private void Refresh()
-		=> CanApply = Rows.Any(r => r.Replace) && _editor.SelectedRooms.Count > 1;
+		=> ApplyCommand.NotifyCanExecuteChanged();
 
-	[RelayCommand]
+	private bool CanApply
+		=> Rows.Any(r => r.Replace) && _editor.SelectedRooms.Count > 1;
+
+	[RelayCommand(CanExecute = nameof(CanApply))]
 	private void Apply()
 	{
-		if (Rows.All(r => !r.Replace))
-		{
-			_editor.SendMessage(_localizationService["NoPropertiesSelectedMessage"], PopupType.Warning, true);
-			return;
-		}
-
 		var undoList = new List<UndoRedoInstance>();
 		var propInfo = typeof(TombLib.LevelData.RoomProperties).GetProperties();
 		var curr = _editor.SelectedRoom;
