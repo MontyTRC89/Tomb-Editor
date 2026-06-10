@@ -33,6 +33,7 @@ namespace TombEditor.Features.Dialogs.Options
         private readonly Editor _editor;
         private readonly object _config;
         private readonly IColorPickerService _colorPickerService;
+        private readonly ILocalizationService _localizationService;
 
         public ObservableCollection<OptionTab> Tabs { get; } = new();
 
@@ -46,11 +47,12 @@ namespace TombEditor.Features.Dialogs.Options
             set { if (SetProperty(ref _searchText, value)) ApplyFilter(); }
         }
 
-        public OptionsWindowViewModel(Editor editor, IColorPickerService? colorPickerService = null)
+        public OptionsWindowViewModel(Editor editor, IColorPickerService? colorPickerService = null, ILocalizationService? localizationService = null)
         {
             _editor = editor;
             _config = editor.Configuration;
             _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
+            _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
             BuildSchema();
             ReadConfigIntoItems(_config);
@@ -202,7 +204,7 @@ namespace TombEditor.Features.Dialogs.Options
 
         // Color scheme presets.
 
-        public void ApplyColorSchemePreset(string presetName)
+        private void ApplyColorSchemePreset(string presetName)
         {
             var scheme = _config.GetType().GetProperty(ColorSchemeProperty)?.GetValue(_config);
             if (scheme is null)
@@ -283,190 +285,198 @@ namespace TombEditor.Features.Dialogs.Options
         {
             var gameVersions = TRVersion.AllVersions.Cast<object>().ToList();
             var fonts = System.Drawing.FontFamily.Families.Select(f => (object)f.Name).ToList();
-            var objectQuality = new List<object> { "High", "Medium", "Low" };
+            var objectQuality = new List<object> { _localizationService["ComboHigh"], _localizationService["ComboMedium"], _localizationService["ComboLow"] };
             var globalEvents = Event.GlobalEventTypes.Select(e => (object)e.ToString().SplitCamelcase()).ToList();
             var volumeEvents = Event.VolumeEventTypes.Select(e => (object)e.ToString().SplitCamelcase()).ToList();
-            var eventMode = new List<object> { "Level script functions", "Node editor" };
+            var eventMode = new List<object> { _localizationService["ComboLevelScriptFunctions"], _localizationService["ComboNodeEditor"] };
 
             var presetNames = GetColorSchemePresetNames();
 
             // General
-            Tabs.Add(Tab("General",
-                Group("Misc",
-                    Bool("Enable step height controls for unsupported engines", "Editor_EnableStepHeightControlsForUnsupportedEngines"),
-                    Bool("Enable logging", "Log_WriteToFile"),
-                    Num("Number of daily log files in history:", "Log_ArchiveN")),
-                Group("Defaults",
-                    Bool("Grid border walls in new rooms", "Editor_GridNewRoom"),
-                    Num("Default new room size (with border walls):", "Editor_DefaultNewRoomSize", 3, 31),
-                    Combo("Default game version for new projects:", "Editor_DefaultProjectGameVersion", gameVersions),
-                    Bool("Use half-pixel UV correction on PRJ import", "Editor_UseHalfPixelCorrectionOnPrjImport"),
-                    Bool("Respect T4Larson's mousepatch flyby handling on PRJ import", "Editor_RespectFlybyPatchOnPrjImport")),
-                Group("System",
-                    Bool("Allow multiple instances", "Editor_AllowMultipleInstances"),
-                    Bool("Open last project on editor start-up", "Editor_OpenLastProjectOnStartup"),
-                    Num("Undo / redo depth:", "Editor_UndoDepth", 1, 1000),
-                    Bool("Reload resources automatically when changed", "Editor_ReloadFilesAutomaticallyWhenChanged")),
-                Group("Autosave",
-                    Bool("Enable autosave", "AutoSave_Enable"),
-                    Num("Autosave interval, in seconds:", "AutoSave_TimeInSeconds", 0, 10000),
-                    Bool("Put date first in autosave name", "AutoSave_NamePutDateFirst"),
-                    Text("Date-time format:", "AutoSave_DateTimeFormat"),
-                    Bool("Cleanup autosaves when amount is reached:", "AutoSave_CleanupEnable"),
-                    Num("Maximum autosaves to keep:", "AutoSave_CleanupMaxAutoSaves"))));
+            Tabs.Add(Tab(_localizationService["Tab_General"],
+                Group(_localizationService["Group_Misc"],
+                    Bool(_localizationService["Opt_Editor_EnableStepHeightControlsForUnsupportedEngines"], "Editor_EnableStepHeightControlsForUnsupportedEngines"),
+                    Bool(_localizationService["Opt_Log_WriteToFile"], "Log_WriteToFile"),
+                    Num(_localizationService["Opt_Log_ArchiveN"], "Log_ArchiveN")),
+                Group(_localizationService["Group_Defaults"],
+                    Bool(_localizationService["Opt_Editor_GridNewRoom"], "Editor_GridNewRoom"),
+                    Num(_localizationService["Opt_Editor_DefaultNewRoomSize"], "Editor_DefaultNewRoomSize", 3, 31),
+                    Combo(_localizationService["Opt_Editor_DefaultProjectGameVersion"], "Editor_DefaultProjectGameVersion", gameVersions),
+                    Bool(_localizationService["Opt_Editor_UseHalfPixelCorrectionOnPrjImport"], "Editor_UseHalfPixelCorrectionOnPrjImport"),
+                    Bool(_localizationService["Opt_Editor_RespectFlybyPatchOnPrjImport"], "Editor_RespectFlybyPatchOnPrjImport")),
+                Group(_localizationService["Group_System"],
+                    Bool(_localizationService["Opt_Editor_AllowMultipleInstances"], "Editor_AllowMultipleInstances"),
+                    Bool(_localizationService["Opt_Editor_OpenLastProjectOnStartup"], "Editor_OpenLastProjectOnStartup"),
+                    Num(_localizationService["Opt_Editor_UndoDepth"], "Editor_UndoDepth", 1, 1000),
+                    Bool(_localizationService["Opt_Editor_ReloadFilesAutomaticallyWhenChanged"], "Editor_ReloadFilesAutomaticallyWhenChanged")),
+                Group(_localizationService["Group_Autosave"],
+                    Bool(_localizationService["Opt_AutoSave_Enable"], "AutoSave_Enable"),
+                    Num(_localizationService["Opt_AutoSave_TimeInSeconds"], "AutoSave_TimeInSeconds", 0, 10000),
+                    Bool(_localizationService["Opt_AutoSave_NamePutDateFirst"], "AutoSave_NamePutDateFirst"),
+                    Text(_localizationService["Opt_AutoSave_DateTimeFormat"], "AutoSave_DateTimeFormat"),
+                    Bool(_localizationService["Opt_AutoSave_CleanupEnable"], "AutoSave_CleanupEnable"),
+                    Num(_localizationService["Opt_AutoSave_CleanupMaxAutoSaves"], "AutoSave_CleanupMaxAutoSaves"))));
 
             // User interface
-            Tabs.Add(Tab("User interface",
-                Group("General",
-                    Bool("Automatically pick selected object color to palette", "Palette_PickColorFromSelectedObject"),
-                    Bool("Add descriptions for autogenerated rooms", "UI_GenerateRoomDescriptions"),
-                    Bool("Warn before deleting objects", "UI_WarnBeforeDeletingObjects"),
-                    Bool("Automatically enable skybox if invisible texture is applied", "UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture"),
-                    Bool("Autofill \"Key\", \"Switch\" and \"Dummy\" trigger types", "UI_AutoFillTriggerTypesForSwitchAndKey"),
-                    Bool("Set or unset selected area's sector flags at once", "UI_SetAttributesAtOnce"),
-                    Bool("Discard selection on editor mode switch", "UI_DiscardSelectionOnModeSwitch"),
-                    Bool("Apply sector flags to bottom room through portals", "UI_ProbeAttributesThroughPortals"),
-                    Bool("Autoswitch sector coloring on property hover", "UI_AutoSwitchSectorColoringInfo"),
-                    Bool("Non-intrusive message when trying to move locked room", "UI_OnlyShowSmallMessageWhenRoomIsLocked")),
-                Group("Color scheme",
-                    Preset("Color scheme preset:", presetNames),
-                    Num("UI brightness (requires restart):", "UI_FormColor_Brightness", 50, 100, 5, 0, "%"),
-                    Color("UI button highlight:", "UI_FormColor_ButtonHighlight"),
-                    Color("2D map - moved rooms:", "Color2DRoomsMoved"),
-                    Color("2D map - rooms below current:", "Color2DRoomsBelow"),
-                    Color("2D map - rooms above current:", "Color2DRoomsAbove"),
-                    Color("Slide direction:", "ColorSlideDirection"),
-                    Color("Illegal slope:", "ColorIllegalSlope"),
-                    Color("Selection:", "ColorSelection"),
-                    Color("Force solid floor:", "ColorForceSolidFloor"),
-                    Color("Trigger triggerer mark:", "ColorTriggerTriggerer"),
-                    Color("Beetle mark:", "ColorBeetle"),
-                    Color("Not walkable:", "ColorNotWalkable"),
-                    Color("Death:", "ColorDeath"),
-                    Color("Box:", "ColorBox"),
-                    Color("Climb:", "ColorClimb"),
-                    Color("Monkeyswing:", "ColorMonkey"),
-                    Color("Trigger:", "ColorTrigger"),
-                    Color("Upper wall section:", "ColorWallUpper"),
-                    Color("Lower wall section:", "ColorWallLower"),
-                    Color("Center wall section:", "ColorWall"),
-                    Color("Border wall:", "ColorBorderWall"),
-                    Color("Floor:", "ColorFloor"),
-                    Color("3D portal face highlight:", "ColorPortalFace"),
-                    Color("2D portal highlight:", "ColorPortal"),
-                    Color("2D portal effect highlight:", "ColorPortalEffect"),
-                    Color("Flipped room background:", "ColorFlipRoom"),
-                    Color("2D background:", "Color2DBackground"),
-                    Color("3D background:", "Color3DBackground"))));
+            Tabs.Add(Tab(_localizationService["Tab_UserInterface"],
+                Group(_localizationService["Group_General"],
+                    Bool(_localizationService["Opt_Palette_PickColorFromSelectedObject"], "Palette_PickColorFromSelectedObject"),
+                    Bool(_localizationService["Opt_UI_GenerateRoomDescriptions"], "UI_GenerateRoomDescriptions"),
+                    Bool(_localizationService["Opt_UI_WarnBeforeDeletingObjects"], "UI_WarnBeforeDeletingObjects"),
+                    Bool(_localizationService["Opt_UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture"], "UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture"),
+                    Bool(_localizationService["Opt_UI_AutoFillTriggerTypesForSwitchAndKey"], "UI_AutoFillTriggerTypesForSwitchAndKey"),
+                    Bool(_localizationService["Opt_UI_SetAttributesAtOnce"], "UI_SetAttributesAtOnce"),
+                    Bool(_localizationService["Opt_UI_DiscardSelectionOnModeSwitch"], "UI_DiscardSelectionOnModeSwitch"),
+                    Bool(_localizationService["Opt_UI_ProbeAttributesThroughPortals"], "UI_ProbeAttributesThroughPortals"),
+                    Bool(_localizationService["Opt_UI_AutoSwitchSectorColoringInfo"], "UI_AutoSwitchSectorColoringInfo"),
+                    Bool(_localizationService["Opt_UI_OnlyShowSmallMessageWhenRoomIsLocked"], "UI_OnlyShowSmallMessageWhenRoomIsLocked")),
+                Group(_localizationService["Group_ColorScheme"],
+                    Preset(_localizationService["Opt_ColorSchemePreset"], presetNames),
+                    Num(_localizationService["Opt_UI_FormColor_Brightness"], "UI_FormColor_Brightness", 50, 100, 5, 0, "%"),
+                    Color(_localizationService["Opt_UI_FormColor_ButtonHighlight"], "UI_FormColor_ButtonHighlight"),
+                    Color(_localizationService["Opt_Color2DRoomsMoved"], "Color2DRoomsMoved"),
+                    Color(_localizationService["Opt_Color2DRoomsBelow"], "Color2DRoomsBelow"),
+                    Color(_localizationService["Opt_Color2DRoomsAbove"], "Color2DRoomsAbove"),
+                    Color(_localizationService["Opt_ColorSlideDirection"], "ColorSlideDirection"),
+                    Color(_localizationService["Opt_ColorIllegalSlope"], "ColorIllegalSlope"),
+                    Color(_localizationService["Opt_ColorSelection"], "ColorSelection"),
+                    Color(_localizationService["Opt_ColorForceSolidFloor"], "ColorForceSolidFloor"),
+                    Color(_localizationService["Opt_ColorTriggerTriggerer"], "ColorTriggerTriggerer"),
+                    Color(_localizationService["Opt_ColorBeetle"], "ColorBeetle"),
+                    Color(_localizationService["Opt_ColorNotWalkable"], "ColorNotWalkable"),
+                    Color(_localizationService["Opt_ColorDeath"], "ColorDeath"),
+                    Color(_localizationService["Opt_ColorBox"], "ColorBox"),
+                    Color(_localizationService["Opt_ColorClimb"], "ColorClimb"),
+                    Color(_localizationService["Opt_ColorMonkey"], "ColorMonkey"),
+                    Color(_localizationService["Opt_ColorTrigger"], "ColorTrigger"),
+                    Color(_localizationService["Opt_ColorWallUpper"], "ColorWallUpper"),
+                    Color(_localizationService["Opt_ColorWallLower"], "ColorWallLower"),
+                    Color(_localizationService["Opt_ColorWall"], "ColorWall"),
+                    Color(_localizationService["Opt_ColorBorderWall"], "ColorBorderWall"),
+                    Color(_localizationService["Opt_ColorFloor"], "ColorFloor"),
+                    Color(_localizationService["Opt_ColorPortalFace"], "ColorPortalFace"),
+                    Color(_localizationService["Opt_ColorPortal"], "ColorPortal"),
+                    Color(_localizationService["Opt_ColorPortalEffect"], "ColorPortalEffect"),
+                    Color(_localizationService["Opt_ColorFlipRoom"], "ColorFlipRoom"),
+                    Color(_localizationService["Opt_Color2DBackground"], "Color2DBackground"),
+                    Color(_localizationService["Opt_Color3DBackground"], "Color3DBackground"))));
 
             // 3D window
-            Tabs.Add(Tab("3D window",
-                Group("Text",
-                    Bool("Draw dark rectangular text overlay", "Rendering3D_DrawFontOverlays"),
-                    Bool("Bold", "Rendering3D_FontIsBold"),
-                    Num("Font size (requires restart):", "Rendering3D_FontSize", 0, 1000, 1, 2),
-                    Combo("Font (requires restart):", "Rendering3D_FontName", fonts)),
-                Group("Rendering",
-                    Combo("Object rendering quality (requires restart):", "Rendering3D_ObjectQuality", objectQuality),
-                    Bool("Use winroomedit cardinal direction hints", "Rendering3D_UseRoomEditorDirections"),
-                    Bool("Animate ghost block unfolding", "Rendering3D_AnimateGhostBlockUnfolding"),
-                    Bool("Use real Light Quality for preview", "Rendering3D_HighQualityLightPreview"),
-                    Bool("Automatically bookmark selected object", "Rendering3D_AutoBookmarkSelectedObject"),
-                    Bool("Automatically switch current room on mouse action", "Rendering3D_AutoswitchCurrentRoom"),
-                    Bool("Allow selection in any room", "Rendering3D_SelectObjectsInAnyRoom"),
-                    Bool("Animate camera on reset", "Rendering3D_AnimateCameraOnReset"),
-                    Bool("Show room bounds rectangle", "Rendering3D_AlwaysShowCurrentRoomBounds"),
-                    Bool("Allow texturing in Lighting mode", "Rendering3D_AllowTexturingInLightingMode"),
-                    Bool("Animate camera on relocation", "Rendering3D_AnimateCameraOnRelocation"),
-                    Bool("Animate camera on double-click room switch", "Rendering3D_AnimateCameraOnDoubleClickRoomSwitch"),
-                    Bool("Use flat icons for service objects", "Rendering3D_UseSpritesForServiceObjects"),
-                    Bool("Show FPS", "Rendering3D_ShowFPS"),
-                    Bool("Reset camera on room switch", "Rendering3D_ResetCameraOnRoomSwitch"),
-                    Bool("Use antialiasing (requires restart)", "Rendering3D_Antialias"),
-                    Num("Sector outline width:", "Rendering3D_LineWidth"),
-                    Num("Maximum portal room depth in 'Draw portals' mode:", "Rendering3D_DrawRoomsMaxDepth"),
-                    Num("Field of view:", "Rendering3D_FieldOfView", 10, 179))));
+            Tabs.Add(Tab(_localizationService["Tab_3DWindow"],
+                Group(_localizationService["Group_Text"],
+                    Bool(_localizationService["Opt_Rendering3D_DrawFontOverlays"], "Rendering3D_DrawFontOverlays"),
+                    Bool(_localizationService["Opt_Rendering3D_FontIsBold"], "Rendering3D_FontIsBold"),
+                    Num(_localizationService["Opt_Rendering3D_FontSize"], "Rendering3D_FontSize", 0, 1000, 1, 2),
+                    Combo(_localizationService["Opt_Rendering3D_FontName"], "Rendering3D_FontName", fonts)),
+                Group(_localizationService["Group_Rendering"],
+                    Combo(_localizationService["Opt_Rendering3D_ObjectQuality"], "Rendering3D_ObjectQuality", objectQuality),
+                    Bool(_localizationService["Opt_Rendering3D_UseRoomEditorDirections"], "Rendering3D_UseRoomEditorDirections"),
+                    Bool(_localizationService["Opt_Rendering3D_AnimateGhostBlockUnfolding"], "Rendering3D_AnimateGhostBlockUnfolding"),
+                    Bool(_localizationService["Opt_Rendering3D_HighQualityLightPreview"], "Rendering3D_HighQualityLightPreview"),
+                    Bool(_localizationService["Opt_Rendering3D_AutoBookmarkSelectedObject"], "Rendering3D_AutoBookmarkSelectedObject"),
+                    Bool(_localizationService["Opt_Rendering3D_AutoswitchCurrentRoom"], "Rendering3D_AutoswitchCurrentRoom"),
+                    Bool(_localizationService["Opt_Rendering3D_SelectObjectsInAnyRoom"], "Rendering3D_SelectObjectsInAnyRoom"),
+                    Bool(_localizationService["Opt_Rendering3D_AnimateCameraOnReset"], "Rendering3D_AnimateCameraOnReset"),
+                    Bool(_localizationService["Opt_Rendering3D_AlwaysShowCurrentRoomBounds"], "Rendering3D_AlwaysShowCurrentRoomBounds"),
+                    Bool(_localizationService["Opt_Rendering3D_AllowTexturingInLightingMode"], "Rendering3D_AllowTexturingInLightingMode"),
+                    Bool(_localizationService["Opt_Rendering3D_AnimateCameraOnRelocation"], "Rendering3D_AnimateCameraOnRelocation"),
+                    Bool(_localizationService["Opt_Rendering3D_AnimateCameraOnDoubleClickRoomSwitch"], "Rendering3D_AnimateCameraOnDoubleClickRoomSwitch"),
+                    Bool(_localizationService["Opt_Rendering3D_UseSpritesForServiceObjects"], "Rendering3D_UseSpritesForServiceObjects"),
+                    Bool(_localizationService["Opt_Rendering3D_ShowFPS"], "Rendering3D_ShowFPS"),
+                    Bool(_localizationService["Opt_Rendering3D_ResetCameraOnRoomSwitch"], "Rendering3D_ResetCameraOnRoomSwitch"),
+                    Bool(_localizationService["Opt_Rendering3D_Antialias"], "Rendering3D_Antialias"),
+                    Num(_localizationService["Opt_Rendering3D_LineWidth"], "Rendering3D_LineWidth"),
+                    Num(_localizationService["Opt_Rendering3D_DrawRoomsMaxDepth"], "Rendering3D_DrawRoomsMaxDepth"),
+                    Num(_localizationService["Opt_Rendering3D_FieldOfView"], "Rendering3D_FieldOfView", 10, 179))));
 
             // 3D controls
-            Tabs.Add(Tab("3D controls",
-                Group("Other",
-                    Num("Fly Mode move speed:", "Rendering3D_FlyModeMoveSpeed")),
-                Group("Mouse controls",
-                    Bool("Warp cursor on edges", "Rendering3D_CursorWarping"),
-                    Bool("Invert mouse zoom", "Rendering3D_InvertMouseZoom"),
-                    Num("Mouse drag tools sensitivity:", "Rendering3D_DragMouseSensitivity", 0, 1, 0.01, 2),
-                    Num("Mouse rotation speed:", "Rendering3D_NavigationSpeedMouseRotate"),
-                    Num("Mouse move speed:", "Rendering3D_NavigationSpeedMouseTranslate", 0, 500000),
-                    Num("Mouse drag zoom speed:", "Rendering3D_NavigationSpeedMouseZoom", 0, 500000),
-                    Num("Mouse wheel zoom speed:", "Rendering3D_NavigationSpeedMouseWheelZoom")),
-                Group("Keyboard controls",
-                    Num("Keyboard zoom speed:", "Rendering3D_NavigationSpeedKeyZoom", 0, 10000),
-                    Num("Keyboard rotation speed:", "Rendering3D_NavigationSpeedKeyRotate", 0, 10, 0.01, 2))));
+            Tabs.Add(Tab(_localizationService["Tab_3DControls"],
+                Group(_localizationService["Group_Other"],
+                    Num(_localizationService["Opt_Rendering3D_FlyModeMoveSpeed"], "Rendering3D_FlyModeMoveSpeed")),
+                Group(_localizationService["Group_MouseControls"],
+                    Bool(_localizationService["Opt_Rendering3D_CursorWarping"], "Rendering3D_CursorWarping"),
+                    Bool(_localizationService["Opt_Rendering3D_InvertMouseZoom"], "Rendering3D_InvertMouseZoom"),
+                    Num(_localizationService["Opt_Rendering3D_DragMouseSensitivity"], "Rendering3D_DragMouseSensitivity", 0, 1, 0.01, 2),
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedMouseRotate"], "Rendering3D_NavigationSpeedMouseRotate"),
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedMouseTranslate"], "Rendering3D_NavigationSpeedMouseTranslate", 0, 500000),
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedMouseZoom"], "Rendering3D_NavigationSpeedMouseZoom", 0, 500000),
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedMouseWheelZoom"], "Rendering3D_NavigationSpeedMouseWheelZoom")),
+                Group(_localizationService["Group_KeyboardControls"],
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedKeyZoom"], "Rendering3D_NavigationSpeedKeyZoom", 0, 10000),
+                    Num(_localizationService["Opt_Rendering3D_NavigationSpeedKeyRotate"], "Rendering3D_NavigationSpeedKeyRotate", 0, 10, 0.01, 2))));
 
             // Gizmo
-            Tabs.Add(Tab("Gizmo",
-                Group("Gizmo",
-                    Num("Line thickness:", "Gizmo_LineThickness", 0, 1000),
-                    Num("Scaling cube size:", "Gizmo_ScaleCubeSize", 0, 1000),
-                    Num("Centering cube size:", "Gizmo_CenterCubeSize", 0, 1000),
-                    Num("Translation cone size:", "Gizmo_TranslationConeSize", 0, 1000),
-                    Num("Gizmo size:", "Gizmo_Size", 0, 10000))));
+            Tabs.Add(Tab(_localizationService["Tab_Gizmo"],
+                Group(_localizationService["Group_Gizmo"],
+                    Num(_localizationService["Opt_Gizmo_LineThickness"], "Gizmo_LineThickness", 0, 1000),
+                    Num(_localizationService["Opt_Gizmo_ScaleCubeSize"], "Gizmo_ScaleCubeSize", 0, 1000),
+                    Num(_localizationService["Opt_Gizmo_CenterCubeSize"], "Gizmo_CenterCubeSize", 0, 1000),
+                    Num(_localizationService["Opt_Gizmo_TranslationConeSize"], "Gizmo_TranslationConeSize", 0, 1000),
+                    Num(_localizationService["Opt_Gizmo_Size"], "Gizmo_Size", 0, 10000))));
 
             // Item browser
-            Tabs.Add(Tab("Item browser",
-                Group("Item browser",
-                    Bool("Animate item preview", "RenderingItem_Animate"),
-                    Bool("Show hint in case current object exists in several wads", "RenderingItem_ShowMultipleWadsPrompt"),
-                    Bool("Hide internally used objects from item list", "RenderingItem_HideInternalObjects"),
-                    Bool("Use antialiasing (requires restart)", "RenderingItem_Antialias"),
-                    Num("Field of view:", "RenderingItem_FieldOfView", 10, 179),
-                    Num("Mouse rotation speed:", "RenderingItem_NavigationSpeedMouseRotate"),
-                    Num("Mouse move speed:", "RenderingItem_NavigationSpeedMouseTranslate", 0, 2000),
-                    Num("Mouse drag zoom speed:", "RenderingItem_NavigationSpeedMouseZoom", 0, 2000),
-                    Num("Mouse wheel zoom speed:", "RenderingItem_NavigationSpeedMouseWheelZoom"))));
+            Tabs.Add(Tab(_localizationService["Tab_ItemBrowser"],
+                Group(_localizationService["Group_ItemBrowser"],
+                    Bool(_localizationService["Opt_RenderingItem_Animate"], "RenderingItem_Animate"),
+                    Bool(_localizationService["Opt_RenderingItem_ShowMultipleWadsPrompt"], "RenderingItem_ShowMultipleWadsPrompt"),
+                    Bool(_localizationService["Opt_RenderingItem_HideInternalObjects"], "RenderingItem_HideInternalObjects"),
+                    Bool(_localizationService["Opt_RenderingItem_Antialias"], "RenderingItem_Antialias"),
+                    Num(_localizationService["Opt_RenderingItem_FieldOfView"], "RenderingItem_FieldOfView", 10, 179),
+                    Num(_localizationService["Opt_RenderingItem_NavigationSpeedMouseRotate"], "RenderingItem_NavigationSpeedMouseRotate"),
+                    Num(_localizationService["Opt_RenderingItem_NavigationSpeedMouseTranslate"], "RenderingItem_NavigationSpeedMouseTranslate", 0, 2000),
+                    Num(_localizationService["Opt_RenderingItem_NavigationSpeedMouseZoom"], "RenderingItem_NavigationSpeedMouseZoom", 0, 2000),
+                    Num(_localizationService["Opt_RenderingItem_NavigationSpeedMouseWheelZoom"], "RenderingItem_NavigationSpeedMouseWheelZoom"))));
 
             // 2D window
-            Tabs.Add(Tab("2D window",
-                Group("2D window",
-                    Num("Keyboard zoom speed:", "Map2D_NavigationSpeedKeyZoom", 0.05, 10, 0.05, 2),
-                    Num("Keyboard move speed:", "Map2D_NavigationSpeedKeyMove", 0, 500),
-                    Num("Mouse drag zoom speed:", "Map2D_NavigationSpeedMouseZoom", 0, 1_000_000, 0.05, 2),
-                    Num("Minimum zoom factor:", "Map2D_NavigationMinZoom", 0.05, 1_000_000, 0.05, 2),
-                    Num("Mouse wheel zoom speed:", "Map2D_NavigationSpeedMouseWheelZoom", 0.0001, 1, 0.0001, 4),
-                    Num("Maximum zoom factor:", "Map2D_NavigationMaxZoom", 0, 5000))));
+            Tabs.Add(Tab(_localizationService["Tab_2DWindow"],
+                Group(_localizationService["Group_2DWindow"],
+                    Num(_localizationService["Opt_Map2D_NavigationSpeedKeyZoom"], "Map2D_NavigationSpeedKeyZoom", 0.05, 10, 0.05, 2),
+                    Num(_localizationService["Opt_Map2D_NavigationSpeedKeyMove"], "Map2D_NavigationSpeedKeyMove", 0, 500),
+                    Num(_localizationService["Opt_Map2D_NavigationSpeedMouseZoom"], "Map2D_NavigationSpeedMouseZoom", 0, 1_000_000, 0.05, 2),
+                    Num(_localizationService["Opt_Map2D_NavigationMinZoom"], "Map2D_NavigationMinZoom", 0.05, 1_000_000, 0.05, 2),
+                    Num(_localizationService["Opt_Map2D_NavigationSpeedMouseWheelZoom"], "Map2D_NavigationSpeedMouseWheelZoom", 0.0001, 1, 0.0001, 4),
+                    Num(_localizationService["Opt_Map2D_NavigationMaxZoom"], "Map2D_NavigationMaxZoom", 0, 5000))));
 
             // Texture map
-            Tabs.Add(Tab("Texture map",
-                Group("Texture map",
-                    Bool("Warn if double-sided texture is applied to single-sided face", "TextureMap_WarnAboutIncorrectAttributes"),
-                    Bool("Reset attributes on new selection", "TextureMap_ResetAttributesOnNewSelection"),
-                    Bool("Pick texture without attributes", "TextureMap_PickTextureWithoutAttributes"),
-                    Bool("Scroll texture with mouse wheel instead of zooming it", "TextureMap_MouseWheelMovesTheTextureInsteadOfZooming"),
-                    Bool("Draw selection direction indicators", "TextureMap_DrawSelectionDirectionIndicators"),
-                    Num("Keyboard zoom speed:", "TextureMap_NavigationSpeedKeyZoom", 0, 1_000_000, 0.05, 2),
-                    Num("Keyboard move speed:", "TextureMap_NavigationSpeedKeyMove", 0, 500),
-                    Num("Mouse drag zoom speed:", "TextureMap_NavigationSpeedMouseZoom", 0, 1_000_000, 0.05, 2),
-                    Num("Minimum zoom factor:", "TextureMap_NavigationMinZoom", 0.05, 1_000_000, 0.05, 2),
-                    Num("Mouse wheel zoom speed:", "TextureMap_NavigationSpeedMouseWheelZoom", 0, 1_000_000, 0.0005, 4),
-                    Num("Maximum zoom factor:", "TextureMap_NavigationMaxZoom", 0, 5000))));
+            Tabs.Add(Tab(_localizationService["Tab_TextureMap"],
+                Group(_localizationService["Group_TextureMap"],
+                    Bool(_localizationService["Opt_TextureMap_WarnAboutIncorrectAttributes"], "TextureMap_WarnAboutIncorrectAttributes"),
+                    Bool(_localizationService["Opt_TextureMap_ResetAttributesOnNewSelection"], "TextureMap_ResetAttributesOnNewSelection"),
+                    Bool(_localizationService["Opt_TextureMap_PickTextureWithoutAttributes"], "TextureMap_PickTextureWithoutAttributes"),
+                    Bool(_localizationService["Opt_TextureMap_MouseWheelMovesTheTextureInsteadOfZooming"], "TextureMap_MouseWheelMovesTheTextureInsteadOfZooming"),
+                    Bool(_localizationService["Opt_TextureMap_DrawSelectionDirectionIndicators"], "TextureMap_DrawSelectionDirectionIndicators"),
+                    Num(_localizationService["Opt_TextureMap_NavigationSpeedKeyZoom"], "TextureMap_NavigationSpeedKeyZoom", 0, 1_000_000, 0.05, 2),
+                    Num(_localizationService["Opt_TextureMap_NavigationSpeedKeyMove"], "TextureMap_NavigationSpeedKeyMove", 0, 500),
+                    Num(_localizationService["Opt_TextureMap_NavigationSpeedMouseZoom"], "TextureMap_NavigationSpeedMouseZoom", 0, 1_000_000, 0.05, 2),
+                    Num(_localizationService["Opt_TextureMap_NavigationMinZoom"], "TextureMap_NavigationMinZoom", 0.05, 1_000_000, 0.05, 2),
+                    Num(_localizationService["Opt_TextureMap_NavigationSpeedMouseWheelZoom"], "TextureMap_NavigationSpeedMouseWheelZoom", 0, 1_000_000, 0.0005, 4),
+                    Num(_localizationService["Opt_TextureMap_NavigationMaxZoom"], "TextureMap_NavigationMaxZoom", 0, 5000))));
 
             // Node editor
-            Tabs.Add(Tab("Node editor",
-                Group("Node editor",
-                    Bool("Show side grips for nodes", "NodeEditor_ShowGrips"),
-                    Bool("Draw node editor links as ropes", "NodeEditor_LinksAsRopes"),
-                    Combo("Default editing mode:", "NodeEditor_DefaultEventMode", eventMode),
-                    Combo("Default event to edit:", "NodeEditor_DefaultEventToEdit", volumeEvents),
-                    Combo("Default global event to edit:", "NodeEditor_DefaultGlobalEventToEdit", globalEvents),
-                    Num("Node graph size:", "NodeEditor_Size", 1, 1024, 0.05, 0),
-                    Num("Node graph grid step:", "NodeEditor_GridStep", 1, 64, 0.0005, 0),
-                    Num("Default node width:", "NodeEditor_DefaultNodeWidth", 128, 1024))));
+            Tabs.Add(Tab(_localizationService["Tab_NodeEditor"],
+                Group(_localizationService["Group_NodeEditor"],
+                    Bool(_localizationService["Opt_NodeEditor_ShowGrips"], "NodeEditor_ShowGrips"),
+                    Bool(_localizationService["Opt_NodeEditor_LinksAsRopes"], "NodeEditor_LinksAsRopes"),
+                    Combo(_localizationService["Opt_NodeEditor_DefaultEventMode"], "NodeEditor_DefaultEventMode", eventMode),
+                    Combo(_localizationService["Opt_NodeEditor_DefaultEventToEdit"], "NodeEditor_DefaultEventToEdit", volumeEvents),
+                    Combo(_localizationService["Opt_NodeEditor_DefaultGlobalEventToEdit"], "NodeEditor_DefaultGlobalEventToEdit", globalEvents),
+                    Num(_localizationService["Opt_NodeEditor_Size"], "NodeEditor_Size", 1, 1024, 0.05, 0),
+                    Num(_localizationService["Opt_NodeEditor_GridStep"], "NodeEditor_GridStep", 1, 64, 0.0005, 0),
+                    Num(_localizationService["Opt_NodeEditor_DefaultNodeWidth"], "NodeEditor_DefaultNodeWidth", 128, 1024))));
 
             // Drop options whose exact config property wasn't resolved (placeholders) - only keep ones
             // that actually exist on the configuration so reflection read/write stays correct.
             foreach (var tab in Tabs)
                 foreach (var group in tab.Groups)
                     group.Items.RemoveAll(o => o.Kind != OptionKind.ColorSchemePreset && GetOption(_config, o.ConfigName) == null);
+
+            // Apply the preset as soon as one is picked (the view binds the combo's SelectedItem to Value).
+            foreach (var item in Tabs.SelectMany(t => t.AllItems).Where(i => i.Kind == OptionKind.ColorSchemePreset))
+                item.PropertyChanged += (_, e) =>
+                {
+                    if (e.PropertyName == nameof(OptionItem.Value) && item.Value is string presetName)
+                        ApplyColorSchemePreset(presetName);
+                };
         }
 
         private List<object> GetColorSchemePresetNames()

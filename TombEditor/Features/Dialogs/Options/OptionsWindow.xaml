@@ -8,7 +8,8 @@
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.Options"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
-	Title="Editor options"
+	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
+	Title="{tombLib:Localize Title}"
 	Width="660"
 	Height="600"
 	MinWidth="520"
@@ -101,7 +102,7 @@
 					VerticalAlignment="Center"
 					DockPanel.Dock="Left"
 					Text="{Binding Label}" />
-				<ComboBox ItemsSource="{Binding Items}" SelectionChanged="Preset_SelectionChanged" />
+				<ComboBox ItemsSource="{Binding Items}" SelectedItem="{Binding Value, Mode=TwoWay}" />
 			</DockPanel>
 		</DataTemplate>
 
@@ -137,7 +138,7 @@
 
 		<!--  Search box  -->
 		<DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
-			<TextBlock VerticalAlignment="Center" Margin="0,0,6,0" Text="Search:" />
+			<TextBlock VerticalAlignment="Center" Margin="0,0,6,0" Text="{tombLib:Localize Search}" />
 			<TextBox Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 		</DockPanel>
 
@@ -148,10 +149,10 @@
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-			<Button Width="120" Command="{Binding PageDefaultsCommand}" Content="Reset page to defaults" />
-			<Button Width="80" Command="{Binding ApplyCommand}" Content="Apply" />
-			<Button Width="80" Command="{Binding OkCommand}" Content="OK" IsDefault="True" />
-			<Button Width="80" Command="{Binding CancelCommand}" Content="Cancel" IsCancel="True" />
+			<Button Width="120" Command="{Binding PageDefaultsCommand}" Content="{tombLib:Localize ResetPageToDefaults}" />
+			<Button Width="80" Command="{Binding ApplyCommand}" Content="{tombLib:Localize ~Common.Apply}" />
+			<Button Width="80" Command="{Binding OkCommand}" Content="{tombLib:Localize ~Common.OK}" IsDefault="True" />
+			<Button Width="80" Command="{Binding CancelCommand}" Content="{tombLib:Localize ~Common.Cancel}" IsCancel="True" />
 		</controls:SpacedStack>
 
 		<!--  Tabs  -->
