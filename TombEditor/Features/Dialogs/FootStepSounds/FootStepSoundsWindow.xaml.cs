@@ -20,12 +20,14 @@ public partial class FootStepSoundsWindow : Window
         {
             old.RequestResetVisibleTexture -= OnResetVisible;
             old.RequestInvalidate -= OnInvalidate;
+            old.MapSelectionProvider = null;
         }
 
         if (e.NewValue is FootStepSoundsWindowViewModel vm)
         {
             vm.RequestResetVisibleTexture += OnResetVisible;
             vm.RequestInvalidate += OnInvalidate;
+            vm.MapSelectionProvider = () => mapView.SelectedTexture;
             mapView.ResetVisibleTexture(vm.SelectedTexture);
         }
     }

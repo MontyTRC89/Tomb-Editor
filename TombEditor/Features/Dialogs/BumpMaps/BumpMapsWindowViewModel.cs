@@ -47,6 +47,10 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     public event EventHandler<LevelTexture?>? RequestResetVisibleTexture;
     public event EventHandler? RequestInvalidate;
 
+    /// <summary>Set by the view: the current selection of the dialog's own texture map
+    /// (the legacy form used textureMap.SelectedTexture, not the editor-wide selection).</summary>
+    public Func<TextureArea>? MapSelectionProvider { get; set; }
+
     public BumpMapsWindowViewModel(
         LevelTexture? texture,
         Editor? editor = null,
@@ -126,7 +130,9 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
         if (SelectedTexture is not { } texture || IsCustomMapped)
             return;
 
-        TextureArea selected = _editor.SelectedTexture;
+        TextureArea selected = MapSelectionProvider?.Invoke() ?? TextureArea.None;
+        if (selected.TextureIsInvisible)
+            return;
 
         Vector2 p0 = selected.TexCoord0 / LevelTexture.BumpMappingGranularity;
         Vector2 p1 = selected.TexCoord1 / LevelTexture.BumpMappingGranularity;

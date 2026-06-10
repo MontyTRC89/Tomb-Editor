@@ -37,6 +37,10 @@ public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDia
     public event EventHandler<LevelTexture?>? RequestResetVisibleTexture;
     public event EventHandler? RequestInvalidate;
 
+    /// <summary>Set by the view: the current selection of the dialog's own texture map
+    /// (the legacy form used textureMap.SelectedTexture, not the editor-wide selection).</summary>
+    public Func<TextureArea>? MapSelectionProvider { get; set; }
+
     public FootStepSoundsWindowViewModel(
         LevelTexture? texture,
         Editor? editor = null,
@@ -65,11 +69,11 @@ public partial class FootStepSoundsWindowViewModel : ObservableObject, IModalDia
         if (SelectedTexture is not { } texture || SelectedSoundIndex < 0)
             return;
 
-        if (_editor.SelectedTexture.TextureIsInvisible)
+        TextureArea selected = MapSelectionProvider?.Invoke() ?? TextureArea.None;
+        if (selected.TextureIsInvisible)
             return;
 
         var sound = (TextureFootStep.Type)SelectedSoundIndex;
-        TextureArea selected = _editor.SelectedTexture;
 
         Vector2 p0 = selected.TexCoord0 / LevelTexture.FootStepSoundGranularity;
         Vector2 p1 = selected.TexCoord1 / LevelTexture.FootStepSoundGranularity;
