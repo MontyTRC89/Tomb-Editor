@@ -23,6 +23,10 @@
 	WindowStartupLocation="CenterOwner"
 	mc:Ignorable="d">
 
+	<Window.Resources>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+	</Window.Resources>
+
 	<controls:SpacedGrid
 		Margin="{x:Static darkUI:Defaults.MediumThickness}"
 		ColumnSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}"
@@ -30,6 +34,7 @@
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -135,8 +140,17 @@
 				IsChecked="{Binding UseWalls, Mode=TwoWay}" />
 		</controls:SpacedGrid>
 
-		<controls:SpacedStack
+		<TextBlock
 			Grid.Row="1"
+			Grid.Column="0"
+			Grid.ColumnSpan="2"
+			Foreground="{DynamicResource Brush_Text_Warning}"
+			Text="{Binding OversizedWarning}"
+			TextWrapping="Wrap"
+			Visibility="{Binding IsOversized, Converter={StaticResource BoolToVis}}" />
+
+		<controls:SpacedStack
+			Grid.Row="2"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"
 			HorizontalAlignment="Right"
