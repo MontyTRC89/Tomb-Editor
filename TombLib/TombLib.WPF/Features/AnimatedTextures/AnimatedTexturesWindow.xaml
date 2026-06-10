@@ -23,7 +23,6 @@
 
 	<Window.Resources>
 		<BooleanToVisibilityConverter x:Key="BoolToVis" />
-		<local:FrameThumbnailConverter x:Key="FrameThumb" />
 	</Window.Resources>
 
 	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
@@ -66,11 +65,14 @@
 						Margin="6,0,0,0"
 						Orientation="Horizontal"
 						Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
-						<Button Width="28" Click="OnRenameSet" IsEnabled="{Binding HasSelectedSet}" ToolTip="{tombLib:Localize RenameSetTooltip}">
+						<Button Width="28" Command="{Binding RenameSetCommand}" ToolTip="{tombLib:Localize RenameSetTooltip}">
 							<Image Width="16" Height="16" Source="{tomb:Icon General/edit}" />
 						</Button>
 						<Button Width="28" Command="{Binding NewSetCommand}" ToolTip="{tombLib:Localize NewSetTooltip}">
 							<Image Width="16" Height="16" Source="{tomb:Icon General/plus_math}" />
+						</Button>
+						<Button Width="28" Command="{Binding CloneSetCommand}" ToolTip="{tombLib:Localize CloneSetTooltip}">
+							<Image Width="16" Height="16" Source="{tomb:Icon General/copy}" />
 						</Button>
 						<Button Width="28" Command="{Binding DeleteSetCommand}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
 							<Image Width="16" Height="16" Source="{tomb:Icon General/trash}" />
@@ -163,7 +165,7 @@
 										DisplayMemberPath="Display"
 										ItemsSource="{Binding ProceduralPresets}"
 										SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
-										ToolTip="Animation type" />
+										ToolTip="{tombLib:Localize AnimatorTooltip}" />
 								</Grid>
 								<Grid Margin="0,0,0,4">
 									<Grid.ColumnDefinitions>
@@ -173,14 +175,14 @@
 										<ColumnDefinition Width="*" />
 									</Grid.ColumnDefinitions>
 									<TextBlock Grid.Column="0" Margin="0,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize ProgressPercent}" />
-									<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" ToolTip="Effect progress or strength" Value="{Binding GenStrength, Mode=TwoWay}" />
+									<controls:NumericUpDown Grid.Column="1" Maximum="100" Minimum="-100" ToolTip="{tombLib:Localize ProgressTooltip}" Value="{Binding GenStrength, Mode=TwoWay}" />
 									<TextBlock Grid.Column="2" Margin="10,0,6,0" VerticalAlignment="Center" Text="{tombLib:Localize Frames}" />
-									<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" ToolTip="Amount of resulting animation frames" Value="{Binding GenFrameCount, Mode=TwoWay}" />
+									<controls:NumericUpDown Grid.Column="3" Maximum="256" Minimum="1" ToolTip="{tombLib:Localize FrameCountTooltip}" Value="{Binding GenFrameCount, Mode=TwoWay}" />
 								</Grid>
 								<Grid Margin="0,0,0,4">
 									<controls:SpacedStack Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-										<CheckBox Content="{tombLib:Localize Symmetric}" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="Make animation symmetric" />
-										<CheckBox Content="{tombLib:Localize Smooth}" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="Ease-in and ease-out animation" />
+										<CheckBox Content="{tombLib:Localize Symmetric}" IsChecked="{Binding GenLoop, Mode=TwoWay}" ToolTip="{tombLib:Localize SymmetricTooltip}" />
+										<CheckBox Content="{tombLib:Localize Smooth}" IsChecked="{Binding GenSmooth, Mode=TwoWay}" ToolTip="{tombLib:Localize SmoothTooltip}" />
 									</controls:SpacedStack>
 									<controls:SpacedStack HorizontalAlignment="Right" Orientation="Horizontal" Spacing="{x:Static darkUI:Defaults.SmallThicknessWidth}">
 										<Button Width="28" Command="{Binding GenerateNewCommand}" ToolTip="{tombLib:Localize GenerateTooltip}">
@@ -264,7 +266,7 @@
 										<Image
 											Width="32"
 											Height="32"
-											Source="{Binding Converter={StaticResource FrameThumb}}"
+											Source="{Binding Thumbnail}"
 											Stretch="Uniform" />
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
@@ -292,10 +294,10 @@
 								Binding="{Binding Area}"
 								Header="{tombLib:Localize ColumnArea}"
 								IsReadOnly="True" />
-							<DataGridTextColumn Width="70" Binding="{Binding TexCoord0}" Header="Edge 0" IsReadOnly="True" />
-							<DataGridTextColumn Width="70" Binding="{Binding TexCoord1}" Header="Edge 1" IsReadOnly="True" />
-							<DataGridTextColumn Width="70" Binding="{Binding TexCoord2}" Header="Edge 2" IsReadOnly="True" />
-							<DataGridTextColumn Width="70" Binding="{Binding TexCoord3}" Header="Edge 3" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord0}" Header="{tombLib:Localize ColumnEdge0}" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord1}" Header="{tombLib:Localize ColumnEdge1}" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord2}" Header="{tombLib:Localize ColumnEdge2}" IsReadOnly="True" />
+							<DataGridTextColumn Width="70" Binding="{Binding TexCoord3}" Header="{tombLib:Localize ColumnEdge3}" IsReadOnly="True" />
 						</DataGrid.Columns>
 					</DataGrid>
 

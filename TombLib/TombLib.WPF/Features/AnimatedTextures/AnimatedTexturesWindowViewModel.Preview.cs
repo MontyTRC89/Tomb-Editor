@@ -110,7 +110,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             }
             else if (SelectedFrame != null)
             {
-                int index = set.Frames.IndexOf(SelectedFrame);
+                int index = set.Frames.IndexOf(SelectedFrame.Model);
                 if (index >= 0)
                     frameIndex = index;
             }

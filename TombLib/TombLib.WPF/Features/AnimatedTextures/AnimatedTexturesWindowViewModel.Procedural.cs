@@ -54,7 +54,9 @@ namespace TombLib.WPF.Features.AnimatedTextures
     public partial class AnimatedTexturesWindowViewModel
     {
         private const int MaxLegacyFrames = 16;
-        private const string AnimNameCombineString = " (with ";
+
+        // " (with " — also used as the marker for stripping a previously appended effect postfix.
+        private string AnimNameCombineString => _localizationService["EffectNamePrefix"];
 
         public IReadOnlyList<ProceduralPreset> ProceduralPresets { get; }
 
@@ -99,7 +101,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             Frames.Clear();
             if (SelectedSet != null)
                 foreach (var frame in SelectedSet.Frames)
-                    Frames.Add(frame);
+                    Frames.Add(new AnimatedTextureFrameViewModel(frame));
             _lockUi = wasLocked;
         }
 
@@ -133,16 +135,16 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 if (genType == AnimGenerationType.Clone)
                     targetSet = targetSet.Clone();
                 else if (genType == AnimGenerationType.AddFrames && targetSet.Frames.Count > 0)
-                    startIndex = (SelectedFrame != null ? targetSet.Frames.IndexOf(SelectedFrame) : -1) + 1;
+                    startIndex = (SelectedFrame != null ? targetSet.Frames.IndexOf(SelectedFrame.Model) : -1) + 1;
                 else if (genType == AnimGenerationType.Replace)
                     targetSet.Frames.Clear();
 
                 if (string.IsNullOrEmpty(targetSet.Name))
-                    targetSet.Name = "Animation #" + (_sets.Count + 1);
+                    targetSet.Name = _localizationService.Format("NewSetName", _sets.Count + 1);
             }
             else
             {
-                targetSet = new AnimatedTextureSet { Name = "Procedural animation #" + (_sets.Count + 1) };
+                targetSet = new AnimatedTextureSet { Name = _localizationService.Format("ProceduralSetName", _sets.Count + 1) };
             }
 
             if (genType is AnimGenerationType.New or AnimGenerationType.Replace or AnimGenerationType.AddFrames)
@@ -181,7 +183,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 int foundPostfixPos = targetSet.Name.IndexOf(AnimNameCombineString, StringComparison.Ordinal);
                 if (foundPostfixPos != -1)
                     targetSet.Name = targetSet.Name.Substring(0, foundPostfixPos);
-                targetSet.Name += AnimNameCombineString + preset.Display + " effect)";
+                targetSet.Name += AnimNameCombineString + preset.Display + _localizationService["EffectNameSuffix"];
             }
 
             var rnd = new Random();

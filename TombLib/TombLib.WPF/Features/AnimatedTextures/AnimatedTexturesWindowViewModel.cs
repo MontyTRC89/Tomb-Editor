@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MvvmDialogs;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -22,7 +23,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
     /// Edits the host's live <see cref="AnimatedTextureSet"/> list; Cancel restores a backup clone.
     /// Procedural-animation generation and the animated preview follow in later steps.
     /// </summary>
-    public partial class AnimatedTexturesWindowViewModel : ObservableObject
+    public partial class AnimatedTexturesWindowViewModel : ObservableObject, IModalDialogViewModel
     {
         private readonly IAnimatedTexturesContext _context;
         private readonly TextureMapBase _textureMap;
@@ -38,14 +39,18 @@ namespace TombLib.WPF.Features.AnimatedTextures
         public TextureMapBase TextureMap => _textureMap;
 
         public ObservableCollection<AnimatedTextureSet> Sets { get; } = new();
-        public ObservableCollection<AnimatedTextureFrame> Frames { get; } = new();
+        public ObservableCollection<AnimatedTextureFrameViewModel> Frames { get; } = new();
         public List<Texture> AvailableTextures => _context.AvailableTextures;
         public IReadOnlyList<AnimatedTextureAnimationType> AnimationTypes { get; }
 
         [ObservableProperty] private AnimatedTextureSet? _selectedSet;
-        [ObservableProperty] private AnimatedTextureFrame? _selectedFrame;
+        [ObservableProperty] private AnimatedTextureFrameViewModel? _selectedFrame;
 
-        public event EventHandler<bool>? RequestClose; // bool = cancelled
+        // Closes the window via HookModalAutoClose once set (true = keep edits, false = cancel).
+        [ObservableProperty] private bool? _dialogResult;
+
+        /// <summary>Raised when the view should show a text prompt (see <see cref="TextInputRequest"/>).</summary>
+        public event EventHandler<TextInputRequest>? InputRequested;
 
         public AnimatedTexturesWindowViewModel(IAnimatedTexturesContext context, TextureMapBase textureMap)
         {
@@ -66,7 +71,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 _backupSets.Add(set.Clone());
 
             context.OnAnimatedTexturesChanged = OnAnimatedTexturesChanged;
-            context.OnContextInvalidated = () => RequestClose?.Invoke(this, false);
+            context.OnContextInvalidated = () => DialogResult = true; // Close keeping the edits, like the OK button.
 
             Frames.CollectionChanged += OnFramesCollectionChanged;
 
@@ -156,7 +161,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (value != null)
             {
                 foreach (var frame in value.Frames)
-                    Frames.Add(frame);
+                    Frames.Add(new AnimatedTextureFrameViewModel(frame));
                 _name = value.Name ?? string.Empty;
                 _selectedAnimationType = value.AnimationType;
                 _fps = value.Fps;
@@ -193,12 +198,12 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             // A frame add/remove does not change the set list, so only refresh the map + preview.
             // (Rebuilding the set combo here would re-enter this collection's CollectionChanged.)
-            SelectedSet.Frames = Frames.ToList();
+            SelectedSet.Frames = Frames.Select(frame => frame.Model).ToList();
             _textureMap.InvalidateVisual();
             UpdatePreviewState();
         }
 
-        // Editable set name (inline; replaces the WinForms "edit name" input box).
+        // Editable set name (written by the rename prompt; see RenameSetCommand).
 
         private string _name = string.Empty;
         public string Name
@@ -252,25 +257,35 @@ namespace TombLib.WPF.Features.AnimatedTextures
         [RelayCommand]
         private void NewSet()
         {
-            var set = new AnimatedTextureSet { Name = "Animation #" + _sets.Count };
+            var set = new AnimatedTextureSet { Name = _localizationService.Format("NewSetName", _sets.Count) };
             _sets.Add(set);
             RebuildSets();
             SelectedSet = set;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
+        private void RenameSet()
+        {
+            InputRequested?.Invoke(this, new TextInputRequest(
+                _localizationService["RenameSetTitle"],
+                _localizationService["Name"],
+                Name,
+                value => Name = value));
+        }
+
+        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
         private void CloneSet()
         {
             if (SelectedSet == null)
                 return;
             var clone = SelectedSet.Clone();
-            clone.Name = (SelectedSet.Name ?? "Animation") + " (copy)";
+            clone.Name = _localizationService.Format("ClonedSetName", SelectedSet.Name ?? _localizationService["FallbackSetName"]);
             _sets.Add(clone);
             RebuildSets();
             SelectedSet = clone;
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
         private void DeleteSet()
         {
             if (SelectedSet == null)
@@ -298,8 +313,9 @@ namespace TombLib.WPF.Features.AnimatedTextures
                     return;
             }
 
-            Frames.Add(frame);
-            SelectedFrame = frame;
+            var row = new AnimatedTextureFrameViewModel(frame);
+            Frames.Add(row);
+            SelectedFrame = row;
         }
 
         [RelayCommand]
@@ -364,16 +380,20 @@ namespace TombLib.WPF.Features.AnimatedTextures
         }
 
         [RelayCommand]
-        private void Ok() => RequestClose?.Invoke(this, false);
+        private void Ok() => DialogResult = true;
 
         [RelayCommand]
-        private void Cancel() => RequestClose?.Invoke(this, true);
+        private void Cancel() => DialogResult = false;
 
-        public void Closing(bool cancelled)
+        /// <summary>
+        /// Final cleanup once the window has closed. Cancel (DialogResult == false) restores the backup;
+        /// OK and a plain window close (DialogResult still null) keep the edits, matching the old flow.
+        /// </summary>
+        public void OnWindowClosed()
         {
             StopPreview();
 
-            if (cancelled)
+            if (DialogResult == false)
             {
                 _sets.Clear();
                 foreach (var set in _backupSets)
@@ -384,6 +404,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
         private void RefreshCommandStates()
         {
+            RenameSetCommand.NotifyCanExecuteChanged();
             CloneSetCommand.NotifyCanExecuteChanged();
             DeleteSetCommand.NotifyCanExecuteChanged();
         }

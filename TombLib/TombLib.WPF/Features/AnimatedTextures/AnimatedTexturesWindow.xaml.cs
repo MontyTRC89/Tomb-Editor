@@ -9,11 +9,11 @@ namespace TombLib.WPF.Features.AnimatedTextures
     public partial class AnimatedTexturesWindow : Window
     {
         private AnimatedTexturesWindowViewModel? _viewModel;
-        private bool _cancelled;
 
         public AnimatedTexturesWindow()
         {
             InitializeComponent();
+            this.HookModalAutoClose();
             DataContextChanged += OnDataContextChanged;
             Loaded += OnLoaded;
             Closed += OnClosed;
@@ -27,7 +27,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_viewModel == null)
                 return;
 
-            _viewModel.RequestClose += OnRequestClose;
+            _viewModel.InputRequested += OnInputRequested;
             _viewModel.TextureMap.MouseDown += OnTextureMapMouseDown;
         }
 
@@ -46,14 +46,13 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 _viewModel.SelectedSet = _viewModel.Sets[0];
         }
 
-        private void OnRenameSet(object sender, RoutedEventArgs e)
+        // The VM cannot show windows itself, so it raises a request and the view answers it here.
+        private void OnInputRequested(object? sender, TextInputRequest e)
         {
-            if (_viewModel == null || !_viewModel.HasSelectedSet)
-                return;
-
-            var dialog = new InputDialog("Rename animation set", "Name:", _viewModel.Name) { Owner = this };
+            var viewModel = new InputDialogViewModel(e.Title, e.Label, e.Value);
+            var dialog = new InputDialog { Owner = this, DataContext = viewModel };
             if (dialog.ShowDialog() == true)
-                _viewModel.Name = dialog.Value;
+                e.Accept(viewModel.Value);
         }
 
         private void OnTextureMapMouseDown(object sender, MouseButtonEventArgs e)
@@ -65,15 +64,9 @@ namespace TombLib.WPF.Features.AnimatedTextures
             }
         }
 
-        private void OnRequestClose(object? sender, bool cancelled)
-        {
-            _cancelled = cancelled;
-            Close();
-        }
-
         private void OnClosed(object? sender, EventArgs e)
         {
-            _viewModel?.Closing(_cancelled);
+            _viewModel?.OnWindowClosed();
             Detach();
             textureMapContainer.Child = null;
         }
@@ -83,7 +76,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_viewModel == null)
                 return;
 
-            _viewModel.RequestClose -= OnRequestClose;
+            _viewModel.InputRequested -= OnInputRequested;
             _viewModel.TextureMap.MouseDown -= OnTextureMapMouseDown;
         }
     }

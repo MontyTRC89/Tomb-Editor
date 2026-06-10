@@ -53,13 +53,13 @@ namespace TombLib.WPF.Features.AnimatedTextures
                 return;
 
             for (int i = -64; i < 0; i++)
-                NgUvRotateOptions.Add(new NgSettingPair(i, "UvRotate = " + i));
+                NgUvRotateOptions.Add(new NgSettingPair(i, _localizationService.Format("NgUvRotateValue", i)));
             NgUvRotateOptions.Add(new NgSettingPair(0, _localizationService["DefaultFromScript"]));
             for (int i = 1; i <= 64; i++)
-                NgUvRotateOptions.Add(new NgSettingPair(i, "UvRotate = " + i));
+                NgUvRotateOptions.Add(new NgSettingPair(i, _localizationService.Format("NgUvRotateValue", i)));
 
             for (int i = 1; i <= 32; i++)
-                NgFpsOptions.Add(new NgSettingPair(i, i + " FPS"));
+                NgFpsOptions.Add(new NgSettingPair(i, _localizationService.Format("NgFpsValue", i)));
         }
 
         // TRNG combos.
