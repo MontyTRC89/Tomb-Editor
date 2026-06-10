@@ -36,10 +36,32 @@
 		BorderThickness="0,1,0,0"
 		Padding="6,2"
 		Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
-		<ItemsControl
-			ItemTemplate="{StaticResource StatRunTemplate}"
-			ItemsPanel="{StaticResource HorizontalPanel}"
-			ItemsSource="{Binding Runs}"
-			ToolTip="{Binding LimitWarning}" />
+		<DockPanel LastChildFill="True">
+			<!--  Step height selector (TEN levels only), mirroring the WinForms panelStepHeightOptions.  -->
+			<StackPanel
+				DockPanel.Dock="Right"
+				Orientation="Horizontal"
+				Visibility="{Binding IsStepHeightVisible, Converter={StaticResource BoolToVis}}">
+				<TextBlock
+					Style="{StaticResource StatRunStyle}"
+					Margin="12,0,6,0"
+					VerticalAlignment="Center"
+					Text="Step height:" />
+				<ComboBox
+					Width="110"
+					VerticalAlignment="Center"
+					FontSize="11"
+					ItemsSource="{Binding StepHeightOptions}"
+					SelectedIndex="{Binding StepHeightIndex}"
+					ToolTip="Set minimum step height for room geometry actions" />
+			</StackPanel>
+			<ItemsControl
+				VerticalAlignment="Center"
+				ItemTemplate="{StaticResource StatRunTemplate}"
+				ItemsPanel="{StaticResource HorizontalPanel}"
+				ItemsSource="{Binding Runs}"
+				ToolTip="{Binding LimitWarning}"
+				Visibility="{Binding IsStatsVisible, Converter={StaticResource BoolToVis}}" />
+		</DockPanel>
 	</Border>
 </UserControl>

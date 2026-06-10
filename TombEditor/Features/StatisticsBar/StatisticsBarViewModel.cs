@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TombLib.Wad.Catalog;
@@ -21,8 +22,14 @@ public partial class StatisticsBarViewModel : ObservableObject
 
     public ObservableCollection<StatRun> Runs { get; } = new();
 
+    /// <summary>Mirrors the WinForms <c>comboStepHeight</c> items (indices map to 32/64/128/256).</summary>
+    public IReadOnlyList<string> StepHeightOptions { get; } = new[] { "32 (Eighth)", "64 (Quarter)", "128 (Half)", "256 (Full)" };
+
     [ObservableProperty] private string? _limitWarning;
     [ObservableProperty] private bool _isVisible;
+    [ObservableProperty] private bool _isStatsVisible;
+    [ObservableProperty] private bool _isStepHeightVisible;
+    [ObservableProperty] private int _stepHeightIndex;
 
     public StatisticsBarViewModel(Editor editor)
     {
@@ -30,6 +37,7 @@ public partial class StatisticsBarViewModel : ObservableObject
         _editor.EditorEventRaised += OnEditorEventRaised;
 
         UpdateVisibility();
+        SyncStepHeight();
         Rebuild();
     }
 
@@ -43,8 +51,22 @@ public partial class StatisticsBarViewModel : ObservableObject
 
     private void OnEditorEventRaised(IEditorEvent obj)
     {
-        if (obj is Editor.ConfigurationChangedEvent)
+        // IsPreciseGeometryAllowed depends on the game version and a config flag, so visibility
+        // must follow level/version changes too (mirrors MainView.UpdateBottomPanelVisibility).
+        if (obj is Editor.ConfigurationChangedEvent
+            or Editor.InitEvent
+            or Editor.LevelChangedEvent
+            or Editor.GameVersionChangedEvent)
+        {
             UpdateVisibility();
+        }
+
+        if (obj is Editor.StepHeightChangedEvent
+            or Editor.InitEvent
+            or Editor.LevelChangedEvent)
+        {
+            SyncStepHeight();
+        }
 
         if (obj is Editor.StatisticsChangedEvent
             or Editor.InitEvent
@@ -57,7 +79,36 @@ public partial class StatisticsBarViewModel : ObservableObject
         }
     }
 
-    private void UpdateVisibility() => IsVisible = _editor.Configuration.Window_Layout.ShowStats;
+    private void UpdateVisibility()
+    {
+        IsStatsVisible = _editor.Configuration.Window_Layout.ShowStats;
+        IsStepHeightVisible = _editor.Level is not null && _editor.IsPreciseGeometryAllowed;
+        IsVisible = IsStatsVisible || IsStepHeightVisible;
+    }
+
+    private void SyncStepHeight()
+    {
+        StepHeightIndex = _editor.Configuration.Editor_StepHeight switch
+        {
+            32 => 0,
+            64 => 1,
+            128 => 2,
+            _ => 3
+        };
+    }
+
+    partial void OnStepHeightIndexChanged(int value)
+    {
+        // Mirrors comboStepHeight_SelectedIndexChanged: the 3D panel reads IncrementReference
+        // live from the configuration, so writing the value is enough (no event needed).
+        _editor.Configuration.Editor_StepHeight = value switch
+        {
+            0 => 32,
+            1 => 64,
+            2 => 128,
+            _ => 256
+        };
+    }
 
     private void Rebuild()
     {
