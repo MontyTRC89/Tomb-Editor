@@ -40,15 +40,19 @@
 
 		<!--  CallMethodAction MethodName="Focus" crashes at Loaded (UIElement.Focus returns bool,
 			the action only accepts void methods) — focus declaratively instead.  -->
+		<!--  Height=Auto overrides the theme's fixed single-line input height so the
+			multiline box fills the window.  -->
 		<TextBox
 			x:Name="memoTextBox"
 			Grid.Row="0"
 			AcceptsReturn="True"
 			AcceptsTab="True"
+			Height="Auto"
 			FocusManager.FocusedElement="{Binding RelativeSource={RelativeSource Self}}"
 			HorizontalScrollBarVisibility="Auto"
 			Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 			TextWrapping="Wrap"
+			VerticalContentAlignment="Top"
 			VerticalScrollBarVisibility="Auto" />
 
 		<Grid Grid.Row="1">
