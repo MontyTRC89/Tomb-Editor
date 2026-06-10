@@ -375,10 +375,36 @@ public partial class MainWindow : Window
 	private void ApplyFlybyTimelineVisibility()
 	{
 		bool shouldBeVisible = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
-		if (shouldBeVisible && flybyTimelineAnchorable.IsHidden)
-			flybyTimelineAnchorable.Show();
-		else if (!shouldBeVisible && !flybyTimelineAnchorable.IsHidden)
-			flybyTimelineAnchorable.Hide();
+
+		// Resolve by ContentId instead of the flybyTimelineAnchorable field: LoadDockState
+		// replaces the whole layout tree, so after a layout switch/reset the XAML field points
+		// at a detached instance whose Show()/Hide() no longer affect the visible layout.
+		var anchorable = FindAnchorable("flybyTimeline");
+
+		// Layouts serialized by builds where the timeline did not exist (or got dropped during
+		// deserialization) do not contain the anchorable at all — recreate it docked at the
+		// bottom so the Window-menu toggle always works.
+		if (anchorable is null)
+		{
+			if (!shouldBeVisible)
+				return;
+
+			anchorable = new LayoutAnchorable
+			{
+				ContentId = "flybyTimeline",
+				CanClose = false,
+				Title = "Flyby timeline",
+				IconSource = TombLib.Icons.IconSources.Load("Objects/movie_projector"),
+				Content = flybyTimelineView,
+			};
+			anchorable.AddToLayout(dockManager, AnchorableShowStrategy.Bottom | AnchorableShowStrategy.Most);
+			return;
+		}
+
+		if (shouldBeVisible && anchorable.IsHidden)
+			anchorable.Show();
+		else if (!shouldBeVisible && !anchorable.IsHidden)
+			anchorable.Hide();
 	}
 
 	#endregion
@@ -410,6 +436,8 @@ public partial class MainWindow : Window
 
 			if (commandName == "ShowFlybyTimeline")
 				item.IsChecked = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
+			else if (commandName == "ShowStatistics")
+				item.IsChecked = _editor.Configuration.Window_Layout.ShowStats;
 			else if (cmd.Execute is { } && _anchorableIdByType.Values.Contains(NormalizedContentIdFor(commandName)))
 				item.IsChecked = FindAnchorable(NormalizedContentIdFor(commandName)) is { IsHidden: false };
 		}
@@ -488,6 +516,10 @@ public partial class MainWindow : Window
 		{
 			serializer.LayoutSerializationCallback -= OnLayoutSerializationCallback;
 		}
+
+		// Layouts saved by builds that did not (de)serialize the timeline anchorable lack it
+		// entirely; re-apply the configured visibility so it is recreated/re-shown right away.
+		ApplyFlybyTimelineVisibility();
 	}
 
 	private void OnLayoutSerializationCallback(object sender, LayoutSerializationCallbackEventArgs e)
@@ -508,6 +540,7 @@ public partial class MainWindow : Window
 			"contentBrowser" => contentBrowserView,
 			"lighting" => lightingView,
 			"palette" => paletteView,
+			"flybyTimeline" => flybyTimelineView,
 			"mainView" => editorAreaHost,
 			_ => null
 		};
