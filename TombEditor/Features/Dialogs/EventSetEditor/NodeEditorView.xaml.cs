@@ -115,12 +115,13 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             var menu = new ContextMenu();
             foreach (var group in System.Linq.Enumerable.GroupBy(ViewModel.Functions, f => f.Section))
             {
-                var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? Localizer.Instance["TombEditor.NodeEditor.Misc"] : group.Key };
+                // "__" so underscores in script-defined names display literally (not access keys).
+                var section = new MenuItem { Header = string.IsNullOrEmpty(group.Key) ? Localizer.Instance["TombEditor.NodeEditor.Misc"] : group.Key.Replace("_", "__") };
                 foreach (var function in group)
                 {
                     section.Items.Add(new MenuItem
                     {
-                        Header = function.Name,
+                        Header = function.Name?.Replace("_", "__"),
                         Command = ViewModel.AddNodeAtPositionCommand,
                         CommandParameter = new NodeEditorViewModel.AddNodeRequest(function, position.X, position.Y)
                     });

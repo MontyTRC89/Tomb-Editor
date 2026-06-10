@@ -205,14 +205,26 @@ public partial class MainWindow : Window
 		// split them side by side while the toolbar and statistics bar above stay a single instance.
 		if (obj is Editor.ModeChangedEvent)
 		{
+			// Re-activating an already-active document still costs a full AvalonDock layout pass
+			// (~350ms on a mid-size level), so skip it when switching between 3D-based modes
+			// (Geometry/FaceEdit/Lighting/ObjectPlacement all share the 3D view document).
 			if (_editor.Mode == EditorMode.Map2D)
-				view2DDocument.IsActive = true;
-			else
+			{
+				if (!view2DDocument.IsActive)
+					view2DDocument.IsActive = true;
+			}
+			else if (!view3DDocument.IsActive)
+			{
 				view3DDocument.IsActive = true;
+			}
 		}
 
 		if (obj is Editor.SwitchLayoutEvent layoutEvent)
 			ApplyLayoutByIndex(layoutEvent.LayoutIndex);
+
+		// Quit editor (File > Quit, Alt+F4 command), mirroring FormMain.
+		if (obj is Editor.EditorQuitEvent)
+			Close();
 	}
 
 	private void UpdateWindowTitle()
@@ -398,13 +410,48 @@ public partial class MainWindow : Window
 				Content = flybyTimelineView,
 			};
 			anchorable.AddToLayout(dockManager, AnchorableShowStrategy.Bottom | AnchorableShowStrategy.Most);
+			HookFlybyTimelineAnchorable(anchorable);
 			return;
 		}
 
+		HookFlybyTimelineAnchorable(anchorable);
+
 		if (shouldBeVisible && anchorable.IsHidden)
+		{
 			anchorable.Show();
+
+			// AvalonDock silently ignores Show() when the hidden anchorable's previous container
+			// no longer exists (it was replaced by a layout switch/reset). Re-dock it instead.
+			if (anchorable.IsHidden)
+			{
+				dockManager.Layout.Hidden.Remove(anchorable);
+				anchorable.AddToLayout(dockManager, AnchorableShowStrategy.Bottom | AnchorableShowStrategy.Most);
+			}
+		}
 		else if (!shouldBeVisible && !anchorable.IsHidden)
+		{
 			anchorable.Hide();
+		}
+	}
+
+	// Keep Window_Layout.ShowFlybyTimeline in sync when the user hides the panel with its own
+	// title-bar button (not via the Window menu), so the menu checkbox stays truthful and the
+	// next toggle works on the first click.
+	private void HookFlybyTimelineAnchorable(LayoutAnchorable anchorable)
+	{
+		anchorable.PropertyChanged -= OnFlybyTimelineAnchorableChanged;
+		anchorable.PropertyChanged += OnFlybyTimelineAnchorableChanged;
+	}
+
+	private bool _suppressTimelineSync;
+
+	private void OnFlybyTimelineAnchorableChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (_suppressTimelineSync)
+			return;
+
+		if (e.PropertyName == nameof(LayoutAnchorable.IsHidden) && sender is LayoutAnchorable anchorable)
+			_editor.Configuration.Window_Layout.ShowFlybyTimeline = !anchorable.IsHidden;
 	}
 
 	#endregion
@@ -472,7 +519,9 @@ public partial class MainWindow : Window
 				if (!File.Exists(fileName))
 					continue;
 
-				var item = new MenuItem { Header = fileName };
+				// MenuItem headers treat "_" as an access-key marker, which would render
+				// "Maya1d2_21" as "Maya1d221"; double them so paths display literally.
+				var item = new MenuItem { Header = fileName.Replace("_", "__") };
 				item.Click += (_, _) => EditorActions.OpenLevel(this.GetWin32Window(), fileName);
 				menu.Items.Add(item);
 				addedAny = true;
@@ -507,6 +556,10 @@ public partial class MainWindow : Window
 
 		var serializer = new XmlLayoutSerializer(dockManager);
 		serializer.LayoutSerializationCallback += OnLayoutSerializationCallback;
+
+		// Tearing down the old tree raises visibility changes on discarded anchorables; they
+		// must not be mistaken for the user hiding the timeline (see HookFlybyTimelineAnchorable).
+		_suppressTimelineSync = true;
 		try
 		{
 			using var sr = new StringReader(xml);
@@ -515,6 +568,7 @@ public partial class MainWindow : Window
 		finally
 		{
 			serializer.LayoutSerializationCallback -= OnLayoutSerializationCallback;
+			_suppressTimelineSync = false;
 		}
 
 		// Layouts saved by builds that did not (de)serialize the timeline anchorable lack it
@@ -553,11 +607,10 @@ public partial class MainWindow : Window
 	{
 		var config = _editor.Configuration;
 
-		// Save tweaks to whatever layout was active before switching.
-		SaveCurrentStateToActiveLayout();
-
 		if (index < 0)
 		{
+			// Save tweaks to whatever layout was active before switching.
+			SaveCurrentStateToActiveLayout();
 			config.Window_ActiveLayoutName = string.Empty;
 			LoadDockState(_defaultDockState);
 			ApplyToolboxPositionsFrom(config.Window_Layout);
@@ -568,6 +621,13 @@ public partial class MainWindow : Window
 			return;
 
 		var target = config.Window_CustomLayouts[index];
+
+		// Re-selecting the already-active layout is an explicit "restore what I saved": saving
+		// first would overwrite the stored state with the current (possibly messed-up) one and
+		// turn the restore into a no-op. Only persist tweaks when actually switching layouts.
+		if (config.Window_ActiveLayoutName != target.Name)
+			SaveCurrentStateToActiveLayout();
+
 		config.Window_ActiveLayoutName = target.Name;
 		LoadDockState(string.IsNullOrEmpty(target.AvalonDockState) ? _defaultDockState : target.AvalonDockState);
 		ApplyToolboxPositionsFrom(target);
@@ -644,7 +704,8 @@ public partial class MainWindow : Window
 				var layout = config.Window_CustomLayouts[i];
 				var item = new MenuItem
 				{
-					Header = layout.Name,
+					// "__" so user-given layout names show "_" literally instead of access keys.
+					Header = layout.Name?.Replace("_", "__"),
 					IsChecked = layout.Name == config.Window_ActiveLayoutName
 				};
 
