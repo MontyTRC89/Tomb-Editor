@@ -11,6 +11,16 @@ using LevelSettingsData = TombLib.LevelData.LevelSettings;
 
 namespace TombEditor.Features.Dialogs.LevelSettings
 {
+    /// <summary>
+    /// Localized strings for the row view-models in this file. The rows deliberately resolve their
+    /// keys from the parent dialog's "LevelSettings" section (via absolute <see cref="Localizer"/>
+    /// keys) instead of per-class sections, so all Level Settings strings live in one place.
+    /// </summary>
+    internal static class LevelSettingsStrings
+    {
+        internal static string Get(string key) => Localizer.Instance["TombEditor.LevelSettings." + key];
+    }
+
     /// <summary>Row view-model for the Textures grid (wraps a <see cref="LevelTexture"/>).</summary>
     public partial class TextureRow : ObservableObject
     {
@@ -67,13 +77,13 @@ namespace TombEditor.Features.Dialogs.LevelSettings
             }
         }
 
-        public string Message => Texture.LoadException == null ? "Successfully loaded" : Texture.LoadException.Message + " (" + Texture.LoadException.GetType().Name + ")";
+        public string Message => Texture.LoadException == null ? LevelSettingsStrings.Get("StatusLoaded") : Texture.LoadException.Message + " (" + Texture.LoadException.GetType().Name + ")";
         public string Size => Texture.LoadException != null || Texture.Image == TombLib.Utils.Texture.UnloadedPlaceholder ? "-" : Texture.Image.Width + " x " + Texture.Image.Height;
 
         [RelayCommand]
         private void Browse()
         {
-            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Texture.Path, "Select a texture file", ImageC.FileExtensions, VariableType.LevelDirectory, false);
+            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Texture.Path, LevelSettingsStrings.Get("BrowseTextureFileTitle"), ImageC.FileExtensions, VariableType.LevelDirectory, false);
             if (result != null)
                 Path = result;
         }
@@ -112,11 +122,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
             get
             {
                 if (Wad.Wad != null && Wad.Wad.GameVersion.Native() != _settings.GameVersion.Native())
-                    return "Game version mismatch";
+                    return LevelSettingsStrings.Get("StatusVersionMismatch");
                 if (Wad.Wad != null && Wad.Wad.HasUnknownData)
-                    return "Wad has unknown data";
+                    return LevelSettingsStrings.Get("StatusUnknownData");
                 if (Wad.LoadException == null)
-                    return "Successfully loaded";
+                    return LevelSettingsStrings.Get("StatusLoaded");
                 return Wad.LoadException.Message + " (" + Wad.LoadException.GetType().Name + ")";
             }
         }
@@ -124,7 +134,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void Browse()
         {
-            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Wad.Path, "Select an object file", Wad2.FileExtensions, VariableType.LevelDirectory, false);
+            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Wad.Path, LevelSettingsStrings.Get("BrowseObjectFileTitle"), Wad2.FileExtensions, VariableType.LevelDirectory, false);
             if (result != null)
                 Path = result;
         }
@@ -158,13 +168,13 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         }
 
         public bool IsValid => Catalog.LoadException == null;
-        public string Message => Catalog.LoadException == null ? "Successfully loaded" : Catalog.LoadException.Message + " (" + Catalog.LoadException.GetType().Name + ")";
+        public string Message => Catalog.LoadException == null ? LevelSettingsStrings.Get("StatusLoaded") : Catalog.LoadException.Message + " (" + Catalog.LoadException.GetType().Name + ")";
         public int SoundsCount => Catalog.LoadException == null ? Catalog.Sounds.SoundInfos.Count : 0;
 
         [RelayCommand]
         private void Browse()
         {
-            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Catalog.Path, "Select a sound catalog", WadSounds.FileExtensions, VariableType.LevelDirectory, false);
+            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Catalog.Path, LevelSettingsStrings.Get("BrowseSoundCatalogTitle"), WadSounds.FileExtensions, VariableType.LevelDirectory, false);
             if (result != null)
                 Path = result;
         }
@@ -190,7 +200,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         public string Name => Object.Info.Name;
         public bool IsValid => Object.LoadException == null;
-        public string ErrorMessage => Object.LoadException == null ? "Successfully loaded" : Object.LoadException.Message + " (" + Object.LoadException.GetType().Name + ")";
+        public string ErrorMessage => Object.LoadException == null ? LevelSettingsStrings.Get("StatusLoaded") : Object.LoadException.Message + " (" + Object.LoadException.GetType().Name + ")";
 
         public string Path { get => Object.Info.Path; set { if (Object.Info.Path == value) return; Update(i => { i.Path = value; return i; }); } }
         public float Scale { get => Object.Info.Scale; set { if (Object.Info.Scale == value) return; Update(i => { i.Scale = value; return i; }); } }
@@ -207,7 +217,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void Browse()
         {
-            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Object.Info.Path, "Select a 3D file", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory, false);
+            string? result = LevelFileDialog.BrowseFile(WinFormsDialogHelper.GetOpenFormOwner(), _settings, Object.Info.Path, LevelSettingsStrings.Get("Browse3DFileTitle"), BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory, false);
             if (result != null)
                 Path = result;
         }
@@ -286,7 +296,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void Browse()
         {
-            string? result = LevelFileDialog.BrowseFolder(WinFormsDialogHelper.GetOpenFormOwner(), _settings, SoundPath.Path, "Select a sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
+            string? result = LevelFileDialog.BrowseFolder(WinFormsDialogHelper.GetOpenFormOwner(), _settings, SoundPath.Path, LevelSettingsStrings.Get("BrowseSoundFolderTitle"), VariableType.LevelDirectory);
             if (result != null)
                 Path = result;
         }

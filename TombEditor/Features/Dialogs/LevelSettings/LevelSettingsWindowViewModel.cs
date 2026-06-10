@@ -9,15 +9,15 @@ using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
-using TombLib.Controls;
 using TombLib.Forms.ViewModels;
-using TombLib.Forms.Views;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 using static TombLib.LevelData.TRVersion;
 using LevelSettingsData = TombLib.LevelData.LevelSettings;
 using WpfColor = System.Windows.Media.Color;
@@ -34,16 +34,40 @@ namespace TombEditor.Features.Dialogs.LevelSettings
     {
         private readonly Editor _editor;
         private readonly LevelSettingsData _settings;
+        private readonly IDialogService _dialogService;
+        private readonly IColorPickerService _colorPickerService;
+        private readonly ILocalizationService _localizationService;
 
         [ObservableProperty] private bool? _dialogResult;
 
         public IReadOnlyList<Game> GameVersions { get; } = AllVersions.ToList();
         public IReadOnlyList<PathVariableRow> PathVariables { get; }
 
-        public LevelSettingsWindowViewModel(Editor editor)
+        public LevelSettingsWindowViewModel(
+            Editor editor,
+            IDialogService? dialogService = null,
+            IColorPickerService? colorPickerService = null,
+            ILocalizationService? localizationService = null)
         {
             _editor = editor;
+            _dialogService = ServiceLocator.ResolveService(dialogService);
+            _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
+            _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
             _settings = editor.Level.Settings.Clone();
+
+            TrxTextureDepths = new[]
+            {
+                _localizationService["TrxDepthDefault"],
+                _localizationService["TrxDepth8Bit"],
+                _localizationService["TrxDepth16Bit"],
+                _localizationService["TrxDepth32Bit"]
+            };
+            LightQualities = new[]
+            {
+                _localizationService["LightQualityLow"],
+                _localizationService["LightQualityMedium"],
+                _localizationService["LightQualityHigh"]
+            };
 
             PathVariables = System.Enum.GetValues(typeof(VariableType))
                 .Cast<VariableType>()
@@ -82,7 +106,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void AddTextures()
         {
-            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new texture files", ImageC.FileExtensions, VariableType.LevelDirectory))
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseTexturesTitle"], ImageC.FileExtensions, VariableType.LevelDirectory))
                 Textures.Add(new TextureRow(_settings, new LevelTexture(_settings, path)));
         }
 
@@ -93,7 +117,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void AddWads()
         {
-            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new object files", Wad2.FileExtensions, VariableType.LevelDirectory))
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseWadsTitle"], Wad2.FileExtensions, VariableType.LevelDirectory))
                 WadRows.Add(new WadRow(_settings, new ReferencedWad(_settings, path)));
         }
 
@@ -104,7 +128,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void AddSoundCatalogs()
         {
-            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select new sound catalogs", WadSounds.FileExtensions, VariableType.LevelDirectory)
+            foreach (var path in LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseSoundCatalogsTitle"], WadSounds.FileExtensions, VariableType.LevelDirectory)
                 .Where(p => SoundCatalogs.All(c => c.Path != p)))
                 SoundCatalogs.Add(new SoundCatalogRow(_settings, new ReferencedSoundCatalog(_settings, path)));
         }
@@ -116,7 +140,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void AddSample()
         {
-            string? result = LevelFileDialog.BrowseFolder(Owner, _settings, _settings.LevelFilePath, "Select a new sound folder (should contain *.wav audio files)", VariableType.LevelDirectory);
+            string? result = LevelFileDialog.BrowseFolder(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseNewSoundFolderTitle"], VariableType.LevelDirectory);
             if (result != null)
                 SampleRows.Add(new SampleRow(_settings, new WadSoundPath(result)));
         }
@@ -219,12 +243,12 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         // TRX tab.
 
-        public IReadOnlyList<string> TrxTextureDepths { get; } = new[] { "Default", "8-bit", "16-bit", "32-bit" };
+        public IReadOnlyList<string> TrxTextureDepths { get; }
 
         public string SelectedTrxDepth
         {
-            get => _settings.TrxTextureBitDepth switch { TrxTextureBitDepth.Bit8 => "8-bit", TrxTextureBitDepth.Bit16 => "16-bit", TrxTextureBitDepth.Bit32 => "32-bit", _ => "Default" };
-            set { _settings.TrxTextureBitDepth = value switch { "8-bit" => TrxTextureBitDepth.Bit8, "16-bit" => TrxTextureBitDepth.Bit16, "32-bit" => TrxTextureBitDepth.Bit32, _ => TrxTextureBitDepth.Default }; OnPropertyChanged(); }
+            get => _settings.TrxTextureBitDepth switch { TrxTextureBitDepth.Bit8 => TrxTextureDepths[1], TrxTextureBitDepth.Bit16 => TrxTextureDepths[2], TrxTextureBitDepth.Bit32 => TrxTextureDepths[3], _ => TrxTextureDepths[0] };
+            set { _settings.TrxTextureBitDepth = value == TrxTextureDepths[1] ? TrxTextureBitDepth.Bit8 : value == TrxTextureDepths[2] ? TrxTextureBitDepth.Bit16 : value == TrxTextureDepths[3] ? TrxTextureBitDepth.Bit32 : TrxTextureBitDepth.Default; OnPropertyChanged(); }
         }
 
         // Sky & font tab.
@@ -259,7 +283,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         // Misc tab.
 
         public IReadOnlyList<string> SampleRates { get; } = new[] { "11025", "22050", "44100", "48000" };
-        public IReadOnlyList<string> LightQualities { get; } = new[] { "Low", "Medium", "High" };
+        public IReadOnlyList<string> LightQualities { get; }
 
         public double TexturePadding { get => _settings.TexturePadding; set => SetSetting<double>(_settings.TexturePadding, value, v => _settings.TexturePadding = (int)v); }
         public bool Dither16BitTextures { get => _settings.Dither16BitTextures; set => SetSetting(_settings.Dither16BitTextures, value, v => _settings.Dither16BitTextures = v); }
@@ -297,15 +321,11 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void PickAmbientLight()
         {
-            using var dialog = new RealtimeColorDialog
-            {
-                Color = (_settings.DefaultAmbientLight * 0.5f).ToWinFormsColor(),
-                FullOpen = true
-            };
-            if (dialog.ShowDialog(Owner) != System.Windows.Forms.DialogResult.OK)
+            Vector3? pickedColor = _colorPickerService.PickColor(_settings.DefaultAmbientLight * 0.5f);
+            if (pickedColor == null)
                 return;
 
-            _settings.DefaultAmbientLight = dialog.Color.ToFloat3Color() * 2.0f;
+            _settings.DefaultAmbientLight = pickedColor.Value * 2.0f;
             OnPropertyChanged(nameof(AmbientLightColor));
         }
 
@@ -313,36 +333,36 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
         [RelayCommand]
         private void BrowseLevelFile()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.LevelFilePath, "Select the level name", LevelSettingsData.FileFormatsLevel, null, true), nameof(LevelFilePath), v => LevelFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseLevelFileTitle"], LevelSettingsData.FileFormatsLevel, null, true), nameof(LevelFilePath), v => LevelFilePath = v);
 
         [RelayCommand]
         private void BrowseGameDirectory()
-            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.GameDirectory, "Select the game folder (should contain game .exe file)", VariableType.LevelDirectory), nameof(GameDirectory), v => GameDirectory = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.GameDirectory, _localizationService["BrowseGameDirectoryTitle"], VariableType.LevelDirectory), nameof(GameDirectory), v => GameDirectory = v);
 
         [RelayCommand]
         private void BrowseGameLevelFile()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameLevelFilePath, "Select place for compiled level", LevelSettingsData.FileFormatsLevelCompiled, VariableType.GameDirectory, true), nameof(GameLevelFilePath), v => GameLevelFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameLevelFilePath, _localizationService["BrowseGameLevelFileTitle"], LevelSettingsData.FileFormatsLevelCompiled, VariableType.GameDirectory, true), nameof(GameLevelFilePath), v => GameLevelFilePath = v);
 
         [RelayCommand]
         private void BrowseGameExecutable()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameExecutableFilePath, "Select an executable", new[] { new FileFormat("Windows executables", "exe") }, VariableType.GameDirectory, false), nameof(GameExecutableFilePath), v => GameExecutableFilePath = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.GameExecutableFilePath, _localizationService["BrowseGameExecutableTitle"], new[] { new FileFormat("Windows executables", "exe") }, VariableType.GameDirectory, false), nameof(GameExecutableFilePath), v => GameExecutableFilePath = v);
 
         [RelayCommand]
         private void BrowseScript()
-            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.ScriptDirectory, "Select the script TXT files folder", VariableType.LevelDirectory), nameof(ScriptDirectory), v => ScriptDirectory = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFolder(Owner, _settings, _settings.ScriptDirectory, _localizationService["BrowseScriptTitle"], VariableType.LevelDirectory), nameof(ScriptDirectory), v => ScriptDirectory = v);
 
         [RelayCommand]
         private void BrowseLua()
-            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.TenLuaScriptFile, "Select the Lua script file", new[] { new FileFormat("Lua script", "lua") }, VariableType.LevelDirectory, false), nameof(TenLuaScriptFile), v => TenLuaScriptFile = v);
+            => SetIfBrowsed(LevelFileDialog.BrowseFile(Owner, _settings, _settings.TenLuaScriptFile, _localizationService["BrowseLuaTitle"], new[] { new FileFormat("Lua script", "lua") }, VariableType.LevelDirectory, false), nameof(TenLuaScriptFile), v => TenLuaScriptFile = v);
 
         [RelayCommand]
-        private void BrowseFont() => BrowseResource(() => _settings.FontTextureFilePath, p => _settings.FontTextureFilePath = p, "Select a font texture", nameof(FontTextureFilePath), nameof(FontUseCustom));
+        private void BrowseFont() => BrowseResource(() => _settings.FontTextureFilePath, p => _settings.FontTextureFilePath = p, _localizationService["BrowseFontTitle"], nameof(FontTextureFilePath), nameof(FontUseCustom));
 
         [RelayCommand]
-        private void BrowseSky() => BrowseResource(() => _settings.SkyTextureFilePath, p => _settings.SkyTextureFilePath = p, "Select a sky texture", nameof(SkyTextureFilePath), nameof(SkyUseCustom));
+        private void BrowseSky() => BrowseResource(() => _settings.SkyTextureFilePath, p => _settings.SkyTextureFilePath = p, _localizationService["BrowseSkyTitle"], nameof(SkyTextureFilePath), nameof(SkyUseCustom));
 
         [RelayCommand]
-        private void BrowseTr5Sprites() => BrowseResource(() => _settings.Tr5ExtraSpritesFilePath, p => _settings.Tr5ExtraSpritesFilePath = p, "Select a TR5 extra sprites texture", nameof(Tr5ExtraSpritesFilePath), nameof(Tr5SpritesUseCustom));
+        private void BrowseTr5Sprites() => BrowseResource(() => _settings.Tr5ExtraSpritesFilePath, p => _settings.Tr5ExtraSpritesFilePath = p, _localizationService["BrowseTr5SpritesTitle"], nameof(Tr5ExtraSpritesFilePath), nameof(Tr5SpritesUseCustom));
 
         // Static meshes tab.
 
@@ -393,7 +413,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         [RelayCommand]
         private void AddImportedGeometry()
         {
-            var paths = LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, "Select 3D files that you want to see imported.", BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
+            var paths = LevelFileDialog.BrowseFiles(Owner, _settings, _settings.LevelFilePath, _localizationService["BrowseImportedGeometryTitle"], BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
             var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
             var config = _editor.Configuration;
 
@@ -402,11 +422,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                 var ioViewModel = new GeometryIOSettingsWindowViewModel(IOSettingsPresets.GeometryImportSettingsPresets);
                 ioViewModel.SelectPreset(config?.GeometryIO_LastUsedGeometryImportPresetName);
 
-                var ioDialog = new GeometryIOSettingsWindow { DataContext = ioViewModel };
-                ioDialog.SetOwner(Owner);
-                ioDialog.ShowDialog();
-
-                if (ioViewModel.DialogResult != true)
+                if (_dialogService.ShowDialog(this, ioViewModel) != true)
                     continue;
 
                 if (config != null)
@@ -493,7 +509,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
 
                 string area = GetNgDescription(info.Id, out int originalId);
                 int sampleCount = info.SampleCount(_settings, paths);
-                string samples = sampleCount == 0 ? "[ missing ]" : sampleCount == -1 ? "[ none ]" : sampleCount.ToString();
+                string samples = sampleCount == 0 ? _localizationService["SamplesMissing"] : sampleCount == -1 ? _localizationService["SamplesNone"] : sampleCount.ToString();
                 SoundInfos.Add(new SoundInfoRow(_settings.SelectedSounds, UpdateSoundStatistics, info.Id, info.Name, info.SoundCatalog, samples, area, originalId, sampleCount == 0));
             }
 
@@ -504,7 +520,7 @@ namespace TombEditor.Features.Dialogs.LevelSettings
                     continue;
 
                 string area = GetNgDescription(missing, out int originalId);
-                SoundInfos.Add(new SoundInfoRow(_settings.SelectedSounds, UpdateSoundStatistics, missing, name, "[ Not present in any of loaded catalogs ]", string.Empty, area, originalId, true));
+                SoundInfos.Add(new SoundInfoRow(_settings.SelectedSounds, UpdateSoundStatistics, missing, name, _localizationService["CatalogNotPresent"], string.Empty, area, originalId, true));
             }
 
             UpdateSoundStatistics();
@@ -513,9 +529,8 @@ namespace TombEditor.Features.Dialogs.LevelSettings
         private void UpdateSoundStatistics()
         {
             int missing = _settings.SelectedAndMissingSounds.Count;
-            SoundStatistics = "Total sounds: " + _settings.GlobalSoundMap.Count +
-                              " | Selected sounds: " + _settings.SelectedSounds.Count +
-                              (missing == 0 ? string.Empty : " | Missing sounds: " + missing);
+            SoundStatistics = _localizationService.Format("SoundStatisticsFormat", _settings.GlobalSoundMap.Count, _settings.SelectedSounds.Count) +
+                              (missing == 0 ? string.Empty : _localizationService.Format("SoundStatisticsMissingFormat", missing));
         }
 
         private string GetNgDescription(int id, out int originalId)
