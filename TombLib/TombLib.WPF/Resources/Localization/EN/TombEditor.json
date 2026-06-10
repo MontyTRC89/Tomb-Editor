@@ -505,7 +505,8 @@
         "SpecificShatter": "Specific shatter",
         "Scalable": "Scalable",
         "Ocb": "OCB:",
-        "Color": "Color:"
+        "Color": "Color:",
+        "InvalidOcbMessage": "The OCB value is not a valid 16-bit integer."
     },
 
     "Portal": {
@@ -529,7 +530,8 @@
         "RespectMousepatch": "Respect T4Larson's mousepatch flyby handling",
         "RespectMousepatchTooltip": "If you've used a patch which increased the maximum amount of flyby sequences in winroomedit, enable this option, otherwise flyby indices will be corrupted.",
         "UseHalfPixelCorrection": "Use half-pixel UV correction",
-        "UseHalfPixelCorrectionTooltip": "Legacy texture cropping to prevent border bleeding. Use only if you intend to disable advanced texture padding in Level settings."
+        "UseHalfPixelCorrectionTooltip": "Legacy texture cropping to prevent border bleeding. Use only if you intend to disable advanced texture padding in Level settings.",
+        "SoundCatalogsFilter": "Sound catalogs|*.xml;*.txt|All files|*.*"
     },
 
     "SoundSource": {
@@ -582,7 +584,8 @@
         "MoveUpTooltip": "Move selected button up",
         "MoveDownTooltip": "Move selected button down",
         "Defaults": "Defaults",
-        "Apply": "Apply"
+        "Apply": "Apply",
+        "Separator": "[ Separator ]"
     },
 
     "Search": {
@@ -596,7 +599,13 @@
         "DeleteConfirmationMessage": "Do you want to delete the selected entry? This action can't be undone.",
         "DeleteConfirmationTitle": "Delete selected entry",
         "MapOnlyDeleteMessage": "This entry can only be deleted from the map.",
-        "UnknownRoom": "<Unknown>"
+        "UnknownRoom": "<Unknown>",
+        "ScopeEverything": "Everything",
+        "ScopeRooms": "Rooms",
+        "ScopeAllObjects": "All objects",
+        "ScopeObjectsInSelectedRooms": "Objects in selected rooms",
+        "ScopeItemTypes": "Item types",
+        "ScopeTriggers": "Triggers"
     },
 
     "ReplaceObject": {
@@ -939,7 +948,8 @@
         "AssignedModelNone": "None",
         "BrowseFilesTitle": "Select 3D files that you want to see imported.",
         "AssignModelMessage": "You need to assign a model before opening the Material Editor.",
-        "NoTexturesMessage": "Assigned model has no textures or was not loaded."
+        "NoTexturesMessage": "Assigned model has no textures or was not loaded.",
+        "ColorTooltip": "Color"
     },
 
     "LevelSettings": {
