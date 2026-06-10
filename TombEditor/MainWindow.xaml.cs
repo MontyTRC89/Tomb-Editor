@@ -312,6 +312,15 @@ public partial class MainWindow : Window
 		_panel3D.Invalidate();
 	}
 
+	protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+	{
+		// Ask to save unsaved changes before quitting, mirroring FormMain.OnFormClosing.
+		if (!EditorActions.ContinueOnFileDrop(this.GetWin32Window(), "Exit"))
+			e.Cancel = true;
+
+		base.OnClosing(e);
+	}
+
 	protected override void OnClosed(System.EventArgs e)
 	{
 		// Snapshot the user's tweaks (dock layout + floating toolbox positions) into the active
