@@ -2,8 +2,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Win32;
 using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs.OpenFile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +19,7 @@ namespace TombEditor.Features.Dialogs.BumpMaps;
 public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly Editor _editor;
+    private readonly IDialogService _dialogService;
     private readonly IMessageService _messageService;
     private readonly ILocalizationService _localizationService;
     private bool _disposed;
@@ -50,10 +51,12 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
     public BumpMapsWindowViewModel(
         LevelTexture? texture,
         Editor? editor = null,
+        IDialogService? dialogService = null,
         IMessageService? messageService = null,
         ILocalizationService? localizationService = null)
     {
         _editor = editor ?? Editor.Instance;
+        _dialogService = ServiceLocator.ResolveService(dialogService);
         _messageService = ServiceLocator.ResolveService(messageService);
         _localizationService = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
 
@@ -82,23 +85,24 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
         }
         else
         {
-            var dialog = new OpenFileDialog
+            var settings = new OpenFileDialogSettings
             {
                 Multiselect = false,
                 Title = _localizationService["BrowseCustomTitle"],
-                Filter = ImageC.FileExtensions.GetFilter()
+                Filter = ImageC.FileExtensions.GetFilter(),
+                CheckFileExists = true
             };
 
             if (!string.IsNullOrWhiteSpace(texture.Path))
-                dialog.InitialDirectory = _editor.Level.Settings.MakeAbsolute(texture.Path) ?? texture.Path;
+                settings.InitialDirectory = _editor.Level.Settings.MakeAbsolute(texture.Path) ?? texture.Path;
 
-            if (dialog.ShowDialog() != true)
+            if (_dialogService.ShowOpenFileDialog(this, settings) != true)
             {
                 texture.BumpPath = null;
             }
             else
             {
-                var tempImage = ImageC.FromFile(dialog.FileName);
+                var tempImage = ImageC.FromFile(settings.FileName);
 
                 if (tempImage.Size != texture.Image.Size)
                 {
@@ -107,7 +111,7 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
                 }
                 else
                 {
-                    texture.BumpPath = _editor.Level?.Settings?.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                    texture.BumpPath = _editor.Level?.Settings?.MakeRelative(settings.FileName, VariableType.LevelDirectory);
                 }
             }
         }
@@ -125,10 +129,10 @@ public partial class BumpMapsWindowViewModel : ObservableObject, IModalDialogVie
 
         TextureArea selected = _editor.SelectedTexture;
 
-        Vector2 p0 = selected.TexCoord0 / LevelTexture.FootStepSoundGranularity;
-        Vector2 p1 = selected.TexCoord1 / LevelTexture.FootStepSoundGranularity;
-        Vector2 p2 = selected.TexCoord2 / LevelTexture.FootStepSoundGranularity;
-        Vector2 p3 = selected.TexCoord3 / LevelTexture.FootStepSoundGranularity;
+        Vector2 p0 = selected.TexCoord0 / LevelTexture.BumpMappingGranularity;
+        Vector2 p1 = selected.TexCoord1 / LevelTexture.BumpMappingGranularity;
+        Vector2 p2 = selected.TexCoord2 / LevelTexture.BumpMappingGranularity;
+        Vector2 p3 = selected.TexCoord3 / LevelTexture.BumpMappingGranularity;
 
         int xMin = (int)Math.Min(Math.Min(Math.Min(p0.X, p1.X), p2.X), p3.X);
         int xMax = (int)Math.Max(Math.Max(Math.Max(p0.X, p1.X), p2.X), p3.X);
