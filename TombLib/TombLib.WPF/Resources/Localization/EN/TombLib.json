@@ -101,6 +101,25 @@
 		"PresetSpin": "Spin",
 		"PresetPanHorizontal": "Pan horizontal",
 		"PresetPanVertical": "Pan vertical",
-		"PresetShake": "Shake"
+		"PresetShake": "Shake",
+
+		"RenameSetTitle": "Rename animation set",
+		"NewSetName": "Animation #{0}",
+		"FallbackSetName": "Animation",
+		"ClonedSetName": "{0} (copy)",
+		"ProceduralSetName": "Procedural animation #{0}",
+		"EffectNamePrefix": " (with ",
+		"EffectNameSuffix": " effect)",
+		"NgUvRotateValue": "UvRotate = {0}",
+		"NgFpsValue": "{0} FPS",
+		"AnimatorTooltip": "Animation type",
+		"ProgressTooltip": "Effect progress or strength",
+		"FrameCountTooltip": "Amount of resulting animation frames",
+		"SymmetricTooltip": "Make animation symmetric",
+		"SmoothTooltip": "Ease-in and ease-out animation",
+		"ColumnEdge0": "Edge 0",
+		"ColumnEdge1": "Edge 1",
+		"ColumnEdge2": "Edge 2",
+		"ColumnEdge3": "Edge 3"
 	}
 }
