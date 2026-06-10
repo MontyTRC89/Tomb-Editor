@@ -341,8 +341,14 @@ public partial class ContentBrowserView
 			_bridgeRefreshPending = true;
 		}
 
-		if (obj is Editor.ConfigurationChangedEvent)
+		// Rebuilding the asset list is expensive (every wad object gets a view model), and the
+		// only configuration value it depends on is HideInternalObjects — skip the rebuild for
+		// unrelated config changes (e.g. the draw-flag toolbar toggles).
+		if (obj is Editor.ConfigurationChangedEvent
+			&& _bridgeEditor?.Configuration.RenderingItem_HideInternalObjects != _bridgeLastHideInternalObjects)
+		{
 			_bridgeRefreshPending = true;
+		}
 
 		if (obj is Editor.ChosenItemsChangedEvent itemsChanged && !_bridgeSuppressEditorSync)
 		{
@@ -365,12 +371,15 @@ public partial class ContentBrowserView
 			BridgeRefreshAssets();
 	}
 
+	private bool _bridgeLastHideInternalObjects;
+
 	private void BridgeRefreshAssets()
 	{
 		if (_bridgeEditor?.Level?.Settings is not { } settings || _bridgeViewModel is null)
 			return;
 
-		_bridgeViewModel.RefreshAssets(settings, _bridgeEditor.Configuration.RenderingItem_HideInternalObjects);
+		_bridgeLastHideInternalObjects = _bridgeEditor.Configuration.RenderingItem_HideInternalObjects;
+		_bridgeViewModel.RefreshAssets(settings, _bridgeLastHideInternalObjects);
 	}
 
 	private void BridgeOnSelectedItemsChanged(object? sender, IReadOnlyList<AssetItemViewModel> items)
