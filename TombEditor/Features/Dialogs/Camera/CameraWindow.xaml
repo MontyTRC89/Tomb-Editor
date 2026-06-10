@@ -50,6 +50,7 @@
 			Increment="1"
 			IsEnabled="{Binding IsMoveTimerEnabled}"
 			Maximum="31"
+			Minimum="0"
 			Value="{Binding MoveTimer, Mode=TwoWay}" />
 		<CheckBox
 			Grid.Row="0"
