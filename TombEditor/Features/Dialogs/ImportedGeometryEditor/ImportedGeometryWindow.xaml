@@ -26,10 +26,12 @@
 
 		<controls:SpacedStack
 			DockPanel.Dock="Bottom"
-			Margin="0,8,0,0"
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<StackPanel.Margin>
+				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+			</StackPanel.Margin>
 			<Button Width="80" Command="{Binding OkCommand}" Content="{tombLib:Localize ~Common.OK}" IsDefault="True" />
 			<Button Width="80" Command="{Binding CancelCommand}" Content="{tombLib:Localize ~Common.Cancel}" IsCancel="True" />
 		</controls:SpacedStack>
@@ -37,10 +39,12 @@
 		<!--  Instance properties (bottom strip, full width)  -->
 		<Border
 			DockPanel.Dock="Bottom"
-			Margin="0,8,0,0"
 			Padding="6"
 			BorderBrush="{DynamicResource Brush_Border}"
 			BorderThickness="1">
+			<Border.Margin>
+				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+			</Border.Margin>
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -73,11 +77,13 @@
 				<controls:SpacedStack
 					Grid.Row="1"
 					Grid.Column="1"
-					Margin="0,8,0,0"
 					Orientation="Horizontal"
 					Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+					<StackPanel.Margin>
+						<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+					</StackPanel.Margin>
 					<ComboBox Width="150" ItemsSource="{Binding LightingModels}" SelectedItem="{Binding LightingModel, Mode=TwoWay}" />
-					<Button Width="48" Height="22" Command="{Binding PickColorCommand}" ToolTip="Color">
+					<Button Width="48" Height="22" Command="{Binding PickColorCommand}" ToolTip="{tombLib:Localize ColorTooltip}">
 						<Button.Background>
 							<SolidColorBrush Color="{Binding Color}" />
 						</Button.Background>
@@ -90,10 +96,13 @@
 					Grid.Row="1"
 					Grid.Column="2"
 					Width="98"
-					Margin="0,8,0,0"
 					HorizontalAlignment="Right"
 					Command="{Binding EditMaterialsCommand}"
-					Content="{tombLib:Localize EditMaterials}" />
+					Content="{tombLib:Localize EditMaterials}">
+					<Button.Margin>
+						<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+					</Button.Margin>
+				</Button>
 			</Grid>
 		</Border>
 

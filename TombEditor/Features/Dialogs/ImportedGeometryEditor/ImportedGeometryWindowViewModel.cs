@@ -30,6 +30,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
     public partial class ImportedGeometryWindowViewModel : ObservableObject, IModalDialogViewModel
     {
         private readonly ImportedGeometryInstance _instance;
+        private readonly Editor _editor;
         private readonly IMessageService _messageService;
         private readonly IDialogService _dialogService;
         private readonly IColorPickerService _colorPickerService;
@@ -66,9 +67,11 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
             LevelSettingsData levelSettings,
             IDialogService? dialogService = null,
             IColorPickerService? colorPickerService = null,
-            ILocalizationService? localizationService = null)
+            ILocalizationService? localizationService = null,
+            Editor? editor = null)
         {
             _instance = instance;
+            _editor = editor ?? Editor.Instance;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
             _dialogService = ServiceLocator.ResolveService(dialogService);
             _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
@@ -116,7 +119,7 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         {
             var paths = LevelFileDialog.BrowseFiles(Owner, NewLevelSettings, NewLevelSettings.LevelFilePath, _localizationService["BrowseFilesTitle"], BaseGeometryImporter.FileExtensions, VariableType.LevelDirectory).ToList();
             var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
-            var config = Editor.Instance?.Configuration;
+            var config = _editor?.Configuration;
 
             foreach (string path in paths)
             {
@@ -156,34 +159,33 @@ namespace TombEditor.Features.Dialogs.ImportedGeometryEditor
         {
             // Mirrors EditorActions.EditColor: realtime preview on the instance while the dialog
             // is open, selection temporarily hidden, undo pushed only when the user confirms.
-            var editor = Editor.Instance;
             Vector3 oldColor = _instance.Color;
 
-            editor.ToggleHiddenSelection(true);
+            _editor.ToggleHiddenSelection(true);
 
             Vector3? pickedColor = _colorPickerService.PickColor(oldColor * 0.5f, c =>
             {
                 _instance.Color = c * 2.0f;
-                editor.ObjectChange(_instance, ObjectChangeType.Change);
+                _editor.ObjectChange(_instance, ObjectChangeType.Change);
             });
 
-            editor.ToggleHiddenSelection(false);
+            _editor.ToggleHiddenSelection(false);
 
             if (pickedColor == null)
             {
                 // Cancelled: roll back any realtime preview changes.
                 _instance.Color = oldColor;
-                editor.ObjectChange(_instance, ObjectChangeType.Change);
+                _editor.ObjectChange(_instance, ObjectChangeType.Change);
                 Color = (oldColor * 0.5f).ToWPFColor();
                 return;
             }
 
             // Confirmed: push undo against the original color, then apply the picked one.
             _instance.Color = oldColor;
-            editor.UndoManager.PushObjectPropertyChanged(_instance);
+            _editor.UndoManager.PushObjectPropertyChanged(_instance);
 
             _instance.Color = pickedColor.Value * 2.0f;
-            editor.ObjectChange(_instance, ObjectChangeType.Change);
+            _editor.ObjectChange(_instance, ObjectChangeType.Change);
             Color = pickedColor.Value.ToWPFColor();
         }
 

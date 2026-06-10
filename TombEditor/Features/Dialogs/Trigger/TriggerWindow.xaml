@@ -181,9 +181,12 @@
 			</Grid.ColumnDefinitions>
 			<Label
 				Grid.Column="0"
-				Margin="0,0,4,0"
 				VerticalAlignment="Center"
-				Content="{tombLib:Localize Script}" />
+				Content="{tombLib:Localize Script}">
+				<Label.Margin>
+					<Thickness Right="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+				</Label.Margin>
+			</Label>
 			<TextBox
 				Grid.Column="1"
 				VerticalAlignment="Center"
@@ -193,36 +196,44 @@
 			<Button
 				Grid.Column="2"
 				Width="24"
-				Margin="2,0,0,0"
 				Command="{Binding CopyToClipboardCommand}"
 				IsEnabled="{Binding ScriptEnabled}"
 				ToolTip="{tombLib:Localize CopyToClipboardTooltip}">
+				<Button.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.TinyThicknessWidth}" />
+				</Button.Margin>
 				<Image Source="{tomb:Icon General/copy}" />
 			</Button>
 			<Button
 				Grid.Column="3"
 				Width="24"
-				Margin="2,0,0,0"
 				Command="{Binding CopyWithCommentsCommand}"
 				IsEnabled="{Binding ScriptEnabled}"
 				ToolTip="{tombLib:Localize CopyWithCommentsTooltip}">
+				<Button.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.TinyThicknessWidth}" />
+				</Button.Margin>
 				<Image Source="{tomb:Icon General/copy_comments}" />
 			</Button>
 			<Button
 				Grid.Column="4"
 				Width="24"
-				Margin="2,0,0,0"
 				Command="{Binding SearchTriggerCommand}"
 				ToolTip="{tombLib:Localize ImportTriggerTooltip}">
+				<Button.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.TinyThicknessWidth}" />
+				</Button.Margin>
 				<Image Source="{tomb:Icon General/Import}" />
 			</Button>
 			<Button
 				Grid.Column="5"
 				Width="24"
-				Margin="2,0,0,0"
 				Command="{Binding CopyAsAnimcommandCommand}"
 				IsEnabled="{Binding CopyAsAnimcommandEnabled}"
 				ToolTip="{tombLib:Localize CopyAsAnimcommandTooltip}">
+				<Button.Margin>
+					<Thickness Left="{x:Static darkUI:Defaults.TinyThicknessWidth}" />
+				</Button.Margin>
 				<Image Source="{tomb:Icon General/animcommand}" />
 			</Button>
 		</Grid>
@@ -250,10 +261,12 @@
 			Grid.Row="7"
 			Grid.Column="0"
 			Grid.ColumnSpan="8"
-			Margin="0,8,0,0"
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<StackPanel.Margin>
+				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+			</StackPanel.Margin>
 			<Button
 				Width="80"
 				Command="{Binding ConfirmCommand}"

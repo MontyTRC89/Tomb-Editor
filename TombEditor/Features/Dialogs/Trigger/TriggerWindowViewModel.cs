@@ -40,7 +40,6 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
     [ObservableProperty] private string _title = string.Empty;
 
     [ObservableProperty] private bool _isNG;
-    [ObservableProperty] private bool _isTombEngine;
 
     [ObservableProperty] private bool _bit1;
     [ObservableProperty] private bool _bit2;
@@ -80,7 +79,6 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         _level = level;
 
         IsNG = level.IsNG;
-        IsTombEngine = level.IsTombEngine;
         Title = level.IsTombEngine ? _localizationService["ClassicTitle"] : _localizationService["Title"];
     }
 
@@ -305,7 +303,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         var frameVm = new InputBoxWindowViewModel(
             title: _localizationService["AnimcommandFrameTitle"],
             label: _localizationService["AnimcommandFrameLabel"],
-            placeholder: "-1");
+            initialValue: "-1");
 
         bool confirmed = _dialogService.ShowDialog(this, frameVm) == true;
 
@@ -324,7 +322,7 @@ public partial class TriggerWindowViewModel : ObservableObject, IModalDialogView
         var outVm = new InputBoxWindowViewModel(
             title: _localizationService["AnimcommandExportTitle"],
             label: _localizationService["AnimcommandExportLabel"],
-            placeholder: result);
+            initialValue: result);
 
         _dialogService.ShowDialog(this, outVm);
     }

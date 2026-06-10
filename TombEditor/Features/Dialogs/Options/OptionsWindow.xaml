@@ -38,10 +38,13 @@
 					DockPanel.Dock="Left"
 					Text="{Binding Label}" />
 				<TextBlock
-					Margin="4,0,0,0"
 					VerticalAlignment="Center"
 					DockPanel.Dock="Right"
-					Text="{Binding Suffix}" />
+					Text="{Binding Suffix}">
+					<TextBlock.Margin>
+						<Thickness Left="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
+					</TextBlock.Margin>
+				</TextBlock>
 				<controls:NumericUpDown
 					Width="120"
 					HorizontalAlignment="Left"
@@ -122,10 +125,10 @@
 
 		<!--  A group: a titled box containing its options  -->
 		<DataTemplate x:Key="GroupTemplate">
-			<GroupBox
-				Margin="0,0,0,8"
-				Header="{Binding Header}"
-				Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
+			<GroupBox Header="{Binding Header}" Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
+				<GroupBox.Margin>
+					<Thickness Bottom="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+				</GroupBox.Margin>
 				<ItemsControl
 					ItemContainerStyle="{StaticResource OptionContainerStyle}"
 					ItemTemplateSelector="{StaticResource OptionSelector}"
@@ -145,10 +148,12 @@
 		<!--  Buttons  -->
 		<controls:SpacedStack
 			DockPanel.Dock="Bottom"
-			Margin="0,8,0,0"
 			HorizontalAlignment="Right"
 			Orientation="Horizontal"
 			Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+			<StackPanel.Margin>
+				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
+			</StackPanel.Margin>
 			<Button Width="120" Command="{Binding PageDefaultsCommand}" Content="{tombLib:Localize ResetPageToDefaults}" />
 			<Button Width="80" Command="{Binding ApplyCommand}" Content="{tombLib:Localize ~Common.Apply}" />
 			<Button Width="80" Command="{Binding OkCommand}" Content="{tombLib:Localize ~Common.OK}" IsDefault="True" />
@@ -168,7 +173,7 @@
 			</TabControl.ItemContainerStyle>
 			<TabControl.ContentTemplate>
 				<DataTemplate>
-					<ScrollViewer Margin="4" VerticalScrollBarVisibility="Auto">
+					<ScrollViewer Margin="{x:Static darkUI:Defaults.SmallThickness}" VerticalScrollBarVisibility="Auto">
 						<ItemsControl ItemTemplate="{StaticResource GroupTemplate}" ItemsSource="{Binding Groups}" />
 					</ScrollViewer>
 				</DataTemplate>

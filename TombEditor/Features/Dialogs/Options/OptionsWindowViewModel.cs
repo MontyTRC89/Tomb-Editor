@@ -39,13 +39,7 @@ namespace TombEditor.Features.Dialogs.Options
 
         [ObservableProperty] private OptionTab? _selectedTab;
         [ObservableProperty] private bool? _dialogResult;
-
-        private string _searchText = string.Empty;
-        public string SearchText
-        {
-            get => _searchText;
-            set { if (SetProperty(ref _searchText, value)) ApplyFilter(); }
-        }
+        [ObservableProperty] private string _searchText = string.Empty;
 
         public OptionsWindowViewModel(Editor editor, IColorPickerService? colorPickerService = null, ILocalizationService? localizationService = null)
         {
@@ -229,9 +223,11 @@ namespace TombEditor.Features.Dialogs.Options
 
         // Search filtering.
 
+        partial void OnSearchTextChanged(string value) => ApplyFilter();
+
         private void ApplyFilter()
         {
-            string query = (_searchText ?? string.Empty).Trim();
+            string query = SearchText.Trim();
 
             foreach (var tab in Tabs)
             {
