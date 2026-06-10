@@ -85,7 +85,8 @@
 					Width="120"
 					Height="20"
 					HorizontalAlignment="Left"
-					Click="ColorSwatch_Click">
+					Command="{Binding DataContext.PickColorCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+					CommandParameter="{Binding}">
 					<Button.Background>
 						<SolidColorBrush Color="{Binding Value}" />
 					</Button.Background>

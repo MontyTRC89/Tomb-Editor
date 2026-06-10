@@ -13,6 +13,8 @@ using MvvmDialogs;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.WPF;
+using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 using WpfColor = System.Windows.Media.Color;
 
 namespace TombEditor.Features.Dialogs.Options
@@ -30,6 +32,7 @@ namespace TombEditor.Features.Dialogs.Options
 
         private readonly Editor _editor;
         private readonly object _config;
+        private readonly IColorPickerService _colorPickerService;
 
         public ObservableCollection<OptionTab> Tabs { get; } = new();
 
@@ -43,10 +46,11 @@ namespace TombEditor.Features.Dialogs.Options
             set { if (SetProperty(ref _searchText, value)) ApplyFilter(); }
         }
 
-        public OptionsWindowViewModel(Editor editor)
+        public OptionsWindowViewModel(Editor editor, IColorPickerService? colorPickerService = null)
         {
             _editor = editor;
             _config = editor.Configuration;
+            _colorPickerService = ServiceLocator.ResolveService(colorPickerService);
 
             BuildSchema();
             ReadConfigIntoItems(_config);
@@ -72,6 +76,16 @@ namespace TombEditor.Features.Dialogs.Options
 
         [RelayCommand]
         private void Cancel() => DialogResult = false;
+
+        [RelayCommand]
+        private void PickColor(OptionItem item)
+        {
+            var current = item.Value is WpfColor c ? c : WpfColor.FromRgb(0, 0, 0);
+
+            Vector3? picked = _colorPickerService.PickColor(current.ToFloat3Color());
+            if (picked.HasValue)
+                item.Value = picked.Value.ToWPFColor();
+        }
 
         [RelayCommand]
         private void PageDefaults()
