@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TombLib.LevelData;
-using TombLib.Utils;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
 
@@ -18,6 +17,7 @@ public sealed record PortalEffectItem(PortalEffectType Effect, string DisplayNam
 public partial class PortalWindowViewModel : ObservableObject, IModalDialogViewModel
 {
     private readonly PortalInstance _instance;
+    private readonly ILocalizationService _localizationService;
 
     [ObservableProperty] private bool? _dialogResult;
 
@@ -37,10 +37,11 @@ public partial class PortalWindowViewModel : ObservableObject, IModalDialogViewM
     public PortalWindowViewModel(PortalInstance instance, ILocalizationService? localizationService = null)
     {
         _instance = instance;
-        _ = ServiceLocator.ResolveService(localizationService).WithKeysFor(this);
+        _localizationService = ServiceLocator.ResolveService(localizationService)
+            .WithKeysFor(this);
 
         Effects = Enum.GetValues<PortalEffectType>()
-            .Select(e => new PortalEffectItem(e, e.ToString().SplitCamelcase()))
+            .Select(e => new PortalEffectItem(e, _localizationService[$"Effect{e}"]))
             .ToList();
 
         _selectedEffect = Effects.FirstOrDefault(e => e.Effect == instance.Effect) ?? Effects[0];
