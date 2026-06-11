@@ -23,8 +23,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             // This window is shown modeless, so the hook falls back to Close() when the
             // view-model sets DialogResult (OK/Cancel buttons, level switch).
             this.HookModalAutoClose();
+            Loaded += OnLoaded;
             Closed += OnClosed;
         }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+            => WindowConfiguration.ConfigureWindow(this, Editor.Instance.Configuration, "FormEventSetEditor");
 
         private void OnClosed(object? sender, EventArgs e)
             => Vm?.OnWindowClosed();

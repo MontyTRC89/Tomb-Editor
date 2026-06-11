@@ -34,7 +34,44 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (e.OldValue is NodeEditorViewModel oldViewModel)
                 oldViewModel.BringNodeIntoViewRequested -= ScrollToNode;
             if (e.NewValue is NodeEditorViewModel newViewModel)
+            {
                 newViewModel.BringNodeIntoViewRequested += ScrollToNode;
+
+                // Start the view over the event's existing nodes instead of the canvas's top-left
+                // corner. Deferred so the ScrollViewer has a measured viewport (a new editor is
+                // created for every event switch, before layout has run).
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, CenterOnNodes);
+            }
+        }
+
+        /// <summary>Scrolls so the bounding box of all nodes is centered in the viewport.</summary>
+        private void CenterOnNodes()
+        {
+            var viewModel = ViewModel;
+            if (viewModel == null || viewModel.Nodes.Count == 0)
+                return;
+
+            if (canvasScroll.ViewportWidth <= 0.0 || canvasScroll.ViewportHeight <= 0.0)
+            {
+                canvasScroll.UpdateLayout();
+                if (canvasScroll.ViewportWidth <= 0.0)
+                    return;
+            }
+
+            double minX = double.PositiveInfinity, minY = double.PositiveInfinity;
+            double maxX = double.NegativeInfinity, maxY = double.NegativeInfinity;
+
+            foreach (var node in viewModel.Nodes)
+            {
+                minX = System.Math.Min(minX, node.CanvasLeft);
+                minY = System.Math.Min(minY, node.CanvasTop);
+                maxX = System.Math.Max(maxX, node.CanvasLeft + node.Width);
+                maxY = System.Math.Max(maxY, node.CanvasTop + node.Height);
+            }
+
+            double scale = zoomTransform.ScaleX;
+            canvasScroll.ScrollToHorizontalOffset(((minX + maxX) / 2.0 * scale) - (canvasScroll.ViewportWidth / 2.0));
+            canvasScroll.ScrollToVerticalOffset(((minY + maxY) / 2.0 * scale) - (canvasScroll.ViewportHeight / 2.0));
         }
 
         private void OnArgDragOver(object sender, DragEventArgs e)
@@ -61,11 +98,27 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             if (Keyboard.Modifiers != ModifierKeys.Control)
                 return;
 
-            double factor = e.Delta > 0 ? 1.1 : 1.0 / 1.1;
-            double scale = System.Math.Clamp(zoomTransform.ScaleX * factor, 0.3, 2.0);
-            zoomTransform.ScaleX = scale;
-            zoomTransform.ScaleY = scale;
             e.Handled = true;
+
+            double oldScale = zoomTransform.ScaleX;
+            double factor = e.Delta > 0 ? 1.1 : 1.0 / 1.1;
+            double newScale = System.Math.Clamp(oldScale * factor, 0.3, 2.0);
+            if (newScale == oldScale)
+                return;
+
+            // Anchor the zoom on the cursor: keep the canvas point under the mouse stationary
+            // by compensating the scroll offsets for the scale change.
+            Point viewportPos = e.GetPosition(canvasScroll);
+            double anchorX = (canvasScroll.HorizontalOffset + viewportPos.X) / oldScale;
+            double anchorY = (canvasScroll.VerticalOffset + viewportPos.Y) / oldScale;
+
+            zoomTransform.ScaleX = newScale;
+            zoomTransform.ScaleY = newScale;
+
+            // The new extent must be measured before the offsets can reach it.
+            canvasScroll.UpdateLayout();
+            canvasScroll.ScrollToHorizontalOffset((anchorX * newScale) - viewportPos.X);
+            canvasScroll.ScrollToVerticalOffset((anchorY * newScale) - viewportPos.Y);
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
