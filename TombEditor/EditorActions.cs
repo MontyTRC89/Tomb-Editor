@@ -4278,7 +4278,9 @@ namespace TombEditor
             return true;
         }
 
-        public static void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue) where T : struct
+        // pushUndo stays false for callers that manage undo themselves (e.g. EditLightColor
+        // pushes once before its realtime color dialog, whose callback re-enters here per tick).
+        public static void UpdateLight<T>(Func<LightInstance, T, bool> compareEquals, Action<LightInstance, T> setLightValue, Func<LightInstance, T?> getGuiValue, bool pushUndo = false) where T : struct
         {
             var light = _editor.SelectedObject as LightInstance;
             if (light == null)
@@ -4288,6 +4290,9 @@ namespace TombEditor
             if (!newValue.HasValue || compareEquals(light, newValue.Value))
                 return;
 
+            if (pushUndo)
+                _editor.UndoManager.PushObjectPropertyChanged(light);
+
             setLightValue(light, newValue.Value);
             light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
@@ -4296,8 +4301,9 @@ namespace TombEditor
         public static void UpdateLightQuality(LightQuality newQuality)
         {
             var light = _editor.SelectedObject as LightInstance;
-            if (light == null)
+            if (light == null || light.Quality == newQuality)
                 return;
+            _editor.UndoManager.PushObjectPropertyChanged(light);
             light.Quality = newQuality;
             light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
@@ -4306,8 +4312,9 @@ namespace TombEditor
         public static void UpdateLightType(LightType type)
         {
             var light = _editor?.SelectedObject as LightInstance;
-            if (light == null)
+            if (light == null || light.Type == type)
                 return;
+            _editor.UndoManager.PushObjectPropertyChanged(light);
             light.Type = type;
             light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);

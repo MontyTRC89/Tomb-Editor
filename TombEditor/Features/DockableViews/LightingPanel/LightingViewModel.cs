@@ -247,12 +247,12 @@ public partial class LightingViewModel : ObservableObject
 
 	private void UpdateLightFloat(Func<LightInstance, float, bool> compare, Action<LightInstance, float> setter, float value)
 	{
-		EditorActions.UpdateLight(compare, setter, light => (float?)value);
+		EditorActions.UpdateLight(compare, setter, light => (float?)value, pushUndo: true);
 	}
 
 	private void UpdateLightBool(Func<LightInstance, bool, bool> compare, Action<LightInstance, bool> setter, bool value)
 	{
-		EditorActions.UpdateLight(compare, setter, light => (bool?)value);
+		EditorActions.UpdateLight(compare, setter, light => (bool?)value, pushUndo: true);
 	}
 
 	private static bool CompareRounded(float first, float second, int decimalPlaces)
