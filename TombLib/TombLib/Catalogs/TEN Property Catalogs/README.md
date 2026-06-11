@@ -105,8 +105,8 @@ Compiles to a Lua integer literal.
 
 A decimal number. Rendered as a numeric spinner with two decimal places.
 
-| Attribute     | Format             | Example   |
-|---------------|--------------------|-----------|
+| Attribute     | Format                                 | Example  |
+|---------------|----------------------------------------|----------|
 | `defaultValue`| Floating-point literal (`.` separator) | `"3.14"` |
 
 Compiles to a Lua number literal.
@@ -129,9 +129,9 @@ Compiles to a quoted Lua string. Inner quotes and backslashes are escaped automa
 
 A 2D vector (X, Y). Rendered as two numeric fields.
 
-| Attribute     | Format                              | Example    |
-|---------------|-------------------------------------|------------|
-| `defaultValue`| Two comma-separated floats          | `"20, 28"` |
+| Attribute     | Format                                               | Example               |
+|---------------|------------------------------------------------------|-----------------------|
+| `defaultValue`| Two comma-separated floats, prefixed with `TEN.Vec2` | `"TEN.Vec2(20, 28)"`  |
 
 Compiles to `TEN.Vec2(x, y)`.
 
@@ -141,9 +141,9 @@ Compiles to `TEN.Vec2(x, y)`.
 
 A 3D vector (X, Y, Z). Rendered as three numeric fields.
 
-| Attribute     | Format                              | Example       |
-|---------------|-------------------------------------|---------------|
-| `defaultValue`| Three comma-separated floats        | `"0, 100, 0"` |
+| Attribute     | Format                                                 | Example                  |
+|---------------|--------------------------------------------------------|--------------------------|
+| `defaultValue`| Three comma-separated floats, prefixed with `TEN.Vec3` | `"TEN.Vec3(0, 100, 0)"`  |
 
 Compiles to `TEN.Vec3(x, y, z)`.
 
@@ -153,9 +153,9 @@ Compiles to `TEN.Vec3(x, y, z)`.
 
 Three Euler angles in degrees (X, Y, Z), each clamped to 0–360. Rendered as three numeric fields.
 
-| Attribute     | Format                              | Example      |
-|---------------|-------------------------------------|--------------|
-| `defaultValue`| Three comma-separated floats        | `"0, 90, 0"` |
+| Attribute     | Format                                                     | Example                     |
+|---------------|------------------------------------------------------------|-----------------------------|
+| `defaultValue`| Three comma-separated floats, prefixed with `TEN.Rotation` | `"TEN.Rotation(0, 90, 0)"`  |
 
 Compiles to `TEN.Rotation(x, y, z)`.
 
@@ -165,10 +165,10 @@ Compiles to `TEN.Rotation(x, y, z)`.
 
 An RGB or RGBA color. Rendered as a color picker button. The alpha field is hidden unless `hasAlpha="true"`.
 
-| Attribute     | Format                                          | Example                   |
-|---------------|-------------------------------------------------|---------------------------|
-| `defaultValue`| Three or four comma-separated 0–255 integers    | `"255, 128, 0"` or `"255, 0, 0, 128"` |
-| `hasAlpha`    | `true` / `false`                                | `"true"`                  |
+| Attribute     | Format                                                                  | Example                                                     |
+|---------------|------------------------------------------------------------------------ |-------------------------------------------------------------|
+| `defaultValue`| Three or four comma-separated 0–255 integers, prefixed with `TEN.Color` | `"TEN.Color(255, 128, 0)"` or `"TEN.Color(255, 0, 0, 128)"` |
+| `hasAlpha`    | `true` / `false`                                                        | `"true"`                                                    |
 
 Compiles to `TEN.Color(r, g, b)` or `TEN.Color(r, g, b, a)`.
 
@@ -178,9 +178,9 @@ Compiles to `TEN.Color(r, g, b)` or `TEN.Color(r, g, b, a)`.
 
 Hours, minutes, seconds and centiseconds. Rendered as four labeled text fields.
 
-| Attribute     | Format                                          | Example         |
-|---------------|-------------------------------------------------|-----------------|
-| `defaultValue`| Four comma-separated integers: `h, m, s, cs`   | `"0, 1, 30, 0"` |
+| Attribute     | Format                                                                | Example                   |
+|---------------|-----------------------------------------------------------------------|---------------------------|
+| `defaultValue`| Four comma-separated integers: `h, m, s, cs`, prefixed with `TEN.Time` | `"TEN.Time(0, 1, 30, 0)"` |
 
 Compiles to `TEN.Time({h, m, s, cs})`.
 

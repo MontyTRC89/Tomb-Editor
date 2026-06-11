@@ -18,12 +18,12 @@
     - Int:      "0", "100", "-5"
     - Float:    "0.0", "3.14", "-1.5"
     - String:   any text (quotes are added automatically)
-    - Vec2:     "0, 0"        (two comma-separated floats)
-    - Vec3:     "0, 0, 0"     (three comma-separated floats)
-    - Rotation: "0, 0, 0"     (three angles in degrees, clamped to 0-360)
-    - Color:    "255, 0, 0"   (three 0-255 ints, or four with alpha)
-    - Time:     "0, 0, 0, 0"  (hours, minutes, seconds, centiseconds)
-    - Enum:     "0"           (0-based index; use entry name as defaultValue for readability)
+    - Vec2:     TEN.Vec2(0, 0)        		(two comma-separated floats)
+    - Vec3:     TEN.Vec3(0, 0, 0)     		(three comma-separated floats, prefixed with `TEN.Vec3`)
+    - Rotation: TEN.Rotation(0, 0, 0)     	(three angles in degrees, clamped to 0-360, prefixed with `TEN.Rotation`)
+    - Color:    TEN.Color(255, 0, 0)   		(three 0-255 ints, or four with alpha, prefixed with `TEN.Color`)
+    - Time:     TEN.Time(0, 0, 0, 0)  		(hours, minutes, seconds, centiseconds, prefixed with `TEN.Time`)
+    - Enum:     "0"           				(0-based index; use entry name as defaultValue for readability)
     
   Properties defined here appear in the WadTool property grid for global (Level 1) 
   editing and in TombEditor for per-instance (Level 2) editing.
@@ -67,7 +67,7 @@
     <property internalName="tintColor"
               displayName="Tint Color"
               type="Color"
-              defaultValue="255, 255, 255"
+              defaultValue="TEN.Color(255, 255, 255)"
               category="Appearance"
               description="Color tint applied to this enemy model." />
   </moveable>
@@ -84,7 +84,7 @@
     <property internalName="swayAmplitude"
               displayName="Sway Amplitude"
               type="Vec3"
-              defaultValue="0, 10, 0"
+              defaultValue="TEN.Vec3(0, 10, 0)"
               category="Animation"
               description="Maximum rotation offset in each axis for sway effect." />
 
