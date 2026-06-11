@@ -1,11 +1,10 @@
-﻿using DarkUI.Docking;
+using DarkUI.Docking;
 using System;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Features.ContextMenus;
-using TombEditor.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;

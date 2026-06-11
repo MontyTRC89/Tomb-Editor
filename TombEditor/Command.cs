@@ -21,7 +21,6 @@ using TombEditor.Features.DockableViews.SectorOptionsPanel;
 using TombEditor.Features.DockableViews.TexturePanel;
 using TombEditor.Features.DockableViews.TriggerList;
 using TombEditor.Features.Panel3D.ToolPalette;
-using TombEditor.Forms;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
@@ -2388,7 +2387,9 @@ namespace TombEditor
 
             AddCommand("SearchMenus", "Search menu entries", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(FormMain));
+                // Literal key kept for event-contract compatibility: the WinForms FormMain
+                // (removed with the WPF migration) listened for this container name.
+                args.Editor.ActivateDefaultControl("FormMain");
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args)

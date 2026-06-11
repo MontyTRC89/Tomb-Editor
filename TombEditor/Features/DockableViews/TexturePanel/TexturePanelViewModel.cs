@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using TombEditor.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;

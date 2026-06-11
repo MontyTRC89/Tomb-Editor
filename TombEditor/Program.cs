@@ -9,7 +9,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using TombEditor.Forms;
 using TombLib.Forms.Services;
 using TombLib.LevelData;
 using TombLib.NG;
@@ -36,21 +35,6 @@ namespace TombEditor
             string batchFile = null;
             bool doBatchCompile = false;
             BatchCompileList batchList = null;
-
-            // Strip the --winforms flag (legacy fallback to the FormMain shell).
-            // WPF MainWindow is the default; --winforms forces the legacy WinForms path.
-            bool useLegacyWinforms = false;
-            {
-                var filtered = new List<string>(args.Length);
-                foreach (var a in args)
-                {
-                    if (string.Equals(a, "--winforms", StringComparison.OrdinalIgnoreCase))
-                        useLegacyWinforms = true;
-                    else
-                        filtered.Add(a);
-                }
-                args = filtered.ToArray();
-            }
 
             if (args.Length >= 1)
             {
@@ -109,18 +93,10 @@ namespace TombEditor
                     // marshal events back to the UI thread. The WPF shell has no WinForms message
                     // loop, so a WindowsFormsSynchronizationContext would deadlock Send(); bind
                     // to the WPF dispatcher (already created by WPFInitializer) instead.
-                    // --winforms restores the WindowsFormsSynchronizationContext for FormMain.
-                    if (useLegacyWinforms)
-                    {
-                        SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
-                    }
-                    else
-                    {
-                        var dispatcher = System.Windows.Application.Current?.Dispatcher
-                            ?? System.Windows.Threading.Dispatcher.CurrentDispatcher;
-                        SynchronizationContext.SetSynchronizationContext(
-                            new System.Windows.Threading.DispatcherSynchronizationContext(dispatcher));
-                    }
+                    var dispatcher = System.Windows.Application.Current?.Dispatcher
+                        ?? System.Windows.Threading.Dispatcher.CurrentDispatcher;
+                    SynchronizationContext.SetSynchronizationContext(
+                        new System.Windows.Threading.DispatcherSynchronizationContext(dispatcher));
 
                     if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                         Environment.Exit(1);
@@ -148,31 +124,6 @@ namespace TombEditor
                     {
                         EditorActions.BuildInBatch(editor, batchList, batchFile);
                     }
-                    else if (useLegacyWinforms)
-                    {
-                        // Legacy WinForms shell. Kept reachable behind --winforms while the WPF
-                        // migration finishes so users still depending on FormMain features have a
-                        // fallback.
-                        using (FormMain form = new FormMain(editor))
-                        {
-                            form.Show();
-
-                            if (!string.IsNullOrEmpty(startFile)) // Open files on start
-                            {
-                                if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-                                    EditorActions.OpenLevelPrj(form, startFile);
-                                else
-                                    EditorActions.OpenLevel(form, startFile);
-                            }
-                            else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-                            {
-                                if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0 &&
-                                    File.Exists(Properties.Settings.Default.RecentProjects[0]))
-                                    EditorActions.OpenLevel(form, Properties.Settings.Default.RecentProjects[0]);
-                            }
-                            Application.Run(form);
-                        }
-                    }
                     else
                     {
                         // Default WPF shell. Catalogs/Editor are fully loaded above, so the window
@@ -197,6 +148,28 @@ namespace TombEditor
                         try
                         {
                             var mainWindow = new MainWindow(editor);
+
+                            // Open the file passed on the command line (or the last project, when
+                            // configured) once the window has rendered, so progress/error dialogs
+                            // have a live owner. ContentRendered fires once after the first layout.
+                            mainWindow.ContentRendered += (_, _) =>
+                            {
+                                if (!string.IsNullOrEmpty(startFile))
+                                {
+                                    if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                                        EditorActions.OpenLevelPrj(mainWindow.GetWin32Window(), startFile);
+                                    else
+                                        EditorActions.OpenLevel(mainWindow.GetWin32Window(), startFile);
+                                }
+                                else if (editor.Configuration.Editor_OpenLastProjectOnStartup &&
+                                    Properties.Settings.Default.RecentProjects != null &&
+                                    Properties.Settings.Default.RecentProjects.Count > 0 &&
+                                    File.Exists(Properties.Settings.Default.RecentProjects[0]))
+                                {
+                                    EditorActions.OpenLevel(mainWindow.GetWin32Window(), Properties.Settings.Default.RecentProjects[0]);
+                                }
+                            };
+
                             wpfApp.Run(mainWindow);
                         }
                         catch (Exception ex)

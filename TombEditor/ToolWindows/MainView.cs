@@ -10,7 +10,6 @@ using TombLib.Forms;
 using TombLib.Utils;
 using System.Linq;
 using System.Collections.Generic;
-using TombEditor.Forms;
 using DarkUI.Config;
 using TombLib.Wad.Catalog;
 

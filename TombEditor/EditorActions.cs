@@ -1,4 +1,4 @@
-﻿using DarkUI.Forms;
+using DarkUI.Forms;
 using NLog;
 using System;
 using System.Collections.Concurrent;
@@ -27,7 +27,6 @@ using TombEditor.Features.Dialogs.Portal;
 using TombEditor.Features.Dialogs.Sink;
 using TombEditor.Features.Dialogs.Static;
 using TombEditor.Features.Dialogs.SoundSource;
-using TombEditor.Forms;
 
 
 using TombLib;

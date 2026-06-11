@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Threading;
-using TombEditor.Forms;
 using TombLib.Controls;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
