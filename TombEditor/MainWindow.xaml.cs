@@ -197,8 +197,8 @@ public partial class MainWindow : Window
 		if (obj is Editor.LevelChangedEvent)
 			_popup.Hide();
 
-		if (obj is Editor.ToolWindowToggleEvent toggle && _anchorableIdByType.TryGetValue(toggle.ContentType, out var id))
-			ToggleAnchorable(id);
+		if (obj is Editor.ToolWindowToggleEvent toggle)
+			ToggleAnchorable(ContentIdForPanelName(toggle.Name));
 
 		// Bring the 3D view or the 2D map forward inside the nested editor dock when the mode switches.
 		// They live in their own DockingManager under the shared toolbar, so the user can tab them or
@@ -363,21 +363,15 @@ public partial class MainWindow : Window
 
 	#region Tool window toggle
 
-	// ToggleToolWindow(Type) → ContentId mapping. Keep in sync with the LayoutAnchorable ContentIds in XAML.
-	private static readonly Dictionary<Type, string> _anchorableIdByType = new()
+	// ToggleToolWindow(name) → the AvalonDock ContentId is the panel name with a lowercased
+	// first letter ("TexturePanel" → "texturePanel"). Keep the LayoutAnchorable ContentIds in
+	// XAML consistent with the names raised in Command.cs.
+	private static string ContentIdForPanelName(string panelName)
 	{
-		[typeof(ObjectList)]              = "objectList",
-		[typeof(SectorOptions)]           = "sectorOptions",
-		[typeof(RoomOptions)]             = "roomOptions",
-		[typeof(TriggerList)]             = "triggerList",
-		[typeof(TexturePanel)]            = "texturePanel",
-		[typeof(ItemBrowser)]             = "itemBrowser",
-		[typeof(ImportedGeometryBrowser)] = "importedGeometryBrowser",
-		[typeof(ContentBrowser)]          = "contentBrowser",
-		[typeof(Lighting)]                = "lighting",
-		[typeof(Palette)]                 = "palette",
-		[typeof(ToolWindows.ItemProperties)] = "itemProperties",
-	};
+		if (string.IsNullOrEmpty(panelName))
+			return string.Empty;
+		return char.ToLowerInvariant(panelName[0]) + panelName.Substring(1);
+	}
 
 	private void ToggleAnchorable(string contentId)
 	{
@@ -514,8 +508,8 @@ public partial class MainWindow : Window
 				item.IsChecked = _editor.Configuration.Window_Layout.ShowFlybyTimeline;
 			else if (commandName == "ShowStatistics")
 				item.IsChecked = _editor.Configuration.Window_Layout.ShowStats;
-			else if (cmd.Execute is { } && _anchorableIdByType.Values.Contains(NormalizedContentIdFor(commandName)))
-				item.IsChecked = FindAnchorable(NormalizedContentIdFor(commandName)) is { IsHidden: false };
+			else if (cmd.Execute is { } && FindAnchorable(NormalizedContentIdFor(commandName)) is { } anchorable)
+				item.IsChecked = !anchorable.IsHidden;
 		}
 	}
 
@@ -523,9 +517,7 @@ public partial class MainWindow : Window
 	{
 		// "ShowItemBrowser" → "itemBrowser" — first letter lowercased after stripping "Show".
 		var name = showCommandName.StartsWith("Show") ? showCommandName.Substring(4) : showCommandName;
-		if (string.IsNullOrEmpty(name))
-			return string.Empty;
-		return char.ToLowerInvariant(name[0]) + name.Substring(1);
+		return ContentIdForPanelName(name);
 	}
 
 	private void OpenRecentMenu_SubmenuOpened(object sender, RoutedEventArgs e)

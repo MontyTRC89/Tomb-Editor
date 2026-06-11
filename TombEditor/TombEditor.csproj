@@ -75,14 +75,8 @@
       <Link>GlobalPaths.cs</Link>
     </Compile>
     <Compile Remove="EditorCommands.cs" />
-    <Compile Update="Controls\RichTextLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="Features\Panel3D\ToolPalette\Toolbox.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Controls\Panel2DMap.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>

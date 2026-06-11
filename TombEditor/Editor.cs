@@ -839,14 +839,15 @@ namespace TombEditor
             RaiseEvent(new EditorFocusedEvent());
         }
 
-        // Dock content change event
+        // Dock content change event. The name is the panel's logical name (e.g. "TexturePanel"),
+        // which the WPF shell maps to its AvalonDock ContentId by lowercasing the first letter.
         public class ToolWindowToggleEvent : IEditorEvent
         {
-            public Type ContentType { get; internal set; }
+            public string Name { get; internal set; }
         }
-        public void ToggleToolWindow(Type contentType)
+        public void ToggleToolWindow(string name)
         {
-            RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
+            RaiseEvent(new ToolWindowToggleEvent() { Name = name });
         }
 
         // Layout switch events

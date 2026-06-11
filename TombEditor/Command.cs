@@ -1809,18 +1809,18 @@ namespace TombEditor
                 args.Editor.Quit();
             });
 
-            AddCommand("ShowTriggerList", "Show trigger list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(TriggerList)));
-            AddCommand("ShowRoomOptions", "Show room options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(RoomOptions)));
-            AddCommand("ShowItemBrowser", "Show item browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ItemBrowser)));
-            AddCommand("ShowImportedGeometryBrowser", "Show imported geometry browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ImportedGeometryBrowser)));
-            AddCommand("ShowContentBrowser", "Show content browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ContentBrowser)));
-            AddCommand("ShowSectorOptions", "Show sector options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(SectorOptions)));
-            AddCommand("ShowLighting", "Show lighting", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(Lighting)));
-            AddCommand("ShowPalette", "Show palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(Palette)));
-            AddCommand("ShowTexturePanel", "Show texture panel", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(TexturePanel)));
-            AddCommand("ShowObjectList", "Show object list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ObjectList)));
-            AddCommand("ShowToolPalette", "Show tool palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ToolPalette)));
-            AddCommand("ShowItemProperties", "Show item properties", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ToolWindows.ItemProperties)));
+            AddCommand("ShowTriggerList", "Show trigger list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("TriggerList"));
+            AddCommand("ShowRoomOptions", "Show room options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("RoomOptions"));
+            AddCommand("ShowItemBrowser", "Show item browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ItemBrowser"));
+            AddCommand("ShowImportedGeometryBrowser", "Show imported geometry browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ImportedGeometryBrowser"));
+            AddCommand("ShowContentBrowser", "Show content browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ContentBrowser"));
+            AddCommand("ShowSectorOptions", "Show sector options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("SectorOptions"));
+            AddCommand("ShowLighting", "Show lighting", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("Lighting"));
+            AddCommand("ShowPalette", "Show palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("Palette"));
+            AddCommand("ShowTexturePanel", "Show texture panel", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("TexturePanel"));
+            AddCommand("ShowObjectList", "Show object list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ObjectList"));
+            AddCommand("ShowToolPalette", "Show tool palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ToolPalette"));
+            AddCommand("ShowItemProperties", "Show item properties", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ItemProperties"));
 
             AddCommand("ShowStatistics", "Statistics display", CommandType.Windows, delegate (CommandArgs args)
             {
@@ -2367,22 +2367,22 @@ namespace TombEditor
 
             AddCommand("InPlaceSearchRooms", "Room in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(RoomOptions));
+                args.Editor.ActivateDefaultControl("RoomOptions");
             });
 
             AddCommand("InPlaceSearchItems", "Item in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(ItemBrowser));
+                args.Editor.ActivateDefaultControl("ItemBrowser");
             });
 
             AddCommand("InPlaceSearchTextures", "Texture in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(TexturePanel));
+                args.Editor.ActivateDefaultControl("TexturePanel");
             });
 
             AddCommand("InPlaceSearchImportedGeometry", "Imported geometry in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(ImportedGeometryBrowser));
+                args.Editor.ActivateDefaultControl("ImportedGeometryBrowser");
             });
 
             AddCommand("SearchMenus", "Search menu entries", CommandType.General, delegate (CommandArgs args)
