@@ -81,29 +81,28 @@ public partial class TriggerWindow : Window
         _vm?.AllocateNewScriptIds();
         UpdateDialog();
 
-        _dialogIsUpdating = true;
-        try
+        // Mirror the legacy FormTrigger ctor: the assignments below must NOT be suppressed —
+        // each one fires ParameterChanged → UpdateDialog, which re-derives the dependent
+        // parameter ranges from the progressively assigned values (the population order below
+        // relies on that cascade). UpdateDialog guards itself against recursion.
+        _vm?.LoadTrigger(trigger);
+
+        paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
+        paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
+        paramPlugin.Parameter = trigger.Plugin;
+
+        if (trigger.TriggerType == TriggerType.ConditionNg)
         {
-            _vm?.LoadTrigger(trigger);
-
-            paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
-            paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
-            paramPlugin.Parameter = trigger.Plugin;
-
-            if (trigger.TriggerType == TriggerType.ConditionNg)
-            {
-                paramTimer.Parameter = trigger.Timer;
-                paramTarget.Parameter = trigger.Target;
-            }
-            else
-            {
-                paramTarget.Parameter = trigger.Target;
-                paramTimer.Parameter = trigger.Timer;
-            }
-
-            paramExtra.Parameter = trigger.Extra;
+            paramTimer.Parameter = trigger.Timer;
+            paramTarget.Parameter = trigger.Target;
         }
-        finally { _dialogIsUpdating = false; }
+        else
+        {
+            paramTarget.Parameter = trigger.Target;
+            paramTimer.Parameter = trigger.Timer;
+        }
+
+        paramExtra.Parameter = trigger.Extra;
 
         _vm?.SetCurrentParameters(CurrentTriggerType, CurrentTargetType,
             paramPlugin.Parameter, paramTarget.Parameter, paramTimer.Parameter, paramExtra.Parameter);
