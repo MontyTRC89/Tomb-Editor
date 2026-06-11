@@ -295,7 +295,7 @@ namespace TombEditor
         public Size Window_FormTransform_Size { get; set; } = new Size(345, 171);
         public bool Window_FormTransform_Maximized { get; set; } = false;
         public Point Window_FormMaterialEditor_Position { get; set; } = new Point(-1);
-        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 560);
+        public Size Window_FormMaterialEditor_Size { get; set; } = new Size(537, 724);
         public bool Window_FormMaterialEditor_Maximized { get; set; } = false;
 
         public NamedLayout Window_Layout { get; set; } = new NamedLayout { State = Window_LayoutDefault.Clone() };
@@ -389,7 +389,7 @@ namespace TombEditor
                     {
                         new DockGroupState
                         {
-                            Contents = new List<string> { "TexturePanel" },
+                            Contents = new List<string> { "TexturePanel", "ItemProperties" },
                             VisibleContent = "TexturePanel",
                             Order = 0,
                             Size = new Size(286,700)
