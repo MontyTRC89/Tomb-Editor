@@ -56,6 +56,33 @@
 		/>
 	</moveable>
 	
+	<moveable id="59">
+		<property
+		  internalName="VehicleLight"
+		  displayName="Render light"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Effects"
+		  description="Render light"
+		/>
+		<property
+		  internalName="VehicleLightColor"
+		  displayName="Light color"
+		  type="Color"
+		  defaultValue="TEN.Color(255,255,255,255)"
+		  category="Vehicle Effects"
+		  description="Light color"
+		/>
+		<property
+		  internalName="VehicleLightIntensity"
+		  displayName="Light intensity"
+		  type="Float"
+		  defaultValue="0.5"
+		  category="Vehicle Effects"
+		  description="Light intensity"
+		/>
+	</moveable>
+	
 	<moveable id="55">
 		<property
 		  internalName="VehicleFoam"
