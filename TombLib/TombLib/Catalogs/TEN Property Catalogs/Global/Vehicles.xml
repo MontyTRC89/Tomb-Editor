@@ -62,7 +62,7 @@
 		  displayName="Render light"
 		  type="Bool"
 		  defaultValue="true"
-		  category="Vehicle Effects"
+		  category="Vehicle Light"
 		  description="Render light"
 		/>
 		<property
@@ -70,7 +70,7 @@
 		  displayName="Light color"
 		  type="Color"
 		  defaultValue="TEN.Color(255,255,255,255)"
-		  category="Vehicle Effects"
+		  category="Vehicle Light"
 		  description="Light color"
 		/>
 		<property
@@ -78,8 +78,40 @@
 		  displayName="Light intensity"
 		  type="Float"
 		  defaultValue="0.5"
-		  category="Vehicle Effects"
+		  category="Vehicle Light"
 		  description="Light intensity"
+		/>
+		<property
+		  internalName="VehicleLightRadius"
+		  displayName="Light radius"
+		  type="Int"
+		  defaultValue="4"
+		  category="Vehicle Light"
+		  description="Light radius (in blocks)"
+		/>
+		<property
+		  internalName="VehicleLightFalloff"
+		  displayName="Light falloff"
+		  type="Int"
+		  defaultValue="2"
+		  category="Vehicle Light"
+		  description="Light falloff (in blocks)"
+		/>
+		<property
+		  internalName="VehicleLightDistance"
+		  displayName="Light distance"
+		  type="Int"
+		  defaultValue="10"
+		  category="Vehicle Light"
+		  description="Light distance (in blocks)"
+		/>
+		<property
+		  internalName="VehicleLightCastShadow"
+		  displayName="Light shadow cast"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Light"
+		  description="Determines whether the vehicle light casts a dynamic shadow"
 		/>
 	</moveable>
 	
