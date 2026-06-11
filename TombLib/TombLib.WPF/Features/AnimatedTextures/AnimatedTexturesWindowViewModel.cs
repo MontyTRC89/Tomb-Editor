@@ -190,6 +190,8 @@ namespace TombLib.WPF.Features.AnimatedTextures
 
             _previewCurrentFrame = null;
             _previewCurrentRepeatTimes = 0;
+            _lastX = 0;
+            _lastY = 0;
             UpdatePreviewState();
         }
 
@@ -334,6 +336,7 @@ namespace TombLib.WPF.Features.AnimatedTextures
             SelectedFrame.TexCoord1 = source.TexCoord1;
             SelectedFrame.TexCoord2 = source.TexCoord2;
             SelectedFrame.TexCoord3 = source.TexCoord3;
+            _textureMap.InvalidateVisual(); // The set outlines on the atlas follow the frame.
             _context.OnAnimatedTexturesChanged?.Invoke();
         }
 

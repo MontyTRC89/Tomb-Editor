@@ -61,10 +61,6 @@ namespace TombLib.WPF.Features.AnimatedTextures
             if (_previewTimer == null)
                 return;
 
-            // Reset the UV-rotate scroll position.
-            _lastX = 0;
-            _lastY = 0;
-
             int frameCount = SelectedSet?.Frames.Count ?? 0;
             if (frameCount == 0 || SelectedSet == null)
             {
@@ -76,8 +72,21 @@ namespace TombLib.WPF.Features.AnimatedTextures
             else
             {
                 double fps = IsTombEngine && SelectedSet.AnimationType == AnimatedTextureAnimationType.UVRotate ? 30.0 : Math.Max(SelectedSet.Fps, 0.001);
-                _previewTimer.Interval = TimeSpan.FromMilliseconds(Math.Clamp(Math.Round(1000.0 / fps), 1, int.MaxValue));
-                _previewTimer.Start();
+                var interval = TimeSpan.FromMilliseconds(Math.Clamp(Math.Round(1000.0 / fps), 1, int.MaxValue));
+
+                // Touching Interval (or Start) on a running DispatcherTimer resets its countdown:
+                // with low-FPS sets (e.g. 0.2 = a 5s interval) any repeated call here — settings
+                // edits, texture-map selection changes — would keep the tick from ever firing.
+                // Reset the scroll position and timer only when something actually changed.
+                if (_previewTimer.Interval != interval)
+                {
+                    _lastX = 0;
+                    _lastY = 0;
+                    _previewTimer.Interval = interval;
+                }
+
+                if (!_previewTimer.IsEnabled)
+                    _previewTimer.Start();
             }
 
             int totalFrames = 0;

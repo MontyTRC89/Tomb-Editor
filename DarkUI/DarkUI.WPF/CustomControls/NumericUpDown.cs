@@ -481,9 +481,15 @@ public class NumericUpDown : Control
 
 	private string FormatValue(double value)
 	{
+		// DecimalPlaces controls the value's rounding; without this it would have no effect on
+		// the DISPLAY when FormatString is left at its "F0" default (0.2 rendered as "0").
+		string format = DecimalPlaces >= 0 && ReadLocalValue(FormatStringProperty) == DependencyProperty.UnsetValue
+			? "F" + DecimalPlaces.ToString(CultureInfo.InvariantCulture)
+			: FormatString;
+
 		try
 		{
-			return value.ToString(FormatString, CultureInfo.CurrentCulture);
+			return value.ToString(format, CultureInfo.CurrentCulture);
 		}
 		catch (FormatException)
 		{
