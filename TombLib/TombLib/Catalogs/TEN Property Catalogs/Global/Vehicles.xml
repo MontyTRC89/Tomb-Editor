@@ -13,7 +13,7 @@
 		  internalName="WakeStartColor"
 		  displayName="Wake start color"
 		  type="Color"
-		  defaultValue="191,191,191,191"
+		  defaultValue="TEN.Color(191,191,191,191)"
 		  hasAlpha = "true"
 		  category="Vehicle Effects"
 		  description="Vehicle wake starting color."
@@ -22,10 +22,18 @@
 		  internalName="WakeEndColor"
 		  displayName="Wake end color"
 		  type="Color"
-		  defaultValue="0,0,0,0"
+		  defaultValue="TEN.Color(0,0,0,0)"
 		  hasAlpha = "true"
 		  category="Vehicle Effects"
 		  description="Vehicle wake ending color."
+		/>
+		<property
+		  internalName="VehicleVelocity"
+		  displayName="Speed modifier"
+		  type="Int"
+		  defaultValue="110"
+		  category="Vehicle Control"
+		  description="Modify the overall speed."
 		/>
 	</moveable>
 	<moveable id="55">
@@ -41,8 +49,7 @@
 		  internalName="VehicleMistStartColor"
 		  displayName="Mist start color"
 		  type="Color"
-		  defaultValue="0,0,0"
-		  hasAlpha = "true"
+		  defaultValue="TEN.Color(0,0,0)"
 		  category="Vehicle Effects"
 		  description="Starting color of mist particles."
 		/>
@@ -50,8 +57,7 @@
 		  internalName="VehicleMistEndColor"
 		  displayName="Mist end color"
 		  type="Color"
-		  defaultValue="64,64,64"
-		  hasAlpha = "true"
+		  defaultValue="TEN.Color(64,64,64)"
 		  category="Vehicle Effects"
 		  description="Ending color of mist particles."
 		/>
@@ -62,14 +68,6 @@
 		  defaultValue="false"
 		  category="Vehicle Effects"
 		  description="Add foam effect"
-		/>
-		<property
-		  internalName="VehicleVelocity"
-		  displayName="Speed modifier"
-		  type="Int"
-		  defaultValue="110"
-		  category="Vehicle Control"
-		  description="Modify the overall speed."
 		/>
 	</moveable>
 </propertyCatalog>
