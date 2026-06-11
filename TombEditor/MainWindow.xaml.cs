@@ -340,6 +340,7 @@ public partial class MainWindow : Window
 		paletteView?.Cleanup();
 		triggerListView?.Cleanup();
 		objectListView?.Cleanup();
+		itemPropertiesView?.Cleanup();
 		importedGeometryBrowserView?.Cleanup();
 		itemBrowserView?.Cleanup();
 		texturePanelView?.Cleanup();
@@ -375,6 +376,7 @@ public partial class MainWindow : Window
 		[typeof(ContentBrowser)]          = "contentBrowser",
 		[typeof(Lighting)]                = "lighting",
 		[typeof(Palette)]                 = "palette",
+		[typeof(ToolWindows.ItemProperties)] = "itemProperties",
 	};
 
 	private void ToggleAnchorable(string contentId)
@@ -387,6 +389,20 @@ public partial class MainWindow : Window
 				anchorable.Show();
 			else
 				anchorable.Hide();
+		}
+		else if (contentId == "itemProperties")
+		{
+			// Layouts saved by builds that predate this panel do not contain the anchorable
+			// (OnLayoutSerializationCallback re-attaches by ContentId, so the XAML-declared one
+			// is dropped on layout load). Recreate it docked left, like ApplyFlybyTimelineVisibility.
+			new LayoutAnchorable
+			{
+				ContentId = "itemProperties",
+				CanClose = false,
+				Title = "Item properties",
+				IconSource = TombLib.Icons.IconSources.Load("General/edit"),
+				Content = itemPropertiesView,
+			}.AddToLayout(dockManager, AnchorableShowStrategy.Left | AnchorableShowStrategy.Most);
 		}
 	}
 
@@ -603,6 +619,7 @@ public partial class MainWindow : Window
 			"contentBrowser" => contentBrowserView,
 			"lighting" => lightingView,
 			"palette" => paletteView,
+			"itemProperties" => itemPropertiesView,
 			"flybyTimeline" => flybyTimelineView,
 			"mainView" => editorAreaHost,
 			_ => null

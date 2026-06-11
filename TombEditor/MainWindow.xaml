@@ -1,4 +1,4 @@
-<Window
+﻿<Window
 	x:Class="TombEditor.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,6 +14,7 @@
 	xmlns:contentBrowser="clr-namespace:TombEditor.Features.DockableViews.ContentBrowser"
 	xmlns:importedGeometryBrowser="clr-namespace:TombEditor.Features.DockableViews.ImportedGeometryBrowser"
 	xmlns:itemBrowser="clr-namespace:TombEditor.Features.DockableViews.ItemBrowser"
+	xmlns:itemPropertiesPanel="clr-namespace:TombEditor.Features.DockableViews.ItemPropertiesPanel"
 	xmlns:lightingPanel="clr-namespace:TombEditor.Features.DockableViews.LightingPanel"
 	xmlns:objectList="clr-namespace:TombEditor.Features.DockableViews.ObjectList"
 	xmlns:palettePanel="clr-namespace:TombEditor.Features.DockableViews.PalettePanel"
@@ -259,6 +260,7 @@
 				<MenuItem editor:EditorMenu.Command="ShowPalette" />
 				<MenuItem editor:EditorMenu.Command="ShowTexturePanel" />
 				<MenuItem editor:EditorMenu.Command="ShowObjectList" />
+				<MenuItem editor:EditorMenu.Command="ShowItemProperties" />
 				<MenuItem editor:EditorMenu.Command="ShowStatistics" />
 				<MenuItem editor:EditorMenu.Command="ShowToolPalette" />
 				<MenuItem editor:EditorMenu.Command="ShowFlybyTimeline" editor:EditorMenu.Icon="Objects/movie_projector" />
@@ -350,6 +352,13 @@
 								IconSource="{tomb:Icon Actions/DrawObjects}"
 								Title="Objects in room">
 								<objectList:ObjectListView x:Name="objectListView" />
+							</avalonDock:LayoutAnchorable>
+							<avalonDock:LayoutAnchorable
+								ContentId="itemProperties"
+								CanClose="False"
+								IconSource="{tomb:Icon General/edit}"
+								Title="Item properties">
+								<itemPropertiesPanel:ItemPropertiesView x:Name="itemPropertiesView" />
 							</avalonDock:LayoutAnchorable>
 						</avalonDock:LayoutAnchorablePane>
 					</avalonDock:LayoutAnchorablePaneGroup>
