@@ -8,14 +8,11 @@ namespace TombEditor.Features.Dialogs.ResizeRoom;
 
 public partial class ResizeRoomWindow : Window
 {
-    private readonly ResizeRoomGridControl _gridControl = new();
-
     public ResizeRoomWindow()
     {
         InitializeComponent();
         this.HookModalAutoClose();
 
-        gridHost.Child = _gridControl;
         DataContextChanged += OnDataContextChanged;
         Closed += OnClosed;
     }
@@ -39,9 +36,10 @@ public partial class ResizeRoomWindow : Window
 
         if (e.NewValue is ResizeRoomWindowViewModel newVm)
         {
-            _gridControl.Room = newVm.Room;
-            _gridControl.ColorScheme = newVm.Editor.Configuration.UI_ColorScheme;
+            gridControl.Room = newVm.Room;
+            gridControl.ColorScheme = newVm.Editor.Configuration.UI_ColorScheme;
             SyncFromViewModel(newVm);
+            gridControl.InvalidateVisual();
 
             newVm.AreaChanged += OnAreaChanged;
             newVm.PropertyChanged += OnViewModelPropertyChanged;
@@ -53,7 +51,7 @@ public partial class ResizeRoomWindow : Window
         if (DataContext is ResizeRoomWindowViewModel vm)
         {
             SyncFromViewModel(vm);
-            _gridControl.Invalidate();
+            gridControl.InvalidateVisual();
         }
     }
 
@@ -65,7 +63,7 @@ public partial class ResizeRoomWindow : Window
 
     private void SyncFromViewModel(ResizeRoomWindowViewModel vm)
     {
-        _gridControl.NewArea = vm.NewArea;
-        _gridControl.UseFloor = vm.UseFloor;
+        gridControl.NewArea = vm.NewArea;
+        gridControl.UseFloor = vm.UseFloor;
     }
 }

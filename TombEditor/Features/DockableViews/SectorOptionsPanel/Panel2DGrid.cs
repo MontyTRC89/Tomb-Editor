@@ -20,10 +20,7 @@ public partial class Panel2DGrid : FrameworkElement, IDisposable
 {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-    private const double OutlineSectorColoringInfoWidth = 3.0;
     private const double BorderThickness = 1.0;
-    private const double HatchPenThickness = 3.5;
-    private const double HatchSpacing = 8.0;
     private const double MinZoom = 1.0;
     private const double MaxZoom = 12.0;
     private const double MouseWheelZoomBase = 1.15;

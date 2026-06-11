@@ -9,7 +9,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="{tombLib:Localize Title}"
 	Width="540"
 	Height="420"
@@ -42,11 +41,12 @@
 			<ColumnDefinition Width="220" />
 		</Grid.ColumnDefinitions>
 
-		<wfi:WindowsFormsHost
-			x:Name="gridHost"
+		<Border
 			Grid.Row="0"
 			Grid.Column="0"
-			Background="{DynamicResource Brush_Background_Low}" />
+			Background="{DynamicResource Brush_Background_Low}">
+			<vm:ResizeRoomGridControl x:Name="gridControl" />
+		</Border>
 
 		<controls:SpacedGrid
 			Grid.Row="0"
