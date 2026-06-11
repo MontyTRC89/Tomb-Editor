@@ -483,8 +483,12 @@ public partial class MainWindow : Window
 
 	private void AboutMenu_Click(object sender, RoutedEventArgs e)
 	{
-		using var form = new FormAbout(Properties.Resources.misc_AboutScreen_800);
-		form.ShowDialog(this.GetWin32Window());
+		var about = new TombLib.WPF.Features.About.AboutWindow(
+			new System.Windows.Media.Imaging.BitmapImage(new Uri("pack://application:,,,/Resources/misc/misc_AboutScreen_800.png")))
+		{
+			Owner = this
+		};
+		about.ShowDialog();
 	}
 
 	private void WindowMenu_SubmenuOpened(object sender, RoutedEventArgs e)

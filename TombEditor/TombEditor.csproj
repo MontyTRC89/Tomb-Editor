@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="TE.ico" />
+    <Resource Include="Resources\misc\misc_AboutScreen_800.png" />
     <Resource Include="Resources\icons_actions\*.png" />
     <Resource Include="Resources\icons_general\*.png" />
     <Resource Include="Resources\icons_objects\*.png" />
