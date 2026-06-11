@@ -29,7 +29,7 @@
 		/>
 	</moveable>
 	
-	<moveable id="55,67">
+	<moveable id="55,59,67">
 		<property
 		  internalName="VehicleMist"
 		  displayName="Render mist"
