@@ -702,10 +702,20 @@
         "DeleteSetTooltip": "Delete event set",
         "NewGlobalSetName": "New global event set {0}",
         "NewVolumeSetName": "New volume event set {0}",
-        "CopySuffix": " (copy)"
+        "CopySuffix": " (copy)",
+        "NewFolderTooltip": "New folder",
+        "NewFolderTitle": "New folder",
+        "NewFolderPrompt": "Enter folder name:",
+        "NewFolderDefaultName": "New folder",
+        "RenameFolderTitle": "Rename folder",
+        "RenameFolderPrompt": "Enter new folder name:",
+        "FolderExists": "A folder with that name already exists. Specify a different name.",
+        "DeleteFolderTitle": "Delete folder",
+        "DeleteFolderConfirm": "Delete {0} event set(s) in folder '{1}'?"
     },
 
     "NodeEditor": {
+        "NotSupported": "Not supported for this event type",
         "Function": "Function:",
         "Add": "Add",
         "Delete": "Delete",

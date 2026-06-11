@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.WPF;
 
@@ -26,11 +27,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public ObservableCollection<ArgumentViewModel> Arguments { get; } = new();
         public event Action? Moved;
 
-        public NodeViewModel(TriggerNode node, double gridStep, NodeFunction? function, ArgumentDataProvider provider)
+        public NodeViewModel(TriggerNode node, double gridStep, NodeFunction? function, ArgumentDataProvider provider, EventType eventType)
         {
             Node = node;
             _gridStep = gridStep;
             _functionDisplay = function?.Name ?? node.Function;
+            IsUnsupported = function?.IsUnsupported(eventType) ?? false;
 
             if (function != null)
             {
@@ -46,6 +48,9 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         public bool IsCondition => Node is TriggerNodeCondition;
         public bool HasArguments => Arguments.Count > 0;
+
+        /// <summary>The node's function is not usable with the event type being edited (#1156).</summary>
+        public bool IsUnsupported { get; }
 
         public bool IsLocked
         {

@@ -353,6 +353,22 @@
 											<!--  Body: the function the node runs (its primary content) + its arguments.
 												The node name is shown in the header bar / edited via the Rename button.  -->
 											<StackPanel Margin="6" IsEnabled="{Binding IsEditable}">
+												<StackPanel
+													Margin="0,0,0,4"
+													Orientation="Horizontal"
+													ToolTip="{tombLib:Localize NotSupported}"
+													Visibility="{Binding IsUnsupported, Converter={StaticResource BoolToVis}}">
+													<TextBlock
+														Margin="0,0,4,0"
+														Foreground="Orange"
+														Text="⚠" />
+													<TextBlock
+														FontStyle="Italic"
+														Foreground="Orange"
+														Opacity="0.8"
+														Text="{tombLib:Localize NotSupported}"
+														TextTrimming="CharacterEllipsis" />
+												</StackPanel>
 												<TextBlock
 													FontWeight="Bold"
 													Foreground="{DynamicResource Brush_Text}"

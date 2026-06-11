@@ -7,9 +7,11 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.EventSetEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
 	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	Title="{Binding Title}"
+	md:DialogServiceViews.IsRegistered="True"
 	Width="980"
 	Height="640"
 	MinWidth="760"
@@ -59,12 +61,41 @@
 					<Button Command="{Binding DeleteSetCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize DeleteSetTooltip}">
 						<Image Source="{tomb:Icon General/trash}" />
 					</Button>
+					<Button Command="{Binding NewFolderCommand}" Style="{DynamicResource ButtonWithIconOnly}" ToolTip="{tombLib:Localize NewFolderTooltip}">
+						<Image Source="{tomb:Icon General/folder}" />
+					</Button>
 					<Button Command="{Binding UnassignSetCommand}" Content="{tombLib:Localize Unassign}" Visibility="{Binding ShowVolumeOptions, Converter={StaticResource BoolToVis}}" />
 				</controls:SpacedStack>
-				<ListBox
-					DisplayMemberPath="Name"
-					ItemsSource="{Binding Sets}"
-					SelectedItem="{Binding SelectedSet, Mode=TwoWay}" />
+				<controls:AlternatingTreeView
+					x:Name="setsTree"
+					AllowDrop="True"
+					DragOver="SetsTree_DragOver"
+					Drop="SetsTree_Drop"
+					ItemsSource="{Binding TreeRoots}"
+					MouseDoubleClick="SetsTree_MouseDoubleClick"
+					PreviewMouseLeftButtonDown="SetsTree_PreviewMouseLeftButtonDown"
+					PreviewMouseMove="SetsTree_PreviewMouseMove"
+					SelectedItemChanged="SetsTree_SelectedItemChanged">
+					<TreeView.ItemContainerStyle>
+						<Style BasedOn="{StaticResource {x:Type controls:AlternatingTreeViewItem}}" TargetType="controls:AlternatingTreeViewItem">
+							<Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+							<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+						</Style>
+					</TreeView.ItemContainerStyle>
+					<TreeView.ItemTemplate>
+						<HierarchicalDataTemplate DataType="{x:Type local:SetTreeNode}" ItemsSource="{Binding Children}">
+							<StackPanel Orientation="Horizontal">
+								<Image
+									Width="16"
+									Height="16"
+									Margin="0,0,4,0"
+									Source="{tomb:Icon General/folder}"
+									Visibility="{Binding IsFolder, Converter={StaticResource BoolToVis}}" />
+								<TextBlock Text="{Binding DisplayName}" />
+							</StackPanel>
+						</HierarchicalDataTemplate>
+					</TreeView.ItemTemplate>
+				</controls:AlternatingTreeView>
 			</DockPanel>
 
 			<GridSplitter

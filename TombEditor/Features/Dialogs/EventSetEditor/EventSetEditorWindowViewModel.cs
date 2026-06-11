@@ -1,11 +1,13 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
+using TombLib.Forms.ViewModels;
 using TombLib.LevelData;
 using TombLib.LevelData.VisualScripting;
 using TombLib.Utils;
@@ -31,6 +33,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         private readonly bool[] _backupVolumeState = new bool[2];
 
         private readonly IMessageService _messageService;
+        private readonly IDialogService _dialogService;
         private readonly ILocalizationService _localizationService;
 
         private bool _lockUi;
@@ -48,13 +51,23 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
 
         private readonly ArgumentDataProvider _argumentProvider;
 
-        public ObservableCollection<EventSet> Sets { get; } = new();
+        /// <summary>Root rows of the event-set tree (folders + sets outside any folder).</summary>
+        public ObservableCollection<SetTreeNode> TreeRoots { get; } = new();
         public IReadOnlyList<EventType> EventTypes { get; }
+
+        private HashSet<string> _collapsedFolders => GlobalMode
+            ? _editor.Level.Settings.CollapsedGlobalEventSetFolders
+            : _editor.Level.Settings.CollapsedVolumeEventSetFolders;
+        private readonly HashSet<string> _backupCollapsedFolders;
+
+        /// <summary>Suppresses tree-event feedback (expansion sync, selection echo) while rebuilding.</summary>
+        private bool _lockTree;
 
         public EventSetEditorWindowViewModel(Editor editor, bool global, VolumeInstance? instance = null)
         {
             _editor = editor;
             _messageService = ServiceLocator.ResolveService<IMessageService>();
+            _dialogService = ServiceLocator.ResolveService<IDialogService>();
             _localizationService = ServiceLocator.ResolveService<ILocalizationService>().WithKeysFor(this);
 
             _usedList = global ? editor.Level.Settings.GlobalEventSets : editor.Level.Settings.VolumeEventSets;
@@ -79,13 +92,13 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 }
             }
 
-            foreach (var set in _usedList)
-                Sets.Add(set);
+            _backupCollapsedFolders = new HashSet<string>(_collapsedFolders);
+            BuildTree();
 
             if (!GenericMode)
                 SelectedSet = _instance!.EventSet;
             else
-                SelectedSet = Sets.FirstOrDefault();
+                SelectedSet = FirstAvailableSet();
 
             _editor.EditorEventRaised += OnEditorEventRaised;
         }
@@ -137,21 +150,249 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             _repopulating = true;
             var current = SelectedSet;
 
-            _lockUi = true;
-            Sets.Clear();
-            foreach (var set in _usedList)
-                Sets.Add(set);
-            _lockUi = false;
+            BuildTree();
 
             if (!GenericMode)
                 SelectedSet = _instance?.EventSet;
             else
-                SelectedSet = current != null && _usedList.Contains(current) ? current : Sets.FirstOrDefault();
+                SelectedSet = current != null && _usedList.Contains(current) ? current : FirstAvailableSet();
 
             _repopulating = false;
         }
 
         private bool _repopulating;
+
+        // Event-set folder tree (#1156 parity with the WinForms FormEventSetEditor).
+
+        /// <summary>Rebuilds the whole tree from <see cref="_usedList"/> + the sets' Folder paths.</summary>
+        private void BuildTree()
+        {
+            _lockTree = true;
+
+            var collapsed = new HashSet<string>(_collapsedFolders);
+            TreeRoots.Clear();
+
+            foreach (var set in _usedList)
+                GetOrCreateFolderChildren(set.Folder, out var parent).Add(Attach(SetTreeNode.Leaf(set), parent));
+
+            foreach (var node in AllNodes().Where(n => n.IsFolder))
+                node.IsExpanded = !collapsed.Contains(node.FolderPath);
+
+            _lockTree = false;
+        }
+
+        private IEnumerable<SetTreeNode> AllNodes() => TreeRoots.SelectMany(r => r.SelfAndDescendants());
+
+        private SetTreeNode? FindNodeBySet(EventSet set) => AllNodes().FirstOrDefault(n => n.Set == set);
+
+        private EventSet? FirstAvailableSet() => AllNodes().FirstOrDefault(n => !n.IsFolder)?.Set;
+
+        private SetTreeNode Attach(SetTreeNode node, SetTreeNode? parent)
+        {
+            node.Parent = parent;
+            node.ExpansionChanged += OnNodeExpansionChanged;
+            return node;
+        }
+
+        /// <summary>Returns the child collection for the given "/"-separated folder path, creating folder nodes as needed.</summary>
+        private ObservableCollection<SetTreeNode> GetOrCreateFolderChildren(string? path, out SetTreeNode? parent)
+        {
+            parent = null;
+            var collection = TreeRoots;
+
+            if (string.IsNullOrEmpty(path))
+                return collection;
+
+            foreach (var part in path.Split(new[] { SetTreeNode.FolderSeparator }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var existing = collection.FirstOrDefault(n => n.IsFolder && n.DisplayName == part);
+                if (existing == null)
+                {
+                    existing = Attach(SetTreeNode.Folder(part), parent);
+                    collection.Add(existing);
+                }
+                parent = existing;
+                collection = existing.Children;
+            }
+
+            return collection;
+        }
+
+        private void OnNodeExpansionChanged()
+        {
+            if (_lockTree)
+                return;
+
+            _collapsedFolders.Clear();
+            foreach (var node in AllNodes())
+                if (node.IsFolder && !node.IsExpanded)
+                    _collapsedFolders.Add(node.FolderPath);
+        }
+
+        /// <summary>Writes the tree structure back to the sets' Folder paths and rebuilds the level list in tree order.</summary>
+        public void SyncFoldersFromTree()
+        {
+            _usedList.Clear();
+
+            foreach (var node in AllNodes())
+            {
+                if (node.Set is { } set)
+                {
+                    set.Folder = node.Parent?.FolderPath ?? string.Empty;
+                    _usedList.Add(set);
+                }
+            }
+        }
+
+        /// <summary>Selection echo from the view's TreeView. Folder rows clear the set editor.</summary>
+        [ObservableProperty] private SetTreeNode? _selectedNode;
+
+        partial void OnSelectedNodeChanged(SetTreeNode? value)
+        {
+            if (_lockTree)
+                return;
+
+            _syncingTreeSelection = true;
+            SelectedSet = value?.Set;
+            _syncingTreeSelection = false;
+
+            // Folder rows do not change SelectedSet, so refresh delete availability explicitly.
+            RefreshCommandStates();
+        }
+
+        private bool _syncingTreeSelection;
+
+        private void SelectNodeFor(EventSet? set)
+        {
+            if (_syncingTreeSelection)
+                return;
+
+            var node = set != null ? FindNodeBySet(set) : null;
+
+            _lockTree = true;
+            foreach (var n in AllNodes())
+                n.IsSelected = n == node;
+            for (var p = node?.Parent; p != null; p = p.Parent)
+                p.IsExpanded = true;
+            SelectedNode = node;
+            _lockTree = false;
+
+            OnNodeExpansionChanged();
+        }
+
+        /// <summary>Folder for newly created/cloned sets, derived from the current tree selection.</summary>
+        private string TargetFolder()
+        {
+            if (SelectedNode == null)
+                return string.Empty;
+            if (SelectedNode.IsFolder)
+                return SelectedNode.FolderPath;
+            return SelectedNode.Parent?.FolderPath ?? string.Empty;
+        }
+
+        private bool FolderNameExists(IEnumerable<SetTreeNode> siblings, string name, SetTreeNode? exclude = null)
+            => siblings.Any(n => n.IsFolder && n != exclude && string.Equals(n.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+
+        /// <summary>Prompts until a unique sibling folder name is given; null on cancel/empty.</summary>
+        private string? PromptUniqueFolderName(string title, string prompt, string initialValue, IEnumerable<SetTreeNode> siblings, SetTreeNode? exclude = null)
+        {
+            string current = initialValue;
+            while (true)
+            {
+                var inputVm = new InputBoxWindowViewModel(title, prompt, current);
+                if (_dialogService.ShowDialog(this, inputVm) != true)
+                    return null;
+
+                string name = inputVm.Value.Trim();
+                if (string.IsNullOrEmpty(name))
+                    return null;
+
+                if (!FolderNameExists(siblings, name, exclude))
+                    return name;
+
+                _messageService.ShowError(_localizationService["FolderExists"]);
+                current = name;
+            }
+        }
+
+        [RelayCommand]
+        private void NewFolder()
+        {
+            string parentFolder = TargetFolder();
+            var siblings = GetOrCreateFolderChildren(parentFolder, out _);
+
+            string? name = PromptUniqueFolderName(
+                _localizationService["NewFolderTitle"], _localizationService["NewFolderPrompt"],
+                _localizationService["NewFolderDefaultName"], siblings);
+            if (name == null)
+                return;
+
+            string fullPath = string.IsNullOrEmpty(parentFolder) ? name : parentFolder + SetTreeNode.FolderSeparator + name;
+            GetOrCreateFolderChildren(fullPath, out var folder);
+            if (folder != null)
+                SelectFolderNode(folder);
+        }
+
+        private void SelectFolderNode(SetTreeNode folder)
+        {
+            _lockTree = true;
+            foreach (var n in AllNodes())
+                n.IsSelected = n == folder;
+            for (var p = folder.Parent; p != null; p = p.Parent)
+                p.IsExpanded = true;
+            SelectedNode = folder;
+            _lockTree = false;
+
+            _syncingTreeSelection = true;
+            SelectedSet = null;
+            _syncingTreeSelection = false;
+        }
+
+        /// <summary>Renames a folder node (double-click in the view), keeping sibling names unique.</summary>
+        public void RenameFolder(SetTreeNode node)
+        {
+            if (!node.IsFolder)
+                return;
+
+            var siblings = node.Parent?.Children ?? TreeRoots;
+            string? name = PromptUniqueFolderName(
+                _localizationService["RenameFolderTitle"], _localizationService["RenameFolderPrompt"],
+                node.DisplayName, siblings, node);
+            if (name == null || name == node.DisplayName)
+                return;
+
+            node.DisplayName = name;
+            SyncFoldersFromTree();
+            OnNodeExpansionChanged();
+        }
+
+        /// <summary>Moves a node (set or folder) into a folder (or to the root when null). Used by drag-drop.</summary>
+        public void MoveNode(SetTreeNode node, SetTreeNode? targetFolder)
+        {
+            if (targetFolder != null && (!targetFolder.IsFolder || node == targetFolder || targetFolder.IsDescendantOf(node)))
+                return;
+
+            var targetCollection = targetFolder?.Children ?? TreeRoots;
+            if (targetCollection.Contains(node))
+                return;
+
+            if (node.IsFolder && FolderNameExists(targetCollection, node.DisplayName, node))
+            {
+                _messageService.ShowError(_localizationService["FolderExists"]);
+                return;
+            }
+
+            var sourceCollection = node.Parent?.Children ?? TreeRoots;
+            sourceCollection.Remove(node);
+            node.Parent = targetFolder;
+            targetCollection.Add(node);
+
+            if (targetFolder != null)
+                targetFolder.IsExpanded = true;
+
+            SyncFoldersFromTree();
+            OnNodeExpansionChanged();
+        }
 
         // Selection.
 
@@ -163,6 +404,8 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         {
             if (!GenericMode && value != null)
                 _instance!.EventSet = value;
+
+            SelectNodeFor(value);
 
             _lockUi = true;
 
@@ -206,7 +449,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         partial void OnCurrentEventChanged(Event? value)
         {
             NodeEditor = value != null
-                ? new NodeEditorViewModel(value, NodeFunctions, _argumentProvider, NodeGridSize, NodeGridStep)
+                ? new NodeEditorViewModel(value, SelectedEventType, NodeFunctions, _argumentProvider, NodeGridSize, NodeGridStep)
                 : null;
 
             OnPropertyChanged(nameof(HasCurrentEvent));
@@ -285,7 +528,9 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 EditorActions.ReplaceEventSetNames(_usedList, SelectedSet.Name, value);
                 SelectedSet.Name = value;
                 SetProperty(ref _name, value);
-                RefreshSetsView();
+
+                if (FindNodeBySet(SelectedSet) is { } node)
+                    node.DisplayName = value;
             }
         }
 
@@ -350,16 +595,17 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         [RelayCommand]
         private void NewSet()
         {
-            string name = _localizationService.Format(GlobalMode ? "NewGlobalSetName" : "NewVolumeSetName", Sets.Count + 1);
+            string name = _localizationService.Format(GlobalMode ? "NewGlobalSetName" : "NewVolumeSetName", _usedList.Count + 1);
+            string folder = TargetFolder();
             EventSet newSet = GlobalMode
-                ? new GlobalEventSet { Name = name, LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit] }
-                : new VolumeEventSet { Name = name, LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit] };
+                ? new GlobalEventSet { Name = name, Folder = folder, LastUsedEvent = Event.GlobalEventTypes[_editor.Configuration.NodeEditor_DefaultGlobalEventToEdit] }
+                : new VolumeEventSet { Name = name, Folder = folder, LastUsedEvent = Event.VolumeEventTypes[_editor.Configuration.NodeEditor_DefaultEventToEdit] };
 
             foreach (var evt in newSet.Events)
                 evt.Value.Mode = (EventSetMode)_editor.Configuration.NodeEditor_DefaultEventMode;
 
             _usedList.Add(newSet);
-            Sets.Add(newSet);
+            BuildTree();
             SelectedSet = newSet;
         }
 
@@ -370,26 +616,67 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 return;
             var clone = SelectedSet.Clone();
             clone.Name = SelectedSet.Name + _localizationService["CopySuffix"];
+            clone.Folder = SelectedSet.Folder;
             _usedList.Add(clone);
-            Sets.Add(clone);
+            BuildTree();
             SelectedSet = clone;
         }
 
-        [RelayCommand(CanExecute = nameof(HasSelectedSet))]
+        /// <summary>Allows deleting a selected folder row too, so the toolbar button covers both cases.</summary>
+        public bool HasDeletableSelection => SelectedNode != null;
+
+        [RelayCommand(CanExecute = nameof(HasDeletableSelection))]
         private void DeleteSet()
         {
-            if (SelectedSet == null)
+            var node = SelectedNode;
+            if (node == null)
                 return;
 
-            int index = Sets.IndexOf(SelectedSet);
-            var toDelete = SelectedSet;
-            EditorActions.DeleteEventSet(toDelete);
-            Sets.Remove(toDelete);
+            if (node.IsFolder)
+            {
+                var setsInFolder = node.SelfAndDescendants().Where(n => n.Set != null).Select(n => n.Set!).ToList();
 
-            if (Sets.Count > 0)
-                SelectedSet = Sets[System.Math.Min(index, Sets.Count - 1)];
-            else
-                SelectedSet = null;
+                if (setsInFolder.Count > 0)
+                {
+                    bool proceed = _messageService.ShowConfirmation(
+                        _localizationService.Format("DeleteFolderConfirm", setsInFolder.Count, node.DisplayName),
+                        _localizationService["DeleteFolderTitle"],
+                        defaultValue: false,
+                        isRisky: true);
+                    if (!proceed)
+                        return;
+
+                    foreach (var set in setsInFolder)
+                        EditorActions.DeleteEventSet(set);
+                }
+
+                (node.Parent?.Children ?? TreeRoots).Remove(node);
+                SyncFoldersFromTree();
+                SelectedSet = FirstAvailableSet();
+                return;
+            }
+
+            var toDelete = node.Set!;
+            var nextSet = FindAdjacentSet(node);
+
+            EditorActions.DeleteEventSet(toDelete);
+            BuildTree();
+
+            SelectedSet = nextSet != null && _usedList.Contains(nextSet) ? nextSet : FirstAvailableSet();
+        }
+
+        private EventSet? FindAdjacentSet(SetTreeNode current)
+        {
+            var all = AllNodes().ToList();
+            int index = all.IndexOf(current);
+
+            for (int i = index + 1; i < all.Count; i++)
+                if (all[i].Set is { } set)
+                    return set;
+            for (int i = index - 1; i >= 0; i--)
+                if (all[i].Set is { } set)
+                    return set;
+            return null;
         }
 
         [RelayCommand]
@@ -422,11 +709,19 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
                 Cancelled = true;
                 RestoreState();
             }
+            else
+            {
+                SyncFoldersFromTree();
+            }
             _editor.EventSetsChange();
         }
 
         private void RestoreState()
         {
+            _collapsedFolders.Clear();
+            foreach (string path in _backupCollapsedFolders)
+                _collapsedFolders.Add(path);
+
             if (GlobalMode)
             {
                 _editor.Level.Settings.GlobalEventSets = _backupList;
@@ -449,21 +744,9 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             }
         }
 
-        private void RefreshSetsView()
-        {
-            // Rebuild the list so the renamed item re-evaluates its display text, preserving selection.
-            var selected = SelectedSet;
-            var items = Sets.ToList();
-            _lockUi = true;
-            Sets.Clear();
-            foreach (var item in items)
-                Sets.Add(item);
-            _lockUi = false;
-            SelectedSet = selected;
-        }
-
         private void RefreshCommandStates()
         {
+            OnPropertyChanged(nameof(HasDeletableSelection));
             CloneSetCommand.NotifyCanExecuteChanged();
             DeleteSetCommand.NotifyCanExecuteChanged();
         }

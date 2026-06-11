@@ -25,6 +25,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
     public partial class NodeEditorViewModel : ObservableObject
     {
         private readonly TombLib.LevelData.Event _event;
+        private readonly TombLib.LevelData.EventType _eventType;
         private readonly int _gridSize;
         private readonly double _gridStep;
         private readonly ArgumentDataProvider _provider;
@@ -75,11 +76,12 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
         public double CanvasWidth => _gridSize * _gridStep;
         public double CanvasHeight => _gridSize * _gridStep;
 
-        public NodeEditorViewModel(TombLib.LevelData.Event evt, IReadOnlyList<NodeFunction> functions, ArgumentDataProvider provider, int gridSize, double gridStep,
+        public NodeEditorViewModel(TombLib.LevelData.Event evt, TombLib.LevelData.EventType eventType, IReadOnlyList<NodeFunction> functions, ArgumentDataProvider provider, int gridSize, double gridStep,
             IDialogService? dialogService = null, IMessageService? messageService = null, IColorPickerService? colorPickerService = null,
             ILocalizationService? localizationService = null)
         {
             _event = evt;
+            _eventType = eventType;
             Functions = functions;
             _provider = provider;
             _gridSize = gridSize;
@@ -108,7 +110,7 @@ namespace TombEditor.Features.Dialogs.EventSetEditor
             foreach (var node in TriggerNode.LinearizeNodes(_event.Nodes))
             {
                 var function = Functions.FirstOrDefault(f => f.Signature == node.Function);
-                var vm = new NodeViewModel(node, _gridStep, function, _provider);
+                var vm = new NodeViewModel(node, _gridStep, function, _provider, _eventType);
                 map[node] = vm;
                 Nodes.Add(vm);
             }
