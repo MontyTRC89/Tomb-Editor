@@ -5,7 +5,7 @@
 		  internalName="VehicleWake"
 		  displayName="Render wake"
 		  type="Bool"
-		  defaultValue="false"
+		  defaultValue="true"
 		  category="Vehicle Effects"
 		  description="Add wake effect"
 		/>
@@ -27,21 +27,14 @@
 		  category="Vehicle Effects"
 		  description="Vehicle wake ending color."
 		/>
-		<property
-		  internalName="VehicleVelocity"
-		  displayName="Speed modifier"
-		  type="Int"
-		  defaultValue="110"
-		  category="Vehicle Control"
-		  description="Modify the overall speed."
-		/>
 	</moveable>
+	
 	<moveable id="55">
 		<property
 		  internalName="VehicleMist"
 		  displayName="Render mist"
 		  type="Bool"
-		  defaultValue="false"
+		  defaultValue="true"
 		  category="Vehicle Effects"
 		  description="Add mist effect."
 		/>
