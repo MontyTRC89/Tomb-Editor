@@ -56,6 +56,25 @@
 		/>
 	</moveable>
 	
+	<moveable id="53">
+		<property
+		  internalName="VehicleSmokeStartColor"
+		  displayName="Exhaust start color"
+		  type="Color"
+		  defaultValue="TEN.Color(0,0,0)"
+		  category="Vehicle Effects"
+		  description="Vehicle exhaust particle starting color."
+		/>
+		<property
+		  internalName="VehicleSmokeEndColor"
+		  displayName="Exhaust end color"
+		  type="Color"
+		  defaultValue="TEN.Color(64,64,64)"
+		  category="Vehicle Effects"
+		  description="Vehicle exhaust particle ending color."
+		/>
+	</moveable>
+	
 	<moveable id="59">
 		<property
 		  internalName="VehicleLight"
