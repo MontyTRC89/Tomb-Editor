@@ -39,7 +39,7 @@
         <DataTemplate x:Key="IntTemplate" DataType="{x:Type vm:LuaPropertyRowViewModel}">
             <controls:NumericUpDown
                 FormatString="F0" Increment="1"
-                Minimum="-2147483648" Maximum="2147483647"
+                Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                 TextAlignment="Left"
                 Value="{Binding IntValue, Mode=TwoWay}" />
         </DataTemplate>
@@ -48,7 +48,7 @@
         <DataTemplate x:Key="FloatTemplate" DataType="{x:Type vm:LuaPropertyRowViewModel}">
             <controls:NumericUpDown
                 FormatString="F2" Increment="0.1"
-                Minimum="-999999" Maximum="999999"
+                Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                 TextAlignment="Left"
                 Value="{Binding FloatValue, Mode=TwoWay}" />
         </DataTemplate>
@@ -72,13 +72,13 @@
                 <TextBlock Grid.Column="0" Text="X" Style="{StaticResource FieldLabelStyle}" Margin="0,0,4,0" />
                 <controls:NumericUpDown Grid.Column="1" Margin="0,0,2,0"
                     FormatString="F2" Increment="0.1"
-                    Minimum="-999999" Maximum="999999"
+                    Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                     TextAlignment="Left"
                     Value="{Binding Vec2X, Mode=TwoWay}" />
                 <TextBlock Grid.Column="2" Text="Y" Style="{StaticResource FieldLabelStyle}" />
                 <controls:NumericUpDown Grid.Column="3"
                     FormatString="F2" Increment="0.1"
-                    Minimum="-999999" Maximum="999999"
+                    Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                     TextAlignment="Left"
                     Value="{Binding Vec2Y, Mode=TwoWay}" />
             </Grid>
@@ -98,19 +98,19 @@
                 <TextBlock Grid.Column="0" Text="X" Style="{StaticResource FieldLabelStyle}" Margin="0,0,4,0" />
                 <controls:NumericUpDown Grid.Column="1" Margin="0,0,2,0"
                     FormatString="F2" Increment="0.1"
-                    Minimum="-999999" Maximum="999999"
+                    Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                     TextAlignment="Left"
                     Value="{Binding Vec3X, Mode=TwoWay}" />
                 <TextBlock Grid.Column="2" Text="Y" Style="{StaticResource FieldLabelStyle}" />
                 <controls:NumericUpDown Grid.Column="3" Margin="0,0,2,0"
                     FormatString="F2" Increment="0.1"
-                    Minimum="-999999" Maximum="999999"
+                    Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                     TextAlignment="Left"
                     Value="{Binding Vec3Y, Mode=TwoWay}" />
                 <TextBlock Grid.Column="4" Text="Z" Style="{StaticResource FieldLabelStyle}" />
                 <controls:NumericUpDown Grid.Column="5"
                     FormatString="F2" Increment="0.1"
-                    Minimum="-999999" Maximum="999999"
+                    Minimum="{Binding MinimumValue}" Maximum="{Binding MaximumValue}"
                     TextAlignment="Left"
                     Value="{Binding Vec3Z, Mode=TwoWay}" />
             </Grid>
