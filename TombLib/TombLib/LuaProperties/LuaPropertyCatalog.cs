@@ -247,10 +247,10 @@ namespace TombLib.LuaProperties
             definition.Type = propertyType;
 
             // Optional: numeric range (only meaningful for numeric types).
-            double.TryParse((propNode.Attributes?["minValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var minValue);
-            definition.MinValue = minValue;
-            double.TryParse((propNode.Attributes?["maxValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var maxValue);
-            definition.MaxValue = maxValue;
+            if (double.TryParse((propNode.Attributes?["minValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var minValue))
+                definition.MinValue = minValue;
+            if (double.TryParse((propNode.Attributes?["maxValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var maxValue))
+                definition.MaxValue = maxValue;
 
             // Optional: hasAlpha (only meaningful for Color properties).
             var hasAlphaStr = propNode.Attributes?["hasAlpha"]?.Value?.Trim() ?? string.Empty;

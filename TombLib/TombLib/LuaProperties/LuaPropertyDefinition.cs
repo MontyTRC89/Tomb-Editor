@@ -54,18 +54,18 @@ namespace TombLib.LuaProperties
         /// </summary>
         public double MinValue { get; set; } = (double)int.MinValue;
 
-		/// <summary>
-		/// Optional maximum value for numeric properties.
-		/// Used by Int, Float, Vec2 and Vec3 editors.
-		/// </summary>
-		public double MaxValue { get; set; } = (double)int.MaxValue;
+        /// <summary>
+        /// Optional maximum value for numeric properties.
+        /// Used by Int, Float, Vec2 and Vec3 editors.
+        /// </summary>
+        public double MaxValue { get; set; } = (double)int.MaxValue;
 
-		/// <summary>
-		/// For Color properties: whether the alpha channel is editable.
-		/// When false, the alpha field is hidden in the property grid.
-		/// Controlled by the "hasAlpha" attribute in XML catalogs.
-		/// </summary>
-		public bool HasAlpha { get; set; } = false;
+        /// <summary>
+        /// For Color properties: whether the alpha channel is editable.
+        /// When false, the alpha field is hidden in the property grid.
+        /// Controlled by the "hasAlpha" attribute in XML catalogs.
+        /// </summary>
+        public bool HasAlpha { get; set; } = false;
 
         /// <summary>
         /// For Enum properties: the ordered list of entry names.
