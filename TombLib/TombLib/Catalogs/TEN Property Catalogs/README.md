@@ -52,6 +52,8 @@ Each `<moveable>` or `<static>` block contains one or more `<property>` child el
     displayName   = "My Property"
     type          = "Float"
     defaultValue  = "1.0"
+    minValue      = "0.0"
+    maxValue      = "10.0"
     category      = "Physics"
     description   = "Controls something important."
     hasAlpha      = "false"
@@ -66,6 +68,8 @@ Each `<moveable>` or `<static>` block contains one or more `<property>` child el
 | `displayName`  | **Yes**           | —                    | Human-readable label shown in the property grid. |
 | `type`         | **Yes**           | —                    | Value type. See [Supported Types](#supported-types). |
 | `defaultValue` | No                | Type-specific zero   | Initial value for new objects. Accepts both `defaultValue` and the shorter alias `default`. |
+| `minValue`     | No                | Minimum 32-bit value | Inclusive minimum numeric value enforced by the editor. Only for `Int`, `Float`, `Vec2`, `Vec3` types. |
+| `maxValue`     | No                | Maximum 32-bit value | Inclusive maximum numeric value enforced by the editor. Only for `Int`, `Float`, `Vec2`, `Vec3` types. |
 | `category`     | No                | *(none)*             | Groups properties under a collapsible header in the grid. Properties without a category appear at the top level. |
 | `description`  | No                | *(none)*             | Tooltip text shown when hovering over the property name or value. |
 | `hasAlpha`     | No (`Color` only) | `false`              | When `true`, an extra alpha (opacity) numeric field is shown next to the color picker. Ignored for all other types. |
@@ -93,9 +97,11 @@ Compiles to Lua `true` / `false`.
 
 A whole number. Rendered as a numeric spinner.
 
-| Attribute     | Format            | Example |
-|---------------|-------------------|---------|
-| `defaultValue`| Integer literal   | `"100"` |
+| Attribute     | Format            | Example  |
+|---------------|-------------------|----------|
+| `defaultValue`| Integer literal   | `"100"`  |
+| `minValue`    | Integer literal   | `"1"`    |
+| `maxValue`    | Integer literal   | `"1000"` |
 
 Compiles to a Lua integer literal.
 
@@ -105,9 +111,11 @@ Compiles to a Lua integer literal.
 
 A decimal number. Rendered as a numeric spinner with two decimal places.
 
-| Attribute     | Format                                 | Example  |
-|---------------|----------------------------------------|----------|
-| `defaultValue`| Floating-point literal (`.` separator) | `"3.14"` |
+| Attribute     | Format                                 | Example     |
+|---------------|----------------------------------------|-------------|
+| `defaultValue`| Floating-point literal (`.` separator) | `"3.14"`    |
+| `minValue`    | Floating-point literal (`.` separator) | `"0.0"`     |
+| `maxValue`    | Floating-point literal (`.` separator) | `"10000.0"` |
 
 Compiles to a Lua number literal.
 
@@ -132,8 +140,12 @@ A 2D vector (X, Y). Rendered as two numeric fields.
 | Attribute     | Format                                               | Example               |
 |---------------|------------------------------------------------------|-----------------------|
 | `defaultValue`| Two comma-separated floats, prefixed with `TEN.Vec2` | `"TEN.Vec2(20, 28)"`  |
+| `minValue`    | Floating-point literal (`.` separator)               | `"0.0"`               |
+| `maxValue`    | Floating-point literal (`.` separator)               | `"1024.0"`            |
 
 Compiles to `TEN.Vec2(x, y)`.
+
+`minValue` and `maxValue` are applied to both vector fields equally.
 
 ---
 
@@ -144,8 +156,12 @@ A 3D vector (X, Y, Z). Rendered as three numeric fields.
 | Attribute     | Format                                                 | Example                  |
 |---------------|--------------------------------------------------------|--------------------------|
 | `defaultValue`| Three comma-separated floats, prefixed with `TEN.Vec3` | `"TEN.Vec3(0, 100, 0)"`  |
+| `minValue`    | Floating-point literal (`.` separator)                 | `"-256.0"`               |
+| `maxValue`    | Floating-point literal (`.` separator)                 | `"256.0"`                |
 
 Compiles to `TEN.Vec3(x, y, z)`.
+
+`minValue` and `maxValue` are applied to all three vector fields equally.
 
 ---
 
@@ -178,8 +194,8 @@ Compiles to `TEN.Color(r, g, b)` or `TEN.Color(r, g, b, a)`.
 
 Hours, minutes, seconds and centiseconds. Rendered as four labeled text fields.
 
-| Attribute     | Format                                                                | Example                   |
-|---------------|-----------------------------------------------------------------------|---------------------------|
+| Attribute     | Format                                                                | Example                    |
+|---------------|-----------------------------------------------------------------------|----------------------------|
 | `defaultValue`| Four comma-separated integers: `h, m, s, cs`, prefixed with `TEN.Time` | `"TEN.Time(0, 1, 30, 0)"` |
 
 Compiles to `TEN.Time({h, m, s, cs})`.
