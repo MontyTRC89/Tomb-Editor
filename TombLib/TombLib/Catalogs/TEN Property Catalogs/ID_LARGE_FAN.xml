@@ -4,7 +4,7 @@
           internalName="FanDamage"
           displayName="Fan damage"
           type="Int"
-          defaultValue="0"
+          defaultValue="1000"
           category="Trap parameters"
           description="Fan damage"
         />
