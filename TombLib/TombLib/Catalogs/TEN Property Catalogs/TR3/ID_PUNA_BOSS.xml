@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <propertyCatalog>
-  <moveable id="252">
+  <moveable id="PUNA_BOSS">
     <property
       internalName="PunaLightningDamage"
       displayName="Lightning Attack Damage"
