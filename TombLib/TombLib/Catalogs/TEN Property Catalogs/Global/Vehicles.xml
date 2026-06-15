@@ -80,25 +80,6 @@
 		  internalName="UPVLightColor"
 		  displayName="Light color"
 		  type="Color"
-		  defaultValue="TEN.Color(255,255,255,255)"
-		  category="Vehicle Light"
-		  description="Light color"
-		/>
-		<property
-		  internalName="UPVLightIntensity"
-		  displayName="Light intensity"
-		  type="Float"
-		  defaultValue="0.5"
-		  category="Vehicle Light"
-		  description="Light intensity"
-		/>
-	</moveable>
-	
-	<moveable id="UPV">
-		<property
-		  internalName="UPVLightColor"
-		  displayName="Light color"
-		  type="Color"
 		  defaultValue="TEN.Color(255,255,255)"
 		  category="Vehicle Light"
 		  description="Light color"
