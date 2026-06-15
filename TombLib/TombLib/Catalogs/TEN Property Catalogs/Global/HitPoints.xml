@@ -6,7 +6,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="5"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -16,7 +16,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="6"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -26,7 +26,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="20"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -36,7 +36,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="22"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -46,7 +46,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="50"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -56,7 +56,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="120"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -66,7 +66,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="125"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -76,7 +76,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="150"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -86,7 +86,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="200"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -96,7 +96,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="400"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -106,7 +106,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="500"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -116,7 +116,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="8"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -126,7 +126,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="10"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -136,7 +136,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="15"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -146,7 +146,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="20"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -156,7 +156,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="24"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -166,7 +166,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="28"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -176,7 +176,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="36"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -186,7 +186,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="50"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -196,7 +196,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="100"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -206,7 +206,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="130"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -216,7 +216,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="200"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -226,7 +226,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="300"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -236,7 +236,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="800"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -246,7 +246,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="5"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -256,7 +256,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="12"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -266,7 +266,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="15"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -276,7 +276,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="20"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -286,7 +286,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="25"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -296,7 +296,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="30"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -306,7 +306,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="40"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -316,7 +316,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="45"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -326,7 +326,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="50"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -336,7 +336,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="60"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -346,7 +346,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="80"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -356,7 +356,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="100"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -366,7 +366,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="150"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -376,7 +376,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="200"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -386,7 +386,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="300"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -396,7 +396,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="5"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -406,7 +406,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="8"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -416,7 +416,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="15"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -426,7 +426,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="18"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -436,7 +436,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="25"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -446,7 +446,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="30"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -456,7 +456,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="36"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -466,7 +466,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="40"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -476,7 +476,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="60"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -486,7 +486,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="80"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -497,7 +497,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="200"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -507,7 +507,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="500"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -517,7 +517,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="1000"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -527,7 +527,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="10"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -537,7 +537,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="12"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -547,7 +547,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="18"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -557,7 +557,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="20"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -567,7 +567,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="24"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -577,7 +577,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="26"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -587,7 +587,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="30"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -597,7 +597,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="35"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -607,7 +607,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="40"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -617,7 +617,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="50"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -627,7 +627,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="60"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -637,7 +637,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="100"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
@@ -648,7 +648,7 @@
 			displayName="Hit Points"
 			type="Int"
 			defaultValue="300"
-			category="Combat"
+			category="Enemy Parameters"
 			description="Starting hit points."
 		/>
     </moveable>
