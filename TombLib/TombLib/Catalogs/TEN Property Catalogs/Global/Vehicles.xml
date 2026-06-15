@@ -77,15 +77,7 @@
 	
 	<moveable id="UPV">
 		<property
-		  internalName="VehicleLight"
-		  displayName="Render light"
-		  type="Bool"
-		  defaultValue="true"
-		  category="Vehicle Light"
-		  description="Render light"
-		/>
-		<property
-		  internalName="VehicleLightColor"
+		  internalName="UPVLightColor"
 		  displayName="Light color"
 		  type="Color"
 		  defaultValue="TEN.Color(255,255,255,255)"
@@ -93,7 +85,26 @@
 		  description="Light color"
 		/>
 		<property
-		  internalName="VehicleLightIntensity"
+		  internalName="UPVLightIntensity"
+		  displayName="Light intensity"
+		  type="Float"
+		  defaultValue="0.5"
+		  category="Vehicle Light"
+		  description="Light intensity"
+		/>
+	</moveable>
+	
+	<moveable id="UPV">
+		<property
+		  internalName="UPVLightColor"
+		  displayName="Light color"
+		  type="Color"
+		  defaultValue="TEN.Color(255,255,255)"
+		  category="Vehicle Light"
+		  description="Light color"
+		/>
+		<property
+		  internalName="UPVLightIntensity"
 		  displayName="Light intensity"
 		  type="Float"
 		  defaultValue="0.5"
@@ -101,31 +112,112 @@
 		  description="Light intensity"
 		/>
 		<property
-		  internalName="VehicleLightRadius"
+		  internalName="UPVLight"
+		  displayName="Render light"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Light"
+		  description="Render light"
+		/>
+		<property
+		  internalName="UPVLightRadius"
 		  displayName="Light radius"
 		  type="Int"
 		  defaultValue="4"
+		  minValue = "0"
+		  maxValue = "10"
 		  category="Vehicle Light"
 		  description="Light radius (in blocks)"
 		/>
 		<property
-		  internalName="VehicleLightFalloff"
+		  internalName="UPVLightFalloff"
 		  displayName="Light falloff"
 		  type="Int"
 		  defaultValue="2"
+		  minValue = "0"
+		  maxValue = "10"
 		  category="Vehicle Light"
 		  description="Light falloff (in blocks)"
 		/>
 		<property
-		  internalName="VehicleLightDistance"
+		  internalName="UPVLightDistance"
 		  displayName="Light distance"
 		  type="Int"
 		  defaultValue="10"
+		  minValue = "0"
+		  maxValue = "100"
 		  category="Vehicle Light"
 		  description="Light distance (in blocks)"
 		/>
 		<property
-		  internalName="VehicleLightCastShadow"
+		  internalName="UPVLightCastShadow"
+		  displayName="Light shadow cast"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Light"
+		  description="Determines whether the vehicle light casts a dynamic shadow"
+		/>
+	</moveable>
+	
+	<moveable id="MOTORBIKE">
+		<property
+		  internalName="MotorbikeLightColor"
+		  displayName="Headlight color"
+		  type="Color"
+		  defaultValue="TEN.Color(255,170,0)"
+		  category="Vehicle Light"
+		  description="Light color"
+		/>
+		<property
+		  internalName="MotorbikeLightIntensity"
+		  displayName="Headlight intensity"
+		  type="Float"
+		  minValue = "0"
+		  maxValue = "2.0"
+		  defaultValue="1.0"
+		  category="Vehicle Light"
+		  description="Light intensity"
+		/>
+		<property
+		  internalName="MotorbikeLight"
+		  displayName="Render light"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Light"
+		  description="Render light"
+		/>
+		<property
+		  internalName="MotorbikeLightRadius"
+		  displayName="Headlight radius"
+		  type="Int"
+		  defaultValue="4"
+		  minValue = "0"
+		  maxValue = "10"
+		  category="Vehicle Light"
+		  description="Light radius (in blocks)"
+		/>
+		<property
+		  internalName="MotorbikeLightFalloff"
+		  displayName="Headlight falloff"
+		  type="Int"
+		  defaultValue="2"
+		  minValue = "0"
+		  maxValue = "10"
+		  category="Vehicle Light"
+		  description="Light falloff (in blocks)"
+		/>
+		<property
+		  internalName="MotorbikeLightDistance"
+		  displayName="Headlight distance"
+		  type="Int"
+		  defaultValue="10"
+		  minValue = "0"
+		  maxValue = "100"
+		  category="Vehicle Light"
+		  description="Light distance (in blocks)"
+		/>
+		<property
+		  internalName="MotorbikeLightCastShadow"
 		  displayName="Light shadow cast"
 		  type="Bool"
 		  defaultValue="true"
