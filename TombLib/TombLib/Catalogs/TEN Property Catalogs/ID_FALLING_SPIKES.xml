@@ -1,0 +1,12 @@
+<propertyCatalog>    
+	<moveable id="FALLING_SPIKES">
+        <property
+          internalName="FallingSpikeForwardVelocity"
+          displayName="Forward velocity"
+          type="Bool"
+          defaultValue="false"
+          category="Trap parameters"
+          description="Adds a slight forward movement"
+        />
+    </moveable>
+</propertyCatalog>

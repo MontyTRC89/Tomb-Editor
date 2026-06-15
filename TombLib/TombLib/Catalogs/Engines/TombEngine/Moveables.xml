@@ -377,6 +377,9 @@
 	<moveable id="467" name="CIRCULAR_SAW" />
 	<moveable id="468" name="ROLLING_BARRELS" />
 	<moveable id="469" name="MULTIPLE_BOULDERS" />
+	<moveable id="470" name="FAN" />
+	<moveable id="471" name="LARGE_FAN" />	
+	<moveable id="472" name="FALLING_SPIKES" />	
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
