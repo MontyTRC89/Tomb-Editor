@@ -19,6 +19,10 @@ using TombLib.Types;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF;
+using WadTool.Features.Dialogs.AnimationFixer;
+using WadTool.Features.Dialogs.ReplaceAnimCommands;
+using WadTool.Features.Dialogs.StateChangesEditor;
 
 namespace WadTool
 {
@@ -1684,14 +1688,10 @@ namespace WadTool
         {
             if (_editor.CurrentAnim == null) return;
 
-            var existingWindow = Application.OpenForms[nameof(FormStateChangesEditor)];
-            if (existingWindow == null)
-            {
-                var scEditor = new FormStateChangesEditor(_editor, _editor.CurrentAnim, sch);
-                scEditor.Show(this);
-            }
-            else
-                existingWindow.Focus();
+            var viewModel = new StateChangesEditorWindowViewModel(_editor, _editor.CurrentAnim, sch);
+            var dialog = new StateChangesEditorWindow { DataContext = viewModel };
+            dialog.SetOwner(this);
+            dialog.ShowDialog();
         }
 
         private void FixAnimations(int mode)
@@ -1705,17 +1705,18 @@ namespace WadTool
                 case 2: anims.AddRange(_editor.Animations); break;
             }
 
-            using (var form = new FormAnimationFixer(_editor, anims))
+            var viewModel = new AnimationFixerWindowViewModel(_editor, anims);
+            var dialog = new AnimationFixerWindow { DataContext = viewModel };
+            dialog.SetOwner(this);
+            dialog.ShowDialog();
+
+            if (viewModel.Outcome == AnimationFixerOutcome.NothingFixed)
+                popup.ShowInfo(panelRendering, "No properties were selected or there was nothing to fix.\nNo changes were made.");
+            else if (viewModel.Outcome == AnimationFixerOutcome.Fixed)
             {
-                var result = form.ShowDialog();
-                if (result == DialogResult.Ignore)
-                    popup.ShowInfo(panelRendering, "No properties were selected or there was nothing to fix.\nNo changes were made.");
-                else if (result == DialogResult.OK)
-                {
-                    var startMessage = (form.ChangedAnimations.Length < 50) ? "Animations (" + form.ChangedAnimations + ")" : "Multiple animations";
-                    popup.ShowWarning(panelRendering, startMessage + " were fixed.\nPlease save your wad under new name and thoroughly test it.");
-                    SelectAnimation(_editor.CurrentAnim);
-                }
+                var startMessage = (viewModel.ChangedAnimations.Length < 50) ? "Animations (" + viewModel.ChangedAnimations + ")" : "Multiple animations";
+                popup.ShowWarning(panelRendering, startMessage + " were fixed.\nPlease save your wad under new name and thoroughly test it.");
+                SelectAnimation(_editor.CurrentAnim);
             }
         }
 
@@ -2777,12 +2778,13 @@ namespace WadTool
 
         private void findReplaceAnimcommandsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormReplaceAnimCommands(_editor))
-            {
-                form.ShowDialog(this);
-                if (form.EditingWasDone) Saved = false;
-                timeline.Invalidate(); // FIXME: To update current timeline. Use an event instead later.
-            }
+            var viewModel = new ReplaceAnimCommandsWindowViewModel(_editor);
+            var dialog = new ReplaceAnimCommandsWindow { DataContext = viewModel };
+            dialog.SetOwner(this);
+            dialog.ShowDialog();
+
+            if (viewModel.EditingWasDone) Saved = false;
+            timeline.Invalidate(); // FIXME: To update current timeline. Use an event instead later.
         }
 
         private void timeline_MouseDown(object sender, MouseEventArgs e)

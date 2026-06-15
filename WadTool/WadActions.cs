@@ -23,6 +23,10 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
+using WadTool.Features.Dialogs.LuaProperties;
+using WadTool.Features.Dialogs.NewWad2;
+using WadTool.Features.Dialogs.SelectSlot;
+using WadTool.Features.Dialogs.SpriteSequenceEditor;
 
 namespace WadTool
 {
@@ -192,14 +196,19 @@ namespace WadTool
 
         public static void CreateNewWad(WadToolClass tool, IWin32Window owner)
         {
-            using (var form = new FormNewWad2())
-            {
-                if (form.ShowDialog(owner) == DialogResult.Cancel)
-                    return;
+            var viewModel = new NewWad2WindowViewModel();
+            var dialog = new NewWad2Window { DataContext = viewModel };
 
-                tool.DestinationWad = new Wad2 { GameVersion = form.Version };
-                tool.ToggleUnsavedChanges(false);
-            }
+            if (owner != null)
+                dialog.SetOwner(owner);
+
+            dialog.ShowDialog();
+
+            if (viewModel.DialogResult != true)
+                return;
+
+            tool.DestinationWad = new Wad2 { GameVersion = viewModel.SelectedGameVersion };
+            tool.ToggleUnsavedChanges(false);
         }
 
         public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner, string path = null)
@@ -245,21 +254,26 @@ namespace WadTool
             }
 
             // Ask for the new slot
-            using (var form = new FormSelectSlot(tool.DestinationWad, wadObject.Id))
+            var slotViewModel = new SelectSlotWindowViewModel(tool.DestinationWad, wadObject.Id);
+            var slotDialog = new SelectSlotWindow { DataContext = slotViewModel };
+
+            if (owner != null)
+                slotDialog.SetOwner(owner);
+
+            slotDialog.ShowDialog();
+
+            if (slotViewModel.DialogResult != true)
+                return null;
+
+            if (slotViewModel.NewId == wadObject.Id)
+                return null;
+
+            if (wad.Contains(slotViewModel.NewId))
             {
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return null;
-
-                if (form.NewId == wadObject.Id)
-                    return null;
-
-                if (wad.Contains(form.NewId))
-                {
-                    tool.SendMessage("The slot " + form.NewId.ToString(wad.GameVersion) + " is already occupied.", PopupType.Error);
-                    return null;
-                }
-                wad.AssignNewId(wadObject.Id, form.NewId);
+                tool.SendMessage("The slot " + slotViewModel.NewId.ToString(wad.GameVersion) + " is already occupied.", PopupType.Error);
+                return null;
             }
+            wad.AssignNewId(wadObject.Id, slotViewModel.NewId);
             tool.WadChanged(tool.MainSelection.Value.WadArea);
             return wadObject.Id;
         }
@@ -825,27 +839,32 @@ namespace WadTool
                         if (newIds[i] is WadMoveableId && allowedMoveableSlots.TryGetValue(i, out filteredSlots))
                             allowedSlots = filteredSlots;
 
-                        using (var form = new FormSelectSlot(destinationWad, newIds[i], listInProgress, allowedSlots))
+                        var slotViewModel = new SelectSlotWindowViewModel(destinationWad, newIds[i], listInProgress, allowedSlots);
+                        var slotDialog = new SelectSlotWindow { DataContext = slotViewModel };
+
+                        if (owner != null)
+                            slotDialog.SetOwner(owner);
+
+                        slotDialog.ShowDialog();
+
+                        if (slotViewModel.DialogResult != true)
+                            return null;
+
+                        if (destinationWad.Contains(slotViewModel.NewId) || newIds.Take(i).Contains(slotViewModel.NewId))
                         {
-                            if (form.ShowDialog(owner) != DialogResult.OK)
-                                return null;
-
-                            if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
-                            {
-                                destinationWad.Remove(form.NewId);
-                                tool.WadChanged(WadArea.Destination);
-                            }
-                            newIds[i] = form.NewId;
-
-                            if (form.NewId is WadStaticId)
-                                listInProgress.Add(((WadStaticId)form.NewId).TypeId);
-                            else if (form.NewId is WadMoveableId)
-                                listInProgress.Add(((WadMoveableId)form.NewId).TypeId);
-                            else if (form.NewId is WadSpriteSequenceId)
-                                listInProgress.Add(((WadSpriteSequenceId)form.NewId).TypeId);
-
-                            break;
+                            destinationWad.Remove(slotViewModel.NewId);
+                            tool.WadChanged(WadArea.Destination);
                         }
+                        newIds[i] = slotViewModel.NewId;
+
+                        if (slotViewModel.NewId is WadStaticId)
+                            listInProgress.Add(((WadStaticId)slotViewModel.NewId).TypeId);
+                        else if (slotViewModel.NewId is WadMoveableId)
+                            listInProgress.Add(((WadMoveableId)slotViewModel.NewId).TypeId);
+                        else if (slotViewModel.NewId is WadSpriteSequenceId)
+                            listInProgress.Add(((WadSpriteSequenceId)slotViewModel.NewId).TypeId);
+
+                        break;
                     }
                     else
                     {
@@ -956,11 +975,16 @@ namespace WadTool
             }
             else if (wadObject is WadSpriteSequence)
             {
-                using (var form = new FormSpriteSequenceEditor(tool, wad, (WadSpriteSequence)wadObject))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                }
+                var spriteViewModel = new SpriteSequenceEditorWindowViewModel(tool, wad, (WadSpriteSequence)wadObject);
+                var spriteDialog = new SpriteSequenceEditorWindow { DataContext = spriteViewModel };
+
+                if (owner != null)
+                    spriteDialog.SetOwner(owner);
+
+                spriteDialog.ShowDialog();
+
+                if (spriteViewModel.DialogResult != true)
+                    return;
 
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
@@ -974,8 +998,13 @@ namespace WadTool
                 return;
             }
 
-            using (var form = new FormLuaProperties(tool, tool.DestinationWad, focusObjectId))
-                form.ShowDialog(owner);
+            var luaViewModel = new LuaPropertiesWindowViewModel(tool, tool.DestinationWad, focusObjectId);
+            var luaDialog = new LuaPropertiesWindow { DataContext = luaViewModel };
+
+            if (owner != null)
+                luaDialog.SetOwner(owner);
+
+            luaDialog.ShowDialog();
         }
 
         public static void DeleteObjects(WadToolClass tool, IWin32Window owner, WadArea wadArea, List<IWadObjectId> ObjectIdsToDelete)
@@ -1009,31 +1038,36 @@ namespace WadTool
 
             IWadObjectId result;
 
-            using (var form = new FormSelectSlot(tool.DestinationWad, initialWadObject.Id))
+            var slotViewModel = new SelectSlotWindowViewModel(tool.DestinationWad, initialWadObject.Id);
+            var slotDialog = new SelectSlotWindow { DataContext = slotViewModel };
+
+            if (owner != null)
+                slotDialog.SetOwner(owner);
+
+            slotDialog.ShowDialog();
+
+            if (slotViewModel.DialogResult != true)
+                return null;
+
+            if (destinationWad.Contains(slotViewModel.NewId))
             {
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return null;
-
-                if (destinationWad.Contains(form.NewId))
-                {
-                    tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.GameVersion) + " is already occupied.", PopupType.Error);
-                    return null;
-                }
-
-                if (initialWadObject is WadMoveable)
-                {
-                    var moveable = initialWadObject as WadMoveable;
-                    WadBone bone = new WadBone
-                    {
-                        Name = "Root",
-                        Mesh = CreateFakeMesh("Root")
-                    };
-                    moveable.Bones.Add(bone);
-                }
-
-                destinationWad.Add(form.NewId, initialWadObject);
-                result = form.NewId;
+                tool.SendMessage("The slot " + slotViewModel.NewId.ToString(destinationWad.GameVersion) + " is already occupied.", PopupType.Error);
+                return null;
             }
+
+            if (initialWadObject is WadMoveable)
+            {
+                var moveable = initialWadObject as WadMoveable;
+                WadBone bone = new WadBone
+                {
+                    Name = "Root",
+                    Mesh = CreateFakeMesh("Root")
+                };
+                moveable.Bones.Add(bone);
+            }
+
+            destinationWad.Add(slotViewModel.NewId, initialWadObject);
+            result = slotViewModel.NewId;
 
             tool.WadChanged(WadArea.Destination);
             tool.ToggleUnsavedChanges();
