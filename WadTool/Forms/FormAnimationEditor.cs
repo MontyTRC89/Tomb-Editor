@@ -20,6 +20,7 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
+using WadTool.Features.Dialogs.AnimCommandsEditor;
 using WadTool.Features.Dialogs.AnimationFixer;
 using WadTool.Features.Dialogs.ReplaceAnimCommands;
 using WadTool.Features.Dialogs.StateChangesEditor;
@@ -1666,20 +1667,10 @@ namespace WadTool
         {
             if (_editor.CurrentAnim == null) return;
 
-            var existingWindow = Application.OpenForms[nameof(FormAnimCommandsEditor)];
-            if (existingWindow == null)
-            {
-                var acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim);
-                acEditor.Show(this);
-                if (cmd != null)
-                    acEditor.SelectCommand(cmd);
-            }
-            else
-            {
-                existingWindow.Focus();
-                if (cmd != null)
-                    ((FormAnimCommandsEditor)existingWindow).SelectCommand(cmd);
-            }
+            var viewModel = new AnimCommandsEditorWindowViewModel(_editor, _editor.CurrentAnim, cmd);
+            var dialog = new AnimCommandsEditorWindow { DataContext = viewModel };
+            dialog.SetOwner(this);
+            dialog.ShowDialog();
 
             _editor.Tool.AnimationEditorAnimationChanged(_editor.CurrentAnim, false);
         }
