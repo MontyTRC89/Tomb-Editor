@@ -24,6 +24,12 @@ namespace WadTool.Controls
             PlaceLight
         }
 
+        /// <summary>
+        /// Raised when the static position may have changed through the 3D view (gizmo drag), so the
+        /// host can refresh its position fields. Replaces the old hard cast to the WinForms editor form.
+        /// </summary>
+        public event Action PositionChanged;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -530,7 +536,7 @@ namespace WadTool.Controls
                 Invalidate();
             }
 
-            ((FormStaticEditor)FindForm()).UpdatePositionUI();
+            PositionChanged?.Invoke();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -543,7 +549,7 @@ namespace WadTool.Controls
             if (_gizmoLight.MouseUp())
                 Invalidate();
 
-            ((FormStaticEditor)FindForm()).UpdatePositionUI();
+            PositionChanged?.Invoke();
         }
 
         public void UpdateLights()

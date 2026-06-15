@@ -27,6 +27,7 @@ using WadTool.Features.Dialogs.LuaProperties;
 using WadTool.Features.Dialogs.NewWad2;
 using WadTool.Features.Dialogs.SelectSlot;
 using WadTool.Features.Dialogs.SpriteSequenceEditor;
+using WadTool.Features.Dialogs.StaticEditor;
 
 namespace WadTool
 {
@@ -955,11 +956,16 @@ namespace WadTool
             // Choose behaviour
             if (wadObject is WadStatic)
             {
-                using (var form = new FormStaticEditor(tool, deviceManager, wad, (WadStatic)wadObject))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                }
+                var staticViewModel = new StaticEditorWindowViewModel(tool, deviceManager, wad, (WadStatic)wadObject);
+                var staticDialog = new StaticEditorWindow { DataContext = staticViewModel };
+
+                if (owner != null)
+                    staticDialog.SetOwner(owner);
+
+                staticDialog.ShowDialog();
+
+                if (staticViewModel.DialogResult != true)
+                    return;
 
                 tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
