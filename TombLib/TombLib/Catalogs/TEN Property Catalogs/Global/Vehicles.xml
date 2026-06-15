@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <propertyCatalog>
-  <moveable id="51,53,55,57,59,61,63,65,67">
+  <moveable id="SNOWMOBILE,QUAD,SPEEDBOAT,KAYAK,UPV,MINECART,JEEP,MOTORBIKE,RUBBER_BOAT">
   		<property
 		  internalName="VehicleWake"
 		  displayName="Render wake"
@@ -29,7 +29,7 @@
 		/>
 	</moveable>
 	
-	<moveable id="55,59,67">
+	<moveable id="SPEEDBOAT,UPV,RUBBER_BOAT">
 		<property
 		  internalName="VehicleMist"
 		  displayName="Render mist"
@@ -56,7 +56,7 @@
 		/>
 	</moveable>
 	
-	<moveable id="53">
+	<moveable id="QUAD">
 		<property
 		  internalName="VehicleSmokeStartColor"
 		  displayName="Exhaust start color"
@@ -75,7 +75,7 @@
 		/>
 	</moveable>
 	
-	<moveable id="59">
+	<moveable id="UPV">
 		<property
 		  internalName="VehicleLight"
 		  displayName="Render light"
@@ -134,7 +134,7 @@
 		/>
 	</moveable>
 	
-	<moveable id="55">
+	<moveable id="SPEEDBOAT">
 		<property
 		  internalName="VehicleFoam"
 		  displayName="Render foam"
