@@ -140,6 +140,8 @@ namespace TombEditor.Controls.Panel3D
         private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
+        private SolidVertex[] _ghostBlockVertices = new SolidVertex[84];
+        private float[] _roomsDistanceCache;
         private Buffer<SolidVertex> _boxVertexBuffer;
 
         // Flyby stuff
@@ -242,6 +244,7 @@ namespace TombEditor.Controls.Panel3D
                 _rasterizerStateDepthBias?.Dispose();
                 _currentContextMenu?.Dispose();
                 _wadRenderer?.Dispose();
+                _fontDefault?.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -396,6 +399,7 @@ namespace TombEditor.Controls.Panel3D
             // Stop camera animation if level is changing
             if (obj is Editor.LevelChangedEvent)
             {
+                _roomsDistanceCache = null;
                 _movementTimer.Stop(true);
 
                 if (_editor.CameraPreviewMode != CameraPreviewType.None)
