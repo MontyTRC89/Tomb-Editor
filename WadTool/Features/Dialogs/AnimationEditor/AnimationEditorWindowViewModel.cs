@@ -57,6 +57,25 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     private bool _allowUpdate = true;
     private int _frameCount;
 
+    private readonly PopUpInfo _popup = new();
+
+    // Chained playback / blend / sound state (slice 3b), mirroring the legacy fields.
+    private static readonly int _materialIndexSwitchInterval = 30 * 3;
+    private static readonly int _gridRecoveryWaitInterval = 30 * 2;
+    private static readonly float _gridRecoveryStep = 1 / (30 * 0.5f);
+
+    private int _chainedIncomingAnimation = -1;
+    private int _chainedIncomingFrame = -1;
+    private TombLib.VectorInt2 _chainedIncomingFrameRange = -TombLib.VectorInt2.One;
+    private int _chainedSetPosRecoveryCount;
+    private float _gridRecoveryCount;
+    private int _chainedInitialAnim;
+    private int _chainedInitialCursorPos;
+    private TombLib.VectorInt2 _chainedInitialSelection;
+    private readonly AnimBlendPreviewState _blendState = new();
+    private int _overallPlaybackCount = 30 * 3;
+    private int _currentMaterialIndex;
+
     [ObservableProperty] private bool? _dialogResult;
     [ObservableProperty] private string _title;
     [ObservableProperty] private string _statusText = string.Empty;
@@ -92,8 +111,12 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     [ObservableProperty] private bool _soundPreview;
     [ObservableProperty] private string _soundConditionLabel = "Land";
 
+    [ObservableProperty] private bool _roomsEnabled;
+    [ObservableProperty] private object? _selectedRoomItem;
+
     public ObservableCollection<AnimListItem> Animations { get; } = new();
     public ObservableCollection<MeshBoneItem> Bones { get; } = new();
+    public ObservableCollection<object> Rooms { get; } = new();
 
     public AnimationEditorWindowViewModel(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
     {
@@ -132,6 +155,8 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
         Bones.Clear();
         for (int i = 0; i < panel.Model.Bones.Count; i++)
             Bones.Add(new MeshBoneItem(i, panel.Model.Bones[i].Name));
+
+        UpdateReferenceLevel();
 
         RebuildAnimationsList();
         if (Animations.Count > 0)
@@ -174,8 +199,20 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
             }
         }
 
+        if (obj is WadToolClass.ReferenceLevelChangedEvent)
+            UpdateReferenceLevel();
+
+        if (obj is WadToolClass.AnimationEditorStateChangeEvent stateChange &&
+            _playTimer is not null && _playTimer.IsEnabled && _editor.Tool.Configuration.AnimationEditor_ChainPlayback)
+        {
+            _chainedIncomingAnimation = stateChange.NextAnimation;
+            _chainedIncomingFrame = stateChange.NextFrame;
+            _chainedIncomingFrameRange = stateChange.FrameRange;
+            _blendState.SetPendingBlend(stateChange.BlendFrames, stateChange.BlendCurve);
+        }
+
         if (obj is WadToolClass.MessageEvent message)
-            PopUpInfo.Show(new PopUpInfo(), null, _panel, message.Message, message.Type);
+            ShowPopup(message.Message, message.Type);
     }
 
     private void RebuildAnimationsList()
@@ -250,19 +287,32 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     /// <summary>Called by the window when the timeline cursor changes.</summary>
     public void OnTimelineValueChanged() => SelectFrame();
 
-    private void SelectFrame()
+    private void SelectFrame(float k = -1)
     {
         if (_panel is null || _timeline is null || !_editor.ValidAnimationAndFrames)
             return;
 
         int frameIndex = _timeline.Value;
-        if (frameIndex >= _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count)
-            frameIndex = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
+        var keyFrames = _editor.CurrentAnim.DirectXAnimation.KeyFrames;
+        if (frameIndex >= keyFrames.Count)
+            frameIndex = keyFrames.Count - 1;
 
         _editor.CurrentFrameIndex = frameIndex;
-        _panel.Model.BuildAnimationPose(_editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex]);
+
+        if (k > 0)
+        {
+            int nextIndex = frameIndex < keyFrames.Count - 1 ? frameIndex + 1 : frameIndex;
+            k = Math.Min(k, 1);
+            _panel.Model.BuildAnimationPose(keyFrames[frameIndex], keyFrames[nextIndex], k);
+        }
+        else
+        {
+            _panel.Model.BuildAnimationPose(keyFrames[frameIndex]);
+            UpdateTransformUI();
+        }
+
         _panel.Invalidate();
-        UpdateTransformUI();
+        PreviewSounds();
         UpdateStatusLabel();
     }
 
@@ -585,22 +635,318 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
                      "   Keyframe: " + _timeline.Value + " / " + Math.Max(_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1, 0);
     }
 
-    private void OnPlayTick()
-    {
-        if (_timeline is null) return;
-        if (_timeline.Value < _timeline.Maximum)
-            _timeline.Value++;
-        else
-            _timeline.Value = _timeline.Minimum;
-    }
-
     [RelayCommand]
     private void Play()
     {
-        if (_playTimer is null) return;
+        if (_playTimer is null || _panel is null || _timeline is null) return;
+
         IsPlaying = !IsPlaying;
-        if (IsPlaying) _playTimer.Start();
-        else _playTimer.Stop();
+        if (IsPlaying)
+        {
+            _playTimer.Start();
+            if (_editor.CurrentAnim?.WadAnimation != null)
+            {
+                _chainedInitialAnim = _editor.CurrentAnim.Index;
+                _chainedInitialCursorPos = _timeline.Value;
+                _chainedInitialSelection = _timeline.Selection;
+                if (_editor.CurrentAnim.WadAnimation.KeyFrames.Count > 1)
+                    _frameCount = _timeline.Value * _editor.CurrentAnim.WadAnimation.FrameRate;
+            }
+        }
+        else
+        {
+            _playTimer.Stop();
+            if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback &&
+                _editor.Tool.Configuration.AnimationEditor_RewindAfterChainPlayback)
+            {
+                var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedInitialAnim);
+                if (origNode != null && origNode != _editor.CurrentAnim)
+                {
+                    if (!SelectAnimByIndex(_chainedInitialAnim))
+                        SelectAnimation(origNode);
+                    else
+                    {
+                        _timeline.Value = _chainedInitialCursorPos;
+                        _timeline.SelectionStart = _chainedInitialSelection.X;
+                        _timeline.SelectionEnd = _chainedInitialSelection.Y;
+                    }
+                }
+                else if (origNode == _editor.CurrentAnim &&
+                         _editor.CurrentAnim.WadAnimation.NextFrame >= (_editor.GetRealNumberOfFrames() - 1) &&
+                         _editor.GetRealFrameNumber() >= _editor.CurrentAnim.WadAnimation.NextFrame)
+                    _timeline.Value = _chainedInitialCursorPos;
+            }
+
+            _blendState.Clear();
+            _panel.DisablePicking = false;
+        }
+
+        _panel.GridPosition = System.Numerics.Vector3.Zero;
+        _panel.Invalidate();
+        _editor.Tool.TogglePlayback(IsPlaying, _editor.Tool.Configuration.AnimationEditor_ChainPlayback);
+    }
+
+    private bool SelectAnimByIndex(int index)
+    {
+        var item = Animations.FirstOrDefault(a => a.Node.Index == index);
+        if (item is null) return false;
+        if (!ReferenceEquals(item, SelectedAnim)) SelectedAnim = item;
+        return true;
+    }
+
+    private void OnPlayTick()
+    {
+        if (_panel is null || _timeline is null ||
+            _editor.CurrentAnim?.WadAnimation == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 1)
+            return;
+
+        int realFrameNumber = _editor.GetRealNumberOfFrames();
+        int realRangeNumber = _editor.CurrentAnim.WadAnimation.EndFrame > realFrameNumber - 1 ? realFrameNumber : _editor.CurrentAnim.WadAnimation.EndFrame + 1;
+
+        _frameCount++;
+
+        var nextIndex = _editor.CurrentAnim.WadAnimation.NextAnimation;
+        var nextFrame = _editor.CurrentAnim.WadAnimation.NextFrame;
+        var nextRange = new TombLib.VectorInt2(realRangeNumber);
+
+        bool chain = _editor.Tool.Configuration.AnimationEditor_ChainPlayback;
+
+        if (chain && _chainedIncomingAnimation >= 0)
+        {
+            if (_chainedIncomingAnimation < _editor.Animations.Count &&
+                _chainedIncomingFrame >= 0 &&
+                _chainedIncomingFrame < _editor.GetRealNumberOfFrames(_chainedIncomingAnimation) &&
+                _chainedIncomingFrameRange.X >= 0 &&
+                _chainedIncomingFrameRange.Y >= _chainedIncomingFrameRange.X &&
+                _chainedIncomingFrameRange.Y <= realFrameNumber)
+            {
+                nextIndex = (ushort)_chainedIncomingAnimation;
+                nextFrame = (ushort)_chainedIncomingFrame;
+                nextRange = _chainedIncomingFrameRange;
+            }
+            else
+            {
+                ShowPopup("Pending state change to animation #" + _chainedIncomingAnimation + " had incorrect data and was ignored.", PopupType.Error);
+                _chainedIncomingAnimation = -1;
+                _blendState.ClearPendingBlend();
+            }
+        }
+
+        if (_frameCount >= nextRange.X && _frameCount <= nextRange.Y)
+        {
+            if (chain)
+            {
+                bool blendStarted = _blendState.TryBegin(_editor.CurrentAnim, _frameCount, _editor.Tool.Configuration.AnimationEditor_SmoothAnimation);
+                _panel.DisablePicking = blendStarted;
+                _chainedIncomingAnimation = -1;
+
+                var nextNode = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
+                if (nextNode != null)
+                {
+                    if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid && _editor.CurrentAnim.WadAnimation.AnimCommands.Count > 0 &&
+                        _editor.CurrentAnim.WadAnimation.AnimCommands.Any(cmd => cmd.Type == WadAnimCommandType.SetPosition))
+                        _chainedSetPosRecoveryCount = 0;
+
+                    _editor.CurrentAnim.WadAnimation.AnimCommands
+                        .Where(cmd => cmd.Type == WadAnimCommandType.SetPosition)
+                        .ToList()
+                        .ForEach(cmd => _panel.GridPosition += new System.Numerics.Vector3(cmd.Parameter1, cmd.Parameter2, cmd.Parameter3));
+
+                    if (nextNode != _editor.CurrentAnim)
+                        SelectAnimByIndex(nextIndex);
+
+                    var maxFrameNumber = _editor.GetRealNumberOfFrames(nextIndex);
+                    if (nextFrame >= maxFrameNumber)
+                    {
+                        _frameCount = 0;
+                        ShowPopup("No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.", PopupType.Warning);
+                    }
+                    else
+                        _frameCount = nextFrame;
+                }
+                else
+                    ShowPopup("Animation " + nextIndex + " wasn't found. Chain is broken.", PopupType.Warning);
+            }
+            else
+                _frameCount = 0;
+        }
+
+        if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid)
+        {
+            if (!chain && _frameCount >= (realRangeNumber - 1) &&
+                _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
+                _panel.GridPosition = System.Numerics.Vector3.Zero;
+
+            var startVel = new System.Numerics.Vector3(_editor.CurrentAnim.WadAnimation.StartLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.StartVelocity);
+            var endVel = new System.Numerics.Vector3(_editor.CurrentAnim.WadAnimation.EndLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.EndVelocity);
+
+            if (_editor.Moveable.Id.TypeId == 0)
+            {
+                switch (_editor.CurrentAnim.WadAnimation.StateId)
+                {
+                    case 5: case 16: case 23: case 25: case 32:
+                        startVel.Z = -startVel.Z; endVel.Z = -endVel.Z; break;
+                    case 21: case 26: case 31: case 60: case 78:
+                        startVel = new System.Numerics.Vector3(startVel.Z, 0, startVel.X);
+                        endVel = new System.Numerics.Vector3(endVel.Z, 0, endVel.X); break;
+                    case 22: case 27: case 30: case 58: case 77:
+                        startVel = new System.Numerics.Vector3(-startVel.Z, 0, -startVel.X);
+                        endVel = new System.Numerics.Vector3(-endVel.Z, 0, -endVel.X); break;
+                }
+            }
+
+            var shiftX = System.Numerics.Vector3.Lerp(startVel, endVel, (float)_frameCount / (float)realFrameNumber);
+            _panel.GridPosition += shiftX;
+
+            if (_editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange)
+            {
+                if (_panel.GridPosition.Y != 0 &&
+                    !_editor.CurrentAnim.WadAnimation.AnimCommands.Any(cmd => cmd.Type == WadAnimCommandType.SetPosition) &&
+                    _editor.CurrentAnim.WadAnimation.NextAnimation == _editor.CurrentAnim.Index)
+                    _chainedSetPosRecoveryCount++;
+                else
+                    _chainedSetPosRecoveryCount = 0;
+
+                if (_chainedSetPosRecoveryCount >= _gridRecoveryWaitInterval)
+                {
+                    _gridRecoveryCount += _gridRecoveryStep;
+                    var shiftY = new System.Numerics.Vector3(_panel.GridPosition.X, 0.0f, _panel.GridPosition.Z);
+                    if (_gridRecoveryCount < 1.0f)
+                        shiftY.Y = (float)TombLib.MathC.SmoothStep(_panel.GridPosition.Y, 0.0f, _gridRecoveryCount);
+                    else { _gridRecoveryCount = 0.0f; _chainedSetPosRecoveryCount = 0; }
+                    _panel.GridPosition = shiftY;
+                }
+            }
+        }
+
+        byte frameRate = _editor.CurrentAnim.WadAnimation.FrameRate == 0 ? (byte)1 : _editor.CurrentAnim.WadAnimation.FrameRate;
+        bool isKeyFrame = _frameCount % frameRate == 0;
+
+        if (isKeyFrame)
+        {
+            int newFrameNumber = (int)Math.Round((double)(_frameCount / frameRate));
+            _timeline.Value = newFrameNumber > _timeline.Maximum ? 0 : newFrameNumber;
+        }
+        else if (_editor.Tool.Configuration.AnimationEditor_SmoothAnimation)
+        {
+            float k = (float)_frameCount / frameRate;
+            k = _frameCount == realFrameNumber - 1 ? 1.0f : k - (float)Math.Floor(k);
+            SelectFrame(k);
+        }
+
+        if (_blendState.IsActive)
+        {
+            _blendState.BuildPose(_panel.Model, _editor.CurrentAnim, _frameCount, _editor.Tool.Configuration.AnimationEditor_SmoothAnimation);
+            _panel.Invalidate();
+            if (!_blendState.Advance())
+                _panel.DisablePicking = false;
+        }
+
+        UpdateStatusLabel();
+    }
+
+    private void ShowPopup(string message, PopupType type) => PopUpInfo.Show(_popup, null, _panel, message, type);
+
+    private void PreviewSounds()
+    {
+        if (!_editor.Tool.Configuration.AnimationEditor_SoundPreview || _editor.Tool.ReferenceLevel == null)
+            return;
+
+        _overallPlaybackCount++;
+        if (_overallPlaybackCount > _materialIndexSwitchInterval)
+        {
+            _overallPlaybackCount = 0;
+            var materialSounds = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap
+                .Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
+            if (materialSounds.Count > 1)
+                while (true)
+                {
+                    var newMaterialIndex = (new Random()).Next(0, materialSounds.Count - 1);
+                    if (materialSounds.Count == 1 || newMaterialIndex != _currentMaterialIndex)
+                    {
+                        _currentMaterialIndex = materialSounds[newMaterialIndex].Id;
+                        break;
+                    }
+                }
+        }
+
+        var previewSoundType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+        foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
+        {
+            int idToPlay = -1;
+            if (ac.Type == WadAnimCommandType.PlaySound)
+                idToPlay = ac.Parameter2;
+            else if (ac.Type == WadAnimCommandType.FlipEffect && previewSoundType == SoundPreviewType.LandWithMaterial &&
+                     _editor.Wad.GameVersion.Native() >= TRVersion.Game.TR3)
+            {
+                var flipID = ac.Parameter2;
+                if (flipID == 32 || flipID == 33) idToPlay = _currentMaterialIndex;
+            }
+
+            if (idToPlay == -1 || ac.Parameter1 != _frameCount)
+                continue;
+
+            var soundType = ac.Type == WadAnimCommandType.FlipEffect ? WadSoundEnvironmentType.Land : (WadSoundEnvironmentType)ac.Parameter3;
+
+            if (ac.Type == WadAnimCommandType.FlipEffect &&
+                (previewSoundType == SoundPreviewType.Water || previewSoundType == SoundPreviewType.Quicksand || previewSoundType == SoundPreviewType.Underwater))
+                continue;
+            if (soundType == WadSoundEnvironmentType.Land && !(previewSoundType == SoundPreviewType.Land || previewSoundType == SoundPreviewType.LandWithMaterial))
+                continue;
+            if (soundType == WadSoundEnvironmentType.Water && previewSoundType != SoundPreviewType.Water) continue;
+            if (soundType == WadSoundEnvironmentType.Quicksand && previewSoundType != SoundPreviewType.Quicksand) continue;
+            if (soundType == WadSoundEnvironmentType.Underwater && previewSoundType != SoundPreviewType.Underwater) continue;
+
+            var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(s => s.Id == idToPlay);
+            if (soundInfo is null)
+            {
+                ShowPopup("Sound info " + idToPlay + " missing in reference project", PopupType.Warning);
+                continue;
+            }
+
+            if (!_editor.Tool.ReferenceLevel.Settings.SelectedSounds.Contains(idToPlay))
+                ShowPopup("Sound info " + idToPlay + " is disabled in level settings.", PopupType.Warning);
+            else
+                try { WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo); }
+                catch (Exception exc) { ShowPopup("Unable to play sound info " + idToPlay + ". Exception: \n" + exc.Message, PopupType.Warning); }
+        }
+    }
+
+    private void UpdateReferenceLevel()
+    {
+        if (_panel is null) return;
+        _panel.Level = _editor.Tool.ReferenceLevel;
+        _panel.Invalidate();
+
+        _allowUpdate = false;
+        Rooms.Clear();
+        if (_editor.Tool.ReferenceLevel != null)
+        {
+            RoomsEnabled = true;
+            Rooms.Add("(select room)");
+            foreach (var room in _editor.Tool.ReferenceLevel.Rooms)
+                if (room != null) Rooms.Add(room);
+            SelectedRoomItem = Rooms.Count > 0 ? Rooms[0] : null;
+        }
+        else
+            RoomsEnabled = false;
+        _allowUpdate = true;
+    }
+
+    partial void OnSelectedRoomItemChanged(object? value)
+    {
+        if (!_allowUpdate || _panel is null) return;
+        if (value is Room room)
+        {
+            _panel.Room = room;
+            _panel.RoomPosition = room.GetLocalCenter();
+        }
+        else
+        {
+            _panel.Room = null;
+            _panel.RoomPosition = System.Numerics.Vector3.Zero;
+        }
+        _panel.Invalidate();
     }
 
     [RelayCommand]

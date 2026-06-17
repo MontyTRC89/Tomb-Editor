@@ -209,7 +209,15 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
+				<ComboBox
+					Grid.Column="2"
+					Width="160"
+					IsEnabled="{Binding RoomsEnabled}"
+					ItemsSource="{Binding Rooms}"
+					SelectedItem="{Binding SelectedRoomItem, Mode=TwoWay}"
+					ToolTip="Reference room" />
 				<controls:SpacedStack Grid.Column="0" Orientation="Horizontal" Spacing="3">
 					<Button Width="34" Command="{Binding GotoStartCommand}" Content="⏮" />
 					<Button Width="34" Command="{Binding GotoPrevCommand}" Content="◀" />
