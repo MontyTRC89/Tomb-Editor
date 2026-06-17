@@ -117,6 +117,7 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
 
     [ObservableProperty] private bool _roomsEnabled;
     [ObservableProperty] private object? _selectedRoomItem;
+    [ObservableProperty] private double _growX, _growY, _growZ;
 
     public ObservableCollection<AnimListItem> Animations { get; } = new();
     public ObservableCollection<MeshBoneItem> Bones { get; } = new();
@@ -1192,6 +1193,187 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
             var msg = vm.ChangedAnimations.Length < 50 ? "Animations (" + vm.ChangedAnimations + ")" : "Multiple animations";
             ShowPopup(msg + " were fixed.\nPlease save your wad under new name and thoroughly test it.", PopupType.Warning);
             SelectAnimation(_editor.CurrentAnim);
+        }
+    }
+
+    // ---- Animation operations (slice 3d) ----
+
+    [RelayCommand]
+    private void DeleteAnimation()
+    {
+        if (_editor.CurrentAnim == null) return;
+        if (DarkUI.Forms.DarkMessageBox.Show(Owner, "Do you really want to delete '" + _editor.CurrentAnim.WadAnimation.Name + "'?",
+                "Confirm", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            return;
+        DeleteAnimationCore(_editor.CurrentAnim);
+    }
+
+    private void DeleteAnimationCore(AnimationNode animToDelete)
+    {
+        if (animToDelete == null || !_editor.Animations.Contains(animToDelete)) return;
+
+        int currentIndex = _editor.Animations.IndexOf(animToDelete);
+        for (int i = 0; i < _editor.Animations.Count; i++)
+        {
+            if (i == currentIndex) continue;
+            var animation = _editor.Animations[i];
+            if (animation.Index > currentIndex) animation.Index--;
+            if (animation.WadAnimation.NextAnimation > currentIndex) animation.WadAnimation.NextAnimation--;
+            foreach (var stateChange in animation.WadAnimation.StateChanges)
+                foreach (var dispatch in stateChange.Dispatches)
+                    if (dispatch.NextAnimation > currentIndex) dispatch.NextAnimation--;
+        }
+
+        _editor.Animations.Remove(animToDelete);
+        RebuildAnimationsList();
+
+        if (Animations.Count > 0)
+            SelectedAnim = Animations[Math.Min(currentIndex, Animations.Count - 1)];
+        else
+            SelectAnimation(null);
+
+        _panel?.Invalidate();
+        _timeline?.Invalidate();
+    }
+
+    [RelayCommand]
+    private void CutAnimation()
+    {
+        if (_editor.CurrentAnim == null) { ShowPopup("No animation to cut!", PopupType.Warning); return; }
+        _editor.ClipboardNode = _editor.CurrentAnim;
+        DeleteAnimationCore(_editor.CurrentAnim);
+    }
+
+    [RelayCommand]
+    private void CopyAnimation()
+    {
+        if (_editor.CurrentAnim == null) { ShowPopup("No animation to copy!", PopupType.Warning); return; }
+        _editor.ClipboardNode = _editor.CurrentAnim.Clone();
+    }
+
+    [RelayCommand]
+    private void PasteAnimation()
+    {
+        if (_editor.ClipboardNode == null || _editor.CurrentAnim == null) { ShowPopup("No animation to paste!", PopupType.Warning); return; }
+        int animationIndex = _editor.Animations.Count;
+        var pastedAnim = _editor.ClipboardNode.Clone(animationIndex);
+        _editor.Animations.Add(pastedAnim);
+        pastedAnim.WadAnimation.Name += " - Copy";
+        RebuildAnimationsList();
+        SelectAnimByIndex(animationIndex);
+    }
+
+    [RelayCommand]
+    private void ReplaceAnimation()
+    {
+        if (_editor.ClipboardNode == null || _editor.CurrentAnim == null) { ShowPopup("No animation to replace!", PopupType.Warning); return; }
+        _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+        int animationIndex = _editor.CurrentAnim.Index;
+        var pastedAnim = _editor.ClipboardNode.Clone(animationIndex);
+        _editor.Animations[animationIndex] = pastedAnim;
+        pastedAnim.WadAnimation.Name += " - Copy";
+        RebuildAnimationsList();
+        SelectAnimByIndex(animationIndex);
+    }
+
+    [RelayCommand]
+    private void SplitAnimation()
+    {
+        if (_timeline is null || _editor.CurrentAnim == null) { ShowPopup("No animation to split!", PopupType.Warning); return; }
+
+        if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 3)
+        { ShowPopup("You must have at least 3 frames for splitting the animation", PopupType.Error); return; }
+
+        int numFrames = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+        if (_timeline.Value == 0 || _timeline.Value == numFrames - 1)
+        { ShowPopup("You can't set the first or the last frame for splitting the animation", PopupType.Error); return; }
+
+        var newWadAnimation = _editor.CurrentAnim.WadAnimation.Clone();
+        var newDirectXAnimation = _editor.CurrentAnim.DirectXAnimation.Clone();
+        int numFrames2 = numFrames - _timeline.Value;
+
+        _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(_timeline.Value + 1, numFrames2 - 1);
+        newDirectXAnimation.KeyFrames.RemoveRange(0, _timeline.Value);
+
+        newWadAnimation.Name += " - splitted";
+        _editor.Animations.Add(new AnimationNode(newWadAnimation, newDirectXAnimation, _editor.Animations.Count));
+
+        RebuildAnimationsList();
+        SelectAnimByIndex(_editor.Animations.Count - 1);
+    }
+
+    // ---- Bounding box (slice 3d) ----
+
+    private System.Collections.Generic.List<int> GetSelectedMeshList()
+        => Bones.Where(b => b.Checked).Select(b => b.Index).ToList();
+
+    [RelayCommand]
+    private void SelectAllMeshes() { foreach (var b in Bones) b.Checked = true; }
+    [RelayCommand]
+    private void SelectNoMeshes() { foreach (var b in Bones) b.Checked = false; }
+
+    [RelayCommand]
+    private void CalcBoundingBox() => CalculateAnimationBoundingBox(false);
+    [RelayCommand]
+    private void ClearBoundingBox() => CalculateAnimationBoundingBox(true);
+
+    private void CalculateAnimationBoundingBox(bool clear)
+    {
+        if (_panel is null || _timeline is null || !_editor.ValidAnimationAndFrames) return;
+        _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+        int start = 0, end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+        if (!_timeline.SelectionIsEmpty) { start = _timeline.Selection.X; end = _timeline.Selection.Y + 1; }
+
+        for (int i = start; i < end; i++)
+            CalculateKeyframeBoundingBox(i, clear);
+
+        _panel.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+        _panel.Invalidate();
+    }
+
+    private void CalculateKeyframeBoundingBox(int index, bool clear)
+    {
+        if (_panel is null || _timeline is null || !_editor.ValidAnimationAndFrames) return;
+        var meshList = GetSelectedMeshList();
+        var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[index];
+        _panel.Model.BuildAnimationPose(keyFrame);
+
+        if (clear || meshList.Count == 0)
+            keyFrame.BoundingBox = new TombLib.BoundingBox();
+        else
+            keyFrame.CalculateBoundingBox(_panel.Model, _panel.Skin, meshList);
+
+        if (index == _timeline.Value)
+        {
+            UpdateTransformUI();
+            _panel.Invalidate();
+        }
+    }
+
+    [RelayCommand]
+    private void GrowBoundingBox() => InflateAnimationBoundingBox(new System.Numerics.Vector3((float)GrowX, (float)GrowY, (float)GrowZ));
+    [RelayCommand]
+    private void ShrinkBoundingBox() => InflateAnimationBoundingBox(new System.Numerics.Vector3((float)-GrowX, (float)-GrowY, (float)-GrowZ));
+
+    private void InflateAnimationBoundingBox(System.Numerics.Vector3 value)
+    {
+        if (_timeline is null || !_editor.ValidAnimationAndFrames || value.Length() == 0f) return;
+        _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+        int start = 0, end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+        if (!_timeline.SelectionIsEmpty) { start = _timeline.Selection.X; end = _timeline.Selection.Y + 1; }
+
+        for (int i = start; i < end; i++)
+        {
+            var kf = _editor.CurrentAnim.DirectXAnimation.KeyFrames[i];
+            kf.BoundingBox = kf.BoundingBox.Inflate(value);
+        }
+
+        if (_panel is not null)
+        {
+            UpdateTransformUI();
+            _panel.Invalidate();
         }
     }
 

@@ -195,6 +195,28 @@
 						</DataGrid.Columns>
 					</DataGrid>
 				</GroupBox>
+
+				<GroupBox Header="Animation bounding box">
+					<StackPanel>
+						<controls:SpacedStack Orientation="Horizontal" Spacing="6">
+							<Button Width="80" Command="{Binding SelectAllMeshesCommand}" Content="All meshes" />
+							<Button Width="80" Command="{Binding SelectNoMeshesCommand}" Content="No meshes" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Margin="0,6,0,0" Orientation="Horizontal" Spacing="6">
+							<Button Width="80" Command="{Binding CalcBoundingBoxCommand}" Content="Calculate" />
+							<Button Width="80" Command="{Binding ClearBoundingBoxCommand}" Content="Clear" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Margin="0,6,0,0" Orientation="Horizontal" Spacing="4">
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding GrowX, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding GrowY, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding GrowZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Margin="0,4,0,0" Orientation="Horizontal" Spacing="6">
+							<Button Width="80" Command="{Binding GrowBoundingBoxCommand}" Content="Grow" />
+							<Button Width="80" Command="{Binding ShrinkBoundingBoxCommand}" Content="Shrink" />
+						</controls:SpacedStack>
+					</StackPanel>
+				</GroupBox>
 			</controls:SpacedStack>
 		</ScrollViewer>
 
@@ -213,6 +235,12 @@
 					<Button Width="44" Command="{Binding SaveCommand}" Content="Save" ToolTip="Save changes" />
 					<Separator />
 					<Button Width="60" Command="{Binding AddAnimationCommand}" Content="+ Anim" ToolTip="Add animation" />
+					<Button Width="60" Command="{Binding DeleteAnimationCommand}" Content="- Anim" ToolTip="Delete animation" />
+					<Button Width="34" Command="{Binding CutAnimationCommand}" Content="Cut" ToolTip="Cut animation" />
+					<Button Width="40" Command="{Binding CopyAnimationCommand}" Content="Copy" ToolTip="Copy animation" />
+					<Button Width="44" Command="{Binding PasteAnimationCommand}" Content="Paste" ToolTip="Paste animation" />
+					<Button Width="56" Command="{Binding ReplaceAnimationCommand}" Content="Replace" ToolTip="Replace animation from clipboard" />
+					<Button Width="44" Command="{Binding SplitAnimationCommand}" Content="Split" ToolTip="Split animation at cursor" />
 					<Separator />
 					<Button Width="34" Command="{Binding AddFrameCommand}" Content="+F" ToolTip="Add frame" />
 					<Button Width="34" Command="{Binding DeleteFrameCommand}" Content="-F" ToolTip="Delete frame(s)" />
