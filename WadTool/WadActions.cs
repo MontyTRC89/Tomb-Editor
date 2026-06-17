@@ -26,6 +26,7 @@ using TombLib.WPF;
 using WadTool.Features.Dialogs.LuaProperties;
 using WadTool.Features.Dialogs.NewWad2;
 using WadTool.Features.Dialogs.SelectSlot;
+using WadTool.Features.Dialogs.SkeletonEditor;
 using WadTool.Features.Dialogs.SpriteSequenceEditor;
 using WadTool.Features.Dialogs.StaticEditor;
 
@@ -1550,13 +1551,18 @@ namespace WadTool
 
             Wad2 wad = tool.GetWad(tool.MainSelection.Value.WadArea);
             var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
-            using (var form = new FormSkeletonEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            var skeletonViewModel = new SkeletonEditorWindowViewModel(tool, DeviceManager.DefaultDeviceManager, wad, moveableId);
+            var skeletonDialog = new SkeletonEditorWindow { DataContext = skeletonViewModel };
 
-                tool.WadChanged(WadArea.Destination);
-            }
+            if (owner != null)
+                skeletonDialog.SetOwner(owner);
+
+            skeletonDialog.ShowDialog();
+
+            if (skeletonViewModel.DialogResult != true)
+                return;
+
+            tool.WadChanged(WadArea.Destination);
         }
 
         private static void AddWadToRecent(string fileName)
