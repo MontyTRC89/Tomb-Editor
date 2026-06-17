@@ -11,6 +11,7 @@ Tomb Editor:
  * Added indication of the nodes not supported by the current event type.
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
  * Added multiple window layout support.
+ * Added support for heavy switch, heavy antitrigger, monkey, climb and crawl trigger types in TRX.
  * Fixed "Map animated textures" checkbox not unchecking in Level Settings dialog.
  * Fixed occasional exceptions after closing Node Editor.
  * Fixed exception while opening texture lists in Remap Texture dialog.
