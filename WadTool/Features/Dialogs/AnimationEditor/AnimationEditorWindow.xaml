@@ -198,8 +198,33 @@
 			</controls:SpacedStack>
 		</ScrollViewer>
 
-		<!--  Center: 3D view + timeline + transport  -->
+		<!--  Center: toolbar + 3D view + timeline + transport  -->
 		<DockPanel LastChildFill="True">
+
+			<!--  Operations toolbar  -->
+			<Border
+				Margin="0,0,0,4"
+				Padding="2"
+				Background="{DynamicResource Brush_BackgroundSlightlyDark}"
+				DockPanel.Dock="Top">
+				<controls:SpacedStack Orientation="Horizontal" Spacing="3">
+					<Button Width="34" Command="{Binding UndoCommand}" Content="↶" ToolTip="Undo" />
+					<Button Width="34" Command="{Binding RedoCommand}" Content="↷" ToolTip="Redo" />
+					<Button Width="44" Command="{Binding SaveCommand}" Content="Save" ToolTip="Save changes" />
+					<Separator />
+					<Button Width="60" Command="{Binding AddAnimationCommand}" Content="+ Anim" ToolTip="Add animation" />
+					<Separator />
+					<Button Width="34" Command="{Binding AddFrameCommand}" Content="+F" ToolTip="Add frame" />
+					<Button Width="34" Command="{Binding DeleteFrameCommand}" Content="-F" ToolTip="Delete frame(s)" />
+					<Button Width="40" Command="{Binding CutFrameCommand}" Content="Cut" ToolTip="Cut frame(s)" />
+					<Button Width="44" Command="{Binding CopyFrameCommand}" Content="Copy" ToolTip="Copy frame(s)" />
+					<Button Width="48" Command="{Binding PasteFrameCommand}" Content="Paste" ToolTip="Paste frame(s)" />
+					<Separator />
+					<Button Width="80" Command="{Binding EditAnimCommandsCommand}" Content="Commands" ToolTip="Edit anim commands" />
+					<Button Width="90" Command="{Binding EditStateChangesCommand}" Content="State changes" ToolTip="Edit state changes" />
+					<Button Width="40" Command="{Binding FixAnimationCommand}" Content="Fix" ToolTip="Fix animation" />
+				</controls:SpacedStack>
+			</Border>
 
 			<!--  Transport + status  -->
 			<Grid DockPanel.Dock="Bottom">

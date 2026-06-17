@@ -14,7 +14,11 @@ using TombLib.LevelData;
 using TombLib.Types;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.WPF;
 using WadTool.Controls;
+using WadTool.Features.Dialogs.AnimCommandsEditor;
+using WadTool.Features.Dialogs.AnimationFixer;
+using WadTool.Features.Dialogs.StateChangesEditor;
 
 namespace WadTool.Features.Dialogs.AnimEditor;
 
@@ -957,6 +961,239 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     private void GotoNext() { if (_timeline is not null && _timeline.Value < _timeline.Maximum) _timeline.Value++; }
     [RelayCommand]
     private void GotoEnd() { if (_timeline is not null) _timeline.Value = _timeline.Maximum; }
+
+    // ---- Keyframe & animation operations (slice 3c) ----
+
+    private void OnKeyframesListChanged()
+    {
+        if (_timeline is null) return;
+        if (_editor.ValidAnimationAndFrames)
+        {
+            _timeline.Minimum = 0;
+            _timeline.Maximum = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1;
+            _allowUpdate = false;
+            EndFrame = _editor.CurrentAnim.WadAnimation.EndFrame;
+            _allowUpdate = true;
+            UpdateStatusLabel();
+        }
+        else
+            StatusText = string.Empty;
+    }
+
+    private void FixEndFrame(int delta)
+    {
+        var v = Math.Max(0, _editor.CurrentAnim.WadAnimation.EndFrame + delta);
+        _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)v;
+    }
+
+    private bool ValidAndSelected(bool prompt = true)
+    {
+        if (_timeline is null) return false;
+        if (_timeline.SelectionIsEmpty)
+        { if (prompt) ShowPopup("No frames selected. Please select at least 1 frame.", PopupType.Error); }
+        else if (_editor.CurrentAnim == null)
+        { if (prompt) ShowPopup("No animation selected. Select animation to work with.", PopupType.Error); }
+        else if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
+        { if (prompt) ShowPopup("Current animation contains no frames.", PopupType.Error); }
+        else
+            return true;
+        return false;
+    }
+
+    [RelayCommand]
+    private void Undo() => _editor.Tool.UndoManager.Undo();
+    [RelayCommand]
+    private void Redo() => _editor.Tool.UndoManager.Redo();
+    [RelayCommand]
+    private void Save() => _editor.SaveChanges();
+
+    [RelayCommand]
+    private void AddAnimation()
+    {
+        var wadAnimation = new WadAnimation { FrameRate = 1, Name = "New Animation " + _editor.Animations.Count };
+        var keyFrame = new WadKeyFrame();
+        foreach (var bone in _editor.Moveable.Bones)
+            keyFrame.Angles.Add(new WadKeyFrameRotation());
+        wadAnimation.KeyFrames.Add(keyFrame);
+
+        var dxAnimation = Animation.FromWad2(_editor.Moveable.Bones, wadAnimation);
+        var node = new AnimationNode(wadAnimation, dxAnimation, _editor.Animations.Count);
+
+        _editor.Animations.Add(node);
+        var item = new AnimListItem(node, "(" + node.Index + ") " + node.WadAnimation.Name);
+        Animations.Add(item);
+        SelectedAnim = item;
+    }
+
+    [RelayCommand]
+    private void AddFrame()
+    {
+        if (_timeline is null) return;
+        AddNewFrame(_timeline.Value + 1, true);
+    }
+
+    private void AddNewFrame(int index, bool undo)
+    {
+        if (_editor.CurrentAnim == null || _timeline is null) return;
+        if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+        KeyFrame keyFrame;
+        if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
+        {
+            index = 0;
+            keyFrame = new KeyFrame();
+            foreach (var bone in _editor.Moveable.Bones)
+            {
+                keyFrame.Rotations.Add(System.Numerics.Vector3.Zero);
+                keyFrame.Quaternions.Add(System.Numerics.Quaternion.Identity);
+                keyFrame.Translations.Add(bone.Translation);
+                keyFrame.TranslationsMatrices.Add(System.Numerics.Matrix4x4.CreateTranslation(bone.Translation));
+            }
+        }
+        else
+            keyFrame = _editor.CurrentKeyFrame.Clone();
+
+        _editor.CurrentAnim.DirectXAnimation.KeyFrames.Insert(index, keyFrame);
+        OnKeyframesListChanged();
+        FixEndFrame(1);
+    }
+
+    [RelayCommand]
+    private void DeleteFrame() => DeleteFrames(true, true, true);
+
+    private void DeleteFrames(bool prompt, bool undo, bool updateGUI)
+    {
+        if (_timeline is null || _panel is null || !ValidAndSelected(prompt)) return;
+
+        if (prompt &&
+            DarkUI.Forms.DarkMessageBox.Show(Owner, "Do you really want to delete frame" +
+                (_timeline.SelectionSize == 1 ? " " + _timeline.Value : "s " + _timeline.Selection.X + "-" + _timeline.Selection.Y) + "?",
+                "Confirm", System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.No)
+            return;
+
+        if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+        int selectionStart = _timeline.Selection.X;
+        int selectionEnd = _timeline.Selection.Y;
+        int cursorPos = (_timeline.Value < _timeline.Selection.X || _timeline.Value > _timeline.Selection.Y) ? _timeline.Value : -1;
+
+        _editor.CurrentAnim.DirectXAnimation.KeyFrames.RemoveRange(_timeline.Selection.X, _timeline.SelectionSize);
+
+        if (!updateGUI) return;
+
+        FixEndFrame(-_timeline.SelectionSize);
+        _timeline.ResetSelection();
+        OnKeyframesListChanged();
+
+        if (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count != 0)
+            _timeline.Value = cursorPos != -1
+                ? (cursorPos < selectionStart ? cursorPos : selectionStart + (cursorPos - selectionEnd - 1))
+                : selectionStart;
+        else
+        {
+            _timeline.Value = 0;
+            StatusText = string.Empty;
+        }
+        _panel.Invalidate();
+    }
+
+    [RelayCommand]
+    private void CutFrame()
+    {
+        if (!ValidAndSelected()) return;
+        CopyFramesInternal(false);
+        DeleteFrames(false, true, true);
+    }
+
+    [RelayCommand]
+    private void CopyFrame() => CopyFramesInternal(true);
+
+    private void CopyFramesInternal(bool updateGUI)
+    {
+        if (_timeline is null || !ValidAndSelected()) return;
+        _editor.ClipboardKeyFrames.Clear();
+        for (int i = _timeline.Selection.X; i <= _timeline.Selection.Y; i++)
+            _editor.ClipboardKeyFrames.Add(_editor.CurrentAnim.DirectXAnimation.KeyFrames[i].Clone());
+        if (updateGUI)
+            _timeline.Highlight(_timeline.Selection.X, _timeline.Selection.Y);
+    }
+
+    [RelayCommand]
+    private void PasteFrame()
+    {
+        if (_timeline is null || _panel is null || _editor.CurrentAnim == null) return;
+        if (_editor.ClipboardKeyFrames == null || _editor.ClipboardKeyFrames.Count <= 0)
+        {
+            ShowPopup("Nothing to paste!", PopupType.Warning);
+            return;
+        }
+
+        _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+
+        int startIndex = _timeline.SelectionIsEmpty ? _timeline.Value : _timeline.Selection.X;
+        int endIndex = _timeline.SelectionIsEmpty ? _timeline.Value : _timeline.Selection.Y;
+        int cursorPos = (_timeline.SelectionIsEmpty || _timeline.Value < _timeline.Selection.X || _timeline.Value > _timeline.Selection.Y) ? _timeline.Value : -1;
+
+        if (!_timeline.SelectionIsEmpty)
+            DeleteFrames(false, false, false);
+
+        var pastedFrames = new System.Collections.Generic.List<KeyFrame>();
+        _editor.ClipboardKeyFrames.ForEach(frame => pastedFrames.Add(frame.Clone()));
+        _editor.CurrentAnim.DirectXAnimation.KeyFrames.InsertRange(startIndex, pastedFrames);
+        OnKeyframesListChanged();
+        FixEndFrame(pastedFrames.Count - _timeline.SelectionSize);
+
+        int insertEnd = startIndex + _editor.ClipboardKeyFrames.Count - 1;
+        if (cursorPos != -1 && cursorPos <= _timeline.Maximum)
+            _timeline.Value = cursorPos < startIndex ? cursorPos : insertEnd + (cursorPos - endIndex) + (_timeline.SelectionIsEmpty ? 1 : 0);
+        else
+            _timeline.Value = insertEnd;
+
+        _timeline.ResetSelection();
+        _timeline.Highlight(startIndex, insertEnd);
+        _panel.Invalidate();
+    }
+
+    [RelayCommand]
+    private void EditAnimCommands()
+    {
+        if (_editor.CurrentAnim == null) return;
+        var vm = new AnimCommandsEditorWindowViewModel(_editor, _editor.CurrentAnim);
+        var dialog = new AnimCommandsEditorWindow { DataContext = vm };
+        dialog.SetOwner(Owner);
+        dialog.ShowDialog();
+        _editor.Tool.AnimationEditorAnimationChanged(_editor.CurrentAnim, false);
+    }
+
+    [RelayCommand]
+    private void EditStateChanges()
+    {
+        if (_editor.CurrentAnim == null) return;
+        var vm = new StateChangesEditorWindowViewModel(_editor, _editor.CurrentAnim);
+        var dialog = new StateChangesEditorWindow { DataContext = vm };
+        dialog.SetOwner(Owner);
+        dialog.ShowDialog();
+    }
+
+    [RelayCommand]
+    private void FixAnimation()
+    {
+        if (_editor.CurrentAnim == null) return;
+        var anims = new System.Collections.Generic.List<AnimationNode> { _editor.CurrentAnim };
+        var vm = new AnimationFixerWindowViewModel(_editor, anims);
+        var dialog = new AnimationFixerWindow { DataContext = vm };
+        dialog.SetOwner(Owner);
+        dialog.ShowDialog();
+
+        if (vm.Outcome == AnimationFixerOutcome.NothingFixed)
+            ShowPopup("No properties were selected or there was nothing to fix.\nNo changes were made.", PopupType.Info);
+        else if (vm.Outcome == AnimationFixerOutcome.Fixed)
+        {
+            var msg = vm.ChangedAnimations.Length < 50 ? "Animations (" + vm.ChangedAnimations + ")" : "Multiple animations";
+            ShowPopup(msg + " were fixed.\nPlease save your wad under new name and thoroughly test it.", PopupType.Warning);
+            SelectAnimation(_editor.CurrentAnim);
+        }
+    }
 
     [RelayCommand]
     private void Ok() => DialogResult = true;
