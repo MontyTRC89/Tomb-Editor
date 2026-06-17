@@ -11,6 +11,7 @@ using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.LevelData;
+using TombLib.Types;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using WadTool.Controls;
@@ -84,6 +85,13 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     [ObservableProperty] private double _bBoxMinX, _bBoxMinY, _bBoxMinZ, _bBoxMaxX, _bBoxMaxY, _bBoxMaxZ;
     [ObservableProperty] private MeshBoneItem? _selectedBoneItem;
 
+    // Root motion (TEN), blend preset, transport toggles (slice 3a).
+    [ObservableProperty] private bool _rootPosX, _rootPosY, _rootPosZ, _rootRotX, _rootRotY, _rootRotZ;
+    [ObservableProperty] private int _blendPresetIndex = -1;
+    [ObservableProperty] private bool _chainPlayback;
+    [ObservableProperty] private bool _soundPreview;
+    [ObservableProperty] private string _soundConditionLabel = "Land";
+
     public ObservableCollection<AnimListItem> Animations { get; } = new();
     public ObservableCollection<MeshBoneItem> Bones { get; } = new();
 
@@ -115,6 +123,11 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
         _editor.Tool.EditorEventRaised += OnEditorEventRaised;
 
         IsTombEngine = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
+        _allowUpdate = false;
+        ChainPlayback = _editor.Tool.Configuration.AnimationEditor_ChainPlayback;
+        SoundPreview = _editor.Tool.Configuration.AnimationEditor_SoundPreview;
+        SoundConditionLabel = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString();
+        _allowUpdate = true;
 
         Bones.Clear();
         for (int i = 0; i < panel.Model.Bones.Count; i++)
@@ -200,6 +213,14 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
             BlendFrameCount = node.WadAnimation.BlendFrameCount;
             StateIdText = node.WadAnimation.StateId.ToString();
             if (_bezier is not null) _bezier.Value = node.WadAnimation.BlendCurve;
+            BlendPresetIndex = -1;
+
+            RootPosX = node.WadAnimation.RootMotion.TranslationX;
+            RootPosY = node.WadAnimation.RootMotion.TranslationY;
+            RootPosZ = node.WadAnimation.RootMotion.TranslationZ;
+            RootRotX = node.WadAnimation.RootMotion.RotationX;
+            RootRotY = node.WadAnimation.RootMotion.RotationY;
+            RootRotZ = node.WadAnimation.RootMotion.RotationZ;
         }
 
         _timeline.Animation = node;
@@ -473,6 +494,83 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
         UpdateTransformUI();
         _panel.Invalidate();
     }
+
+    // ---- Root motion (TEN) ----
+
+    partial void OnRootPosXChanged(bool value) => ApplyRootMotion();
+    partial void OnRootPosYChanged(bool value) => ApplyRootMotion();
+    partial void OnRootPosZChanged(bool value) => ApplyRootMotion();
+    partial void OnRootRotXChanged(bool value) => ApplyRootMotion();
+    partial void OnRootRotYChanged(bool value) => ApplyRootMotion();
+    partial void OnRootRotZChanged(bool value) => ApplyRootMotion();
+
+    private void ApplyRootMotion()
+    {
+        if (!_allowUpdate || _editor.CurrentAnim == null) return;
+        PushUndoOnce();
+        var rootMotion = _editor.CurrentAnim.WadAnimation.RootMotion;
+        rootMotion.TranslationX = RootPosX;
+        rootMotion.TranslationY = RootPosY;
+        rootMotion.TranslationZ = RootPosZ;
+        rootMotion.RotationX = RootRotX;
+        rootMotion.RotationY = RootRotY;
+        rootMotion.RotationZ = RootRotZ;
+        _editor.CurrentAnim.WadAnimation.RootMotion = rootMotion;
+    }
+
+    // ---- Blend curve preset ----
+
+    partial void OnBlendPresetIndexChanged(int value)
+    {
+        if (_bezier is null || value < 0) return;
+        _bezier.Value.Set(value switch
+        {
+            0 => BezierCurve2.Linear,
+            1 => BezierCurve2.EaseIn,
+            2 => BezierCurve2.EaseOut,
+            _ => BezierCurve2.EaseInOut
+        });
+        _bezier.UpdateUI();
+    }
+
+    /// <summary>Called by the window when the blend-curve editor value changes (legacy resets the preset combo).</summary>
+    public void OnBlendCurveEdited()
+    {
+        _allowUpdate = false;
+        BlendPresetIndex = -1;
+        _allowUpdate = true;
+    }
+
+    // ---- Transport toggles ----
+
+    partial void OnChainPlaybackChanged(bool value) => _editor.Tool.Configuration.AnimationEditor_ChainPlayback = value;
+
+    [RelayCommand]
+    private void ToggleSound()
+    {
+        if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, Owner)) return;
+        _editor.Tool.Configuration.AnimationEditor_SoundPreview = !_editor.Tool.Configuration.AnimationEditor_SoundPreview;
+        SoundPreview = _editor.Tool.Configuration.AnimationEditor_SoundPreview;
+    }
+
+    [RelayCommand]
+    private void CycleSoundCondition()
+    {
+        if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, Owner)) return;
+        var t = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
+        bool isTEN = IsTombEngine;
+        _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = t switch
+        {
+            SoundPreviewType.Land => SoundPreviewType.LandWithMaterial,
+            SoundPreviewType.LandWithMaterial => SoundPreviewType.Water,
+            SoundPreviewType.Water => isTEN ? SoundPreviewType.Quicksand : SoundPreviewType.Land,
+            SoundPreviewType.Quicksand when isTEN => SoundPreviewType.Underwater,
+            _ => SoundPreviewType.Land
+        };
+        SoundConditionLabel = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType.ToString();
+    }
+
+    private static System.Windows.Forms.IWin32Window Owner => TombLib.WPF.WinFormsDialogHelper.GetOpenFormOwner();
 
     private void UpdateStatusLabel()
     {

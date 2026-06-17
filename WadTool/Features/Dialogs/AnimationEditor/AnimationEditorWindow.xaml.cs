@@ -36,6 +36,7 @@ public partial class AnimationEditorWindow : Window
 
         _timeline.ValueChanged += OnTimelineValueChanged;
         _timeline.SelectionChanged += OnTimelineSelectionChanged;
+        _bezier.ValueChanged += OnBezierValueChanged;
 
         stateIdBox.LostKeyboardFocus += (_, _) => _vm?.CommitStateId();
         stateIdBox.KeyDown += (_, e) => { if (e.Key == System.Windows.Input.Key.Enter) _vm?.CommitStateId(); };
@@ -55,12 +56,15 @@ public partial class AnimationEditorWindow : Window
 
     private void OnTimelineSelectionChanged(object? sender, EventArgs e) => _vm?.OnTimelineSelectionChanged();
 
+    private void OnBezierValueChanged(object? sender, EventArgs e) => _vm?.OnBlendCurveEdited();
+
     private void OnClosingHandler(object? sender, CancelEventArgs e) => _vm?.HandleClosing();
 
     private void OnClosed(object? sender, EventArgs e)
     {
         _timeline.ValueChanged -= OnTimelineValueChanged;
         _timeline.SelectionChanged -= OnTimelineSelectionChanged;
+        _bezier.ValueChanged -= OnBezierValueChanged;
         _vm?.Detach();
     }
 }

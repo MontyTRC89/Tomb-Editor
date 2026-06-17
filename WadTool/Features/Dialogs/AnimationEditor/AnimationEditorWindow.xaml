@@ -104,6 +104,29 @@
 						<Border Height="110" Margin="0,6,0,0" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
 							<wfi:WindowsFormsHost x:Name="bezierHost" />
 						</Border>
+						<ComboBox Margin="0,4,0,0" SelectedIndex="{Binding BlendPresetIndex, Mode=TwoWay}" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
+							<ComboBoxItem Content="Linear" />
+							<ComboBoxItem Content="Ease in" />
+							<ComboBoxItem Content="Ease out" />
+							<ComboBoxItem Content="Ease in-out" />
+						</ComboBox>
+					</StackPanel>
+				</GroupBox>
+
+				<GroupBox Header="Root motion" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
+					<StackPanel>
+						<TextBlock Style="{StaticResource Val}" Text="Translation" />
+						<controls:SpacedStack Margin="0,2,0,0" Orientation="Horizontal" Spacing="10">
+							<CheckBox Content="X" IsChecked="{Binding RootPosX, Mode=TwoWay}" />
+							<CheckBox Content="Y" IsChecked="{Binding RootPosY, Mode=TwoWay}" />
+							<CheckBox Content="Z" IsChecked="{Binding RootPosZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+						<TextBlock Margin="0,6,0,0" Style="{StaticResource Val}" Text="Rotation" />
+						<controls:SpacedStack Margin="0,2,0,0" Orientation="Horizontal" Spacing="10">
+							<CheckBox Content="X" IsChecked="{Binding RootRotX, Mode=TwoWay}" />
+							<CheckBox Content="Y" IsChecked="{Binding RootRotY, Mode=TwoWay}" />
+							<CheckBox Content="Z" IsChecked="{Binding RootRotZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
 					</StackPanel>
 				</GroupBox>
 
@@ -193,6 +216,10 @@
 					<Button Width="44" Command="{Binding PlayCommand}" Content="▶ / ⏹" />
 					<Button Width="34" Command="{Binding GotoNextCommand}" Content="▶" />
 					<Button Width="34" Command="{Binding GotoEndCommand}" Content="⏭" />
+					<Separator />
+					<ToggleButton Width="60" Content="Chain" IsChecked="{Binding ChainPlayback, Mode=TwoWay}" ToolTip="Chained playback" />
+					<ToggleButton Width="60" Content="Sound" IsChecked="{Binding SoundPreview, Mode=OneWay}" Command="{Binding ToggleSoundCommand}" ToolTip="Sound preview" />
+					<Button Width="90" Command="{Binding CycleSoundConditionCommand}" Content="{Binding SoundConditionLabel}" ToolTip="Sound preview condition" />
 				</controls:SpacedStack>
 				<TextBlock
 					Grid.Column="1"
