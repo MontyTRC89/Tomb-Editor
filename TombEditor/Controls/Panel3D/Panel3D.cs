@@ -232,6 +232,9 @@ namespace TombEditor.Controls.Panel3D
                 _rasterizerWireframe?.Dispose();
                 _objectHeightLineVertexBuffer?.Dispose();
                 _flybyPathVertexBuffer?.Dispose();
+                _flybyPyramidSolidVertexBuffer?.Dispose();
+                _flybyPyramidAccentVertexBuffer?.Dispose();
+                _flybyPyramidWireVertexBuffer?.Dispose();
                 _gizmo?.Dispose();
                 _sphere?.Dispose();
                 _cone?.Dispose();
