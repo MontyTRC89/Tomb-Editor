@@ -217,6 +217,18 @@
 						</controls:SpacedStack>
 					</StackPanel>
 				</GroupBox>
+
+				<GroupBox Header="View">
+					<StackPanel>
+						<CheckBox Content="Smooth animation" IsChecked="{Binding SmoothAnimation, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Scroll grid" IsChecked="{Binding ScrollGrid, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Restore grid height" IsChecked="{Binding RestoreGridHeight, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Draw gizmo" IsChecked="{Binding ShowGizmo, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Draw grid" IsChecked="{Binding ShowGrid, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Draw collision box" IsChecked="{Binding ShowCollisionBox, Mode=TwoWay}" />
+						<CheckBox Margin="0,3,0,0" Content="Draw skin" IsChecked="{Binding ShowSkin, Mode=TwoWay}" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}" />
+					</StackPanel>
+				</GroupBox>
 			</controls:SpacedStack>
 		</ScrollViewer>
 
@@ -251,6 +263,13 @@
 					<Button Width="80" Command="{Binding EditAnimCommandsCommand}" Content="Commands" ToolTip="Edit anim commands" />
 					<Button Width="90" Command="{Binding EditStateChangesCommand}" Content="State changes" ToolTip="Edit state changes" />
 					<Button Width="40" Command="{Binding FixAnimationCommand}" Content="Fix" ToolTip="Fix animation" />
+					<Separator />
+					<Button Width="56" Command="{Binding InterpolateCommand}" Content="Interp" ToolTip="Interpolate frames" />
+					<Button Width="56" Command="{Binding ReverseCommand}" Content="Reverse" ToolTip="Reverse frames" />
+					<Button Width="50" Command="{Binding MirrorCommand}" Content="Mirror" ToolTip="Mirror animation" />
+					<Separator />
+					<Button Width="56" Command="{Binding ImportAnimationCommand}" Content="Import" ToolTip="Import animation" />
+					<Button Width="56" Command="{Binding ExportAnimationCommand}" Content="Export" ToolTip="Export animation" />
 				</controls:SpacedStack>
 			</Border>
 
