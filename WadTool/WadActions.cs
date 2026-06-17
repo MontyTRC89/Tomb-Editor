@@ -23,6 +23,7 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
+using WadTool.Features.Dialogs.AnimEditor;
 using WadTool.Features.Dialogs.LuaProperties;
 using WadTool.Features.Dialogs.NewWad2;
 using WadTool.Features.Dialogs.SelectSlot;
@@ -972,13 +973,18 @@ namespace WadTool
             }
             else if (wadObject is WadMoveable)
             {
-                using (var form = new FormAnimationEditor(tool, deviceManager, wad, ((WadMoveable)wadObject).Id))
-                {
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                var animViewModel = new AnimationEditorWindowViewModel(tool, deviceManager, wad, ((WadMoveable)wadObject).Id);
+                var animDialog = new AnimationEditorWindow { DataContext = animViewModel };
 
-                    tool.WadChanged(tool.MainSelection.Value.WadArea);
-                }
+                if (owner != null)
+                    animDialog.SetOwner(owner);
+
+                animDialog.ShowDialog();
+
+                if (animViewModel.DialogResult != true)
+                    return;
+
+                tool.WadChanged(tool.MainSelection.Value.WadArea);
             }
             else if (wadObject is WadSpriteSequence)
             {
