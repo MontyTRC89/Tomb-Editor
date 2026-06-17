@@ -19,6 +19,7 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using WadTool.Controls;
+using WadTool.Features.Dialogs.MeshEditor;
 using WinForms = System.Windows.Forms;
 
 namespace WadTool.Features.Dialogs.SkeletonEditor;
@@ -500,11 +501,14 @@ public partial class SkeletonEditorWindowViewModel : ObservableObject, IModalDia
         if (SelectedBone is null)
             return;
 
-        using var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowEditingTools = false };
-        if (form.ShowDialog() == WinForms.DialogResult.Cancel || form.SelectedMesh is null)
+        var meshViewModel = new MeshEditorWindowViewModel(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowEditingTools = false };
+        var meshDialog = new MeshEditorWindow { DataContext = meshViewModel };
+        meshDialog.SetOwner(Owner);
+        meshDialog.ShowDialog();
+        if (meshViewModel.DialogResult != true || meshViewModel.SelectedMesh is null)
             return;
 
-        InsertNewBone(form.SelectedMesh.Clone(), SelectedBone);
+        InsertNewBone(meshViewModel.SelectedMesh.Clone(), SelectedBone);
     }
 
     [RelayCommand]
@@ -526,11 +530,14 @@ public partial class SkeletonEditorWindowViewModel : ObservableObject, IModalDia
         if (SelectedBone is null)
             return;
 
-        using var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowEditingTools = false };
-        if (form.ShowDialog() == WinForms.DialogResult.Cancel || form.SelectedMesh is null)
+        var meshViewModel = new MeshEditorWindowViewModel(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowEditingTools = false };
+        var meshDialog = new MeshEditorWindow { DataContext = meshViewModel };
+        meshDialog.SetOwner(Owner);
+        meshDialog.ShowDialog();
+        if (meshViewModel.DialogResult != true || meshViewModel.SelectedMesh is null)
             return;
 
-        ReplaceExistingBone(form.SelectedMesh.Clone(), SelectedBone);
+        ReplaceExistingBone(meshViewModel.SelectedMesh.Clone(), SelectedBone);
     }
 
     [RelayCommand]
@@ -540,11 +547,14 @@ public partial class SkeletonEditorWindowViewModel : ObservableObject, IModalDia
             return;
 
         var theNode = SelectedBone;
-        using var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.Mesh.Clone());
-        if (form.ShowDialog() == WinForms.DialogResult.Cancel)
+        var meshViewModel = new MeshEditorWindowViewModel(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.Mesh.Clone());
+        var meshDialog = new MeshEditorWindow { DataContext = meshViewModel };
+        meshDialog.SetOwner(Owner);
+        meshDialog.ShowDialog();
+        if (meshViewModel.DialogResult != true || meshViewModel.SelectedMesh is null)
             return;
 
-        ReplaceExistingBone(form.SelectedMesh.Clone(), theNode);
+        ReplaceExistingBone(meshViewModel.SelectedMesh.Clone(), theNode);
     }
 
     [RelayCommand]

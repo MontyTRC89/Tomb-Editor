@@ -16,6 +16,7 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using WadTool.Controls;
+using WadTool.Features.Dialogs.MeshEditor;
 using WinForms = System.Windows.Forms;
 
 namespace WadTool.Features.Dialogs.StaticEditor;
@@ -556,11 +557,14 @@ public partial class StaticEditorWindowViewModel : ObservableObject, IModalDialo
         if (_panel?.Static?.Mesh is null)
             return;
 
-        using var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone());
-        if (form.ShowDialog() == WinForms.DialogResult.Cancel)
+        var meshViewModel = new MeshEditorWindowViewModel(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone());
+        var meshDialog = new MeshEditorWindow { DataContext = meshViewModel };
+        meshDialog.SetOwner(Owner);
+        meshDialog.ShowDialog();
+        if (meshViewModel.DialogResult != true || meshViewModel.SelectedMesh is null)
             return;
 
-        _static.Mesh = form.SelectedMesh.Clone();
+        _static.Mesh = meshViewModel.SelectedMesh.Clone();
         _panel.UpdateMesh();
         _panel.Invalidate();
         UpdateLightUI();

@@ -557,8 +557,10 @@ namespace WadTool
             if (_tool.DestinationWad == null)
                 return;
 
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, (_tool.MainSelection?.Id ?? null), _tool.DestinationWad) { ShowEditingTools = true })
-                form.ShowDialog(this.GetWin32Window());
+            var meshViewModel = new Features.Dialogs.MeshEditor.MeshEditorWindowViewModel(
+                _tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, focusObjectId: _tool.MainSelection?.Id);
+            var meshDialog = new Features.Dialogs.MeshEditor.MeshEditorWindow { DataContext = meshViewModel, Owner = this };
+            meshDialog.ShowDialog();
         }
 
         private void ItemPropertiesMenu_Click(object sender, RoutedEventArgs e)
@@ -615,8 +617,10 @@ namespace WadTool
 
         private void DebugMeshEditorMenu_Click(object sender, RoutedEventArgs e)
         {
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
-                form.ShowDialog(this.GetWin32Window());
+            var meshViewModel = new Features.Dialogs.MeshEditor.MeshEditorWindowViewModel(
+                _tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad);
+            var meshDialog = new Features.Dialogs.MeshEditor.MeshEditorWindow { DataContext = meshViewModel, Owner = this };
+            meshDialog.ShowDialog();
         }
 
         private void EditItemButton_Click(object sender, RoutedEventArgs e)
