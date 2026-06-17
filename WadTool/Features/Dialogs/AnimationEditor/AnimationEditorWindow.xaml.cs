@@ -35,6 +35,10 @@ public partial class AnimationEditorWindow : Window
         bezierHost.Child = _bezier;
 
         _timeline.ValueChanged += OnTimelineValueChanged;
+        _timeline.SelectionChanged += OnTimelineSelectionChanged;
+
+        stateIdBox.LostKeyboardFocus += (_, _) => _vm?.CommitStateId();
+        stateIdBox.KeyDown += (_, e) => { if (e.Key == System.Windows.Input.Key.Enter) _vm?.CommitStateId(); };
 
         DataContextChanged += OnDataContextChanged;
         Closing += OnClosingHandler;
@@ -49,11 +53,14 @@ public partial class AnimationEditorWindow : Window
 
     private void OnTimelineValueChanged(object? sender, EventArgs e) => _vm?.OnTimelineValueChanged();
 
+    private void OnTimelineSelectionChanged(object? sender, EventArgs e) => _vm?.OnTimelineSelectionChanged();
+
     private void OnClosingHandler(object? sender, CancelEventArgs e) => _vm?.HandleClosing();
 
     private void OnClosed(object? sender, EventArgs e)
     {
         _timeline.ValueChanged -= OnTimelineValueChanged;
+        _timeline.SelectionChanged -= OnTimelineSelectionChanged;
         _vm?.Detach();
     }
 }

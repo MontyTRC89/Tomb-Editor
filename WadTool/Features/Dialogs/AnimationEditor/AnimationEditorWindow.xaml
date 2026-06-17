@@ -28,6 +28,24 @@
 		<Style x:Key="Val" TargetType="TextBlock">
 			<Setter Property="Foreground" Value="{DynamicResource Brush_Text}" />
 		</Style>
+		<BooleanToVisibilityConverter x:Key="BoolToVis" />
+		<Style x:Key="FieldLbl" TargetType="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="Width" Value="64" />
+			<Setter Property="Foreground" Value="{DynamicResource Brush_Text_Low}" />
+		</Style>
+		<Style x:Key="Nud" TargetType="controls:NumericUpDown">
+			<Setter Property="Width" Value="120" />
+			<Setter Property="DecimalPlaces" Value="0" />
+			<Setter Property="Minimum" Value="-1000000" />
+			<Setter Property="Maximum" Value="1000000" />
+		</Style>
+		<Style x:Key="Axis" TargetType="controls:NumericUpDown">
+			<Setter Property="Width" Value="64" />
+			<Setter Property="DecimalPlaces" Value="2" />
+			<Setter Property="Minimum" Value="-1000000" />
+			<Setter Property="Maximum" Value="1000000" />
+		</Style>
 	</Window.Resources>
 
 	<DockPanel Margin="{x:Static darkUI:Defaults.MediumThickness}" LastChildFill="True">
@@ -59,36 +77,103 @@
 				SelectedItem="{Binding SelectedAnim, Mode=TwoWay}" />
 		</GroupBox>
 
-		<!--  Right: properties + blend curve  -->
-		<GroupBox
-			Width="220"
+		<!--  Right: properties + transform + bounding box + bones  -->
+		<ScrollViewer
+			Width="300"
 			DockPanel.Dock="Right"
-			Header="Animation">
-			<GroupBox.Margin>
+			HorizontalScrollBarVisibility="Disabled"
+			VerticalScrollBarVisibility="Auto">
+			<ScrollViewer.Margin>
 				<Thickness Left="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
-			</GroupBox.Margin>
-			<StackPanel>
-				<TextBlock Style="{StaticResource Lbl}" Text="Name" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding AnimName}" />
-				<TextBlock Style="{StaticResource Lbl}" Text="Frame rate" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding FrameRate}" />
-				<TextBlock Style="{StaticResource Lbl}" Text="End frame" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding EndFrame}" />
-				<TextBlock Style="{StaticResource Lbl}" Text="Next animation" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding NextAnim}" />
-				<TextBlock Style="{StaticResource Lbl}" Text="Next frame" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding NextFrame}" />
-				<TextBlock Style="{StaticResource Lbl}" Text="State ID" />
-				<TextBlock Style="{StaticResource Val}" Text="{Binding StateId}" />
-				<Border
-					Height="120"
-					Margin="0,8,0,0"
-					BorderBrush="{DynamicResource Brush_Border}"
-					BorderThickness="1">
-					<wfi:WindowsFormsHost x:Name="bezierHost" />
-				</Border>
-			</StackPanel>
-		</GroupBox>
+			</ScrollViewer.Margin>
+			<controls:SpacedStack Orientation="Vertical" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+
+				<GroupBox Header="Animation">
+					<StackPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Name" /><TextBox Text="{Binding AnimName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="State ID" /><TextBox x:Name="stateIdBox" Text="{Binding StateIdText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Frame rate" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="1" Maximum="255" Value="{Binding FrameRate, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="End frame" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="0" Value="{Binding EndFrame, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Next anim" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="0" Value="{Binding NextAnimation, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Next frame" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="0" Value="{Binding NextFrame, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="V vel start" /><controls:NumericUpDown Style="{StaticResource Nud}" DecimalPlaces="2" Value="{Binding StartVertVel, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="V vel end" /><controls:NumericUpDown Style="{StaticResource Nud}" DecimalPlaces="2" Value="{Binding EndVertVel, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="H vel start" /><controls:NumericUpDown Style="{StaticResource Nud}" DecimalPlaces="2" Value="{Binding StartHorVel, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="H vel end" /><controls:NumericUpDown Style="{StaticResource Nud}" DecimalPlaces="2" Value="{Binding EndHorVel, Mode=TwoWay}" /></DockPanel>
+						<DockPanel Margin="0,2" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Blend frames" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="0" Value="{Binding BlendFrameCount, Mode=TwoWay}" /></DockPanel>
+						<Border Height="110" Margin="0,6,0,0" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
+							<wfi:WindowsFormsHost x:Name="bezierHost" />
+						</Border>
+					</StackPanel>
+				</GroupBox>
+
+				<GroupBox Header="{Binding TransformHeader}">
+					<StackPanel>
+						<ComboBox SelectedIndex="{Binding TransformModeIndex, Mode=TwoWay}">
+							<ComboBoxItem Content="Simple" />
+							<ComboBoxItem Content="Smooth" />
+							<ComboBoxItem Content="Smooth reverse" />
+							<ComboBoxItem Content="Linear" />
+							<ComboBoxItem Content="Linear reverse" />
+							<ComboBoxItem Content="Symmetric" />
+							<ComboBoxItem Content="Symmetric linear" />
+						</ComboBox>
+						<controls:SpacedStack Margin="0,6,0,0" Orientation="Horizontal" Spacing="4">
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource Val}" Text="Rot" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding RotationX, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding RotationY, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding RotationZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Margin="0,4,0,0" Orientation="Horizontal" Spacing="4">
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource Val}" Text="Pos" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding TranslationX, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding TranslationY, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" Value="{Binding TranslationZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+					</StackPanel>
+				</GroupBox>
+
+				<GroupBox Header="Bounding box (keyframe)">
+					<StackPanel>
+						<controls:SpacedStack Orientation="Horizontal" Spacing="4">
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource Val}" Text="Min" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMinX, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMinY, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMinZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+						<controls:SpacedStack Margin="0,4,0,0" Orientation="Horizontal" Spacing="4">
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource Val}" Text="Max" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMaxX, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMaxY, Mode=TwoWay}" />
+							<controls:NumericUpDown Style="{StaticResource Axis}" DecimalPlaces="0" Value="{Binding BBoxMaxZ, Mode=TwoWay}" />
+						</controls:SpacedStack>
+					</StackPanel>
+				</GroupBox>
+
+				<GroupBox Header="Bones">
+					<DataGrid
+						Height="160"
+						AutoGenerateColumns="False"
+						CanUserAddRows="False"
+						CanUserReorderColumns="False"
+						HeadersVisibility="Column"
+						ItemsSource="{Binding Bones}"
+						SelectedItem="{Binding SelectedBoneItem, Mode=TwoWay}"
+						SelectionMode="Single">
+						<DataGrid.Columns>
+							<DataGridTemplateColumn Width="30">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate>
+										<CheckBox HorizontalAlignment="Center" IsChecked="{Binding Checked, UpdateSourceTrigger=PropertyChanged}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+							<DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Bone" IsReadOnly="True" />
+						</DataGrid.Columns>
+					</DataGrid>
+				</GroupBox>
+			</controls:SpacedStack>
+		</ScrollViewer>
 
 		<!--  Center: 3D view + timeline + transport  -->
 		<DockPanel LastChildFill="True">

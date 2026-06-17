@@ -25,6 +25,15 @@ public sealed partial class AnimListItem : ObservableObject
     public AnimListItem(AnimationNode node, string label) { Node = node; _label = label; }
 }
 
+/// <summary>One entry of the bounding-mesh / bone list (legacy <c>dgvBoundingMeshList</c>).</summary>
+public sealed partial class MeshBoneItem : ObservableObject
+{
+    [ObservableProperty] private bool _checked = true;
+    public int Index { get; }
+    public string Name { get; }
+    public MeshBoneItem(int index, string name) { Index = index; Name = name; }
+}
+
 /// <summary>
 /// WPF counterpart of the legacy <c>FormAnimationEditor</c> — built incrementally. The 3D view
 /// (<see cref="PanelRenderingAnimationEditor"/>), the <see cref="AnimationTrackBar"/> timeline and the
@@ -51,17 +60,32 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     [ObservableProperty] private string _title;
     [ObservableProperty] private string _statusText = string.Empty;
     [ObservableProperty] private bool _isPlaying;
+    [ObservableProperty] private bool _isTombEngine;
     [ObservableProperty] private AnimListItem? _selectedAnim;
 
-    // Read-only animation properties (slice 1).
+    // Editable animation properties (slice 2).
     [ObservableProperty] private string _animName = string.Empty;
-    [ObservableProperty] private string _frameRate = string.Empty;
-    [ObservableProperty] private string _endFrame = string.Empty;
-    [ObservableProperty] private string _nextAnim = string.Empty;
-    [ObservableProperty] private string _nextFrame = string.Empty;
-    [ObservableProperty] private string _stateId = string.Empty;
+    [ObservableProperty] private double _frameRate;
+    [ObservableProperty] private double _endFrame;
+    [ObservableProperty] private double _nextAnimation;
+    [ObservableProperty] private double _nextFrame;
+    [ObservableProperty] private double _startVertVel;
+    [ObservableProperty] private double _endVertVel;
+    [ObservableProperty] private double _startHorVel;
+    [ObservableProperty] private double _endHorVel;
+    [ObservableProperty] private double _blendFrameCount;
+    [ObservableProperty] private string _stateIdText = string.Empty;
+
+    // Per-bone transform + bounding box (slice 2).
+    [ObservableProperty] private string _transformHeader = "Transform";
+    [ObservableProperty] private int _transformModeIndex;
+    [ObservableProperty] private double _rotationX, _rotationY, _rotationZ;
+    [ObservableProperty] private double _translationX, _translationY, _translationZ;
+    [ObservableProperty] private double _bBoxMinX, _bBoxMinY, _bBoxMinZ, _bBoxMaxX, _bBoxMaxY, _bBoxMaxZ;
+    [ObservableProperty] private MeshBoneItem? _selectedBoneItem;
 
     public ObservableCollection<AnimListItem> Animations { get; } = new();
+    public ObservableCollection<MeshBoneItem> Bones { get; } = new();
 
     public AnimationEditorWindowViewModel(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMoveableId id)
     {
@@ -90,6 +114,12 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
 
         _editor.Tool.EditorEventRaised += OnEditorEventRaised;
 
+        IsTombEngine = _editor.Wad.GameVersion == TRVersion.Game.TombEngine;
+
+        Bones.Clear();
+        for (int i = 0; i < panel.Model.Bones.Count; i++)
+            Bones.Add(new MeshBoneItem(i, panel.Model.Bones[i].Name));
+
         RebuildAnimationsList();
         if (Animations.Count > 0)
             SelectedAnim = Animations[0];
@@ -103,10 +133,33 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
 
     private void OnEditorEventRaised(IEditorEvent obj)
     {
+        if (obj is WadToolClass.AnimationEditorMeshSelectedEvent ||
+            obj is WadToolClass.AnimationEditorGizmoPickedEvent ||
+            obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
+            obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+        {
+            _editor.MadeChanges = false;
+            UpdateTransformUI();
+        }
+
         if (obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
             obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent ||
             obj is WadToolClass.AnimationEditorAnimcommandChangedEvent)
             _timeline?.Invalidate();
+
+        if (obj is WadToolClass.AnimationEditorMeshSelectedEvent meshSelected && _panel is not null)
+        {
+            // Sync the bone list selection to the 3D-picked mesh.
+            int index = meshSelected.Mesh is null ? -1 : meshSelected.Model.Meshes.IndexOf(meshSelected.Mesh);
+            var item = Bones.FirstOrDefault(b => b.Index == index);
+            if (item is not null && !ReferenceEquals(item, SelectedBoneItem))
+            {
+                bool prev = _allowUpdate;
+                _allowUpdate = false; // avoid re-driving panel selection
+                SelectedBoneItem = item;
+                _allowUpdate = prev;
+            }
+        }
 
         if (obj is WadToolClass.MessageEvent message)
             PopUpInfo.Show(new PopUpInfo(), null, _panel, message.Message, message.Type);
@@ -131,15 +184,21 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
 
         _editor.CurrentAnim = node;
 
+        _editor.MadeChanges = false;
         _allowUpdate = false;
         if (node != null)
         {
             AnimName = node.WadAnimation.Name;
-            FrameRate = node.WadAnimation.FrameRate.ToString();
-            EndFrame = node.WadAnimation.EndFrame.ToString();
-            NextAnim = node.WadAnimation.NextAnimation.ToString();
-            NextFrame = node.WadAnimation.NextFrame.ToString();
-            StateId = node.WadAnimation.StateId.ToString();
+            FrameRate = node.WadAnimation.FrameRate;
+            EndFrame = node.WadAnimation.EndFrame;
+            NextAnimation = node.WadAnimation.NextAnimation;
+            NextFrame = node.WadAnimation.NextFrame;
+            StartVertVel = node.WadAnimation.StartVelocity;
+            EndVertVel = node.WadAnimation.EndVelocity;
+            StartHorVel = node.WadAnimation.StartLateralVelocity;
+            EndHorVel = node.WadAnimation.EndLateralVelocity;
+            BlendFrameCount = node.WadAnimation.BlendFrameCount;
+            StateIdText = node.WadAnimation.StateId.ToString();
             if (_bezier is not null) _bezier.Value = node.WadAnimation.BlendCurve;
         }
 
@@ -182,7 +241,237 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
         _editor.CurrentFrameIndex = frameIndex;
         _panel.Model.BuildAnimationPose(_editor.CurrentAnim.DirectXAnimation.KeyFrames[frameIndex]);
         _panel.Invalidate();
+        UpdateTransformUI();
         UpdateStatusLabel();
+    }
+
+    /// <summary>Reads the current keyframe's per-bone rotation/translation + bounding box into the UI (legacy UpdateTransformUI).</summary>
+    private void UpdateTransformUI()
+    {
+        if (_panel is null || _editor.CurrentKeyFrame == null)
+            return;
+
+        _allowUpdate = false;
+        int meshIndex = _panel.SelectedMesh == null ? 0 : _panel.Model.Meshes.IndexOf(_panel.SelectedMesh);
+
+        RotationX = TombLib.MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].X);
+        RotationY = TombLib.MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Y);
+        RotationZ = TombLib.MathC.RadToDeg(_editor.CurrentKeyFrame.Rotations[meshIndex].Z);
+        TranslationX = _editor.CurrentKeyFrame.Translations[0].X;
+        TranslationY = _editor.CurrentKeyFrame.Translations[0].Y;
+        TranslationZ = _editor.CurrentKeyFrame.Translations[0].Z;
+        if (TransformModeIndex < 0) TransformModeIndex = 0;
+
+        BBoxMinX = _editor.CurrentKeyFrame.BoundingBox.Minimum.X;
+        BBoxMinY = _editor.CurrentKeyFrame.BoundingBox.Minimum.Y;
+        BBoxMinZ = _editor.CurrentKeyFrame.BoundingBox.Minimum.Z;
+        BBoxMaxX = _editor.CurrentKeyFrame.BoundingBox.Maximum.X;
+        BBoxMaxY = _editor.CurrentKeyFrame.BoundingBox.Maximum.Y;
+        BBoxMaxZ = _editor.CurrentKeyFrame.BoundingBox.Maximum.Z;
+
+        var boneName = _panel.Model.Bones[meshIndex].Name;
+        if (string.IsNullOrEmpty(boneName)) boneName = "Bone " + meshIndex;
+        TransformHeader = "Transform (" + boneName + ")";
+        _allowUpdate = true;
+    }
+
+    /// <summary>Called by the window when the timeline selection changes (drives bounding-box range edits).</summary>
+    public void OnTimelineSelectionChanged()
+    {
+        if (_timeline is null) return;
+        _editor.Selection = _timeline.SelectionIsEmpty ? new TombLib.VectorInt2(-1, -1) : _timeline.Selection;
+        UpdateStatusLabel();
+    }
+
+    private bool ValidAnim() => _allowUpdate && _editor.ValidAnimationAndFrames;
+
+    private void PushUndoOnce()
+    {
+        if (!_editor.MadeChanges)
+        {
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
+            _editor.MadeChanges = true;
+        }
+    }
+
+    private void AfterParameterChange()
+    {
+        _timeline?.Invalidate();
+        _panel?.Invalidate();
+    }
+
+    // ---- Editable animation properties ----
+
+    partial void OnAnimNameChanged(string value)
+    {
+        if (!_allowUpdate || _editor.CurrentAnim == null) return;
+        var newName = value.Trim();
+        if (string.IsNullOrEmpty(newName) || newName == _editor.CurrentAnim.WadAnimation.Name) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.Name = newName;
+        if (SelectedAnim is not null) SelectedAnim.Label = "(" + _editor.CurrentAnim.Index + ") " + newName;
+    }
+
+    partial void OnFrameRateChanged(double value)
+    {
+        if (!ValidAnim() || (byte)value == _editor.CurrentAnim.WadAnimation.FrameRate) return;
+        PushUndoOnce();
+        byte rate = (byte)TombLib.MathC.Clamp((float)value, 1, 255);
+        _allowUpdate = false;
+        EndFrame = Math.Round(_editor.CurrentAnim.WadAnimation.EndFrame / (_editor.CurrentAnim.WadAnimation.FrameRate / (float)rate));
+        _allowUpdate = true;
+        _editor.CurrentAnim.WadAnimation.FrameRate = rate;
+        _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)EndFrame;
+        AfterParameterChange();
+    }
+
+    partial void OnEndFrameChanged(double value)
+    {
+        if (!ValidAnim() || (ushort)value == _editor.CurrentAnim.WadAnimation.EndFrame) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)value;
+        AfterParameterChange();
+    }
+
+    partial void OnNextAnimationChanged(double value)
+    {
+        if (!ValidAnim() || (ushort)value == _editor.CurrentAnim.WadAnimation.NextAnimation) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.NextAnimation = (ushort)value;
+        AfterParameterChange();
+    }
+
+    partial void OnNextFrameChanged(double value)
+    {
+        if (!ValidAnim() || (ushort)value == _editor.CurrentAnim.WadAnimation.NextFrame) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.NextFrame = (ushort)value;
+        AfterParameterChange();
+    }
+
+    partial void OnStartVertVelChanged(double value) => SetVelocity(v => _editor.CurrentAnim.WadAnimation.StartVelocity = v, _editor.CurrentAnim?.WadAnimation.StartVelocity, value);
+    partial void OnEndVertVelChanged(double value) => SetVelocity(v => _editor.CurrentAnim.WadAnimation.EndVelocity = v, _editor.CurrentAnim?.WadAnimation.EndVelocity, value);
+    partial void OnStartHorVelChanged(double value) => SetVelocity(v => _editor.CurrentAnim.WadAnimation.StartLateralVelocity = v, _editor.CurrentAnim?.WadAnimation.StartLateralVelocity, value);
+    partial void OnEndHorVelChanged(double value) => SetVelocity(v => _editor.CurrentAnim.WadAnimation.EndLateralVelocity = v, _editor.CurrentAnim?.WadAnimation.EndLateralVelocity, value);
+
+    private void SetVelocity(Action<float> setter, float? current, double value)
+    {
+        if (!ValidAnim() || current is null || Math.Abs(current.Value - (float)value) < 1e-6f) return;
+        PushUndoOnce();
+        setter((float)value);
+        AfterParameterChange();
+    }
+
+    partial void OnBlendFrameCountChanged(double value)
+    {
+        if (!ValidAnim() || (ushort)value == _editor.CurrentAnim.WadAnimation.BlendFrameCount) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.BlendFrameCount = (ushort)value;
+        AfterParameterChange();
+    }
+
+    /// <summary>Commits the state-id text box (legacy UpdateStateChange). Called by the window on commit.</summary>
+    public void CommitStateId()
+    {
+        if (!_allowUpdate || _editor.CurrentAnim == null) return;
+
+        ushort oldValue = _editor.CurrentAnim.WadAnimation.StateId;
+        if (!ushort.TryParse(StateIdText.Trim(), out ushort newValue))
+        {
+            string searchString = StateIdText.Trim();
+            int possibleID = -1;
+            for (int i = 0; i < 2; i++)
+            {
+                possibleID = TrCatalog.TryToGetStateID(_editor.Wad.GameVersion, _editor.Moveable.Id.TypeId, searchString);
+                if (possibleID >= 0) break;
+                searchString = searchString.Replace(' ', '_');
+            }
+            if (possibleID < 0)
+                return;
+            newValue = (ushort)possibleID;
+        }
+
+        var possibleName = TrCatalog.GetStateName(_editor.Wad.GameVersion, _editor.Moveable.Id.TypeId, newValue);
+        _allowUpdate = false;
+        StateIdText = possibleName.Contains("Unknown") ? newValue.ToString() : possibleName;
+        _allowUpdate = true;
+
+        if (oldValue == newValue) return;
+        PushUndoOnce();
+        _editor.CurrentAnim.WadAnimation.StateId = newValue;
+    }
+
+    // ---- Bounding box ----
+
+    partial void OnBBoxMinXChanged(double value) => SetBoundingBox();
+    partial void OnBBoxMinYChanged(double value) => SetBoundingBox();
+    partial void OnBBoxMinZChanged(double value) => SetBoundingBox();
+    partial void OnBBoxMaxXChanged(double value) => SetBoundingBox();
+    partial void OnBBoxMaxYChanged(double value) => SetBoundingBox();
+    partial void OnBBoxMaxZChanged(double value) => SetBoundingBox();
+
+    private void SetBoundingBox()
+    {
+        if (_timeline is null || !ValidAnim()) return;
+        var bb = _editor.CurrentAnim.DirectXAnimation.KeyFrames[_timeline.Value].BoundingBox;
+        var newMin = new System.Numerics.Vector3((float)BBoxMinX, (float)BBoxMinY, (float)BBoxMinZ);
+        var newMax = new System.Numerics.Vector3((float)BBoxMaxX, (float)BBoxMaxY, (float)BBoxMaxZ);
+        if (newMin == bb.Minimum && newMax == bb.Maximum) return;
+
+        PushUndoOnce();
+        var deltaMin = newMin - bb.Minimum;
+        var deltaMax = newMax - bb.Maximum;
+
+        int start = _timeline.Value, end = _timeline.Value;
+        if (!_editor.SelectionIsEmpty) { start = _editor.Selection.X; end = _editor.Selection.Y; }
+
+        for (int i = start; i <= end; i++)
+        {
+            var bb2 = _editor.CurrentAnim.DirectXAnimation.KeyFrames[i].BoundingBox;
+            bb2.Minimum += deltaMin;
+            bb2.Maximum += deltaMax;
+            _editor.CurrentAnim.DirectXAnimation.KeyFrames[i].BoundingBox = bb2;
+        }
+        AfterParameterChange();
+    }
+
+    // ---- Per-bone transform ----
+
+    partial void OnTransformModeIndexChanged(int value)
+    {
+        _editor.TransformMode = (AnimTransformMode)value;
+        if (_allowUpdate && _editor.MadeChanges) UpdateTransform();
+    }
+
+    partial void OnRotationXChanged(double value) => UpdateTransform();
+    partial void OnRotationYChanged(double value) => UpdateTransform();
+    partial void OnRotationZChanged(double value) => UpdateTransform();
+    partial void OnTranslationXChanged(double value) => UpdateTransform();
+    partial void OnTranslationYChanged(double value) => UpdateTransform();
+    partial void OnTranslationZChanged(double value) => UpdateTransform();
+
+    private void UpdateTransform()
+    {
+        if (_panel is null || !_allowUpdate || _editor.CurrentKeyFrame == null)
+            return;
+
+        PushUndoOnce();
+        int meshIndex = _panel.SelectedMesh == null ? 0 : _panel.Model.Meshes.IndexOf(_panel.SelectedMesh);
+        _editor.UpdateTransform(meshIndex,
+            new System.Numerics.Vector3(TombLib.MathC.DegToRad((float)RotationX), TombLib.MathC.DegToRad((float)RotationY), TombLib.MathC.DegToRad((float)RotationZ)),
+            new System.Numerics.Vector3((float)TranslationX, (float)TranslationY, (float)TranslationZ));
+        _panel.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
+        _panel.Invalidate();
+    }
+
+    // ---- Bone / mesh selection ----
+
+    partial void OnSelectedBoneItemChanged(MeshBoneItem? value)
+    {
+        if (!_allowUpdate || _panel is null || value is null) return;
+        _panel.SelectedMesh = value.Index < 0 ? null : _panel.Model.Meshes[value.Index];
+        UpdateTransformUI();
+        _panel.Invalidate();
     }
 
     private void UpdateStatusLabel()
