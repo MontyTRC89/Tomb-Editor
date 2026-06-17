@@ -44,6 +44,11 @@ public partial class LevelCompilerClassicTR
     {
         foreach (var (teRoom, trRoom) in _tempRooms)
         {
+            if (GetRoomPropertyEntry(teRoom, trRoom) is TRXRoomPropertyEntry roomEntry)
+            {
+                yield return roomEntry;
+            }
+
             for (ushort x = 1; x < teRoom.NumXSectors - 1; x++)
             {
                 for (ushort z = 1; z < teRoom.NumZSectors - 1; z++)
@@ -67,6 +72,32 @@ public partial class LevelCompilerClassicTR
                 }
             }
         }
+    }
+
+    private TRXRoomPropertyEntry GetRoomPropertyEntry(Room teRoom, tr_room trRoom)
+    {
+        if (teRoom.Properties.Reverberation == 0
+            && !teRoom.Properties.FlagCold && !teRoom.Properties.FlagDamage)
+        {
+            return null;
+        }
+
+        var flags = trRoom.Flags;
+        if (teRoom.Properties.FlagDamage)
+        {
+            flags |= 0x02;
+        }
+        if (teRoom.Properties.FlagCold)
+        {
+            flags |= 0x04;
+        }
+
+        return new()
+        {
+            RoomIndex = (short)_roomRemapping[teRoom],
+            Flags = flags,
+            ReverbInfo = teRoom.Properties.Reverberation,
+        };
     }
 
     private TrxSectorOverwrite GetSectorOverwrite(Room teRoom, tr_room trRoom, ushort x, ushort z)
