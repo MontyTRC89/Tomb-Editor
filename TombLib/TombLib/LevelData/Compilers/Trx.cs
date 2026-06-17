@@ -61,6 +61,10 @@ public partial class LevelCompilerClassicTR
                     {
                         yield return climbEdit;
                     }
+                    if (GetMineCartEntry(teRoom, x, z) is TrxSectorEdit mineCartEdit)
+                    {
+                        yield return mineCartEdit;
+                    }
                     if (GetTriangulation(teRoom, x, z) is TrxSectorEdit triangulationEdit)
                     {
                         yield return triangulationEdit;
@@ -146,6 +150,33 @@ public partial class LevelCompilerClassicTR
             X = x,
             Z = z,
             Flags = teSector.Flags,
+        };
+    }
+
+    private TrxMineCartEntry GetMineCartEntry(Room teRoom, ushort x, ushort z)
+    {
+        var teSector = teRoom.Sectors[x, z];
+        var left = (teSector.Flags & SectorFlags.TriggerTriggerer) != 0;
+        var right = (teSector.Flags & SectorFlags.Beetle) != 0;
+
+        var type = (left, right) switch
+        {
+            (true, true) => TrxMineCartType.Stop,
+            (true, false) => TrxMineCartType.Left,
+            (false, true) => TrxMineCartType.Right,
+            _ => TrxMineCartType.None,
+        };
+        if (type == TrxMineCartType.None)
+        {
+            return null;
+        }
+
+        return new()
+        {
+            RoomIndex = (short)_roomRemapping[teRoom],
+            X = x,
+            Z = z,
+            Type = type,
         };
     }
 
