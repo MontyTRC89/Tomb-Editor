@@ -78,8 +78,12 @@ LevelFuncs.Engine.Node.SetCreatureTarget = function(moveable, target, retaliate)
     movAI:SetTarget(targetMov)
 
     if retaliate and targetMov:GetStatus() == 1 then
-        local targetMovAI = Objects.Creature(targetMov)
-        targetMovAI:SetTarget(mov)
+        local success, targetMovAI = pcall(Objects.Creature, targetMov)
+        if success then
+            targetMovAI:SetTarget(mov)
+        else
+            TEN.Util.PrintLog("moveable [ " .. target .. " ] is not a creature. Retaliation skipped.",TEN.Util.LogLevel.ERROR)
+        end
     end
 end
 
