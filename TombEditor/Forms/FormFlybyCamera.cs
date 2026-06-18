@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using TombEditor.Controls.FlybyTimeline;
 using TombEditor.Controls.FlybyTimeline.Sequence;
 using TombLib;
 using TombLib.LevelData;

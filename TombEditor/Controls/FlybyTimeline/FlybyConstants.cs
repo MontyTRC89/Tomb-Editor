@@ -78,29 +78,6 @@ public static class FlybyConstants
     /// </summary>
     public static readonly float MaxPreviewFieldOfViewRadians = MathC.DegToRad(MaxFlybyFieldOfViewDegrees);
 
-    /// <summary>
-    /// Clamps a flyby camera field-of-view value expressed in degrees to the valid persisted range.
-    /// </summary>
-    public static float ClampFlybyFieldOfViewDegrees(float fovDegrees)
-    {
-        if (!float.IsFinite(fovDegrees))
-            return DefaultPreviewFieldOfViewDegrees;
-
-        return Math.Clamp(fovDegrees, 0.0f, MaxFlybyFieldOfViewDegrees);
-    }
-
-    /// <summary>
-    /// Clamps a preview field-of-view value expressed in radians to the valid projection range.
-    /// Invalid or too-small values fall back to the default preview field of view.
-    /// </summary>
-    public static float ClampPreviewFieldOfViewRadians(float fovRadians)
-    {
-        if (!float.IsFinite(fovRadians) || fovRadians < PreviewMinFieldOfViewRadians)
-            return MathC.DegToRad(DefaultPreviewFieldOfViewDegrees);
-
-        return Math.Min(fovRadians, MaxPreviewFieldOfViewRadians);
-    }
-
     // Timeline constants.
 
     public const float TimelineZoomOutScale = 1.05f;
