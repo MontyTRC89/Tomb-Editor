@@ -744,6 +744,11 @@ namespace WadTool
 
             const int texturePageSize = 2048;
 
+            // Gather the meshes from every selected object and consolidate them in a single pass,
+            // so all of them share one set of texture pages and a texture used by more than one
+            // object (e.g. across Lara's many meshes) is packed only once instead of being
+            // duplicated per object.
+            var meshes = new List<WadMesh>();
             int counter = 0;
 
             foreach (var o in objects)
@@ -754,24 +759,31 @@ namespace WadTool
 
                 if (obj is WadMoveable moveable)
                 {
-                    if (WadMesh.ConsolidateTextures(moveable.Meshes.Where(mesh => mesh != null).ToList(), 0, texturePageSize))
+                    var moveableMeshes = moveable.Meshes.Where(mesh => mesh != null).ToList();
+                    if (moveableMeshes.Count > 0)
+                    {
+                        meshes.AddRange(moveableMeshes);
                         counter++;
+                    }
                 }
-                else if (obj is WadStatic @static)
+                else if (obj is WadStatic @static && @static.Mesh != null)
                 {
-                    if (@static.Mesh != null && WadMesh.ConsolidateTextures(new List<WadMesh> { @static.Mesh }, 0, texturePageSize))
-                        counter++;
+                    meshes.Add(@static.Mesh);
+                    counter++;
                 }
             }
 
-            if (counter == 0)
+            // De-duplicate shared mesh instances so a mesh referenced by multiple objects is packed once.
+            meshes = meshes.Distinct().ToList();
+
+            if (!WadMesh.ConsolidateTextures(meshes, 0, texturePageSize))
             {
                 tool.SendMessage("There was no packable mesh data in selected objects.\nNothing was done.", PopupType.Info);
                 return;
             }
 
             tool.WadChanged(WadArea.Destination);
-            tool.SendMessage(counter + " object" + (counter > 1 ? "s were" : " was") + " consolidated into texture pages.", PopupType.Info);
+            tool.SendMessage(counter + " object" + (counter > 1 ? "s were" : " was") + " consolidated into shared texture pages.", PopupType.Info);
         }
 
         public static List<IWadObjectId> CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
