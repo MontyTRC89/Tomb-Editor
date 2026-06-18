@@ -101,6 +101,7 @@
     <moveable id="137" name="HAMMERHEAD" />
     <moveable id="138" name="CROCODILE_GOD" />
     <moveable id="139" name="LOCUSTS_EMITTER" />
+	<moveable id="140" name="BATS_EMITTER_TR3" />
     <moveable id="150" name="SCUBA_HARPOON" />
     <moveable id="151" name="SCUBA_DIVER" />
     <moveable id="152" name="GOON_SILENCER1" />
@@ -366,6 +367,17 @@
     <moveable id="456" name="TURNING_WALL_BLADE" />
     <moveable id="457" name="TURNING_CEILING_BLADE" />
     <moveable id="458" name="FIRE_PENDULUM" />
+	<moveable id="459" name="HEAVY_STAMPER" />
+	<moveable id="460" name="DRILL_BIT" />
+	<moveable id="461" name="SPIKED_FRAME" />
+	<moveable id="462" name="SWINGING_SANDBAG" />
+	<moveable id="463" name="SWINGING_BOX" />
+	<moveable id="464" name="OVERHEAD_PULLY_HOOK" />
+	<moveable id="465" name="SWINGING_IRON_ANCHOR" />
+	<moveable id="466" name="SWINGING_SPIKE_BAG" />
+	<moveable id="467" name="CIRCULAR_SAW" />
+	<moveable id="468" name="ROLLING_BARRELS" />
+	<moveable id="469" name="MULTIPLE_BOULDERS" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
@@ -631,6 +643,7 @@
     <moveable id="830" name="PULLEY" />
     <moveable id="831" name="CROWDOVE_SWITCH" />
     <moveable id="832" name="MINECART_SWITCH" />
+    <moveable id="833" name="FUSEBOX_SWITCH" />
     <moveable id="850" name="DOOR_TYPE1" />
     <moveable id="851" name="DOOR_TYPE2" />
     <moveable id="852" name="DOOR_TYPE3" />
