@@ -47,7 +47,7 @@ LevelFuncs.Engine.Node.TestCreatureMood = function(moveable, index)
     local mov = TEN.Objects.GetMoveableByName(moveable)
 
     if mov:GetStatus() ~= 1 then
-        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. No mood set.",TEN.Util.LogLevel.ERROR)   
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check mood.",TEN.Util.LogLevel.ERROR)
         return false
     end
 
@@ -261,7 +261,7 @@ LevelFuncs.Engine.Node.TestCreatureReachedGoal = function(moveable)
     local mov = TEN.Objects.GetMoveableByName(moveable)
 
     if mov:GetStatus() ~= 1 then
-        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check location status.",TEN.Util.LogLevel.ERROR)   
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot check goal status.",TEN.Util.LogLevel.ERROR)   
         return false
     end
 
@@ -279,7 +279,7 @@ LevelFuncs.Engine.Node.SetCreatureReachedGoal = function(moveable, goal)
     local mov = TEN.Objects.GetMoveableByName(moveable)
 
     if mov:GetStatus() ~= 1 then
-        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set location status.",TEN.Util.LogLevel.ERROR)   
+        TEN.Util.PrintLog("moveable [ " .. moveable .. " ] is not active. Cannot set goal status.",TEN.Util.LogLevel.ERROR)   
         return
     end
 
