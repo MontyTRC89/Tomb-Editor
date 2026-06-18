@@ -849,6 +849,17 @@ namespace TombEditor
             RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
         }
 
+        // Layout switch events
+        public class LayoutSwitchedEvent : IEditorEvent { }
+        public class SwitchLayoutEvent : IEditorEvent
+        {
+            public int LayoutIndex { get; internal set; }
+        }
+        public void SwitchLayout(int layoutIndex)
+        {
+            RaiseEvent(new SwitchLayoutEvent() { LayoutIndex = layoutIndex });
+        }
+
         // Default control engage event
         public class DefaultControlActivationEvent : IEditorEvent
         {
@@ -1254,7 +1265,7 @@ namespace TombEditor
         {
             // Don't update stats if option is unset or there is no level
 
-            if (!Configuration.UI_ShowStats || Level == null)
+            if (!Configuration.Window_Layout.ShowStats || Level == null)
                 return;
 
             // Don't update stats if already updating
