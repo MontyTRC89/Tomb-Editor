@@ -87,25 +87,24 @@ namespace WadTool
 
                 panel3D.Invalidate();
 
-                if (_tool.DestinationWad != null)
+                bool isWadLoaded = _tool.DestinationWad != null;
+                if (isWadLoaded)
                 {
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
                                            "Sprite sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
                                            "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count + " | " +
                                            "Texture infos: " + _tool.DestinationWad.MeshTexInfosUnique.Count;
-
-                    meshEditorToolStripMenuItem.Enabled = true;
-                    animatedTexturesToolStripMenuItem.Enabled = true;
-                    convertDestinationWadToTombEngineToolStripMenuItem.Enabled = true;
                 }
                 else
                 {
                     labelStatistics.Text = "";
-                    meshEditorToolStripMenuItem.Enabled = false;
-                    animatedTexturesToolStripMenuItem.Enabled = false;
-                    convertDestinationWadToTombEngineToolStripMenuItem.Enabled = false;
                 }
+
+                meshEditorToolStripMenuItem.Enabled =
+                animatedTexturesToolStripMenuItem.Enabled =
+                convertDestinationWadToTombEngineToolStripMenuItem.Enabled =
+                itemPropertiesToolStripMenuItem.Enabled = isWadLoaded;
             }
 
             if (obj is WadToolClass.SourceWadChangedEvent || obj is InitEvent)
@@ -552,6 +551,11 @@ namespace WadTool
             WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
+        private void itemPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditLuaProperties(_tool, this, null);
+        }
+
         private void changeSlotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             butChangeSlot_Click(null, null);
@@ -713,6 +717,11 @@ namespace WadTool
             {
                 form.ShowDialog();
             }
+        }
+
+        private void editPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WadActions.EditLuaProperties(_tool, this, _tool.DestinationWad?.TryGet(_tool.MainSelection?.Id).Id);
         }
     }
 }
