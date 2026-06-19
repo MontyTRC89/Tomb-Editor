@@ -117,8 +117,8 @@ public class FlybyPreviewTests
     [TestMethod]
     public void FromDegrees_ClampsInvalidFieldOfViewIntoPreviewRange()
     {
-        var lowFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, -15.0f);
-        var highFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, 220.0f);
+        var lowFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, 0.0f, DofMode.None);
+        var highFrame = FlybyFrameState.FromDegrees(Vector3.Zero, 0.0f, 0.0f, 0.0f, 220.0f, 0.0f, 0.0f, 0.0f, DofMode.None);
 
         Assert.AreEqual(MathC.DegToRad(FlybyConstants.DefaultPreviewFieldOfViewDegrees), lowFrame.Fov, 0.001f);
         Assert.AreEqual(FlybyConstants.MaxPreviewFieldOfViewRadians, highFrame.Fov, 0.001f);
