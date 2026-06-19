@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombLib.LevelData.IO
 {
@@ -62,6 +63,24 @@ namespace TombLib.LevelData.IO
             byte[] geometryData = LZ4.DecompressData(fs);
 
             return new TenLevelFile(version, mediaData, geometryData);
+        }
+
+        /// <summary>
+        /// Full import pipeline: reads the compiled level, parses its object section and decodes the texture
+        /// atlases, then rebuilds the moveables and static meshes into a fresh TombEngine <see cref="Wad2"/>.
+        /// </summary>
+        public static Wad2 ImportObjectsAsWad2(string fileName)
+        {
+            var file = ReadRaw(fileName);
+            var objects = TenGeometryReader.ReadObjects(file);
+            var media = TenMediaReader.Read(file);
+
+            var wad = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
+            var converter = new TenWad2Converter(objects, media);
+            converter.ConvertMoveables(wad);
+            converter.ConvertStatics(wad);
+
+            return wad;
         }
     }
 }

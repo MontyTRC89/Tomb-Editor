@@ -123,6 +123,12 @@ namespace TombLib.Wad
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
                 return Wad2Loader.LoadFromFile(fileName, withSounds);
+            else if (fileName.EndsWith(".ten", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var newWad = LevelData.IO.TenLevelReader.ImportObjectsAsWad2(fileName);
+                newWad.Timestamp = File.GetLastWriteTime(fileName);
+                return newWad;
+            }
             else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||
                      fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
                      fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||
@@ -264,7 +270,8 @@ namespace TombLib.Wad
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
-            new FileFormat("Tomb Raider Chronicles level", "trc")
+            new FileFormat("Tomb Raider Chronicles level", "trc"),
+            new FileFormat("Compiled TombEngine level", "ten")
         };
 
         public static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture.AtlasReference> texturesToPack, int padding)
