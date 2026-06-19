@@ -21,10 +21,10 @@ namespace TombLib.LevelData.IO
         private readonly TenObjectData _objects;
         private readonly TenMediaData _media;
 
-        // One WadTexture per decoded atlas page, shared across every polygon that maps into it. Keyed by
-        // the owning atlas list (reference identity) plus the page index, so moveable/static pages that
-        // happen to share an index don't collide.
-        private readonly Dictionary<(object Atlas, int Page), WadTexture> _atlasTextures = new();
+        // Each polygon's used texture region is cropped out of the big (up to 4096²) engine atlas into its
+        // own small WadTexture, mirroring how the original WADs stored per-face tiles. Identical regions are
+        // shared via this cache, keyed by the owning atlas list (reference identity), page, and crop rect.
+        private readonly Dictionary<(object Atlas, int Page, int X, int Y, int W, int H), WadTexture> _croppedTextures = new();
 
         public TenWad2Converter(TenObjectData objects, TenMediaData media)
         {
@@ -327,32 +327,57 @@ namespace TombLib.LevelData.IO
             if (atlas == null || src.TextureAtlas < 0 || src.TextureAtlas >= atlas.Count)
                 return WadMesh.EmptyTextureArea;
 
-            var texture = GetAtlasTexture(atlas, src.TextureAtlas);
-            var size = new Vector2(texture.Image.Width, texture.Image.Height);
+            var page = atlas[src.TextureAtlas];
+            var size = new Vector2(page.Width, page.Height);
 
-            // .ten UVs are normalized against the atlas page; Wad2 TextureArea coords are in pixels.
-            var area = new TextureArea
+            // .ten UVs are normalized against the atlas page; scale to pixels within it.
+            int n = src.IsTriangle ? 3 : 4;
+            var coords = new Vector2[4];
+            for (int i = 0; i < n; i++)
+                coords[i] = src.TexCoords[i] * size;
+            if (src.IsTriangle)
+                coords[3] = coords[2];
+
+            // Bounding rect of this polygon's region inside the atlas page.
+            float minXf = float.MaxValue, minYf = float.MaxValue, maxXf = float.MinValue, maxYf = float.MinValue;
+            for (int i = 0; i < n; i++)
+            {
+                minXf = Math.Min(minXf, coords[i].X); maxXf = Math.Max(maxXf, coords[i].X);
+                minYf = Math.Min(minYf, coords[i].Y); maxYf = Math.Max(maxYf, coords[i].Y);
+            }
+
+            int minX = Math.Clamp((int)Math.Floor(minXf), 0, page.Width);
+            int minY = Math.Clamp((int)Math.Floor(minYf), 0, page.Height);
+            int maxX = Math.Clamp((int)Math.Ceiling(maxXf), minX, page.Width);
+            int maxY = Math.Clamp((int)Math.Ceiling(maxYf), minY, page.Height);
+            int w = Math.Max(1, maxX - minX);
+            int h = Math.Max(1, maxY - minY);
+
+            var texture = GetCroppedTexture(atlas, src.TextureAtlas, minX, minY, w, h);
+
+            // Rebase the UVs to the cropped tile's local space.
+            var origin = new Vector2(minX, minY);
+            return new TextureArea
             {
                 Texture = texture,
                 BlendMode = (BlendMode)src.BlendMode,
                 DoubleSided = false,
-                TexCoord0 = src.TexCoords[0] * size,
-                TexCoord1 = src.TexCoords[1] * size,
-                TexCoord2 = src.TexCoords[2] * size,
-                TexCoord3 = src.IsTriangle ? src.TexCoords[2] * size : src.TexCoords[3] * size
+                TexCoord0 = coords[0] - origin,
+                TexCoord1 = coords[1] - origin,
+                TexCoord2 = coords[2] - origin,
+                TexCoord3 = coords[3] - origin
             };
-            return area;
         }
 
-        private WadTexture GetAtlasTexture(List<ImageC> atlas, int page)
+        private WadTexture GetCroppedTexture(List<ImageC> atlas, int page, int x, int y, int w, int h)
         {
-            var key = (atlas, page);
-            if (!_atlasTextures.TryGetValue(key, out var texture))
+            var key = (atlas, page, x, y, w, h);
+            if (!_croppedTextures.TryGetValue(key, out var texture))
             {
-                var image = atlas[page];
-                image.FileName = string.Empty;
+                var image = ImageC.CreateNew(w, h);
+                image.CopyFrom(0, 0, atlas[page], x, y, w, h);
                 texture = new WadTexture(image);
-                _atlasTextures[key] = texture;
+                _croppedTextures[key] = texture;
             }
             return texture;
         }
