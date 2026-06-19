@@ -30,6 +30,8 @@ namespace TombLib.LevelData.IO
             var data = new TenObjectData();
             ReadMeshes(r, data);
             ReadMeshTrees(r, data);
+            ReadMoveables(r, data);
+            ReadStatics(r, data);
 
             return data;
         }
@@ -154,6 +156,162 @@ namespace TombLib.LevelData.IO
             data.MeshTrees = trees;
         }
 
+        // ---- Moveables --------------------------------------------------------------------------
+        // writer.Write(_moveables.Count); foreach moveable: TombEngineMoveable.Write(writer)
+
+        private static void ReadMoveables(BinaryReader r, TenObjectData data)
+        {
+            int count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+                data.Moveables.Add(ReadMoveable(r));
+        }
+
+        private static TenMoveable ReadMoveable(BinaryReader r)
+        {
+            var mov = new TenMoveable
+            {
+                ObjectID = r.ReadInt32(),
+                Skin = r.ReadInt32(),
+                NumMeshes = r.ReadInt32(),
+                StartingMesh = r.ReadInt32(),
+                MeshTree = r.ReadInt32()
+            };
+
+            int numAnimations = r.ReadInt32();
+            for (int a = 0; a < numAnimations; a++)
+                mov.Animations.Add(ReadAnimation(r, mov.NumMeshes));
+
+            return mov;
+        }
+
+        private static TenAnimation ReadAnimation(BinaryReader r, int numMeshes)
+        {
+            var anim = new TenAnimation
+            {
+                StateID = r.ReadInt32(),
+                FrameEnd = r.ReadInt32(),
+                NextAnimation = r.ReadInt32(),
+                NextFrame = r.ReadInt32(),
+                BlendFrameCount = r.ReadInt32()
+            };
+
+            // Blend curve (4 Vec2) - not needed for object import, skipped.
+            SkipBezierCurve(r);
+
+            // Velocity is encoded as three fixed motion bezier curves (X/Y/Z). For each, Start = (0, velStart.c)
+            // and End = (1, velEnd.c), so the velocity components are recoverable from the curves' Y values.
+            ReadVelocityFromCurve(r, out float startX, out float endX);
+            ReadVelocityFromCurve(r, out float startY, out float endY);
+            ReadVelocityFromCurve(r, out float startZ, out float endZ);
+            anim.VelocityStart = new Vector3(startX, startY, startZ);
+            anim.VelocityEnd = new Vector3(endX, endY, endZ);
+
+            // Pre-baked interpolated frames
+            int frameCount = r.ReadInt32();
+            for (int f = 0; f < frameCount; f++)
+                anim.InterpolatedFrames.Add(ReadKeyFrame(r));
+
+            // State changes
+            int stateChangeCount = r.ReadInt32();
+            for (int s = 0; s < stateChangeCount; s++)
+                anim.StateChanges.Add(ReadStateChange(r));
+
+            // Anim commands: count of commands, then each command is self-describing (type + fixed params).
+            int numAnimCommands = r.ReadInt32();
+            for (int c = 0; c < numAnimCommands; c++)
+                anim.Commands.Add(ReadAnimCommand(r));
+
+            anim.RootMotionFlags = r.ReadInt32();
+            return anim;
+        }
+
+        private static TenKeyFrame ReadKeyFrame(BinaryReader r)
+        {
+            var frame = new TenKeyFrame
+            {
+                BoundingBoxCenter = ReadVector3(r),
+                BoundingBoxExtents = ReadVector3(r),
+                RootOffset = ReadVector3(r)
+            };
+
+            int boneCount = r.ReadInt32();
+            for (int i = 0; i < boneCount; i++)
+                frame.BoneOrientations.Add(ReadQuaternion(r));
+
+            return frame;
+        }
+
+        private static TenStateChange ReadStateChange(BinaryReader r)
+        {
+            var sc = new TenStateChange
+            {
+                StateID = r.ReadInt32(),
+                FrameLow = r.ReadInt32(),
+                FrameHigh = r.ReadInt32(),
+                NextAnimation = r.ReadInt32(),
+                NextLowFrame = r.ReadInt32(),
+                NextHighFrame = r.ReadInt32(),
+                BlendFrames = r.ReadInt32()
+            };
+            SkipBezierCurve(r); // BlendCurve (4 Vec2)
+            return sc;
+        }
+
+        private static TenAnimCommand ReadAnimCommand(BinaryReader r)
+        {
+            var cmd = new TenAnimCommand { Type = r.ReadInt32() };
+            switch (cmd.Type)
+            {
+                case 1: // SetPosition
+                case 2: // SetJumpDistance
+                    cmd.Vector = ReadVector3(r);
+                    break;
+                case 3: // EmptyHands
+                case 4: // KillEntity
+                    break;
+                case 5: // PlaySound: SoundID, Frame, Environment
+                    cmd.Ints = new[] { r.ReadInt32(), r.ReadInt32(), r.ReadInt32() };
+                    break;
+                case 6: // FlipEffect: two ints
+                    cmd.Ints = new[] { r.ReadInt32(), r.ReadInt32() };
+                    break;
+                case 7: // DisableInterpolation: one int
+                    cmd.Ints = new[] { r.ReadInt32() };
+                    break;
+            }
+            return cmd;
+        }
+
+        // ---- Static meshes ----------------------------------------------------------------------
+        // writer.Write(_staticMeshes.Count); writer.WriteBlockArray(_staticMeshes)  // TombEngineStaticMesh
+
+        private static void ReadStatics(BinaryReader r, TenObjectData data)
+        {
+            int count = r.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                var s = new TenStatic
+                {
+                    ObjectID = r.ReadInt32(),
+                    Mesh = r.ReadInt32()
+                };
+
+                // TombEngineBoundingBox: short X1, X2, Y1, Y2, Z1, Z2 (min = *1, max = *2)
+                short vx1 = r.ReadInt16(), vx2 = r.ReadInt16(), vy1 = r.ReadInt16(), vy2 = r.ReadInt16(), vz1 = r.ReadInt16(), vz2 = r.ReadInt16();
+                short cx1 = r.ReadInt16(), cx2 = r.ReadInt16(), cy1 = r.ReadInt16(), cy2 = r.ReadInt16(), cz1 = r.ReadInt16(), cz2 = r.ReadInt16();
+                s.VisibilityBoxMin = new Vector3(vx1, vy1, vz1);
+                s.VisibilityBoxMax = new Vector3(vx2, vy2, vz2);
+                s.CollisionBoxMin = new Vector3(cx1, cy1, cz1);
+                s.CollisionBoxMax = new Vector3(cx2, cy2, cz2);
+
+                s.Flags = r.ReadUInt16();
+                s.ShatterType = r.ReadInt16();
+                s.ShatterSound = r.ReadInt16();
+
+                data.Statics.Add(s);
+            }
+        }
+
         // ---- Rooms (skipped) --------------------------------------------------------------------
         // writer.Write(_level.ExistingRooms.Count); foreach room: TombEngineRoom.WriteStaticData(writer)
 
@@ -224,8 +382,23 @@ namespace TombLib.LevelData.IO
             Skip(r, (long)count * 2);
         }
 
+        // A BezierCurve2 is serialized as Start, End, StartHandle, EndHandle (4 Vec2 = 32 bytes).
+        private static void SkipBezierCurve(BinaryReader r) => Skip(r, 32);
+
+        // Velocity component encoded as a fixed motion curve: Start = (0, velStart), End = (1, velEnd),
+        // handles duplicate the endpoints. We only need the Y of Start and End.
+        private static void ReadVelocityFromCurve(BinaryReader r, out float velStart, out float velEnd)
+        {
+            var start = ReadVector2(r);
+            var end = ReadVector2(r);
+            Skip(r, 16); // StartHandle + EndHandle
+            velStart = start.Y;
+            velEnd = end.Y;
+        }
+
         private static Vector2 ReadVector2(BinaryReader r) => new(r.ReadSingle(), r.ReadSingle());
         private static Vector3 ReadVector3(BinaryReader r) => new(r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
+        private static Quaternion ReadQuaternion(BinaryReader r) => new(r.ReadSingle(), r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
         private static void Skip(BinaryReader r, long bytes) => r.BaseStream.Seek(bytes, SeekOrigin.Current);
     }
 }

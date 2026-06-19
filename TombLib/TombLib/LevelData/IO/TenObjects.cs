@@ -52,6 +52,72 @@ namespace TombLib.LevelData.IO
         public List<TenPolygon> Polygons = new();
     }
 
+    public sealed class TenKeyFrame
+    {
+        public Vector3 BoundingBoxCenter;
+        public Vector3 BoundingBoxExtents;
+        public Vector3 RootOffset;
+        public List<Quaternion> BoneOrientations = new();
+    }
+
+    public sealed class TenStateChange
+    {
+        public int StateID;
+        public int FrameLow;
+        public int FrameHigh;
+        public int NextAnimation;
+        public int NextLowFrame;
+        public int NextHighFrame;
+        public int BlendFrames;
+    }
+
+    public sealed class TenAnimCommand
+    {
+        public int Type;          // 1 SetPosition, 2 SetJumpDistance, 3 EmptyHands, 4 KillEntity, 5 PlaySound, 6 FlipEffect, 7 DisableInterpolation
+        public Vector3 Vector;    // for types 1/2
+        public int[] Ints;        // for types 5 (3), 6 (2), 7 (1)
+    }
+
+    public sealed class TenAnimation
+    {
+        public int StateID;
+        public int FrameEnd;
+        public int NextAnimation;
+        public int NextFrame;
+        public int BlendFrameCount;
+        public Vector3 VelocityStart;
+        public Vector3 VelocityEnd;
+
+        // Pre-baked, per-frame interpolated frames (the .ten format does not retain the original keyframes).
+        public List<TenKeyFrame> InterpolatedFrames = new();
+        public List<TenStateChange> StateChanges = new();
+        public List<TenAnimCommand> Commands = new();
+        public int RootMotionFlags;
+    }
+
+    public sealed class TenMoveable
+    {
+        public int ObjectID;
+        public int Skin;
+        public int NumMeshes;
+        public int StartingMesh;   // index of the first mesh in TenObjectData.Meshes
+        public int MeshTree;       // offset (in ints) into TenObjectData.MeshTrees
+        public List<TenAnimation> Animations = new();
+    }
+
+    public sealed class TenStatic
+    {
+        public int ObjectID;
+        public int Mesh;           // index into TenObjectData.Meshes
+        public Vector3 VisibilityBoxMin;
+        public Vector3 VisibilityBoxMax;
+        public Vector3 CollisionBoxMin;
+        public Vector3 CollisionBoxMax;
+        public ushort Flags;
+        public short ShatterType;
+        public short ShatterSound;
+    }
+
     /// <summary>
     /// Intermediate, version-agnostic representation of the objects extracted from a compiled
     /// <c>.ten</c> geometry block. Filled incrementally across the reader's slices.
@@ -65,5 +131,8 @@ namespace TombLib.LevelData.IO
         /// each moveable through its MeshTree offset. Kept raw; decoded when moveables are rebuilt.
         /// </summary>
         public int[] MeshTrees = System.Array.Empty<int>();
+
+        public List<TenMoveable> Moveables = new();
+        public List<TenStatic> Statics = new();
     }
 }
