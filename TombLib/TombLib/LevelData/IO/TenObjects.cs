@@ -81,6 +81,7 @@ namespace TombLib.LevelData.IO
     public sealed class TenAnimation
     {
         public int StateID;
+        public int FrameRate;     // legacy levels only; current levels bake per-frame and imply rate 1
         public int FrameEnd;
         public int NextAnimation;
         public int NextFrame;
@@ -134,5 +135,11 @@ namespace TombLib.LevelData.IO
 
         public List<TenMoveable> Moveables = new();
         public List<TenStatic> Statics = new();
+
+        /// <summary>
+        /// True when the parsed level used the pre-blending animation layout (an extra per-animation frame
+        /// rate field, with original rather than pre-baked keyframes). Set by the reader's format detection.
+        /// </summary>
+        public bool LegacyAnimationFormat;
     }
 }

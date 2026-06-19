@@ -49,6 +49,13 @@ namespace TombLib.LevelData.IO
             var v = reader.ReadBytes(4);
             var version = new Version(v[0], v[1], v[2]);
 
+            // Versions below 2.0 used a different header layout and zlib (not chunked-LZ4) block compression.
+            // They are a distinct legacy format that this reader does not handle.
+            if (version.Major < 2)
+                throw new InvalidDataException(
+                    $"This .ten level was compiled by an older TombEngine version ({version}) and is not supported. " +
+                    "Recompile the level with a current version of Tomb Editor.");
+
             reader.ReadInt32(); // hashed machine name (reserved, unused here)
             reader.ReadInt32(); // checksum (only used for the engine's fast-reload, unused here)
 

@@ -128,9 +128,9 @@ namespace TombLib.LevelData.IO
         {
             var anim = new WadAnimation
             {
-                // The .ten stream bakes one interpolated frame per engine frame and does not retain the
-                // original frame rate, so the reconstructed animation runs at one keyframe per frame.
-                FrameRate = 1,
+                // Legacy levels retain the authored frame rate (with original keyframes); current levels bake
+                // one interpolated frame per engine frame, which the reader reports as a rate of 1.
+                FrameRate = (byte)Math.Clamp(src.FrameRate, 1, byte.MaxValue),
                 StateId = (ushort)src.StateID,
                 EndFrame = (ushort)src.FrameEnd,
                 NextAnimation = (ushort)src.NextAnimation,

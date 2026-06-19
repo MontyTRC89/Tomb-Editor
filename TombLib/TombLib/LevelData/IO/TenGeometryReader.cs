@@ -1,9 +1,18 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Numerics;
 
 namespace TombLib.LevelData.IO
 {
+    /// <summary>
+    /// Thrown when the object section of a .ten geometry block does not parse into self-consistent values
+    /// under the assumed layout. Used internally to drive legacy-format fallback detection.
+    /// </summary>
+    public sealed class TenFormatException : Exception
+    {
+        public TenFormatException(string message) : base(message) { }
+    }
+
     /// <summary>
     /// Parses the (already LZ4-decompressed) geometry block of a compiled TombEngine level, mirroring
     /// in reverse the writer in <c>LevelCompilerTombEngine.WriteLevelTombEngine</c> (the geometry stream
@@ -14,11 +23,21 @@ namespace TombLib.LevelData.IO
     /// Object section order in the stream: meshes, mesh-trees, moveables, static meshes, (then sprites,
     /// pathfinding, etc. which we ignore).
     ///
-    /// SLICE 2: skip rooms + floordata to reach the object section.
-    /// SLICE 3: parse meshes and mesh-trees into the intermediate model.
+    /// Format revisions: levels compiled before TE 2.x "animation blending and root motion" wrote an extra
+    /// per-animation Interpolation (frame rate) int after StateID. The header version stamp does not tell
+    /// the two apart, so <see cref="ReadObjects"/> tries the current layout first and falls back to the
+    /// legacy one when the moveable/static section fails to parse into self-consistent values.
     /// </summary>
     public static class TenGeometryReader
     {
+        // Generous sanity caps used to reject a wrong-format parse fast (before allocating huge lists).
+        private const int MaxAnimations = 1_000_000;
+        private const int MaxFrames = 10_000_000;
+        private const int MaxBones = 1_000_000;
+        private const int MaxStateChanges = 1_000_000;
+        private const int MaxAnimCommands = 1_000_000;
+        private const int MaxObjects = 1_000_000;
+
         public static TenObjectData ReadObjects(TenLevelFile file)
         {
             using var ms = new MemoryStream(file.GeometryData, writable: false);
@@ -30,10 +49,52 @@ namespace TombLib.LevelData.IO
             var data = new TenObjectData();
             ReadMeshes(r, data);
             ReadMeshTrees(r, data);
-            ReadMoveables(r, data);
-            ReadStatics(r, data);
+
+            // Detect the animation layout by attempting the current format first, then the legacy one.
+            long moveablesStart = ms.Position;
+            foreach (bool legacy in new[] { false, true })
+            {
+                ms.Position = moveablesStart;
+                data.Moveables.Clear();
+                data.Statics.Clear();
+                try
+                {
+                    ReadMoveables(r, data, legacy);
+                    ReadStatics(r, data);
+                    ValidateObjects(data);
+                    data.LegacyAnimationFormat = legacy;
+                    return data;
+                }
+                catch (Exception ex) when (ex is EndOfStreamException || ex is TenFormatException)
+                {
+                    if (legacy)
+                        throw; // Neither layout parsed; surface the failure.
+                }
+            }
 
             return data;
+        }
+
+        // Cross-checks the parsed object section against the (format-stable) mesh/mesh-tree tables. A wrong
+        // layout guess drifts the stream and yields out-of-range indices here with near certainty.
+        private static void ValidateObjects(TenObjectData data)
+        {
+            int meshCount = data.Meshes.Count;
+            int treeLen = data.MeshTrees.Length;
+
+            foreach (var m in data.Moveables)
+            {
+                if (m.NumMeshes < 0 || m.StartingMesh < 0 || m.StartingMesh + m.NumMeshes > meshCount)
+                    throw new TenFormatException("Moveable references meshes outside the mesh table.");
+                if (m.NumMeshes > 1 && (m.MeshTree < 0 || m.MeshTree + (m.NumMeshes - 1) * 4 > treeLen))
+                    throw new TenFormatException("Moveable references a mesh-tree offset outside the table.");
+                if (m.Skin >= meshCount)
+                    throw new TenFormatException("Moveable references a skin mesh outside the mesh table.");
+            }
+
+            foreach (var s in data.Statics)
+                if (s.Mesh < 0 || s.Mesh >= meshCount)
+                    throw new TenFormatException("Static mesh references a mesh outside the mesh table.");
         }
 
         // ---- Meshes -----------------------------------------------------------------------------
@@ -108,8 +169,6 @@ namespace TombLib.LevelData.IO
         // Layout: Shape(int) AnimatedSequence(int) AnimatedFrame(int) [ShineStrength(float)] Normal(Vec3)
         //         then n indices(int), n uv(Vec2), n normals(Vec3), n tangents(Vec3), n binormals(Vec3)
         // where n = 4 for Quad (Shape==0) or 3 for Triangle (Shape==1).
-        // NOTE on field order: the writer emits ShineStrength *after* AnimatedFrame and *before* Normal for
-        // meshes; rooms omit it entirely.
         private static TenPolygon ReadPolygon(BinaryReader r, bool hasShineStrength)
         {
             var poly = new TenPolygon
@@ -159,14 +218,14 @@ namespace TombLib.LevelData.IO
         // ---- Moveables --------------------------------------------------------------------------
         // writer.Write(_moveables.Count); foreach moveable: TombEngineMoveable.Write(writer)
 
-        private static void ReadMoveables(BinaryReader r, TenObjectData data)
+        private static void ReadMoveables(BinaryReader r, TenObjectData data, bool legacy)
         {
-            int count = r.ReadInt32();
+            int count = ReadCount(r, MaxObjects);
             for (int i = 0; i < count; i++)
-                data.Moveables.Add(ReadMoveable(r));
+                data.Moveables.Add(ReadMoveable(r, legacy));
         }
 
-        private static TenMoveable ReadMoveable(BinaryReader r)
+        private static TenMoveable ReadMoveable(BinaryReader r, bool legacy)
         {
             var mov = new TenMoveable
             {
@@ -177,23 +236,25 @@ namespace TombLib.LevelData.IO
                 MeshTree = r.ReadInt32()
             };
 
-            int numAnimations = r.ReadInt32();
+            int numAnimations = ReadCount(r, MaxAnimations);
             for (int a = 0; a < numAnimations; a++)
-                mov.Animations.Add(ReadAnimation(r, mov.NumMeshes));
+                mov.Animations.Add(ReadAnimation(r, legacy));
 
             return mov;
         }
 
-        private static TenAnimation ReadAnimation(BinaryReader r, int numMeshes)
+        private static TenAnimation ReadAnimation(BinaryReader r, bool legacy)
         {
-            var anim = new TenAnimation
-            {
-                StateID = r.ReadInt32(),
-                FrameEnd = r.ReadInt32(),
-                NextAnimation = r.ReadInt32(),
-                NextFrame = r.ReadInt32(),
-                BlendFrameCount = r.ReadInt32()
-            };
+            var anim = new TenAnimation { StateID = r.ReadInt32() };
+
+            // Legacy levels stored the authored frame rate here; the keyframes that follow are the original
+            // (sparse) keyframes. Current levels omit it and bake one interpolated frame per engine frame.
+            anim.FrameRate = legacy ? r.ReadInt32() : 1;
+
+            anim.FrameEnd = r.ReadInt32();
+            anim.NextAnimation = r.ReadInt32();
+            anim.NextFrame = r.ReadInt32();
+            anim.BlendFrameCount = r.ReadInt32();
 
             // Blend curve (4 Vec2) - not needed for object import, skipped.
             SkipBezierCurve(r);
@@ -206,18 +267,18 @@ namespace TombLib.LevelData.IO
             anim.VelocityStart = new Vector3(startX, startY, startZ);
             anim.VelocityEnd = new Vector3(endX, endY, endZ);
 
-            // Pre-baked interpolated frames
-            int frameCount = r.ReadInt32();
+            // Keyframes (legacy: original keyframes; current: pre-baked interpolated frames).
+            int frameCount = ReadCount(r, MaxFrames);
             for (int f = 0; f < frameCount; f++)
                 anim.InterpolatedFrames.Add(ReadKeyFrame(r));
 
             // State changes
-            int stateChangeCount = r.ReadInt32();
+            int stateChangeCount = ReadCount(r, MaxStateChanges);
             for (int s = 0; s < stateChangeCount; s++)
                 anim.StateChanges.Add(ReadStateChange(r));
 
             // Anim commands: count of commands, then each command is self-describing (type + fixed params).
-            int numAnimCommands = r.ReadInt32();
+            int numAnimCommands = ReadCount(r, MaxAnimCommands);
             for (int c = 0; c < numAnimCommands; c++)
                 anim.Commands.Add(ReadAnimCommand(r));
 
@@ -234,7 +295,7 @@ namespace TombLib.LevelData.IO
                 RootOffset = ReadVector3(r)
             };
 
-            int boneCount = r.ReadInt32();
+            int boneCount = ReadCount(r, MaxBones);
             for (int i = 0; i < boneCount; i++)
                 frame.BoneOrientations.Add(ReadQuaternion(r));
 
@@ -278,6 +339,8 @@ namespace TombLib.LevelData.IO
                 case 7: // DisableInterpolation: one int
                     cmd.Ints = new[] { r.ReadInt32() };
                     break;
+                default:
+                    throw new TenFormatException("Unknown anim command type " + cmd.Type + ".");
             }
             return cmd;
         }
@@ -287,7 +350,7 @@ namespace TombLib.LevelData.IO
 
         private static void ReadStatics(BinaryReader r, TenObjectData data)
         {
-            int count = r.ReadInt32();
+            int count = ReadCount(r, MaxObjects);
             for (int i = 0; i < count; i++)
             {
                 var s = new TenStatic
@@ -394,6 +457,14 @@ namespace TombLib.LevelData.IO
             Skip(r, 16); // StartHandle + EndHandle
             velStart = start.Y;
             velEnd = end.Y;
+        }
+
+        private static int ReadCount(BinaryReader r, int max)
+        {
+            int count = r.ReadInt32();
+            if (count < 0 || count > max)
+                throw new TenFormatException($"Count {count} is out of the expected range [0, {max}].");
+            return count;
         }
 
         private static Vector2 ReadVector2(BinaryReader r) => new(r.ReadSingle(), r.ReadSingle());
