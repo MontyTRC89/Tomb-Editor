@@ -65,6 +65,181 @@ namespace TombLib.LevelData.IO
         private static BoundingBox MakeBox(Vector3 min, Vector3 max) =>
             new BoundingBox(new Vector3(min.X, -min.Y, min.Z), new Vector3(max.X, -max.Y, max.Z));
 
+        // ---- Moveables --------------------------------------------------------------------------
+
+        public void ConvertMoveables(Wad2 wad)
+        {
+            foreach (var src in _objects.Moveables)
+            {
+                var converted = ConvertMoveable(src);
+                wad.Moveables.Add(converted.Id, converted);
+            }
+        }
+
+        public WadMoveable ConvertMoveable(TenMoveable src)
+        {
+            var dest = new WadMoveable(new WadMoveableId(checked((uint)src.ObjectID)));
+            string name = "Moveable_" + src.ObjectID;
+
+            // Meshes are stored sequentially; the compiler set StartingMesh to the running mesh count just
+            // before emitting this moveable's meshes, so it is a direct index into the shared mesh list.
+            var meshes = new List<WadMesh>(src.NumMeshes);
+            for (int i = 0; i < src.NumMeshes; i++)
+                meshes.Add(ConvertMesh(_objects.Meshes[src.StartingMesh + i], _media.MoveablesAtlas, name + "_Mesh_" + i));
+
+            // Root bone always exists and carries no link; remaining bones are decoded from the mesh-tree
+            // blob (4 ints each: opcode + X/Y/Z, with Y negated by the compiler).
+            var root = new WadBone
+            {
+                Name = "bone_0_root",
+                Parent = null,
+                Translation = Vector3.Zero,
+                Mesh = meshes.Count > 0 ? meshes[0] : null
+            };
+            dest.Bones.Add(root);
+
+            for (int b = 1; b < src.NumMeshes; b++)
+            {
+                int baseOffset = src.MeshTree + (b - 1) * 4;
+                var bone = new WadBone
+                {
+                    Name = "bone_" + b,
+                    Parent = null,
+                    Mesh = meshes[b],
+                    OpCode = (WadLinkOpcode)_objects.MeshTrees[baseOffset + 0],
+                    Translation = new Vector3(
+                        _objects.MeshTrees[baseOffset + 1],
+                        -_objects.MeshTrees[baseOffset + 2],
+                        _objects.MeshTrees[baseOffset + 3])
+                };
+                dest.Bones.Add(bone);
+            }
+
+            if (src.Skin >= 0 && src.Skin < _objects.Meshes.Count)
+                dest.Skin = ConvertMesh(_objects.Meshes[src.Skin], _media.MoveablesAtlas, name + "_Skin");
+
+            foreach (var anim in src.Animations)
+                dest.Animations.Add(ConvertAnimation(anim));
+
+            return dest;
+        }
+
+        private WadAnimation ConvertAnimation(TenAnimation src)
+        {
+            var anim = new WadAnimation
+            {
+                // The .ten stream bakes one interpolated frame per engine frame and does not retain the
+                // original frame rate, so the reconstructed animation runs at one keyframe per frame.
+                FrameRate = 1,
+                StateId = (ushort)src.StateID,
+                EndFrame = (ushort)src.FrameEnd,
+                NextAnimation = (ushort)src.NextAnimation,
+                NextFrame = (ushort)src.NextFrame,
+                BlendFrameCount = (ushort)src.BlendFrameCount,
+                Name = "Animation",
+                // VelocityStart/End were packed as (lateral, 0, forward) by the compiler.
+                StartLateralVelocity = src.VelocityStart.X,
+                StartVelocity = src.VelocityStart.Z,
+                EndLateralVelocity = src.VelocityEnd.X,
+                EndVelocity = src.VelocityEnd.Z,
+                RootMotion = new WadAnimRootMotionSettings { Flags = (WadAnimRootMotionFlags)src.RootMotionFlags }
+            };
+
+            foreach (var frame in src.InterpolatedFrames)
+                anim.KeyFrames.Add(ConvertKeyFrame(frame));
+
+            foreach (var cmd in src.Commands)
+                anim.AnimCommands.Add(ConvertAnimCommand(cmd));
+
+            // The .ten stream flattens state changes to one record per dispatch (each tagged with its state
+            // id); regroup consecutive records that share a state id back into a single WadStateChange.
+            foreach (var sc in src.StateChanges)
+            {
+                var dispatch = new WadAnimDispatch
+                {
+                    InFrame = (ushort)sc.FrameLow,
+                    OutFrame = (ushort)sc.FrameHigh,
+                    NextAnimation = (ushort)sc.NextAnimation,
+                    NextLowFrame = (ushort)sc.NextLowFrame,
+                    NextHighFrame = (ushort)sc.NextHighFrame,
+                    BlendFrames = (ushort)sc.BlendFrames
+                };
+
+                var last = anim.StateChanges.Count > 0 ? anim.StateChanges[anim.StateChanges.Count - 1] : null;
+                if (last != null && last.StateId == (ushort)sc.StateID)
+                    last.Dispatches.Add(dispatch);
+                else
+                {
+                    var stateChange = new WadStateChange { StateId = (ushort)sc.StateID };
+                    stateChange.Dispatches.Add(dispatch);
+                    anim.StateChanges.Add(stateChange);
+                }
+            }
+
+            return anim;
+        }
+
+        private static WadKeyFrame ConvertKeyFrame(TenKeyFrame src)
+        {
+            // Recover engine-space box corners from center/extents, then re-negate Y into editor space.
+            var min = src.BoundingBoxCenter - src.BoundingBoxExtents;
+            var max = src.BoundingBoxCenter + src.BoundingBoxExtents;
+
+            var frame = new WadKeyFrame
+            {
+                BoundingBox = new BoundingBox(
+                    new Vector3(min.X, -min.Y, min.Z),
+                    new Vector3(max.X, -max.Y, max.Z)),
+                Offset = new Vector3(src.RootOffset.X, -src.RootOffset.Y, src.RootOffset.Z)
+            };
+
+            foreach (var q in src.BoneOrientations)
+                frame.Angles.Add(ReverseRotation(q));
+
+            return frame;
+        }
+
+        private static WadAnimCommand ConvertAnimCommand(TenAnimCommand src)
+        {
+            var cmd = new WadAnimCommand { Type = (WadAnimCommandType)src.Type };
+            switch (cmd.Type)
+            {
+                case WadAnimCommandType.SetPosition: // Vector = (X, Y, Z)
+                    cmd.Parameter1 = (short)src.Vector.X;
+                    cmd.Parameter2 = (short)src.Vector.Y;
+                    cmd.Parameter3 = (short)src.Vector.Z;
+                    break;
+                case WadAnimCommandType.SetJumpDistance: // compiler packed (0, H, V)
+                    cmd.Parameter1 = (short)src.Vector.Y;
+                    cmd.Parameter2 = (short)src.Vector.Z;
+                    break;
+                case WadAnimCommandType.PlaySound: // Ints = [SoundID, Frame, Environment]
+                    cmd.Parameter1 = (short)src.Ints[1];
+                    cmd.Parameter2 = (short)src.Ints[0];
+                    cmd.Parameter3 = (short)src.Ints[2];
+                    break;
+                case WadAnimCommandType.FlipEffect: // Ints = [FlipEffectID, Frame]
+                    cmd.Parameter1 = (short)src.Ints[1];
+                    cmd.Parameter2 = (short)src.Ints[0];
+                    break;
+                case WadAnimCommandType.DisableInterpolation: // Ints = [Frame]
+                    cmd.Parameter1 = (short)src.Ints[0];
+                    break;
+            }
+            return cmd;
+        }
+
+        // Inverse of WadKeyFrameRotation.Quaternion, which is CreateFromYawPitchRoll(Y, -X, -Z). QuaternionToEuler
+        // inverts CreateFromYawPitchRoll(Y, X, Z) (returns pitch=X, yaw=Y, roll=Z in radians), so the pitch and
+        // roll signs are flipped back here. Euler is ambiguous, but the reconstructed angles reproduce the
+        // original quaternion (verified by round-trip test).
+        private static WadKeyFrameRotation ReverseRotation(Quaternion q)
+        {
+            var e = MathC.QuaternionToEuler(q);
+            const float radToDeg = 180.0f / (float)Math.PI;
+            return new WadKeyFrameRotation { Rotations = new Vector3(-e.X, e.Y, -e.Z) * radToDeg };
+        }
+
         /// <summary>
         /// Rebuilds a single <see cref="WadMesh"/> from a parsed <see cref="TenMesh"/>. <paramref name="atlas"/>
         /// is the destination-specific atlas page list (moveables vs statics) the mesh's polygons index into.
