@@ -97,6 +97,48 @@ namespace TombLib.Utils
 			return outStream.Position - startPos;
 		}
 
+		/// <summary>
+		/// Decompresses a chunked raw LZ4 stream produced by <see cref="CompressData(Stream, Stream, CompressionLevel)"/>.
+		/// Reads the chunk header (count + per-chunk uncompressed/compressed lengths) and returns the
+		/// concatenated decompressed bytes. The input stream must be positioned at the start of the chunk data.
+		/// </summary>
+		public static byte[] DecompressData(Stream inStream)
+		{
+			var br = new BinaryReader(inStream, System.Text.Encoding.Default, true);
+
+			uint numChunks = br.ReadUInt32();
+
+			using var outStream = new MemoryStream();
+			byte[] compressBuffer = null;
+			byte[] decompressBuffer = null;
+
+			for (uint i = 0; i < numChunks; i++)
+			{
+				int uncompressedLen = (int)br.ReadUInt32();
+				int compressedLen = (int)br.ReadUInt32();
+
+				if (compressBuffer == null || compressBuffer.Length < compressedLen)
+					compressBuffer = new byte[compressedLen];
+
+				int read = 0;
+				while (read < compressedLen)
+				{
+					int r = inStream.Read(compressBuffer, read, compressedLen - read);
+					if (r == 0)
+						break;
+					read += r;
+				}
+
+				if (decompressBuffer == null || decompressBuffer.Length < uncompressedLen)
+					decompressBuffer = new byte[uncompressedLen];
+
+				int decoded = LZ4Codec.Decode(compressBuffer, 0, compressedLen, decompressBuffer, 0, uncompressedLen);
+				outStream.Write(decompressBuffer, 0, decoded);
+			}
+
+			return outStream.ToArray();
+		}
+
 		private static LZ4Level GetCompressionLevel(CompressionLevel compressionLevel)
 		{
 			return compressionLevel switch
