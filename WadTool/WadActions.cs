@@ -734,26 +734,22 @@ namespace WadTool
             tool.SendMessage(counter + " mesh" + (counter > 1 ? "es were" : " was") + " converted to specified light model.", PopupType.Info);
         }
 
-        public static void ConsolidateSelectedObjectTextures(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects)
+        private const int ConsolidateTexturePageSize = 2048;
+
+        /// <summary>
+        /// Gathers the distinct meshes of the given objects so their textures can be consolidated
+        /// in a single pass: all of them share one set of texture pages and a texture used by more
+        /// than one object (e.g. across Lara's many meshes) is packed only once instead of being
+        /// duplicated per object.
+        /// </summary>
+        private static List<WadMesh> GatherObjectMeshes(Wad2 wad, IEnumerable<IWadObjectId> objectIds, out int objectCount)
         {
-            if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)
-            {
-                tool.SendMessage("You must have at least one object selected and it must be in the destination wad.\nNothing was done.", PopupType.Info);
-                return;
-            }
-
-            const int texturePageSize = 2048;
-
-            // Gather the meshes from every selected object and consolidate them in a single pass,
-            // so all of them share one set of texture pages and a texture used by more than one
-            // object (e.g. across Lara's many meshes) is packed only once instead of being
-            // duplicated per object.
             var meshes = new List<WadMesh>();
-            int counter = 0;
+            objectCount = 0;
 
-            foreach (var o in objects)
+            foreach (var o in objectIds)
             {
-                var obj = tool.DestinationWad.TryGet(o);
+                var obj = wad?.TryGet(o);
                 if (obj == null)
                     continue;
 
@@ -763,20 +759,31 @@ namespace WadTool
                     if (moveableMeshes.Count > 0)
                     {
                         meshes.AddRange(moveableMeshes);
-                        counter++;
+                        objectCount++;
                     }
                 }
                 else if (obj is WadStatic @static && @static.Mesh != null)
                 {
                     meshes.Add(@static.Mesh);
-                    counter++;
+                    objectCount++;
                 }
             }
 
             // De-duplicate shared mesh instances so a mesh referenced by multiple objects is packed once.
-            meshes = meshes.Distinct().ToList();
+            return meshes.Distinct().ToList();
+        }
 
-            if (!WadMesh.ConsolidateTextures(meshes, 0, texturePageSize))
+        public static void ConsolidateSelectedObjectTextures(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objects)
+        {
+            if (objects == null || objects.Count == 0 || tool.MainSelection?.WadArea == WadArea.Source)
+            {
+                tool.SendMessage("You must have at least one object selected and it must be in the destination wad.\nNothing was done.", PopupType.Info);
+                return;
+            }
+
+            var meshes = GatherObjectMeshes(tool.DestinationWad, objects, out int counter);
+
+            if (!WadMesh.ConsolidateTextures(meshes, 0, ConsolidateTexturePageSize))
             {
                 tool.SendMessage("There was no packable mesh data in selected objects.\nNothing was done.", PopupType.Info);
                 return;
@@ -959,6 +966,14 @@ namespace WadTool
                 }
 
                 destinationWad.Add(newIds[i], obj);
+            }
+
+            // Optionally consolidate the just-copied objects' textures into shared pages, so
+            // textures coming out of legacy/TR files don't pile up as per-object duplicates.
+            if (tool.Configuration.Tool_AutoConsolidateTexturesOnCopy)
+            {
+                var copiedMeshes = GatherObjectMeshes(destinationWad, newIds, out _);
+                WadMesh.ConsolidateTextures(copiedMeshes, 0, ConsolidateTexturePageSize);
             }
 
             // Update the situation

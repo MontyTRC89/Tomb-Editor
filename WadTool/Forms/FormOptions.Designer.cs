@@ -57,6 +57,7 @@
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
             this.darkCheckBox6 = new DarkUI.Controls.DarkCheckBox();
+            this.cbAutoConsolidateTextures = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox4 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
             this.darkNumericUpDown39 = new DarkUI.Controls.DarkNumericUpDown();
@@ -514,12 +515,13 @@
             this.darkGroupBox2.Controls.Add(this.darkCheckBox6);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox4);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
+            this.darkGroupBox2.Controls.Add(this.cbAutoConsolidateTextures);
             this.darkGroupBox2.Controls.Add(this.darkNumericUpDown39);
             this.darkGroupBox2.Controls.Add(this.darkLabel67);
             this.darkGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox2.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(375, 119);
+            this.darkGroupBox2.Size = new System.Drawing.Size(375, 142);
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "Editing";
@@ -533,7 +535,17 @@
             this.darkCheckBox6.TabIndex = 12;
             this.darkCheckBox6.Tag = "AnimationEditor_ClampStateChangeValues";
             this.darkCheckBox6.Text = "Automatically bound state change editor values";
-            // 
+            //
+            // cbAutoConsolidateTextures
+            //
+            this.cbAutoConsolidateTextures.AutoSize = true;
+            this.cbAutoConsolidateTextures.Location = new System.Drawing.Point(6, 118);
+            this.cbAutoConsolidateTextures.Name = "cbAutoConsolidateTextures";
+            this.cbAutoConsolidateTextures.Size = new System.Drawing.Size(280, 17);
+            this.cbAutoConsolidateTextures.TabIndex = 13;
+            this.cbAutoConsolidateTextures.Tag = "Tool_AutoConsolidateTexturesOnCopy";
+            this.cbAutoConsolidateTextures.Text = "Auto-consolidate textures when copying objects";
+            //
             // darkCheckBox4
             // 
             this.darkCheckBox4.AutoSize = true;
@@ -1169,6 +1181,7 @@
         private DarkUI.Controls.DarkPanel panel1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkCheckBox darkCheckBox3;
+        private DarkUI.Controls.DarkCheckBox cbAutoConsolidateTextures;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown1;
         private DarkUI.Controls.DarkCheckBox cbEnableLogging;
         private DarkUI.Controls.DarkLabel darkLabel1;
