@@ -15,6 +15,7 @@ Tomb Editor:
  * Added support for cold and damaging rooms in TRX.
  * Added support for mine cart floor data in TRX.
  * Added support for heavy switch, heavy antitrigger, monkey, climb and crawl trigger types in TRX.
+ * Added support for specifying moveable instance names in TRX.
  * Fixed "Map animated textures" checkbox not unchecking in Level Settings dialog.
  * Fixed occasional exceptions after closing Node Editor.
  * Fixed exception while opening texture lists in Remap Texture dialog.

@@ -573,6 +573,7 @@ namespace TombLib.LevelData.IO
                 // It's not clear why Monty decided to deviate for 2 different chunk versions.
 
                 var isTEN = level == null || level.IsTombEngine;
+                var isTRX = level != null && level.IsTRX;
 
                 foreach (var o in objects)
                 {
@@ -598,6 +599,21 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
                                 WriteLuaProperties(chunkIO, instance.LuaProperties);
                             }
+                        }
+                        else if (isTRX)
+                        {
+                            using var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTRX, LEB128.MaximumSize2Byte);
+                            var instance = (MoveableInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.WadObjectId.TypeId);
+                            chunkIO.Raw.Write(instance.Ocb);
+                            chunkIO.Raw.Write(instance.Invisible);
+                            chunkIO.Raw.Write(instance.ClearBody);
+                            chunkIO.Raw.Write(instance.CodeBits);
+                            chunkIO.Raw.Write(instance.Color);
+                            chunkIO.Raw.WriteStringUTF8(instance.LuaName ?? string.Empty);
                         }
                         else
                         {
