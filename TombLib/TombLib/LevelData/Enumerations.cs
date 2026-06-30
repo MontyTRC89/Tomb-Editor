@@ -56,7 +56,7 @@ namespace TombLib.LevelData
             => ver.Native() >= Game.TR4;
 
         public static bool SupportsReverberation(this Game ver)
-            => ver.Native() >= Game.TR3;
+            => ver >= Game.TR3;
 
         public static bool SupportsLensflare(this Game ver)
             => ver.Native() >= Game.TR4;
