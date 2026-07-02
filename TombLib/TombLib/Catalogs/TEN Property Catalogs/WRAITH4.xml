@@ -34,8 +34,8 @@
       internalName="damage"
       displayName="Damage"
       type="Int"
-      defaultValue="1"
-      minValue="1"
+      defaultValue="4"
+      minValue="0"
       maxValue="1000"
       category="Damage"
       description="The amount of damage the wraith deals." />
