@@ -426,11 +426,10 @@
     <None Update="Catalogs\Engines\TR5\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-<<<<<<< Properties-Vehicles-TR2
     <None Update="Catalogs\TEN Property Catalogs\Global\Vehicles.xml">
-=======
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Property Catalogs\Global\HitPoints.xml">
->>>>>>> develop
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
