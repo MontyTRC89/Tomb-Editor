@@ -43,6 +43,7 @@
 			texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			convertToTiledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			convertToUVMappedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			consolidateTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			animatedTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			meshEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -364,7 +365,7 @@
 			// texturesToolStripMenuItem
 			// 
 			texturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-			texturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertToTiledToolStripMenuItem, convertToUVMappedToolStripMenuItem });
+			texturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { convertToTiledToolStripMenuItem, convertToUVMappedToolStripMenuItem, consolidateTexturesToolStripMenuItem });
 			texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
 			texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
 			texturesToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
@@ -387,6 +388,15 @@
 			convertToUVMappedToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
 			convertToUVMappedToolStripMenuItem.Text = "Convert to UV-mapped";
 			convertToUVMappedToolStripMenuItem.Click += convertToUVMappedToolStripMenuItem_Click;
+			// 
+			// consolidateTexturesToolStripMenuItem
+			// 
+			consolidateTexturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+			consolidateTexturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(220, 220, 220);
+			consolidateTexturesToolStripMenuItem.Name = "consolidateTexturesToolStripMenuItem";
+			consolidateTexturesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			consolidateTexturesToolStripMenuItem.Text = "Consolidate textures";
+			consolidateTexturesToolStripMenuItem.Click += consolidateTexturesToolStripMenuItem_Click;
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -1271,6 +1281,7 @@
         private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertToUVMappedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertToTiledToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem consolidateTexturesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem animatedTexturesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem itemPropertiesToolStripMenuItem;

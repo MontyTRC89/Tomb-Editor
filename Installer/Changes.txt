@@ -20,6 +20,7 @@ Tomb Editor:
  * Fixed exception while opening texture lists in Remap Texture dialog.
 
 WadTool:
+ * Added an option to consolidate textures for an object into a single set of texture pages.
  * Added mesh name display in the skeleton editor.
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  * Fixed exception when trying to open an object without meshes in the mesh editor.
