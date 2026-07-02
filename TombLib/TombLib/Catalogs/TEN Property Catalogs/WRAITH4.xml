@@ -25,7 +25,7 @@
       internalName="attackType"
       displayName="Attack Type"
       type="Enum"
-      entries="Damage, Electric, Fire, Poison"
+      entries="Damage, Electric, Fire, Poison, Smoke, Water"
       defaultValue="Damage"
       category="Damage"
       description="Type of attack the wraith uses." />
