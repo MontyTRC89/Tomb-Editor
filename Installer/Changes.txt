@@ -29,6 +29,9 @@ TEN nodes:
  * Added a node to unswap a previously swapped mesh.
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.
  
+TEN property system updates:
+ * Starting hit points for all enemies. 
+ 
 Version 1.11
 ============
 
