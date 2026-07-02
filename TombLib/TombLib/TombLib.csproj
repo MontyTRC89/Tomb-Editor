@@ -426,7 +426,11 @@
     <None Update="Catalogs\Engines\TR5\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+<<<<<<< Properties-Vehicles-TR2
     <None Update="Catalogs\TEN Property Catalogs\Global\Vehicles.xml">
+=======
+    <None Update="Catalogs\TEN Property Catalogs\Global\HitPoints.xml">
+>>>>>>> develop
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -480,9 +484,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Catalogs\TEN Sound Catalogs\TR5_Override.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Catalogs\TEN Property Catalogs\Example.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Catalogs\TEN Property Catalogs\README.md">

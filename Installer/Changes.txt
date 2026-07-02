@@ -20,6 +20,7 @@ Tomb Editor:
  * Fixed exception while opening texture lists in Remap Texture dialog.
 
 WadTool:
+ * Added an option to consolidate textures for an object into a single set of texture pages.
  * Added mesh name display in the skeleton editor.
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  * Fixed exception when trying to open an object without meshes in the mesh editor.
@@ -28,6 +29,9 @@ WadTool:
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.
+ 
+TEN property system updates:
+ * Starting hit points for all enemies. 
  
 Version 1.11
 ============
