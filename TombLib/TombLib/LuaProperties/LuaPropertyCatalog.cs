@@ -168,10 +168,14 @@ namespace TombLib.LuaProperties
         /// </summary>
         private static void ParseObjectNode(XmlNode objectNode, ObjectKind kind, string filePath, Dictionary<LuaPropertyObjectKey, List<LuaPropertyDefinition>> result)
         {
+            // Read object identifier: prefer "id", fall back to "name".
             var idAttr = objectNode.Attributes?["id"];
             if (idAttr == null || string.IsNullOrWhiteSpace(idAttr.Value))
+                idAttr = objectNode.Attributes?["name"];
+
+            if (idAttr == null || string.IsNullOrWhiteSpace(idAttr.Value))
             {
-                logger.Warn("Property catalog entry missing 'id' attribute in {0}", filePath);
+                logger.Warn("Property catalog entry missing 'id' or 'name' attributes in {0}", filePath);
                 return;
             }
 
@@ -256,6 +260,11 @@ namespace TombLib.LuaProperties
             var hasAlphaStr = propNode.Attributes?["hasAlpha"]?.Value?.Trim() ?? string.Empty;
             if (bool.TryParse(hasAlphaStr, out var hasAlpha))
                 definition.HasAlpha = hasAlpha;
+
+            // Optional: replacesOCB (warns if OCB is non-zero on an ItemInstance with this property).
+            var replacesOCBStr = propNode.Attributes?["replacesOCB"]?.Value?.Trim() ?? string.Empty;
+            if (bool.TryParse(replacesOCBStr, out var replacesOCB))
+                definition.ReplacesOCB = replacesOCB;
 
             // Optional: enum entries (only meaningful for Enum type).
             if (propertyType == LuaPropertyType.Enum)
