@@ -111,7 +111,9 @@ namespace TombLib.LuaProperties
                 return result;
             }
 
-            var xmlFiles = Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories).OrderBy(f => f).ToList();
+            var xmlFiles = Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories)
+                .Where(f => !Path.GetFileName(f).Equals("Example.xml", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(f => f).ToList();
 
             if (xmlFiles.Count == 0)
             {
