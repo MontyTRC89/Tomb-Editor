@@ -118,7 +118,8 @@ namespace TombEditor.ToolWindows
                 // Warn if legacy OCB is set on a moveable that has properties replacing OCB functionality.
                 if (moveable.Ocb != 0 && definitions.Any(d => d.ReplacesOCB))
                 {
-                    _editor.SendMessage("A legacy OCB field overrides \"" + definitions.First(d => d.ReplacesOCB).DisplayName + "\" property for this moveable." + "\n" +
+                    var defName = definitions.Where(d => d.ReplacesOCB).Count() > 1 ? "some properties" : "\"" + definitions.First(d => d.ReplacesOCB).DisplayName + "\" property";
+                    _editor.SendMessage("A legacy OCB field overrides " + defName + " for this moveable." + "\n" +
                         "Reset OCB to 0 and use properties instead to solve conflict.", PopupType.Warning);
                 }
             }
