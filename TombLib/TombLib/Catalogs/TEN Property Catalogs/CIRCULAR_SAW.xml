@@ -1,7 +1,7 @@
 <propertyCatalog>    
 	<moveable id="CIRCULAR_SAW">
         <property
-          internalName="CircularSawSparkles"
+          internalName="SparkEffect"
           displayName="Spark Effect"
           type="Bool"
           defaultValue="false"

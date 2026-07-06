@@ -1,7 +1,7 @@
 <propertyCatalog>    
 	<moveable id="LARGE_FAN">
         <property
-          internalName="FanDamage"
+          internalName="Damage"
           displayName="Fan damage"
           type="Int"
           defaultValue="1000"

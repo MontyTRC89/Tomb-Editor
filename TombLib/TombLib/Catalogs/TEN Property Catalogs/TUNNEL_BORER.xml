@@ -1,15 +1,15 @@
 <propertyCatalog>    
 	<moveable id="TUNNEL_BORER">
         <property
-          internalName="TunnelBorerSpeed"
-          displayName="Downward velocity"
+          internalName="VerticalVelocity"
+          displayName="Vertical velocity"
           type="Int"
           defaultValue="5"
           category="Trap parameters"
-          description="Adds a slight downward movement"
+          description="Adds a slight vertical movement"
         />
 		<property
-          internalName="TunnelBorerDamage"
+          internalName="Damage"
           displayName="Harm damage"
           type="Int"
           defaultValue="75"

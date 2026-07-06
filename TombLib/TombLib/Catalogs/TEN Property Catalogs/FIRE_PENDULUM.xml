@@ -1,7 +1,7 @@
 <propertyCatalog>    
 	<moveable id="DISK_SHOOTER">
         <property
-          internalName="FirePendulumFlameMesh"
+          internalName="EffectMeshID"
           displayName="Flame Mesh"
           type="Int"
           defaultValue="4"
@@ -9,7 +9,7 @@
           description="Mesh to display the flame effect"
         />
 		<property 
-		  internalName="FirePendulumFlameColor"
+		  internalName="EffectColor"
           displayName="Flame Color"
           type="Color"
           defaultValue="TEN.Color(0, 0, 0)"
@@ -17,7 +17,7 @@
           description="Color tint applied to the flame effect. (0, 0, 0) = real flame color" 
 		/>
 		<property
-          internalName="FirePendulumFxFogEffect"
+          internalName="FxFogEffect"
           displayName="Fx Fog Effect"
           type="Bool"
           defaultValue="false"

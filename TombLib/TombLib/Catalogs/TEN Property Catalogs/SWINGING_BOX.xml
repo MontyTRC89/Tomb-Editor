@@ -1,7 +1,7 @@
 <propertyCatalog>    
 	<moveable id="SWINGING_BOX">
         <property
-          internalName="PendulumDamage"
+          internalName="Damage"
           displayName="Harm damage"
           type="Int"
           defaultValue="75"
