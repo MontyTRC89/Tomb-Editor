@@ -101,14 +101,14 @@
 	  category="Sounds"
 	  description="Sound played when Puna is dying."
 	/>
-	<property
-	  internalName="PunaChairTurnSound"
-	  displayName="Chair turning sound"
-	  type="Int"
-	  defaultValue="696"
-	  category="Sounds"
-	  description="Sound played when Puna's chair is turning."
-	/>
+    <property
+      internalName="PunaChairTurnSound"
+      displayName="Chair Turning Sound"
+      type="Int"
+      defaultValue="696"
+      category="Sounds"
+      description="Sound played when Puna's chair is turning."
+    />
 	<property
 	  internalName="PunaChairTurnEndSound"
 	  displayName="Chair turning end sound"
