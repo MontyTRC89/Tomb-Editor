@@ -2401,10 +2401,33 @@ namespace TombEditor
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
         }
 
+        private static bool ObjectInstanceIsMoveable(ObjectInstance instance) =>
+            instance is ItemInstance item && !item.ItemType.IsStatic;
+
+        private static bool ObjectGroupContainsMoveable(ObjectGroup group) =>
+            group.Any(ObjectInstanceIsMoveable);
+
+        private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
+        {
+            if (!room.IsAlternate)
+                return false;
+
+            if (instance is ObjectGroup group)
+                return ObjectGroupContainsMoveable(group);
+
+            return ObjectInstanceIsMoveable(instance);
+        }
+
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
             if (!(instance is ISpatial))
                 return;
+
+            if (IsInvalidMoveablePlacement(room, instance))
+            {
+                _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
+                return;
+            }
 
             if (instance is ObjectGroup)
             {
