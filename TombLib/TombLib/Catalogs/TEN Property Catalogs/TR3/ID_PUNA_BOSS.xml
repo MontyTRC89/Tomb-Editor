@@ -85,14 +85,14 @@
       category="Visuals"
       description="Secondary color of the explosion sparks during Puna's death sequence."
     />
-	<property
-	  internalName="PunaHitSound"
-	  displayName="Hit sound"
-	  type="Int"
-	  defaultValue="695"
-	  category="Sounds"
-	  description="Sound played when Puna is hit."
-	/>
+    <property
+      internalName="PunaHitSound"
+      displayName="Hit Sound"
+      type="Int"
+      defaultValue="695"
+      category="Sounds"
+      description="Sound played when Puna is hit."
+    />
 	<property
 	  internalName="PunaDeathSound"
 	  displayName="Death sound"
