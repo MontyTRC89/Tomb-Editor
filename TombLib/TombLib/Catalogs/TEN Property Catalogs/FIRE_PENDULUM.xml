@@ -1,5 +1,5 @@
 <propertyCatalog>    
-	<moveable id="DISK_SHOOTER">
+	<moveable id="FIRE_PENDULUM">
         <property
           internalName="EffectMeshID"
           displayName="Flame Mesh"
