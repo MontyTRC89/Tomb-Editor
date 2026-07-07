@@ -74,7 +74,9 @@ namespace TombLib.Forms.ViewModels
         /// <param name="container">Existing property container with saved values, or null.</param>
         /// <param name="globalDefaults">Optional global defaults from the wad2 object type.
         /// When provided, these values override XML catalog defaults for display and reset purposes.</param>
-        public void Load(List<LuaPropertyDefinition> definitions, LuaPropertyContainer container, LuaPropertyContainer globalDefaults = null)
+        /// <param name="isOCBSet">If true, the associated ItemInstance has a non-zero OCB value.
+        /// Properties with ReplacesOCB=true will be disabled and grayed out.</param>
+        public void Load(List<LuaPropertyDefinition> definitions, LuaPropertyContainer container, LuaPropertyContainer globalDefaults = null, bool isOCBSet = false)
         {
             Properties.Clear();
             _container = container;
@@ -104,6 +106,11 @@ namespace TombLib.Forms.ViewModels
 
                 var row = new LuaPropertyRowViewModel(definition, currentValue, wadDefault);
                 row.ValueChanged += OnRowValueChanged;
+
+                // Disable and gray out properties that conflict with a non-zero OCB.
+                if (isOCBSet && definition.ReplacesOCB)
+                    row.IsEnabled = false;
+
                 Properties.Add(row);
             }
 
