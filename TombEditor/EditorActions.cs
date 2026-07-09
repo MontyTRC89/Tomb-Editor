@@ -193,10 +193,29 @@ namespace TombEditor
                         case ArrowType.CornerNW: origin = SectorEdge.XnZp; break;
                         case ArrowType.CornerSE: origin = SectorEdge.XpZn; break;
                     }
+
+                    // GetSectorTryThroughPortal can return an empty pair (outside the room, no portal), so
+                    // guard the origin and every corner before reading heights. Corners default to true,
+                    // hence the explicit reset when the origin itself is missing.
                     var originSector = room.GetSectorTryThroughPortal(startCoord);
-                    var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
-                    for (int i = 0; i < 4; i++)
-                        corners[i] = originHeight == cornerSectors[i].Sector.GetHeight(vertical, (SectorEdge)i) + cornerSectors[i].Room.Position.Y;
+                    if (originSector.Sector == null || originSector.Room == null)
+                        Array.Fill(corners, false);
+                    else
+                    {
+                        var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
+
+                        // A corner smooths only if it exists and sits at the same height as the edited corner.
+                        bool CornerMatchesOriginHeight(RoomSectorPair corner, SectorEdge edge)
+                        {
+                            if (corner.Sector == null || corner.Room == null)
+                                return false;
+
+                            return originHeight == corner.Sector.GetHeight(vertical, edge) + corner.Room.Position.Y;
+                        }
+
+                        for (int i = 0; i < 4; i++)
+                            corners[i] = CornerMatchesOriginHeight(cornerSectors[i], (SectorEdge)i);
+                    }
                 }
 
                 // Smoothly change sectors on the corners
