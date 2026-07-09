@@ -383,6 +383,9 @@
 	<moveable id="471" name="LARGE_FAN" />	
 	<moveable id="472" name="FALLING_SPIKES" />	
 	<moveable id="473" name="TUNNEL_BORER" />	
+	<moveable id="474" name="AIRPLANE_PROPELLER" />
+	<moveable id="475" name="ROTATING_KNIFE_DISK" />
+	<moveable id="476" name="FALLING_SANDBAG" />
     <moveable id="500" name="PUZZLE_ITEM1" />
     <moveable id="501" name="PUZZLE_ITEM2" />
     <moveable id="502" name="PUZZLE_ITEM3" />
