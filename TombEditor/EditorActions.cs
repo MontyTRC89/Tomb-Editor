@@ -5944,6 +5944,9 @@ namespace TombEditor
                         if (instance is SoundSourceInstance)
                         {
                             var soundSource = instance as SoundSourceInstance;
+                            if (soundSource.IsEmpty)
+                                continue;
+
                             if (!settings.SelectedSounds.Contains(soundSource.SoundId))
                                 settings.SelectedSounds.Add(soundSource.SoundId);
                         }
