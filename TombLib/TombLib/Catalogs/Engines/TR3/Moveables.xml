@@ -81,7 +81,7 @@
     <moveable id="87" name="Spikes / Barbed wire" essential="false" ten="TEETH_SPIKES" /> 
     <moveable id="88" name="Boulder / Barrel" essential="false" ten="CLASSIC_ROLLINGBALL" />
     <moveable id="89" name="Giant boulder (Temple of Puna)" essential="false" ten="BIG_ROLLINGBALL" /> 
-    <moveable id="90" name="Disk (like dart)" hidden="true" ten="DART" />
+    <moveable id="90" name="Disk (like dart)" essential="false" ten="DARTS,DISK" />
     <moveable id="91" name="Dart emitter" essential="false" ten="DART_EMITTER" />
     <moveable id="94" name="Spiked frame / Slamming door" essential="false" ten="SPIKED_FRAME, SLAMMING_DOOR" />
     <moveable id="97" name="Movable cubical block (pushable)" essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
