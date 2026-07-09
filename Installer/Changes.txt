@@ -51,6 +51,9 @@ Tomb Editor:
  * Fixed node parameter corruption after changing node background color.
  * Fixed unintended room deletion in 3D mode when no objects are selected.
  * Fixed enemy monkeyswing pathfinding being added to TR3 levels.
+ * Fixed rare exception that happened when objects were copied and pasted to another room.
+ * Fixed empty sound sources not skipped when autodetecting sounds.
+ * Fixed rare exception that was happening when a geometry group operation was applied to border walls.
 
 WadTool:
  * Added indication of missing external texture file.
