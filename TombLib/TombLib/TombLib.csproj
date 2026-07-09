@@ -426,6 +426,9 @@
     <None Update="Catalogs\Engines\TR5\States.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Property Catalogs\TR3\ID_PUNA_BOSS.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Property Catalogs\Global\HitPoints.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

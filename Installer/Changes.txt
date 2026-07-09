@@ -33,6 +33,9 @@ TEN nodes:
 TEN property system updates:
  * Starting hit points for all enemies. 
  
+TEN property system updates:
+ * Added properties for customising PUNA_BOSS lightning colours, hardcoded sounds, attack damage and behavior.
+ 
 Version 1.11
 ============
 

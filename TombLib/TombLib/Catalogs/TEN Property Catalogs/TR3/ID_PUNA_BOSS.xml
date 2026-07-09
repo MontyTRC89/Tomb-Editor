@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<propertyCatalog>
+  <moveable id="PUNA_BOSS">
+    <property
+      internalName="PunaLightningDamage"
+      displayName="Lightning Attack Damage"
+      type="Int"
+      defaultValue="350"
+      category="Attack Parameters"
+      description="Damage dealt by Puna's direct lightning strike."
+    />
+    <property
+      internalName="PunaAttackCount"
+      displayName="Attacks Before Lizard Summon"
+      type="Int"
+      defaultValue="4"
+      category="Attack Parameters"
+      description="Number of lightning attacks Puna performs before summoning a lizard. Requires lizards to be present on the map."
+    />
+    <property
+      internalName="PunaAlertRange"
+      displayName="Alert Range (blocks)"
+      type="Float"
+      defaultValue="2.5"
+      category="Behaviour"
+      description="Distance in blocks at which Puna becomes alerted and begins attacking the player."
+    />
+    <property
+      internalName="PunaTurnRate"
+      displayName="Turn Rate (degrees)"
+      type="Float"
+      defaultValue="3.0"
+      category="Behaviour"
+      description="Maximum rotation speed of Puna's body per frame, in degrees."
+    />
+    <property
+      internalName="PunaLightningColor"
+      displayName="Lightning Color"
+      type="Color"
+      defaultValue="TEN.Color(20, 160, 160)"
+      category="Visuals"
+      description="Color of the direct lightning attack fired at the player."
+    />
+    <property
+      internalName="PunaSummonColor"
+      displayName="Summon Lightning Color"
+      type="Color"
+      defaultValue="TEN.Color(0, 255, 128)"
+      category="Visuals"
+      description="Color of the lightning bolt fired to summon a lizard."
+    />
+    <property
+      internalName="PunaShieldColor"
+      displayName="Shield Color"
+      type="Color"
+      defaultValue="TEN.Color(0, 64, 64, 166)"
+      hasAlpha="true"
+      category="Visuals"
+      description="Color of the energy shield that deflects shots while Puna is not attacking."
+    />
+    <property
+      internalName="PunaEffectColor"
+      displayName="Death Effect Color"
+      type="Color"
+      defaultValue="TEN.Color(0, 102, 128, 128)"
+      hasAlpha="true"
+      category="Visuals"
+      description="Color of the shockwave and dynamic light emitted during Puna's death explosion sequence."
+    />
+    <property
+      internalName="PunaExplosionColor1"
+      displayName="Explosion Spark Color 1"
+      type="Color"
+      defaultValue="TEN.Color(0, 179, 77, 128)"
+      hasAlpha="true"
+      category="Visuals"
+      description="Primary color of the explosion sparks during Puna's death sequence."
+    />
+    <property
+      internalName="PunaExplosionColor2"
+      displayName="Explosion Spark Color 2"
+      type="Color"
+      defaultValue="TEN.Color(26, 77, 179, 128)"
+      hasAlpha="true"
+      category="Visuals"
+      description="Secondary color of the explosion sparks during Puna's death sequence."
+    />
+    <property
+      internalName="PunaHitSound"
+      displayName="Hit Sound"
+      type="Int"
+      defaultValue="695"
+      category="Sounds"
+      description="Sound played when Puna is hit."
+    />
+	<property
+	  internalName="PunaDeathSound"
+	  displayName="Death sound"
+	  type="Int"
+	  defaultValue="693"
+	  category="Sounds"
+	  description="Sound played when Puna is dying."
+	/>
+    <property
+      internalName="PunaChairTurnSound"
+      displayName="Chair Turning Sound"
+      type="Int"
+      defaultValue="696"
+      category="Sounds"
+      description="Sound played when Puna's chair is turning."
+    />
+	<property
+	  internalName="PunaChairTurnEndSound"
+	  displayName="Chair turning end sound"
+	  type="Int"
+	  defaultValue="692"
+	  category="Sounds"
+	  description="Sound played when Puna's chair has finished turning."
+	/>		
+  </moveable>
+</propertyCatalog>
