@@ -74,7 +74,7 @@
     <moveable id="73" name="Breakable window (must jump through)" essential="false" ten="SMASH_OBJECT2" />
     <moveable id="76" name="Airplane propeller" essential="false" ten="AIRPLANE_PROPELLER" />
     <moveable id="77" name="Power saw" essential="false" ten="CIRCULAR_SAW" />
-    <moveable id="78" name="Overhead pulley hook" essential="false" ten="MOVING_BLADE" />
+    <moveable id="78" name="Overhead pulley hook" essential="false" ten="OVERHEAD_PULLEY_HOOK" />
     <moveable id="79" name="Sandbag / Ceiling fragments" essential="false" ten="FALLING_CEILING,FALLING_SANDBAG" />
     <moveable id="80" name="Rolling spindle" essential="false" ten="ROLLING_SPINDLE" />
     <moveable id="81" name="Wall-mounted knife blade" essential="false" ten="WALL_MOUNTED_BLADE" />

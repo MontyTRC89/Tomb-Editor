@@ -373,7 +373,7 @@
 	<moveable id="461" name="SPIKED_FRAME" />
 	<moveable id="462" name="SWINGING_SANDBAG" />
 	<moveable id="463" name="SWINGING_BOX" />
-	<moveable id="464" name="OVERHEAD_PULLY_HOOK" />
+	<moveable id="464" name="OVERHEAD_PULLEY_HOOK" />
 	<moveable id="465" name="SWINGING_IRON_ANCHOR" />
 	<moveable id="466" name="SWINGING_SPIKE_BAG" />
 	<moveable id="467" name="CIRCULAR_SAW" />
