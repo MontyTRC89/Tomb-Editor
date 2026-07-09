@@ -1,177 +1,114 @@
--- !Ignore
--- Helper function to test whether Lara is in a specific traversal mode based on the provided state. Used by TestLaraTraversalState.
-LevelFuncs.Engine.Node.TestLaraTraversalMode = function(mode, state)
-	local ladderStates =
+-- Lookup of Lara's traversal states, grouped by traversal mode (the enumeration exposed by the node
+-- below). Built once at module scope so the node performs an O(1) lookup instead of rebuilding tables
+-- and doing a linear scan on every call.
+local TRAVERSAL_STATES =
+{
+	[0] = -- CLIMB
 	{
-		10, -- hang state
-		19, -- grabbing (pulling up)
-		55, -- climbing up
-		56, -- idle on ladder
-		57, -- ladder up
-		58, -- ladder left
-		59, -- ladder down
-		60, -- ladder right
-		61, -- climbing down
-		88, -- climb off ladder
-		107, -- shimmy outer left
-		108, -- shimmy outer right
-		109, -- shimmy inner left
-		110, -- shimmy inner right
-		138, -- ladder to crouch
-	}
+		[10] = true,  -- hang state
+		[19] = true,  -- grabbing (pulling up)
+		[55] = true,  -- climbing up
+		[56] = true,  -- idle on ladder
+		[57] = true,  -- ladder up
+		[58] = true,  -- ladder left
+		[59] = true,  -- ladder down
+		[60] = true,  -- ladder right
+		[61] = true,  -- climbing down
+		[88] = true,  -- climb off ladder
+		[107] = true, -- shimmy outer left
+		[108] = true, -- shimmy outer right
+		[109] = true, -- shimmy inner left
+		[110] = true, -- shimmy inner right
+		[138] = true, -- ladder to crouch
+	},
 
-	local crawlingStates =
+	[1] = -- CRAWL
 	{
-		71, -- crouch idle
-		72, -- crouch roll
-		80, -- crawling idle
-		81, -- crawl forward
-		84, -- crawling turn left
-		85, -- crawling turn right
-		86, -- crawling backwards
-		105, -- crouch turn left
-		106, -- crouch turn right
-		160, -- crawl step up
-		161, -- crawl step down
-		167, -- 1 step crouch vault
-		168, -- 2 step crouch vault
-		169, -- 3 step crouch vault
-		171, -- crouch turn 180
-		172, -- crawl turn 180
-	}
+		[71] = true,  -- crouch idle
+		[72] = true,  -- crouch roll
+		[80] = true,  -- crawling idle
+		[81] = true,  -- crawl forward
+		[84] = true,  -- crawling turn left
+		[85] = true,  -- crawling turn right
+		[86] = true,  -- crawling backwards
+		[105] = true, -- crouch turn left
+		[106] = true, -- crouch turn right
+		[160] = true, -- crawl step up
+		[161] = true, -- crawl step down
+		[167] = true, -- 1 step crouch vault
+		[168] = true, -- 2 step crouch vault
+		[169] = true, -- 3 step crouch vault
+		[171] = true, -- crouch turn 180
+		[172] = true, -- crawl turn 180
+	},
 
-	local horizontalBarStates =
+	[2] = -- HORIZONTAL_BAR
 	{
-		128, -- horizontal bar swing
-		129, -- horizontal bar leap
-	}
+		[128] = true, -- horizontal bar swing
+		[129] = true, -- horizontal bar leap
+	},
 
-	local monkeySwingStates =
+	[3] = -- MONKEY_SWING
 	{
-		75, -- monkey swing idle
-		76, -- monkey swing forward
-		77, -- monkey swing shimmy left
-		78, -- monkey swing shimmy right
-		79, -- monkey swing turn 180
-		82, -- monkey turn left
-		83, -- monkey turn right
-	}
+		[75] = true,  -- monkey swing idle
+		[76] = true,  -- monkey swing forward
+		[77] = true,  -- monkey swing shimmy left
+		[78] = true,  -- monkey swing shimmy right
+		[79] = true,  -- monkey swing turn 180
+		[82] = true,  -- monkey turn left
+		[83] = true,  -- monkey turn right
+	},
 
-	local poleVaultStates =
+	[4] = -- POLE_VAULT
 	{
-		99, -- pole idle
-		100, -- pole up
-		101, -- pole down
-		102, -- pole turn clockwise
-		103, -- pole turn counterclockwise
-	}
+		[99] = true,  -- pole idle
+		[100] = true, -- pole up
+		[101] = true, -- pole down
+		[102] = true, -- pole turn clockwise
+		[103] = true, -- pole turn counterclockwise
+	},
 
-	local ropeSwingStates =
+	[5] = -- ROPE_SWING
 	{
-		90, -- rope turn clockwise
-		91, -- rope turn counterclockwise
-		111, -- rope idle
-		112, -- rope up
-		113, -- rope down
-		114, -- rope swing
-		115, -- rope unknown
-	}
+		[90] = true,  -- rope turn clockwise
+		[91] = true,  -- rope turn counterclockwise
+		[111] = true, -- rope idle
+		[112] = true, -- rope up
+		[113] = true, -- rope down
+		[114] = true, -- rope swing
+		[115] = true, -- rope unknown
+	},
 
-	local swimStates =
+	[6] = -- SWIM
 	{
-		13, -- swimming idle
-		17, -- swim forward
-		18, -- swim inertia
-		35, -- dive
-		40, -- use switch
-		42, -- use key
-		43, -- use puzzle
-		44, -- underwater death
-		66, -- underwater roll
-		67, -- pickup flare
-		89, -- misc control (opening door, trapdoor, kick)
-		93, -- trapdoor floor open
-		104, -- using pulley
-		189, -- remove puzzle
-		198, -- ungrab pulley
-	}
+		[13] = true,  -- swimming idle
+		[17] = true,  -- swim forward
+		[18] = true,  -- swim inertia
+		[35] = true,  -- dive
+		[40] = true,  -- use switch
+		[42] = true,  -- use key
+		[43] = true,  -- use puzzle
+		[44] = true,  -- underwater death
+		[66] = true,  -- underwater roll
+		[67] = true,  -- pickup flare
+		[89] = true,  -- misc control (opening door, trapdoor, kick)
+		[93] = true,  -- trapdoor floor open
+		[104] = true, -- using pulley
+		[189] = true, -- remove puzzle
+		[198] = true, -- ungrab pulley
+	},
 
-	local tightropeStates =
+	[7] = -- TIGHTROPE
 	{
-		119, -- Tightrope idle
-		120, -- Tightrope turn 180
-		121, -- Tightrope walk
-		122, -- Tightrope unbalance left
-		123, -- Tightrope unbalance right
-		124, -- Tightrope enter
-		125, -- Tightrope dismount
-	}
-
-	local function IsStateInList(currentState, states)
-		for _, expectedState in ipairs(states) do
-			if (currentState == expectedState) then
-				return true
-			end
-		end
-
-		return false
-	end
-
-	local TRAVERSAL_MODE =
-	{
-		CLIMB = 0,
-		CRAWL = 1,
-		HORIZONTAL_BAR = 2,
-		MONKEY_SWING = 3,
-		POLE_VAULT = 4,
-		ROPE_SWING = 5,
-		SWIM = 6,
-		TIGHTROPE = 7,
-	}
-
-	local traversalModeTests =
-	{
-		[TRAVERSAL_MODE.CLIMB] = function(currentState)
-			return IsStateInList(currentState, ladderStates)
-		end,
-
-		[TRAVERSAL_MODE.CRAWL] = function(currentState)
-			return IsStateInList(currentState, crawlingStates)
-		end,
-
-		[TRAVERSAL_MODE.HORIZONTAL_BAR] = function(currentState)
-			return IsStateInList(currentState, horizontalBarStates)
-		end,
-
-		[TRAVERSAL_MODE.MONKEY_SWING] = function(currentState)
-			return IsStateInList(currentState, monkeySwingStates)
-		end,
-
-		[TRAVERSAL_MODE.POLE_VAULT] = function(currentState)
-			return IsStateInList(currentState, poleVaultStates)
-		end,
-
-		[TRAVERSAL_MODE.ROPE_SWING] = function(currentState)
-			return IsStateInList(currentState, ropeSwingStates)
-		end,
-
-		[TRAVERSAL_MODE.SWIM] = function(currentState)
-			return IsStateInList(currentState, swimStates)
-		end,
-
-		[TRAVERSAL_MODE.TIGHTROPE] = function(currentState)
-			return IsStateInList(currentState, tightropeStates)
-		end,
-	}
-
-	local traversalTest = traversalModeTests[mode]
-
-	if (traversalTest == nil) then
-		return false
-	end
-
-	return traversalTest(state)
-end
+		[119] = true, -- Tightrope idle
+		[120] = true, -- Tightrope turn 180
+		[121] = true, -- Tightrope walk
+		[122] = true, -- Tightrope unbalance left
+		[123] = true, -- Tightrope unbalance right
+		[124] = true, -- Tightrope enter
+		[125] = true, -- Tightrope dismount
+	},
+}
 
 -- !Name "If Lara traversal state is..."
 -- !Section "Lara state"
@@ -180,5 +117,6 @@ end
 -- !Arguments "Enumeration, [ Climb | Crawl | Horizontal Bar | Monkey Swing | Pole Vault | Rope Swing | Swim | Tightrope ], 30, Traversal state to test."
 
 LevelFuncs.Engine.Node.TestLaraTraversalState = function(mode)
-	return LevelFuncs.Engine.Node.TestLaraTraversalMode(mode, TEN.Objects.Lara:GetState())
+	local states = TRAVERSAL_STATES[mode]
+	return states ~= nil and states[TEN.Objects.Lara:GetState()] == true
 end
