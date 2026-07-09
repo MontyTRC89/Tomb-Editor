@@ -194,6 +194,9 @@ namespace TombEditor
                         case ArrowType.CornerSE: origin = SectorEdge.XpZn; break;
                     }
 
+                    // GetSectorTryThroughPortal can return an empty pair (outside the room, no portal), so
+                    // guard the origin and every corner before reading heights. Corners default to true,
+                    // hence the explicit reset when the origin itself is missing.
                     var originSector = room.GetSectorTryThroughPortal(startCoord);
                     if (originSector.Sector == null || originSector.Room == null)
                         Array.Fill(corners, false);
@@ -201,16 +204,17 @@ namespace TombEditor
                     {
                         var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
 
-                        bool IsCornerValidAndAtSameHeight(RoomSectorPair cornerSector, SectorEdge edge, SectorVerticalPart cornerVertical, int referenceHeight)
+                        // A corner smooths only if it exists and sits at the same height as the edited corner.
+                        bool CornerMatchesOriginHeight(RoomSectorPair corner, SectorEdge edge)
                         {
-                            if (cornerSector.Sector == null || cornerSector.Room == null)
+                            if (corner.Sector == null || corner.Room == null)
                                 return false;
 
-                            return referenceHeight == cornerSector.Sector.GetHeight(cornerVertical, edge) + cornerSector.Room.Position.Y;
+                            return originHeight == corner.Sector.GetHeight(vertical, edge) + corner.Room.Position.Y;
                         }
 
                         for (int i = 0; i < 4; i++)
-                            corners[i] = IsCornerValidAndAtSameHeight(cornerSectors[i], (SectorEdge)i, vertical, originHeight);
+                            corners[i] = CornerMatchesOriginHeight(cornerSectors[i], (SectorEdge)i);
                     }
                 }
 
