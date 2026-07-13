@@ -62,7 +62,7 @@
     <moveable id="61" name="Disk (like dart)" hidden="true" ten="DISK" />
     <moveable id="62" name="Wall-mounted disk shooter (like dartgun)" essential="false" ten="DISK_SHOOTER" />
     <moveable id="63" name="Drawbridge" essential="false" />
-    <moveable id="64" name="Slamming door" essential="false" ten="SLAMMING_DOOR" />
+    <moveable id="64" name="Slamming door" essential="false" ten="SLAMMING_DOORS" />
     <moveable id="65" name="Elevator" essential="false" ten="LIFT" />
     <moveable id="66" name="Minisub" essential="false" />
     <moveable id="67" name="Movable cubical block (pushable)"   essential="false" ten="PUSHABLE_OBJECT_CLIMBABLE1" />
