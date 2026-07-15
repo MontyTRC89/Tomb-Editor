@@ -237,7 +237,7 @@
 	<moveable id="305" name="LONDON_MERCENARY" />
 	<moveable id="306" name="SWAT_GUN" />
 	<moveable id="307" name="PRISONER" />
-	<movebale id="308" name="WASP_MUTANT_EMITTER" />
+	<moveable id="308" name="WASP_MUTANT_EMITTER" />
     <moveable id="320" name="SPRINGBOARD" />
     <moveable id="321" name="ROLLING_SPINDLE" />
     <moveable id="322" name="DISK_SHOOTER" />
