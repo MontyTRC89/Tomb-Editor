@@ -7,14 +7,14 @@ local TRAVERSAL_STATES =
 	{
 		[10] = true,  -- hang state
 		[19] = true,  -- grabbing (pulling up)
-		[55] = true,  -- climbing up
+		[55] = true,  -- climbing out of water
 		[56] = true,  -- idle on ladder
 		[57] = true,  -- ladder up
 		[58] = true,  -- ladder left
-		[59] = true,  -- ladder down
+		[59] = true,  -- ladder stop
 		[60] = true,  -- ladder right
-		[61] = true,  -- climbing down
-		[88] = true,  -- climb off ladder
+		[61] = true,  -- ladder down
+		[88] = true,  -- crawl to hang
 		[107] = true, -- shimmy outer left
 		[108] = true, -- shimmy outer right
 		[109] = true, -- shimmy inner left
@@ -33,8 +33,8 @@ local TRAVERSAL_STATES =
 		[86] = true,  -- crawling backwards
 		[105] = true, -- crouch turn left
 		[106] = true, -- crouch turn right
-		[160] = true, -- crawl step up
-		[161] = true, -- crawl step down
+		[161] = true, -- crawl step up
+		[162] = true, -- crawl step down
 		[167] = true, -- 1 step crouch vault
 		[168] = true, -- 2 step crouch vault
 		[169] = true, -- 3 step crouch vault
@@ -85,17 +85,14 @@ local TRAVERSAL_STATES =
 		[17] = true,  -- swim forward
 		[18] = true,  -- swim inertia
 		[35] = true,  -- dive
-		[40] = true,  -- use switch
-		[42] = true,  -- use key
-		[43] = true,  -- use puzzle
+		[40] = true,  -- use switch (shared with dry land, see water room check below)
+		[42] = true,  -- use key (shared with dry land)
+		[43] = true,  -- use puzzle (shared with dry land)
 		[44] = true,  -- underwater death
 		[66] = true,  -- underwater roll
 		[67] = true,  -- pickup flare
-		[89] = true,  -- misc control (opening door, trapdoor, kick)
-		[93] = true,  -- trapdoor floor open
-		[104] = true, -- using pulley
-		[189] = true, -- remove puzzle
-		[198] = true, -- ungrab pulley
+		[89] = true,  -- misc control (opening door, trapdoor, kick; shared with dry land)
+		[93] = true,  -- trapdoor floor open (shared with dry land)
 	},
 
 	[7] = -- TIGHTROPE
@@ -110,6 +107,10 @@ local TRAVERSAL_STATES =
 	},
 }
 
+-- Interaction states in the swim group (switches, keys, puzzles) are shared with their
+-- dry-land counterparts, so the swim check additionally requires a water room.
+local SWIM_MODE = 6
+
 -- !Name "If Lara traversal state is..."
 -- !Section "Lara state"
 -- !Conditional "True"
@@ -118,5 +119,14 @@ local TRAVERSAL_STATES =
 
 LevelFuncs.Engine.Node.TestLaraTraversalState = function(mode)
 	local states = TRAVERSAL_STATES[mode]
-	return states ~= nil and states[TEN.Objects.Lara:GetState()] == true
+
+	if states == nil or states[TEN.Objects.Lara:GetState()] ~= true then
+		return false
+	end
+
+	if mode == SWIM_MODE then
+		return TEN.Objects.Lara:GetRoom():GetFlag(TEN.Objects.RoomFlagID.WATER)
+	end
+
+	return true
 end

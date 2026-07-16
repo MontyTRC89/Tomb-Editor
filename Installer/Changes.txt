@@ -27,7 +27,7 @@ WadTool:
  * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
 
 TEN nodes:
- * Added a node to unswap a previously swapped mesh
+ * Added a node to unswap a previously swapped mesh.
  * Added a node to check Lara's traversal mode.
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.
  
