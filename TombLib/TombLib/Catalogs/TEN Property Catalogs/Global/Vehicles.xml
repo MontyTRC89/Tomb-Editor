@@ -2,7 +2,7 @@
 <propertyCatalog>
   <moveable id="SNOWMOBILE,QUAD,SPEEDBOAT,KAYAK,UPV,MINECART,JEEP,MOTORBIKE,RUBBER_BOAT">
   		<property
-		  internalName="VehicleWake"
+		  internalName="VehicleWakeEnable"
 		  displayName="Render wake"
 		  type="Bool"
 		  defaultValue="true"
@@ -10,7 +10,7 @@
 		  description="Add wake effect"
 		/>
 		<property
-		  internalName="WakeStartColor"
+		  internalName="VehicleWakeStartColor"
 		  displayName="Wake start color"
 		  type="Color"
 		  defaultValue="TEN.Color(191,191,191,191)"
@@ -19,7 +19,7 @@
 		  description="Vehicle wake starting color."
 		/>
 		<property
-		  internalName="WakeEndColor"
+		  internalName="VehicleWakeEndColor"
 		  displayName="Wake end color"
 		  type="Color"
 		  defaultValue="TEN.Color(0,0,0,0)"
@@ -34,6 +34,7 @@
 		  internalName="VehicleMist"
 		  displayName="Render mist"
 		  type="Bool"
+		  replacesOCB ="true"
 		  defaultValue="true"
 		  category="Vehicle Effects"
 		  description="Add mist effect."
@@ -77,23 +78,7 @@
 	
 	<moveable id="UPV">
 		<property
-		  internalName="UPVLightColor"
-		  displayName="Light color"
-		  type="Color"
-		  defaultValue="TEN.Color(255,255,255)"
-		  category="Vehicle Light"
-		  description="Light color"
-		/>
-		<property
-		  internalName="UPVLightIntensity"
-		  displayName="Light intensity"
-		  type="Float"
-		  defaultValue="0.5"
-		  category="Vehicle Light"
-		  description="Light intensity"
-		/>
-		<property
-		  internalName="UPVLight"
+		  internalName="SpotLightEnabled"
 		  displayName="Render light"
 		  type="Bool"
 		  defaultValue="true"
@@ -101,7 +86,23 @@
 		  description="Render light"
 		/>
 		<property
-		  internalName="UPVLightRadius"
+		  internalName="SpotLightColor"
+		  displayName="Light color"
+		  type="Color"
+		  defaultValue="TEN.Color(255,255,255)"
+		  category="Vehicle Light"
+		  description="Light color"
+		/>
+		<property
+		  internalName="SpotLightIntensity"
+		  displayName="Light intensity"
+		  type="Float"
+		  defaultValue="0.5"
+		  category="Vehicle Light"
+		  description="Light intensity"
+		/>
+		<property
+		  internalName="SpotLightRadius"
 		  displayName="Light radius"
 		  type="Int"
 		  defaultValue="4"
@@ -111,7 +112,7 @@
 		  description="Light radius (in blocks)"
 		/>
 		<property
-		  internalName="UPVLightFalloff"
+		  internalName="SpotLightFalloff"
 		  displayName="Light falloff"
 		  type="Int"
 		  defaultValue="2"
@@ -121,7 +122,7 @@
 		  description="Light falloff (in blocks)"
 		/>
 		<property
-		  internalName="UPVLightDistance"
+		  internalName="SpotLightDistance"
 		  displayName="Light distance"
 		  type="Int"
 		  defaultValue="10"
@@ -131,7 +132,7 @@
 		  description="Light distance (in blocks)"
 		/>
 		<property
-		  internalName="UPVLightCastShadow"
+		  internalName="SpotLightCastShadow"
 		  displayName="Light shadow cast"
 		  type="Bool"
 		  defaultValue="true"
@@ -142,7 +143,15 @@
 	
 	<moveable id="MOTORBIKE">
 		<property
-		  internalName="MotorbikeLightColor"
+		  internalName="SpotLightEnabled"
+		  displayName="Render light"
+		  type="Bool"
+		  defaultValue="true"
+		  category="Vehicle Light"
+		  description="Render light"
+		/>
+		<property
+		  internalName="SpotLightColor"
 		  displayName="Headlight color"
 		  type="Color"
 		  defaultValue="TEN.Color(255,170,0)"
@@ -150,7 +159,7 @@
 		  description="Light color"
 		/>
 		<property
-		  internalName="MotorbikeLightIntensity"
+		  internalName="SpotLightIntensity"
 		  displayName="Headlight intensity"
 		  type="Float"
 		  minValue = "0"
@@ -160,15 +169,7 @@
 		  description="Light intensity"
 		/>
 		<property
-		  internalName="MotorbikeLight"
-		  displayName="Render light"
-		  type="Bool"
-		  defaultValue="true"
-		  category="Vehicle Light"
-		  description="Render light"
-		/>
-		<property
-		  internalName="MotorbikeLightRadius"
+		  internalName="SpotLightRadius"
 		  displayName="Headlight radius"
 		  type="Int"
 		  defaultValue="4"
@@ -178,7 +179,7 @@
 		  description="Light radius (in blocks)"
 		/>
 		<property
-		  internalName="MotorbikeLightFalloff"
+		  internalName="SpotLightFalloff"
 		  displayName="Headlight falloff"
 		  type="Int"
 		  defaultValue="2"
@@ -188,7 +189,7 @@
 		  description="Light falloff (in blocks)"
 		/>
 		<property
-		  internalName="MotorbikeLightDistance"
+		  internalName="SpotLightDistance"
 		  displayName="Headlight distance"
 		  type="Int"
 		  defaultValue="10"
@@ -198,7 +199,7 @@
 		  description="Light distance (in blocks)"
 		/>
 		<property
-		  internalName="MotorbikeLightCastShadow"
+		  internalName="SpotLightCastShadow"
 		  displayName="Light shadow cast"
 		  type="Bool"
 		  defaultValue="true"
@@ -209,7 +210,15 @@
 	
 	<moveable id="JEEP">
 		<property
-		  internalName="JeepLightColor"
+		  internalName="SpotLightEnabled"
+		  displayName="Render headlight"
+		  type="Bool"
+		  defaultValue="false"
+		  category="Vehicle Light"
+		  description="Render light"
+		/>
+		<property
+		  internalName="SpotLightColor"
 		  displayName="Headlight color"
 		  type="Color"
 		  defaultValue="TEN.Color(200,200,200)"
@@ -217,7 +226,7 @@
 		  description="Light color"
 		/>
 		<property
-		  internalName="JeepLightIntensity"
+		  internalName="SpotLightIntensity"
 		  displayName="Headlight intensity"
 		  type="Float"
 		  minValue = "0"
@@ -227,15 +236,7 @@
 		  description="Light intensity"
 		/>
 		<property
-		  internalName="JeepLight"
-		  displayName="Render headlight"
-		  type="Bool"
-		  defaultValue="false"
-		  category="Vehicle Light"
-		  description="Render light"
-		/>
-		<property
-		  internalName="JeepLightRadius"
+		  internalName="SpotLightRadius"
 		  displayName="Headlight radius"
 		  type="Int"
 		  defaultValue="4"
@@ -245,7 +246,7 @@
 		  description="Light radius (in blocks)"
 		/>
 		<property
-		  internalName="JeepLightFalloff"
+		  internalName="SpotLightFalloff"
 		  displayName="Headlight falloff"
 		  type="Int"
 		  defaultValue="2"
@@ -255,7 +256,7 @@
 		  description="Light falloff (in blocks)"
 		/>
 		<property
-		  internalName="JeepLightDistance"
+		  internalName="SpotLightDistance"
 		  displayName="Headlight distance"
 		  type="Int"
 		  defaultValue="10"
@@ -265,7 +266,7 @@
 		  description="Light distance (in blocks)"
 		/>
 		<property
-		  internalName="JeepLightCastShadow"
+		  internalName="SpotLightCastShadow"
 		  displayName="Light shadow cast"
 		  type="Bool"
 		  defaultValue="true"
@@ -279,6 +280,7 @@
 		  internalName="VehicleFoam"
 		  displayName="Render foam"
 		  type="Bool"
+		  replacesOCB ="true"
 		  defaultValue="false"
 		  category="Vehicle Effects"
 		  description="Add foam effect"
