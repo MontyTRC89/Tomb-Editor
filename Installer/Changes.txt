@@ -31,7 +31,12 @@ TEN nodes:
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.
  
 TEN property system updates:
- * Starting hit points for all enemies. 
+ * Starting hit points for all enemies.
+ * Wake effect toggle and colors for all vehicles.
+ * Mist effect toggle and colors for SPEEDBOAT, UPV and RUBBER_BOAT.
+ * Foam effect toggle for SPEEDBOAT.
+ * Exhaust smoke colors for QUAD.
+ * Headlight parameters (color, intensity, radius, falloff, distance and shadow casting) for UPV, MOTORBIKE and JEEP.
  
 Version 1.11
 ============
