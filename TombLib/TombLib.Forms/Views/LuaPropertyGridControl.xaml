@@ -249,30 +249,6 @@
             <Setter Property="Margin" Value="2,1" />
             <Setter Property="MinHeight" Value="24" />
         </Style>
-
-        <!-- System-styled tooltip (overrides DarkUI.WPF implicit ToolTip style) -->
-        <Style x:Key="SystemToolTipStyle" TargetType="ToolTip">
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InfoTextColor}}" />
-			<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Padding" Value="4,2" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToolTip">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                Padding="{TemplateBinding Padding}"
-                                TextElement.Foreground="{TemplateBinding Foreground}">
-                            <TextBlock Text="{TemplateBinding Content}"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       TextWrapping="Wrap" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -306,10 +282,9 @@
                                 <ItemsControl ItemsSource="{Binding}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type vm:LuaPropertyRowViewModel}">
-                                            <Grid Margin="2">
+                                            <Grid Margin="2" Opacity="{Binding IsEnabled, Converter={StaticResource BoolToOpacityConverter}}">
                                                 <Grid.ToolTip>
-                                                    <ToolTip Style="{StaticResource SystemToolTipStyle}"
-                                                             Content="{Binding ToolTip}" />
+                                                    <ToolTip Content="{Binding ToolTip}" />
                                                 </Grid.ToolTip>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="0.4*" MinWidth="80" />
@@ -321,11 +296,13 @@
                                                            Foreground="{DynamicResource Brush_Text}"
                                                            VerticalAlignment="Center"
                                                            Padding="4,2" TextTrimming="CharacterEllipsis"
+                                                           IsEnabled="{Binding IsEnabled}"
                                                            MouseLeftButtonDown="PropertyName_MouseLeftButtonDown" />
 
                                                 <!-- Value column (editable via template selector) -->
                                                 <ContentControl Grid.Column="1" Content="{Binding}"
                                                                 ContentTemplateSelector="{StaticResource EditorTemplateSelector}"
+                                                                IsEnabled="{Binding IsEnabled}"
                                                                 Style="{StaticResource EditorRowStyle}" />
                                             </Grid>
                                         </DataTemplate>

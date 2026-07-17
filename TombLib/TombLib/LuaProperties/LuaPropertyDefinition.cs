@@ -31,6 +31,14 @@ namespace TombLib.LuaProperties
         public string Description { get; set; } = string.Empty;
 
         /// <summary>
+        /// When true, it means that this property supersedes legacy OCB functionality.
+        /// If an ItemInstance has a non-zero OCB value and any of its properties
+        /// has this flag set, the editor will warn the user to reset OCB to 0.
+        /// Controlled by the "replacesOCB" attribute in XML catalogs.
+        /// </summary>
+        public bool ReplacesOCB { get; set; } = false;
+
+        /// <summary>
         /// The Lua value type of this property.
         /// </summary>
         public LuaPropertyType Type { get; set; } = LuaPropertyType.Float;
