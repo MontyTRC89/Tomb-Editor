@@ -29,6 +29,9 @@ WadTool:
  * Fixed exception when trying to open an object without meshes in the mesh editor.
  * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
 
+TombIDE:
+ * Updated TR1X and TR2X presets to TRX 1.9.3.
+
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.
  * Fixed CLOCKWORK_BEETLE, EXAMINE and WATERSKIN items not appearing in the inventory nodes.

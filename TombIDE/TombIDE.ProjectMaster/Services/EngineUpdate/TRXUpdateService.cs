@@ -17,7 +17,7 @@ namespace TombIDE.ProjectMaster.Services.EngineUpdate;
 /// </summary>
 public sealed class TRXUpdateService : IEngineUpdateService
 {
-	private static readonly Version MinAutoUpdateVersion = new(1, 3, 1);
+	private static readonly Version MinAutoUpdateVersion = new(1, 9, 0);
 
 	private readonly IFileExtractionService _fileExtractionService;
 	private readonly TRVersion.Game _gameVersion;
@@ -46,7 +46,7 @@ public sealed class TRXUpdateService : IEngineUpdateService
 	{
 		if (currentVersion < MinAutoUpdateVersion)
 		{
-			blockReason = "Cannot Auto-Update engine. TRX 1.3 introduced breaking changes, which require manual migration.";
+			blockReason = "Cannot Auto-Update engine. TRX 1.9 introduced breaking changes, which require manual migration.";
 			return false;
 		}
 
@@ -67,7 +67,7 @@ public sealed class TRXUpdateService : IEngineUpdateService
 		DialogResult result = MessageBox.Show(owner,
 			"This update will replace the following directories and files:\n\n" +
 
-			"- Engine/shaders/\n" +
+			"- Engine/cfg/shaders/\n" +
 			"- Engine/TRX.exe\n\n" +
 
 			"If any of these directories / files are important to you, please update the engine manually or create a copy of these files before performing this update.\n\n" +
@@ -95,7 +95,7 @@ public sealed class TRXUpdateService : IEngineUpdateService
 			string enginePresetPath = Path.Combine(DefaultPaths.PresetsDirectory, presetArchiveName);
 			using var engineArchive = new ZipArchive(File.OpenRead(enginePresetPath));
 
-			var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/shaders")).ToList();
+			var shaders = engineArchive.Entries.Where(entry => entry.FullName.StartsWith("Engine/cfg/shaders")).ToList();
 			_fileExtractionService.ExtractEntries(shaders, project.DirectoryPath);
 
 			var executables = engineArchive.Entries.Where(entry => entry.FullName.EndsWith(".exe")).ToList();
