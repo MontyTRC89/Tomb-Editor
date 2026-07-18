@@ -20,6 +20,7 @@ Tomb Editor:
  * Fixed "Map animated textures" checkbox not unchecking in Level Settings dialog.
  * Fixed occasional exceptions after closing Node Editor.
  * Fixed exception while opening texture lists in Remap Texture dialog.
+ * Fixed being unable to use sound IDs in TRX levels above the OG sound map size without defining all lower IDs
 
 WadTool:
  * Added an option to consolidate textures for an object into a single set of texture pages.
