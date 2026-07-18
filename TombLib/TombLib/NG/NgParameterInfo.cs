@@ -75,7 +75,8 @@ namespace TombLib.NG
                 yield return TriggerTargetType.FlipEffect;
                 yield return TriggerTargetType.Secret;
 
-                if (levelSettings.GameVersion.Native() >= TRVersion.Game.TR4)
+                if (levelSettings.GameVersion.Native() >= TRVersion.Game.TR4
+                    || (levelSettings.GameVersion.IsTRX() && !levelSettings.TrxConvertFlybysToCinematicFrames))
                     yield return TriggerTargetType.FlyByCamera;
                 if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                 {

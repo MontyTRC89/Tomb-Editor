@@ -32,12 +32,21 @@ public partial class LevelCompilerClassicTR
         ReportProgress(98, "Writing TRX data");
 
         var injData = new TrxInjectionData();
+        injData.FlybyCameras.AddRange(GenerateFlybyCameras());
         injData.SectorEdits.AddRange(GenerateTrxSectorEdits());
         injData.TexPages.AddRange(GenerateTrxTexPages());
         injData.SFX.AddRange(GenerateTrxSFXData());
 
         using var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Append));
         TrxInjector.Serialize(injData, writer);
+    }
+
+    private IEnumerable<tr4_flyby_camera> GenerateFlybyCameras()
+    {
+        if (_level.Settings.TrxConvertFlybysToCinematicFrames)
+            yield break;
+        foreach (var flyby in _flyByCameras)
+            yield return flyby;
     }
 
     private IEnumerable<TrxSectorEdit> GenerateTrxSectorEdits()
