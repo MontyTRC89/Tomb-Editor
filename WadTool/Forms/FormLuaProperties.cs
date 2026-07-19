@@ -169,7 +169,7 @@ namespace WadTool
 
             _viewModel.Title = objectName;
 
-            var definitions = LuaPropertyCatalog.GetDefinitions(kind, typeId);
+            var definitions = LuaPropertyCatalog.GetDefinitions(kind, typeId, _wad.GameVersion);
             _viewModel.Load(definitions, GetContainer(wadObject));
 
             if (definitions.Count == 0)

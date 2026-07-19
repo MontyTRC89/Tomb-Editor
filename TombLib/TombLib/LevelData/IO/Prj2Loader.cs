@@ -1319,6 +1319,7 @@ namespace TombLib.LevelData.IO
                     instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
+                    ReadLuaProperties(chunkIO, instance.LuaProperties);
                 }
                 else if (id3 == Prj2Chunks.ObjectStatic ||
                          id3 == Prj2Chunks.ObjectStatic2)

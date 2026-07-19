@@ -6,6 +6,8 @@ using System.Linq;
 using TombLib.IO;
 using TombLib.LevelData.Compilers.Util;
 using TombLib.LevelData.SectorEnums;
+using TombLib.LuaProperties;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers;
 
@@ -41,6 +43,8 @@ public partial class LevelCompilerClassicTR
         injData.TexPages.AddRange(GenerateTrxTexPages());
         injData.SFX.AddRange(GenerateTrxSFXData());
         injData.ItemNameEdits.AddRange(GenerateTrxItemNameEdits());
+        injData.PropertyEdits.AddRange(GenerateTrxGlobalMoveableProperties());
+        injData.PropertyEdits.AddRange(GenerateTrxInstanceMoveableProperties());
 
         using var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Append));
         TrxInjector.Serialize(injData, writer);
@@ -403,6 +407,99 @@ public partial class LevelCompilerClassicTR
                 Index = (short)index,
                 Name = moveable.LuaName,
             };
+        }
+    }
+
+    private IEnumerable<TrxObjectPropertyEdit> GenerateTrxGlobalMoveableProperties()
+    {
+        var moveables = _level.Settings.Wads
+            .Where(w => w.Wad != null)
+            .SelectMany(w => w.Wad.Moveables);
+        foreach (var mov in moveables)
+        {
+            if (mov.Value.LuaProperties == null || !mov.Value.LuaProperties.HasProperties)
+                continue;
+
+            var objectId = mov.Key.TypeId;
+            var edit = new TrxObjectPropertyEdit((int)objectId);
+            PopulateTrxProperties(edit, mov.Value.LuaProperties, objectId);
+
+            if (edit.Properties.Count > 0)
+                yield return edit;
+        }
+    }
+
+    private IEnumerable<TrxItemPropertyEdit> GenerateTrxInstanceMoveableProperties()
+    {
+        foreach (var (moveable, index) in _moveablesTable)
+        {
+            if (_level.Settings.WadTryGetMoveable(moveable.WadObjectId) == null ||
+                moveable.LuaProperties?.HasProperties != true)
+                continue;
+
+            var edit = new TrxItemPropertyEdit(index);
+            PopulateTrxProperties(edit, moveable.LuaProperties,
+                TrCatalog.GetSubstituteID(_level.Settings.GameVersion, moveable.WadObjectId.TypeId));
+
+            if (edit.Properties.Count > 0)
+                yield return edit;
+        }
+    }
+
+    private void PopulateTrxProperties(TrxPropertyEdit edit, LuaPropertyContainer properties, uint objectId)
+    {
+        var definitionMap = LuaPropertyCatalog
+            .GetDefinitions(ObjectKind.Moveable, objectId, _level.Settings.GameVersion)
+            .ToDictionary(d => d.InternalName);
+        foreach (var (name, value) in properties.GetAll())
+        {
+            if (!definitionMap.TryGetValue(name, out var definition))
+                continue;
+
+            if (value.Equals(definition.DefaultValue))
+                continue;
+
+            var trxProperty = ConvertLuaPropertyToTrx(definition.Type, name, value);
+            if (trxProperty != null)
+                edit.Properties.Add(trxProperty);
+        }
+    }
+
+    private static TrxProperty ConvertLuaPropertyToTrx(LuaPropertyType type,
+        string propertyName, string propertyValue)
+    {
+        switch (type)
+        {
+            case LuaPropertyType.Bool:
+                return new TrxBoolProperty
+                {
+                    Name = propertyName,
+                    Value = LuaValueParser.UnboxBool(propertyValue),
+                };
+            case LuaPropertyType.Int:
+            case LuaPropertyType.Enum:
+                return new TrxIntProperty
+                {
+                    Name = propertyName,
+                    Value = LuaValueParser.UnboxInt(propertyValue),
+                };
+            case LuaPropertyType.Float:
+                return new TrxFloatProperty
+                {
+                    Name = propertyName,
+                    Value = LuaValueParser.UnboxFloat(propertyValue),
+                };
+            case LuaPropertyType.Vec3:
+                var vec = LuaValueParser.UnboxVec3(propertyValue);
+                return new TrxXYZProperty
+                {
+                    Name = propertyName,
+                    X = (int)vec[0],
+                    Y = (int)vec[1],
+                    Z = (int)vec[2],
+                };
+            default:
+                return null;
         }
     }
 }
