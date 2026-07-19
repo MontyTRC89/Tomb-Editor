@@ -586,6 +586,9 @@ namespace TombLib.LevelData.Compilers
         {
             var result = new List<tr_cinematicFrame>();
 
+            if (_level.IsTRX && !_level.Settings.TrxConvertFlybysToCinematicFrames)
+                return result;
+
             var allObjects = _level.GetAllObjects().OfType<PositionBasedObjectInstance>().ToList();
             if (allObjects.Count == 0)
                 return result;

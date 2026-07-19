@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using TombLib.IO;
 using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
@@ -35,10 +36,14 @@ public static class TrxInjector
         outWriter.Write(zippedData);
     }
 
+    public static byte[] Encode(string text)
+        => Encoding.UTF8.GetBytes(text ?? string.Empty);
+
     private static bool WriteData(TrxInjectionData data, BinaryWriterEx writer)
     {
         var chunks = new List<TrxChunk>()
         {
+            CreateChunk(TrxChunkType.CameraData, data, WriteCameraData),
             CreateChunk(TrxChunkType.DataEdits, data, WriteEdits),
             CreateChunk(TrxChunkType.SFX, data, WriteSFXData),
         };
@@ -74,6 +79,32 @@ public static class TrxInjector
         };
     }
 
+    private static int WriteCameraData(TrxInjectionData data, BinaryWriterEx writer)
+    {
+        int blockCount = 0;
+
+        blockCount += WriteBlock(TrxBlockType.FlybyCameras, data.FlybyCameras.Count, writer,
+            w => data.FlybyCameras.ForEach(c =>
+            {
+                w.Write(c.X);
+                w.Write(c.Y);
+                w.Write(c.Z);
+                w.Write(c.DirectionX);
+                w.Write(c.DirectionY);
+                w.Write(c.DirectionZ);
+                w.Write(c.Sequence);
+                w.Write(c.Index);
+                w.Write(c.FOV);
+                w.Write(c.Roll);
+                w.Write(c.Timer);
+                w.Write(c.Speed);
+                w.Write(c.Flags);
+                w.Write(c.Room);
+            }));
+
+        return blockCount;
+    }
+
     private static int WriteEdits(TrxInjectionData data, BinaryWriterEx writer)
     {
         int blockCount = 0;
@@ -82,6 +113,8 @@ public static class TrxInjector
             w => data.SectorEdits.ForEach(s => s.Serialize(w)));
         blockCount += WriteBlock(TrxBlockType.TextureOverwrites, data.TexPages.Count, writer,
             w => data.TexPages.ForEach(t => t.Serialize(w)));
+        blockCount += WriteBlock(TrxBlockType.ItemNameEdits, data.ItemNameEdits.Count, writer,
+            w => data.ItemNameEdits.ForEach(t => t.Serialize(w)));
 
         return blockCount;
     }
@@ -134,6 +167,7 @@ public static class TrxInjector
     {
         SFX = 5,
         DataEdits = 6,
+        CameraData = 7,
     }
 
     private enum TrxBlockType
@@ -141,14 +175,18 @@ public static class TrxInjector
         SoundEffects = 14,
         SectorEdits = 17,
         TextureOverwrites = 20,
+        ItemNameEdits = 37,
+        FlybyCameras = 38,
     }
 }
 
 public class TrxInjectionData
 {
+    public List<tr4_flyby_camera> FlybyCameras { get; set; } = new();
     public List<TrxSectorEdit> SectorEdits { get; set; } = new();
     public List<TrxTextureOverwrite> TexPages { get; set; } = new();
     public List<TrxSFXData> SFX { get; set; } = new();
+    public List<TrxItemNameEdit> ItemNameEdits = new();
 }
 
 public abstract class TrxSectorEdit
@@ -343,5 +381,19 @@ public class TrxSFXData
             Pitch = details.Pitch,
             Range = details.Range,
         };
+    }
+}
+
+public class TrxItemNameEdit
+{
+    public short Index { get; set; }
+    public string Name { get; set; }
+
+    public void Serialize(BinaryWriterEx writer)
+    {
+        var data = TrxInjector.Encode(Name);
+        writer.Write(Index);
+        writer.Write(data.Length);
+        writer.Write(data);
     }
 }

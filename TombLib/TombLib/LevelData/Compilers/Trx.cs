@@ -14,6 +14,7 @@ public partial class LevelCompilerClassicTR
     private const int _legacyRoomLimit = 255;
     private const int _noRoom = -1;
     private const int _maxSamples = 1000;
+    private const int _maxLuaNameLength = 4096;
 
     private void WriteLevelTrx()
     {
@@ -32,12 +33,22 @@ public partial class LevelCompilerClassicTR
         ReportProgress(98, "Writing TRX data");
 
         var injData = new TrxInjectionData();
+        injData.FlybyCameras.AddRange(GenerateFlybyCameras());
         injData.SectorEdits.AddRange(GenerateTrxSectorEdits());
         injData.TexPages.AddRange(GenerateTrxTexPages());
         injData.SFX.AddRange(GenerateTrxSFXData());
+        injData.ItemNameEdits.AddRange(GenerateTrxItemNameEdits());
 
         using var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Append));
         TrxInjector.Serialize(injData, writer);
+    }
+
+    private IEnumerable<tr4_flyby_camera> GenerateFlybyCameras()
+    {
+        if (_level.Settings.TrxConvertFlybysToCinematicFrames)
+            yield break;
+        foreach (var flyby in _flyByCameras)
+            yield return flyby;
     }
 
     private IEnumerable<TrxSectorEdit> GenerateTrxSectorEdits()
@@ -355,5 +366,27 @@ public partial class LevelCompilerClassicTR
 
         if (sampleCount > _maxSamples)
             _progressReporter.ReportWarn($"{sampleCount} samples included - limit is {_maxSamples}. This may lead to crashes.");
+    }
+
+    private IEnumerable<TrxItemNameEdit> GenerateTrxItemNameEdits()
+    {
+        foreach (var (moveable, index) in _moveablesTable)
+        {
+            if (string.IsNullOrEmpty(moveable.LuaName))
+                continue;
+
+            var name = TrxInjector.Encode(moveable.LuaName);
+            if (name.Length > _maxLuaNameLength)
+            {
+                _progressReporter.ReportWarn($"Lua name for moveable {index} is too long - max {_maxLuaNameLength} bytes.");
+                continue;
+            }
+
+            yield return new()
+            {
+                Index = (short)index,
+                Name = moveable.LuaName,
+            };
+        }
     }
 }

@@ -201,6 +201,9 @@ namespace TombEditor.Forms
             if (_editor.Level is null)
                 return false;
 
+            if (_editor.Level.IsTRX)
+                return _editor.Level.Settings.TrxConvertFlybysToCinematicFrames;
+
             return _editor.Level.Settings.GameVersion.Native() <= TRVersion.Game.TR3;
         }
 

@@ -1293,13 +1293,13 @@ namespace TombEditor
 
             AddCommand("GenerateObjectNames", "Generate Lua names for unnamed objects", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Object naming"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine || args.Editor.Level.IsTRX, "Object naming"))
                     return;
 
                 int count = 0;
 
-                foreach (var obj in args.Editor.Level.GetAllObjects().OfType<PositionAndScriptBasedObjectInstance>())
-                    if (string.IsNullOrEmpty(obj.LuaName))
+                foreach (var obj in args.Editor.Level.GetAllObjects().OfType<IHasLuaName>())
+                    if (obj.SupportsLuaName() && string.IsNullOrEmpty(obj.LuaName))
                     {
                         obj.AllocateNewLuaName();
                         count++;
