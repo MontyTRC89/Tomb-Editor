@@ -20,6 +20,7 @@ Tomb Editor:
  * Fixed "Map animated textures" checkbox not unchecking in Level Settings dialog.
  * Fixed occasional exceptions after closing Node Editor.
  * Fixed exception while opening texture lists in Remap Texture dialog.
+ * Fixed being unable to use sound IDs in TRX levels above the OG sound map size without defining all lower IDs
 
 WadTool:
  * Added an option to consolidate textures for an object into a single set of texture pages.
@@ -27,6 +28,9 @@ WadTool:
  * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
  * Fixed exception when trying to open an object without meshes in the mesh editor.
  * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
+
+TombIDE:
+ * Updated TR1X and TR2X presets to TRX 1.9.3.
 
 TEN nodes:
  * Added a node to unswap a previously swapped mesh.

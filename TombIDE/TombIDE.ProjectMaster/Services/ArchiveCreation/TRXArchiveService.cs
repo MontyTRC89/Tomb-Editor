@@ -17,7 +17,8 @@ public sealed class TRXArchiveService : GameArchiveServiceBase
 		Path.Combine(engineDirectory, "music"),
 		Path.Combine(engineDirectory, "cfg"),
 		Path.Combine(engineDirectory, "data"),
-		Path.Combine(engineDirectory, "shaders")
+		Path.Combine(engineDirectory, "shaders"),
+		Path.Combine(engineDirectory, "game"),
 	];
 
 	protected override IReadOnlyList<string> GetImportantFiles(string engineDirectory) => [
