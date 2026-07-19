@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using TombLib.IO;
 using TombLib.LevelData.SectorEnums;
 using TombLib.Utils;
@@ -34,6 +35,9 @@ public static class TrxInjector
         outWriter.Write(zippedData.Length);
         outWriter.Write(zippedData);
     }
+
+    public static byte[] Encode(string text)
+        => Encoding.UTF8.GetBytes(text ?? string.Empty);
 
     private static bool WriteData(TrxInjectionData data, BinaryWriterEx writer)
     {
@@ -109,6 +113,8 @@ public static class TrxInjector
             w => data.SectorEdits.ForEach(s => s.Serialize(w)));
         blockCount += WriteBlock(TrxBlockType.TextureOverwrites, data.TexPages.Count, writer,
             w => data.TexPages.ForEach(t => t.Serialize(w)));
+        blockCount += WriteBlock(TrxBlockType.ItemNameEdits, data.ItemNameEdits.Count, writer,
+            w => data.ItemNameEdits.ForEach(t => t.Serialize(w)));
 
         return blockCount;
     }
@@ -169,6 +175,7 @@ public static class TrxInjector
         SoundEffects = 14,
         SectorEdits = 17,
         TextureOverwrites = 20,
+        ItemNameEdits = 37,
         FlybyCameras = 38,
     }
 }
@@ -179,6 +186,7 @@ public class TrxInjectionData
     public List<TrxSectorEdit> SectorEdits { get; set; } = new();
     public List<TrxTextureOverwrite> TexPages { get; set; } = new();
     public List<TrxSFXData> SFX { get; set; } = new();
+    public List<TrxItemNameEdit> ItemNameEdits = new();
 }
 
 public abstract class TrxSectorEdit
@@ -373,5 +381,19 @@ public class TrxSFXData
             Pitch = details.Pitch,
             Range = details.Range,
         };
+    }
+}
+
+public class TrxItemNameEdit
+{
+    public short Index { get; set; }
+    public string Name { get; set; }
+
+    public void Serialize(BinaryWriterEx writer)
+    {
+        var data = TrxInjector.Encode(Name);
+        writer.Write(Index);
+        writer.Write(data.Length);
+        writer.Write(data);
     }
 }

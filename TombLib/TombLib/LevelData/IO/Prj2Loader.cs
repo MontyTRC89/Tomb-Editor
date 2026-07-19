@@ -1305,6 +1305,21 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectMovableTRX)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectStatic ||
                          id3 == Prj2Chunks.ObjectStatic2)
                 {

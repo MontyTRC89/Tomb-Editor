@@ -141,9 +141,9 @@ namespace TombEditor.Forms
 
                 addBoxVolumeToolStripMenuItem.Visible =
                 addSphereVolumeToolStripMenuItem.Visible =
-                generateObjectNamesToolStripMenuItem.Visible =
                 editEventSetsToolStripMenuItem.Visible =
                 editGlobalEventSetsToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine || _editor.Level.IsTRX;
 
                 increaseStepHeightToolStripMenuItem.Visible =
                 decreaseStepHeightToolStripMenuItem.Visible =
