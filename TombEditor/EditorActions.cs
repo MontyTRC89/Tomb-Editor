@@ -1082,13 +1082,11 @@ namespace TombEditor
                 return;
             }
 
-            if (!VersionCheck(_editor.Level.IsTombEngine, "Object name"))
+            if (!VersionCheck(_editor.Level.IsTombEngine || _editor.Level.IsTRX, "Object name"))
                 return;
 
-            if (!(instance is PositionAndScriptBasedObjectInstance))
+            if (instance is not PositionAndScriptBasedObjectInstance luaInstance || !luaInstance.SupportsLuaName())
                 return;
-
-            var luaInstance = instance as PositionAndScriptBasedObjectInstance;
 
             using (var form = new FormInputBox("Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName))
             {
@@ -2365,11 +2363,10 @@ namespace TombEditor
                 if (si.ScriptId == null)
                     si.AllocateNewScriptId();
             }
-            else if (instance is IHasLuaName && _editor.Level.IsTombEngine)
+            else if (instance is IHasLuaName luaInstance && luaInstance.SupportsLuaName())
             {
-                var li = instance as IHasLuaName;
-                if (string.IsNullOrEmpty(li.LuaName))
-                    li.AllocateNewLuaName();
+                if (string.IsNullOrEmpty(luaInstance.LuaName))
+                    luaInstance.AllocateNewLuaName();
             }
 
             if (instance is ObjectGroup)
@@ -2380,7 +2377,7 @@ namespace TombEditor
         // Batch-optimized version that allocates script IDs in bulk.
         public static void AllocateScriptIds(IEnumerable<PositionBasedObjectInstance> instances)
         {
-            if (_editor.Level.IsTombEngine)
+            if (_editor.Level.IsTombEngine || _editor.Level.IsTRX)
             {
                 var existingNames = _editor.Level.GetAllLuaNames();
                 foreach (var instance in instances)
@@ -2401,7 +2398,7 @@ namespace TombEditor
                 if (si.ScriptId == null)
                     si.AllocateNewScriptId();
             }
-            else if (instance is PositionAndScriptBasedObjectInstance scriptObj && _editor.Level.IsTombEngine)
+            else if (instance is PositionAndScriptBasedObjectInstance scriptObj && scriptObj.SupportsLuaName())
             {
                 if (string.IsNullOrEmpty(scriptObj.LuaName))
                     scriptObj.AllocateNewLuaName(luaNameCache);
