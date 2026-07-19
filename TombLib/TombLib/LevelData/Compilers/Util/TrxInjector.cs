@@ -43,6 +43,7 @@ public static class TrxInjector
     {
         var chunks = new List<TrxChunk>()
         {
+            CreateChunk(TrxChunkType.CameraData, data, WriteCameraData),
             CreateChunk(TrxChunkType.DataEdits, data, WriteEdits),
             CreateChunk(TrxChunkType.SFX, data, WriteSFXData),
         };
@@ -76,6 +77,32 @@ public static class TrxInjector
             BlockCount = blockCount,
             Data = stream.ToArray(),
         };
+    }
+
+    private static int WriteCameraData(TrxInjectionData data, BinaryWriterEx writer)
+    {
+        int blockCount = 0;
+
+        blockCount += WriteBlock(TrxBlockType.FlybyCameras, data.FlybyCameras.Count, writer,
+            w => data.FlybyCameras.ForEach(c =>
+            {
+                w.Write(c.X);
+                w.Write(c.Y);
+                w.Write(c.Z);
+                w.Write(c.DirectionX);
+                w.Write(c.DirectionY);
+                w.Write(c.DirectionZ);
+                w.Write(c.Sequence);
+                w.Write(c.Index);
+                w.Write(c.FOV);
+                w.Write(c.Roll);
+                w.Write(c.Timer);
+                w.Write(c.Speed);
+                w.Write(c.Flags);
+                w.Write(c.Room);
+            }));
+
+        return blockCount;
     }
 
     private static int WriteEdits(TrxInjectionData data, BinaryWriterEx writer)
@@ -140,6 +167,7 @@ public static class TrxInjector
     {
         SFX = 5,
         DataEdits = 6,
+        CameraData = 7,
     }
 
     private enum TrxBlockType
@@ -148,11 +176,13 @@ public static class TrxInjector
         SectorEdits = 17,
         TextureOverwrites = 20,
         ItemNameEdits = 37,
+        FlybyCameras = 38,
     }
 }
 
 public class TrxInjectionData
 {
+    public List<tr4_flyby_camera> FlybyCameras { get; set; } = new();
     public List<TrxSectorEdit> SectorEdits { get; set; } = new();
     public List<TrxTextureOverwrite> TexPages { get; set; } = new();
     public List<TrxSFXData> SFX { get; set; } = new();
