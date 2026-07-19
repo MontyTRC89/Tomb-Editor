@@ -36,12 +36,12 @@ The root element must be `<propertyCatalog>`. It may contain any number of `<mov
 
 ### `id` and `name` Formats
 
-| Format  | Example                                       | Description                        |
-|---------|-----------------------------------------------|------------------------------------|
-| Single  | `id="73"` or `name="LARA"`                    | One slot                           |
-| List    | `id="73,74,75"` or `name="LARA,SHOTGUN_ITEM"` | Explicit list of slots             |
-| Range   | `id="73-80"` or `id="LARA-SHOTGUN_ITEM"`      | Inclusive range (numeric `id` only)|
-| Mixed   | `id="0-5,73,SHOTGUN_ITEM"`                    | Any combination of the above       |
+| Format  | Example                                       | Description                                      |
+|---------|-----------------------------------------------|--------------------------------------------------|
+| Single  | `id="73"` or `name="LARA"`                    | One slot                                         |
+| List    | `id="73,74,75"` or `name="LARA,SHOTGUN_ITEM"` | Explicit list of slots                           |
+| Range   | `id="73-80"` or `id="LARA-SHOTGUN_ITEM"`      | Inclusive range (can combine numeric id and name)|
+| Mixed   | `id="0-5,73,SHOTGUN_ITEM"`                    | Any combination of the above                     |
 
 Each `<moveable>` or `<static>` block contains one or more `<property>` child elements. The same block may be repeated for the same ID in different files — properties are merged by `internalName`.
 
