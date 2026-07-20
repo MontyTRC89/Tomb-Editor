@@ -31,6 +31,7 @@ WadTool:
  * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
 
 TombIDE:
+ * Added TR3X support and engine preset (1.9.3).
  * Updated TR1X and TR2X presets to TRX 1.9.3.
 
 TEN nodes:
