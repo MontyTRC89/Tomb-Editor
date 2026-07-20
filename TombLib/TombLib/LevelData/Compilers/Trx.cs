@@ -26,6 +26,9 @@ public partial class LevelCompilerClassicTR
             case TRVersion.Game.TR2X:
                 WriteLevelTr2();
                 break;
+            case TRVersion.Game.TR3X:
+                WriteLevelTr3();
+                break;
             default:
                 throw new NotImplementedException("The selected game engine is not supported yet");
         }
@@ -87,7 +90,7 @@ public partial class LevelCompilerClassicTR
 
     private TRXRoomPropertyEntry GetRoomPropertyEntry(Room teRoom, tr_room trRoom)
     {
-        if (teRoom.Properties.Reverberation == 0
+        if ((teRoom.Properties.Reverberation == 0 || _level.Settings.GameVersion == TRVersion.Game.TR3X)
             && !teRoom.Properties.FlagCold && !teRoom.Properties.FlagDamage)
         {
             return null;
@@ -142,6 +145,9 @@ public partial class LevelCompilerClassicTR
 
     private TrxClimbEntry GetClimbEntry(Room teRoom, ushort x, ushort z)
     {
+        if (_level.Settings.GameVersion == TRVersion.Game.TR3X)
+            return null;
+
         var teSector = teRoom.Sectors[x, z];
         var hasLadder = (teSector.Flags & SectorFlags.ClimbAny) != 0;
         var hasMonkey = (teSector.Flags & SectorFlags.Monkey) != 0;
@@ -166,6 +172,9 @@ public partial class LevelCompilerClassicTR
 
     private TrxMineCartEntry GetMineCartEntry(Room teRoom, ushort x, ushort z)
     {
+        if (_level.Settings.GameVersion == TRVersion.Game.TR3X)
+            return null;
+
         var teSector = teRoom.Sectors[x, z];
         var left = (teSector.Flags & SectorFlags.TriggerTriggerer) != 0;
         var right = (teSector.Flags & SectorFlags.Beetle) != 0;
@@ -193,6 +202,9 @@ public partial class LevelCompilerClassicTR
 
     private TrxTriangulationEntry GetTriangulation(Room teRoom, ushort x, ushort z)
     {
+        if (_level.Settings.GameVersion == TRVersion.Game.TR3X)
+            return null;
+
         var teSector = teRoom.Sectors[x, z];
         if (teSector.IsFullWall)
         {
@@ -246,6 +258,9 @@ public partial class LevelCompilerClassicTR
             yield break;
 
         if (version == TRVersion.Game.TR2X && depth == TrxTextureBitDepth.Bit16)
+            yield break;
+
+        if (version == TRVersion.Game.TR3X && depth == TrxTextureBitDepth.Bit16)
             yield break;
 
         const int size = 256 * 256;
@@ -355,8 +370,9 @@ public partial class LevelCompilerClassicTR
                 continue;
 
             var soundInfo = _finalSoundInfosList[_finalSoundMap[i]];
-            var details = GetTR12SoundDetails(soundInfo);
-            var data = TrxSFXData.Create(i, details);
+            var data = _level.Settings.GameVersion == TRVersion.Game.TR3X
+                ? TrxSFXData.Create(i, GetTR3SoundDetails(soundInfo))
+                : TrxSFXData.Create(i, GetTR12SoundDetails(soundInfo));
             data.Samples.AddRange(
                 Enumerable.Range(0, soundInfo.Samples.Count)
                 .Select(_ => samples.Dequeue().Data));
