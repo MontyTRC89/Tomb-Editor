@@ -10,9 +10,8 @@ using WadTool.Controls;
 namespace WadTool.Features.Dialogs.BlendCurveEditor;
 
 /// <summary>
-/// WPF shell replacing the WinForms <c>FormBlendCurveEditor</c>. The curve canvas is still the
-/// WinForms <see cref="BezierCurveEditor"/> control (hosted via WindowsFormsHost, same approach
-/// as MainWindow's wad trees and 3D preview); presets, buttons and dialog result are native WPF.
+/// WPF shell replacing the WinForms <c>FormBlendCurveEditor</c>; the curve canvas is the WPF
+/// <see cref="BezierCurveEditor"/> control.
 /// </summary>
 public partial class BlendCurveEditorWindow : Window
 {
@@ -24,9 +23,8 @@ public partial class BlendCurveEditorWindow : Window
         InitializeComponent();
         this.HookModalAutoClose();
 
-        _curveEditor = new BezierCurveEditor();
+        _curveEditor = curveEditor;
         _curveEditor.ValueChanged += CurveEditor_ValueChanged;
-        curveEditorHost.Child = _curveEditor;
 
         DataContextChanged += OnDataContextChanged;
     }

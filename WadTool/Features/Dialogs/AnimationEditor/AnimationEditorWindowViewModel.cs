@@ -44,9 +44,9 @@ public sealed partial class MeshBoneItem : ObservableObject
 
 /// <summary>
 /// WPF counterpart of the legacy <c>FormAnimationEditor</c> — built incrementally. The 3D view
-/// (<see cref="PanelRenderingAnimationEditor"/>), the <see cref="AnimationTrackBar"/> timeline and the
-/// <see cref="BezierCurveEditor"/> remain WinForms custom-rendered controls, hosted via
-/// <c>WindowsFormsHost</c> and driven by this view model; the chrome is native WPF.
+/// (<see cref="PanelRenderingAnimationEditor"/>) and the <see cref="AnimationTrackBar"/> timeline
+/// remain WinForms custom-rendered controls, hosted via <c>WindowsFormsHost</c> and driven by this
+/// view model; the blend-curve editor and the rest of the chrome are native WPF.
 ///
 /// SLICE 1: animation list, read-only animation properties, playback and frame selection. Keyframe
 /// editing, transforms, root motion, blending, sound and chained playback follow in later slices.

@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:WadTool.Features.Dialogs.AnimEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wadControls="clr-namespace:WadTool.Controls"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="{Binding Title}"
 	Width="1100"
@@ -102,7 +103,7 @@
 						<DockPanel Margin="0,2"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="H vel end" /><controls:NumericUpDown Style="{StaticResource Nud}" DecimalPlaces="2" Value="{Binding EndHorVel, Mode=TwoWay}" /></DockPanel>
 						<DockPanel Margin="0,2" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}"><TextBlock DockPanel.Dock="Left" Style="{StaticResource FieldLbl}" Text="Blend frames" /><controls:NumericUpDown Style="{StaticResource Nud}" Minimum="0" Value="{Binding BlendFrameCount, Mode=TwoWay}" /></DockPanel>
 						<Border Height="110" Margin="0,6,0,0" BorderBrush="{DynamicResource Brush_Border}" BorderThickness="1" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
-							<wfi:WindowsFormsHost x:Name="bezierHost" />
+							<wadControls:BezierCurveEditor x:Name="bezierEditor" />
 						</Border>
 						<ComboBox Margin="0,4,0,0" SelectedIndex="{Binding BlendPresetIndex, Mode=TwoWay}" Visibility="{Binding IsTombEngine, Converter={StaticResource BoolToVis}}">
 							<ComboBoxItem Content="Linear" />

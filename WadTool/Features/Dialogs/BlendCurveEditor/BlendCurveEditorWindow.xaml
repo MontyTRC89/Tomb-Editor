@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:vm="clr-namespace:WadTool.Features.Dialogs.BlendCurveEditor"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+	xmlns:wadControls="clr-namespace:WadTool.Controls"
 	Title="{tombLib:Localize Title}"
 	d:DataContext="{d:DesignInstance Type=vm:BlendCurveEditorWindowViewModel}"
 	Background="{DynamicResource Brush_Background}"
@@ -34,9 +34,8 @@
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<!--  Hosted WinForms BezierCurveEditor; assigned in code-behind (same approach as MainWindow's hosted panels).  -->
-		<wfi:WindowsFormsHost
-			x:Name="curveEditorHost"
+		<wadControls:BezierCurveEditor
+			x:Name="curveEditor"
 			Grid.Row="0"
 			Grid.Column="0"
 			Grid.ColumnSpan="2"

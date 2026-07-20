@@ -10,10 +10,9 @@ using WadTool.Controls;
 namespace WadTool.Features.Dialogs.AnimEditor;
 
 /// <summary>
-/// WPF port of the legacy <c>FormAnimationEditor</c> (built incrementally). The 3D view, the timeline
-/// (<see cref="AnimationTrackBar"/>) and the blend-curve editor (<see cref="BezierCurveEditor"/>) remain
-/// WinForms custom-rendered controls, hosted via <c>WindowsFormsHost</c>; everything else is WPF bound
-/// to <see cref="AnimationEditorWindowViewModel"/>.
+/// WPF port of the legacy <c>FormAnimationEditor</c> (built incrementally). The 3D view and the timeline
+/// (<see cref="AnimationTrackBar"/>) remain WinForms custom-rendered controls, hosted via
+/// <c>WindowsFormsHost</c>; everything else is WPF bound to <see cref="AnimationEditorWindowViewModel"/>.
 /// </summary>
 public partial class AnimationEditorWindow : Window
 {
@@ -29,10 +28,9 @@ public partial class AnimationEditorWindow : Window
 
         _panel = new PanelRenderingAnimationEditor();
         _timeline = new AnimationTrackBar();
-        _bezier = new BezierCurveEditor();
+        _bezier = bezierEditor;
         panelRenderingHost.Child = _panel;
         timelineHost.Child = _timeline;
-        bezierHost.Child = _bezier;
 
         _timeline.ValueChanged += OnTimelineValueChanged;
         _timeline.SelectionChanged += OnTimelineSelectionChanged;
