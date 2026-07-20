@@ -1,6 +1,7 @@
 using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -110,7 +111,9 @@ namespace TombLib.LuaProperties
                 return result;
             }
 
-            var xmlFiles = Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories).OrderBy(f => f).ToList();
+            var xmlFiles = Directory.GetFiles(path, "*.xml", SearchOption.AllDirectories)
+                .Where(f => !Path.GetFileName(f).Equals("Example.xml", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(f => f).ToList();
 
             if (xmlFiles.Count == 0)
             {
@@ -167,10 +170,14 @@ namespace TombLib.LuaProperties
         /// </summary>
         private static void ParseObjectNode(XmlNode objectNode, ObjectKind kind, string filePath, Dictionary<LuaPropertyObjectKey, List<LuaPropertyDefinition>> result)
         {
+            // Read object identifier: prefer "id", fall back to "name".
             var idAttr = objectNode.Attributes?["id"];
             if (idAttr == null || string.IsNullOrWhiteSpace(idAttr.Value))
+                idAttr = objectNode.Attributes?["name"];
+
+            if (idAttr == null || string.IsNullOrWhiteSpace(idAttr.Value))
             {
-                logger.Warn("Property catalog entry missing 'id' attribute in {0}", filePath);
+                logger.Warn("Property catalog entry missing 'id' or 'name' attributes in {0}", filePath);
                 return;
             }
 
@@ -245,10 +252,21 @@ namespace TombLib.LuaProperties
             }
             definition.Type = propertyType;
 
+            // Optional: numeric range (only meaningful for numeric types).
+            if (double.TryParse((propNode.Attributes?["minValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var minValue))
+                definition.MinValue = minValue;
+            if (double.TryParse((propNode.Attributes?["maxValue"]?.Value)?.Trim() ?? string.Empty, NumberStyles.Float, CultureInfo.InvariantCulture, out var maxValue))
+                definition.MaxValue = maxValue;
+
             // Optional: hasAlpha (only meaningful for Color properties).
             var hasAlphaStr = propNode.Attributes?["hasAlpha"]?.Value?.Trim() ?? string.Empty;
             if (bool.TryParse(hasAlphaStr, out var hasAlpha))
                 definition.HasAlpha = hasAlpha;
+
+            // Optional: replacesOCB (warns if OCB is non-zero on an ItemInstance with this property).
+            var replacesOCBStr = propNode.Attributes?["replacesOCB"]?.Value?.Trim() ?? string.Empty;
+            if (bool.TryParse(replacesOCBStr, out var replacesOCB))
+                definition.ReplacesOCB = replacesOCB;
 
             // Optional: enum entries (only meaningful for Enum type).
             if (propertyType == LuaPropertyType.Enum)
@@ -265,9 +283,7 @@ namespace TombLib.LuaProperties
                 {
                     foreach (XmlNode entryNode in propNode.SelectNodes("entry"))
                     {
-                        var entryVal = (entryNode.Attributes?["value"]?.Value
-                                     ?? entryNode.Attributes?["name"]?.Value)?.Trim()
-                                     ?? string.Empty;
+                        var entryVal = (entryNode.Attributes?["value"]?.Value ?? entryNode.Attributes?["name"]?.Value)?.Trim() ?? string.Empty;
 
                         if (!string.IsNullOrEmpty(entryVal))
                             definition.EnumValues.Add(entryVal);
@@ -279,9 +295,7 @@ namespace TombLib.LuaProperties
             }
 
             // Optional: default value (accept both "defaultValue" and "default" attribute names).
-            var defaultStr = (propNode.Attributes?["defaultValue"]?.Value
-                          ?? propNode.Attributes?["default"]?.Value)?.Trim()
-                          ?? string.Empty;
+            var defaultStr = (propNode.Attributes?["defaultValue"]?.Value ?? propNode.Attributes?["default"]?.Value)?.Trim() ?? string.Empty;
 
             // For enum: allow the default to be an entry name; convert to 0-based integer.
             if (propertyType == LuaPropertyType.Enum && !string.IsNullOrEmpty(defaultStr))

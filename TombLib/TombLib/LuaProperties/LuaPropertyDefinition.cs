@@ -31,6 +31,14 @@ namespace TombLib.LuaProperties
         public string Description { get; set; } = string.Empty;
 
         /// <summary>
+        /// When true, it means that this property supersedes legacy OCB functionality.
+        /// If an ItemInstance has a non-zero OCB value and any of its properties
+        /// has this flag set, the editor will warn the user to reset OCB to 0.
+        /// Controlled by the "replacesOCB" attribute in XML catalogs.
+        /// </summary>
+        public bool ReplacesOCB { get; set; } = false;
+
+        /// <summary>
         /// The Lua value type of this property.
         /// </summary>
         public LuaPropertyType Type { get; set; } = LuaPropertyType.Float;
@@ -47,6 +55,18 @@ namespace TombLib.LuaProperties
         /// Must be compatible with the declared Type.
         /// </summary>
         public string DefaultValue { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Optional minimum value for numeric properties.
+        /// Used by Int, Float, Vec2 and Vec3 editors.
+        /// </summary>
+        public double MinValue { get; set; } = (double)int.MinValue;
+
+        /// <summary>
+        /// Optional maximum value for numeric properties.
+        /// Used by Int, Float, Vec2 and Vec3 editors.
+        /// </summary>
+        public double MaxValue { get; set; } = (double)int.MaxValue;
 
         /// <summary>
         /// For Color properties: whether the alpha channel is editable.

@@ -32,7 +32,7 @@ public struct FlybyFrameState
         RotationY = MathC.DegToRad(rotationY),
         RotationX = -MathC.DegToRad(rotationX),
         Roll = MathC.DegToRad(roll),
-        Fov = MathC.DegToRad(fov),
+        Fov = FlybyHelpers.ClampPreviewFieldOfViewRadians(MathC.DegToRad(fov)),
         DofDistance = dofDistance,
         DofRange = dofRange,
         DofStrength = dofStrength,

@@ -40,9 +40,37 @@ namespace TombLib.Forms.ViewModels
         public bool HasAlpha => Definition.HasAlpha;
 
         /// <summary>
+        /// Minimal value (for numeric types).
+        /// </summary>
+        public double MinimumValue => Definition.MinValue;
+
+        /// <summary>
+        /// Maximal value (for numeric types).
+        /// </summary>
+        public double MaximumValue => Definition.MaxValue;
+
+        /// <summary>
         /// The Lua property type.
         /// </summary>
         public LuaPropertyType PropertyType => Definition.Type;
+
+        /// <summary>
+        /// When false, the property row is grayed out and all editors are disabled.
+        /// Set to false when the object's legacy OCB value conflicts with this property
+        /// (i.e. Definition.ReplacesOCB is true and the ItemInstance.Ocb is non-zero).
+        /// </summary>
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled == value)
+                    return;
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _isEnabled = true;
 
         /// <summary>
         /// Current boxed Lua value string.

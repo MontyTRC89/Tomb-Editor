@@ -1367,13 +1367,13 @@ namespace TombEditor
 
             AddCommand("GenerateObjectNames", "Generate Lua names for unnamed objects", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Object naming"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine || args.Editor.Level.IsTRX, "Object naming"))
                     return;
 
                 int count = 0;
 
-                foreach (var obj in args.Editor.Level.GetAllObjects().OfType<PositionAndScriptBasedObjectInstance>())
-                    if (string.IsNullOrEmpty(obj.LuaName))
+                foreach (var obj in args.Editor.Level.GetAllObjects().OfType<IHasLuaName>())
+                    if (obj.SupportsLuaName() && string.IsNullOrEmpty(obj.LuaName))
                     {
                         obj.AllocateNewLuaName();
                         count++;
@@ -2187,20 +2187,20 @@ namespace TombEditor
                 EditorActions.SetDiagonalWall(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
             });
 
-            AddCommand("SetBeetleCheckpoint", "Set beetle checkpoint / minecart right (TR3)", CommandType.Sectors, delegate (CommandArgs args)
+            AddCommand("SetBeetleCheckpoint", "Set beetle checkpoint / minecart right (TR3/TRX)", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3, "This flag"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.Beetle);
             });
 
-            AddCommand("SetTriggerTriggerer", "Set trigger triggerer / minecart left (TR3)", CommandType.Sectors, delegate (CommandArgs args)
+            AddCommand("SetTriggerTriggerer", "Set trigger triggerer / minecart left (TR3/TRX)", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndSectorSelection(args.Window))
                     return;
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion.Native() >= TRVersion.Game.TR3, "This flag"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
                     return;
                 EditorActions.ToggleSectorFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, SectorFlags.TriggerTriggerer);
             });
@@ -2259,7 +2259,7 @@ namespace TombEditor
 
             AddCommand("SetRoomCold", "Set room to cold (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG, "Cold flag"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR1X, "Cold flag"))
                     return;
                 if (args.Editor.SelectedRoom != null)
                 {
@@ -2282,7 +2282,7 @@ namespace TombEditor
 
             AddCommand("SetRoomDamage", "Set room to damage (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG, "Damage flag"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR1X, "Damage flag"))
                     return;
                 if (args.Editor.SelectedRoom != null)
                 {

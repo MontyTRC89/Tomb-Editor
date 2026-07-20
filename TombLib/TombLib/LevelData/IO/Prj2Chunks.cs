@@ -44,6 +44,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId TexturePadding = ChunkId.FromString("TeTexturePadding");
         /**/public static readonly ChunkId TextureCompression = ChunkId.FromString("TeTextureCompression");
         /**/public static readonly ChunkId TrxTextureBitDepth = ChunkId.FromString("TeTrxTextureDepth");
+        /**/public static readonly ChunkId TrxConvertFlybysToCinematicFrames = ChunkId.FromString("TeTrxConvertFlybysToCinematicFrames");
         /**/public static readonly ChunkId AgressiveTexturePacking = ChunkId.FromString("TeAgressiveTexturePacking");
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId RemapAnimatedTextures = ChunkId.FromString("TeRemapAnimTextures");
@@ -178,6 +179,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectMovableTombEngine = ChunkId.FromString("TeMovTen");
         /**********/public static readonly ChunkId ObjectMovableTombEngine2 = ChunkId.FromString("TeMovTen2");
         /**********/public static readonly ChunkId ObjectMovableTombEngine3 = ChunkId.FromString("TeMovTn3");
+        /**********/public static readonly ChunkId ObjectMovableTRX = ChunkId.FromString("TeMovTrx");
         /**********/public static readonly ChunkId ObjectItemLuaId = ChunkId.FromString("TeItLuaId"); // DEPRECATED
         /**********/public static readonly ChunkId ObjectStatic = ChunkId.FromString("TeSta");
         /**********/public static readonly ChunkId ObjectStatic2 = ChunkId.FromString("TeSta2");
