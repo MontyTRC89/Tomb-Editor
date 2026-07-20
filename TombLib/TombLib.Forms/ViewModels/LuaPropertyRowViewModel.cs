@@ -55,6 +55,24 @@ namespace TombLib.Forms.ViewModels
         public LuaPropertyType PropertyType => Definition.Type;
 
         /// <summary>
+        /// When false, the property row is grayed out and all editors are disabled.
+        /// Set to false when the object's legacy OCB value conflicts with this property
+        /// (i.e. Definition.ReplacesOCB is true and the ItemInstance.Ocb is non-zero).
+        /// </summary>
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set
+            {
+                if (_isEnabled == value)
+                    return;
+                _isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+        private bool _isEnabled = true;
+
+        /// <summary>
         /// Current boxed Lua value string.
         /// Setting this updates all type-specific properties via notification.
         /// </summary>

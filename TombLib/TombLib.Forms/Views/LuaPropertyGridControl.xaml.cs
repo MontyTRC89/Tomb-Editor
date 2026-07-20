@@ -21,6 +21,7 @@ namespace TombLib.Forms.Views
             // Add custom converters to resources before InitializeComponent.
             Resources.Add("BoolToVisConverter", new BooleanToVisibilityConverter());
             Resources.Add("StringEmptyToVisConverter", new StringEmptyToCollapsedConverter());
+            Resources.Add("BoolToOpacityConverter", new BoolToOpacityConverter());
 
             InitializeComponent();
         }
@@ -101,6 +102,18 @@ namespace TombLib.Forms.Views
 
             // Collapses element when string is null or empty. Used for category headers — hides header when category is empty.
             return string.IsNullOrEmpty(str) ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
+    }
+
+    internal class BoolToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // Returns full opacity when enabled, reduced opacity when disabled (OCB conflict).
+            return value is true ? 1.0 : 0.4;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

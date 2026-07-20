@@ -130,23 +130,33 @@ namespace TombLib.LevelData
             return false;
         }
 
-        public static int ParseMaterialType(string value)
+        public static void ParseMaterialType(MaterialData refData, string value)
         {
             EnsureLoaded();
 
             if (string.IsNullOrWhiteSpace(value))
-                return 0;
+            {
+                refData.Type = 0;
+                return;
+            }
 
             value = value.Trim();
 
             if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var typeId))
-                return typeId;
+            {
+                refData.Type = typeId;
+                return;
+            }
 
             if (LegacyMaterialTypeMap.TryGetValue(value, out typeId))
-                return typeId;
+            {
+                refData.Type = typeId;
+                refData.ApplyDefinitionDefaults(); // Reapply default property definitions for legacy materials.
+                return;
+            }
 
             var definition = _definitions.Values.FirstOrDefault(candidate => candidate.Name.Equals(value, StringComparison.OrdinalIgnoreCase));
-            return definition?.Id ?? 0;
+            refData.Type = definition?.Id ?? 0;
         }
 
         public static string GetMaterialTypeName(int type)
@@ -330,53 +340,13 @@ namespace TombLib.LevelData
 
             try
             {
-                var vector = ParseRawValue(type, value);
+                var vector = UnboxValue(type, value);
                 return BoxValue(type, vector);
             }
             catch (Exception)
             {
                 return BoxValue(type, Vector4.Zero);
             }
-        }
-
-        private static Vector4 ParseRawValue(MaterialPropertyType type, string value)
-        {
-            var components = value.Split(',').Select(component => component.Trim()).Where(component => component.Length > 0).ToArray();
-
-            switch (type)
-            {
-                case MaterialPropertyType.Bool:
-                    return new Vector4(string.Equals(value.Trim(), "true", StringComparison.OrdinalIgnoreCase) ? 1.0f : 0.0f, 0.0f, 0.0f, 0.0f);
-
-                case MaterialPropertyType.Int:
-                case MaterialPropertyType.Float:
-                    return new Vector4(ParseSingle(value), 0.0f, 0.0f, 0.0f);
-
-                case MaterialPropertyType.Vec2:
-                    return new Vector4(ParseComponent(components, 0), ParseComponent(components, 1), 0.0f, 0.0f);
-
-                case MaterialPropertyType.Vec3:
-                    return new Vector4(ParseComponent(components, 0), ParseComponent(components, 1), ParseComponent(components, 2), 0.0f);
-
-                case MaterialPropertyType.Color:
-                    return new Vector4(ParseComponent(components, 0), ParseComponent(components, 1), ParseComponent(components, 2), components.Length > 3 ? ParseComponent(components, 3) : 255.0f);
-
-                default:
-                    return Vector4.Zero;
-            }
-        }
-
-        private static float ParseComponent(string[] components, int index)
-        {
-            if (index >= components.Length)
-                return 0.0f;
-
-            return ParseSingle(components[index]);
-        }
-
-        private static float ParseSingle(string value)
-        {
-            return float.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
         }
 
         private static float? ParseOptionalSingle(string value)

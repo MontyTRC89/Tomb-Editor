@@ -10,7 +10,7 @@ Property catalog files define custom Lua properties for TombEngine moveable and 
 <?xml version="1.0" encoding="utf-8"?>
 <propertyCatalog>
 
-  <moveable id="73">
+  <moveable name="SHOTGUN_ITEM">
     <property ... />
   </moveable>
 
@@ -28,17 +28,20 @@ The root element must be `<propertyCatalog>`. It may contain any number of `<mov
 ## Object Elements — `<moveable>` and `<static>`
 
 | Attribute | Required | Description |
-|-----------|----------|-------------|
-| `id`      | Yes      | Numeric slot ID(s) this block targets. Supports all formats below. |
+|-----------|----------|-----------------------------------------------------------------------|
+| `id`      | No*      | Numeric slot ID(s) this block targets. Supports all formats below.    |
+| `name`    | No*      | String name(s) of moveable slot(s) (e.g. `"LARA"`, `"SHOTGUN_ITEM"`). |
 
-### `id` Formats
+> \* `id` and `name` fields are interchangeable. If both are provided, `id` takes priority.
 
-| Format  | Example           | Description                        |
-|---------|-------------------|------------------------------------|
-| Single  | `id="73"`         | One slot                           |
-| List    | `id="73,74,75"`   | Explicit list of slots             |
-| Range   | `id="73-80"`      | Inclusive range                    |
-| Mixed   | `id="0-5,73,100"` | Any combination of the above       |
+### `id` and `name` Formats
+
+| Format  | Example                                       | Description                                      |
+|---------|-----------------------------------------------|--------------------------------------------------|
+| Single  | `id="73"` or `name="LARA"`                    | One slot                                         |
+| List    | `id="73,74,75"` or `name="LARA,SHOTGUN_ITEM"` | Explicit list of slots                           |
+| Range   | `id="73-80"` or `id="LARA-SHOTGUN_ITEM"`      | Inclusive range (can combine numeric id and name)|
+| Mixed   | `id="0-5,73,SHOTGUN_ITEM"`                    | Any combination of the above                     |
 
 Each `<moveable>` or `<static>` block contains one or more `<property>` child elements. The same block may be repeated for the same ID in different files — properties are merged by `internalName`.
 
@@ -57,6 +60,7 @@ Each `<moveable>` or `<static>` block contains one or more `<property>` child el
     category      = "Physics"
     description   = "Controls something important."
     hasAlpha      = "false"
+    replacesOCB   = "false"
     entries       = "Option A, Option B, Option C" />
 ```
 
@@ -73,6 +77,7 @@ Each `<moveable>` or `<static>` block contains one or more `<property>` child el
 | `category`     | No                | *(none)*             | Groups properties under a collapsible header in the grid. Properties without a category appear at the top level. |
 | `description`  | No                | *(none)*             | Tooltip text shown when hovering over the property name or value. |
 | `hasAlpha`     | No (`Color` only) | `false`              | When `true`, an extra alpha (opacity) numeric field is shown next to the color picker. Ignored for all other types. |
+| `replacesOCB`  | No                | `false`              | When `true`, the editor will display a conflict warning if a placed object has a non-zero **OCB** (Object Code Bit) value while this property is defined. |
 | `entries`      | No (`Enum` only)  | —                    | Comma-separated list of entry names, e.g. `"Normal, Aggressive, Calm"`. Alternative to child `<entry>` nodes. |
 
 > **Tip:** `displayName` falls back to `internalName` if omitted, but it is strongly recommended to always provide a friendly label.

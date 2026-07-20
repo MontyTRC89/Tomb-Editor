@@ -1,7 +1,9 @@
 using DarkUI.Docking;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using TombLib.Forms;
 using TombLib.Forms.ViewModels;
 using TombLib.Forms.Views;
 using TombLib.LevelData;
@@ -110,8 +112,16 @@ namespace TombEditor.ToolWindows
                 var globalDefaults = wadMoveable?.LuaProperties;
 
                 _viewModel.Title = $"Properties: {moveable.ItemType.ToString()}";
-                _viewModel.Load(definitions, moveable.LuaProperties, globalDefaults);
+                _viewModel.Load(definitions, moveable.LuaProperties, globalDefaults, moveable.Ocb != 0);
                 _viewModel.StatusMessage = "No properties defined for this moveable type.";
+
+                // Warn if legacy OCB is set on a moveable that has properties replacing OCB functionality.
+                if (moveable.Ocb != 0 && definitions.Any(d => d.ReplacesOCB))
+                {
+                    var defName = definitions.Where(d => d.ReplacesOCB).Count() > 1 ? "some properties" : "\"" + definitions.First(d => d.ReplacesOCB).DisplayName + "\" property";
+                    _editor.SendMessage("A legacy OCB field overrides " + defName + " for this moveable." + "\n" +
+                        "Reset OCB to 0 and use properties instead to solve conflict.", PopupType.Warning);
+                }
             }
             else if (selected is StaticInstance staticObj)
             {
@@ -124,7 +134,7 @@ namespace TombEditor.ToolWindows
                 var globalDefaults = wadStatic?.LuaProperties;
 
                 _viewModel.Title = $"Properties: {staticObj.ItemType.ToString()}";
-                _viewModel.Load(definitions, staticObj.LuaProperties, globalDefaults);
+                _viewModel.Load(definitions, staticObj.LuaProperties, globalDefaults, staticObj.Ocb != 0);
                 _viewModel.StatusMessage = "No properties defined for this static mesh slot.";
             }
             else

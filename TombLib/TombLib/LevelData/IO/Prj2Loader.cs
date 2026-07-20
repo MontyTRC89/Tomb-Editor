@@ -317,6 +317,8 @@ namespace TombLib.LevelData.IO
                     settings.CompressTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.TrxTextureBitDepth)
                     settings.TrxTextureBitDepth = (TrxTextureBitDepth)chunkIO.ReadChunkInt(chunkSize);
+                else if (id == Prj2Chunks.TrxConvertFlybysToCinematicFrames)
+                    settings.TrxConvertFlybysToCinematicFrames = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RearrangeRooms)
                     settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RemoveUnusedObjects)
@@ -1300,6 +1302,21 @@ namespace TombLib.LevelData.IO
                     if (id3 == Prj2Chunks.ObjectMovableTombEngine3)
                         ReadLuaProperties(chunkIO, instance.LuaProperties);
 
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectMovableTRX)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

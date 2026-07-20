@@ -18,7 +18,7 @@ namespace TombLib.LevelData
 		public string SerializedType
 		{
 			get => Type.ToString(CultureInfo.InvariantCulture);
-			set => Type = MaterialCatalog.ParseMaterialType(value);
+			set => MaterialCatalog.ParseMaterialType(this, value);
 		}
 
 		public string Name { get; set; }
@@ -238,7 +238,7 @@ namespace TombLib.LevelData
 			}
 		}
 
-		private void ApplyDefinitionDefaults()
+		public void ApplyDefinitionDefaults()
 		{
 			var definition = MaterialCatalog.GetDefinition(Type);
 			for (int i = 0; i < PropertyCount; i++)
