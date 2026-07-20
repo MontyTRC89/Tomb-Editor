@@ -121,6 +121,11 @@
 						Click="ConvertToUVMappedMenu_Click"
 						Header="Convert to UV-mapped"
 						IsEnabled="False" />
+					<MenuItem
+						x:Name="consolidateTexturesMenu"
+						Click="ConsolidateTexturesMenu_Click"
+						Header="Consolidate textures"
+						IsEnabled="False" />
 				</MenuItem>
 			</MenuItem>
 

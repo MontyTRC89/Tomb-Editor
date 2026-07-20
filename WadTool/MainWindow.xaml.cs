@@ -405,6 +405,7 @@ namespace WadTool
             convertToDynamicLightingMenu.IsEnabled =
             convertToStaticLightingMenu.IsEnabled =
             convertToUVMappedMenu.IsEnabled =
+            consolidateTexturesMenu.IsEnabled =
             convertToTiledMenu.IsEnabled = _treeDestWad.SelectedWadObjectIds.Count() > 0;
         }
 
@@ -532,6 +533,11 @@ namespace WadTool
         private void ConvertToUVMappedMenu_Click(object sender, RoutedEventArgs e)
         {
             WadActions.ConvertSelectedObjectUVMapping(_tool, this.GetWin32Window(), _treeDestWad.SelectedWadObjectIds.ToList(), true);
+        }
+
+        private void ConsolidateTexturesMenu_Click(object sender, RoutedEventArgs e)
+        {
+            WadActions.ConsolidateSelectedObjectTextures(_tool, this.GetWin32Window(), _treeDestWad.SelectedWadObjectIds.ToList());
         }
 
         private void AnimatedTexturesMenu_Click(object sender, RoutedEventArgs e)
