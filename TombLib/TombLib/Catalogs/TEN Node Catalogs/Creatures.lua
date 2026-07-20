@@ -1,5 +1,5 @@
 ﻿-- !Name "If creature was hit with weapon..."
--- !Section "Creature state"
+-- !Section "Creature AI"
 -- !Description "Checks if creature was shot with any weapon."
 -- !Conditional "True"
 -- !Arguments "NewLine, Moveables"
