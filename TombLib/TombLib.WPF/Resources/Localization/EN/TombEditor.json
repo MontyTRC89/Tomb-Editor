@@ -1029,6 +1029,7 @@
         "ColumnSamples": "Samples",
         "ColumnSoundFolder": "Sound folder",
         "TextureBitDepthLabel": "Texture bit depth:",
+        "TrxConvertFlybysToCinematicFrames": "Convert flyby cameras into cinematic frames",
         "DefaultAmbientLightLabel": "Default ambient light:",
         "DefaultLightQualityLabel": "Default light quality:",
         "DefaultLightQualityTooltip": "Raytracing quality for all lights with `Default` light quality setting",

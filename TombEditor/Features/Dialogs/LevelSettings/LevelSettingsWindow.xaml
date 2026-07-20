@@ -543,6 +543,8 @@
                             <Label Content="{tombLib:Localize TextureBitDepthLabel}" />
                             <ComboBox Width="120" HorizontalAlignment="Left" ItemsSource="{Binding TrxTextureDepths}" SelectedItem="{Binding SelectedTrxDepth, Mode=TwoWay}" />
                         </DockPanel>
+
+                        <CheckBox Margin="0,3" Content="{tombLib:Localize TrxConvertFlybysToCinematicFrames}" IsChecked="{Binding TrxConvertFlybysToCinematicFrames, Mode=TwoWay}" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

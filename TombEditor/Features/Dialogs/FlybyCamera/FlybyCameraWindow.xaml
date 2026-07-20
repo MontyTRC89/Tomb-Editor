@@ -126,7 +126,7 @@
 				Grid.Column="1"
 				FormatString="F4"
 				Increment="1"
-				Maximum="360"
+				Maximum="{Binding MaxFov}"
 				Minimum="0"
 				Value="{Binding Fov, Mode=TwoWay}" />
 

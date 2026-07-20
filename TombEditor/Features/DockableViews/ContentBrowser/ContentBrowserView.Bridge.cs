@@ -164,18 +164,13 @@ public partial class ContentBrowserView
 		if (_bridgeEditor is null || _bridgeViewModel?.SelectedItem is not { } selected)
 			return;
 
-		if (selected.WadObject is ImportedGeometry)
+		string command = selected.WadObject is ImportedGeometry ? "AddImportedGeometry" : "AddItem";
+
+		CommandHandler.GetCommand(command).Execute?.Invoke(new CommandArgs
 		{
-			_bridgeEditor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
-		}
-		else
-		{
-			CommandHandler.GetCommand("AddItem").Execute?.Invoke(new CommandArgs
-			{
-				Editor = _bridgeEditor,
-				Window = WPFUtils.GetWin32WindowOwner(),
-			});
-		}
+			Editor = _bridgeEditor,
+			Window = WPFUtils.GetWin32WindowOwner(),
+		});
 
 		// Validation may have rejected the action; restore the tile animation so the icon
 		// doesn't stay grayed out forever.

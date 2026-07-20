@@ -542,8 +542,8 @@ public partial class RoomOptionsViewModel : ObservableObject
 
         SupportsHorizon = !isTR1 || level.IsTRX;
         SupportsFlagOutside = !isTR1 || level.IsTRX;
-        SupportsFlagCold = isNgOrTEN;
-        SupportsFlagDamage = isNgOrTEN;
+        SupportsFlagCold = isNgOrTEN || level.IsTRX;
+        SupportsFlagDamage = isNgOrTEN || level.IsTRX;
         SupportsNoLensflare = version.SupportsLensflare();
         SupportsNoCaustics = isTEN;
         SupportsReverb = version.SupportsReverberation();

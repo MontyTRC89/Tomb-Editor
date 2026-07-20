@@ -275,6 +275,12 @@ namespace TombEditor.Features.Dialogs.LevelSettings
             set { _settings.TrxTextureBitDepth = value == TrxTextureDepths[1] ? TrxTextureBitDepth.Bit8 : value == TrxTextureDepths[2] ? TrxTextureBitDepth.Bit16 : value == TrxTextureDepths[3] ? TrxTextureBitDepth.Bit32 : TrxTextureBitDepth.Default; OnPropertyChanged(); }
         }
 
+        public bool TrxConvertFlybysToCinematicFrames
+        {
+            get => _settings.TrxConvertFlybysToCinematicFrames;
+            set { _settings.TrxConvertFlybysToCinematicFrames = value; OnPropertyChanged(); }
+        }
+
         // Sky & font tab.
 
         public IReadOnlyList<Tr5WeatherType> Tr5WeatherTypes { get; } = Enum.GetValues(typeof(Tr5WeatherType)).Cast<Tr5WeatherType>().ToList();

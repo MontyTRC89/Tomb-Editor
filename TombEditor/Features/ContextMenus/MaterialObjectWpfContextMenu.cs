@@ -30,7 +30,7 @@ internal static class MaterialObjectWpfContextMenu
                 menu.Items.Add(Sep());
             }
 
-            if (editor.Level.IsTombEngine)
+            if (targetObject is IHasLuaName luaTarget && luaTarget.SupportsLuaName())
                 menu.Items.Add(Item("Rename object", "General/edit",
                     () => EditorActions.RenameObject(targetObject, owner)));
         }
@@ -125,15 +125,14 @@ internal static class MaterialObjectWpfContextMenu
                 }));
         }
 
-        if (targetObject is PositionAndScriptBasedObjectInstance scriptObj
-            && editor.Level.Settings.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine)
+        if (targetObject is IHasLuaName luaObject && luaObject.SupportsLuaName())
         {
             menu.Items.Add(Item("Copy Lua name to clipboard", null,
                 () =>
                 {
-                    if (string.IsNullOrEmpty(scriptObj.LuaName))
-                        scriptObj.AllocateNewLuaName();
-                    Clipboard.SetText(scriptObj.LuaName);
+                    if (string.IsNullOrEmpty(luaObject.LuaName))
+                        luaObject.AllocateNewLuaName();
+                    Clipboard.SetText(luaObject.LuaName);
                 }));
         }
 

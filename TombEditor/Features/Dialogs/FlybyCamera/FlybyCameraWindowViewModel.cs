@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using MvvmDialogs;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using TombEditor.Features.FlybyTimeline;
 using TombEditor.Features.FlybyTimeline.Sequence;
 using TombLib;
 using TombLib.LevelData;
@@ -62,6 +63,9 @@ public partial class FlybyCameraWindowViewModel : ObservableObject, IModalDialog
 
     public bool IsTombEngine { get; }
     public bool HasChanges { get; private set; }
+
+    /// <summary>Upper bound for the FOV editor; a full 180 degrees would make the projection degenerate.</summary>
+    public decimal MaxFov => (decimal)FlybyConstants.MaxFlybyFieldOfViewDegrees;
 
     public FlybyCameraWindowViewModel(
         FlybyCameraInstance flyByCamera,

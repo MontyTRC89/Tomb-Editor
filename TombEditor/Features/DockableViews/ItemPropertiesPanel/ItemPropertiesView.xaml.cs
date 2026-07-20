@@ -1,7 +1,9 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using System.Windows.Controls;
+using TombLib.Forms;
 using TombLib.Forms.ViewModels;
 using TombLib.LevelData;
 using TombLib.LuaProperties;
@@ -83,8 +85,19 @@ public partial class ItemPropertiesView : UserControl
 			var globalDefaults = _editor.Level.Settings.WadTryGetMoveable(moveable.WadObjectId)?.LuaProperties;
 
 			_viewModel.Title = $"Properties: {moveable.ItemType}";
-			_viewModel.Load(definitions, moveable.LuaProperties, globalDefaults);
+			_viewModel.Load(definitions, moveable.LuaProperties, globalDefaults, moveable.Ocb != 0);
 			_viewModel.StatusMessage = "No properties defined for this moveable type.";
+
+			// Warn if legacy OCB is set on a moveable that has properties replacing OCB functionality.
+			if (moveable.Ocb != 0 && definitions.Any(d => d.ReplacesOCB))
+			{
+				string defName = definitions.Count(d => d.ReplacesOCB) > 1
+					? "some properties"
+					: "\"" + definitions.First(d => d.ReplacesOCB).DisplayName + "\" property";
+
+				_editor.SendMessage("A legacy OCB field overrides " + defName + " for this moveable." + "\n" +
+					"Reset OCB to 0 and use properties instead to solve conflict.", PopupType.Warning);
+			}
 		}
 		else if (selected is StaticInstance staticObj)
 		{
@@ -93,7 +106,7 @@ public partial class ItemPropertiesView : UserControl
 			var globalDefaults = _editor.Level.Settings.WadTryGetStatic(staticObj.WadObjectId)?.LuaProperties;
 
 			_viewModel.Title = $"Properties: {staticObj.ItemType}";
-			_viewModel.Load(definitions, staticObj.LuaProperties, globalDefaults);
+			_viewModel.Load(definitions, staticObj.LuaProperties, globalDefaults, staticObj.Ocb != 0);
 			_viewModel.StatusMessage = "No properties defined for this static mesh slot.";
 		}
 		else

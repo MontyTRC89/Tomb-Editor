@@ -154,12 +154,12 @@ public partial class SectorOptionsViewModel : ObservableObject
 	private void UpdateVersionSpecificControls()
 	{
 		var version = _editor.Level.Settings.GameVersion;
-		bool isTR345 = version.Native() >= TRVersion.Game.TR3;
+		bool beetleTrigMineSupported = version >= TRVersion.Game.TR3;
 
 		SupportsClimbing = version.SupportsClimbing();
 		SupportsMonkeySwing = version.SupportsMonkeySwing();
-		SupportsBeetleCheckpoint = isTR345;
-		SupportsTriggerTriggerer = isTR345;
+		SupportsBeetleCheckpoint = beetleTrigMineSupported;
+		SupportsTriggerTriggerer = beetleTrigMineSupported;
 
 		if (version.Native() >= TRVersion.Game.TR4)
 		{
