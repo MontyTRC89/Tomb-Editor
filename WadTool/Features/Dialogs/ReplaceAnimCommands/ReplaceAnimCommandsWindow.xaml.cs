@@ -7,9 +7,8 @@ using TombLib.WPF;
 namespace WadTool.Features.Dialogs.ReplaceAnimCommands;
 
 /// <summary>
-/// WPF port of the legacy <c>FormReplaceAnimCommands</c>. The two anim command editors are
-/// still the WinForms <see cref="AnimCommandEditor"/> user control, hosted via
-/// <c>WindowsFormsHost</c> until that control is ported.
+/// WPF port of the legacy <c>FormReplaceAnimCommands</c>, using two WPF
+/// <see cref="AnimCommandEditor"/> controls.
 /// </summary>
 public partial class ReplaceAnimCommandsWindow : Window
 {
@@ -21,10 +20,8 @@ public partial class ReplaceAnimCommandsWindow : Window
         InitializeComponent();
         this.HookModalAutoClose();
 
-        _aceFind = new AnimCommandEditor { BackColor = DarkUI.Config.Colors.GreyBackground };
-        _aceReplace = new AnimCommandEditor { BackColor = DarkUI.Config.Colors.GreyBackground };
-        findCommandHost.Child = _aceFind;
-        replaceCommandHost.Child = _aceReplace;
+        _aceFind = findCommandEditor;
+        _aceReplace = replaceCommandEditor;
 
         DataContextChanged += (_, _) => AttachViewModel();
 

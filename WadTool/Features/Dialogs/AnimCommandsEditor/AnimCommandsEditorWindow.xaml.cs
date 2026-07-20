@@ -8,10 +8,9 @@ using TombLib.WPF;
 namespace WadTool.Features.Dialogs.AnimCommandsEditor;
 
 /// <summary>
-/// WPF port of the legacy <c>FormAnimCommandsEditor</c>. The command editor itself is still the
-/// WinForms <see cref="AnimCommandEditor"/> user control, hosted via <c>WindowsFormsHost</c> until
-/// that control is ported. Selecting a row pushes its command into the hosted editor; edits made
-/// in the editor are pushed back into the view model.
+/// WPF port of the legacy <c>FormAnimCommandsEditor</c>. Selecting a row pushes its command into
+/// the <see cref="AnimCommandEditor"/> control; edits made in the editor are pushed back into the
+/// view model.
 /// </summary>
 public partial class AnimCommandsEditorWindow : Window
 {
@@ -23,8 +22,7 @@ public partial class AnimCommandsEditorWindow : Window
         InitializeComponent();
         this.HookModalAutoClose();
 
-        _commandEditor = new AnimCommandEditor { BackColor = DarkUI.Config.Colors.GreyBackground };
-        commandEditorHost.Child = _commandEditor;
+        _commandEditor = commandEditor;
         _commandEditor.AnimCommandChanged += OnCommandEditorChanged;
 
         DataContextChanged += OnDataContextChanged;

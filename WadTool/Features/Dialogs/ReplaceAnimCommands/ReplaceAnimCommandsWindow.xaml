@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
 	xmlns:vm="clr-namespace:WadTool.Features.Dialogs.ReplaceAnimCommands"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+	xmlns:wadTool="clr-namespace:WadTool"
 	Title="{tombLib:Localize Title}"
 	Width="811"
 	Height="460"
@@ -33,8 +33,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<!--  The two anim command editors are the legacy WinForms AnimCommandEditor user controls,
-		      hosted as-is (same approach as MainWindow's wad trees) until that control is ported.  -->
 		<controls:SpacedGrid Grid.Row="0" ColumnSpacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
@@ -42,10 +40,10 @@
 			</Grid.ColumnDefinitions>
 
 			<GroupBox Grid.Column="0" Header="{tombLib:Localize SearchFor}">
-				<wfi:WindowsFormsHost x:Name="findCommandHost" Height="140" />
+				<wadTool:AnimCommandEditor x:Name="findCommandEditor" Height="140" />
 			</GroupBox>
 			<GroupBox Grid.Column="1" Header="{tombLib:Localize ReplaceWith}">
-				<wfi:WindowsFormsHost x:Name="replaceCommandHost" Height="140" />
+				<wadTool:AnimCommandEditor x:Name="replaceCommandEditor" Height="140" />
 			</GroupBox>
 		</controls:SpacedGrid>
 

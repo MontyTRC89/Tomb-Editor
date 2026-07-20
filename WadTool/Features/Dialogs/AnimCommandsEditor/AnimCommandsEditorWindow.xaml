@@ -8,7 +8,7 @@
 	xmlns:local="clr-namespace:WadTool.Features.Dialogs.AnimCommandsEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tombLib="clr-namespace:TombLib.WPF;assembly=TombLib.WPF"
-	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+	xmlns:wadTool="clr-namespace:WadTool"
 	Title="{tombLib:Localize Title}"
 	Width="381"
 	Height="382"
@@ -48,16 +48,14 @@
 				IsCancel="True" />
 		</controls:SpacedStack>
 
-		<!--  The command editor is the legacy WinForms AnimCommandEditor user control, hosted as-is
-		      (same approach as ReplaceAnimCommands) until that control is ported.  -->
-		<wfi:WindowsFormsHost
-			x:Name="commandEditorHost"
+		<wadTool:AnimCommandEditor
+			x:Name="commandEditor"
 			Height="150"
 			DockPanel.Dock="Bottom">
-			<wfi:WindowsFormsHost.Margin>
+			<wadTool:AnimCommandEditor.Margin>
 				<Thickness Top="{x:Static darkUI:Defaults.MediumThicknessWidth}" />
-			</wfi:WindowsFormsHost.Margin>
-		</wfi:WindowsFormsHost>
+			</wadTool:AnimCommandEditor.Margin>
+		</wadTool:AnimCommandEditor>
 
 		<GroupBox Header="{tombLib:Localize GroupTitle}">
 			<DockPanel LastChildFill="True">
