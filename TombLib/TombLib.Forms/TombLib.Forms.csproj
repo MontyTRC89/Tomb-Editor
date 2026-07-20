@@ -96,9 +96,6 @@
     <Compile Update="Controls\VisualScripting\VisibleNodeAction.cs" />
     <Compile Update="Controls\VisualScripting\VisibleNodeBase.cs" />
     <Compile Update="Controls\VisualScripting\VisibleNodeCondition.cs" />
-    <Compile Update="Controls\WadTreeControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Update="Forms\FormAnimatedTextures.cs">
       <SubType>Form</SubType>
     </Compile>

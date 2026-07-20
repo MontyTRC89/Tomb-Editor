@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:TombEditor.Features.Dialogs.WadPreview"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tombLibControls="clr-namespace:TombLib.WPF.CustomControls;assembly=TombLib.WPF"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Width="683"
 	Height="400"
@@ -31,7 +32,10 @@
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 
-			<wfi:WindowsFormsHost x:Name="wadTreeHost" Grid.Column="0" />
+			<tombLibControls:WadTreeView
+				x:Name="wadTree"
+				Grid.Column="0"
+				MultiSelect="False" />
 			<wfi:WindowsFormsHost x:Name="panelItemHost" Grid.Column="1" />
 		</controls:SpacedGrid>
 	</Border>

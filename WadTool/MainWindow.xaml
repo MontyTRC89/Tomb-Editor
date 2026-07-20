@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tomb="clr-namespace:TombLib.Icons;assembly=TombLib.Icons"
+	xmlns:tombLibControls="clr-namespace:TombLib.WPF.CustomControls;assembly=TombLib.WPF"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="WadTool"
 	Icon="pack://application:,,,/WT.ico"
@@ -320,7 +321,10 @@
 								Foreground="{DynamicResource Brush_Text}"
 								Text="Destination" />
 						</Border>
-						<wfi:WindowsFormsHost x:Name="treeDestWadHost" Background="{DynamicResource Brush_Background_Low}" />
+						<tombLibControls:WadTreeView
+							x:Name="treeDestWad"
+							Padding="3"
+							Background="{DynamicResource Brush_Background_Low}" />
 					</DockPanel>
 				</Border>
 			</DockPanel>
@@ -431,7 +435,10 @@
 								Foreground="{DynamicResource Brush_Text}"
 								Text="Source" />
 						</Border>
-						<wfi:WindowsFormsHost x:Name="treeSourceWadHost" Background="{DynamicResource Brush_Background_Low}" />
+						<tombLibControls:WadTreeView
+							x:Name="treeSourceWad"
+							Padding="3"
+							Background="{DynamicResource Brush_Background_Low}" />
 					</DockPanel>
 				</Border>
 			</DockPanel>

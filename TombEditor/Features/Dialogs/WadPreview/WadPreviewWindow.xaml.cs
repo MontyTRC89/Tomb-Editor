@@ -5,17 +5,17 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
-using TombLib.Controls;
 using TombLib.Rendering;
 using TombLib.Wad;
+using TombLib.WPF.CustomControls;
 
 namespace TombEditor.Features.Dialogs.WadPreview;
 
 /// <summary>
 /// Borderless pop-up that previews a <see cref="Wad2"/>: a WAD tree on the left
 /// for selection, a 3D item preview on the right. Mirrors the WinForms
-/// <c>FormPreviewWad</c>: both inner controls remain WinForms (the 3D pipeline
-/// is hosted via <c>WindowsFormsHost</c> until the Vulkan/OpenGL refactor).
+/// <c>FormPreviewWad</c>; the 3D pipeline remains WinForms (hosted via
+/// <c>WindowsFormsHost</c> until the Vulkan/OpenGL refactor).
 /// </summary>
 public partial class WadPreviewWindow : Window
 {
@@ -35,14 +35,9 @@ public partial class WadPreviewWindow : Window
 		};
 		_panelItem.InitializeRendering(device, editor.Configuration.RenderingItem_Antialias);
 
-		_wadTree = new WadTreeView
-		{
-			Dock = DockStyle.Fill,
-			MultiSelect = false
-		};
+		_wadTree = wadTree;
 		_wadTree.SelectedWadObjectIdsChanged += OnTreeSelectionChanged;
 
-		wadTreeHost.Child = _wadTree;
 		panelItemHost.Child = _panelItem;
 
 		DataContextChanged += OnDataContextChanged;

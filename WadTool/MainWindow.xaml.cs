@@ -15,7 +15,9 @@ using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
+using TombLib.WPF.CustomControls;
 using WadTool.Controls;
+using ContextMenu = System.Windows.Controls.ContextMenu;
 using WinFormsDialogResult = System.Windows.Forms.DialogResult;
 using Keys = System.Windows.Forms.Keys;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -40,8 +42,8 @@ namespace WadTool
         private readonly WadTreeView _treeDestWad;
         private readonly WadTreeView _treeSourceWad;
 
-        private readonly DarkContextMenu _contextMenuMoveableItem;
-        private readonly DarkContextMenu _contextMenuStatics;
+        private readonly ContextMenu _contextMenuMoveableItem;
+        private readonly ContextMenu _contextMenuStatics;
 
         private HotkeyMessageFilter _hotkeyFilter;
 
@@ -65,20 +67,19 @@ namespace WadTool
             _panel3D.InitializeRendering(DeviceManager.DefaultDeviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             panel3DHost.Child = _panel3D;
 
-            // Hosted WinForms wad trees. They keep their DarkUI context menus and search box.
-            _treeDestWad = new WadTreeView { ReadOnly = false, Padding = new Padding(3) };
+            _treeDestWad = treeDestWad;
+            _treeDestWad.ReadOnly = false;
             _treeDestWad.ClickOnEmpty += treeDestWad_ClickOnEmpty;
             _treeDestWad.SelectedWadObjectIdsChanged += treeDestWad_SelectedWadObjectIdsChanged;
             _treeDestWad.MetadataChanged += treeDestWad_MetadataChanged;
             _treeDestWad.DoubleClick += treeDestWad_DoubleClick;
             _treeDestWad.KeyDown += treeDestWad_KeyDown;
-            treeDestWadHost.Child = _treeDestWad;
 
-            _treeSourceWad = new WadTreeView { ReadOnly = false, Padding = new Padding(3) };
+            _treeSourceWad = treeSourceWad;
+            _treeSourceWad.ReadOnly = false;
             _treeSourceWad.ClickOnEmpty += treeSourceWad_ClickOnEmpty;
             _treeSourceWad.SelectedWadObjectIdsChanged += treeSourceWad_SelectedWadObjectIdsChanged;
             _treeSourceWad.DoubleClick += treeSourceWad_DoubleClick;
-            treeSourceWadHost.Child = _treeSourceWad;
 
             _contextMenuMoveableItem = BuildMoveableContextMenu();
             _contextMenuStatics = BuildStaticsContextMenu();
@@ -106,34 +107,34 @@ namespace WadTool
 
         private class InitEvent : IEditorEvent { };
 
-        private DarkContextMenu BuildMoveableContextMenu()
+        private ContextMenu BuildMoveableContextMenu()
         {
-            var menu = new DarkContextMenu();
-            menu.Items.Add(NewWinFormsMenuItem("Edit animations...", Properties.Resources.animations_16, (s, e) => EditItemButton_Click(null, null)));
-            menu.Items.Add(NewWinFormsMenuItem("Edit skeleton...", Properties.Resources.skeleton_16, (s, e) => EditSkeletonButton_Click(null, null)));
-            menu.Items.Add(NewWinFormsMenuItem("Edit meshes...", null, MeshEditorMenu_ClickHandler));
-            menu.Items.Add(NewWinFormsMenuItem("Edit properties...", null, (s, e) => EditSelectedObjectProperties()));
-            menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(NewWinFormsMenuItem("Change slot...", Properties.Resources.replace_16, (s, e) => ChangeSlotButton_Click(null, null)));
-            menu.Items.Add(NewWinFormsMenuItem("Delete object", Properties.Resources.trash_16, (s, e) => DeleteObjectButton_Click(null, null)));
+            var menu = new ContextMenu();
+            menu.Items.Add(NewContextMenuItem("Edit animations...", (s, e) => EditItemButton_Click(null, null)));
+            menu.Items.Add(NewContextMenuItem("Edit skeleton...", (s, e) => EditSkeletonButton_Click(null, null)));
+            menu.Items.Add(NewContextMenuItem("Edit meshes...", (s, e) => MeshEditorMenu_ClickHandler(s, e)));
+            menu.Items.Add(NewContextMenuItem("Edit properties...", (s, e) => EditSelectedObjectProperties()));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(NewContextMenuItem("Change slot...", (s, e) => ChangeSlotButton_Click(null, null)));
+            menu.Items.Add(NewContextMenuItem("Delete object", (s, e) => DeleteObjectButton_Click(null, null)));
             return menu;
         }
 
-        private DarkContextMenu BuildStaticsContextMenu()
+        private ContextMenu BuildStaticsContextMenu()
         {
-            var menu = new DarkContextMenu();
-            menu.Items.Add(NewWinFormsMenuItem("Edit object...", Properties.Resources.edit_16, (s, e) => EditItemButton_Click(null, null)));
-            menu.Items.Add(NewWinFormsMenuItem("Edit mesh...", null, MeshEditorMenu_ClickHandler));
-            menu.Items.Add(NewWinFormsMenuItem("Edit properties...", null, (s, e) => EditSelectedObjectProperties()));
-            menu.Items.Add(new ToolStripSeparator());
-            menu.Items.Add(NewWinFormsMenuItem("Change slot...", Properties.Resources.replace_16, (s, e) => ChangeSlotButton_Click(null, null)));
-            menu.Items.Add(NewWinFormsMenuItem("Delete object", Properties.Resources.trash_16, (s, e) => DeleteObjectButton_Click(null, null)));
+            var menu = new ContextMenu();
+            menu.Items.Add(NewContextMenuItem("Edit object...", (s, e) => EditItemButton_Click(null, null)));
+            menu.Items.Add(NewContextMenuItem("Edit mesh...", (s, e) => MeshEditorMenu_ClickHandler(s, e)));
+            menu.Items.Add(NewContextMenuItem("Edit properties...", (s, e) => EditSelectedObjectProperties()));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(NewContextMenuItem("Change slot...", (s, e) => ChangeSlotButton_Click(null, null)));
+            menu.Items.Add(NewContextMenuItem("Delete object", (s, e) => DeleteObjectButton_Click(null, null)));
             return menu;
         }
 
-        private static ToolStripMenuItem NewWinFormsMenuItem(string text, System.Drawing.Image image, EventHandler onClick)
+        private static MenuItem NewContextMenuItem(string text, RoutedEventHandler onClick)
         {
-            var item = new ToolStripMenuItem(text, image);
+            var item = new MenuItem { Header = text };
             item.Click += onClick;
             return item;
         }
@@ -395,11 +396,11 @@ namespace WadTool
 
             // Update context menu
             if (currentSelection is WadMoveableId)
-                _treeDestWad.ContextMenuStrip = _contextMenuMoveableItem;
+                _treeDestWad.ContextMenu = _contextMenuMoveableItem;
             else if (currentSelection is WadStaticId)
-                _treeDestWad.ContextMenuStrip = _contextMenuStatics;
+                _treeDestWad.ContextMenu = _contextMenuStatics;
             else
-                _treeDestWad.ContextMenuStrip = null;
+                _treeDestWad.ContextMenu = null;
 
             // Update menus
             convertToDynamicLightingMenu.IsEnabled =
@@ -428,11 +429,11 @@ namespace WadTool
                 CopyObject(System.Windows.Forms.Control.ModifierKeys.HasFlag(Keys.Alt));
         }
 
-        private void treeDestWad_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        private void treeDestWad_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            switch (e.Key)
             {
-                case Keys.Delete:
+                case System.Windows.Input.Key.Delete:
                     WadActions.DeleteObjects(_tool, this.GetWin32Window(), WadArea.Destination, _treeDestWad.SelectedWadObjectIds.ToList());
                     break;
             }
@@ -761,11 +762,7 @@ namespace WadTool
                 _hotkeyFilter = null;
             }
 
-            _contextMenuMoveableItem?.Dispose();
-            _contextMenuStatics?.Dispose();
             _popup?.Dispose();
-            _treeDestWad?.Dispose();
-            _treeSourceWad?.Dispose();
             _panel3D?.Dispose();
 
             base.OnClosed(e);
