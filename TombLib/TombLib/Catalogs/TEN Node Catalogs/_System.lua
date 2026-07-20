@@ -226,19 +226,13 @@ LevelFuncs.Engine.Node.RequireActiveMoveable = function(objectId, errorMessage, 
     local mov = TEN.Objects.GetMoveableByName(objectId)
 
     if mov == nil then
-        TEN.Util.PrintLog(
-            "moveable [ " .. tostring(objectId) .. " ] does not exist.",
-            TEN.Util.LogLevel.ERROR
-        )
+        TEN.Util.PrintLog("moveable [ " .. tostring(objectId) .. " ] does not exist.", TEN.Util.LogLevel.ERROR)
         return returnFalse and false or nil
     end
 
     if mov:GetStatus() ~= TEN.Objects.MoveableStatus.ACTIVE then
         local msg = errorMessage or "operation"
-        TEN.Util.PrintLog(
-            "moveable [ " .. tostring(objectId) .. " ] is not active. Cannot perform " .. msg .. ".",
-            TEN.Util.LogLevel.ERROR
-        )
+        TEN.Util.PrintLog("moveable [ " .. tostring(objectId) .. " ] is not active. Cannot perform " .. msg .. ".", TEN.Util.LogLevel.ERROR)
         return returnFalse and false or nil
     end
 
