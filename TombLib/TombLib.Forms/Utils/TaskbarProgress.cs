@@ -78,17 +78,30 @@ namespace TombLib.Utils
                 taskbarInstance.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
         }
 
-        public static void FlashWindow()
+        public static void FlashWindow() => FlashWindow(IntPtr.Zero);
+
+        public static void FlashWindow(IntPtr fallbackHandle)
         {
+            // Don't flash if any of our own windows is already the foreground. A process-wide
+            // check is needed because WPF windows (e.g. the operation dialog itself) never appear
+            // in Application.OpenForms.
             var activatedHandle = GetForegroundWindow();
+
             if (activatedHandle != IntPtr.Zero)
             {
-                for (int i = 0; i < Application.OpenForms.Count; i++)
-                    if (activatedHandle == Application.OpenForms[i].Handle)
-                        return;
+                GetWindowThreadProcessId(activatedHandle, out int activatedProcessId);
+                if (activatedProcessId == Environment.ProcessId)
+                    return;
             }
 
-            FlashWindow(Application.OpenForms[0].Handle, true);
+            // Prefer the first WinForms form (legacy shell), fall back to the supplied HWND
+            // (used by the WPF shell where Application.OpenForms is empty).
+            IntPtr target = Application.OpenForms.Count > 0
+                ? Application.OpenForms[0].Handle
+                : fallbackHandle;
+
+            if (target != IntPtr.Zero)
+                FlashWindow(target, true);
         }
     }
 

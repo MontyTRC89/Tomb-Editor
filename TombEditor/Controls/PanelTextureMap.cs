@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Controls.ContextMenus;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;

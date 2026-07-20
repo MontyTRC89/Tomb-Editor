@@ -169,7 +169,12 @@ namespace TombEditor.Controls.Panel3D
 
         private void OnMouseEntered()
         {
-            if (!Focused && Form.ActiveForm == FindForm())
+            // Only grab keyboard focus when our own top-level window is already the foreground
+            // window. Hovering the 3D view must not steal activation from a non-modal, always-on-top
+            // tool window. The old "Form.ActiveForm == FindForm()" guard relied on Panel3D living
+            // inside a WinForms Form; under the WPF WindowsFormsHost FindForm() is null and the guard
+            // always passed, so every mouse-enter pulled foreground back to the main window.
+            if (!Focused && GetForegroundWindow() == GetAncestor(Handle, GA_ROOT))
             {
                 Focus(); // Enable keyboard interaction
                 _editor.ToggleHiddenSelection(false); // Restore hidden selection, if any

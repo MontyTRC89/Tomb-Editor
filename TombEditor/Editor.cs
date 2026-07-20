@@ -6,7 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using TombEditor.Controls.FlybyTimeline.Preview;
+using TombEditor.Features.FlybyTimeline.Preview;
 using TombLib;
 using TombLib.Forms;
 using TombLib.Graphics;
@@ -839,14 +839,15 @@ namespace TombEditor
             RaiseEvent(new EditorFocusedEvent());
         }
 
-        // Dock content change event
+        // Dock content change event. The name is the panel's logical name (e.g. "TexturePanel"),
+        // which the WPF shell maps to its AvalonDock ContentId by lowercasing the first letter.
         public class ToolWindowToggleEvent : IEditorEvent
         {
-            public Type ContentType { get; internal set; }
+            public string Name { get; internal set; }
         }
-        public void ToggleToolWindow(Type contentType)
+        public void ToggleToolWindow(string name)
         {
-            RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
+            RaiseEvent(new ToolWindowToggleEvent() { Name = name });
         }
 
         // Layout switch events
@@ -1073,6 +1074,9 @@ namespace TombEditor
             // Update configuration watcher
             if (obj is ConfigurationChangedEvent)
             {
+                if (((ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                    KeyBindingsWrapper.Instance.Invalidate();
+
                 if (((ConfigurationChangedEvent)obj).Save && !_configurationIsLoadedFromFile)
                     Configuration.SaveTry();
 

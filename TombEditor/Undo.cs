@@ -248,7 +248,13 @@ namespace TombEditor
                 Properties = new List<object> { uo.Sequence, uo.Number, uo.Timer, uo.Flags, uo.Speed, uo.Fov, uo.Roll, uo.RotationX, uo.RotationY };
             }
             else if (UndoObject is LightInstance)
-                Properties = new List<object> { ((LightInstance)UndoObject).Color };
+            {
+                var uo = (LightInstance)UndoObject;
+                Properties = new List<object> { uo.Color, uo.Type, uo.Quality, uo.Intensity,
+                    uo.InnerRange, uo.OuterRange, uo.InnerAngle, uo.OuterAngle,
+                    uo.RotationX, uo.RotationY, uo.Enabled, uo.IsObstructedByRoomGeometry,
+                    uo.IsDynamicallyUsed, uo.IsStaticallyUsed, uo.IsUsedForImportedGeometry, uo.CastDynamicShadows };
+            }
             else if (UndoObject is SinkInstance)
                 Properties = new List<object> { ((SinkInstance)UndoObject).Strength };
             else if (UndoObject is SoundSourceInstance)
@@ -303,8 +309,24 @@ namespace TombEditor
                 }
                 else if (UndoObject is LightInstance)
                 {
-                    ((LightInstance)UndoObject).Color = (Vector3)Properties[0];
-                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    var uo = (LightInstance)UndoObject;
+                    uo.Color = (Vector3)Properties[0];
+                    uo.Type = (LightType)Properties[1];
+                    uo.Quality = (LightQuality)Properties[2];
+                    uo.Intensity = (float)Properties[3];
+                    uo.InnerRange = (float)Properties[4];
+                    uo.OuterRange = (float)Properties[5];
+                    uo.InnerAngle = (float)Properties[6];
+                    uo.OuterAngle = (float)Properties[7];
+                    uo.RotationX = (float)Properties[8];
+                    uo.RotationY = (float)Properties[9];
+                    uo.Enabled = (bool)Properties[10];
+                    uo.IsObstructedByRoomGeometry = (bool)Properties[11];
+                    uo.IsDynamicallyUsed = (bool)Properties[12];
+                    uo.IsStaticallyUsed = (bool)Properties[13];
+                    uo.IsUsedForImportedGeometry = (bool)Properties[14];
+                    uo.CastDynamicShadows = (bool)Properties[15];
+                    uo.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 }
                 else if (UndoObject is SinkInstance)
                     ((SinkInstance)UndoObject).Strength = (short)Properties[0];

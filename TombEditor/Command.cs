@@ -1,3 +1,5 @@
+using DarkUI.Controls;
+using DarkUI.Forms;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -7,20 +9,28 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Windows.Forms;
-using DarkUI.Controls;
-using DarkUI.Forms;
-using TombEditor.Forms;
-using TombEditor.ToolWindows;
+using TombEditor.Controls;
+using TombEditor.Features.DockableViews.ContentBrowser;
+using TombEditor.Features.DockableViews.ImportedGeometryBrowser;
+using TombEditor.Features.DockableViews.ItemBrowser;
+using TombEditor.Features.DockableViews.LightingPanel;
+using TombEditor.Features.DockableViews.ObjectList;
+using TombEditor.Features.DockableViews.PalettePanel;
+using TombEditor.Features.DockableViews.RoomOptionsPanel;
+using TombEditor.Features.DockableViews.SectorOptionsPanel;
+using TombEditor.Features.DockableViews.TexturePanel;
+using TombEditor.Features.DockableViews.TriggerList;
+using TombEditor.Features.Panel3D.ToolPalette;
 using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
-using TombLib.Wad;
-using TombLib.Wad.Catalog;
-using TombLib.Utils;
 using TombLib.LevelData.SectorEnums;
 using TombLib.LevelData.SectorEnums.Extensions;
-using TombEditor.Controls;
+using TombLib.Utils;
+using TombLib.WPF;
+using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -53,6 +63,14 @@ namespace TombEditor
         public Editor Editor;
         public IWin32Window Window;
         public Keys KeyData = Keys.None;
+
+        public CommandArgs() { }
+
+        public CommandArgs(IWin32Window window, Editor editor)
+        {
+            Window = window;
+            Editor = editor;
+        }
     }
 
     public static class CommandHandler
@@ -64,9 +82,29 @@ namespace TombEditor
         public static CommandObj GetCommand(string name)
         {
             CommandObj command = _commands.FirstOrDefault(cmd => cmd.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
-            if (command == null)
+            if (command is null)
                 throw new KeyNotFoundException("Command with name '" + name + "' not found.");
+
             return command;
+        }
+
+        public static System.Windows.Input.ICommand GetCommand(string name, CommandArgs args)
+        {
+            ArgumentNullException.ThrowIfNull(args);
+
+            var command = GetCommand(name);
+            return new CommunityToolkit.Mvvm.Input.RelayCommand(
+                () => command.Execute?.Invoke(ResolveCommandArgs(args)),
+                () => args.Editor is not null);
+        }
+
+        public static System.Windows.Input.ICommand GetCommand(string name, Func<CommandArgs> argsFactory)
+        {
+            ArgumentNullException.ThrowIfNull(argsFactory);
+
+            var command = GetCommand(name);
+            return new CommunityToolkit.Mvvm.Input.RelayCommand(
+                () => command.Execute?.Invoke(argsFactory()));
         }
 
         public static void ExecuteHotkey(CommandArgs args)
@@ -85,7 +123,7 @@ namespace TombEditor
                 {
                     var command = GetCommand(control.Tag.ToString());
 
-                    if (command != null)
+                    if (command is not null)
                     {
                         var hotkeyLabel = string.Join(", ", editor.Configuration.UI_Hotkeys[control.Tag.ToString()]);
                         var label = command.FriendlyName + (string.IsNullOrEmpty(hotkeyLabel) ? "" : " (" + hotkeyLabel + ")");
@@ -93,11 +131,36 @@ namespace TombEditor
                         if(!onlyToolTips)
                             control.Click += (sender, e) => { command.Execute?.Invoke(new CommandArgs { Editor = editor, Window = parent.FindForm() }); };
 
-                        if (toolTip != null && !string.IsNullOrEmpty(label))
+                        if (toolTip is not null && !string.IsNullOrEmpty(label))
                             toolTip.SetToolTip(control, label);
                     }
                 }
             }
+        }
+
+        private static CommandArgs ResolveCommandArgs(CommandArgs args)
+        {
+            ArgumentNullException.ThrowIfNull(args);
+
+            var window = args.Window;
+
+            if (!IsValidWindow(window))
+                window = WPFUtils.GetWin32WindowOwner();
+
+            return new CommandArgs
+            {
+                Editor = args.Editor,
+                Window = window,
+                KeyData = args.KeyData
+            };
+        }
+
+        private static bool IsValidWindow(IWin32Window window)
+        {
+            if (window is null || window.Handle == IntPtr.Zero)
+                return false;
+
+            return window is not Control control || !control.IsDisposed;
         }
 
         private static void GenericDirectionalControlCommand(CommandArgs args, SectorVerticalPart surface, int increment, bool smooth, bool oppositeDiagonal)
@@ -910,14 +973,19 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormSearch)];
-                if (existingWindow == null)
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    var searchForm = new FormSearch(args.Editor);
-                    searchForm.Show(args.Window);
+                    if (w is TombEditor.Features.Dialogs.Search.SearchWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
                 }
-                else
-                    existingWindow.Focus();
+
+                var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(args.Editor);
+                var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
+                searchWindow.Owner = System.Windows.Application.Current.MainWindow;
+                searchWindow.Show();
             });
 
             AddCommand("EditVolumeEventSets", "Edit volume event sets...", CommandType.Edit, delegate (CommandArgs args)
@@ -1116,14 +1184,20 @@ namespace TombEditor
 
             AddCommand("ApplyRoomProperties", "Apply room properties...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormRoomProperties)];
-                if (existingWindow == null)
+                // Surface the existing window if one is already open instead of stacking duplicates.
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
                 {
-                    var propForm = new FormRoomProperties(args.Editor);
-                    propForm.Show(args.Window);
+                    if (w is TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
                 }
-                else
-                    existingWindow.Focus();
+
+                var vm = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindowViewModel();
+                var dialog = new TombEditor.Features.Dialogs.RoomProperties.RoomPropertiesWindow { DataContext = vm };
+                dialog.Owner = System.Windows.Application.Current.MainWindow;
+                dialog.Show();
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)
@@ -1378,20 +1452,33 @@ namespace TombEditor
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate (CommandArgs args)
             {
-                using (var form = new FormTextureRemap(args.Editor))
-                    form.ShowDialog(args.Window);
+                {
+                    var vm = new TombEditor.Features.Dialogs.TextureRemap.TextureRemapWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Features.Dialogs.TextureRemap.TextureRemapWindow { DataContext = vm };
+                    if (args.Window is not null)
+                        dialog.SetOwner(args.Window);
+                    dialog.ShowDialog();
+                }
             });
 
             AddCommand("SearchTextures", "Search textures...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormFindTextures)];
-                if (existingWindow == null)
+                var existingWpfWindow = System.Windows.Application.Current?.Windows
+                    .OfType<TombEditor.Features.Dialogs.FindTextures.FindTexturesWindow>()
+                    .FirstOrDefault();
+
+                if (existingWpfWindow is null)
                 {
-                    var findUntexturedForm = new FormFindTextures(args.Editor);
-                    findUntexturedForm.Show(args.Window);
+                    var vm = new TombEditor.Features.Dialogs.FindTextures.FindTexturesWindowViewModel(args.Editor);
+                    var dialog = new TombEditor.Features.Dialogs.FindTextures.FindTexturesWindow { DataContext = vm };
+                    if (args.Window is not null)
+                        dialog.SetOwner(args.Window);
+                    dialog.Show();
                 }
                 else
-                    existingWindow.Focus();
+                {
+                    existingWpfWindow.Activate();
+                }
             });
 
             AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate (CommandArgs args)
@@ -1424,21 +1511,14 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
+                var context = new TombEditorAnimatedTexturesContext(args.Editor);
+                var textureMap = new Controls.WpfAnimatedTextureMapView();
+                var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
+                var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
 
-                if (existingWindow == null)
-                {
-                    var context = new TombEditorAnimatedTexturesContext(args.Editor);
-                    var form = new FormAnimatedTextures(
-                        new PanelTextureMapForAnimations(),
-                        context,
-                        args.Editor.Configuration
-                    );
-
-                    form.Show(args.Window);
-                }
-                else
-                    existingWindow.Focus();
+                if (args.Window is not null)
+                    window.SetOwner(args.Window);
+                window.ShowDialog();
             });
 
             AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate (CommandArgs args)
@@ -1593,14 +1673,24 @@ namespace TombEditor
 
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (var form = new FormLevelSettings(args.Editor))
-                    form.ShowDialog(args.Window);
+                var levelSettingsViewModel = new TombEditor.Features.Dialogs.LevelSettings.LevelSettingsWindowViewModel(args.Editor);
+                var levelSettingsWindow = new TombEditor.Features.Dialogs.LevelSettings.LevelSettingsWindow { DataContext = levelSettingsViewModel };
+
+                if (args.Window is not null)
+                    levelSettingsWindow.SetOwner(args.Window);
+
+                levelSettingsWindow.ShowDialog();
             });
 
             AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (var form = new FormOptions(args.Editor))
-                    form.ShowDialog(args.Window);
+                var optionsViewModel = new TombEditor.Features.Dialogs.Options.OptionsWindowViewModel(args.Editor);
+                var optionsWindow = new TombEditor.Features.Dialogs.Options.OptionsWindow { DataContext = optionsViewModel };
+
+                if (args.Window is not null)
+                    optionsWindow.SetOwner(args.Window);
+
+                optionsWindow.ShowDialog();
             });
 
             AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate (CommandArgs args)
@@ -1637,8 +1727,11 @@ namespace TombEditor
 
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (var f = new FormKeyboardLayout(args.Editor))
-                    f.ShowDialog(args.Window);
+                var kbVm = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindowViewModel(args.Editor);
+                var kbDialog = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindow { DataContext = kbVm };
+                if (args.Window is not null)
+                    kbDialog.SetOwner(args.Window);
+                kbDialog.ShowDialog();
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate (CommandArgs args)
@@ -1716,18 +1809,18 @@ namespace TombEditor
                 args.Editor.Quit();
             });
 
-            AddCommand("ShowTriggerList", "Show trigger list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(TriggerList)));
-            AddCommand("ShowRoomOptions", "Show room options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(RoomOptions)));
-            AddCommand("ShowItemBrowser", "Show item browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ItemBrowser)));
-            AddCommand("ShowImportedGeometryBrowser", "Show imported geometry browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ImportedGeometryBrowser)));
-            AddCommand("ShowContentBrowser", "Show content browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ContentBrowser)));
-            AddCommand("ShowSectorOptions", "Show sector options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(SectorOptions)));
-            AddCommand("ShowLighting", "Show lighting", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(Lighting)));
-            AddCommand("ShowPalette", "Show palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(Palette)));
-            AddCommand("ShowTexturePanel", "Show texture panel", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(TexturePanel)));
-            AddCommand("ShowObjectList", "Show object list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ObjectList)));
-            AddCommand("ShowToolPalette", "Show tool palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ToolPalette)));
-            AddCommand("ShowItemProperties", "Show item properties", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow(typeof(ItemProperties)));
+            AddCommand("ShowTriggerList", "Show trigger list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("TriggerList"));
+            AddCommand("ShowRoomOptions", "Show room options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("RoomOptions"));
+            AddCommand("ShowItemBrowser", "Show item browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ItemBrowser"));
+            AddCommand("ShowImportedGeometryBrowser", "Show imported geometry browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ImportedGeometryBrowser"));
+            AddCommand("ShowContentBrowser", "Show content browser", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ContentBrowser"));
+            AddCommand("ShowSectorOptions", "Show sector options", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("SectorOptions"));
+            AddCommand("ShowLighting", "Show lighting", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("Lighting"));
+            AddCommand("ShowPalette", "Show palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("Palette"));
+            AddCommand("ShowTexturePanel", "Show texture panel", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("TexturePanel"));
+            AddCommand("ShowObjectList", "Show object list", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ObjectList"));
+            AddCommand("ShowToolPalette", "Show tool palette", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ToolPalette"));
+            AddCommand("ShowItemProperties", "Show item properties", CommandType.Windows, (CommandArgs args) => args.Editor.ToggleToolWindow("ItemProperties"));
 
             AddCommand("ShowStatistics", "Statistics display", CommandType.Windows, delegate (CommandArgs args)
             {
@@ -1954,9 +2047,19 @@ namespace TombEditor
                     return;
                 }
 
-                using (var form = new FormTransform(args.Editor.SelectedObject as PositionBasedObjectInstance))
                 {
-                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
+                    var transformViewModel = new TombEditor.Features.Dialogs.Transform.TransformWindowViewModel(
+                        (PositionBasedObjectInstance)args.Editor.SelectedObject,
+                        args.Editor);
+
+                    var transformDialog = new TombEditor.Features.Dialogs.Transform.TransformWindow { DataContext = transformViewModel };
+
+                    if (args.Window is not null)
+                        transformDialog.SetOwner(args.Window);
+
+                    transformDialog.ShowDialog();
+
+                    if (transformViewModel.DialogResult != true)
                         return;
 
                     args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);
@@ -2264,27 +2367,29 @@ namespace TombEditor
 
             AddCommand("InPlaceSearchRooms", "Room in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(RoomOptions));
+                args.Editor.ActivateDefaultControl("RoomOptions");
             });
 
             AddCommand("InPlaceSearchItems", "Item in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(ItemBrowser));
+                args.Editor.ActivateDefaultControl("ItemBrowser");
             });
 
             AddCommand("InPlaceSearchTextures", "Texture in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(TexturePanel));
+                args.Editor.ActivateDefaultControl("TexturePanel");
             });
 
             AddCommand("InPlaceSearchImportedGeometry", "Imported geometry in-place search", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(ImportedGeometryBrowser));
+                args.Editor.ActivateDefaultControl("ImportedGeometryBrowser");
             });
 
             AddCommand("SearchMenus", "Search menu entries", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.ActivateDefaultControl(nameof(FormMain));
+                // Literal key kept for event-contract compatibility: the WinForms FormMain
+                // (removed with the WPF migration) listened for this container name.
+                args.Editor.ActivateDefaultControl("FormMain");
             });
 
             AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args)

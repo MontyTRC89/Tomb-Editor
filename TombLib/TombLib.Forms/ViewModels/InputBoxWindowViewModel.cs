@@ -31,7 +31,7 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 	public InputBoxWindowViewModel(
 		string? title = null,
 		string? label = null,
-		string? placeholder = null,
+		string? initialValue = null,
 		IEnumerable<string>? invalidNames = null,
 		IMessageService? messageService = null,
 		ILocalizationService? localizationService = null)
@@ -44,7 +44,7 @@ public partial class InputBoxWindowViewModel : ObservableObject, IModalDialogVie
 		// Properties
 		Title = title ?? string.Empty;
 		Label = label ?? _localizationService["EnterValue"];
-		Value = placeholder ?? string.Empty;
+		Value = initialValue ?? string.Empty;
 
 		_invalidNames = invalidNames ?? [];
 	}

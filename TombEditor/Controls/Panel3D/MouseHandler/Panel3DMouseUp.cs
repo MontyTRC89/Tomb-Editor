@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib;
-using TombEditor.Controls.ContextMenus;
+using TombEditor.Features.ContextMenus;
 using TombLib.Graphics;
 
 namespace TombEditor.Controls.Panel3D
@@ -88,25 +88,29 @@ namespace TombEditor.Controls.Panel3D
             var distance = new Vector2(_startMousePosition.X, _startMousePosition.Y) - new Vector2(location.X, location.Y);
             if (distance.Length() < 4.0f)
             {
-                _currentContextMenu?.Dispose();
-                _currentContextMenu = null;
+                if (_currentWpfContextMenu != null)
+                {
+                    _currentWpfContextMenu.IsOpen = false;
+                    _currentWpfContextMenu = null;
+                }
 
                 PickingResult newPicking = DoPicking(GetRay(location.X, location.Y), true);
+                var screen = PointToScreen(location);
                 if (newPicking is PickingResultObject)
                 {
                     ObjectInstance target = ((PickingResultObject)newPicking).ObjectInstance;
                     if (target is ISpatial)
-                        _currentContextMenu = new MaterialObjectContextMenu(_editor, this, target);
+                        _currentWpfContextMenu = MaterialObjectWpfContextMenu.Show(_editor, this, target, screen);
                 }
-                else if (newPicking is PickingResultSector)
+                else if (newPicking is PickingResultSector pickedSector)
                 {
-                    var pickedSector = newPicking as PickingResultSector;
                     if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pickedSector.Pos))
-                        _currentContextMenu = new SelectedGeometryContextMenu(_editor, this, pickedSector.Room, _editor.SelectedSectors.Area, pickedSector.Pos);
+                        _currentWpfContextMenu = SelectedGeometryWpfContextMenu.Show(
+                            _editor, this, pickedSector.Room, _editor.SelectedSectors.Area, pickedSector.Pos, screen);
                     else
-                        _currentContextMenu = new SectorContextMenu(_editor, this, pickedSector.Room, pickedSector.Pos);
+                        _currentWpfContextMenu = SectorWpfContextMenu.Show(
+                            _editor, this, pickedSector.Room, pickedSector.Pos, screen);
                 }
-                _currentContextMenu?.Show(PointToScreen(location));
             }
         }
     }

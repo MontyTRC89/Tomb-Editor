@@ -25,10 +25,6 @@ namespace WadTool
         [STAThread]
         public static void Main(string[] args)
         {
-            var services = WPFInitializer.InitializeWPF();
-            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
-            ServiceLocator.Configure(services.BuildServiceProvider());
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             // Load configuration
@@ -37,6 +33,10 @@ namespace WadTool
 
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
+
+            var services = WPFInitializer.InitializeWPF();
+            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            ServiceLocator.Configure(services.BuildServiceProvider());
 
             // Setup logging
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))

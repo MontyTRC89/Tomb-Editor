@@ -7,7 +7,7 @@ using TombLib.Utils;
 
 namespace TombEditor;
 
-public class TombEditorAnimatedTexturesContext : FormAnimatedTextures.IAnimatedTexturesContext
+public class TombEditorAnimatedTexturesContext : FormAnimatedTextures.IAnimatedTexturesContext, TombLib.WPF.Features.AnimatedTextures.IAnimatedTexturesContext
 {
 	private readonly Editor _editor;
 

@@ -27,6 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
+    <ProjectReference Include="..\TombLib.Icons\TombLib.Icons.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Resources\Localization\EN\Common.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

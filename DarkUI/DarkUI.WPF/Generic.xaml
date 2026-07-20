@@ -22,6 +22,7 @@
 		<ResourceDictionary Source="Styles/Slider.xaml" />
 		<ResourceDictionary Source="Styles/StatusBar.xaml" />
 		<ResourceDictionary Source="Styles/TabControl.xaml" />
+		<ResourceDictionary Source="Styles/SidebarTabControl.xaml" />
 		<ResourceDictionary Source="Styles/TextBlock.xaml" />
 		<ResourceDictionary Source="Styles/TextBox.xaml" />
 		<ResourceDictionary Source="Styles/ToggleButton.xaml" />

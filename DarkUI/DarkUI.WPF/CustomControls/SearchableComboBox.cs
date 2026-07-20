@@ -115,6 +115,8 @@ public class SearchableComboBox : ComboBox
 		{
 			FindNext();
 			PerformedSpecialAction = true;
+			// Prevent Enter from bubbling up to the parent Window's IsDefault button.
+			e.Handled = true;
 		}
 	}
 

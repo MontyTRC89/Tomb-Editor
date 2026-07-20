@@ -1,4 +1,5 @@
 ﻿using CustomMessageBox.WPF;
+using DarkUI.WPF;
 using Microsoft.Extensions.DependencyInjection;
 using MvvmDialogs;
 using System;
@@ -14,8 +15,9 @@ public static class WPFInitializer
 	/// <summary>
 	/// Initializes WPF application, DarkUI theme, and dependency injection services.
 	/// </summary>
+	/// <param name="theme">Color theme to apply at startup. Can be swapped at runtime via <see cref="ThemeManager.Apply" />.</param>
 	/// <returns>A <see cref="ServiceCollection" /> with core services already registered.</returns>
-	public static ServiceCollection InitializeWPF()
+	public static ServiceCollection InitializeWPF(Theme theme = Theme.Dark)
 	{
 		Localizer.Instance.LoadLanguage("en");
 
@@ -25,17 +27,14 @@ public static class WPFInitializer
 			ShutdownMode = ShutdownMode.OnExplicitShutdown
 		};
 
-		// Add the DarkUI theme to the WPF application
+		// Add the DarkUI control templates. Color brushes are added separately via
+		// ThemeManager so the palette can be swapped without re-merging templates.
 		wpfApp.Resources.MergedDictionaries.Add(new ResourceDictionary
 		{
 			Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Generic.xaml")
 		});
 
-		// Use DarkColours theme (default DarkUI look)
-		wpfApp.Resources.MergedDictionaries.Add(new ResourceDictionary
-		{
-			Source = new Uri("pack://application:,,,/DarkUI.WPF;component/Dictionaries/DarkColors.xaml")
-		});
+		ThemeManager.Apply(theme);
 
 		CMessageBox.WindowStyleOverride = (Style)wpfApp.Resources["CustomWindowStyle"];
 		CMessageBox.UsePathIconsByDefault = true;

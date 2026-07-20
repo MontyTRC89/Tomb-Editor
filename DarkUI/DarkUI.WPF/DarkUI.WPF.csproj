@@ -31,7 +31,13 @@
 
   <ItemGroup>
     <PackageReference Include="CustomMessageBox.WPF" Version="1.2.1" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.74.1" />
+    <PackageReference Include="Dirkster.AvalonDock.Themes.VS2013" Version="4.74.1" />
     <PackageReference Include="SpacedGrid-WPF" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DarkUI\DarkUI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +60,36 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
     <None Update="Dictionaries\PathDefinitions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Styles\AvalonDock\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="Styles\AvalonDock\Theme_WinRoomEdit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\ClassicColors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\ClassicRoomEdit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\ColorPickerButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\ComboBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ClassicRoomEdit\ToggleButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

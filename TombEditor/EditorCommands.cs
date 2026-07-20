@@ -675,8 +675,19 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate ()
             {
-                Forms.FormSearch searchForm = new Forms.FormSearch(_editor);
-                searchForm.Show(_editorWindow); // Also disposes: https://social.msdn.microsoft.com/Forums/windows/en-US/5cbf16a9-1721-4861-b7c0-ea20cf328d48/any-difference-between-formclose-and-formdispose?forum=winformsdesigner
+                foreach (System.Windows.Window w in System.Windows.Application.Current.Windows)
+                {
+                    if (w is TombEditor.Features.Dialogs.Search.SearchWindow existing)
+                    {
+                        existing.Activate();
+                        return;
+                    }
+                }
+
+                var searchVm = new TombEditor.Features.Dialogs.Search.SearchWindowViewModel(_editor);
+                var searchWindow = new TombEditor.Features.Dialogs.Search.SearchWindow { DataContext = searchVm };
+                searchWindow.Owner = System.Windows.Application.Current.MainWindow;
+                searchWindow.Show();
             });
 
             AddCommand("DeleteRooms", "Delete", CommandType.Rooms, delegate ()
@@ -868,8 +879,11 @@ namespace TombEditor
 
             AddCommand("RemapTexture", "Remap texture...", CommandType.Textures, delegate ()
             {
-                using (var form = new Forms.FormTextureRemap(_editor))
-                    form.ShowDialog(_editorWindow);
+                var vm = new ViewModels.TextureRemapWindowViewModel(_editor);
+                var dialog = new Views.TextureRemapWindow { DataContext = vm };
+                if (_editorWindow is not null)
+                    dialog.SetOwner(_editorWindow);
+                dialog.ShowDialog();
             });
 
             AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate ()
@@ -975,12 +989,6 @@ namespace TombEditor
                     EditorActions.GridWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, true);
             });
 
-            AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate ()
-            {
-                using (Forms.FormLevelSettings form = new Forms.FormLevelSettings(_editor))
-                    form.ShowDialog(_editorWindow);
-            });
-
             AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate ()
             {
                 try
@@ -1009,8 +1017,11 @@ namespace TombEditor
 
             AddCommand("EditKeyboardLayout", "Edit keyboard layout...", CommandType.Settings, delegate ()
             {
-                using (var f = new FormKeyboardLayout(_editor))
-                    f.ShowDialog();
+                var kbVm = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindowViewModel(_editor);
+                var kbDialog = new TombEditor.Features.Dialogs.KeyboardLayout.KeyboardLayoutWindow { DataContext = kbVm };
+                if (_editorWindow is not null)
+                    kbDialog.SetOwner(_editorWindow);
+                kbDialog.ShowDialog();
             });
 
             AddCommand("SwitchTool1", "Switch tool 1", CommandType.General, delegate ()

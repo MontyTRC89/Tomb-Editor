@@ -9,7 +9,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using TombEditor.Forms;
+using TombLib.Forms.Services;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Services;
@@ -18,6 +18,7 @@ using TombLib.Utils;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using TombLib.WPF.Services;
+using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor
 {
@@ -28,10 +29,6 @@ namespace TombEditor
         [STAThread]
         public static void Main(string[] args)
         {
-            var services = WPFInitializer.InitializeWPF();
-            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
-            ServiceLocator.Configure(services.BuildServiceProvider());
-
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string startFile = null;
@@ -63,6 +60,11 @@ namespace TombEditor
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
+            var services = WPFInitializer.InitializeWPF(configuration.UI_WpfTheme);
+            services.AddSingleton<ICustomGeometrySettingsPresetIOService, CustomGeometrySettingsPresetIOService>();
+            services.AddSingleton<IColorPickerService>(_ => new ColorPickerService(() => configuration.UI_ColorScheme));
+            ServiceLocator.Configure(services.BuildServiceProvider());
+
             if (configuration.Editor_AllowMultipleInstances || doBatchCompile ||
                 mutex.WaitOne(TimeSpan.Zero, true))
             {
@@ -75,6 +77,7 @@ namespace TombEditor
                     // Setup application
                     Application.EnableVisualStyles();
                     Application.SetDefaultFont(new System.Drawing.Font("Segoe UI", 8.25f));
+                    Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                     Application.ThreadException += (sender, e) =>
@@ -85,7 +88,15 @@ namespace TombEditor
                                 Environment.Exit(1);
                     };
                     Application.AddMessageFilter(new ControlScrollFilter());
-                    SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+
+                    // The Editor captures SynchronizationContext.Current and uses Send() to
+                    // marshal events back to the UI thread. The WPF shell has no WinForms message
+                    // loop, so a WindowsFormsSynchronizationContext would deadlock Send(); bind
+                    // to the WPF dispatcher (already created by WPFInitializer) instead.
+                    var dispatcher = System.Windows.Application.Current?.Dispatcher
+                        ?? System.Windows.Threading.Dispatcher.CurrentDispatcher;
+                    SynchronizationContext.SetSynchronizationContext(
+                        new System.Windows.Threading.DispatcherSynchronizationContext(dispatcher));
 
                     if (!DefaultPaths.CheckCatalog(DefaultPaths.EngineCatalogsDirectory))
                         Environment.Exit(1);
@@ -109,36 +120,77 @@ namespace TombEditor
                     // Run editor normally if no batch compile is pending.
                     // Otherwise, don't load main form and jump straight to batch-compiling levels.
 
-                    if (!doBatchCompile)
+                    if (doBatchCompile)
                     {
-                        using (FormMain form = new FormMain(editor))
-                        {
-                            form.Show();
-
-                            if (!string.IsNullOrEmpty(startFile)) // Open files on start
-                            {
-                                if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-                                    EditorActions.OpenLevelPrj(form, startFile);
-                                else
-                                    EditorActions.OpenLevel(form, startFile);
-                            }
-                            else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-                            {
-                                if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0 &&
-                                    File.Exists(Properties.Settings.Default.RecentProjects[0]))
-                                    EditorActions.OpenLevel(form, Properties.Settings.Default.RecentProjects[0]);
-                            }
-                            Application.Run(form);
-                        }
+                        EditorActions.BuildInBatch(editor, batchList, batchFile);
                     }
                     else
-                        EditorActions.BuildInBatch(editor, batchList, batchFile);
+                    {
+                        // Default WPF shell. Catalogs/Editor are fully loaded above, so the window
+                        // can already observe Editor events on first paint.
+                        var wpfApp = System.Windows.Application.Current;
+
+                        // Shared editor code shows DarkMessageBox (WinForms); route it onto the
+                        // WPF CMessageBox so message boxes match the shell.
+                        WpfMessageBoxBridge.Install();
+
+                        // Without this handler, exceptions thrown during MainWindow construction or
+                        // any later WPF-dispatched callback are swallowed silently — the process
+                        // dies but neither the console nor NLog see anything. Route them through
+                        // the standard logger and surface them so we can actually debug them.
+                        wpfApp.DispatcherUnhandledException += (sender, e) =>
+                        {
+                            log.HandleException(e.Exception);
+                            MessageBox.Show(e.Exception.ToString(), "Tomb Editor — unhandled exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            e.Handled = true;
+                        };
+
+                        try
+                        {
+                            var mainWindow = new MainWindow(editor);
+
+                            // Open the file passed on the command line (or the last project, when
+                            // configured) once the window has rendered, so progress/error dialogs
+                            // have a live owner. ContentRendered fires once after the first layout.
+                            mainWindow.ContentRendered += (_, _) =>
+                            {
+                                if (!string.IsNullOrEmpty(startFile))
+                                {
+                                    if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                                        EditorActions.OpenLevelPrj(mainWindow.GetWin32Window(), startFile);
+                                    else
+                                        EditorActions.OpenLevel(mainWindow.GetWin32Window(), startFile);
+                                }
+                                else if (editor.Configuration.Editor_OpenLastProjectOnStartup &&
+                                    Properties.Settings.Default.RecentProjects != null &&
+                                    Properties.Settings.Default.RecentProjects.Count > 0 &&
+                                    File.Exists(Properties.Settings.Default.RecentProjects[0]))
+                                {
+                                    EditorActions.OpenLevel(mainWindow.GetWin32Window(), Properties.Settings.Default.RecentProjects[0]);
+                                }
+                            };
+
+                            wpfApp.Run(mainWindow);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.HandleException(ex);
+                            MessageBox.Show(ex.ToString(), "Tomb Editor — startup failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                        wpfApp.Shutdown();
+                    }
                 }
             }
             else if (startFile != null) // Send opening file to existing editor instance
                 SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
             else // Just bring editor to top, if user tries to launch another copy
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());
+
+            // The hosted native rendering device (DeviceManager singleton) keeps a foreground thread
+            // alive, so the process would otherwise linger after the main window closes. Configuration
+            // is already persisted (Editor.SaveTry on close) and logs are flushed, so terminate now.
+            Environment.Exit(0);
         }
     }
 }

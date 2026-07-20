@@ -1,4 +1,5 @@
 using DarkUI.Docking;
+using DarkUI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -199,6 +200,7 @@ namespace TombEditor
         public float UI_FormColor_Brightness { get; set; } = 100.0f;
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
+        public Theme UI_WpfTheme { get; set; } = Theme.Dark;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
         // Toolbar button order
@@ -424,6 +426,12 @@ namespace TombEditor
     {
         public string Name { get; set; } = string.Empty;
         public DockPanelState State { get; set; } = Configuration.Window_LayoutDefault.Clone();
+
+        // Serialized AvalonDock layout (XmlLayoutSerializer output) for the WPF shell.
+        // The legacy `State` is kept so old configs round-trip when the user switches
+        // back to --winforms, but the two formats are not convertible.
+        public string AvalonDockState { get; set; } = string.Empty;
+
         public Point ToolboxPosition { get; set; } = new Point(15, 15);
         public Point ObjectBrushToolboxPosition { get; set; } = new Point(50, 15);
         public bool ShowToolbox { get; set; } = true;
@@ -434,6 +442,7 @@ namespace TombEditor
         {
             Name = Name,
             State = State.Clone(),
+            AvalonDockState = AvalonDockState,
             ToolboxPosition = ToolboxPosition,
             ObjectBrushToolboxPosition = ObjectBrushToolboxPosition,
             ShowToolbox = ShowToolbox,

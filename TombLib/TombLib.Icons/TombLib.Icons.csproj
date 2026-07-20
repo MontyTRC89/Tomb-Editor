@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>x64;x86</Platforms>
+    <RootNamespace>TombLib.Icons</RootNamespace>
+    <AssemblyName>TombLib.Icons</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\Build ($(Platform))\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\BuildRelease ($(Platform))\</OutputPath>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpVectors.Reloaded" Version="1.8.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Svg\**\*.svg" />
+    <EmbeddedResource Include="Png\**\*.png" />
+  </ItemGroup>
+
+</Project>
