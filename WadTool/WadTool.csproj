@@ -91,6 +91,7 @@
   <ItemGroup>
     <Resource Include="WT.ico" />
     <Resource Include="Resources\AboutScreen_800.png" />
+    <Resource Include="Resources\icons_transport\*.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0" />

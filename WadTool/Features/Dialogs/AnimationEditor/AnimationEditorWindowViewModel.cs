@@ -982,6 +982,9 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
     [RelayCommand]
     private void GotoEnd() { if (_timeline is not null) _timeline.Value = _timeline.Maximum; }
 
+    [RelayCommand]
+    private void ResetCamera() => _panel?.ResetCamera();
+
     // ---- Keyframe & animation operations (slice 3c) ----
 
     private void OnKeyframesListChanged()
