@@ -249,4 +249,3 @@ LevelFuncs.Engine.Node.RequireActiveMoveable = function(objectId, errorMessage, 
 
     return mov
 end
-
