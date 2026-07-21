@@ -1556,18 +1556,12 @@ namespace WadTool
 
             if (tmpModel.Animations.Count > 1)
             {
-                using (var dialog = new AnimationImportDialog(tmpModel.Animations.Select(o => o.Name).ToList()))
-                {
-                    dialog.ShowDialog(owner);
-                    if (dialog.DialogResult == DialogResult.Cancel)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        animToImport = tmpModel.Animations[dialog.AnimationToImport];
-                    }
-                }
+                int? index = TombLib.WPF.Features.Pickers.ComboPickerBox.Show(owner, "Import animation",
+                    "Select animation to import:", tmpModel.Animations.Select(o => o.Name).ToList());
+                if (index == null)
+                    return null;
+
+                animToImport = tmpModel.Animations[index.Value];
             }
             else
             {
