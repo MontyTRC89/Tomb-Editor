@@ -29,7 +29,8 @@ public sealed class TRXUpdateService : IEngineUpdateService
 	{
 		{ TRVersion.Game.TR1, "TR1.zip" },
 		{ TRVersion.Game.TR1X, "TR1.zip" },
-		{ TRVersion.Game.TR2X, "TR2X.zip" }
+		{ TRVersion.Game.TR2X, "TR2X.zip" },
+		{ TRVersion.Game.TR3X, "TR3X.zip" }
 	};
 
 	public TRXUpdateService(IFileExtractionService fileExtractionService, TRVersion.Game gameVersion)

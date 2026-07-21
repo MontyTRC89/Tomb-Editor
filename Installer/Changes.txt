@@ -11,9 +11,10 @@ Tomb Editor:
  * Added indication of the nodes not supported by the current event type.
  * Added On Pickup, On Vehicle Enter and On Vehicle Exit global events in the global event set editor.
  * Added multiple window layout support.
- * Added support for room reverb in TRX.
+ * Added support for TR3X levels.
+ * Added support for room reverb in TR1X and TR2X.
  * Added support for cold and damaging rooms in TRX.
- * Added support for mine cart floor data in TRX.
+ * Added support for mine cart floor data in TR1X and TR2X.
  * Added support for heavy switch, heavy antitrigger, monkey, climb and crawl trigger types in TRX.
  * Added support for flyby cameras in TRX.
  * Added support for specifying moveable instance names in TRX.
@@ -30,6 +31,7 @@ WadTool:
  * Added support for choosing the destination slot when copying classic objects into a TombEngine WAD2, for cases where a classic slot maps to multiple objects.
 
 TombIDE:
+ * Added TR3X support and engine preset (1.9.3).
  * Updated TR1X and TR2X presets to TRX 1.9.3.
 
 TEN nodes:
