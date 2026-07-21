@@ -3,16 +3,16 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
-using TombLib.Controls;
 using TombLib.WPF;
+using TombLib.WPF.CustomControls;
 using WadTool.Controls;
 
 namespace WadTool.Features.Dialogs.AnimEditor;
 
 /// <summary>
-/// WPF port of the legacy <c>FormAnimationEditor</c> (built incrementally). The 3D view and the timeline
-/// (<see cref="AnimationTrackBar"/>) remain WinForms custom-rendered controls, hosted via
-/// <c>WindowsFormsHost</c>; everything else is WPF bound to <see cref="AnimationEditorWindowViewModel"/>.
+/// WPF port of the legacy <c>FormAnimationEditor</c> (built incrementally). The 3D view remains a
+/// WinForms custom-rendered control, hosted via <c>WindowsFormsHost</c>; everything else is WPF
+/// bound to <see cref="AnimationEditorWindowViewModel"/>.
 /// </summary>
 public partial class AnimationEditorWindow : Window
 {
@@ -27,10 +27,9 @@ public partial class AnimationEditorWindow : Window
         this.HookModalAutoClose();
 
         _panel = new PanelRenderingAnimationEditor();
-        _timeline = new AnimationTrackBar();
+        _timeline = timeline;
         _bezier = bezierEditor;
         panelRenderingHost.Child = _panel;
-        timelineHost.Child = _timeline;
 
         _timeline.ValueChanged += OnTimelineValueChanged;
         _timeline.SelectionChanged += OnTimelineSelectionChanged;

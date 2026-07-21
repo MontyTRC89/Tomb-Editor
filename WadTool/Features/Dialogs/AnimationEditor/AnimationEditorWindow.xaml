@@ -7,6 +7,7 @@
 	xmlns:darkUI="clr-namespace:DarkUI.WPF;assembly=DarkUI.WPF"
 	xmlns:local="clr-namespace:WadTool.Features.Dialogs.AnimEditor"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tombLibControls="clr-namespace:TombLib.WPF.CustomControls;assembly=TombLib.WPF"
 	xmlns:wadControls="clr-namespace:WadTool.Controls"
 	xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
 	Title="{Binding Title}"
@@ -311,7 +312,7 @@
 					TextTrimming="CharacterEllipsis" />
 			</Grid>
 
-			<!--  Timeline (hosted AnimationTrackBar)  -->
+			<!--  Timeline  -->
 			<Border
 				Height="84"
 				DockPanel.Dock="Bottom"
@@ -320,7 +321,7 @@
 				<Border.Margin>
 					<Thickness Top="{x:Static darkUI:Defaults.SmallThicknessWidth}" />
 				</Border.Margin>
-				<wfi:WindowsFormsHost x:Name="timelineHost" />
+				<tombLibControls:AnimationTrackBar x:Name="timeline" />
 			</Border>
 
 			<!--  3D view (hosted)  -->

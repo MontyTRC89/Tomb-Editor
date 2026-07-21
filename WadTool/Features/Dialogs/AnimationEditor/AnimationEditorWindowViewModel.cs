@@ -7,7 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Threading;
-using TombLib.Controls;
+using TombLib.WPF.CustomControls;
 using System.IO;
 using TombLib.Forms;
 using TombLib.GeometryIO;
