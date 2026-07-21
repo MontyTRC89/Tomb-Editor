@@ -29,12 +29,12 @@ end
 -- !Section "Creature AI"
 -- !Description "Set creature mood"
 -- !Arguments "Newline, Moveables, 80, Moveable to set mood for."
--- !Arguments "Enumeration, 20, [ Attack | Auto | Bored | Escape | Stalk ], Mood to set for creature."
-LevelFuncs.Engine.Node.SetCreatureMood = function(moveable, index)
+-- !Arguments "Enumeration, 20, [ Auto | Attack | Bored | Escape | Stalk ], Mood to set for creature."
+LevelFuncs.Engine.Node.SetMood = function(moveable, index)
     local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(moveable, "setting mood")
     if not mov then return end
 
-    local mood = LevelFuncs.Engine.Node.GetCreatureMood(index)
+    local mood = LevelFuncs.Engine.Node.SetCreatureMood(index)
     Objects.Creature(mov):SetMood(mood)
 end
 
@@ -43,8 +43,8 @@ end
 -- !Description "Checks if creature mood is a specified mood."
 -- !Conditional "True"
 -- !Arguments "Newline, Moveables, 80, Moveable to check mood for."
--- !Arguments "Enumeration, 20, [ Attack | Auto | Bored | Escape | Stalk ], Mood to check for."
-LevelFuncs.Engine.Node.TestCreatureMood = function(moveable, index)
+-- !Arguments "Enumeration, 20, [ Attack | Bored | Escape | Stalk ], Mood to check for."
+LevelFuncs.Engine.Node.GetMood = function(moveable, index)
     local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(moveable, "checking mood", true)
     if not mov then return false end
 
