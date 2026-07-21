@@ -30,6 +30,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.WPF;
 using TombLib.WPF.Services;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor;

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Drawing;
@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.WPF;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 using WadTool.Controls;
 
 namespace WadTool.Features.Dialogs.SkeletonEditor;

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using TombLib.Forms;
 using TombLib.WPF;
 using WadTool.Controls;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 
 namespace WadTool.Features.Dialogs.MeshEditor;
 

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Windows;
@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.Utils;
 using TombLib.WPF;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 using WadTool.Controls;
 
 namespace WadTool.Features.Dialogs.StaticEditor;

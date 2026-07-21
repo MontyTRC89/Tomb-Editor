@@ -18,6 +18,7 @@ using TombLib.WPF;
 using TombLib.WPF.CustomControls;
 using WadTool.Controls;
 using ContextMenu = System.Windows.Controls.ContextMenu;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 using WinFormsDialogResult = System.Windows.Forms.DialogResult;
 using Keys = System.Windows.Forms.Keys;
 using MenuItem = System.Windows.Controls.MenuItem;

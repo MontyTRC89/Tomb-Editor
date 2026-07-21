@@ -19,6 +19,7 @@ using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using TombLib.WPF;
 using WadTool.Controls;
+using PopUpInfo = TombLib.WPF.PopUpInfo;
 using WadTool.Features.Dialogs.AnimCommandsEditor;
 using WadTool.Features.Dialogs.AnimationFixer;
 using WadTool.Features.Dialogs.StateChangesEditor;

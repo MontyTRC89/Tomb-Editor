@@ -5,23 +5,9 @@ using DarkUI.Forms;
 
 namespace TombLib.Forms
 {
-    public enum PopupAlignment
-    {
-        Center,
-        TopLeft,
-        TopRight,
-        BottomLeft,
-        BottomRight
-    }
-
-    public enum PopupType
-    {
-        None,
-        Info,
-        Warning,
-        Error
-    }
-
+    // PopupAlignment and PopupType moved to the core TombLib assembly (Utils/PopupEnums.cs, same
+    // namespace) so the WPF PopUpInfo can share them. This WinForms form remains for the pure
+    // WinForms apps (SoundTool); the WPF shells use TombLib.WPF.PopUpInfo.
     public partial class PopUpInfo : DarkForm
     {
         private const float _shiftCoeff = 0.25f;   // Intro animation push coefficient
