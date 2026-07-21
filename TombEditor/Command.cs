@@ -2068,15 +2068,13 @@ namespace TombEditor
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)
             {
-                using (var form = new FormInputBox("Edit room's name", "Insert the name of this room:", args.Editor.SelectedRoom.Name))
-                {
-                    if (form.ShowDialog(args.Window) == DialogResult.Cancel)
-                        return;
+                string result = TombLib.WPF.InputBox.Show(args.Window, "Edit room's name", "Insert the name of this room:", args.Editor.SelectedRoom.Name);
+                if (result == null)
+                    return;
 
-                    args.Editor.SelectedRoom.Name = form.Result;
-                    args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
-                    args.Editor.RoomListChange();
-                }
+                args.Editor.SelectedRoom.Name = result;
+                args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+                args.Editor.RoomListChange();
             });
 
             AddCommand("SetFloor", "Set floor", CommandType.Sectors, delegate (CommandArgs args)

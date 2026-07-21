@@ -482,10 +482,10 @@ public partial class SkeletonEditorWindowViewModel : ObservableObject, IModalDia
             return;
 
         var theNode = SelectedBone;
-        using var form = new FormInputBox("Rename bone", "Insert the name of the bone:", theNode.Bone.Name);
-        if (form.ShowDialog(Owner) == WinForms.DialogResult.OK && form.Result != "")
+        string result = InputBox.Show(Owner, "Rename bone", "Insert the name of the bone:", theNode.Bone.Name);
+        if (!string.IsNullOrEmpty(result))
         {
-            theNode.Bone.Name = form.Result;
+            theNode.Bone.Name = result;
             if (_nodesDictionary.TryGetValue(theNode, out BoneTreeNode? node))
                 node.Text = GetBoneName(theNode);
             _panel?.Invalidate();

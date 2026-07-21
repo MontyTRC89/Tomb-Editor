@@ -1418,11 +1418,9 @@ public partial class AnimationEditorWindowViewModel : ObservableObject, IModalDi
 
         int numFrames;
         var selection = TombLib.MathC.Clamp(_timeline.Selection.Y - _timeline.Selection.X - 1, 0, int.MaxValue).ToString();
-        using (var inputBox = new FormInputBox("Interpolation", "Enter number of interpolated frames:", selection) { Width = 300 })
-        {
-            if (inputBox.ShowDialog(Owner) == System.Windows.Forms.DialogResult.Cancel) return;
-            if (!int.TryParse(inputBox.Result, out numFrames)) numFrames = 3;
-        }
+        string input = InputBox.Show(Owner, "Interpolation", "Enter number of interpolated frames:", selection);
+        if (input == null) return;
+        if (!int.TryParse(input, out numFrames)) numFrames = 3;
         if (numFrames == 0) { ShowPopup("Interpolation requires at least 1 frame to insert", PopupType.Error); return; }
 
         _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);

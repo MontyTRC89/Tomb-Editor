@@ -1107,14 +1107,14 @@ public partial class MeshEditorWindowViewModel : ObservableObject, IModalDialogV
     private void Rename()
     {
         if (_panelMesh?.Mesh is null) return;
-        using var form = new FormInputBox("Edit mesh name", "Mesh name:", _panelMesh.Mesh.Name);
-        if (form.ShowDialog(Owner) == WinForms.DialogResult.Cancel || string.IsNullOrEmpty(form.Result))
+        string result = InputBox.Show(Owner, "Edit mesh name", "Mesh name:", _panelMesh.Mesh.Name);
+        if (string.IsNullOrEmpty(result))
             return;
-        if (_panelMesh.Mesh.Name.Equals(form.Result, StringComparison.InvariantCultureIgnoreCase))
+        if (_panelMesh.Mesh.Name.Equals(result, StringComparison.InvariantCultureIgnoreCase))
             return;
 
         _tool.UndoManager.PushMeshChanged(_panelMesh);
-        _panelMesh.Mesh.Name = form.Result;
+        _panelMesh.Mesh.Name = result;
         SaveCurrentMesh();
         UpdateUI();
         UpdateMeshTreeName();

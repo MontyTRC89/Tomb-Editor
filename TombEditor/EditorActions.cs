@@ -1113,19 +1113,19 @@ namespace TombEditor
             if (instance is not PositionAndScriptBasedObjectInstance luaInstance || !luaInstance.SupportsLuaName())
                 return;
 
-            using (var form = new FormInputBox("Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName))
             {
-                if (form.ShowDialog(owner) == DialogResult.Cancel)
+                string result = TombLib.WPF.InputBox.Show(owner, "Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName);
+                if (result == null)
                     return;
 
-                if (!luaInstance.CanSetLuaName(form.Result))
+                if (!luaInstance.CanSetLuaName(result))
                 {
                     MessageBoxes.LuaNameAlreadyTakenError(owner);
                     RenameObject(luaInstance, owner);
                 }
                 else
                 {
-                    luaInstance.LuaName = form.Result;
+                    luaInstance.LuaName = result;
                     _editor.ObjectChange(luaInstance, ObjectChangeType.Change);
                 }
             }
