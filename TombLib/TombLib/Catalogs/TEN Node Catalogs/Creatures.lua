@@ -11,9 +11,9 @@ end
 -- !Name "Set intelligent creature location"
 -- !Section "Creature AI"
 -- !Description "Sets the location of intelligent enemies to a specified location.\nOnly to be used with GUIDE, Sophia-Leigh or Von Croy.\nPlace AI_X1 objects with an OCB to create a location."
--- !Arguments "Newline, Moveables, 60, [ guide | sophia_leigh | von_croy ], Creature to set location for."
--- !Arguments "Numerical, 20, [ 0 | 1000 ], Location to set."
--- !Arguments "Boolean, 20, {false}, Debug to console."
+-- !Arguments "Newline, Moveables, 70, [ guide | sophia_leigh | von_croy ], Creature to set location for."
+-- !Arguments "Numerical, 30, [ 0 | 1000 ], Location to set."
+-- !Arguments "NewLine, Boolean, {false}, Debug to console"
 LevelFuncs.Engine.Node.SetCreatureLocation = function(objectId, location, consoleDebug)
     local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(objectId, "setting creature location")
     if not mov then return end
@@ -57,7 +57,6 @@ end
 -- !Description "Set creature target"
 -- !Arguments "Newline, Moveables, 50, Moveable to set target for."
 -- !Arguments "Moveables, 50, Moveable to set as target."
--- !Arguments "Newline, Boolean, 50, {true}, Retaliate target"
 LevelFuncs.Engine.Node.SetCreatureTarget = function(moveable, target, retaliate)
     local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(moveable, "setting target")
     if not mov then return end
@@ -67,15 +66,6 @@ LevelFuncs.Engine.Node.SetCreatureTarget = function(moveable, target, retaliate)
 
     local movAI = Objects.Creature(mov)
     movAI:SetTarget(targetMov)
-
-    if retaliate then
-        local success, targetMovAI = pcall(Objects.Creature, targetMov)
-        if success then
-            targetMovAI:SetTarget(mov)
-        else
-            TEN.Util.PrintLog("moveable [ " .. target .. " ] is not a creature. Retaliation skipped.", TEN.Util.LogLevel.ERROR)
-        end
-    end
 end
 
 -- !Name "If creature target is..."
@@ -95,8 +85,8 @@ end
 -- !Name "Set creature as friendly"
 -- !Section "Creature AI"
 -- !Description "Sets creature as friendly to the player."
--- !Arguments "Newline, Moveables, 70, Moveable to set as friendly."
--- !Arguments "Boolean, 30, {true}, Undo friendly if attacked."
+-- !Arguments "Newline, Moveables, 60, Moveable to set as friendly."
+-- !Arguments "Boolean, 40, {true}, Undo friendly if attacked"
 LevelFuncs.Engine.Node.SetCreatureFriendly = function(moveable, undoIfAttacked)
     local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(moveable, "setting friendly state")
     if not mov then return end
@@ -203,16 +193,4 @@ LevelFuncs.Engine.Node.TestCreatureReachedGoal = function(moveable)
     if not mov then return false end
 
     return Objects.Creature(mov):GetAtGoal()
-end
-
--- !Name "Set creature goal status"
--- !Section "Creature AI"
--- !Description "Sets whether the creature has reached their goal or not."
--- !Arguments "Newline, Moveables, Moveable to set goal status for."
--- !Arguments "Boolean, 30, {true}, At goal"
-LevelFuncs.Engine.Node.SetCreatureReachedGoal = function(moveable, goal)
-    local mov = LevelFuncs.Engine.Node.RequireActiveMoveable(moveable, "setting goal status")
-    if not mov then return end
-
-    Objects.Creature(mov):SetAtGoal(goal)
 end
