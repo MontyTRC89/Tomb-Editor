@@ -241,6 +241,9 @@
     <None Update="Catalogs\TEN Node Catalogs\Lara.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Catalogs\TEN Node Catalogs\Lara Traversal.lua">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Catalogs\TEN Node Catalogs\Particles.lua">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

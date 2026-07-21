@@ -208,4 +208,3 @@ LevelFuncs.Engine.Node.SetInteractionHighlightType = function(index)
 	}	
 	return interactionIconType[index]
 end
-		
