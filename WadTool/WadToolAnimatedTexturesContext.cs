@@ -8,7 +8,7 @@ using TombLib.Wad;
 
 namespace WadTool;
 
-public class WadToolAnimatedTexturesContext : FormAnimatedTextures.IAnimatedTexturesContext
+public class WadToolAnimatedTexturesContext : TombLib.WPF.Features.AnimatedTextures.IAnimatedTexturesContext
 {
 	private readonly WadToolClass _tool;
 	private readonly List<WadTexture> _userTextures;

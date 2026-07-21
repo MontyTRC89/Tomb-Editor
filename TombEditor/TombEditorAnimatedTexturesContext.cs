@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombEditor;
 
-public class TombEditorAnimatedTexturesContext : FormAnimatedTextures.IAnimatedTexturesContext, TombLib.WPF.Features.AnimatedTextures.IAnimatedTexturesContext
+public class TombEditorAnimatedTexturesContext : TombLib.WPF.Features.AnimatedTextures.IAnimatedTexturesContext
 {
 	private readonly Editor _editor;
 

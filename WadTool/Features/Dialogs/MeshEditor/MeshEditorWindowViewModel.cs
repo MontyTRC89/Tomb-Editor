@@ -1340,8 +1340,11 @@ public partial class MeshEditorWindowViewModel : ObservableObject, IModalDialogV
     private void AnimationRanges()
     {
         var context = new WadToolAnimatedTexturesContext(_tool, _userTextures);
-        using var form = new FormAnimatedTextures(new PanelTextureMapForAnimations(_tool), context, _tool.Configuration);
-        form.ShowDialog();
+        var textureMap = new WpfAnimatedTextureMapView(_tool);
+        var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
+        var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
+        window.SetOwner(Owner);
+        window.ShowDialog();
     }
 
     [RelayCommand]

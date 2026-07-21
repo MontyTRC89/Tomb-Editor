@@ -11,6 +11,7 @@ using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.WPF;
 using NLog;
 
 namespace TombEditor
@@ -903,8 +904,12 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate ()
             {
-                using (Forms.FormAnimatedTextures form = new Forms.FormAnimatedTextures(_editor, null))
-                    form.ShowDialog(_editorWindow);
+                var context = new TombEditorAnimatedTexturesContext(_editor);
+                var textureMap = new Controls.WpfAnimatedTextureMapView();
+                var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
+                var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel };
+                window.SetOwner(_editorWindow);
+                window.ShowDialog();
             });
 
             AddCommand("SmoothRandomFloorUp", "Smooth random floor up", CommandType.Geometry, delegate ()

@@ -547,14 +547,10 @@ namespace WadTool
                 return;
 
             var context = new WadToolAnimatedTexturesContext(_tool, new List<WadTexture>());
-            using (var form = new FormAnimatedTextures(
-                new PanelTextureMapForAnimations(_tool),
-                context,
-                _tool.Configuration
-                ))
-            {
-                form.ShowDialog();
-            }
+            var textureMap = new WpfAnimatedTextureMapView(_tool);
+            var viewModel = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindowViewModel(context, textureMap);
+            var window = new TombLib.WPF.Features.AnimatedTextures.AnimatedTexturesWindow { DataContext = viewModel, Owner = this };
+            window.ShowDialog();
         }
 
         private void MeshEditorMenu_Click(object sender, RoutedEventArgs e) => MeshEditorMenu_ClickHandler(null, null);
