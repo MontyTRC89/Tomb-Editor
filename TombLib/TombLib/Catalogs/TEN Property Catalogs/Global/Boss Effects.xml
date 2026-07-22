@@ -1,0 +1,20 @@
+<propertyCatalog>    
+	<moveable id="PUNA_BOSS, SOPHIA_LEIGH_BOSS, TONY_BOSS">
+        <property
+          internalName="BossExplosionSound" 
+          displayName="Death Explosion SFX"
+          type="Int"
+          defaultValue="714"
+          category="Death Properties"
+          description="Set SFX to play during boss death explosion"
+        />
+		<property
+          internalName="BossDynamicLight" 
+          displayName="Add lighting effects"
+          type="Bool"
+          defaultValue="false"
+          category="Death Properties"
+          description="Add dynamic lighting to death sequence effects"
+        />
+    </moveable>
+</propertyCatalog>
