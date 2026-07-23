@@ -615,6 +615,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.CodeBits);
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.Raw.WriteStringUTF8(instance.LuaName ?? string.Empty);
+                            WriteLuaProperties(chunkIO, instance.LuaProperties);
                         }
                         else
                         {

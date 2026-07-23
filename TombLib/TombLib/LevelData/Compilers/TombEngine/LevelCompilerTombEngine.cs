@@ -581,7 +581,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (globalMovProps.ContainsKey(slotName))
                         continue;
 
-                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, mov.Key.TypeId);
+                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, mov.Key.TypeId, TRVersion.Game.TombEngine);
                     if (definitions.Count == 0)
                         continue;
 
@@ -607,7 +607,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     if (globalStaticProps.ContainsKey(typeId))
                         continue;
 
-                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId);
+                    var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId, TRVersion.Game.TombEngine);
 
                     if (definitions.Count == 0)
                         continue;

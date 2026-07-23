@@ -91,8 +91,8 @@ namespace TombEditor.ToolWindows
         {
             var selected = _editor.SelectedObject;
 
-            // Only show for TombEngine levels.
-            if (!_editor.Level.IsTombEngine)
+            // Only show for TombEngine and TRX levels.
+            if (!_editor.Level.IsTombEngine && !_editor.Level.IsTRX)
             {
                 _viewModel.Clear();
                 _viewModel.Title = "Item Properties";
@@ -104,8 +104,10 @@ namespace TombEditor.ToolWindows
             if (selected is MoveableInstance moveable)
             {
                 _currentObject = moveable;
-                var typeId = moveable.WadObjectId.TypeId;
-                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, typeId);
+                var typeId = _editor.Level.IsTombEngine
+                    ? moveable.WadObjectId.TypeId
+                    : TrCatalog.GetSubstituteID(_editor.Level.Settings.GameVersion, moveable.WadObjectId.TypeId);
+                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Moveable, typeId, _editor.Level.Settings.GameVersion);
 
                 // Get wad2 global defaults for this moveable type (if available).
                 var wadMoveable = _editor.Level.Settings.WadTryGetMoveable(moveable.WadObjectId);
@@ -127,7 +129,7 @@ namespace TombEditor.ToolWindows
             {
                 _currentObject = staticObj;
                 var typeId = staticObj.WadObjectId.TypeId;
-                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId);
+                var definitions = LuaPropertyCatalog.GetDefinitions(ObjectKind.Static, typeId, _editor.Level.Settings.GameVersion);
 
                 // Get wad2 global defaults for this static type (if available).
                 var wadStatic = _editor.Level.Settings.WadTryGetStatic(staticObj.WadObjectId);
