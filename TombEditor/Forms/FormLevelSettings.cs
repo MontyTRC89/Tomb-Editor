@@ -522,6 +522,7 @@ namespace TombEditor.Forms
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
             tbLuaPath.Text = _levelSettings.TenLuaScriptFile;
             comboTrxTextureDepth.Text = GetDisplayName(_levelSettings.TrxTextureBitDepth);
+            cbTrxConvertFlybysToCinematicFrames.Checked = _levelSettings.TrxConvertFlybysToCinematicFrames;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -712,7 +713,6 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Enabled = !currentVersionToCheck;
             cbAgressiveFloordataPacking.Enabled = !currentVersionToCheck;
             cbCompressTextures.Enabled = currentVersionToCheck;
-            cbRemapAnimTextures.Checked = !currentVersionToCheck;
             cbRemapAnimTextures.Enabled = !currentVersionToCheck;
 
 			panelLuaPath.Height = currentVersionToCheck ? _scriptPathPanelSize : 0;
@@ -1401,6 +1401,12 @@ namespace TombEditor.Forms
             if (_levelSettings.TrxTextureBitDepth == depth)
                 return;
             _levelSettings.TrxTextureBitDepth = depth;
+            UpdateDialog();
+        }
+
+        private void cbTrxUseFlybysForCinematics_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.TrxConvertFlybysToCinematicFrames = cbTrxConvertFlybysToCinematicFrames.Checked;
             UpdateDialog();
         }
 
