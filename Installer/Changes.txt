@@ -28,16 +28,7 @@ WadTool:
  * Added an option to consolidate textures for an object into a single set of texture pages.
  * Added support for choosing the destination slot when copying classic objects into a TEN wad if a classic slot maps to multiple objects.
  * Added mesh name display in the skeleton editor.
- * Added missing TR2 henchman death sound (ID 838) and appropriate TR2 -> TEN conversion.
- * Added BOO_MUTANT (ID 300) to TombEngine catalog and TR3 -> TEN conversion.
- * Added HYBRID_MUTANT (ID 301) to TombEngine catalog and TR3 -> TEN conversion.
- * Added OILRED (ID 302) to TombEngine catalog and TR3 -> TEN conversion.
- * Added WHITE_SOLDIER (ID 303) to TombEngine catalog and TR3 -> TEN conversion.
- * Added PUNK (ID 304) to TombEngine catalog and TR3 -> TEN conversion.
- * Added LONDON_MERCENARY (ID 305) to TombEngine catalog and TR3 -> TEN conversion.
- * Added SWAT_GUN (ID 306) to TombEngine catalog and TR3 -> TEN conversion.
- * Added PRISONER (ID 307) to TombEngine catalog and TR3 -> TEN conversion.
- * Added WASP_MUTANT_EMITTER (ID 308) to TombEngine catalog and TR3 -> TEN conversion.
+ * Added missing TR2 henchman death sound (ID 838) and appropriate TR2-TEN conversion.
  * Fixed exception when trying to open an object without meshes in the mesh editor.
 
 TombIDE:
