@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<propertyCatalog>
+  <moveable id="PUNA_BOSS">
+		<property
+		  internalName="PrimaryColor"
+		  displayName="Summon smoke color"
+		  type="Color"
+		  defaultValue="TEN.Color(16,64,0)"
+		  alpha="false"
+		  category="Effect parameters"
+		  description="Set color of summon smoke"
+		/>      
+  </moveable>
+</propertyCatalog>
