@@ -1165,10 +1165,10 @@ namespace TombEditor
                 else
                     Tool = _lastFaceEditTool;
 
-                // If the mode switched to lighting mode, relight all rooms.
+                // If the mode switched to lighting mode, relight all changed rooms.
                 if (@event.Current == EditorMode.Lighting)
                 {
-                    Parallel.ForEach(Level.ExistingRooms,
+                    Parallel.ForEach(Level.ExistingRooms.Where(room => room.PendingRelight),
                         room => room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview));
                 }
             }
