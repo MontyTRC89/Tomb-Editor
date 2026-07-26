@@ -88,7 +88,7 @@ namespace TombEditor.Forms
 
                             // HACK: We need to rebuild lighting for rooms with changed AmbientLight property.
                             if (prop.Name == nameof(r.Properties.AmbientLight))
-                                _editor.RebuildLighting(r);
+                                r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         }
                     }
                 }

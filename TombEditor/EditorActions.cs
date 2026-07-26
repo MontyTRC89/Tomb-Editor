@@ -1029,7 +1029,7 @@ namespace TombEditor
         {
             if (instance is LightInstance ||
                (instance is ObjectGroup && ((ObjectGroup)instance).Any(o => o is LightInstance)))
-                _editor.RebuildLighting(instance.Room);
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
         }
 
         public static DarkForm GetObjectSetupWindow(params object[] args)
@@ -1358,7 +1358,10 @@ namespace TombEditor
 
             if (instance is LightInstance)
             {
-                _editor.RebuildLighting(room);
+                if (_editor.ShouldRelight)
+                    room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                else
+                    room.PendingRelight = true;
 
                 _editor.RoomGeometryChange(room);
             }
@@ -4178,7 +4181,7 @@ namespace TombEditor
                 return;
 
             setLightValue(light, newValue.Value);
-            _editor.RebuildLighting(light.Room);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -4188,7 +4191,7 @@ namespace TombEditor
             if (light == null)
                 return;
             light.Quality = newQuality;
-            _editor.RebuildLighting(light.Room);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -4198,7 +4201,7 @@ namespace TombEditor
             if (light == null)
                 return;
             light.Type = type;
-            _editor.RebuildLighting(light.Room);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 

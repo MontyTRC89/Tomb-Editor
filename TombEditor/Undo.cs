@@ -188,7 +188,10 @@ namespace TombEditor
                 // Rebuild lighting!
                 if (UndoObject is LightInstance)
                 {
-                    Parent.Editor.RebuildLighting(Room);
+                    if (Parent.Editor.ShouldRelight)
+                        Room.RebuildLighting(Parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    else
+                        Room.PendingRelight = true;
                 }
 
                 // Move origin of object group, if it contains object
@@ -301,7 +304,7 @@ namespace TombEditor
                 else if (UndoObject is LightInstance)
                 {
                     ((LightInstance)UndoObject).Color = (Vector3)Properties[0];
-                    parent.Editor.RebuildLighting(UndoObject.Room);
+                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 }
                 else if (UndoObject is SinkInstance)
                     ((SinkInstance)UndoObject).Strength = (short)Properties[0];
@@ -388,7 +391,7 @@ namespace TombEditor
                 bool rebuildLighting = Room.Properties.AmbientLight != Properties.AmbientLight;
                 Room.Properties = Properties;
                 if (rebuildLighting)
-                    parent.Editor.RebuildLighting(Room);
+                    Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 Parent.Editor.RoomPropertiesChange(Room);
             };
             RedoInstance = () => new RoomPropertyUndoInstance(Parent, Room);

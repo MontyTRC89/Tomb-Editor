@@ -1551,13 +1551,5 @@ namespace TombEditor
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
 
         public bool ShouldRelight => Mode is EditorMode.Lighting;
-
-        public void RebuildLighting(Room room)
-        {
-            if (ShouldRelight)
-                room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview);
-            else
-                room.PendingRelight = true;
-        }
     }
 }
