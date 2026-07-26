@@ -190,8 +190,6 @@ namespace TombEditor
                 {
                     if (Parent.Editor.ShouldRelight)
                         Room.RebuildLighting(Parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
-                    else
-                        Room.PendingRelight = true;
                 }
 
                 // Move origin of object group, if it contains object

@@ -136,7 +136,6 @@ namespace TombLib.LevelData
 
         // Internal data structures
         public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
-        public bool PendingRelight { get; set; } = true;
 
         private IEnumerable<PortalInstance> _portalsCache;
 
@@ -957,14 +956,7 @@ namespace TombLib.LevelData
             RoomGeometry.Build(this);
 
             if (relight)
-            {
                 RoomGeometry.Relight(this, highQualityLighting);
-                PendingRelight = false;
-            }
-            else
-            {
-                PendingRelight = true;
-            }
         }
 
         public void BuildGeometry(bool useLegacyCode = false)
@@ -975,7 +967,6 @@ namespace TombLib.LevelData
         public void RebuildLighting(bool highQualityLighting)
         {
             RoomGeometry.Relight(this, highQualityLighting);
-            PendingRelight = false;
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
