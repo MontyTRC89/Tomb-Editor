@@ -1165,10 +1165,10 @@ namespace TombEditor
                 else
                     Tool = _lastFaceEditTool;
 
-                // If the mode switched to lighting mode, relight all rooms.
+                // If the mode switched to lighting mode, relight all changed rooms.
                 if (@event.Current == EditorMode.Lighting)
                 {
-                    Parallel.ForEach(Level.Rooms.Where(room => room is not null),
+                    Parallel.ForEach(Level.ExistingRooms.Where(room => room.PendingRelight),
                         room => room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview));
                 }
             }
@@ -1551,5 +1551,13 @@ namespace TombEditor
         public int IncrementReference => IsPreciseGeometryAllowed ? Configuration.Editor_StepHeight : Level.FullClickHeight;
 
         public bool ShouldRelight => Mode is EditorMode.Lighting;
+
+        public void UpdateRoomLighting(Room room)
+        {
+            if (ShouldRelight)
+                room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview);
+            else
+                room.InvalidateLighting();
+        }
     }
 }

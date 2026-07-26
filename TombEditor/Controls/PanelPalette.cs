@@ -124,7 +124,7 @@ namespace TombEditor.Controls
                     instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
 
                     if (_editor.SelectedObject is LightInstance)
-                        _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        _editor.UpdateRoomLighting(_editor.SelectedObject.Room);
 
                     _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
                 }

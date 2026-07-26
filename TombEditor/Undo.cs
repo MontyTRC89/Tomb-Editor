@@ -165,10 +165,11 @@ namespace TombEditor
             UndoAction = () =>
             {
                 bool roomChanged = false;
+                Room oldRoom = null;
 
                 if (UndoObject.Room != Room)
                 {
-                    var oldRoom = UndoObject.Room;
+                    oldRoom = UndoObject.Room;
                     oldRoom.RemoveObject(Parent.Editor.Level, UndoObject);
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Remove, oldRoom);
 
@@ -188,8 +189,10 @@ namespace TombEditor
                 // Rebuild lighting!
                 if (UndoObject is LightInstance)
                 {
-                    if (Parent.Editor.ShouldRelight)
-                        Room.RebuildLighting(Parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    Parent.Editor.UpdateRoomLighting(Room);
+
+                    if (oldRoom is not null)
+                        Parent.Editor.UpdateRoomLighting(oldRoom);
                 }
 
                 // Move origin of object group, if it contains object
@@ -302,7 +305,7 @@ namespace TombEditor
                 else if (UndoObject is LightInstance)
                 {
                     ((LightInstance)UndoObject).Color = (Vector3)Properties[0];
-                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    parent.Editor.UpdateRoomLighting(UndoObject.Room);
                 }
                 else if (UndoObject is SinkInstance)
                     ((SinkInstance)UndoObject).Strength = (short)Properties[0];
@@ -389,7 +392,7 @@ namespace TombEditor
                 bool rebuildLighting = Room.Properties.AmbientLight != Properties.AmbientLight;
                 Room.Properties = Properties;
                 if (rebuildLighting)
-                    Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    parent.Editor.UpdateRoomLighting(Room);
                 Parent.Editor.RoomPropertiesChange(Room);
             };
             RedoInstance = () => new RoomPropertyUndoInstance(Parent, Room);

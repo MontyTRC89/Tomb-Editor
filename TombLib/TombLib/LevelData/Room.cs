@@ -136,6 +136,7 @@ namespace TombLib.LevelData
 
         // Internal data structures
         public RoomGeometry RoomGeometry { get; } = new RoomGeometry();
+        public bool PendingRelight { get; private set; } = true;
 
         private IEnumerable<PortalInstance> _portalsCache;
 
@@ -954,19 +955,27 @@ namespace TombLib.LevelData
         public void Rebuild(bool relight, bool highQualityLighting = false)
         {
             RoomGeometry.Build(this);
+            InvalidateLighting();
 
             if (relight)
-                RoomGeometry.Relight(this, highQualityLighting);
+                RebuildLighting(highQualityLighting);
         }
 
         public void BuildGeometry(bool useLegacyCode = false)
         {
             RoomGeometry.Build(this, useLegacyCode);
+            InvalidateLighting();
+        }
+
+        public void InvalidateLighting()
+        {
+            PendingRelight = true;
         }
 
         public void RebuildLighting(bool highQualityLighting)
         {
             RoomGeometry.Relight(this, highQualityLighting);
+            PendingRelight = false;
         }
 
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
@@ -1203,6 +1212,9 @@ namespace TombLib.LevelData
                 throw;
             }
 
+            if (instance is LightInstance)
+                InvalidateLighting();
+
             return instance;
         }
 
@@ -1219,6 +1231,9 @@ namespace TombLib.LevelData
                 if (!CoordinateInvalid(ghost.SectorPosition))
                     Sectors[ghost.SectorPosition.X, ghost.SectorPosition.Y].GhostBlock = null;
             }
+
+            if (instance is LightInstance)
+                InvalidateLighting();
 
             return instance;
         }
