@@ -1758,11 +1758,11 @@ namespace TombLib.LevelData.Compilers
                                 // Load external custom bump map
                                 try
                                 {
-                                    var potentialImage = ImageC.FromFile(materialData.NormalMap);
+                                    var potentialImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
                                     if (potentialImage.Size == p.Texture.Image.Size)
                                     {
                                         cacheEntry.NormalMap = potentialImage;
-                                        cacheEntry.NormalMapPath = materialData.NormalMap;
+                                        cacheEntry.NormalMapPath = _level.Settings.MakeAbsolute(tex.BumpPath);
                                     }
                                     else
                                         _progressReporter.ReportWarn($"Texture file '{p.Texture}' has a normal map with a different size and was ignored.");

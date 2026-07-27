@@ -652,6 +652,7 @@ namespace TombLib.LevelData.IO
 
                 level.Settings.GameVersion = TRVersion.Game.TombEngine;
                 level.Settings.ConvertLevelExtension();
+                ConvertLegacyMaterialSidecars(level, progressReporter, cancelToken);
 
                 newPath = Path.Combine(
                     Path.GetDirectoryName(source),
@@ -666,6 +667,53 @@ namespace TombLib.LevelData.IO
                 progressReporter.ReportWarn(ex.Message);
                 return string.Empty;
             }
+        }
+
+        private static void ConvertLegacyMaterialSidecars(Level level, IProgressReporter progressReporter, CancellationToken cancelToken)
+        {
+            progressReporter.ReportInfo("Converting legacy material sidecars...");
+
+            foreach (var texture in level.Settings.Textures)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+                ConvertLegacyMaterialSidecar(level.Settings, texture.AbsolutePath, texture.BumpPath);
+                texture.BumpPath = null;
+            }
+
+            foreach (var importedGeometry in level.Settings.ImportedGeometries)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+
+                foreach (var texture in importedGeometry.Textures)
+                    ConvertLegacyMaterialSidecar(level.Settings, texture.AbsolutePath);
+            }
+
+            foreach (var wad in level.Settings.Wads)
+            {
+                cancelToken.ThrowIfCancellationRequested();
+
+                foreach (var texture in wad.Wad.MeshTexturesUnique.Where(t => !string.IsNullOrEmpty(t.AbsolutePath)))
+                    ConvertLegacyMaterialSidecar(level.Settings, texture.AbsolutePath);
+            }
+        }
+
+        private static void ConvertLegacyMaterialSidecar(LevelSettings settings, string textureAbsolutePath, string legacyBumpPath = null)
+        {
+            if (string.IsNullOrEmpty(textureAbsolutePath))
+                return;
+
+            var materialData = MaterialData.TrySidecarLoadOrLoadExisting(textureAbsolutePath);
+            if (materialData is null)
+                return;
+
+            if (string.IsNullOrEmpty(materialData.NormalMap) && !string.IsNullOrEmpty(legacyBumpPath))
+                materialData.NormalMap = settings.MakeAbsolute(legacyBumpPath);
+
+            string externalMaterialDataPath = Path.Combine(
+                Path.GetDirectoryName(textureAbsolutePath),
+                Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
+
+            MaterialData.SaveToXml(externalMaterialDataPath, materialData);
         }
     }
 }
