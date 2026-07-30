@@ -221,7 +221,7 @@ namespace TombIDE.Shared.NewStructure
 
 			switch (version)
 			{
-				case TRVersion.Game.TR1 or TRVersion.Game.TR2X:
+				case TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X:
 					scriptsDirectory = Path.Combine(engineDirectory, "cfg");
 
 					if (!Directory.Exists(scriptsDirectory))
@@ -368,7 +368,7 @@ namespace TombIDE.Shared.NewStructure
 		{
 			switch (targetGameVersion)
 			{
-				case TRVersion.Game.TR1 or TRVersion.Game.TR2X:
+				case TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X:
 					return true; // File names will change soon, pass validation for now
 
 				case TRVersion.Game.TombEngine:

@@ -86,6 +86,20 @@ namespace TombIDE.Shared.SharedClasses
 				if (!string.IsNullOrEmpty(foundFile))
 					return foundFile;
 			}
+			else if (version == TRVersion.Game.TR3X)
+			{
+				// Try fall-back to TRX_gameflow.json5.
+				foundFile = FindFile("TRX_gameflow.json5", targetExtension);
+
+				if (!string.IsNullOrEmpty(foundFile))
+					return foundFile;
+
+				// Try fall-back to TR3X_gameflow.json5
+				foundFile = FindFile("TR3X_gameflow.json5", targetExtension);
+
+				if (!string.IsNullOrEmpty(foundFile))
+					return foundFile;
+			}
 
 			throw new FileNotFoundException("Script file is missing.");
 		}

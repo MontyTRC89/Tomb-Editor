@@ -33,7 +33,7 @@ public static class ScriptingWorkspaceProfileSelector
 		{
 			TRVersion.Game.TR4 or TRVersion.Game.TRNG => CreateClassicScriptProfile(projectContext, settingsStore, classicScriptServices),
 			TRVersion.Game.TR2 or TRVersion.Game.TR3 => CreateGameFlowProfile(projectContext, settingsStore, gameFlowServices),
-			TRVersion.Game.TR1 or TRVersion.Game.TR2X => CreateTrxProfile(projectContext, settingsStore, trxServices),
+			TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X => CreateTrxProfile(projectContext, settingsStore, trxServices),
 			TRVersion.Game.TombEngine => CreateLuaProfile(projectContext, settingsStore),
 			_ => throw new NotSupportedException($"Unsupported scripting workspace game version: {projectContext.Project.GameVersion}.")
 		};
