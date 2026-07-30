@@ -1,26 +1,34 @@
 #nullable enable
 
 using DarkUI.Controls;
-using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.TRX.Parsers;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX.Resources;
+using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.TRX.ContentNodes;
 
 public sealed class TRXNodesProvider : ContentNodesProviderBase
 {
+	private readonly ITRXLineService _lineService;
+
+	public TRXNodesProvider(ITRXLineService lineService)
+	{
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+	}
+
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
 	{
 		var nodes = new List<string>();
-		var document = new TextDocument(content);
+		var source = new StringTextSnapshot(content);
 
-		foreach (DocumentLine line in document.Lines)
+		foreach (ITextLine line in source.Lines)
 		{
-			string lineText = document.GetText(line.Offset, line.Length);
+			string lineText = source.GetText(line.Offset, line.Length);
 			string? levelNode = GetLevelNode(lineText, filter);
 
 			if (levelNode is not null)
@@ -30,13 +38,13 @@ public sealed class TRXNodesProvider : ContentNodesProviderBase
 		return ContentNodeTreeBuilder.BuildFlatNodes(nodes, node => node);
 	}
 
-	private static string? GetLevelNode(string lineText, string filter)
+	private string? GetLevelNode(string lineText, string filter)
 	{
 		var regex = new Regex(Patterns.LevelProperty, RegexOptions.IgnoreCase);
 
 		if (regex.IsMatch(lineText))
 		{
-			lineText = LineParser.RemoveComments(lineText);
+			lineText = _lineService.RemoveComments(lineText);
 			string levelName = regex.Replace(lineText, string.Empty).Trim().TrimEnd(',').Trim('"');
 
 			if (!string.IsNullOrWhiteSpace(levelName) && levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))

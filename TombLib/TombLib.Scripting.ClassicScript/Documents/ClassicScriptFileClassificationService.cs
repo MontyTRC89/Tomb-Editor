@@ -1,10 +1,17 @@
 using System.IO;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
 
 namespace TombLib.Scripting.ClassicScript.Documents;
 
 public sealed class ClassicScriptFileClassificationService
 {
+	private readonly IClassicScriptLineService _lineService;
+
+	public ClassicScriptFileClassificationService(IClassicScriptLineService lineService)
+	{
+		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+	}
+
 	private static readonly HashSet<string> ScriptSections = new(StringComparer.OrdinalIgnoreCase)
 	{
 		"PSXExtensions",
@@ -29,10 +36,10 @@ public sealed class ClassicScriptFileClassificationService
 
 		foreach (string line in File.ReadLines(filePath))
 		{
-			if (!LineParser.IsSectionHeaderLine(line))
+			if (!_lineService.IsSectionHeaderLine(line))
 				continue;
 
-			string? sectionName = LineParser.GetSectionHeaderText(line);
+			string? sectionName = _lineService.GetSectionHeaderText(line);
 
 			if (string.IsNullOrWhiteSpace(sectionName))
 				continue;

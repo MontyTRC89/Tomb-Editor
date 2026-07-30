@@ -1,5 +1,0 @@
-#nullable enable
-
-namespace TombLib.Scripting.Specifications.ClassicScript.Mnemonics.Models;
-
-public sealed record PluginMnemonicDefinition(string FlagName, string Description, short DecimalValue, string HexValue);

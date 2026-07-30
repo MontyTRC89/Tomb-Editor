@@ -1,24 +1,31 @@
 using DarkUI.Controls;
-using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.ClassicScript.ContentNodes;
 
 public sealed class StringFileNodesProvider : ContentNodesProviderBase
 {
+	private readonly IClassicScriptLineService _lineService;
+
+	public StringFileNodesProvider(IClassicScriptLineService lineService)
+	{
+		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+	}
+
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
 	{
 		var nodes = new List<DarkTreeNode>();
-		var document = new TextDocument(content);
+		var source = new StringTextSnapshot(content);
 
-		foreach (DocumentLine line in document.Lines)
+		foreach (ITextLine line in source.Lines)
 		{
-			string lineText = document.GetText(line.Offset, line.Length);
+			string lineText = source.GetText(line.Offset, line.Length);
 
-			if (LineParser.IsSectionHeaderLine(lineText))
+			if (_lineService.IsSectionHeaderLine(lineText))
 			{
-				string headerText = LineParser.GetSectionHeaderText(lineText);
+				string headerText = _lineService.GetSectionHeaderText(lineText);
 
 				if (headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
 					nodes.Add(new DarkTreeNode(headerText));

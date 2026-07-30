@@ -19,23 +19,19 @@ namespace TombLib.Scripting.TRX.Highlighting
 
 		public static bool operator !=(ColorScheme a, ColorScheme b) => !a.Equals(b);
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
-			if (obj == null || !(obj is ColorScheme))
+			if (obj is not ColorScheme other)
 				return false;
-			else
-			{
-				var objectToCompare = obj as ColorScheme;
 
-				return Comments == objectToCompare.Comments
-					&& Constants == objectToCompare.Constants
-					&& Collections == objectToCompare.Collections
-					&& Properties == objectToCompare.Properties
-					&& Values == objectToCompare.Values
-					&& Strings == objectToCompare.Strings
-					&& Background.Equals(objectToCompare.Background, StringComparison.OrdinalIgnoreCase)
-					&& Foreground.Equals(objectToCompare.Foreground, StringComparison.OrdinalIgnoreCase);
-			}
+			return Comments == other.Comments
+				&& Constants == other.Constants
+				&& Collections == other.Collections
+				&& Properties == other.Properties
+				&& Values == other.Values
+				&& Strings == other.Strings
+				&& Background.Equals(other.Background, StringComparison.OrdinalIgnoreCase)
+				&& Foreground.Equals(other.Foreground, StringComparison.OrdinalIgnoreCase);
 		}
 
 		public override int GetHashCode() => ToString().GetHashCode();

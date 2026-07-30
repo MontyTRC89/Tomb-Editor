@@ -17,7 +17,7 @@ internal sealed class TextEditorBaseServiceCollection
 		TextAutoClosingService autoClosingService,
 		BookmarkCoordinator bookmarkCoordinator,
 		TextLineCommentService commentService,
-		CompletionWindowHost completionWindowHost,
+		CompletionWindowCoordinator completionWindowCoordinator,
 		ContentPersistenceCoordinator contentPersistenceCoordinator,
 		TextDefinitionNavigationService definitionNavigationService,
 		TextDiagnosticToolTipService diagnosticToolTipService,
@@ -28,7 +28,7 @@ internal sealed class TextEditorBaseServiceCollection
 		AutoClosingService = autoClosingService;
 		BookmarkCoordinator = bookmarkCoordinator;
 		CommentService = commentService;
-		CompletionWindowHost = completionWindowHost;
+		CompletionWindowCoordinator = completionWindowCoordinator;
 		ContentPersistenceCoordinator = contentPersistenceCoordinator;
 		DefinitionNavigationService = definitionNavigationService;
 		DiagnosticToolTipService = diagnosticToolTipService;
@@ -43,7 +43,7 @@ internal sealed class TextEditorBaseServiceCollection
 
 	public TextLineCommentService CommentService { get; }
 
-	public CompletionWindowHost CompletionWindowHost { get; }
+	public CompletionWindowCoordinator CompletionWindowCoordinator { get; }
 
 	public ContentPersistenceCoordinator ContentPersistenceCoordinator { get; }
 
@@ -63,12 +63,22 @@ internal sealed class TextEditorBaseServiceCollection
 
 		return new TextEditorBaseServiceCollection(
 			autoClosingService: new TextAutoClosingService(),
-			bookmarkCoordinator: new BookmarkCoordinator(() => editor.Document),
+			bookmarkCoordinator: new BookmarkCoordinator(
+				() => editor.Document,
+				onBookmarksChanged: () =>
+				{
+					editor.TextArea.TextView.InvalidateLayer(ICSharpCode.AvalonEdit.Rendering.KnownLayer.Background);
+					editor.SaveBookmarks();
+				}),
 			commentService: new TextLineCommentService(),
-			completionWindowHost: new CompletionWindowHost(editor.TextArea),
+			completionWindowCoordinator: new CompletionWindowCoordinator(
+				new CompletionWindowHost(editor.TextArea),
+				TextEditorBase.DefaultToolTipBorder,
+				TextEditorBase.DefaultToolTipBackground,
+				TextEditorBase.ToolTipForeground),
 			contentPersistenceCoordinator: new ContentPersistenceCoordinator(() => editor.Content, () => editor.IsSilentSession, useDelayedScheduling: true),
 			definitionNavigationService: new TextDefinitionNavigationService(),
-			diagnosticToolTipService: new TextDiagnosticToolTipService(),
+			diagnosticToolTipService: new TextDiagnosticToolTipService(onDiagnosticsChanged: () => editor.InvalidateDiagnosticLayer()),
 			statusCoordinator: new TextEditorStatusCoordinator(editor.TextArea, editor.RaiseStatusChanged, editor.RaiseZoomChanged),
 			toolTipPresenter: new EditorToolTipPresenter(editor),
 			viewService: new TextEditorViewService(editor));

@@ -1,1 +1,1 @@
-global using TombLib.Scripting.Core.Lua;global using TombLib.LanguageServer.Core;
+global using TombLib.Scripting.Lua;global using TombLib.LanguageServer.Core;

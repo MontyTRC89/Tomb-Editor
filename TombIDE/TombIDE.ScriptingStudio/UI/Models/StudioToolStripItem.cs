@@ -1,41 +1,43 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
 
-namespace TombIDE.ScriptingStudio.UI
+using System.Collections.Generic;
+using TombIDE.ScriptingStudio.UI;
+
+namespace TombIDE.ScriptingStudio.CommandSurface;
+
+public class StudioToolStripItem
 {
-	public class StudioToolStripItem
-	{
-		public string LangKey { get; set; } = string.Empty;
-		public string Command { get; set; } = string.Empty;
-		public string Icon { get; set; } = string.Empty;
-		public bool CheckOnClick { get; set; } = false;
-
-		public string Keys { get; set; } = string.Empty;
-		public string KeysDisplay { get; set; } = string.Empty;
-
-		public string Position { get; set; } = string.Empty;
-
-		public List<StudioToolStripItem> DropDownItems { get; set; } = new List<StudioToolStripItem>();
-	}
+	public string LangKey { get; set; } = string.Empty;
+	public UICommand Command { get; set; } = UICommand.None;
+	public string Icon { get; set; } = string.Empty;
+	public bool CheckOnClick { get; set; }
 
 	/// <summary>
-	/// Wide ToolStrip button (icon + text)
+	/// Optional explicit shortcut display text override.
+	/// When empty, the display text is obtained from <see cref="Shortcuts.IShortcutBindingService"/>.
 	/// </summary>
-	public sealed class StudioToolStripButton : StudioToolStripItem
-	{
-		public static StudioToolStripButton FromNormalItem(StudioToolStripItem item)
-			=> new StudioToolStripButton
-			{
-				LangKey = item.LangKey,
-				Command = item.Command,
-				Icon = item.Icon,
-				Keys = item.Keys,
-				KeysDisplay = item.KeysDisplay,
-				CheckOnClick = item.CheckOnClick,
-				Position = item.Position,
-				DropDownItems = item.DropDownItems
-			};
-	}
+	public string ShortcutDisplayText { get; set; } = string.Empty;
 
-	public sealed class StudioSeparator : StudioToolStripItem
-	{ }
+	public int? Position { get; set; }
+
+	public List<StudioToolStripItem> DropDownItems { get; set; } = [];
 }
+
+/// <summary>
+/// Wide ToolStrip button (icon + text)
+/// </summary>
+public sealed class StudioToolStripButton : StudioToolStripItem
+{
+	public static StudioToolStripButton FromNormalItem(StudioToolStripItem item) => new()
+	{
+		LangKey = item.LangKey,
+		Command = item.Command,
+		Icon = item.Icon,
+		ShortcutDisplayText = item.ShortcutDisplayText,
+		CheckOnClick = item.CheckOnClick,
+		Position = item.Position,
+		DropDownItems = item.DropDownItems
+	};
+}
+
+public sealed class StudioSeparator : StudioToolStripItem;

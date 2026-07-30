@@ -1,5 +1,5 @@
 using System.Text.Json;
-using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Lua;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 

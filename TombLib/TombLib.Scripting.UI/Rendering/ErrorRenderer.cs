@@ -3,8 +3,8 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Windows;
 using System.Windows.Media;
-using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.Diagnostics;
+using TombLib.Scripting.UI.Bases;
 using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.UI.Rendering

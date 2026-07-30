@@ -1,5 +1,4 @@
-using TombLib.Scripting.ClassicScript.Enums;
-using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Navigation;
 
 namespace TombLib.Tests;
 

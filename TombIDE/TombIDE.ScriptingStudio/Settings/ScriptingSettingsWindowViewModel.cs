@@ -2,7 +2,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ICSharpCode.AvalonEdit.Editing;
 using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
@@ -19,31 +18,38 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Resources;
-using TombLib.Scripting.Lua.Themes;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Resources;
-using TombLib.Utils;
 using ClassicScriptDefaults = TombLib.Scripting.ClassicScript.Resources.ConfigurationDefaults;
 using GameFlowDefaults = TombLib.Scripting.GameFlowScript.Resources.ConfigurationDefaults;
-using TrxDefaults = TombLib.Scripting.TRX.Resources.ConfigurationDefaults;
 
 namespace TombIDE.ScriptingStudio.Settings;
 
 public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 {
 	private readonly ConfigurationCollection _configs = new();
+	private readonly ClassicScriptLanguageServices _languageServices;
+	private readonly GameFlowLanguageServices _gameFlowLanguageServices;
+	private readonly TRXLanguageServices _trxLanguageServices;
 
-	public ScriptingSettingsWindowViewModel(ScriptingWorkspaceProfile workspaceProfile, DocumentMode documentMode)
+	public ScriptingSettingsWindowViewModel(ScriptingWorkspaceProfile workspaceProfile, DocumentMode documentMode, ClassicScriptLanguageServices languageServices, GameFlowLanguageServices gameFlowLanguageServices, TRXLanguageServices trxLanguageServices)
 	{
 		ArgumentNullException.ThrowIfNull(workspaceProfile);
+		ArgumentNullException.ThrowIfNull(languageServices);
+		ArgumentNullException.ThrowIfNull(gameFlowLanguageServices);
+		ArgumentNullException.ThrowIfNull(trxLanguageServices);
+
+		_languageServices = languageServices;
+		_gameFlowLanguageServices = gameFlowLanguageServices;
+		_trxLanguageServices = trxLanguageServices;
 
 		string[] fontFamilies = Fonts.SystemFontFamilies
 			.Select(static family => family.Source)
 			.OrderBy(static family => family, StringComparer.OrdinalIgnoreCase)
 			.ToArray();
 
-		Pages = new ObservableCollection<ScriptingSettingsPageViewModel>(CreatePages(workspaceProfile, fontFamilies));
+		Pages = new ObservableCollection<ScriptingSettingsPageViewModel>(CreatePages(workspaceProfile, fontFamilies, languageServices, gameFlowLanguageServices, trxLanguageServices));
 		SelectedPage = SelectInitialPage(workspaceProfile, documentMode) ?? Pages.FirstOrDefault();
 	}
 
@@ -81,7 +87,7 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 	partial void OnSelectedPageChanged(ScriptingSettingsPageViewModel? value)
 		=> value?.RefreshPreviewPresentation();
 
-	private IEnumerable<ScriptingSettingsPageViewModel> CreatePages(ScriptingWorkspaceProfile workspaceProfile, IReadOnlyList<string> fontFamilies)
+	private IEnumerable<ScriptingSettingsPageViewModel> CreatePages(ScriptingWorkspaceProfile workspaceProfile, IReadOnlyList<string> fontFamilies, ClassicScriptLanguageServices languageServices, GameFlowLanguageServices gameFlowLanguageServices, TRXLanguageServices trxLanguageServices)
 	{
 		var orderedKinds = new List<ScriptingSettingsPageKind>();
 
@@ -103,7 +109,10 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 				kind,
 				GetTitle(workspaceProfile, kind),
 				fontFamilies,
-				GetConfiguration(kind));
+				GetConfiguration(kind),
+				languageServices,
+				gameFlowLanguageServices,
+				trxLanguageServices);
 		}
 	}
 
@@ -163,6 +172,7 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 public sealed class ScriptingSettingsPageViewModel : ObservableObject
 {
 	private const string ClassicPreviewSection = "[Level]";
+
 	private const string LuaPreviewText =
 		"---@class Weapon\n"
 		+ "local Weapon = {}\n"
@@ -203,17 +213,26 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 	private bool _tidyPreEqualSpace;
 	private bool _tidyReduceSpaces;
 	private bool _wordWrapping;
+	private readonly ClassicScriptLanguageServices _languageServices;
+	private readonly GameFlowLanguageServices _gameFlowLanguageServices;
+	private readonly TRXLanguageServices _trxLanguageServices;
 
 	public ScriptingSettingsPageViewModel(
 		ScriptingSettingsPageKind kind,
 		string title,
 		IReadOnlyList<string> fontFamilies,
-		TextEditorConfigBase config)
+		TextEditorConfigBase config,
+		ClassicScriptLanguageServices languageServices,
+		GameFlowLanguageServices gameFlowLanguageServices,
+		TRXLanguageServices trxLanguageServices)
 	{
 		Kind = kind;
 		Title = title;
 		FontFamilies = fontFamilies;
 		_config = config;
+		_languageServices = languageServices;
+		_gameFlowLanguageServices = gameFlowLanguageServices;
+		_trxLanguageServices = trxLanguageServices;
 		_undoStackSize = Math.Max(config.UndoStackSize, TextEditorBaseDefaults.UndoStackSize);
 
 		Description = kind switch
@@ -494,13 +513,13 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		}
 	}
 
-	private static TextEditorBase CreatePreviewEditor(ScriptingSettingsPageKind kind)
+	private TextEditorBase CreatePreviewEditor(ScriptingSettingsPageKind kind)
 	{
 		TextEditorBase editor = kind switch
 		{
-			ScriptingSettingsPageKind.ClassicScript => new ClassicScriptEditor(new Version(0, 0)),
-			ScriptingSettingsPageKind.GameFlowScript => new GameFlowEditor(new Version(0, 0)),
-			ScriptingSettingsPageKind.TRX => new TRXEditor(new Version(0, 0)),
+			ScriptingSettingsPageKind.ClassicScript => new ClassicScriptEditor(new Version(0, 0), _languageServices),
+			ScriptingSettingsPageKind.GameFlowScript => new GameFlowEditor(new Version(0, 0), _gameFlowLanguageServices),
+			ScriptingSettingsPageKind.TRX => new TRXEditor(new Version(0, 0), _trxLanguageServices),
 			ScriptingSettingsPageKind.Lua => new LuaEditor(new Version(0, 0)),
 			_ => throw new NotSupportedException($"Unsupported preview editor kind: {kind}.")
 		};
@@ -546,15 +565,14 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 			+ ClassicPreviewSection;
 	}
 
-	private string GetPreviewText()
-		=> Kind switch
-		{
-			ScriptingSettingsPageKind.ClassicScript => CreateClassicPreviewText(),
-			ScriptingSettingsPageKind.GameFlowScript => "DESCRIPTION: Tomb Raider 2 Script File\n\nLEVEL: Scotland Temple\n\tGAME: data\\temp.tr2 // Good level\n\tSECRETS: 21\n\tTRACK: 37\nEND:",
-			ScriptingSettingsPageKind.TRX => "\"levels\": [\n\t{\n\t\t\"title\": \"Vatican City\",\n\t\t\"file\": \"data\\\\level21.phd\",\n\t\t\"type\": \"normal\",\n\t\t\"music\": 37,\n\t\t\"demo\": true,\n\t}\n]",
-			ScriptingSettingsPageKind.Lua => LuaPreviewText,
-			_ => string.Empty
-		};
+	private string GetPreviewText() => Kind switch
+	{
+		ScriptingSettingsPageKind.ClassicScript => CreateClassicPreviewText(),
+		ScriptingSettingsPageKind.GameFlowScript => "DESCRIPTION: Tomb Raider 2 Script File\n\nLEVEL: Scotland Temple\n\tGAME: data\\temp.tr2 // Good level\n\tSECRETS: 21\n\tTRACK: 37\nEND:",
+		ScriptingSettingsPageKind.TRX => "\"levels\": [\n\t{\n\t\t\"title\": \"Vatican City\",\n\t\t\"file\": \"data\\\\level21.phd\",\n\t\t\"type\": \"normal\",\n\t\t\"music\": 37,\n\t\t\"demo\": true,\n\t}\n]",
+		ScriptingSettingsPageKind.Lua => LuaPreviewText,
+		_ => string.Empty
+	};
 
 	private static IReadOnlyList<string> LoadThemeOptions(ScriptingSettingsPageKind kind, TextEditorConfigBase config)
 	{
@@ -564,14 +582,13 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 			ScriptingSettingsPageKind.GameFlowScript => GetThemeNames(DefaultPaths.GameFlowColorConfigsDirectory, "*" + GameFlowDefaults.ColorSchemeFileExtension),
 			ScriptingSettingsPageKind.TRX => TRXEditorConfiguration.GetAvailableColorSchemeFiles().Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty),
 			ScriptingSettingsPageKind.Lua => LuaThemeRepository.GetAvailableThemes().Select(static theme => theme.Name),
-			_ => Enumerable.Empty<string>()
+			_ => []
 		};
 
-		List<string> values = options
+		List<string> values = [.. options
 			.Where(static option => !string.IsNullOrWhiteSpace(option))
 			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.OrderBy(static option => option, StringComparer.OrdinalIgnoreCase)
-			.ToList();
+			.OrderBy(static option => option, StringComparer.OrdinalIgnoreCase)];
 
 		string selectedValue = kind switch
 		{
@@ -707,8 +724,8 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 
 	private static IReadOnlyList<LuaSemanticToken> CreateLuaPreviewTokens()
 	{
-		return new[]
-		{
+		return
+		[
 			CreateLuaPreviewToken(0, "Weapon", "class"),
 			CreateLuaPreviewToken(1, "Weapon", "class"),
 			CreateLuaPreviewToken(2, "levelName", "variable", 1, "global"),
@@ -720,7 +737,7 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 			CreateLuaPreviewToken(5, "levelName", "variable", 1, "global"),
 			CreateLuaPreviewToken(6, "name", "property", 1),
 			CreateLuaPreviewToken(6, "name", "parameter", 2)
-		};
+		];
 	}
 
 	private static LuaSemanticToken CreateLuaPreviewToken(int lineIndex, string tokenText, string tokenType, params string[] modifiers)

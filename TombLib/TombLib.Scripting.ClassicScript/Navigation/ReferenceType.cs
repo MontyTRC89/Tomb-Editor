@@ -7,4 +7,3 @@ public enum ReferenceType
 	NewCommand,
 	OCB
 }
-

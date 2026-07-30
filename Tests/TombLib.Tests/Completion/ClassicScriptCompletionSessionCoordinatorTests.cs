@@ -1,5 +1,8 @@
 using System.Linq;
+using TombLib.Scripting.ClassicScript.Completion;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.Completion;
 
 namespace TombLib.Tests;
@@ -7,10 +10,19 @@ namespace TombLib.Tests;
 [TestClass]
 public class ClassicScriptCompletionSessionCoordinatorTests
 {
+	private static ClassicScriptCompletionSessionCoordinator CreateCoordinator()
+	{
+		var lineService = new ClassicScriptLineService();
+		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
+		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
+		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+		return new ClassicScriptCompletionSessionCoordinator(lineService, commandService, mnemonicCatalogService);
+	}
+
 	[TestMethod]
 	public async Task GetTextEnteredDecisionAsync_AfterEqualsSpace_OpensContextualCompletionAtCaret()
 	{
-		var coordinator = new ClassicScriptCompletionSessionCoordinator();
+		var coordinator = CreateCoordinator();
 
 		TextCompletionSessionDecision decision = await coordinator.GetTextEnteredDecisionAsync(
 			"Horizon= ",
@@ -29,7 +41,7 @@ public class ClassicScriptCompletionSessionCoordinatorTests
 	[TestMethod]
 	public async Task GetTextEnteredDecisionAsync_AfterCommaSpace_OpensContextualCompletionAtCaret()
 	{
-		var coordinator = new ClassicScriptCompletionSessionCoordinator();
+		var coordinator = CreateCoordinator();
 
 		const string text = "Customize= CUST_LOOK_TRASPARENT, ";
 

@@ -10,8 +10,8 @@ using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Objects;
 using TombLib.Scripting.Signatures;
+using TombLib.Scripting.UI.Completion;
 using static TombLib.Tests.WPFTestHelper;
 
 namespace TombLib.Tests;
@@ -39,8 +39,9 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				CompletionWindow completionWindow = GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
 
+				Assert.IsNotNull(completionWindow);
 				Assert.AreEqual(1, completionWindow.CompletionList.CompletionData.Count);
 				Assert.AreEqual(0, completionWindow.StartOffset);
 				Assert.AreEqual(3, completionWindow.EndOffset);
@@ -82,7 +83,8 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				CompletionWindow firstWindow = GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? firstWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(firstWindow);
 				ToolTip firstToolTip = GetCompletionToolTip(firstWindow);
 				firstToolTip.Content = new TextBlock { Text = "old tooltip" };
 				firstToolTip.IsOpen = true;
@@ -93,7 +95,8 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				CompletionWindow refreshedWindow = GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? refreshedWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(refreshedWindow);
 				var refreshedItem = (CompletionData)refreshedWindow.CompletionList.CompletionData[0];
 
 				Assert.AreNotSame(firstWindow, refreshedWindow);
@@ -133,10 +136,7 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				FieldInfo completionWindowField = FindInstanceField(editor.GetType(), "_completionWindow")
-					?? throw new InvalidOperationException("Private field '_completionWindow' was not found.");
-
-				Assert.IsNull(completionWindowField.GetValue(editor));
+				Assert.IsNull(editor.ActiveCompletionWindow);
 			}
 			finally
 			{
@@ -176,7 +176,7 @@ public class LuaEditorCompletionWindowTests
 				Assert.IsFalse(signaturePopup.IsOpen);
 				Assert.IsNull(signaturePresenter.Content);
 				Assert.AreEqual(5, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
-				Assert.IsNotNull(GetPrivateField<CompletionWindow>(editor, "_completionWindow"));
+				Assert.IsNotNull(editor.ActiveCompletionWindow);
 			}
 			finally
 			{
@@ -213,7 +213,8 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				CompletionWindow completionWindow = GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(completionWindow);
 				ToolTip toolTip = GetCompletionToolTip(completionWindow);
 				completionWindow.CompletionList.ListBox.SelectedItem = completionWindow.CompletionList.CompletionData[0];
 
@@ -258,7 +259,8 @@ public class LuaEditorCompletionWindowTests
 				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
 				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
 
-				CompletionWindow completionWindow = GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(completionWindow);
 				ToolTip toolTip = GetCompletionToolTip(completionWindow);
 				toolTip.Content = new TextBlock { Text = "stale tooltip" };
 				toolTip.IsOpen = true;

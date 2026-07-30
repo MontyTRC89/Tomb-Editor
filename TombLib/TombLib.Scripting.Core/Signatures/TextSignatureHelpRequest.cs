@@ -3,6 +3,10 @@ namespace TombLib.Scripting.Signatures;
 /// <summary>
 /// Represents an in-process signature-help request against the current document snapshot.
 /// </summary>
+/// <remarks>
+/// Signature help requests use a zero-based document offset so they can be constructed directly
+/// from editor caret positions without converting to line and column coordinates.
+/// </remarks>
 public sealed class TextSignatureHelpRequest
 {
 	/// <summary>
@@ -12,7 +16,7 @@ public sealed class TextSignatureHelpRequest
 	/// <param name="caretOffset">The zero-based caret offset within that snapshot.</param>
 	public TextSignatureHelpRequest(string documentText, int caretOffset)
 	{
-		DocumentText = documentText ?? string.Empty;
+		DocumentText = documentText;
 		CaretOffset = caretOffset;
 	}
 

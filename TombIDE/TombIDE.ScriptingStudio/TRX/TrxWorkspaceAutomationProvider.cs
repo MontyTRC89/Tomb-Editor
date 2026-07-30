@@ -1,5 +1,4 @@
 using System;
-using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Services;
 using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.Shared;
@@ -36,32 +35,38 @@ internal sealed class TrxWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 		if (ideEvent is null || !IsSilentAction(ideEvent))
 			return;
 
-		TabPage cachedTab = _silentActionService.RememberSelectedTab();
+		switch (ideEvent)
+		{
+			case IDE.ScriptEditor_ScriptPresenceCheckEvent scriptPresenceEvent:
+				IDE.Instance.ScriptDefined = IsScriptDefined(scriptPresenceEvent.LevelName);
+				break;
+
+			case IDE.ScriptEditor_RenameLevelEvent renameLevelEvent:
+				RenameLevel(renameLevelEvent.OldName, renameLevelEvent.NewName);
+				break;
+		}
+	}
+
+	public bool IsScriptDefined(string levelName)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, _engine);
-
-		if (ideEvent is IDE.ScriptEditor_ScriptPresenceCheckEvent scriptPresenceEvent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			IDE.Instance.ScriptDefined = _callbacks.IsLevelScriptDefined(scriptPresenceEvent.LevelName);
-			_silentActionService.Complete(cachedTab, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
-		}
-		else if (ideEvent is IDE.ScriptEditor_RenameLevelEvent renameLevelEvent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			_callbacks.RenameRequestedLevelScript(renameLevelEvent.OldName, renameLevelEvent.NewName);
-			_silentActionService.Complete(cachedTab, true, _silentActionService.CreateCompletion(scriptFileState));
-		}
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		bool isDefined = _callbacks.IsLevelScriptDefined(levelName);
+		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
+		return isDefined;
 	}
 
-	public void Build()
+	public void RenameLevel(string oldName, string newName)
 	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, _engine);
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		_callbacks.RenameRequestedLevelScript(oldName, newName);
+		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(scriptFileState));
 	}
 
-	public void ShowDocumentation()
-	{
-	}
-
-	private static bool IsSilentAction(IIDEEvent ideEvent)
-		=> ideEvent is IDE.ScriptEditor_ScriptPresenceCheckEvent
-		|| ideEvent is IDE.ScriptEditor_RenameLevelEvent;
+	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
+		is IDE.ScriptEditor_ScriptPresenceCheckEvent
+		or IDE.ScriptEditor_RenameLevelEvent;
 }

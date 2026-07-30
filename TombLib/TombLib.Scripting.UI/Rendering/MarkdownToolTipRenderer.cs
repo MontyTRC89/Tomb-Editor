@@ -1,5 +1,9 @@
 #nullable enable
 
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using MdXaml;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,10 +17,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using MdXaml;
 using TombLib.Scripting.UI.Highlighting;
 using TombLib.Scripting.UI.Resources;
 using TombLib.WPF;
@@ -30,9 +30,11 @@ namespace TombLib.Scripting.UI.Rendering
 		private const double ToolTipMaxHeight = 420.0;
 		private const double ToolTipMaxWidth = 540.0;
 		private const double ToolTipTextMaxWidth = 500.0;
+
 		private static readonly Regex FencedCodeBlockPattern = new Regex(
 			@"(?ms)(^|\n)(?<fence>`{3,}|~{3,})[ \t]*(?<lang>[^\n]*)\n(?<code>.*?)(?:\n)\k<fence>[ \t]*(?=\n|$)",
 			RegexOptions.Compiled);
+
 		private static readonly FontFamily BodyFontFamily = SystemFonts.MessageFontFamily;
 		private static readonly FontFamily CodeFontFamily = new FontFamily(TextEditorBaseDefaults.FontFamily);
 		private static readonly double BodyFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
@@ -40,11 +42,13 @@ namespace TombLib.Scripting.UI.Rendering
 		private static readonly Brush DefaultForeground = TextEditorColorPalette.ToolTipForeground;
 		private static readonly Brush DefaultBackground = TextEditorColorPalette.ToolTipBackground;
 		private static readonly Brush DefaultLinkForeground = CreateFrozenBrush(Color.FromRgb(112, 192, 231));
+
 		private static readonly HashSet<string> SupportedHyperlinkSchemes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{
 			Uri.UriSchemeHttp,
 			Uri.UriSchemeHttps
 		};
+
 		private static readonly Lazy<IHighlightingDefinition?> LuaHighlighting = new Lazy<IHighlightingDefinition?>(LoadLuaHighlighting);
 
 		public static FrameworkElement CreateContent(string content, Brush foreground, Brush background, bool allowScrolling = true)

@@ -1,29 +1,44 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
-using System;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editing;
+using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.ClassicScript.Writers
 {
-	public static class LanguageStringWriter
+	public class LanguageStringWriter
 	{
-		public static void WriteNewLevelNameString(TextEditorBase textEditor, string levelName)
+		private readonly IClassicScriptCommandService _commandService;
+
+		public LanguageStringWriter(IClassicScriptCommandService commandService)
+		{
+			_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		}
+
+		public void WriteNewLevelNameString(TextEditorBase textEditor, string levelName)
 		{
 			if (!AssignStockLevelNameStringSlot(textEditor, levelName))
 				WriteNewNGString(textEditor, levelName);
 		}
 
-		public static bool WriteNewNGString(TextEditorBase textEditor, string ngString)
+		public bool WriteNewNGString(TextEditorBase textEditor, string ngString)
 		{
+			ITextSnapshot source = new TextDocumentSnapshot(textEditor.Document);
+
 			if (!IsNGStringAlreadyDefined(textEditor.Document, ngString))
 			{
-				DocumentLine extrangSectionStartLine = DocumentParser.FindDocumentLineOfSection(textEditor.Document, "ExtraNG");
+				int? extrangSectionStartLineNumber = _commandService.FindDocumentLineOfSection(source, "ExtraNG");
+
+				if (extrangSectionStartLineNumber is null)
+					return false;
+
+				ITextLine extrangSectionStartLine = source.GetLineByNumber(extrangSectionStartLineNumber.Value);
 
 				for (int i = textEditor.Document.LineCount; i >= extrangSectionStartLine.LineNumber; i--)
 				{
-					DocumentLine line = textEditor.Document.GetLineByNumber(i);
+					var line = textEditor.Document.GetLineByNumber(i);
 					string lineText = textEditor.Document.GetText(line.Offset, line.Length);
 
 					if (Regex.IsMatch(lineText, @"^\d+:"))
@@ -50,16 +65,17 @@ namespace TombLib.Scripting.ClassicScript.Writers
 			return false;
 		}
 
-		private static bool IsNGStringAlreadyDefined(TextDocument document, string ngString)
+		private bool IsNGStringAlreadyDefined(TextDocument document, string ngString)
 		{
-			DocumentLine extrangSectionStartLine = DocumentParser.FindDocumentLineOfSection(document, "ExtraNG");
+			var source = new TextDocumentSnapshot(document);
+			int? extrangSectionStartLineNumber = _commandService.FindDocumentLineOfSection(source, "ExtraNG");
 
-			if (extrangSectionStartLine == null)
+			if (extrangSectionStartLineNumber is null)
 				return true;
 
-			for (int i = extrangSectionStartLine.LineNumber + 1; i < document.LineCount; i++)
+			for (int i = extrangSectionStartLineNumber.Value + 1; i < document.LineCount; i++)
 			{
-				DocumentLine line = document.GetLineByNumber(i);
+				var line = document.GetLineByNumber(i);
 				string lineText = document.GetText(line.Offset, line.Length);
 
 				if (Regex.IsMatch(lineText, $@"^\d+:\s*{ngString}\s*(;.*)?$"))

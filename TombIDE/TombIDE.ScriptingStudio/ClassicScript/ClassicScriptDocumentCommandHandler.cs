@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.UI;
@@ -9,38 +10,22 @@ namespace TombIDE.ScriptingStudio.ClassicScript;
 public sealed class ClassicScriptDocumentCommandHandler : IStudioDocumentCommandHandler
 {
 	private readonly ClassicScriptDocumentCommandCallbacks _callbacks;
+	private readonly IReadOnlyDictionary<UICommand, Action<ClassicScriptEditor>> _editorHandlers;
 
 	public ClassicScriptDocumentCommandHandler(ClassicScriptDocumentCommandCallbacks callbacks)
 	{
 		_callbacks = callbacks ?? throw new ArgumentNullException(nameof(callbacks));
+		_editorHandlers = new Dictionary<UICommand, Action<ClassicScriptEditor>>
+		{
+			[UICommand.Reindent] = StudioDocumentCommandDispatcher.Run(_callbacks.ReindentAsync),
+			[UICommand.TrimWhiteSpace] = StudioDocumentCommandDispatcher.Run(_callbacks.TrimWhitespaceAsync),
+			[UICommand.TypeFirstAvailableId] = _callbacks.TypeFirstAvailableId,
+			[UICommand.NewFileAtCaret] = _callbacks.CreateNewFileAtCaret
+		};
 	}
 
 	public bool TryHandle(UICommand command)
-	{
-		if (_callbacks.GetCurrentEditor() is not ClassicScriptEditor editor)
-			return false;
-
-		switch (command)
-		{
-			case UICommand.Reindent:
-				_ = _callbacks.ReindentAsync(editor);
-				return true;
-
-			case UICommand.TrimWhiteSpace:
-				_ = _callbacks.TrimWhitespaceAsync(editor);
-				return true;
-
-			case UICommand.TypeFirstAvailableId:
-				_callbacks.TypeFirstAvailableId(editor);
-				return true;
-
-			case UICommand.NewFileAtCaret:
-				_callbacks.CreateNewFileAtCaret(editor);
-				return true;
-		}
-
-		return false;
-	}
+		=> StudioDocumentCommandDispatcher.TryHandle(command, _callbacks.GetCurrentEditor, _editorHandlers);
 }
 
 public sealed record ClassicScriptDocumentCommandCallbacks(

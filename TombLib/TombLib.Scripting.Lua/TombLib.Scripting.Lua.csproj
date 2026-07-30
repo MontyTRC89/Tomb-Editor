@@ -23,4 +23,11 @@
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Configs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.Extensions;
 using TombLib.Scripting.UI.Cleaning;
 
 namespace TombLib.Scripting.ClassicScript.Cleaning;
@@ -16,14 +17,14 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 	public string FormatDocument(string editorContent, bool trimOnly = false)
 	{
 		if (trimOnly)
-			return BasicCleaner.TrimTrailingWhitespace(editorContent);
+			return editorContent.TrimTrailingWhitespaceOnLines();
 
 		string[] lines = editorContent.Replace("\r", string.Empty).Split('\n');
 
 		for (int i = 0; i < lines.Length; i++)
 			lines[i] = FormatLine(lines[i]);
 
-		return string.Join(Environment.NewLine, BasicCleaner.TrimTrailingWhitespaceOnLines(lines));
+		return string.Join(Environment.NewLine, lines.TrimTrailingWhitespaceOnLines());
 	}
 
 	public static string FormatCompilerOutput(string content)
@@ -33,7 +34,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 		for (int i = 0; i < lines.Length; i++)
 			lines[i] = RemoveSpacesBeforeEquals(lines[i]);
 
-		return string.Join(Environment.NewLine, BasicCleaner.TrimTrailingWhitespaceOnLines(lines));
+		return string.Join(Environment.NewLine, lines.TrimTrailingWhitespaceOnLines());
 	}
 
 	private string FormatLine(string line)

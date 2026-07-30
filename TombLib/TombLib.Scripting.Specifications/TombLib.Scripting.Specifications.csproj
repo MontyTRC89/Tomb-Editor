@@ -9,34 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="ClassicScript\Resources\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Resources\ClassicScript\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="GameFlow\Resources\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Resources\GameFlow\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="TRX\Resources\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Resources\TRX\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="ClassicScript\Configs\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="GameFlow\Configs\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="Lua\Configs\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-    <Content Include="TRX\Configs\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-  </ItemGroup>
+
 </Project>

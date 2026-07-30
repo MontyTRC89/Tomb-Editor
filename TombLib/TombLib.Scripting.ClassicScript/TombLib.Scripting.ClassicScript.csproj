@@ -33,8 +33,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Configs\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Configs\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
+    <Content Include="Resources\ClassicScript\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Resources\ClassicScript\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

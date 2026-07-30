@@ -1,5 +1,3 @@
-using TombLib.Scripting.Core.Lua;
-
 namespace TombLib.LanguageServer.Lua;
 
 public sealed partial class LuaLanguageServerIntellisenseProvider

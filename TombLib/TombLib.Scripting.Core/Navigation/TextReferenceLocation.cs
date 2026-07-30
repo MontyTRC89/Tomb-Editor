@@ -3,6 +3,11 @@ namespace TombLib.Scripting.Navigation;
 /// <summary>
 /// Identifies a source location for a symbol reference.
 /// </summary>
+/// <remarks>
+/// Reference locations use one-based line and column coordinates to match the LSP convention
+/// and remain stable across documents without depending on an editor-specific offset or segment
+/// instance.
+/// </remarks>
 public sealed class TextReferenceLocation
 {
 	/// <summary>
@@ -15,7 +20,7 @@ public sealed class TextReferenceLocation
 	/// <param name="endColumnNumber">The one-based end column number.</param>
 	public TextReferenceLocation(string filePath, int startLineNumber, int startColumnNumber, int endLineNumber, int endColumnNumber)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
+		FilePath = filePath;
 
 		int safeStartLineNumber = Math.Max(1, startLineNumber);
 		int safeStartColumnNumber = Math.Max(1, startColumnNumber);

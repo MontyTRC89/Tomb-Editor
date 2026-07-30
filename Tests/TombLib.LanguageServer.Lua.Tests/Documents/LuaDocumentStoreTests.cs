@@ -1,5 +1,5 @@
 using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Lua;
 
 namespace TombLib.LanguageServer.Lua.Tests;
 

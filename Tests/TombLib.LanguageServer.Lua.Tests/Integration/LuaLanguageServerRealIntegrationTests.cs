@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Lua;
 using TombLib.Scripting.Editing;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;

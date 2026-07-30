@@ -1,17 +1,12 @@
 #nullable enable
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
+using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
-using TombLib.Scripting.ClassicScript.Navigation;
-using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Presentation;
-using TombLib.Scripting.UI.Rendering;
 
 namespace TombLib.Scripting.ClassicScript;
 
@@ -26,16 +21,11 @@ public sealed partial class ClassicScriptEditor
 		internal ClassicScriptHoverController(ClassicScriptEditor editor)
 		{
 			_editor = editor;
-			_controller = new TextHoverController(
-				owner: editor,
-				getOffsetFromPoint: editor.GetOffsetFromPoint,
-				buildRequestState: BuildRequestState,
-				requestHoverAsync: RequestAsync,
-				getCurrentRequestOffset: hoveredOffset => hoveredOffset,
-				showDiagnosticToolTip: editor.ShowDiagnosticToolTip,
-				showHoverToolTip: ShowHoverToolTip,
-				showCombinedToolTip: ShowCombinedToolTip,
-				applyHoverState: ApplyHoverState);
+			_controller = HoverControllerFactory.Create(
+				editor,
+				BuildRequestState,
+				RequestAsync,
+				ApplyHoverState);
 		}
 
 		internal Task HandleMouseHoverAsync(MouseEventArgs e)
@@ -83,34 +73,8 @@ public sealed partial class ClassicScriptEditor
 		private Task<TextHoverInfo?> RequestAsync(int hoveredOffset, CancellationToken cancellationToken)
 			=> Task.FromResult(_editor._languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(_editor.Document.Text, hoveredOffset)));
 
-		private void ShowHoverToolTip(TextHoverInfo hoverInfo)
-			=> _editor.ShowToolTip(
-				TextHoverToolTipContentFactory.CreateHoverContent(hoverInfo, ToolTipForeground, DefaultToolTipBackground),
-				DefaultToolTipBorder,
-				DefaultToolTipBackground);
-
-		private void ShowCombinedToolTip(TextHoverInfo hoverInfo, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
-			=> _editor.ShowToolTip(
-				TextHoverToolTipContentFactory.CreateCombinedContent(
-					hoverInfo,
-					diagnosticMessage,
-					diagnosticSeverity,
-					ToolTipForeground,
-					DefaultToolTipBackground,
-					ToolTipTextMaxWidth,
-					ToolTipTextFontSize,
-					GetDiagnosticColors),
-				DefaultToolTipBorder,
-				DefaultToolTipBackground);
-
 		private void ApplyHoverState(TextHoverPresentationState state)
 			=> _hoveredWordArgs = state.HoverInfo is null ? null : CreateWordDefinitionArgs(state.HoverInfo, state.HoveredOffset);
-
-		private static (SolidColorBrush Border, SolidColorBrush Background) GetDiagnosticColors(TextEditorDiagnosticSeverity severity)
-		{
-			GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
-			return (border, background);
-		}
 
 		private static WordDefinitionEventArgs? CreateWordDefinitionArgs(TextHoverInfo hoverInfo, int hoveredOffset)
 		{

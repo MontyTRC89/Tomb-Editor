@@ -15,7 +15,7 @@ public sealed class TextEditorDiagnostic
 	public TextEditorDiagnostic(TextEditorDiagnosticSeverity severity, string message, int startOffset, int endOffset)
 	{
 		Severity = severity;
-		Message = message ?? throw new ArgumentNullException(nameof(message));
+		Message = message;
 		StartOffset = Math.Max(0, startOffset);
 		EndOffset = Math.Max(StartOffset + 1, endOffset);
 	}

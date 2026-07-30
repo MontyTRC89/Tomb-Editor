@@ -2,7 +2,6 @@
 
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using System;
 using System.Windows;
 using System.Windows.Documents;

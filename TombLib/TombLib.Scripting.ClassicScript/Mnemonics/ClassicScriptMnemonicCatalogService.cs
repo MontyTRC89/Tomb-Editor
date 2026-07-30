@@ -1,8 +1,7 @@
 using System.Data;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.Specifications.ClassicScript;
-using TombLib.Scripting.Specifications.ClassicScript.Mnemonics.Models;
-using TombLib.Scripting.Specifications.ClassicScript.Mnemonics.Services;
+using TombLib.Scripting.ClassicScript.Mnemonics.Models;
+using TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
 namespace TombLib.Scripting.ClassicScript.Mnemonics;
 

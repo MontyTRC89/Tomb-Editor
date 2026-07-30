@@ -1,6 +1,6 @@
+using NLog;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
-using NLog;
 
 namespace TombLib.LanguageServer.Lua;
 

@@ -1,4 +1,4 @@
-using TombLib.Scripting.Specifications.ClassicScript.Syntaxes;
+using TombLib.Scripting.ClassicScript.Syntaxes;
 
 namespace TombLib.Tests;
 

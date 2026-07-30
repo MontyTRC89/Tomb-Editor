@@ -1,6 +1,6 @@
 using ICSharpCode.AvalonEdit;
 using System.Windows.Media;
-using TombLib.Scripting.Rendering;
+using TombLib.Scripting.UI.Rendering;
 
 namespace TombLib.Tests;
 

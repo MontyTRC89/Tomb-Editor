@@ -17,17 +17,17 @@ public sealed class TextCompletionItem
 	/// </summary>
 	/// <param name="label">The display label shown in the completion list.</param>
 	/// <param name="insertText">The text inserted when the item is committed.</param>
-	/// <param name="Description">Optional descriptive content for detail popups.</param>
-	/// <param name="Priority">The sort priority used by the completion UI.</param>
-	/// <param name="Kind">The semantic category used for icons and styling.</param>
-	/// <param name="Detail">Optional short detail text shown beside the label.</param>
-	/// <param name="FilterText">The text used when filtering the item from typed input.</param>
-	/// <param name="IsDescriptionMarkdown">Whether <paramref name="Description"/> should be rendered as Markdown.</param>
-	/// <param name="ResolveAsync">An optional asynchronous resolver for lazily loading richer content.</param>
-	/// <param name="TextEdit">Optional protocol-style insert and replace ranges for custom commit behavior.</param>
-	/// <param name="RequestDocumentVersion">The originating document version for staleness checks.</param>
-	/// <param name="RequestGeneration">The originating request generation for staleness checks.</param>
-	/// <param name="InsertCaretOffset">An optional caret position to use after commit.</param>
+	/// <param name="description">Optional descriptive content for tooltip or detail rendering.</param>
+	/// <param name="priority">The sort priority used by the completion UI.</param>
+	/// <param name="kind">The semantic category used for icons and styling.</param>
+	/// <param name="detail">Optional short detail text shown beside the label.</param>
+	/// <param name="filterText">The text used to match the item during filtering.</param>
+	/// <param name="isDescriptionMarkdown">Whether <paramref name="description"/> should be rendered as Markdown.</param>
+	/// <param name="resolveAsync">An optional asynchronous resolver for lazily loading richer content.</param>
+	/// <param name="textEdit">Optional protocol-style insert and replace ranges for custom commit behavior.</param>
+	/// <param name="requestDocumentVersion">The originating document version for staleness checks.</param>
+	/// <param name="requestGeneration">The originating request generation for staleness checks.</param>
+	/// <param name="insertCaretOffset">An optional caret position to use after commit.</param>
 	public TextCompletionItem(
 		string label,
 		string? insertText = null,
@@ -43,8 +43,6 @@ public sealed class TextCompletionItem
 		int? requestGeneration = null,
 		int? insertCaretOffset = null)
 	{
-		ArgumentNullException.ThrowIfNull(label);
-
 		Label = label;
 		InsertText = string.IsNullOrWhiteSpace(insertText) ? label : insertText;
 		Description = string.IsNullOrWhiteSpace(description) ? null : isDescriptionMarkdown ? description : description.Trim();
@@ -206,8 +204,6 @@ public sealed class TextCompletionItem
 	/// <returns>A merged completion item that preserves the original commit metadata.</returns>
 	public TextCompletionItem WithResolvedContent(TextCompletionItem resolvedItem)
 	{
-		ArgumentNullException.ThrowIfNull(resolvedItem);
-
 		string? detail = string.IsNullOrWhiteSpace(resolvedItem.Detail) ? Detail : resolvedItem.Detail;
 		string? description = string.IsNullOrWhiteSpace(resolvedItem.Description) ? Description : resolvedItem.Description;
 

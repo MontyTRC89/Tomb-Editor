@@ -1,33 +1,53 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using TombIDE.ScriptingStudio.UI;
 
-namespace TombIDE.ScriptingStudio.Shortcuts
+namespace TombIDE.ScriptingStudio.Shortcuts;
+
+/// <summary>
+/// Immutable command catalog entry containing a <see cref="UICommand"/>,
+/// its stable serialized identifier, default bindings, and remapping policy.
+/// </summary>
+public sealed class StudioCommandDescriptor
 {
-	internal sealed class StudioCommandDescriptor
+	public StudioCommandDescriptor(
+		UICommand command,
+		string serializedId,
+		bool isRemappable,
+		bool isHostReserved,
+		params ShortcutKey[] defaultBindings)
 	{
-		public StudioCommandDescriptor(UICommand command, params StudioShortcutBinding[] defaultBindings)
-		{
-			Command = command;
-			DefaultBindings = Array.AsReadOnly(defaultBindings ?? Array.Empty<StudioShortcutBinding>());
-		}
-
-		public UICommand Command { get; }
-
-		public IReadOnlyList<StudioShortcutBinding> DefaultBindings { get; }
+		Command = command;
+		SerializedId = serializedId ?? throw new ArgumentNullException(nameof(serializedId));
+		IsRemappable = isRemappable;
+		IsHostReserved = isHostReserved;
+		DefaultBindings = Array.AsReadOnly(defaultBindings ?? Array.Empty<ShortcutKey>());
 	}
 
-	internal sealed class StudioShortcutBinding
-	{
-		public StudioShortcutBinding(Keys keys, string displayText = null)
-		{
-			Keys = keys;
-			DisplayText = displayText;
-		}
+	/// <summary>
+	/// The command this descriptor represents. Never <see cref="UICommand.None"/>.
+	/// </summary>
+	public UICommand Command { get; }
 
-		public Keys Keys { get; }
+	/// <summary>
+	/// Stable serialized identifier used for persistence.
+	/// This is the <see cref="UICommand"/> name (e.g. "Save"), not its numeric value.
+	/// </summary>
+	public string SerializedId { get; }
 
-		public string DisplayText { get; }
-	}
+	/// <summary>
+	/// The default bindings defined by the application.
+	/// </summary>
+	public IReadOnlyList<ShortcutKey> DefaultBindings { get; }
+
+	/// <summary>
+	/// Whether the user is permitted to remap this command.
+	/// </summary>
+	public bool IsRemappable { get; }
+
+	/// <summary>
+	/// Whether this command's shortcut is reserved by the host (e.g. Alt+F4 for Exit).
+	/// Host-reserved commands always use catalog defaults and ignore overrides.
+	/// </summary>
+	public bool IsHostReserved { get; }
 }

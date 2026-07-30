@@ -2,13 +2,14 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
-using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
 public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
 	private readonly ColorScheme _scheme;
+	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
 
 	#region Construction
 
@@ -28,7 +29,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Comments */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Comments),
+				Regex = new Regex(";.*$"),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
@@ -40,7 +41,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Sections */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Sections, RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\[\b(" + string.Join("|", ClassicScriptKeywords.Sections) + @")\b\]", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Sections.HtmlColor)),
@@ -52,7 +53,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Standard commands */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.StandardCommands, RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\b(" + string.Join("|", ClassicScriptKeywords.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.StandardCommands.HtmlColor)),
@@ -64,7 +65,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* New commands */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.NewCommands, RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\b(" + string.Join("|", ClassicScriptKeywords.NewCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),
@@ -87,7 +88,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Mnemonics */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Mnemonics, RegexOptions.IgnoreCase),
+				Regex = new Regex(_mnemonicCatalogService.GetMnemonicPattern(), RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
@@ -99,7 +100,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Hex values */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.HexValues, RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\$[a-f0-9]*", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
@@ -111,7 +112,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Directives (#...) */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Directives, RegexOptions.IgnoreCase),
+				Regex = new Regex(@"#(define|first_id|include)\s", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
@@ -123,7 +124,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Values */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Values),
+				Regex = new Regex("\\d|\\w|\"|'|\\.|\\\\"),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Values.HtmlColor)),

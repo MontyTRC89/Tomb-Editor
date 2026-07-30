@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.Lua.Utils;
+using TombLib.Scripting.Lua.Completion;
+using TombLib.Scripting.Lua.Editing;
 
 namespace TombLib.Tests;
 

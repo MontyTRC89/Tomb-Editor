@@ -2,34 +2,42 @@ using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.ClassicScript.Parsers;
-using TombLib.Scripting.ClassicScript.Resources;
+using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Extensions;
-using TombLib.Scripting.Specifications.ClassicScript;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Completion;
 
 public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 {
-	private static readonly ClassicScriptMnemonicCatalogService MnemonicCatalogService = new();
+	private readonly IClassicScriptCommandService _commandService;
+	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
+
+	public ClassicScriptCompletionProvider(
+		IClassicScriptCommandService commandService,
+		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
+	{
+		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
+	}
 
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
 	{
-		var document = new TextDocument(context.DocumentText);
+		var source = new StringTextSnapshot(context.DocumentText);
 
 		return context.Trigger switch
 		{
-			TextCompletionTrigger.EmptyLine => GetNewLineCompletionItems(document, context.CaretOffset),
-			TextCompletionTrigger.Contextual => GetContextualCompletionItems(document, context.CaretOffset, context.ArgumentIndex),
-			TextCompletionTrigger.Word => GetWordCompletionItems(document, context.CaretOffset),
+			TextCompletionTrigger.EmptyLine => GetNewLineCompletionItems(source, context.CaretOffset),
+			TextCompletionTrigger.Contextual => GetContextualCompletionItems(source, context.CaretOffset, context.ArgumentIndex),
+			TextCompletionTrigger.Word => GetWordCompletionItems(context.DocumentText, context.CaretOffset),
 			_ => []
 		};
 	}
 
-	private static IReadOnlyList<TextCompletionItem> GetNewLineCompletionItems(TextDocument document, int caretOffset)
+	private IReadOnlyList<TextCompletionItem> GetNewLineCompletionItems(ITextSnapshot source, int caretOffset)
 	{
-		string? currentSection = DocumentParser.GetCurrentSectionName(document, caretOffset);
+		string? currentSection = _commandService.GetCurrentSectionName(source, caretOffset);
 
 		if (currentSection is not null && currentSection.IgnoreCaseEqualsAny("Strings", "PSXStrings", "PCStrings", "ExtraNG"))
 			return [];
@@ -47,14 +55,14 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		return items;
 	}
 
-	private static IReadOnlyList<TextCompletionItem> GetContextualCompletionItems(TextDocument document, int caretOffset, int argumentIndex)
+	private IReadOnlyList<TextCompletionItem> GetContextualCompletionItems(ITextSnapshot source, int caretOffset, int argumentIndex)
 	{
-		string? syntax = CommandParser.GetCommandSyntax(document, caretOffset);
+		string? syntax = _commandService.GetCommandSyntax(source, caretOffset);
 
 		if (string.IsNullOrEmpty(syntax))
 			return [];
 
-		var regex = new Regex(Patterns.CommandPrefixInParenthesis);
+		var regex = new Regex(@"\(.*_\.*\)");
 
 		if (!regex.IsMatch(syntax) && !syntax.Contains("ENABLED", StringComparison.OrdinalIgnoreCase) && !syntax.Contains("DISABLED", StringComparison.OrdinalIgnoreCase))
 			return [];
@@ -62,7 +70,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		string[] arguments = syntax.Split(',');
 
 		if (argumentIndex == -1)
-			argumentIndex = ArgumentParser.GetArgumentIndexAtOffset(document, caretOffset);
+			argumentIndex = _commandService.GetArgumentIndexAtOffset(source, caretOffset);
 
 		if (arguments.Length <= argumentIndex || argumentIndex == -1)
 			return [];
@@ -74,7 +82,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		{
 			string mnemonicPrefix = currentArgument.Split('(')[1].Split(')')[0].Trim('.').Trim();
 
-			foreach (string mnemonicConstant in MnemonicCatalogService.GetAllFlags())
+			foreach (string mnemonicConstant in _mnemonicCatalogService.GetAllFlags())
 			{
 				if (mnemonicConstant.StartsWith(mnemonicPrefix, StringComparison.OrdinalIgnoreCase))
 					items.Add(CreateItem(mnemonicConstant, mnemonicConstant, TextCompletionItemKind.Constant));
@@ -89,10 +97,14 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		return items;
 	}
 
-	private static IReadOnlyList<TextCompletionItem> GetWordCompletionItems(TextDocument document, int caretOffset)
+	private IReadOnlyList<TextCompletionItem> GetWordCompletionItems(string documentText, int caretOffset)
 	{
 		if (caretOffset <= 0)
 			return [];
+
+		// Word completion uses AvalonEdit's TextUtilities for caret positioning.
+		// This remains a UI-level concern that requires a TextDocument.
+		var document = new TextDocument(documentText);
 
 		int wordStartOffset = TextUtilities.GetNextCaretPosition(document, caretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
 
@@ -101,12 +113,12 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 		string word = document.GetText(wordStartOffset, caretOffset - wordStartOffset);
 
-		if (!MnemonicCatalogService.GetAllFlags().Any(constant => constant.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
+		if (!_mnemonicCatalogService.GetAllFlags().Any(constant => constant.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
 			return [];
 
 		var items = new List<TextCompletionItem>();
 
-		foreach (string mnemonicConstant in MnemonicCatalogService.GetAllFlags())
+		foreach (string mnemonicConstant in _mnemonicCatalogService.GetAllFlags())
 		{
 			if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
 				items.Add(CreateItem(mnemonicConstant, mnemonicConstant, TextCompletionItemKind.Constant));

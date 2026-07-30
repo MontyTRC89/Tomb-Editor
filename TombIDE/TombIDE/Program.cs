@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Composition;
 using TombIDE.Shared;
+using TombIDE.Shared.Messaging;
 using TombIDE.Shared.SharedClasses;
 using TombLib.WPF;
 using TombLib.WPF.Services;
@@ -20,6 +24,7 @@ namespace TombIDE
 		private static void Main(string[] args)
 		{
 			var services = WPFInitializer.InitializeWPF();
+			services.AddScriptingStudioHostComposition();
 			ServiceLocator.Configure(services.BuildServiceProvider());
 
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -31,10 +36,18 @@ namespace TombIDE
 			Application.SetHighDpiMode(HighDpiMode.SystemAware);
 			Application.SetCompatibleTextRenderingDefault(false);
 
+			if (SynchronizationContext.Current is null)
+				SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+
 			var ideConfiguration = IDEConfiguration.Load();
 			var availableProjects = XmlHandling.GetProjectsFromXml().ToList();
 
-			using var ide = new IDE(ideConfiguration, availableProjects);
+			using var ide = new IDE(
+				ideConfiguration,
+				availableProjects,
+				ServiceLocator.GetService<IMessenger>(),
+				ServiceLocator.GetService<IUiDispatcherService>());
+
 			IDE.Instance = ide;
 
 			using var form = new FormStart(ide);

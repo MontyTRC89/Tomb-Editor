@@ -1,5 +1,4 @@
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 

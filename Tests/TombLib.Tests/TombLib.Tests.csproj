@@ -22,7 +22,6 @@
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.TRX\TombLib.Scripting.TRX.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />

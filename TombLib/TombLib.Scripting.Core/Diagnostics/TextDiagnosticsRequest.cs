@@ -12,7 +12,7 @@ public sealed class TextDiagnosticsRequest
 	/// <param name="engineVersion">The engine version that should be used when evaluating diagnostics.</param>
 	public TextDiagnosticsRequest(string documentText, Version engineVersion)
 	{
-		DocumentText = documentText ?? string.Empty;
+		DocumentText = documentText;
 		EngineVersion = engineVersion;
 	}
 

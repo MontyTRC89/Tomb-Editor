@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.Generic;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Specifications.TRX.Services;
+using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Completion;
 

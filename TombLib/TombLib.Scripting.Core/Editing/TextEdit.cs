@@ -17,7 +17,7 @@ public sealed class TextEdit
 	public TextEdit(TextDocumentRange range, string newText)
 	{
 		Range = range;
-		NewText = newText ?? string.Empty;
+		NewText = newText;
 	}
 
 	/// <summary>

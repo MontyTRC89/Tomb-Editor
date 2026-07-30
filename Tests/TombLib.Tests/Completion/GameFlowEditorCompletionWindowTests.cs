@@ -2,19 +2,38 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using System.Windows;
 using System.Windows.Threading;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.GameFlowScript.Completion;
+using TombLib.Scripting.GameFlowScript.Documents;
+using TombLib.Scripting.GameFlowScript.Hover;
+using TombLib.Scripting.GameFlowScript.Navigation;
+using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;
 
 [TestClass]
 public class GameFlowEditorCompletionWindowTests
 {
+	private static GameFlowLanguageServices CreateLanguageServices()
+	{
+		var lineService = new GameFlowScriptLineService();
+		var documentService = new GameFlowScriptDocumentService(lineService);
+
+		return new GameFlowLanguageServices(
+			new GameFlowDefinitionProvider(documentService),
+			new GameFlowHoverProvider(),
+			new GameFlowAutocompleteService(lineService),
+			lineService,
+			documentService,
+			new GameFlowDocumentLookupService(documentService));
+	}
+
 	[TestMethod]
 	public void ShowCompletionWindow_ClearsFieldWhenWindowCloses()
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var editor = new GameFlowEditor(new Version(1, 0));
+			var editor = new GameFlowEditor(new Version(1, 0), CreateLanguageServices());
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 
 			try
@@ -23,11 +42,12 @@ public class GameFlowEditorCompletionWindowTests
 				editor.ShowCompletionWindow();
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				CompletionWindow completionWindow = WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(completionWindow);
 				completionWindow.Close();
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				Assert.IsNull(WPFTestHelper.FindInstanceField(editor.GetType(), "_completionWindow")?.GetValue(editor));
+				Assert.IsNull(editor.ActiveCompletionWindow);
 			}
 			finally
 			{
@@ -41,7 +61,7 @@ public class GameFlowEditorCompletionWindowTests
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var editor = new GameFlowEditor(new Version(1, 0));
+			var editor = new GameFlowEditor(new Version(1, 0), CreateLanguageServices());
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 
 			try
@@ -50,13 +70,14 @@ public class GameFlowEditorCompletionWindowTests
 				editor.ShowCompletionWindow();
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				CompletionWindow firstWindow = WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? firstWindow = editor.ActiveCompletionWindow;
+				Assert.IsNotNull(firstWindow);
 
 				editor.InitializeCompletionWindow();
 				editor.ShowCompletionWindow();
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				CompletionWindow secondWindow = WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? secondWindow = editor.ActiveCompletionWindow;
 
 				Assert.AreNotSame(firstWindow, secondWindow);
 				Assert.IsFalse(firstWindow.IsVisible);
@@ -64,7 +85,7 @@ public class GameFlowEditorCompletionWindowTests
 			}
 			finally
 			{
-				WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow").Close();
+				editor.ActiveCompletionWindow?.Close();
 				hostWindow.Close();
 			}
 		});
@@ -75,7 +96,7 @@ public class GameFlowEditorCompletionWindowTests
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var editor = new GameFlowEditor(new Version(1, 0))
+			var editor = new GameFlowEditor(new Version(1, 0), CreateLanguageServices())
 			{
 				Text = "test"
 			};
@@ -97,16 +118,17 @@ public class GameFlowEditorCompletionWindowTests
 
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				CompletionWindow completionWindow = WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
 
 				Assert.IsTrue(opened);
+				Assert.IsNotNull(completionWindow);
 				Assert.AreEqual(1, completionWindow.CompletionList.CompletionData.Count);
 				Assert.AreEqual(1, completionWindow.StartOffset);
 				Assert.AreEqual(3, completionWindow.EndOffset);
 			}
 			finally
 			{
-				WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow").Close();
+				editor.ActiveCompletionWindow?.Close();
 				hostWindow.Close();
 			}
 		});

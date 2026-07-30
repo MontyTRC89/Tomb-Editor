@@ -1,6 +1,7 @@
 #nullable enable
 
-using ICSharpCode.AvalonEdit.Document;
+using TombLib.Scripting.Text;
+using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Tests;
@@ -8,11 +9,19 @@ namespace TombLib.Tests;
 [TestClass]
 public class Tomb1MainDocumentLookupServiceTests
 {
+	private static TRXDocumentLookupService CreateService()
+	{
+		var lineService = new TRXLineService();
+		var documentService = new TRXDocumentService(lineService);
+
+		return new TRXDocumentLookupService(documentService);
+	}
+
 	[TestMethod]
 	public void IsLevelScriptDefined_ReturnsTrueForMatchingTitleLine()
 	{
-		var service = new TRXDocumentLookupService();
-		var document = new TextDocument(
+		var service = CreateService();
+		var source = new StringTextSnapshot(
 			"{\r\n" +
 			"  \"levels\": [\r\n" +
 			"    {\r\n" +
@@ -22,7 +31,7 @@ public class Tomb1MainDocumentLookupServiceTests
 			"  ]\r\n" +
 			"}\r\n");
 
-		bool isDefined = service.IsLevelScriptDefined(document, "Vatican City");
+		bool isDefined = service.IsLevelScriptDefined(source, "Vatican City");
 
 		Assert.IsTrue(isDefined);
 	}
@@ -30,8 +39,8 @@ public class Tomb1MainDocumentLookupServiceTests
 	[TestMethod]
 	public void IsLevelScriptDefined_ReturnsFalseForMissingLevel()
 	{
-		var service = new TRXDocumentLookupService();
-		var document = new TextDocument(
+		var service = CreateService();
+		var source = new StringTextSnapshot(
 			"{\r\n" +
 			"  \"levels\": [\r\n" +
 			"    {\r\n" +
@@ -41,7 +50,7 @@ public class Tomb1MainDocumentLookupServiceTests
 			"  ]\r\n" +
 			"}\r\n");
 
-		bool isDefined = service.IsLevelScriptDefined(document, "Colosseum");
+		bool isDefined = service.IsLevelScriptDefined(source, "Colosseum");
 
 		Assert.IsFalse(isDefined);
 	}

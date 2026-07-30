@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace TombIDE.ScriptingStudio.FindAndReplace
-{
-	public class FindReplaceEventArgs : EventArgs
-	{
-		public List<FindReplaceSource> SourceCollection { get; }
+namespace TombIDE.ScriptingStudio.FindAndReplace;
 
-		public FindReplaceEventArgs(List<FindReplaceSource> collection)
-			=> SourceCollection = collection;
-	}
+public class FindReplaceEventArgs : EventArgs
+{
+	public IReadOnlyList<FindReplaceSource> SourceCollection { get; }
+
+	public FindReplaceEventArgs(IReadOnlyList<FindReplaceSource> collection)
+		=> SourceCollection = collection;
 }

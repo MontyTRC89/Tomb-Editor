@@ -11,6 +11,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.74.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
@@ -21,48 +24,13 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Settings\TRXSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="TRXStudio.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="GameFlowScriptStudio.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Settings\GameFlowSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="Settings\ClassicScriptSettingsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolWindows\ContentExplorer.cs" />
-    <Compile Update="ToolWindows\SearchResults.cs" />
-    <Compile Update="Controls\EditorTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="Controls\SearchTextBox.cs" />
-    <Compile Update="ToolStrips\StudioStatusStrip.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="ToolStrips\EditorContextMenu.cs" />
-    <Compile Update="ToolWindows\CompilerLogs.cs" />
-    <Compile Update="ToolWindows\FileExplorer.cs" />
-    <Compile Update="ToolWindows\ReferenceBrowser.cs" />
-    <Compile Update="Controls\SyntaxPreview.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="DocumentOutline\DocumentOutlineToolWindow.cs" />
+    <Compile Update="ToolStrips\StudioStatusStrip.cs" />
+    <Compile Update="Build\CompilerLogsToolWindow.cs" />
+    <Compile Update="FileExplorer\FileExplorerToolWindow.cs" />
+    <Compile Update="Navigation\ReferenceBrowserToolWindow.cs" />
     <Compile Update="ToolStrips\StudioMenuStrip.cs" />
     <Compile Update="ToolStrips\StudioToolStrip.cs" />
-    <Compile Update="Bases\StudioBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="ClassicScriptStudio.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="LuaStudio.cs">
-      <SubType>Component</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
@@ -72,43 +40,11 @@
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Specifications\TombLib.Scripting.Specifications.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.TRX\TombLib.Scripting.TRX.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\GameFlowScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Lua.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\PlainText.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\TRX.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\GameFlowScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\PlainText.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\TRX.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\ClassicScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\GameFlowScript.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Lua.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\PlainText.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Strings.xml" />
-    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\TRX.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="FileHandling.cs" />
-    <Compile Remove="StudioBase.cs" />
-    <Compile Remove="StudioBase.Designer.cs" />
-    <Compile Remove="UI\DocumentModePresets\MenuStripPresets.cs" />
-    <Compile Remove="UI\DocumentModePresets\ToolStripPresets.cs" />
-    <Compile Remove="UI\StudioModePresets\MenuStripPresets.cs" />
-    <Compile Remove="UI\StudioModePresets\ToolStripPresets.cs" />
-    <Compile Remove="UI\UIElement.cs" />
-    <EmbeddedResource Remove="StudioBase.resx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">

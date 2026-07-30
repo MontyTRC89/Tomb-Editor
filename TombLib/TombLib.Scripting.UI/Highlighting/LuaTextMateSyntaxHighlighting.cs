@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using TextMateSharp.Grammars;
 using TextMateSharp.Model;
 using TextMateSharp.Registry;
-using TextMateSharp.Themes;
-using System.Xml;
 
 namespace TombLib.Scripting.UI.Highlighting
 {
@@ -69,7 +68,6 @@ namespace TombLib.Scripting.UI.Highlighting
 			using var reader = XmlReader.Create(stream);
 			return HighlightingLoader.Load(reader, HighlightingManager.Instance);
 		}
-
 	}
 
 	public sealed class LuaTextMateInstallation : IDisposable

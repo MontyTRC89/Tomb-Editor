@@ -1,5 +1,5 @@
 using System.Windows.Input;
-using TombLib.Scripting.Utils;
+using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;
 

@@ -9,6 +9,7 @@ public sealed partial class DocumentOperationScheduler
 	// Queue tails per scheduling policy. All dictionaries are keyed by normalized document path so
 	// global, per-document, latest-update, and exclusive-barrier policies can advance independently.
 	private readonly object _syncRoot = new();
+
 	private readonly Dictionary<string, Task> _queuedPerDocumentOperations = new(LanguageServerPathHelper.LocalPathComparer);
 	private readonly Dictionary<string, Task> _queuedLatestUpdateOperations = new(LanguageServerPathHelper.LocalPathComparer);
 	private readonly Dictionary<string, QueuedUpdateRegistration> _queuedDocumentUpdates = new(LanguageServerPathHelper.LocalPathComparer);

@@ -1,6 +1,4 @@
-﻿using TombLib.Scripting.ClassicScript.Parsers;
-
-namespace TombLib.Scripting.ClassicScript.Navigation;
+﻿namespace TombLib.Scripting.ClassicScript.Navigation;
 
 public class WordDefinitionEventArgs : EventArgs
 {

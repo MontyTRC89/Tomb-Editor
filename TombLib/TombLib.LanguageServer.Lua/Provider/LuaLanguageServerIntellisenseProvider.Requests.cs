@@ -1,7 +1,5 @@
-using TombLib.Scripting.Completion;
 using TombLib.Scripting.Editing;
 using TombLib.Scripting.Hover;
-using TombLib.Scripting.Core.Lua;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
 

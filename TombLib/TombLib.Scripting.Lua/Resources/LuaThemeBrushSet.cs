@@ -1,6 +1,5 @@
 using System.Windows.Media;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Lua.Themes;
 
 namespace TombLib.Scripting.Lua.Resources;
 

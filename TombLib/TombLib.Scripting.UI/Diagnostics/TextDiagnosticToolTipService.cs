@@ -10,12 +10,19 @@ namespace TombLib.Scripting.UI.Diagnostics;
 
 internal sealed class TextDiagnosticToolTipService
 {
+	private readonly Action? _onDiagnosticsChanged;
 	private IReadOnlyList<TextEditorDiagnostic> _diagnostics = Array.Empty<TextEditorDiagnostic>();
+
+	public TextDiagnosticToolTipService(Action? onDiagnosticsChanged = null)
+		=> _onDiagnosticsChanged = onDiagnosticsChanged;
 
 	public IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnostics;
 
 	public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic>? diagnostics)
-		=> _diagnostics = diagnostics ?? Array.Empty<TextEditorDiagnostic>();
+	{
+		_diagnostics = diagnostics ?? Array.Empty<TextEditorDiagnostic>();
+		_onDiagnosticsChanged?.Invoke();
+	}
 
 	public bool ClearDiagnostics()
 	{
@@ -23,6 +30,7 @@ internal sealed class TextDiagnosticToolTipService
 			return false;
 
 		_diagnostics = Array.Empty<TextEditorDiagnostic>();
+		_onDiagnosticsChanged?.Invoke();
 		return true;
 	}
 

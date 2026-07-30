@@ -1,7 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Windows.Documents;
+using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.Hover;
-using TombLib.Scripting.Specifications.GameFlow;
 
 namespace TombLib.Scripting.GameFlowScript.Hover;
 
@@ -16,7 +16,7 @@ public sealed class GameFlowHoverProvider : ITextHoverProvider
 			return null;
 
 		if (Contains(GameFlowDefinitionsProvider.Sections, hoveredWord))
-			return new TextHoverInfo($"GameFlow section \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: "Section");
+			return new TextHoverInfo($"GameFlow section \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: ObjectType.Section);
 
 		if (Contains(GameFlowDefinitionsProvider.SpecialProperties, hoveredWord))
 			return new TextHoverInfo($"GameFlow special property \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: "SpecialProperty");

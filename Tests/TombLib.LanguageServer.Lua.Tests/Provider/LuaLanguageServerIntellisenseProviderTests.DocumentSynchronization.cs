@@ -1,7 +1,7 @@
 using System.Text.Json;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Core.Lua;
+using TombLib.Scripting.Lua;
 using TombLib.Scripting.Hover;
 
 namespace TombLib.LanguageServer.Lua.Tests;

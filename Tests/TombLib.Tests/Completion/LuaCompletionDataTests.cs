@@ -1,7 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Reflection;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;
 

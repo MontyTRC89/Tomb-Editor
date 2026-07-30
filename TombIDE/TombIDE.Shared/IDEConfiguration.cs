@@ -1,8 +1,8 @@
-﻿using DarkUI.Docking;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using TombIDE.Shared.Docking;
 using TombLib.Utils;
 
 namespace TombIDE.Shared
@@ -46,6 +46,11 @@ namespace TombIDE.Shared
 		public DockPanelState GFL_DockPanelState { get; set; } = DefaultLayouts.GameFlowScriptLayout;
 		public DockPanelState TRX_DockPanelState { get; set; } = DefaultLayouts.TRXLayout;
 		public DockPanelState Lua_DockPanelState { get; set; } = DefaultLayouts.LuaLayout;
+
+		public string CS_AvalonDockLayoutXml { get; set; } = string.Empty;
+		public string GFL_AvalonDockLayoutXml { get; set; } = string.Empty;
+		public string TRX_AvalonDockLayoutXml { get; set; } = string.Empty;
+		public string Lua_AvalonDockLayoutXml { get; set; } = string.Empty;
 
 		public string VSCodePath { get; set; } = string.Empty;
 		public bool DoNotAskToInstallLuaExtension { get; set; }

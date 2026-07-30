@@ -8,34 +8,34 @@ namespace TombLib.Scripting.UI.Presentation;
 
 public partial class TextDiagnosticsView : UserControl
 {
-    private readonly Action<TextDiagnosticListItem>? _activateDiagnostic;
+	private readonly Action<TextDiagnosticListItem>? _activateDiagnostic;
 
-    public TextDiagnosticsView(TextDiagnosticsViewModel viewModel, Action<TextDiagnosticListItem>? activateDiagnostic)
-    {
-        InitializeComponent();
-        DataContext = viewModel;
-        _activateDiagnostic = activateDiagnostic;
-    }
+	public TextDiagnosticsView(TextDiagnosticsViewModel viewModel, Action<TextDiagnosticListItem>? activateDiagnostic)
+	{
+		InitializeComponent();
+		DataContext = viewModel;
+		_activateDiagnostic = activateDiagnostic;
+	}
 
-    private TextDiagnosticsViewModel ViewModel => (TextDiagnosticsViewModel)DataContext;
+	private TextDiagnosticsViewModel ViewModel => (TextDiagnosticsViewModel)DataContext;
 
-    private void DiagnosticsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        => ActivateSelectedDiagnostic();
+	private void DiagnosticsGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		=> ActivateSelectedDiagnostic();
 
-    private void DiagnosticsGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key != Key.Enter)
-            return;
+	private void DiagnosticsGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Key != Key.Enter)
+			return;
 
-        ActivateSelectedDiagnostic();
-        e.Handled = true;
-    }
+		ActivateSelectedDiagnostic();
+		e.Handled = true;
+	}
 
-    private void ActivateSelectedDiagnostic()
-    {
-        if (ViewModel.SelectedItem is not TextDiagnosticListItem selectedDiagnostic)
-            return;
+	private void ActivateSelectedDiagnostic()
+	{
+		if (ViewModel.SelectedItem is not TextDiagnosticListItem selectedDiagnostic)
+			return;
 
-        _activateDiagnostic?.Invoke(selectedDiagnostic);
-    }
+		_activateDiagnostic?.Invoke(selectedDiagnostic);
+	}
 }

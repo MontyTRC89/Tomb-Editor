@@ -1,87 +1,93 @@
-using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.GameFlowScript.Navigation;
-using TombLib.Scripting.GameFlowScript.Parsers;
 using TombLib.Scripting.GameFlowScript.Resources;
-using TombLib.Scripting.Specifications.GameFlow;
+using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.GameFlowScript.ContentNodes;
 
 internal sealed class GameFlowContentNodeService
 {
-	private static readonly Regex LevelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);
+    private static readonly Regex LevelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);
+    private readonly IGameFlowScriptLineService _lineService;
 
-	public IReadOnlyList<GameFlowContentNodeGroup> GetNodeGroups(string content, string filter)
-	{
-		var document = new TextDocument(content ?? string.Empty);
-		var sectionNodes = new List<GameFlowContentNode>();
-		var levelNodes = new List<GameFlowContentNode>();
+    public GameFlowContentNodeService(IGameFlowScriptLineService lineService)
+    {
+        ArgumentNullException.ThrowIfNull(lineService);
+        _lineService = lineService;
+    }
 
-		foreach (DocumentLine line in document.Lines)
-		{
-			string lineText = document.GetText(line.Offset, line.Length);
+    public IReadOnlyList<GameFlowContentNodeGroup> GetNodeGroups(string content, string filter)
+    {
+        var source = new StringTextSnapshot(content ?? string.Empty);
+        var sectionNodes = new List<GameFlowContentNode>();
+        var levelNodes = new List<GameFlowContentNode>();
 
-			GameFlowContentNode? sectionNode = GetSectionNode(lineText, filter);
+        foreach (ITextLine line in source.Lines)
+        {
+            string lineText = source.GetText(line.Offset, line.Length);
 
-			if (sectionNode is GameFlowContentNode matchedSectionNode)
-			{
-				sectionNodes.Add(matchedSectionNode);
-				continue;
-			}
+            GameFlowContentNode? sectionNode = GetSectionNode(lineText, filter);
 
-			GameFlowContentNode? levelNode = GetLevelNode(lineText, filter);
+            if (sectionNode is GameFlowContentNode matchedSectionNode)
+            {
+                sectionNodes.Add(matchedSectionNode);
+                continue;
+            }
 
-			if (levelNode is GameFlowContentNode matchedLevelNode)
-				levelNodes.Add(matchedLevelNode);
-		}
+            GameFlowContentNode? levelNode = GetLevelNode(lineText, filter);
 
-		var groups = new List<GameFlowContentNodeGroup>(2);
+            if (levelNode is GameFlowContentNode matchedLevelNode)
+                levelNodes.Add(matchedLevelNode);
+        }
 
-		if (sectionNodes.Count > 0)
-			groups.Add(new GameFlowContentNodeGroup("Sections", sectionNodes));
+        var groups = new List<GameFlowContentNodeGroup>(2);
 
-		if (levelNodes.Count > 0)
-			groups.Add(new GameFlowContentNodeGroup("Levels", levelNodes));
+        if (sectionNodes.Count > 0)
+            groups.Add(new GameFlowContentNodeGroup("Sections", sectionNodes));
 
-		return groups;
-	}
+        if (levelNodes.Count > 0)
+            groups.Add(new GameFlowContentNodeGroup("Levels", levelNodes));
 
-	private static GameFlowContentNode? GetSectionNode(string lineText, string filter)
-	{
-		if (!LineParser.IsSectionHeaderLine(lineText))
-			return null;
+        return groups;
+    }
 
-		string? headerText = LineParser.GetSectionHeaderText(lineText);
+    private GameFlowContentNode? GetSectionNode(string lineText, string filter)
+    {
+        if (!_lineService.IsSectionHeaderLine(lineText))
+            return null;
 
-		if (string.IsNullOrWhiteSpace(headerText))
-			return null;
+        string? headerText = _lineService.GetSectionHeaderText(lineText);
 
-		bool isLevelHeader = headerText.Equals("Level", StringComparison.OrdinalIgnoreCase);
-		bool isEndHeader = headerText.Equals("END", StringComparison.OrdinalIgnoreCase);
+        if (string.IsNullOrWhiteSpace(headerText))
+            return null;
 
-		if (isLevelHeader || isEndHeader
-			|| !GameFlowDefinitionsProvider.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
-			|| !headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
-		{
-			return null;
-		}
+        bool isLevelHeader = headerText.Equals("Level", StringComparison.OrdinalIgnoreCase);
+        bool isEndHeader = headerText.Equals("END", StringComparison.OrdinalIgnoreCase);
 
-		return new GameFlowContentNode(headerText, ObjectType.Section);
-	}
+        if (isLevelHeader || isEndHeader
+            || !GameFlowDefinitionsProvider.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
+            || !headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
 
-	private static GameFlowContentNode? GetLevelNode(string lineText, string filter)
-	{
-		if (!LevelPropertyRegex.IsMatch(lineText))
-			return null;
+        return new GameFlowContentNode(headerText, ObjectType.Section);
+    }
 
-		string sanitizedLineText = LineParser.RemoveComments(lineText);
-		string levelName = LevelPropertyRegex.Replace(sanitizedLineText, string.Empty);
+    private static GameFlowContentNode? GetLevelNode(string lineText, string filter)
+    {
+        if (!LevelPropertyRegex.IsMatch(lineText))
+            return null;
 
-		if (string.IsNullOrWhiteSpace(levelName) || !levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))
-			return null;
+        string sanitizedLineText = LineCommentHelper.RemoveLineComment(lineText, "//");
+        string levelName = LevelPropertyRegex.Replace(sanitizedLineText, string.Empty);
 
-		return new GameFlowContentNode(levelName, ObjectType.Level);
-	}
+        if (string.IsNullOrWhiteSpace(levelName) || !levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return new GameFlowContentNode(levelName, ObjectType.Level);
+    }
 }
 
 internal sealed class GameFlowContentNodeGroup(string header, IReadOnlyList<GameFlowContentNode> nodes)

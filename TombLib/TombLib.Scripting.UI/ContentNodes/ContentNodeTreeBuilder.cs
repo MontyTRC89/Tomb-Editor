@@ -1,6 +1,6 @@
+using DarkUI.Controls;
 using System;
 using System.Collections.Generic;
-using DarkUI.Controls;
 
 namespace TombLib.Scripting.UI.ContentNodes
 {

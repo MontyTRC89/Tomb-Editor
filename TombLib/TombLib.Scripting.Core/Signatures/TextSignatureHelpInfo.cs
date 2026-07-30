@@ -18,9 +18,10 @@ public sealed class TextSignatureHelpInfo
 		string? documentation = null,
 		IReadOnlyList<TextSignatureParameterInfo>? parameters = null)
 	{
-		Label = label ?? string.Empty;
+		Label = label;
 		Documentation = documentation;
 		Parameters = parameters ?? [];
+
 		ActiveParameterIndex = Parameters.Count == 0
 			? activeParameterIndex
 			: Math.Clamp(activeParameterIndex, 0, Parameters.Count - 1);

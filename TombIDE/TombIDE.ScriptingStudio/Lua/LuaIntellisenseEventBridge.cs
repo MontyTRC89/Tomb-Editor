@@ -1,38 +1,30 @@
 #nullable enable
 
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Messaging;
+using TombIDE.ScriptingStudio.Shell;
 using TombLib.LanguageServer.Core;
 using TombLib.LanguageServer.Lua;
 using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Lua;
 
 namespace TombIDE.ScriptingStudio.Lua;
 
-internal sealed class LuaIntellisenseEventBridge : IDisposable
+internal sealed class LuaIntellisenseEventBridge : ILuaIntellisenseBridge
 {
-	private readonly Control _owner;
+	private readonly IAvalonDockHost _dockHost;
+	private readonly IMessenger _messenger;
 	private readonly ILuaIntellisenseProvider _intellisenseProvider;
-	private readonly Action<string, IReadOnlyList<TextEditorDiagnostic>> _diagnosticsUpdated;
-	private readonly Action<string, IReadOnlyList<LuaSemanticToken>> _semanticTokensUpdated;
-	private readonly Action<LanguageServerStartupFailure> _startupFailed;
-	private readonly Action<WorkspaceWatcherFailure> _workspaceWatcherFailed;
 
 	public LuaIntellisenseEventBridge(
-		Control owner,
-		ILuaIntellisenseProvider intellisenseProvider,
-		Action<string, IReadOnlyList<TextEditorDiagnostic>> diagnosticsUpdated,
-		Action<string, IReadOnlyList<LuaSemanticToken>> semanticTokensUpdated,
-		Action<LanguageServerStartupFailure> startupFailed,
-		Action<WorkspaceWatcherFailure> workspaceWatcherFailed)
+		IAvalonDockHost dockHost,
+		IMessenger messenger,
+		ILuaIntellisenseProvider intellisenseProvider)
 	{
-		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
+		_dockHost = dockHost ?? throw new ArgumentNullException(nameof(dockHost));
+		_messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
 		_intellisenseProvider = intellisenseProvider ?? throw new ArgumentNullException(nameof(intellisenseProvider));
-		_diagnosticsUpdated = diagnosticsUpdated ?? throw new ArgumentNullException(nameof(diagnosticsUpdated));
-		_semanticTokensUpdated = semanticTokensUpdated ?? throw new ArgumentNullException(nameof(semanticTokensUpdated));
-		_startupFailed = startupFailed ?? throw new ArgumentNullException(nameof(startupFailed));
-		_workspaceWatcherFailed = workspaceWatcherFailed ?? throw new ArgumentNullException(nameof(workspaceWatcherFailed));
 	}
 
 	public void Attach()
@@ -68,28 +60,30 @@ internal sealed class LuaIntellisenseEventBridge : IDisposable
 	}
 
 	private void IntellisenseProvider_DiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		=> DispatchToUi(() => _diagnosticsUpdated(filePath, diagnostics));
+		=> DispatchToUi(() => _messenger.Send(new LuaDiagnosticsUpdatedMessage(new LuaDiagnosticsPayload(filePath, diagnostics))));
 
 	private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
-		=> DispatchToUi(() => _semanticTokensUpdated(filePath, semanticTokens));
+		=> DispatchToUi(() => _messenger.Send(new LuaSemanticTokensUpdatedMessage(new LuaSemanticTokensPayload(filePath, semanticTokens))));
 
 	private void IntellisenseProvider_StartupFailed(LanguageServerStartupFailure failure)
-		=> DispatchToUi(() => _startupFailed(failure));
+		=> DispatchToUi(() => _messenger.Send(new LuaStartupFailedMessage(failure)));
 
 	private void IntellisenseProvider_WorkspaceWatcherFailed(WorkspaceWatcherFailure failure)
-		=> DispatchToUi(() => _workspaceWatcherFailed(failure));
+		=> DispatchToUi(() => _messenger.Send(new LuaWorkspaceWatcherFailedMessage(failure)));
 
 	private void DispatchToUi(Action action)
 	{
-		if (_owner.IsDisposed)
+		ArgumentNullException.ThrowIfNull(action);
+
+		if (_dockHost.Dispatcher.HasShutdownStarted || _dockHost.Dispatcher.HasShutdownFinished)
 			return;
 
-		if (_owner.InvokeRequired)
+		if (_dockHost.Dispatcher.CheckAccess())
 		{
-			_owner.BeginInvoke(action);
+			action();
 			return;
 		}
 
-		action();
+		_ = _dockHost.Dispatcher.BeginInvoke(action);
 	}
 }

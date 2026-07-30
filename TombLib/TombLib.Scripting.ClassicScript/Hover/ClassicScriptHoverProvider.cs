@@ -1,29 +1,41 @@
-using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Hover;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Hover;
 
 public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 {
-	private static readonly ClassicScriptMnemonicCatalogService MnemonicCatalogService = new();
+	private readonly IClassicScriptLineService _lineService;
+	private readonly IClassicScriptCommandService _commandService;
+	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
+
+	public ClassicScriptHoverProvider(
+		IClassicScriptLineService lineService,
+		IClassicScriptCommandService commandService,
+		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
+	{
+		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
+	}
 
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)
 	{
-		var document = new TextDocument(request.DocumentText);
+		var source = new StringTextSnapshot(request.DocumentText);
 
-		return TryGetHoverWord(document, request.HoveredOffset, out string hoveredWord, out WordType type)
-			? CreateHoverInfo(document, request.HoveredOffset, hoveredWord, type)
+		return TryGetHoverWord(source, request.HoveredOffset, out string hoveredWord, out WordType type)
+			? CreateHoverInfo(source, request.HoveredOffset, hoveredWord, type)
 			: null;
 	}
 
-	private static bool TryGetHoverWord(TextDocument document, int hoveredOffset, out string hoveredWord, out WordType type)
+	private bool TryGetHoverWord(ITextSnapshot source, int hoveredOffset, out string hoveredWord, out WordType type)
 	{
-		string? word = WordParser.GetWordFromOffset(document, hoveredOffset);
-		type = WordParser.GetWordTypeFromOffset(document, hoveredOffset);
+		string? word = _lineService.GetWordAtOffset(source, hoveredOffset);
+		type = _lineService.GetWordTypeAtOffset(source, hoveredOffset);
 
-		if (type == WordType.MnemonicConstant && !MnemonicCatalogService.ContainsFlag(word))
+		if (type == WordType.MnemonicConstant && !_mnemonicCatalogService.ContainsFlag(word))
 			type = WordType.Unknown;
 
 		if (type == WordType.Unknown && int.TryParse(word, out _))
@@ -39,17 +51,17 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		return hoveredWord.Length > 0 && type != WordType.Unknown;
 	}
 
-	private static TextHoverInfo? CreateHoverInfo(TextDocument document, int hoveredOffset, string hoveredWord, WordType type)
+	private TextHoverInfo? CreateHoverInfo(ITextSnapshot source, int hoveredOffset, string hoveredWord, WordType type)
 	{
 		if (type is WordType.MnemonicConstant or WordType.Hexadecimal or WordType.Decimal)
-			return CreateConstantHoverInfo(document, hoveredOffset, hoveredWord, type);
+			return CreateConstantHoverInfo(source, hoveredOffset, hoveredWord, type);
 
 		return new TextHoverInfo($"For more information about the \"{hoveredWord}\" {type}, Press F12.", SymbolName: hoveredWord, Identifier: type);
 	}
 
-	private static TextHoverInfo? CreateConstantHoverInfo(TextDocument document, int hoveredOffset, string hoveredWord, WordType type)
+	private TextHoverInfo? CreateConstantHoverInfo(ITextSnapshot source, int hoveredOffset, string hoveredWord, WordType type)
 	{
-		string? currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(document, hoveredOffset);
+		string? currentFlagPrefix = _commandService.GetFlagPrefixOfCurrentArgument(source, hoveredOffset);
 
 		if (currentFlagPrefix is null)
 		{
@@ -66,7 +78,7 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		return new TextHoverInfo(content, SymbolName: hoveredWord, Identifier: type);
 	}
 
-	private static bool TryGetMnemonicInfo(string hoveredWord, WordType type, string currentFlagPrefix, out string flagName, out string hexValue, out string decimalValue)
+	private bool TryGetMnemonicInfo(string hoveredWord, WordType type, string currentFlagPrefix, out string flagName, out string hexValue, out string decimalValue)
 	{
 		flagName = string.Empty;
 		hexValue = string.Empty;
@@ -74,22 +86,21 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 
 		bool found = type switch
 		{
-			WordType.MnemonicConstant => MnemonicCatalogService.TryResolveFlagByValue(hoveredWord, false, null, out flagName)
-				&& MnemonicCatalogService.TryGetDescription(flagName, out _),
-			WordType.Hexadecimal => MnemonicCatalogService.TryResolveFlagByValue(hoveredWord, true, currentFlagPrefix, out flagName),
-			WordType.Decimal => MnemonicCatalogService.TryResolveFlagByValue(hoveredWord, false, currentFlagPrefix, out flagName),
+			WordType.MnemonicConstant => _mnemonicCatalogService.TryResolveFlagByValue(hoveredWord, false, null, out flagName)
+				&& _mnemonicCatalogService.TryGetDescription(flagName, out _),
+			WordType.Hexadecimal => _mnemonicCatalogService.TryResolveFlagByValue(hoveredWord, true, currentFlagPrefix, out flagName),
+			WordType.Decimal => _mnemonicCatalogService.TryResolveFlagByValue(hoveredWord, false, currentFlagPrefix, out flagName),
 			_ => false
 		};
 
 		if (!found)
 			return false;
 
-		if (!MnemonicCatalogService.TryGetEntry(flagName, out ClassicScriptMnemonicEntry entry))
+		if (!_mnemonicCatalogService.TryGetEntry(flagName, out ClassicScriptMnemonicEntry entry))
 			return false;
 
 		hexValue = entry.HexValue;
 		decimalValue = entry.DecimalValue;
 		return true;
 	}
-
 }

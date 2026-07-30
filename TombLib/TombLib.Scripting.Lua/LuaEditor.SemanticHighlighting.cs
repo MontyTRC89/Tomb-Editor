@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using TombLib.Scripting.Lua.Highlighting;
-using TombLib.Scripting.Lua;
 
 namespace TombLib.Scripting.Lua;
 

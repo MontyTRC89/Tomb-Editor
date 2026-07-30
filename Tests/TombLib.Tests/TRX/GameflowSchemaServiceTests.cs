@@ -1,7 +1,7 @@
 #nullable enable
 
-using TombLib.Scripting.Specifications.TRX;
-using TombLib.Scripting.Specifications.TRX.Services;
+using TombLib.Scripting.TRX;
+using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Tests;
 

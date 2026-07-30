@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.Completion;
 using System.Windows.Documents;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.GameFlowScript.Completion;
 
@@ -16,13 +17,16 @@ public sealed class GameFlowCompletionSessionCoordinator(GameFlowAutocompleteSer
 
 	private TextCompletionSessionDecision GetOpenDecision(TextDocument document, int caretOffset, bool completionWindowIsOpen)
 	{
-		if (completionWindowIsOpen || !_autocompleteService.ShouldShowAutocomplete(document, caretOffset))
+		var source = new TextDocumentSnapshot(document);
+
+		if (completionWindowIsOpen || !_autocompleteService.ShouldShowAutocomplete(source, caretOffset))
 			return TextCompletionSessionDecision.None;
 
+		// TextUtilities.GetNextCaretPosition is AvalonEdit-specific and must use TextDocument.
 		int wordStartOffset = TextUtilities.GetNextCaretPosition(document, caretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStartOrSymbol);
 		string word = document.GetText(wordStartOffset, caretOffset - wordStartOffset);
 		int startOffset = word.StartsWith(':') ? caretOffset : wordStartOffset;
-		var items = _autocompleteService.GetCompletionItems(document, caretOffset);
+		var items = _autocompleteService.GetCompletionItems(source, caretOffset);
 
 		return items.Count == 0
 			? TextCompletionSessionDecision.None

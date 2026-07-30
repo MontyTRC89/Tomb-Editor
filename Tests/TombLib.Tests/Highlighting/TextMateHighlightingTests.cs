@@ -1,7 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Windows.Media;
-using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Tests;
 

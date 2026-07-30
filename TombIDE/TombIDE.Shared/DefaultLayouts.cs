@@ -1,6 +1,6 @@
-﻿using DarkUI.Docking;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
+using TombIDE.Shared.Docking;
 
 namespace TombIDE.Shared
 {

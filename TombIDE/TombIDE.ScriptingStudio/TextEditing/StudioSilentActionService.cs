@@ -1,9 +1,8 @@
 #nullable enable
 
 using System;
-using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Controls;
-using TombIDE.Shared;
+using TombIDE.ScriptingStudio.Shell;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.TextEditing;
@@ -16,34 +15,38 @@ internal readonly record struct SilentActionFileState(
 	bool WasContentChanged);
 
 internal readonly record struct SilentActionCompletion(
-	TabPage? TabPage,
+	IEditorControl? Editor,
 	bool SaveAffectedFile,
 	bool CloseAffectedTab);
 
 internal sealed class StudioSilentActionService
 {
-	private readonly EditorTabControl _editorTabControl;
+	private readonly IEditorDocumentController _documentController;
+	private readonly IScriptingHostOperations _hostOperations;
 
-	public StudioSilentActionService(EditorTabControl editorTabControl)
-		=> _editorTabControl = editorTabControl ?? throw new ArgumentNullException(nameof(editorTabControl));
+	public StudioSilentActionService(IEditorDocumentController documentController, IScriptingHostOperations hostOperations)
+	{
+		_documentController = documentController ?? throw new ArgumentNullException(nameof(documentController));
+		_hostOperations = hostOperations ?? throw new ArgumentNullException(nameof(hostOperations));
+	}
 
-	public TabPage? RememberSelectedTab()
-		=> _editorTabControl.SelectedTab;
+	public IEditorControl? RememberSelectedEditor()
+		=> _documentController.CurrentEditor;
 
 	public SilentActionFileState CaptureFileState(string filePath, EditorType editorType = EditorType.Default)
 	{
-		TabPage? tabPage = _editorTabControl.FindTabPage(filePath, editorType);
-		bool wasAlreadyOpen = tabPage is not null;
-		bool wasContentChanged = wasAlreadyOpen && _editorTabControl.GetEditorOfTab(tabPage) is { } editor && editor.IsContentChanged;
+		IEditorControl? editor = _documentController.FindEditor(filePath, editorType);
+		bool wasAlreadyOpen = editor is not null;
+		bool wasContentChanged = editor is not null && editor.IsContentChanged;
 
 		return new SilentActionFileState(filePath, editorType, false, wasAlreadyOpen, wasContentChanged);
 	}
 
 	public SilentActionFileState CaptureSourceFileState(string filePath)
 	{
-		TabPage? tabPage = _editorTabControl.FindSourceTabPage(filePath);
-		bool wasAlreadyOpen = tabPage is not null;
-		bool wasContentChanged = wasAlreadyOpen && _editorTabControl.GetEditorOfTab(tabPage) is { } editor && editor.IsContentChanged;
+		IEditorControl? editor = _documentController.FindSourceEditor(filePath);
+		bool wasAlreadyOpen = editor is not null;
+		bool wasContentChanged = editor is not null && editor.IsContentChanged;
 
 		return new SilentActionFileState(filePath, EditorType.Default, true, wasAlreadyOpen, wasContentChanged);
 	}
@@ -53,39 +56,39 @@ internal sealed class StudioSilentActionService
 		bool saveAffectedFile = true,
 		bool closeAffectedTab = true)
 	{
-		TabPage? tabPage = fileState.OpenSourceView
-			? _editorTabControl.FindSourceTabPage(fileState.FilePath)
-			: _editorTabControl.FindTabPage(fileState.FilePath, fileState.EditorType);
+		IEditorControl? editor = fileState.OpenSourceView
+			? _documentController.FindSourceEditor(fileState.FilePath)
+			: _documentController.FindEditor(fileState.FilePath, fileState.EditorType);
 
 		return new SilentActionCompletion(
-			tabPage,
+			editor,
 			saveAffectedFile && !fileState.WasContentChanged,
 			closeAffectedTab && !fileState.WasAlreadyOpen);
 	}
 
-	public void Complete(TabPage? previousTab, bool indicateChange, params SilentActionCompletion[] completions)
+	public void Complete(IEditorControl? previousEditor, bool indicateChange, params SilentActionCompletion[] completions)
 	{
-		if (indicateChange && _editorTabControl.CurrentEditor is { } currentEditor)
+		if (indicateChange && _documentController.CurrentEditor is { } currentEditor)
 		{
 			currentEditor.LastModified = DateTime.Now;
-			IDE.Instance.ScriptEditor_IndicateExternalChange();
+			_hostOperations.IndicateExternalChange();
 		}
 
 		foreach (SilentActionCompletion completion in completions)
 		{
-			if (completion.SaveAffectedFile && completion.TabPage is not null && _editorTabControl.TabPages.Contains(completion.TabPage))
-				_editorTabControl.SaveFile(completion.TabPage);
+			if (completion.SaveAffectedFile && completion.Editor is not null && _documentController.ContainsEditor(completion.Editor))
+				_documentController.SaveFile(completion.Editor);
 		}
 
 		foreach (SilentActionCompletion completion in completions)
 		{
-			if (completion.CloseAffectedTab && completion.TabPage is not null && _editorTabControl.TabPages.Contains(completion.TabPage))
-				_editorTabControl.TabPages.Remove(completion.TabPage);
+			if (completion.CloseAffectedTab && completion.Editor is not null && _documentController.ContainsEditor(completion.Editor))
+				_documentController.TryCloseEditor(completion.Editor);
 		}
 
-		_editorTabControl.EnsureTabFileSynchronization();
+		_documentController.EnsureTabFileSynchronization();
 
-		if (previousTab is not null && _editorTabControl.TabPages.Contains(previousTab))
-			_editorTabControl.SelectTab(previousTab);
+		if (previousEditor is not null && _documentController.ContainsEditor(previousEditor))
+			_documentController.ActivateEditor(previousEditor);
 	}
 }

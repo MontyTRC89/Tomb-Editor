@@ -1,6 +1,6 @@
 using System.Data;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.Specifications.ClassicScript.ReferenceTables;
+using TombLib.Scripting.ClassicScript.ReferenceTables;
 
 namespace TombIDE.ScriptingStudio.ClassicScript;
 

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.Hover;
-using TombLib.Scripting.Specifications.TRX.Services;
+using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Hover;
 

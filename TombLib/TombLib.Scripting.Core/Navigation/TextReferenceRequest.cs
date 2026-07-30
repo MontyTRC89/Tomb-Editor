@@ -3,6 +3,11 @@ namespace TombLib.Scripting.Navigation;
 /// <summary>
 /// Describes a reference lookup request against the current document.
 /// </summary>
+/// <remarks>
+/// Reference requests use zero-based line and column indices to match the editor's internal
+/// coordinate system. When converting to or from LSP positions, the provider boundary is
+/// responsible for the zero-based to one-based translation.
+/// </remarks>
 public sealed class TextReferenceRequest
 {
 	/// <summary>
@@ -15,8 +20,8 @@ public sealed class TextReferenceRequest
 	/// <param name="includeDeclaration"><see langword="true"/> to include the symbol declaration when available.</param>
 	public TextReferenceRequest(string filePath, string documentText, int line, int column, bool includeDeclaration = true)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-		DocumentText = documentText ?? string.Empty;
+		FilePath = filePath;
+		DocumentText = documentText;
 		Line = Math.Max(0, line);
 		Column = Math.Max(0, column);
 		IncludeDeclaration = includeDeclaration;

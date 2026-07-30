@@ -1,9 +1,10 @@
 #nullable enable
 
-using System;
 using TombLib.Scripting.GameFlowScript.Completion;
+using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
+using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
 
@@ -11,33 +12,38 @@ namespace TombLib.Scripting.GameFlowScript;
 
 public sealed class GameFlowLanguageServices
 {
-	private static readonly Lazy<GameFlowLanguageServices> DefaultInstance = new(CreateDefault);
+    public GameFlowLanguageServices(
+        ITextDefinitionProvider definitionProvider,
+        ITextHoverProvider hoverProvider,
+        GameFlowAutocompleteService autocompleteService,
+        IGameFlowScriptLineService lineService,
+        IGameFlowScriptDocumentService documentService,
+        GameFlowDocumentLookupService documentLookupService)
+    {
+        ArgumentNullException.ThrowIfNull(definitionProvider);
+        ArgumentNullException.ThrowIfNull(hoverProvider);
+        ArgumentNullException.ThrowIfNull(autocompleteService);
+        ArgumentNullException.ThrowIfNull(lineService);
+        ArgumentNullException.ThrowIfNull(documentService);
+        ArgumentNullException.ThrowIfNull(documentLookupService);
 
-	public GameFlowLanguageServices(
-		ITextDefinitionProvider definitionProvider,
-		ITextHoverProvider hoverProvider,
-		GameFlowAutocompleteService autocompleteService)
-	{
-		ArgumentNullException.ThrowIfNull(definitionProvider);
-		ArgumentNullException.ThrowIfNull(hoverProvider);
-		ArgumentNullException.ThrowIfNull(autocompleteService);
+        DefinitionProvider = definitionProvider;
+        HoverProvider = hoverProvider;
+        AutocompleteService = autocompleteService;
+        LineService = lineService;
+        DocumentService = documentService;
+        DocumentLookupService = documentLookupService;
+    }
 
-		DefinitionProvider = definitionProvider;
-		HoverProvider = hoverProvider;
-		AutocompleteService = autocompleteService;
-	}
+    public ITextDefinitionProvider DefinitionProvider { get; }
 
-	public static GameFlowLanguageServices Default => DefaultInstance.Value;
+    public ITextHoverProvider HoverProvider { get; }
 
-	public ITextDefinitionProvider DefinitionProvider { get; }
+    public GameFlowAutocompleteService AutocompleteService { get; }
 
-	public ITextHoverProvider HoverProvider { get; }
+    public IGameFlowScriptLineService LineService { get; }
 
-	public GameFlowAutocompleteService AutocompleteService { get; }
+    public IGameFlowScriptDocumentService DocumentService { get; }
 
-	private static GameFlowLanguageServices CreateDefault()
-		=> new(
-			new GameFlowDefinitionProvider(),
-			new GameFlowHoverProvider(),
-			new GameFlowAutocompleteService());
+    public GameFlowDocumentLookupService DocumentLookupService { get; }
 }

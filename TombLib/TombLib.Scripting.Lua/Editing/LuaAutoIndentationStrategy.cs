@@ -2,7 +2,6 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Indentation;
 using System;
-using TombLib.Scripting.Lua.Editor;
 
 namespace TombLib.Scripting.Lua.Editing;
 

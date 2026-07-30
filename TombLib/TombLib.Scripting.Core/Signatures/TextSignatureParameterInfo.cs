@@ -12,7 +12,7 @@ public sealed class TextSignatureParameterInfo
 	/// <param name="documentation">Optional parameter documentation.</param>
 	public TextSignatureParameterInfo(string label, string? documentation = null)
 	{
-		Label = label ?? string.Empty;
+		Label = label;
 		Documentation = documentation;
 	}
 

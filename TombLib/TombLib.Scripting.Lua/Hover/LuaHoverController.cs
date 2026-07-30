@@ -1,0 +1,133 @@
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Media;
+using TombLib.Scripting.Diagnostics;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.UI.Completion;
+using TombLib.Scripting.UI.Hover;
+using TombLib.Scripting.UI.Rendering;
+
+namespace TombLib.Scripting.Lua;
+
+public sealed partial class LuaEditor
+{
+	protected override async void HandleMouseHover(MouseEventArgs e)
+		=> await _hoverController.HandleMouseHoverAsync(e).ConfigureAwait(true);
+
+	/// <summary>
+	/// Owns Lua hover request state, request eligibility checks, and hover-versus-diagnostic tooltip presentation.
+	/// </summary>
+	private sealed class LuaHoverController
+	{
+		private readonly LuaEditor _editor;
+		private readonly TextHoverController _controller;
+
+		internal LuaHoverController(LuaEditor editor)
+		{
+			_editor = editor;
+			_controller = new TextHoverController(
+				owner: editor,
+				getOffsetFromPoint: editor.GetOffsetFromPoint,
+				buildRequestState: BuildRequestState,
+				requestHoverAsync: RequestAsync,
+				getCurrentRequestOffset: TryGetCurrentRequestOffset,
+				showDiagnosticToolTip: editor.ShowDiagnosticToolTip,
+				showHoverToolTip: ShowHoverToolTip,
+				showCombinedToolTip: ShowCombinedToolTip,
+				applyHoverState: _ => { },
+				handleRequestFailure: exception => LogEditorFailure("Hover request", exception));
+		}
+
+		internal Task HandleMouseHoverAsync(MouseEventArgs e)
+			=> _controller.HandleMouseHoverAsync(e);
+
+		internal void CancelPendingRequest()
+			=> _controller.CancelPendingRequest();
+
+		internal void InvalidateRequests()
+			=> _controller.InvalidateRequests();
+
+		private TextHoverRequestState BuildRequestState(int hoveredOffset)
+		{
+			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
+			bool canShowToolTip = TextPopupInteractionRules.CanShowHover(_editor.IsCompletionWindowOpen, _editor._signatureHelpController.IsVisible);
+			int hoverOffset = 0;
+			bool shouldRequestHover = false;
+
+			if (_editor.IsIntellisenseAvailable()
+				&& canShowToolTip
+				&& LuaEditorInteractionRules.TryGetHoverOffset(_editor.Document, hoveredOffset, out hoverOffset))
+			{
+				shouldRequestHover = !string.IsNullOrWhiteSpace(_editor.GetWordFromOffset(hoverOffset));
+			}
+
+			return new TextHoverRequestState(
+				ShouldRequestHover: shouldRequestHover,
+				RequestOffset: shouldRequestHover ? hoverOffset : 0,
+				CanShowToolTip: canShowToolTip,
+				CanShowDiagnosticFallback: canShowToolTip,
+				HasDiagnostic: hasDiagnostic,
+				DiagnosticMessage: diagnosticMessage,
+				DiagnosticSeverity: diagnosticSeverity);
+		}
+
+		private int? TryGetCurrentRequestOffset(int hoveredOffset)
+		{
+			if (!TextPopupInteractionRules.CanShowHover(_editor.IsCompletionWindowOpen, _editor._signatureHelpController.IsVisible))
+				return null;
+
+			if (!LuaEditorInteractionRules.TryGetHoverOffset(_editor.Document, hoveredOffset, out int hoverOffset))
+				return null;
+
+			return string.IsNullOrWhiteSpace(_editor.GetWordFromOffset(hoverOffset))
+				? null
+				: hoverOffset;
+		}
+
+		private void ShowHoverToolTip(TextHoverInfo hoverInfo)
+			=> _editor.ShowToolTip(
+				TextHoverToolTipContentFactory.CreateHoverContent(hoverInfo, ToolTipForeground, DefaultToolTipBackground),
+				DefaultToolTipBorder,
+				DefaultToolTipBackground);
+
+		private void ShowCombinedToolTip(TextHoverInfo hoverInfo, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
+		{
+			_editor.ShowToolTip(
+				TextHoverToolTipContentFactory.CreateCombinedContent(
+					hoverInfo,
+					diagnosticMessage,
+					diagnosticSeverity,
+					ToolTipForeground,
+					DefaultToolTipBackground,
+					ToolTipTextMaxWidth,
+					ToolTipTextFontSize,
+					GetDiagnosticColors),
+				DefaultToolTipBorder,
+				DefaultToolTipBackground);
+		}
+
+		private static (SolidColorBrush Border, SolidColorBrush Background) GetDiagnosticColors(TextEditorDiagnosticSeverity severity)
+		{
+			TextEditorToolTipHelper.GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
+			return (border, background);
+		}
+
+		private async Task<TextHoverInfo?> RequestAsync(int offset, CancellationToken cancellationToken)
+		{
+			if (!_editor.IsIntellisenseAvailable())
+				return null;
+
+			var intellisenseProvider = _editor.IntellisenseProvider;
+
+			if (intellisenseProvider is null)
+				return null;
+
+			(int line, int column) = _editor.GetPositionFromOffset(offset);
+
+			return await intellisenseProvider
+				.GetHoverAsync(_editor.FilePath, _editor.Text, line, column, cancellationToken)
+				.ConfigureAwait(true);
+		}
+	}
+}

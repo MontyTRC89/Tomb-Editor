@@ -11,6 +11,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	// Store state is keyed by normalized file path. Access stamps provide an LRU-style ordering for
 	// request-only document trimming without pushing that policy into derived language-specific stores.
 	private readonly object _syncRoot = new();
+
 	private readonly Dictionary<string, TTrackedDocumentState> _documents = new(LanguageServerPathHelper.LocalPathComparer);
 	private long _nextAccessStamp;
 

@@ -3,6 +3,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Collections.Generic;
 using TombLib.Scripting.Completion;
+using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.TRX.Completion;
 
@@ -47,7 +48,9 @@ public sealed class CompletionSessionCoordinator
 			return CreateOpenDecision(document, caretOffset, currentWord);
 		}
 
-		if (_autocompleteManager.ShouldTriggerAutocompleteOnEmptyLine(document, caretOffset))
+		var source = new TextDocumentSnapshot(document);
+
+		if (_autocompleteManager.ShouldTriggerAutocompleteOnEmptyLine(source, caretOffset))
 		{
 			string currentWord = _textAnalysisService.GetCurrentWordBeingTyped(document, caretOffset);
 			return CreateOpenDecision(document, caretOffset, currentWord);
@@ -80,7 +83,8 @@ public sealed class CompletionSessionCoordinator
 		if (filteredCompletions.Count == 0)
 			return TextCompletionSessionDecision.None;
 
-		(int startOffset, int endOffset) = _autocompleteManager.GetCompletionWindowOffsets(document, caretOffset, currentWord);
+		var source = new TextDocumentSnapshot(document);
+		(int startOffset, int endOffset) = _autocompleteManager.GetCompletionWindowOffsets(source, caretOffset, currentWord);
 		return TextCompletionSessionDecision.Open(filteredCompletions, startOffset, endOffset);
 	}
 }

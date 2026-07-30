@@ -1,6 +1,6 @@
-using TombLib.Scripting.Highlighting;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Resources;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Tests;
 

@@ -9,8 +9,8 @@ using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Services;
 using TombLib.Scripting.Signatures;
+using TombLib.Scripting.UI.Presentation;
 using static TombLib.Tests.WPFTestHelper;
 
 namespace TombLib.Tests;
@@ -542,7 +542,7 @@ public class LuaEditorIntellisenseStateTests
 			Assert.IsTrue(hoverCancellationTokenSource.IsCancellationRequested);
 			Assert.IsNull(GetHoverFieldValue(editor, "_hoverCancellationTokenSource"));
 			Assert.AreEqual(5, GetHoverField<int>(editor, "_hoverRequestToken"));
-			Assert.IsNotNull(GetPrivateFieldValue(editor, "_completionWindow"));
+			Assert.IsNotNull(editor.ActiveCompletionWindow);
 			Assert.AreEqual(3, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
 			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRequestInFlight"));
 			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));

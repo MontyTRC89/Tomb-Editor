@@ -1,31 +1,38 @@
-using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Documents;
 
 public sealed class ClassicScriptDocumentLookupService
 {
-	public bool IsLevelScriptDefined(TextDocument document, string levelName)
-	{
-		ArgumentNullException.ThrowIfNull(document);
-		ArgumentNullException.ThrowIfNull(levelName);
+	private readonly IClassicScriptCommandService _commandService;
 
-		return DocumentParser.IsLevelScriptDefined(document, levelName);
+	public ClassicScriptDocumentLookupService(IClassicScriptCommandService commandService)
+	{
+		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 	}
 
-	public bool IsLevelLanguageStringDefined(TextDocument document, string levelName)
+	public bool IsLevelScriptDefined(ITextSnapshot source, string levelName)
 	{
-		ArgumentNullException.ThrowIfNull(document);
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(levelName);
 
-		return DocumentParser.IsLevelLanguageStringDefined(document, levelName);
+		return _commandService.IsLevelScriptDefined(source, levelName);
 	}
 
-	public string? TryGetIncludeFilePath(TextDocument document, int offset)
+	public bool IsLevelLanguageStringDefined(ITextSnapshot source, string levelName)
 	{
-		ArgumentNullException.ThrowIfNull(document);
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(levelName);
 
-		string? includeFilePath = CommandParser.GetFullIncludePath(document, offset);
+		return _commandService.IsLevelLanguageStringDefined(source, levelName);
+	}
+
+	public string? TryGetIncludeFilePath(ITextSnapshot source, int offset)
+	{
+		ArgumentNullException.ThrowIfNull(source);
+
+		string? includeFilePath = _commandService.GetFullIncludePath(source, offset);
 		return string.IsNullOrWhiteSpace(includeFilePath) ? null : includeFilePath;
 	}
 }

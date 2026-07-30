@@ -1,27 +1,24 @@
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Diagnostics.CodeAnalysis;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Cleaning;
 using TombLib.Scripting.ClassicScript.Completion;
-using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Highlighting;
-using TombLib.Scripting.ClassicScript.Hover;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Navigation;
-using TombLib.Scripting.ClassicScript.Parsers;
-using TombLib.Scripting.ClassicScript.Signatures;
+using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Hover;
-using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Diagnostics;
 using TombLib.Scripting.UI.Navigation;
 using TombLib.Scripting.UI.Signatures;
+using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.ClassicScript
 {
@@ -67,7 +64,7 @@ namespace TombLib.Scripting.ClassicScript
 		#region Fields
 
 		private TextDiagnosticsCoordinator _diagnosticsCoordinator;
-		private readonly ClassicScriptCompletionSessionCoordinator _completionCoordinator = new();
+		private readonly ClassicScriptCompletionSessionCoordinator _completionCoordinator;
 		private readonly TextCompletionController _completionController;
 		private readonly TextDefinitionTriggerController _definitionTriggerController;
 		private readonly ClassicScriptHoverController _hoverController;
@@ -78,16 +75,15 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Construction
 
-		public ClassicScriptEditor(Version engineVersion)
-			: this(engineVersion, ClassicScriptLanguageServices.Default)
-		{
-		}
-
 		public ClassicScriptEditor(Version engineVersion, ClassicScriptLanguageServices languageServices) : base(engineVersion)
 		{
 			ArgumentNullException.ThrowIfNull(languageServices);
 
 			_languageServices = languageServices;
+			_completionCoordinator = new ClassicScriptCompletionSessionCoordinator(
+				languageServices.LineService,
+				languageServices.CommandService,
+				new ClassicScriptMnemonicCatalogService());
 			_completionController = new TextCompletionController(this);
 			_definitionTriggerController = new TextDefinitionTriggerController(this, GetOffsetFromPoint, TryNavigateDefinitionAsync);
 			_hoverController = new ClassicScriptHoverController(this);
@@ -112,7 +108,7 @@ namespace TombLib.Scripting.ClassicScript
 		[MemberNotNull(nameof(_sectionRenderer))]
 		private void InitializeRenderers()
 		{
-			_sectionRenderer = new SectionRenderer(this);
+			_sectionRenderer = new SectionRenderer(this, _languageServices.LineService);
 
 			if (ShowSectionSeparators)
 				TextArea.TextView.BackgroundRenderers.Add(_sectionRenderer);
@@ -230,7 +226,8 @@ namespace TombLib.Scripting.ClassicScript
 
 		public void InputFreeIndex()
 		{
-			int nextFreeIndex = GlobalParser.GetNextFreeIndex(Document, CaretOffset);
+			ITextSnapshot source = new TextDocumentSnapshot(Document);
+			int nextFreeIndex = _languageServices.IndexService.GetNextFreeIndex(source, CaretOffset);
 
 			if (nextFreeIndex == -1)
 				return;
@@ -264,7 +261,7 @@ namespace TombLib.Scripting.ClassicScript
 		public event WordDefinitionRequestedEventHandler? WordDefinitionRequested;
 		public void OnWordDefinitionRequested(WordDefinitionEventArgs e) => WordDefinitionRequested?.Invoke(this, e);
 
-		[Obsolete("This method shouldn't be used for ClassicScript.\nUse WordParser.GetWordFromOffset() instead.")]
+		[Obsolete("This method shouldn't be used for ClassicScript.\nUse IClassicScriptLineService.GetWordAtOffset() instead.")]
 		public new void GetWordFromOffset(int offset)
 			=> base.GetWordFromOffset(offset);
 
@@ -276,17 +273,23 @@ namespace TombLib.Scripting.ClassicScript
 
 		public bool TryAddNewPluginEntry(string pluginString)
 		{
-			DocumentLine optionsSectionLine = DocumentParser.FindDocumentLineOfSection(Document, "Options");
+			ITextSnapshot source = new TextDocumentSnapshot(Document);
+			int? optionsSectionLineNumber = _languageServices.CommandService.FindDocumentLineOfSection(source, "Options");
 
-			if (optionsSectionLine == null)
+			if (optionsSectionLineNumber is null)
 				return false;
 
-			if (DocumentParser.IsPluginDefined(Document, pluginString))
+			if (_languageServices.CommandService.IsPluginDefined(source, pluginString))
 				return false;
 
-			int nextFreePluginIndex = GlobalParser.GetNextFreeIndex(Document, optionsSectionLine.Offset, "Plugin");
-			DocumentLine lastSectionLine = DocumentParser.GetLastLineOfCurrentSection(Document, optionsSectionLine.Offset);
+			ITextLine optionsLine = source.GetLineByNumber(optionsSectionLineNumber.Value);
+			int nextFreePluginIndex = _languageServices.IndexService.GetNextFreeIndex(source, optionsLine.Offset, "Plugin");
+			int? lastSectionLineNumber = _languageServices.CommandService.GetLastLineOfCurrentSection(source, optionsLine.Offset);
 
+			if (lastSectionLineNumber is null)
+				return false;
+
+			ITextLine lastSectionLine = source.GetLineByNumber(lastSectionLineNumber.Value);
 			CaretOffset = lastSectionLine.Offset + lastSectionLine.Length;
 
 			TextArea.PerformTextInput($"{Environment.NewLine}Plugin= {nextFreePluginIndex}, {pluginString}, IGNORE");

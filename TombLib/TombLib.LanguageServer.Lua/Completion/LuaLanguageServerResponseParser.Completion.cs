@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 

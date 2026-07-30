@@ -45,8 +45,10 @@ namespace TombLib.Scripting.UI.Diagnostics
 
 		public ErrorDetectionWorker() : this(null, new Version(0, 0))
 		{ }
+
 		public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion) : this(errorDetector, engineVersion, new TimeSpan(500))
 		{ }
+
 		public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion, TimeSpan idleDelayInterval)
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;

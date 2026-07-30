@@ -1,6 +1,4 @@
-﻿using TombLib.Scripting.Specifications.GameFlow;
-
-namespace TombLib.Scripting.GameFlowScript.Resources
+﻿namespace TombLib.Scripting.GameFlowScript.Resources
 {
 	public struct Patterns
 	{

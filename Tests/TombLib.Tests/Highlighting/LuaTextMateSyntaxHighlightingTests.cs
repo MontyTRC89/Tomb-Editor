@@ -1,6 +1,6 @@
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
-using TombLib.Scripting.Highlighting;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Tests;
 

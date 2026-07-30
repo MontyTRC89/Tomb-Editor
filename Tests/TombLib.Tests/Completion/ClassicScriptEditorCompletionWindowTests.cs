@@ -3,16 +3,51 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Completion;
+using TombLib.Scripting.ClassicScript.Diagnostics;
+using TombLib.Scripting.ClassicScript.Hover;
+using TombLib.Scripting.ClassicScript.Mnemonics;
+using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Signatures;
+using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Objects;
+using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;
 
 [TestClass]
 public class ClassicScriptEditorCompletionWindowTests
 {
-	private static readonly ITextCompletionProvider CompletionProvider = new ClassicScriptCompletionProvider();
+	private static readonly ITextCompletionProvider CompletionProvider = CreateCompletionProvider();
+
+	private static ClassicScriptLanguageServices CreateLanguageServices()
+	{
+		var lineService = new ClassicScriptLineService();
+		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
+		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
+		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+		var indexService = new ClassicScriptIndexService(commandService, lineService, mnemonicCatalogService);
+		var errorDetector = new ErrorDetector(lineService, commandService, syntaxCatalogService);
+
+		return new ClassicScriptLanguageServices(
+			new ClassicScriptDefinitionProvider(commandService),
+			new ClassicScriptHoverProvider(lineService, commandService, mnemonicCatalogService),
+			new ClassicScriptSignatureHelpProvider(commandService),
+			errorDetector,
+			lineService,
+			commandService,
+			indexService);
+	}
+
+	private static ITextCompletionProvider CreateCompletionProvider()
+	{
+		var lineService = new ClassicScriptLineService();
+		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
+		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
+		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+		return new ClassicScriptCompletionProvider(commandService, mnemonicCatalogService);
+	}
 
 	[TestMethod]
 	public void EmptyLineCompletion_ItemsExposeKindDetailText()
@@ -31,7 +66,8 @@ public class ClassicScriptEditorCompletionWindowTests
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var editor = new ClassicScriptEditor(new Version(1, 0))
+			var languageServices = CreateLanguageServices();
+			var editor = new ClassicScriptEditor(new Version(1, 0), languageServices)
 			{
 				Text = string.Empty
 			};
@@ -59,15 +95,16 @@ public class ClassicScriptEditorCompletionWindowTests
 
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 
-				CompletionWindow completionWindow = WPFTestHelper.GetPrivateField<CompletionWindow>(editor, "_completionWindow");
+				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
 
 				Assert.IsTrue(opened);
+				Assert.IsNotNull(completionWindow);
 				Assert.IsTrue(completionWindow.CompletionList.CompletionData.Count > 0);
 				Assert.AreEqual(0, completionWindow.StartOffset);
 			}
 			finally
 			{
-				(WPFTestHelper.FindInstanceField(editor.GetType(), "_completionWindow")?.GetValue(editor) as CompletionWindow)?.Close();
+				editor.ActiveCompletionWindow?.Close();
 				hostWindow.Close();
 			}
 		});

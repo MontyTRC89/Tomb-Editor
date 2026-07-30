@@ -12,8 +12,8 @@ public sealed class TextDocumentEdit
 	/// <param name="textEdits">The edits to apply.</param>
 	public TextDocumentEdit(string filePath, IReadOnlyList<TextEdit> textEdits)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-		TextEdits = textEdits ?? [];
+		FilePath = filePath;
+		TextEdits = textEdits;
 	}
 
 	/// <summary>

@@ -1,5 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
-using TombLib.Scripting.Services;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Tests;
 

@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using TombLib.Scripting.Lua.Editor;
 using TombLib.Scripting.Lua.Parsing;
 
 namespace TombLib.Scripting.Lua;
@@ -142,7 +141,7 @@ public sealed partial class LuaEditor
 			return;
 		}
 
-		if (_completionWindow is not null)
+		if (IsCompletionWindowOpen)
 		{
 			CancelPendingCompletionRequest();
 

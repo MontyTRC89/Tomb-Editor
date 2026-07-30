@@ -1,5 +1,5 @@
+using TombLib.Scripting.ClassicScript.Descriptions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.Specifications.ClassicScript.Descriptions;
 
 namespace TombLib.Scripting.ClassicScript.Navigation;
 

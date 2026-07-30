@@ -6,7 +6,7 @@ using System.Windows.Threading;
 
 namespace TombLib.Scripting.UI.Documents;
 
-internal sealed class ContentPersistenceCoordinator : IDisposable
+public sealed class ContentPersistenceCoordinator : IDisposable
 {
 	private readonly Func<string> _contentProvider;
 	private readonly Func<bool> _silentSessionProvider;

@@ -1,18 +1,9 @@
 #nullable enable
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using TombLib.Scripting.Completion;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Highlighting;
-using TombLib.Scripting.GameFlowScript.Hover;
-using TombLib.Scripting.GameFlowScript.Navigation;
-using TombLib.Scripting.Hover;
-using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Hover;
@@ -29,11 +20,6 @@ namespace TombLib.Scripting.GameFlowScript
 		private readonly TextHoverController _hoverController;
 
 		public override string DefaultFileExtension => ".txt";
-
-		public GameFlowEditor(Version engineVersion)
-			: this(engineVersion, GameFlowLanguageServices.Default)
-		{
-		}
 
 		public GameFlowEditor(Version engineVersion, GameFlowLanguageServices languageServices) : base(engineVersion)
 		{

@@ -1,7 +1,7 @@
-using ICSharpCode.AvalonEdit.Document;
+using TombLib.Scripting.ClassicScript.Descriptions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.ClassicScript.Parsers;
-using TombLib.Scripting.Specifications.ClassicScript.Descriptions;
+using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Navigation;
 
@@ -9,17 +9,23 @@ public sealed class ClassicScriptReferenceDefinitionService
 {
 	private readonly ClassicScriptDescriptionArchiveService _descriptionArchiveService = new();
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
+	private readonly IClassicScriptCommandService _commandService;
 
-	public ClassicScriptReferenceDefinition ResolveReference(TextDocument document, string word, WordType wordType, int offset)
+	public ClassicScriptReferenceDefinitionService(IClassicScriptCommandService commandService)
 	{
-		ArgumentNullException.ThrowIfNull(document);
+		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+	}
+
+	public ClassicScriptReferenceDefinition ResolveReference(ITextSnapshot source, string word, WordType wordType, int offset)
+	{
+		ArgumentNullException.ThrowIfNull(source);
 		ArgumentNullException.ThrowIfNull(word);
 
-		int safeOffset = Math.Max(0, Math.Min(offset, document.TextLength));
+		int safeOffset = Math.Max(0, Math.Min(offset, source.TextLength));
 
 		if (wordType is WordType.Hexadecimal or WordType.Decimal)
 		{
-			string? mnemonicConstant = TryResolveMnemonicConstant(document, word, wordType, safeOffset);
+			string? mnemonicConstant = TryResolveMnemonicConstant(source, word, wordType, safeOffset);
 
 			if (!string.IsNullOrWhiteSpace(mnemonicConstant))
 				return new ClassicScriptReferenceDefinition(mnemonicConstant, ReferenceType.MnemonicConstant);
@@ -36,9 +42,9 @@ public sealed class ClassicScriptReferenceDefinitionService
 		return new ClassicScriptReferenceDefinition(word, referenceType);
 	}
 
-	private string? TryResolveMnemonicConstant(TextDocument document, string word, WordType wordType, int offset)
+	private string? TryResolveMnemonicConstant(ITextSnapshot source, string word, WordType wordType, int offset)
 	{
-		string? currentFlagPrefix = ArgumentParser.GetFlagPrefixOfCurrentArgument(document, offset);
+		string? currentFlagPrefix = _commandService.GetFlagPrefixOfCurrentArgument(source, offset);
 
 		if (string.IsNullOrWhiteSpace(currentFlagPrefix))
 			return null;

@@ -11,6 +11,7 @@ namespace TombLib.Scripting.UI.Documents
 		#region Properties
 
 		private volatile string _filePath = string.Empty;
+
 		public string FilePath
 		{
 			get => _filePath;
@@ -33,6 +34,7 @@ namespace TombLib.Scripting.UI.Documents
 		}
 
 		private volatile bool _createBackupFiles;
+
 		public bool CreateBackupFiles
 		{
 			get => _createBackupFiles;
@@ -74,8 +76,10 @@ namespace TombLib.Scripting.UI.Documents
 
 		public ContentChangedWorker() : this(string.Empty)
 		{ }
+
 		public ContentChangedWorker(string filePath) : this(filePath, true)
 		{ }
+
 		public ContentChangedWorker(string filePath, bool createBackupFiles)
 		{
 			_dispatcher = Dispatcher.CurrentDispatcher;

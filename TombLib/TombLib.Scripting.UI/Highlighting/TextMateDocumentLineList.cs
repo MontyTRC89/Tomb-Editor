@@ -1,6 +1,6 @@
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
-using ICSharpCode.AvalonEdit.Document;
 using TextMateSharp.Grammars;
 using TextMateSharp.Model;
 

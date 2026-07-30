@@ -35,7 +35,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// <summary>
 	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
 	/// </summary>
-	public ILuaIntellisenseProvider? IntellisenseProvider { get; set; }
+	public ILanguageServerIntellisenseProvider? IntellisenseProvider { get; set; }
 
 	/// <summary>
 	/// Occurs when the editor resolves a definition location that should be opened by the host application.

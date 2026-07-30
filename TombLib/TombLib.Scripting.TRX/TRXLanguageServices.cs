@@ -3,39 +3,43 @@
 using System;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.TRX.Completion;
+using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
-using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Specifications.TRX;
-using TombLib.Scripting.Specifications.TRX.Services;
+using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX;
 
 public sealed class TRXLanguageServices
 {
-	private static readonly Lazy<TRXLanguageServices> DefaultInstance = new(CreateDefault);
+    public TRXLanguageServices(IGameflowSchemaService schemaService, ITRXLineService lineService, ITRXDocumentService documentService)
+    {
+        ArgumentNullException.ThrowIfNull(schemaService);
+        ArgumentNullException.ThrowIfNull(lineService);
+        ArgumentNullException.ThrowIfNull(documentService);
 
-	public static TRXLanguageServices Default => DefaultInstance.Value;
+        SchemaService = schemaService;
+        LineService = lineService;
+        DocumentService = documentService;
+        DefinitionProvider = new TRXDefinitionProvider(documentService);
+        AutocompleteService = new GameflowAutocompleteService(schemaService);
+        HoverService = new GameflowHoverService(schemaService);
+        DocumentLookupService = new TRXDocumentLookupService(documentService);
+    }
 
-	public TRXLanguageServices(IGameflowSchemaService schemaService)
-	{
-		ArgumentNullException.ThrowIfNull(schemaService);
+    public IGameflowSchemaService SchemaService { get; }
 
-		SchemaService = schemaService;
-		DefinitionProvider = new TRXDefinitionProvider();
-		AutocompleteService = new GameflowAutocompleteService(schemaService);
-		HoverService = new GameflowHoverService(schemaService);
-	}
+    public ITRXLineService LineService { get; }
 
-	public IGameflowSchemaService SchemaService { get; }
+    public ITRXDocumentService DocumentService { get; }
 
-	public ITextDefinitionProvider DefinitionProvider { get; }
+    public ITextDefinitionProvider DefinitionProvider { get; }
 
-	public ITextCompletionProvider AutocompleteService { get; }
+    public ITextCompletionProvider AutocompleteService { get; }
 
-	public ITextHoverProvider HoverService { get; }
+    public ITextHoverProvider HoverService { get; }
 
-	private static TRXLanguageServices CreateDefault()
-		=> new(new GameflowSchemaService(TrxResourcePaths.GetGameflowSchemaPath()));
+    public TRXDocumentLookupService DocumentLookupService { get; }
 }

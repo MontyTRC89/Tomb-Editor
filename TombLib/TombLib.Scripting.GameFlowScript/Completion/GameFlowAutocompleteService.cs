@@ -1,29 +1,37 @@
-using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.GameFlowScript.Parsers;
+using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Scripting.GameFlowScript.Completion;
 
 public sealed class GameFlowAutocompleteService
 {
-	private static readonly ITextCompletionProvider Provider = new GameFlowCompletionProvider();
+    private static readonly ITextCompletionProvider Provider = new GameFlowCompletionProvider();
+    private readonly IGameFlowScriptLineService _lineService;
 
-	public bool ShouldShowAutocomplete(TextDocument document, int caretOffset)
-	{
-		ArgumentNullException.ThrowIfNull(document);
+    public GameFlowAutocompleteService(IGameFlowScriptLineService lineService)
+    {
+        ArgumentNullException.ThrowIfNull(lineService);
+        _lineService = lineService;
+    }
 
-		if (document.TextLength == 0 || caretOffset < 0 || caretOffset > document.TextLength)
-			return false;
+    public bool ShouldShowAutocomplete(ITextSnapshot source, int caretOffset)
+    {
+        ArgumentNullException.ThrowIfNull(source);
 
-		string currentLineText = LineParser.EscapeComments(document.GetText(document.GetLineByOffset(caretOffset))).Trim();
-		return EditorCompletionTriggerHelper.IsSingleCharacterLine(currentLineText);
-	}
+        if (source.TextLength == 0 || caretOffset < 0 || caretOffset > source.TextLength)
+            return false;
 
-	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextDocument document, int caretOffset)
-	{
-		ArgumentNullException.ThrowIfNull(document);
+        ITextLine line = source.GetLineByOffset(caretOffset);
+        string currentLineText = _lineService.EscapeComments(source.GetText(line.Offset, line.Length)).Trim();
+        return EditorCompletionTriggerHelper.IsSingleCharacterLine(currentLineText);
+    }
 
-		return Provider.GetCompletionItems(new TextCompletionContext(document.Text, caretOffset));
-	}
+    public IReadOnlyList<TextCompletionItem> GetCompletionItems(ITextSnapshot source, int caretOffset)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        return Provider.GetCompletionItems(new TextCompletionContext(source.GetText(0, source.TextLength), caretOffset));
+    }
 }

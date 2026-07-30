@@ -1,4 +1,4 @@
-﻿using TombLib.Scripting.Specifications.TRX.Services;
+﻿using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Resources;
 
@@ -10,11 +10,17 @@ public sealed class Patterns
 
 		var schemaKeywords = schemaService.GetSchemaKeywords();
 
-		if (schemaKeywords != null)
+		if (schemaKeywords is not null)
 		{
 			Constants = $"\"\\b({string.Join("|", schemaKeywords.Constants)})\\b\"";
 			Collections = $"\"\\b({string.Join("|", schemaKeywords.Collections)})\\b\"";
 			Properties = $"\"\\b({string.Join("|", schemaKeywords.Properties)})\\b\"";
+		}
+		else
+		{
+			Constants = string.Empty;
+			Collections = string.Empty;
+			Properties = string.Empty;
 		}
 
 		Values = $@"\b({string.Join("|", Keywords.Values)})\b";

@@ -12,8 +12,10 @@ internal readonly record struct EditorNavigationLocation(
 	int? PreferredLine)
 {
 	public bool IsEquivalentTo(EditorNavigationLocation other)
-		=> string.Equals(FilePath, other.FilePath, StringComparison.OrdinalIgnoreCase)
+	{
+		return string.Equals(FilePath, other.FilePath, StringComparison.OrdinalIgnoreCase)
 			&& CaretOffset == other.CaretOffset
 			&& SelectionStart == other.SelectionStart
 			&& SelectionLength == other.SelectionLength;
+	}
 }

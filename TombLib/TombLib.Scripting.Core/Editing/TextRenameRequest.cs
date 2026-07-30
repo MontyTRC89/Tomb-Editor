@@ -3,6 +3,11 @@ namespace TombLib.Scripting.Editing;
 /// <summary>
 /// Describes a rename request against the current document.
 /// </summary>
+/// <remarks>
+/// Rename requests use zero-based line and column indices to match the editor's internal
+/// coordinate system. When converting to or from LSP positions, the provider boundary is
+/// responsible for the zero-based to one-based translation.
+/// </remarks>
 public sealed class TextRenameRequest
 {
 	/// <summary>
@@ -15,11 +20,11 @@ public sealed class TextRenameRequest
 	/// <param name="newName">The requested replacement name.</param>
 	public TextRenameRequest(string filePath, string documentText, int line, int column, string newName)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-		DocumentText = documentText ?? string.Empty;
+		FilePath = filePath;
+		DocumentText = documentText;
 		Line = Math.Max(0, line);
 		Column = Math.Max(0, column);
-		NewName = newName ?? throw new ArgumentNullException(nameof(newName));
+		NewName = newName;
 	}
 
 	/// <summary>

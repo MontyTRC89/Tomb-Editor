@@ -13,8 +13,8 @@ public sealed class TextDefinitionRequest
 	/// <param name="identifier">An optional language-specific identifier that disambiguates the target.</param>
 	public TextDefinitionRequest(string documentText, string symbolName, object? identifier = null)
 	{
-		DocumentText = documentText ?? string.Empty;
-		SymbolName = symbolName ?? throw new ArgumentNullException(nameof(symbolName));
+		DocumentText = documentText;
+		SymbolName = symbolName;
 		Identifier = identifier;
 	}
 

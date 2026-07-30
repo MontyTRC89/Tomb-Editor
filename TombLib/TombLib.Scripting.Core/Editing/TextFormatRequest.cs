@@ -13,9 +13,9 @@ public sealed class TextFormatRequest
 	/// <param name="options">The formatting options to apply.</param>
 	public TextFormatRequest(string filePath, string documentText, TextFormattingOptions options)
 	{
-		FilePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
-		DocumentText = documentText ?? string.Empty;
-		Options = options ?? throw new ArgumentNullException(nameof(options));
+		FilePath = filePath;
+		DocumentText = documentText;
+		Options = options;
 	}
 
 	/// <summary>

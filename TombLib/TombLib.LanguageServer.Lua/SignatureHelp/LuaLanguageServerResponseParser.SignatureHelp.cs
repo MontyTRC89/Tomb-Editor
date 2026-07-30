@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using TombLib.Scripting.Signatures;
-using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 

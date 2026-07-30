@@ -21,7 +21,8 @@ namespace TombLib.Scripting.TRX
 
 		#region Color scheme
 
-		private string _selectedColorSchemeName;
+		private string _selectedColorSchemeName = string.Empty;
+
 		public string SelectedColorSchemeName
 		{
 			get => _selectedColorSchemeName;
@@ -38,7 +39,7 @@ namespace TombLib.Scripting.TRX
 			}
 		}
 
-		public ColorScheme ColorScheme;
+		public ColorScheme ColorScheme = new ColorScheme();
 
 		#endregion Color scheme
 

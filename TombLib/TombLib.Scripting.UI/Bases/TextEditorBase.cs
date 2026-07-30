@@ -7,8 +7,6 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -32,19 +30,11 @@ namespace TombLib.Scripting.UI.Bases
 {
 	public abstract class TextEditorBase : TextEditor, IEditorControl
 	{
-		protected const double ToolTipTextMaxWidth = 500.0;
-		protected static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
-		protected static readonly SolidColorBrush DefaultToolTipBorder = TextEditorColorPalette.ToolTipBorder;
-		protected static readonly SolidColorBrush DefaultToolTipBackground = TextEditorColorPalette.ToolTipBackground;
-		private static readonly SolidColorBrush ErrorToolTipBorder = TextEditorColorPalette.ErrorToolTipBorder;
-		private static readonly SolidColorBrush ErrorToolTipBackground = TextEditorColorPalette.ErrorToolTipBackground;
-		private static readonly SolidColorBrush WarningToolTipBorder = TextEditorColorPalette.WarningToolTipBorder;
-		private static readonly SolidColorBrush WarningToolTipBackground = TextEditorColorPalette.WarningToolTipBackground;
-		private static readonly SolidColorBrush InformationToolTipBorder = TextEditorColorPalette.InformationToolTipBorder;
-		private static readonly SolidColorBrush InformationToolTipBackground = TextEditorColorPalette.InformationToolTipBackground;
-		private static readonly SolidColorBrush HintToolTipBorder = TextEditorColorPalette.HintToolTipBorder;
-		private static readonly SolidColorBrush HintToolTipBackground = TextEditorColorPalette.HintToolTipBackground;
-		protected static readonly SolidColorBrush ToolTipForeground = TextEditorColorPalette.ToolTipForeground;
+		public const double ToolTipTextMaxWidth = 500.0;
+		public static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
+		public static readonly SolidColorBrush DefaultToolTipBorder = TextEditorColorPalette.ToolTipBorder;
+		public static readonly SolidColorBrush DefaultToolTipBackground = TextEditorColorPalette.ToolTipBackground;
+		public static readonly SolidColorBrush ToolTipForeground = TextEditorColorPalette.ToolTipForeground;
 		private static readonly TextEditorFormattingService FormattingService = new();
 
 		public EditorType EditorType => EditorType.Text;
@@ -141,12 +131,11 @@ namespace TombLib.Scripting.UI.Bases
 		#region Fields
 
 		protected Popup _specialToolTip;
-		protected CompletionWindow? _completionWindow;
 
 		private readonly BookmarkCoordinator _bookmarkCoordinator;
 		private readonly TextAutoClosingService _autoClosingService;
 		private readonly TextLineCommentService _commentService;
-		private readonly CompletionWindowHost _completionWindowHost;
+		private readonly CompletionWindowCoordinator _completionWindowCoordinator;
 		private readonly ContentPersistenceCoordinator _contentPersistenceCoordinator;
 		private readonly TextDefinitionNavigationService _definitionNavigationService;
 		private readonly TextDiagnosticToolTipService _diagnosticToolTipService;
@@ -171,7 +160,7 @@ namespace TombLib.Scripting.UI.Bases
 			_autoClosingService = services.AutoClosingService;
 			_bookmarkCoordinator = services.BookmarkCoordinator;
 			_commentService = services.CommentService;
-			_completionWindowHost = services.CompletionWindowHost;
+			_completionWindowCoordinator = services.CompletionWindowCoordinator;
 			_contentPersistenceCoordinator = services.ContentPersistenceCoordinator;
 			_definitionNavigationService = services.DefinitionNavigationService;
 			_diagnosticToolTipService = services.DiagnosticToolTipService;
@@ -240,6 +229,7 @@ namespace TombLib.Scripting.UI.Bases
 		#region Events
 
 		public event EventHandler? StatusChanged;
+
 		protected virtual void OnStatusChanged(EventArgs e)
 			=> StatusChanged?.Invoke(this, e);
 
@@ -247,6 +237,7 @@ namespace TombLib.Scripting.UI.Bases
 			=> OnStatusChanged(EventArgs.Empty);
 
 		public event EventHandler? ZoomChanged;
+
 		protected virtual void OnZoomChanged(EventArgs e)
 		{
 			ZoomChanged?.Invoke(this, e);
@@ -257,10 +248,12 @@ namespace TombLib.Scripting.UI.Bases
 			=> OnZoomChanged(EventArgs.Empty);
 
 		public event EventHandler? TextChangedDelayed;
+
 		protected virtual void OnTextChangedDelayed(EventArgs e)
 			=> TextChangedDelayed?.Invoke(this, e);
 
 		public event EventHandler? ContentChangedWorkerRunCompleted;
+
 		protected virtual void OnContentChangedWorkerRunCompleted(EventArgs e)
 			=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
@@ -305,7 +298,33 @@ namespace TombLib.Scripting.UI.Bases
 		}
 
 		private void TextEditor_MouseRightButtonDown(object? sender, MouseButtonEventArgs e)
-			=> _viewService.TryMoveCaretToMousePosition();
+		{
+			_viewService.TryMoveCaretToMousePosition();
+
+			if (ContextMenu is null)
+				ContextMenu = BuildDefaultContextMenu();
+
+			ContextMenu.IsOpen = true;
+			e.Handled = true;
+		}
+
+		protected virtual ContextMenu BuildDefaultContextMenu()
+		{
+			var menu = new ContextMenu();
+
+			var cutItem = new MenuItem { Header = "Cut", Command = ApplicationCommands.Cut };
+			var copyItem = new MenuItem { Header = "Copy", Command = ApplicationCommands.Copy };
+			var pasteItem = new MenuItem { Header = "Paste", Command = ApplicationCommands.Paste };
+			var selectAllItem = new MenuItem { Header = "Select All", Command = ApplicationCommands.SelectAll };
+
+			menu.Items.Add(cutItem);
+			menu.Items.Add(copyItem);
+			menu.Items.Add(pasteItem);
+			menu.Items.Add(new Separator());
+			menu.Items.Add(selectAllItem);
+
+			return menu;
+		}
 
 		protected void CloseDefinitionToolTip(bool force = false)
 			=> _toolTipPresenter.Close(force);
@@ -315,7 +334,7 @@ namespace TombLib.Scripting.UI.Bases
 			if (!AutocompleteEnabled || !EditorCompletionTriggerHelper.IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))
 				return false;
 
-			if (_completionWindow is null)
+			if (!IsCompletionWindowOpen)
 				onTriggered();
 
 			e.Handled = true;
@@ -355,7 +374,7 @@ namespace TombLib.Scripting.UI.Bases
 			LastModified = DateTime.Now;
 		}
 
-		private void SaveBookmarks()
+		internal void SaveBookmarks()
 			=> _bookmarkCoordinator.Save(FilePath);
 
 		#endregion File I/O
@@ -399,20 +418,12 @@ namespace TombLib.Scripting.UI.Bases
 		#region Error handling
 
 		public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		{
-			_diagnosticToolTipService.SetDiagnostics(diagnostics);
-			InvalidateDiagnosticLayer();
-		}
+			=> _diagnosticToolTipService.SetDiagnostics(diagnostics);
 
 		public void ClearDiagnostics()
-		{
-			if (!_diagnosticToolTipService.ClearDiagnostics())
-				return;
+			=> _diagnosticToolTipService.ClearDiagnostics();
 
-			InvalidateDiagnosticLayer();
-		}
-
-		private void InvalidateDiagnosticLayer()
+		internal void InvalidateDiagnosticLayer()
 		{
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
 			TextArea.TextView.InvalidateLayer(KnownLayer.Selection);
@@ -443,9 +454,9 @@ namespace TombLib.Scripting.UI.Bases
 			return !string.IsNullOrWhiteSpace(message);
 		}
 
-		protected void ShowDiagnosticToolTip(string message, TextEditorDiagnosticSeverity severity)
+		public void ShowDiagnosticToolTip(string message, TextEditorDiagnosticSeverity severity)
 		{
-			GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
+			TextEditorToolTipHelper.GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
 			ShowToolTip(message, border, background, ToolTipForeground);
 		}
 
@@ -546,13 +557,7 @@ namespace TombLib.Scripting.UI.Bases
 		// TODO: Refactor
 
 		public void ToggleBookmark()
-		{
-			_bookmarkCoordinator.ToggleBookmark(CaretOffset);
-
-			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
-
-			SaveBookmarks();
-		}
+			=> _bookmarkCoordinator.ToggleBookmark(CaretOffset);
 
 		public void GoToNextBookmark()
 		{
@@ -595,52 +600,27 @@ namespace TombLib.Scripting.UI.Bases
 		#region CompletionWindow
 
 		public void InitializeCompletionWindow(int width = 300, int height = 300)
-			=> _completionWindow = _completionWindowHost.Create(width, height, DefaultToolTipBorder, DefaultToolTipBackground, ToolTipForeground);
+			=> _completionWindowCoordinator.Initialize(width, height);
 
 		public void ShowCompletionWindow()
-		{
-			if (_completionWindow is null)
-				return;
+			=> _completionWindowCoordinator.Show();
 
-			_completionWindowHost.Show(_completionWindow, () => _completionWindow = null);
-		}
+		internal CompletionWindow? ActiveCompletionWindow => _completionWindowCoordinator.ActiveWindow;
 
-		internal CompletionWindow? ActiveCompletionWindow => _completionWindow;
+		protected bool IsCompletionWindowOpen => _completionWindowCoordinator.IsWindowOpen;
 
 		internal void CloseSharedCompletionWindow()
-			=> CloseCompletionWindowCore();
+			=> _completionWindowCoordinator.Close();
 
 		protected void CloseCompletionWindowCore()
-			=> _completionWindowHost.Close(_completionWindow, () => _completionWindow = null);
+			=> _completionWindowCoordinator.Close();
 
 		protected bool TryOpenCompletionWindow(IEnumerable<ICompletionData> items,
 			int? startOffset = null,
 			int? endOffset = null,
 			int width = 300,
 			int height = 300)
-		{
-			ICompletionData[] completionItems = items?.ToArray() ?? [];
-
-			if (completionItems.Length == 0)
-				return false;
-
-			InitializeCompletionWindow(width, height);
-
-			if (_completionWindow is null)
-				return false;
-
-			if (startOffset.HasValue)
-				_completionWindow.StartOffset = startOffset.Value;
-
-			if (endOffset.HasValue)
-				_completionWindow.EndOffset = endOffset.Value;
-
-			foreach (ICompletionData item in completionItems)
-				_completionWindow.CompletionList.CompletionData.Add(item);
-
-			ShowCompletionWindow();
-			return true;
-		}
+			=> _completionWindowCoordinator.TryOpen(items, startOffset, endOffset, width, height);
 
 		#endregion CompletionWindow
 
@@ -654,10 +634,6 @@ namespace TombLib.Scripting.UI.Bases
 				return;
 
 			_bookmarkCoordinator.Clear();
-
-			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
-
-			SaveBookmarks();
 		}
 
 		public void ConvertSpacesToTabs()
@@ -667,6 +643,7 @@ namespace TombLib.Scripting.UI.Bases
 			=> Content = WhiteSpaceConverter.ConvertTabsToSpaces(Content, 4);
 
 		public void SelectLine(int lineNumber) => SelectLine(Document.GetLineByNumber(lineNumber));
+
 		public void SelectLine(DocumentLine line) => _viewService.SelectLine(line);
 
 		public void ReplaceLine(int lineNumber, string replacement, bool deselectAfterwards = false)
@@ -681,6 +658,7 @@ namespace TombLib.Scripting.UI.Bases
 		public void ResetSelection() => _viewService.ResetSelection();
 
 		public void ResetSelectionAt(int lineNumber) => ResetSelectionAt(Document.GetLineByNumber(lineNumber));
+
 		public void ResetSelectionAt(DocumentLine line) => _viewService.ResetSelectionAt(line);
 
 		public int GetOffsetFromPoint(Point point)
@@ -702,61 +680,16 @@ namespace TombLib.Scripting.UI.Bases
 				ToolTipForeground);
 
 		public void ShowToolTip(string content, SolidColorBrush border, SolidColorBrush background, SolidColorBrush foreground)
-			=> ShowToolTip(CreatePlainToolTipContent(content, foreground), border, background);
+			=> ShowToolTip(TextEditorToolTipHelper.CreatePlainToolTipContent(content, foreground), border, background);
 
 		public void ShowMarkdownToolTip(string content, SolidColorBrush border, SolidColorBrush background, SolidColorBrush foreground)
-			=> ShowToolTip(CreateMarkdownToolTipContent(content, foreground, background), border, background);
+			=> ShowToolTip(TextEditorToolTipHelper.CreateMarkdownToolTipContent(content, foreground, background), border, background);
 
-		protected void ShowToolTip(object content, SolidColorBrush border, SolidColorBrush background)
+		public void ShowToolTip(object content, SolidColorBrush border, SolidColorBrush background)
 			=> _toolTipPresenter.Show(content, border, background);
-
-		private static object CreatePlainToolTipContent(string content, Brush foreground)
-			=> MarkdownToolTipRenderer.CreatePlainTextContent(content, foreground);
-
-		private static object CreateMarkdownToolTipContent(string content, Brush foreground, Brush background)
-		{
-			string normalizedContent = NormalizeToolTipLineEndings(content);
-
-			if (string.IsNullOrWhiteSpace(normalizedContent))
-				return CreatePlainToolTipContent(string.Empty, foreground);
-
-			return MarkdownToolTipRenderer.CreateContent(normalizedContent, foreground, background);
-		}
-
-		private static string NormalizeToolTipLineEndings(string text)
-			=> (text ?? string.Empty)
-				.Replace("\r\n", "\n", StringComparison.Ordinal)
-				.Replace('\r', '\n');
 
 		internal IReadOnlyList<DocumentLine> GetBookmarkedLines()
 			=> _bookmarkCoordinator.GetBookmarkedLines();
-
-		protected static void GetDiagnosticToolTipColors(TextEditorDiagnosticSeverity severity,
-			out SolidColorBrush border, out SolidColorBrush background)
-		{
-			switch (severity)
-			{
-				case TextEditorDiagnosticSeverity.Warning:
-					border = WarningToolTipBorder;
-					background = WarningToolTipBackground;
-					break;
-
-				case TextEditorDiagnosticSeverity.Information:
-					border = InformationToolTipBorder;
-					background = InformationToolTipBackground;
-					break;
-
-				case TextEditorDiagnosticSeverity.Hint:
-					border = HintToolTipBorder;
-					background = HintToolTipBackground;
-					break;
-
-				default:
-					border = ErrorToolTipBorder;
-					background = ErrorToolTipBackground;
-					break;
-			}
-		}
 
 		public virtual void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 		{
@@ -804,6 +737,7 @@ namespace TombLib.Scripting.UI.Bases
 		#region IEditorControl methods
 
 		void IEditorControl.Undo() => Undo();
+
 		void IEditorControl.Redo() => Redo();
 
 		public virtual void GoToObject(string objectName, object? identifyingObject = null)

@@ -2,24 +2,17 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Completion;
-using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Specifications.TRX.Services;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Diagnostics;
 using TombLib.Scripting.TRX.Highlighting;
-using TombLib.Scripting.TRX.Parsers;
-using TombLib.Scripting.TRX.Hover;
+using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Bases;
-using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Diagnostics;
 using TombLib.Scripting.UI.Hover;
@@ -46,11 +39,6 @@ namespace TombLib.Scripting.TRX
 		private readonly TextDefinitionTriggerController _definitionTriggerController;
 		private readonly TextHoverController _hoverController;
 
-		public TRXEditor(Version engineVersion)
-			: this(engineVersion, TRXLanguageServices.Default)
-		{
-		}
-
 		public TRXEditor(Version engineVersion, TRXLanguageServices languageServices) : base(engineVersion)
 		{
 			ArgumentNullException.ThrowIfNull(languageServices);
@@ -60,7 +48,7 @@ namespace TombLib.Scripting.TRX
 			_autocompleteService = languageServices.AutocompleteService;
 			_hoverService = languageServices.HoverService;
 			_textAnalysisService = new TextAnalysisService();
-			_autocompleteManager = new AutocompleteManager();
+			_autocompleteManager = new AutocompleteManager(languageServices.LineService);
 			_completionCoordinator = new CompletionSessionCoordinator(_autocompleteService, _textAnalysisService, _autocompleteManager);
 			_completionController = new TextCompletionController(this);
 			_definitionTriggerController = new TextDefinitionTriggerController(
@@ -69,7 +57,7 @@ namespace TombLib.Scripting.TRX
 				(offset, cancellationToken) => Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverService, offset)));
 			_hoverController = CreateHoverController();
 
-			var errorDetector = new ErrorDetector();
+			var errorDetector = new ErrorDetector(languageServices.LineService);
 			_diagnosticsCoordinator = new TextDiagnosticsCoordinator(this, EngineVersion, errorDetector, errorDetector);
 
 			BindEventMethods();
@@ -142,9 +130,7 @@ namespace TombLib.Scripting.TRX
 
 		#endregion Event handlers
 
-		#region Autocomplete handling
 
-		#endregion Autocomplete handling
 
 		#region Text manipulation helpers
 

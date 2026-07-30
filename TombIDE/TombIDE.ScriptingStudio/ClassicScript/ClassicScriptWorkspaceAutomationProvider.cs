@@ -1,3 +1,5 @@
+#nullable enable
+
 using DarkUI.Forms;
 using System;
 using System.Diagnostics;
@@ -33,7 +35,9 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 	private readonly string _engineDirectoryPath;
 	private readonly IWin32Window _promptOwner;
 	private readonly string _scriptRootDirectoryPath;
+	private readonly Func<bool> _showCompilerLogsAfterBuildProvider;
 	private readonly StudioSilentActionService _silentActionService;
+	private readonly Func<bool> _useNewIncludeMethodProvider;
 	private readonly ScriptingWorkspaceProfile _workspaceProfile;
 
 	public ClassicScriptWorkspaceAutomationProvider(
@@ -42,7 +46,9 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 		StudioSilentActionService silentActionService,
 		string scriptRootDirectoryPath,
 		string engineDirectoryPath,
-		ClassicScriptWorkspaceAutomationCallbacks callbacks)
+		ClassicScriptWorkspaceAutomationCallbacks callbacks,
+		Func<bool> showCompilerLogsAfterBuildProvider,
+		Func<bool> useNewIncludeMethodProvider)
 	{
 		_promptOwner = promptOwner ?? throw new ArgumentNullException(nameof(promptOwner));
 		_workspaceProfile = workspaceProfile ?? throw new ArgumentNullException(nameof(workspaceProfile));
@@ -50,6 +56,8 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 		_scriptRootDirectoryPath = scriptRootDirectoryPath ?? string.Empty;
 		_engineDirectoryPath = engineDirectoryPath ?? string.Empty;
 		_callbacks = callbacks ?? throw new ArgumentNullException(nameof(callbacks));
+		_showCompilerLogsAfterBuildProvider = showCompilerLogsAfterBuildProvider ?? throw new ArgumentNullException(nameof(showCompilerLogsAfterBuildProvider));
+		_useNewIncludeMethodProvider = useNewIncludeMethodProvider ?? throw new ArgumentNullException(nameof(useNewIncludeMethodProvider));
 	}
 
 	public void HandleIDEEvent(IIDEEvent ideEvent)
@@ -57,14 +65,84 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 		if (ideEvent is null)
 			return;
 
-		if (IsSilentAction(ideEvent))
+		if (ideEvent is IDE.ScriptEditor_ReloadSyntaxHighlightingEvent)
 		{
-			HandleSilentAction(ideEvent);
+			ReloadSyntaxHighlighting();
 			return;
 		}
 
-		if (ideEvent is IDE.ScriptEditor_ReloadSyntaxHighlightingEvent)
-			_callbacks.ApplyUserSettings();
+		if (!IsSilentAction(ideEvent))
+			return;
+
+		switch (ideEvent)
+		{
+			case IDE.ScriptEditor_AppendScriptEvent appendEvent:
+				AppendScript(appendEvent.Result);
+				break;
+
+			case IDE.ScriptEditor_AddNewLevelStringEvent addLevelStringEvent:
+				AddLevelString(addLevelStringEvent.LevelName);
+				break;
+
+			case IDE.ScriptEditor_AddNewPluginEntryEvent addPluginEntryEvent:
+				AddPluginEntry(addPluginEntryEvent.PluginString);
+				break;
+
+			case IDE.ScriptEditor_AddNewNGStringEvent addNgStringEvent:
+				AddNgString(addNgStringEvent.NGString);
+				break;
+
+			case IDE.ScriptEditor_ScriptPresenceCheckEvent scriptPresenceEvent:
+				IDE.Instance.ScriptDefined = IsScriptDefined(scriptPresenceEvent.LevelName);
+				break;
+
+			case IDE.ScriptEditor_StringPresenceCheckEvent stringPresenceEvent:
+				IDE.Instance.StringDefined = IsStringDefined(stringPresenceEvent.String);
+				break;
+
+			case IDE.ScriptEditor_RenameLevelEvent renameLevelEvent:
+				RenameLevel(renameLevelEvent.OldName, renameLevelEvent.NewName);
+				break;
+		}
+	}
+
+	public void AddLevelString(string levelName)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string languageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
+		SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
+		_callbacks.AddNewLevelNameString(levelName);
+		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(languageFileState));
+	}
+
+	public void AddNgString(string ngString)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string ngLanguageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TRNG);
+		SilentActionFileState ngLanguageFileState = _silentActionService.CaptureSourceFileState(ngLanguageFilePath);
+		bool isChanged = _callbacks.AddNewNGString(ngString);
+		_silentActionService.Complete(cachedEditor, isChanged, _silentActionService.CreateCompletion(ngLanguageFileState));
+	}
+
+	public void AddPluginEntry(string pluginString)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		bool isChanged = _callbacks.AddNewPluginEntry(pluginString);
+		_silentActionService.Complete(cachedEditor, isChanged, _silentActionService.CreateCompletion(scriptFileState));
+	}
+
+	public void AppendScript(ScriptGenerationResult result)
+	{
+		if (!result.HasContent)
+			return;
+
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		_callbacks.AppendScript(result.GameFlowScript);
+		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(scriptFileState));
 	}
 
 	public void Build()
@@ -83,71 +161,53 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 		OpenPathIfExists(pdfPath);
 	}
 
-	private static bool IsSilentAction(IIDEEvent ideEvent)
-		=> ideEvent is IDE.ScriptEditor_AppendScriptEvent
-		|| ideEvent is IDE.ScriptEditor_AddNewLevelStringEvent
-		|| ideEvent is IDE.ScriptEditor_AddNewPluginEntryEvent
-		|| ideEvent is IDE.ScriptEditor_AddNewNGStringEvent
-		|| ideEvent is IDE.ScriptEditor_ScriptPresenceCheckEvent
-		|| ideEvent is IDE.ScriptEditor_StringPresenceCheckEvent
-		|| ideEvent is IDE.ScriptEditor_RenameLevelEvent;
-
-	private void HandleSilentAction(IIDEEvent ideEvent)
+	public bool IsScriptDefined(string levelName)
 	{
-		TabPage cachedTab = _silentActionService.RememberSelectedTab();
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		bool isDefined = _callbacks.IsLevelScriptDefined(levelName);
+		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
+		return isDefined;
+	}
+
+	public bool IsStringDefined(string value)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
+		string languageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
+		SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
+		bool isDefined = _callbacks.IsLevelLanguageStringDefined(value);
+		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(languageFileState, saveAffectedFile: false));
+		return isDefined;
+	}
+
+	public void ReloadSyntaxHighlighting()
+		=> _callbacks.ApplyUserSettings();
+
+	public void RenameLevel(string oldName, string newName)
+	{
+		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
 		string languageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR4);
-		string ngLanguageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TRNG);
-
-		if (ideEvent is IDE.ScriptEditor_AppendScriptEvent appendEvent && appendEvent.Result.HasContent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			_callbacks.AppendScript(appendEvent.Result.GameFlowScript);
-			_silentActionService.Complete(cachedTab, true, _silentActionService.CreateCompletion(scriptFileState));
-		}
-		else if (ideEvent is IDE.ScriptEditor_AddNewLevelStringEvent addLevelStringEvent)
-		{
-			SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
-			_callbacks.AddNewLevelNameString(addLevelStringEvent.LevelName);
-			_silentActionService.Complete(cachedTab, true, _silentActionService.CreateCompletion(languageFileState));
-		}
-		else if (ideEvent is IDE.ScriptEditor_AddNewPluginEntryEvent addPluginEntryEvent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			bool isChanged = _callbacks.AddNewPluginEntry(addPluginEntryEvent.PluginString);
-			_silentActionService.Complete(cachedTab, isChanged, _silentActionService.CreateCompletion(scriptFileState));
-		}
-		else if (ideEvent is IDE.ScriptEditor_AddNewNGStringEvent addNgStringEvent)
-		{
-			SilentActionFileState ngLanguageFileState = _silentActionService.CaptureSourceFileState(ngLanguageFilePath);
-			bool isChanged = _callbacks.AddNewNGString(addNgStringEvent.NGString);
-			_silentActionService.Complete(cachedTab, isChanged, _silentActionService.CreateCompletion(ngLanguageFileState));
-		}
-		else if (ideEvent is IDE.ScriptEditor_ScriptPresenceCheckEvent scriptPresenceEvent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			IDE.Instance.ScriptDefined = _callbacks.IsLevelScriptDefined(scriptPresenceEvent.LevelName);
-			_silentActionService.Complete(cachedTab, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
-		}
-		else if (ideEvent is IDE.ScriptEditor_StringPresenceCheckEvent stringPresenceEvent)
-		{
-			SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
-			IDE.Instance.StringDefined = _callbacks.IsLevelLanguageStringDefined(stringPresenceEvent.String);
-			_silentActionService.Complete(cachedTab, false, _silentActionService.CreateCompletion(languageFileState, saveAffectedFile: false));
-		}
-		else if (ideEvent is IDE.ScriptEditor_RenameLevelEvent renameLevelEvent)
-		{
-			SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
-			SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
-			_callbacks.RenameRequestedLevelScript(renameLevelEvent.OldName, renameLevelEvent.NewName);
-			_callbacks.RenameRequestedLanguageString(renameLevelEvent.OldName, renameLevelEvent.NewName);
-			_silentActionService.Complete(
-				cachedTab,
-				true,
-				_silentActionService.CreateCompletion(scriptFileState),
-				_silentActionService.CreateCompletion(languageFileState));
-		}
+		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+		SilentActionFileState languageFileState = _silentActionService.CaptureSourceFileState(languageFilePath);
+		_callbacks.RenameRequestedLevelScript(oldName, newName);
+		_callbacks.RenameRequestedLanguageString(oldName, newName);
+		_silentActionService.Complete(
+			cachedEditor,
+			true,
+			_silentActionService.CreateCompletion(scriptFileState),
+			_silentActionService.CreateCompletion(languageFileState));
 	}
+
+	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
+		is IDE.ScriptEditor_AppendScriptEvent
+		or IDE.ScriptEditor_AddNewLevelStringEvent
+		or IDE.ScriptEditor_AddNewPluginEntryEvent
+		or IDE.ScriptEditor_AddNewNGStringEvent
+		or IDE.ScriptEditor_ScriptPresenceCheckEvent
+		or IDE.ScriptEditor_StringPresenceCheckEvent
+		or IDE.ScriptEditor_RenameLevelEvent;
 
 	private void CompileTR4Script()
 	{
@@ -155,7 +215,7 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 		{
 			string logs = TR4Compiler.Compile(_scriptRootDirectoryPath, _engineDirectoryPath);
 
-			if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild)
+			if (_showCompilerLogsAfterBuildProvider())
 				_callbacks.ShowCompilerLogsPane();
 
 			_callbacks.UpdateCompilerLogs(logs);
@@ -173,7 +233,7 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 			bool success = NGCompiler.Compile(
 				_scriptRootDirectoryPath,
 				_engineDirectoryPath,
-				IDE.Instance.IDEConfiguration.UseNewIncludeMethod);
+				_useNewIncludeMethodProvider());
 
 			string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
 			_callbacks.UpdateCompilerLogs(File.ReadAllText(logFilePath));
@@ -181,7 +241,7 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 			if (!success)
 				ShowError("Script compilation yielded an error. Please check the logs.");
 
-			if (IDE.Instance.IDEConfiguration.ShowCompilerLogsAfterBuild || !success)
+			if (_showCompilerLogsAfterBuildProvider() || !success)
 				_callbacks.ShowCompilerLogsPane();
 		}
 		catch (Exception exception)

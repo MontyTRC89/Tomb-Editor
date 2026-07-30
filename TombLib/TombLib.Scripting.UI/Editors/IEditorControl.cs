@@ -1,5 +1,4 @@
 ﻿using System;
-using TombLib.Scripting.UI.Bases;
 
 namespace TombLib.Scripting.UI.Editors
 {
@@ -24,7 +23,9 @@ namespace TombLib.Scripting.UI.Editors
 		/// <para><b>Note:</b> Every <c>IEditorControl</c> should have some way of representing its contents using a string!</para>
 		/// </summary>
 		string Content { get; set; }
+
 		bool IsContentChanged { get; set; }
+
 		void ApplyPersistedContent(string content);
 
 		DateTime LastModified { get; set; }
@@ -57,13 +58,17 @@ namespace TombLib.Scripting.UI.Editors
 		void Load(string fileName, bool silentSession);
 
 		void Save();
+
 		void Save(string fileName);
 
 		void Undo();
+
 		void Redo();
 
 		void Cut();
+
 		void Copy();
+
 		void Paste();
 
 		void SelectAll();
@@ -79,7 +84,9 @@ namespace TombLib.Scripting.UI.Editors
 		#region Events
 
 		event EventHandler ContentChangedWorkerRunCompleted;
+
 		event EventHandler StatusChanged;
+
 		event EventHandler ZoomChanged;
 
 		#endregion Events

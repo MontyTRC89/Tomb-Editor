@@ -2,9 +2,9 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using System;
-using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
+using TombLib.Scripting.UI.Bases;
 
 namespace TombLib.Scripting.UI.Navigation;
 

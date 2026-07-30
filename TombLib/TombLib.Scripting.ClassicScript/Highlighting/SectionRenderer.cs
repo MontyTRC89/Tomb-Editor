@@ -2,18 +2,22 @@
 using ICSharpCode.AvalonEdit.Rendering;
 using System.Windows;
 using System.Windows.Media;
-using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.ClassicScript.Services;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
 public sealed class SectionRenderer : IBackgroundRenderer
 {
 	private ClassicScriptEditor _editor;
+	private IClassicScriptLineService _lineService;
 
 	#region Construction
 
-	public SectionRenderer(ClassicScriptEditor e)
-		=> _editor = e;
+	public SectionRenderer(ClassicScriptEditor editor, IClassicScriptLineService lineService)
+	{
+		_editor = editor;
+		_lineService = lineService;
+	}
 
 	public KnownLayer Layer => KnownLayer.Caret;
 
@@ -23,11 +27,11 @@ public sealed class SectionRenderer : IBackgroundRenderer
 
 	public void Draw(TextView textView, DrawingContext drawingContext)
 	{
-		foreach (DocumentLine line in _editor.Document.Lines)
+		foreach (var line in _editor.Document.Lines)
 		{
 			string lineText = _editor.Document.GetText(line.Offset, line.Length);
 
-			if (LineParser.IsSectionHeaderLine(lineText))
+			if (_lineService.IsSectionHeaderLine(lineText))
 			{
 				var segment = new TextSegment { StartOffset = line.Offset, EndOffset = line.EndOffset };
 				var border = new Pen(new SolidColorBrush(Color.FromRgb(192, 192, 192)), 0.5);

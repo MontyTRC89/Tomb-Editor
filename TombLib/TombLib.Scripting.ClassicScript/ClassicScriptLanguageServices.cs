@@ -1,9 +1,9 @@
 #nullable enable
 
-using System;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;
 using TombLib.Scripting.ClassicScript.Navigation;
+using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Signatures;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
@@ -13,26 +13,31 @@ namespace TombLib.Scripting.ClassicScript;
 
 public sealed class ClassicScriptLanguageServices
 {
-	private static readonly Lazy<ClassicScriptLanguageServices> DefaultInstance = new(CreateDefault);
-
 	public ClassicScriptLanguageServices(
 		ITextDefinitionProvider definitionProvider,
 		ITextHoverProvider hoverProvider,
 		ITextSignatureHelpProvider signatureHelpProvider,
-		ErrorDetector errorDetector)
+		ErrorDetector errorDetector,
+		IClassicScriptLineService lineService,
+		IClassicScriptCommandService commandService,
+		IClassicScriptIndexService indexService)
 	{
 		ArgumentNullException.ThrowIfNull(definitionProvider);
 		ArgumentNullException.ThrowIfNull(hoverProvider);
 		ArgumentNullException.ThrowIfNull(signatureHelpProvider);
 		ArgumentNullException.ThrowIfNull(errorDetector);
+		ArgumentNullException.ThrowIfNull(lineService);
+		ArgumentNullException.ThrowIfNull(commandService);
+		ArgumentNullException.ThrowIfNull(indexService);
 
 		DefinitionProvider = definitionProvider;
 		HoverProvider = hoverProvider;
 		SignatureHelpProvider = signatureHelpProvider;
 		ErrorDetector = errorDetector;
+		LineService = lineService;
+		CommandService = commandService;
+		IndexService = indexService;
 	}
-
-	public static ClassicScriptLanguageServices Default => DefaultInstance.Value;
 
 	public ITextDefinitionProvider DefinitionProvider { get; }
 
@@ -42,10 +47,9 @@ public sealed class ClassicScriptLanguageServices
 
 	public ErrorDetector ErrorDetector { get; }
 
-	private static ClassicScriptLanguageServices CreateDefault()
-		=> new(
-			new ClassicScriptDefinitionProvider(),
-			new ClassicScriptHoverProvider(),
-			new ClassicScriptSignatureHelpProvider(),
-			new ErrorDetector());
+	public IClassicScriptLineService LineService { get; }
+
+	public IClassicScriptCommandService CommandService { get; }
+
+	public IClassicScriptIndexService IndexService { get; }
 }

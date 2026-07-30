@@ -1,7 +1,6 @@
 using NLog;
 using System.Collections.Concurrent;
 using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Core.Lua;
 
 namespace TombLib.LanguageServer.Lua;
 

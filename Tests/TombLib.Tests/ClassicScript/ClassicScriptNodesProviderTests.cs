@@ -1,16 +1,20 @@
 using DarkUI.Controls;
-using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.ContentNodes;
+using TombLib.Scripting.ClassicScript.Documents;
+using TombLib.Scripting.ClassicScript.Services;
 
 namespace TombLib.Tests;
 
 [TestClass]
 public class ClassicScriptNodesProviderTests
 {
+	private static ClassicScriptNodesProvider CreateProvider()
+		=> new(new ClassicScriptLineService());
+
 	[TestMethod]
 	public void GetNodes_ReturnsExpectedGroupsForMatchingContent()
 	{
-		var provider = new ClassicScriptNodesProvider();
+		var provider = CreateProvider();
 		const string content = "[Options]\r\nName = Caves ; comment\r\n#include \"strings.txt\"\r\n#define SECRET_FLAG ENABLED\r\n[Level]\r\n";
 
 		IReadOnlyList<DarkTreeNode> nodes = provider.GetNodes(content, string.Empty);
@@ -36,7 +40,7 @@ public class ClassicScriptNodesProviderTests
 	[TestMethod]
 	public void GetNodes_FiltersOutUnmatchedGroups()
 	{
-		var provider = new ClassicScriptNodesProvider();
+		var provider = CreateProvider();
 		const string content = "[Options]\r\nName = Caves\r\n#include \"scripts.dat\"\r\n#define SECRET_FLAG ENABLED\r\n";
 
 		IReadOnlyList<DarkTreeNode> nodes = provider.GetNodes(content, "script");

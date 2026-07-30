@@ -13,11 +13,13 @@ namespace TombLib.Scripting.UI.Documents;
 internal sealed class BookmarkCoordinator
 {
 	private readonly Func<TextDocument> _documentProvider;
+	private readonly Action? _onBookmarksChanged;
 	private readonly List<TextAnchor> _bookmarkAnchors = [];
 
-	public BookmarkCoordinator(Func<TextDocument> documentProvider)
+	public BookmarkCoordinator(Func<TextDocument> documentProvider, Action? onBookmarksChanged = null)
 	{
 		_documentProvider = documentProvider ?? throw new ArgumentNullException(nameof(documentProvider));
+		_onBookmarksChanged = onBookmarksChanged;
 	}
 
 	public IReadOnlyList<DocumentLine> GetBookmarkedLines()
@@ -37,6 +39,8 @@ internal sealed class BookmarkCoordinator
 			AddBookmark(document, currentLine);
 		else
 			_bookmarkAnchors.Remove(bookmarkAnchor);
+
+		_onBookmarksChanged?.Invoke();
 	}
 
 	public DocumentLine? GetNextBookmarkLine(int caretOffset)
@@ -46,7 +50,10 @@ internal sealed class BookmarkCoordinator
 		=> GetAdjacentBookmarkLine(caretOffset, findNext: false);
 
 	public void Clear()
-		=> _bookmarkAnchors.Clear();
+	{
+		_bookmarkAnchors.Clear();
+		_onBookmarksChanged?.Invoke();
+	}
 
 	public void Save(string filePath)
 	{

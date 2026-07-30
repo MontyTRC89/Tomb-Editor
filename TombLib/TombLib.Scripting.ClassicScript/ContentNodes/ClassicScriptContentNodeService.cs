@@ -1,29 +1,34 @@
-using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Documents;
-using TombLib.Scripting.ClassicScript.Parsers;
-using TombLib.Scripting.ClassicScript.Resources;
-using TombLib.Scripting.Specifications.ClassicScript;
+using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.ContentNodes;
 
 internal sealed class ClassicScriptContentNodeService
 {
-	private static readonly Regex DefineCommandRegex = new(Patterns.DefineCommand + Patterns.DefineValue, RegexOptions.IgnoreCase);
-	private static readonly Regex IncludeCommandRegex = new($"{Patterns.IncludeCommand}({Patterns.FilePath})", RegexOptions.IgnoreCase);
-	private static readonly Regex NameCommandRegex = new(Patterns.NameCommand, RegexOptions.IgnoreCase);
+	private readonly IClassicScriptLineService _lineService;
+
+	public ClassicScriptContentNodeService(IClassicScriptLineService lineService)
+	{
+		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+	}
+
+	private static readonly Regex DefineCommandRegex = new(@"^\s*#define\s+(\w*)\s+(\w*)", RegexOptions.IgnoreCase);
+	private static readonly Regex IncludeCommandRegex = new(@"^\s*#include\s+("".*"")", RegexOptions.IgnoreCase);
+	private static readonly Regex NameCommandRegex = new(@"^\s*\bName\s*=\s*", RegexOptions.IgnoreCase);
 
 	public IReadOnlyList<ClassicScriptContentNodeGroup> GetNodeGroups(string content, string filter)
 	{
-		var document = new TextDocument(content ?? string.Empty);
+		var source = new StringTextSnapshot(content ?? string.Empty);
 		var sectionNodes = new List<ClassicScriptContentNode>();
 		var levelNodes = new List<ClassicScriptContentNode>();
 		var includeNodes = new List<ClassicScriptContentNode>();
 		var defineNodes = new List<ClassicScriptContentNode>();
 
-		foreach (DocumentLine line in document.Lines)
+		foreach (ITextLine line in source.Lines)
 		{
-			string lineText = document.GetText(line.Offset, line.Length);
+			string lineText = source.GetText(line.Offset, line.Length);
 
 			ClassicScriptContentNode? sectionNode = GetSectionNode(lineText, filter);
 
@@ -71,12 +76,12 @@ internal sealed class ClassicScriptContentNodeService
 			groups.Add(new ClassicScriptContentNodeGroup(header, nodes));
 	}
 
-	private static ClassicScriptContentNode? GetSectionNode(string lineText, string filter)
+	private ClassicScriptContentNode? GetSectionNode(string lineText, string filter)
 	{
-		if (!LineParser.IsSectionHeaderLine(lineText))
+		if (!_lineService.IsSectionHeaderLine(lineText))
 			return null;
 
-		string? headerText = LineParser.GetSectionHeaderText(lineText);
+		string? headerText = _lineService.GetSectionHeaderText(lineText);
 
 		if (string.IsNullOrWhiteSpace(headerText))
 			return null;
@@ -93,12 +98,12 @@ internal sealed class ClassicScriptContentNodeService
 		return new ClassicScriptContentNode($"[{headerText}]", ObjectType.Section);
 	}
 
-	private static ClassicScriptContentNode? GetLevelNode(string lineText, string filter)
+	private ClassicScriptContentNode? GetLevelNode(string lineText, string filter)
 	{
 		if (!NameCommandRegex.IsMatch(lineText))
 			return null;
 
-		string sanitizedLineText = LineParser.RemoveComments(lineText);
+		string sanitizedLineText = _lineService.RemoveComments(lineText);
 		string levelName = NameCommandRegex.Replace(sanitizedLineText, string.Empty);
 
 		if (string.IsNullOrWhiteSpace(levelName) || !levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))

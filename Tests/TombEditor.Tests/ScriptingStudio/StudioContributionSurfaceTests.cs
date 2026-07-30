@@ -1,6 +1,13 @@
-using System.Windows.Forms;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
+using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.ToolStrips;
 using TombIDE.ScriptingStudio.UI;
+using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -8,63 +15,344 @@ namespace TombEditor.Tests.ScriptingStudio;
 public class StudioContributionSurfaceTests
 {
 	[TestMethod]
-	public void RebuildStudioModeItems_MenuStrip_UsesContributionsWhenStudioModeIsNone()
+	public void CreateCommandItem_PreservesPhase1TypedSurfaceContract()
 	{
-		var menuStrip = new StudioMenuStrip
-		{
-			StudioMode = StudioMode.None,
-			StudioModeContributionItems =
-			new[]
-			{
-				new StudioToolStripItem
-				{
-					LangKey = "TestRoot",
-					Position = "0",
-					DropDownItems =
-					new List<StudioToolStripItem>
-					{
-						new StudioToolStripItem
-						{
-							LangKey = "TestCommand",
-							Command = nameof(UICommand.About)
-						}
-					}
-				}
-			}
-		};
+		StudioToolStripItem item = StudioCommandSurfaceItemFactory.CreateCommandItem(
+			"Build",
+			UICommand.Build,
+			icon: "Play_16",
+			shortcutDisplayText: "F9",
+			checkOnClick: true,
+			position: 4);
 
-		menuStrip.RebuildStudioModeItems();
-
-		Assert.AreEqual(1, menuStrip.Items.Count);
-		Assert.IsTrue(menuStrip.Items[0] is ToolStripMenuItem);
-
-		var rootItem = menuStrip.Items[0] as ToolStripMenuItem ?? throw new AssertFailedException();
-		Assert.AreEqual(1, rootItem.DropDownItems.Count);
-		var rootArgs = rootItem.DropDownItems[0].Tag as UIElementArgs ?? throw new AssertFailedException();
-		Assert.AreEqual(UICommand.About, rootArgs.Command);
+		Assert.AreEqual("Build", item.LangKey);
+		Assert.AreEqual(UICommand.Build, item.Command);
+		Assert.AreEqual("Play_16", item.Icon);
+		Assert.AreEqual("F9", item.ShortcutDisplayText);
+		Assert.IsTrue(item.CheckOnClick);
+		Assert.AreEqual(4, item.Position);
+		Assert.AreEqual(0, item.DropDownItems.Count);
 	}
 
 	[TestMethod]
-	public void RebuildStudioModeItems_ToolStrip_UsesContributionsWhenStudioModeIsNone()
+	public void RebuildWorkspaceItems_MenuStrip_UsesWorkspaceContributions()
 	{
-		var toolStrip = new StudioToolStrip
+		RunInSta(() =>
 		{
-			StudioMode = StudioMode.None,
-			StudioModeContributionItems =
+			UICommand? invokedCommand = null;
+			var menuStrip = new StudioMenuStrip
+			{
+				WorkspaceContributionItems =
+				new[]
+				{
+					new StudioToolStripItem
+					{
+						LangKey = "TestRoot",
+						Position = 0,
+						DropDownItems =
+						new List<StudioToolStripItem>
+						{
+							new StudioToolStripItem
+							{
+								LangKey = "TestCommand",
+								Command = UICommand.About
+							}
+						}
+					}
+				}
+			};
+
+			menuStrip.ItemClicked += (_, args) => invokedCommand = args.Command;
+
+			menuStrip.RebuildWorkspaceItems();
+
+			Menu menu = GetMenu(menuStrip);
+			Assert.AreEqual(1, menu.Items.Count);
+
+			var rootItem = menu.Items[0] as MenuItem ?? throw new AssertFailedException();
+			Assert.AreEqual(1, rootItem.Items.Count);
+
+			var commandItem = rootItem.Items[0] as MenuItem ?? throw new AssertFailedException();
+			commandItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+			Assert.AreEqual(UICommand.About, invokedCommand);
+		});
+	}
+
+	[TestMethod]
+	public void RebuildWorkspaceItems_ToolStrip_UsesWorkspaceContributions()
+	{
+		RunInSta(() =>
+		{
+			UICommand? invokedCommand = null;
+			var toolStrip = new StudioToolStrip
+			{
+				WorkspaceContributionItems =
+				new[]
+				{
+					new StudioToolStripItem
+					{
+						LangKey = "TestCommand",
+						Command = UICommand.About
+					}
+				}
+			};
+
+			toolStrip.ItemClicked += (_, args) => invokedCommand = args.Command;
+
+			toolStrip.RebuildWorkspaceItems();
+
+			ToolBar toolBar = GetToolBar(toolStrip);
+			Assert.AreEqual(1, toolBar.Items.Count);
+
+			var button = toolBar.Items[0] as System.Windows.Controls.Primitives.ButtonBase ?? throw new AssertFailedException();
+			button.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+
+			Assert.AreEqual(UICommand.About, invokedCommand);
+		});
+	}
+
+	[TestMethod]
+	public void TypedDocumentCommandSurfaceProvider_ReturnsExpectedRepresentativeContributions()
+	{
+		IStudioDocumentCommandSurfaceProvider typedProvider = TypedDocumentCommandSurfaceProvider.Instance;
+
+		StudioToolStripItem luaMenuRoot = AssertSingleRoot(typedProvider.GetMenuStripItems(null!, DocumentMode.Lua));
+		Assert.AreEqual("Document", luaMenuRoot.LangKey);
+		Assert.AreEqual(2, luaMenuRoot.Position);
+		CollectionAssert.AreEqual(
 			new[]
 			{
-				new StudioToolStripItem
-				{
-					LangKey = "TestCommand",
-					Command = nameof(UICommand.About)
-				}
+				"Convert",
+				string.Empty,
+				"Reindent",
+				"TrimWhitespace",
+				string.Empty,
+				"GoToDefinition",
+				"FindReferences",
+				"RenameSymbol",
+				"NavigateBack",
+				"NavigateForward",
+				string.Empty,
+				"ToggleComment",
+				"CommentOut",
+				"Uncomment",
+				string.Empty,
+				"ToggleBookmark",
+				"PrevBookmark",
+				"NextBookmark",
+				"ClearBookmarks"
+			},
+			luaMenuRoot.DropDownItems.Select(static item => item.LangKey).ToArray());
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				string.Empty,
+				"CommentOut",
+				"Uncomment",
+				string.Empty,
+				"ToggleBookmark",
+				"PrevBookmark",
+				"NextBookmark",
+				"ClearBookmarks"
+			},
+			typedProvider.GetToolStripItems(null!, DocumentMode.ClassicScript).Select(static item => item.LangKey).ToArray());
+
+		CollectionAssert.AreEqual(
+			new[]
+			{
+				"Cut",
+				"Copy",
+				"Paste"
+			},
+			typedProvider.GetContextMenuItems(null!, DocumentMode.Strings).Select(static item => item.LangKey).ToArray());
+
+		Assert.AreEqual(0, typedProvider.GetMenuStripItems(null!, DocumentMode.None).Count);
+	}
+
+	[TestMethod]
+	public void TypedDocumentCommandSurfaceProvider_ContextMenu_ReturnsEmptyForNoneMode()
+	{
+		// EditorContextMenu is removed (replaced by native WPF context menus).
+		// Context menu items are still provided by the typed provider.
+		IStudioDocumentCommandSurfaceProvider typedProvider = TypedDocumentCommandSurfaceProvider.Instance;
+
+		var items = typedProvider.GetContextMenuItems(null!, DocumentMode.None);
+		Assert.AreEqual(0, items.Count);
+	}
+
+	private static void RunInSta(Action action)
+	{
+		ExceptionDispatchInfo? capturedException = null;
+
+		var thread = new Thread(() =>
+		{
+			try
+			{
+				action();
 			}
-		};
+			catch (Exception exception)
+			{
+				capturedException = ExceptionDispatchInfo.Capture(exception);
+			}
+		});
 
-		toolStrip.RebuildStudioModeItems();
+		thread.SetApartmentState(ApartmentState.STA);
+		thread.Start();
+		thread.Join();
 
-		Assert.AreEqual(1, toolStrip.Items.Count);
-		var toolStripArgs = toolStrip.Items[0].Tag as UIElementArgs ?? throw new AssertFailedException();
-		Assert.AreEqual(UICommand.About, toolStripArgs.Command);
+		capturedException?.Throw();
+	}
+
+	private static Menu GetMenu(StudioMenuStrip menuStrip)
+	{
+		object view = typeof(StudioMenuStrip)
+			.GetProperty("View", BindingFlags.Instance | BindingFlags.NonPublic)?
+			.GetValue(menuStrip) ?? throw new AssertFailedException();
+
+		return ((System.Windows.Controls.UserControl)view).Content as Menu ?? throw new AssertFailedException();
+	}
+
+	private static ToolBar GetToolBar(StudioToolStrip toolStrip)
+	{
+		object view = typeof(StudioToolStrip)
+			.GetProperty("View", BindingFlags.Instance | BindingFlags.NonPublic)?
+			.GetValue(toolStrip) ?? throw new AssertFailedException();
+
+		var tray = ((System.Windows.Controls.UserControl)view).Content as ToolBarTray ?? throw new AssertFailedException();
+		return tray.ToolBars[0];
+	}
+
+	private static void AssertItemsEqual(IReadOnlyList<StudioToolStripItem> expected, IReadOnlyList<StudioToolStripItem> actual)
+	{
+		Assert.AreEqual(expected.Count, actual.Count);
+
+		for (int i = 0; i < expected.Count; i++)
+			AssertItemEqual(expected[i], actual[i]);
+	}
+
+	private static void AssertItemEqual(StudioToolStripItem expected, StudioToolStripItem actual)
+	{
+		Assert.AreEqual(expected.GetType(), actual.GetType());
+		Assert.AreEqual(expected.LangKey, actual.LangKey);
+		Assert.AreEqual(expected.Command, actual.Command);
+		Assert.AreEqual(expected.Icon, actual.Icon);
+		Assert.AreEqual(expected.CheckOnClick, actual.CheckOnClick);
+		Assert.AreEqual(expected.ShortcutDisplayText, actual.ShortcutDisplayText);
+		Assert.AreEqual(expected.Position, actual.Position);
+
+		AssertItemsEqual(expected.DropDownItems, actual.DropDownItems);
+	}
+
+	private static StudioToolStripItem AssertSingleRoot(IReadOnlyList<StudioToolStripItem> items)
+	{
+		Assert.AreEqual(1, items.Count);
+		return items[0];
+	}
+
+	private sealed class TestEditorControl : IEditorControl
+	{
+		private int _zoom = 100;
+
+		public EditorType EditorType => EditorType.Text;
+
+		public string FilePath { get; set; } = string.Empty;
+
+		public bool IsSilentSession { get; set; }
+
+		public bool CreateBackupFiles { get; set; }
+
+		public string Content { get; set; } = string.Empty;
+
+		public bool IsContentChanged { get; set; }
+
+		public DateTime LastModified { get; set; }
+
+		public bool CanUndo => false;
+
+		public bool CanRedo => false;
+
+		public int CurrentRow => 1;
+
+		public int CurrentColumn => 1;
+
+		public object SelectedContent => string.Empty;
+
+		public int SelectionLength => 0;
+
+		public int Zoom
+		{
+			get => _zoom;
+			set
+			{
+				if (value == _zoom)
+					return;
+
+				_zoom = value;
+				ZoomChanged?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		public int MinZoom { get; set; } = 10;
+
+		public int MaxZoom { get; set; } = 400;
+
+		public int ZoomStepSize { get; set; } = 10;
+
+		public string DefaultFileExtension => ".txt";
+
+		public Version EngineVersion { get; set; } = new(1, 0);
+
+		public event EventHandler? ContentChangedWorkerRunCompleted;
+
+		public event EventHandler? StatusChanged;
+
+		public event EventHandler? ZoomChanged;
+
+		public void ApplyPersistedContent(string content)
+			=> Content = content;
+
+		public void Copy()
+		{ }
+
+		public void Cut()
+		{ }
+
+		public void Dispose()
+		{ }
+
+		public void GoToObject(string objectName, object? identifyingObject = null)
+		{ }
+
+		public void Load(string fileName, bool silentSession)
+		{
+			FilePath = fileName;
+			IsSilentSession = silentSession;
+		}
+
+		public void Paste()
+		{ }
+
+		public void Redo()
+		{ }
+
+		public void Save()
+		{ }
+
+		public void Save(string fileName)
+			=> FilePath = fileName;
+
+		public void SelectAll()
+		{ }
+
+		public void TryRunContentChangedWorker()
+			=> ContentChangedWorkerRunCompleted?.Invoke(this, EventArgs.Empty);
+
+		public void Undo()
+		{ }
+
+		public void UpdateSettings(ConfigurationBase configuration)
+			=> StatusChanged?.Invoke(this, EventArgs.Empty);
 	}
 }

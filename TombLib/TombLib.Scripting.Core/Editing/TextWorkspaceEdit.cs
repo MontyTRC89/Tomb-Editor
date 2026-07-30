@@ -10,9 +10,7 @@ public sealed class TextWorkspaceEdit
 	/// </summary>
 	/// <param name="documentEdits">The per-document edits in the workspace change set.</param>
 	public TextWorkspaceEdit(IReadOnlyList<TextDocumentEdit> documentEdits)
-	{
-		DocumentEdits = documentEdits ?? [];
-	}
+		=> DocumentEdits = documentEdits;
 
 	/// <summary>
 	/// Gets the per-document edits in the workspace change set.

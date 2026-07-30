@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.UI;
@@ -9,64 +10,31 @@ namespace TombIDE.ScriptingStudio.Lua;
 public sealed class LuaDocumentCommandHandler : IStudioDocumentCommandHandler
 {
 	private readonly LuaDocumentCommandCallbacks _callbacks;
+	private readonly IReadOnlyDictionary<UICommand, Action<LuaEditor>> _editorHandlers;
+	private readonly IReadOnlyDictionary<UICommand, Action> _globalHandlers;
 
 	public LuaDocumentCommandHandler(LuaDocumentCommandCallbacks callbacks)
 	{
 		_callbacks = callbacks ?? throw new ArgumentNullException(nameof(callbacks));
+		_globalHandlers = new Dictionary<UICommand, Action>
+		{
+			[UICommand.NavigateBack] = _callbacks.NavigateBack,
+			[UICommand.NavigateForward] = _callbacks.NavigateForward,
+			[UICommand.FindReferences] = StudioDocumentCommandDispatcher.Run(_callbacks.FindReferencesAsync),
+			[UICommand.RenameSymbol] = StudioDocumentCommandDispatcher.Run(_callbacks.RenameSymbolAsync),
+			[UICommand.LuaBasics] = _callbacks.ShowLuaBasics
+		};
+		_editorHandlers = new Dictionary<UICommand, Action<LuaEditor>>
+		{
+			[UICommand.Reindent] = StudioDocumentCommandDispatcher.Run<LuaEditor>(_callbacks.ReindentAsync),
+			[UICommand.TrimWhiteSpace] = StudioDocumentCommandDispatcher.Run<LuaEditor>(_callbacks.TrimWhitespaceAsync),
+			[UICommand.GoToDefinition] = _callbacks.GoToDefinition
+		};
 	}
 
 	public bool TryHandle(UICommand command)
-	{
-		if (command == UICommand.NavigateBack)
-		{
-			_callbacks.NavigateBack();
-			return true;
-		}
-
-		if (command == UICommand.NavigateForward)
-		{
-			_callbacks.NavigateForward();
-			return true;
-		}
-
-		if (command == UICommand.FindReferences)
-		{
-			_ = _callbacks.FindReferencesAsync();
-			return true;
-		}
-
-		if (command == UICommand.RenameSymbol)
-		{
-			_ = _callbacks.RenameSymbolAsync();
-			return true;
-		}
-
-		if (command == UICommand.LuaBasics)
-		{
-			_callbacks.ShowLuaBasics();
-			return true;
-		}
-
-		if (_callbacks.GetCurrentEditor() is not LuaEditor editor)
-			return false;
-
-		switch (command)
-		{
-			case UICommand.Reindent:
-				_ = _callbacks.ReindentAsync();
-				return true;
-
-			case UICommand.TrimWhiteSpace:
-				_ = _callbacks.TrimWhitespaceAsync();
-				return true;
-
-			case UICommand.GoToDefinition:
-				_callbacks.GoToDefinition(editor);
-				return true;
-		}
-
-		return false;
-	}
+		=> StudioDocumentCommandDispatcher.TryHandle(command, _globalHandlers)
+			|| StudioDocumentCommandDispatcher.TryHandle(command, _callbacks.GetCurrentEditor, _editorHandlers);
 }
 
 public sealed record LuaDocumentCommandCallbacks(

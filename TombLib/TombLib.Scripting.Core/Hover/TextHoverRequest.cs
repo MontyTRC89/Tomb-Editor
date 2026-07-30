@@ -3,6 +3,10 @@ namespace TombLib.Scripting.Hover;
 /// <summary>
 /// Represents an in-process hover request against the current document snapshot.
 /// </summary>
+/// <remarks>
+/// Hover requests use a zero-based document offset so they can be constructed directly from
+/// editor caret positions without converting to line and column coordinates.
+/// </remarks>
 public sealed class TextHoverRequest
 {
 	/// <summary>
@@ -12,7 +16,7 @@ public sealed class TextHoverRequest
 	/// <param name="hoveredOffset">The zero-based hovered offset within that snapshot.</param>
 	public TextHoverRequest(string documentText, int hoveredOffset)
 	{
-		DocumentText = documentText ?? string.Empty;
+		DocumentText = documentText;
 		HoveredOffset = hoveredOffset;
 	}
 

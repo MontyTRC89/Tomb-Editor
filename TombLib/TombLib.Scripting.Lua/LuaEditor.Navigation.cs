@@ -8,7 +8,7 @@ public sealed partial class LuaEditor
 {
 	private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Escape && (_completionWindow is not null || _signatureHelpController.IsVisible || _specialToolTip.IsOpen))
+		if (e.Key == Key.Escape && (IsCompletionWindowOpen || _signatureHelpController.IsVisible || _specialToolTip.IsOpen))
 		{
 			CloseCompletionWindow();
 			DismissTransientToolTips();

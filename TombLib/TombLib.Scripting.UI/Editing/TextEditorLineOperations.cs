@@ -2,6 +2,7 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using System;
+using System.Text.RegularExpressions;
 using TombLib.Scripting.UI.Bases;
 
 namespace TombLib.Scripting.UI.Editing;
@@ -40,5 +41,47 @@ public static class TextEditorLineOperations
 		}
 
 		return false;
+	}
+
+	/// <summary>
+	/// Replaces the first occurrence of <paramref name="oldName"/> with <paramref name="newName"/>
+	/// on a line that matches <paramref name="lineRegex"/>. The name is extracted from each matching
+	/// line via <paramref name="nameExtractor"/> before comparison.
+	/// </summary>
+	/// <param name="textEditor">The editor whose document should be updated.</param>
+	/// <param name="lineRegex">The regular expression used to identify candidate lines.</param>
+	/// <param name="nameExtractor">
+	/// Extracts the normalized name from a candidate line. Receives the full line text and
+	/// the <paramref name="lineRegex"/> to remove the pattern; returns the cleaned name.
+	/// </param>
+	/// <param name="oldName">The name to search for.</param>
+	/// <param name="newName">The replacement name.</param>
+	/// <param name="scrollToLine">Whether to scroll the editor to the updated line.</param>
+	/// <returns><see langword="true" /> when a matching line was replaced; otherwise, <see langword="false" />.</returns>
+	public static bool TryReplaceFirstMatchingLine(
+		TextEditorBase textEditor,
+		Regex lineRegex,
+		Func<string, Regex, string> nameExtractor,
+		string oldName,
+		string newName,
+		bool scrollToLine = true)
+	{
+		ArgumentNullException.ThrowIfNull(textEditor);
+		ArgumentNullException.ThrowIfNull(lineRegex);
+		ArgumentNullException.ThrowIfNull(nameExtractor);
+		ArgumentNullException.ThrowIfNull(oldName);
+		ArgumentNullException.ThrowIfNull(newName);
+
+		return TryReplaceFirstMatchingLine(textEditor, lineText =>
+		{
+			if (!lineRegex.IsMatch(lineText))
+				return null;
+
+			string extractedName = nameExtractor(lineText, lineRegex);
+
+			return extractedName == oldName
+				? lineText.Replace(oldName, newName)
+				: null;
+		}, scrollToLine);
 	}
 }

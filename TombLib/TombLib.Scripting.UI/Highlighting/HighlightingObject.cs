@@ -11,6 +11,7 @@ namespace TombLib.Scripting.UI.Highlighting
 		#region Operators
 
 		public static bool operator ==(HighlightingObject? a, HighlightingObject? b) => Equals(a, b);
+
 		public static bool operator !=(HighlightingObject? a, HighlightingObject? b) => !Equals(a, b);
 
 		public override bool Equals(object? obj)
