@@ -173,6 +173,7 @@
             this.tabTrx = new System.Windows.Forms.TabPage();
             this.comboTrxTextureDepth = new DarkUI.Controls.DarkComboBox();
             this.lblTrxTextureDepth = new DarkUI.Controls.DarkLabel();
+            this.cbTrxConvertFlybysToCinematicFrames = new DarkUI.Controls.DarkCheckBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.levelFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
@@ -2021,6 +2022,7 @@
             this.tabTrx.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabTrx.Controls.Add(this.comboTrxTextureDepth);
             this.tabTrx.Controls.Add(this.lblTrxTextureDepth);
+            this.tabTrx.Controls.Add(this.cbTrxConvertFlybysToCinematicFrames);
             this.tabTrx.Location = new System.Drawing.Point(4, 22);
             this.tabTrx.Name = "tabTrx";
             this.tabTrx.Size = new System.Drawing.Size(778, 505);
@@ -2037,6 +2039,16 @@
             this.comboTrxTextureDepth.Size = new System.Drawing.Size(81, 23);
             this.comboTrxTextureDepth.TabIndex = 4;
             this.comboTrxTextureDepth.SelectedIndexChanged += new System.EventHandler(this.comboTrxTextureDepth_SelectedIndexChanged);
+            // 
+            // cbTrxConvertFlybysToCinematicFrames
+            // 
+            this.cbTrxConvertFlybysToCinematicFrames.AutoSize = true;
+            this.cbTrxConvertFlybysToCinematicFrames.Location = new System.Drawing.Point(3, 40);
+            this.cbTrxConvertFlybysToCinematicFrames.Name = "cbTrxConvertFlybysToCinematicFrames";
+            this.cbTrxConvertFlybysToCinematicFrames.Size = new System.Drawing.Size(120, 17);
+            this.cbTrxConvertFlybysToCinematicFrames.Tag = "";
+            this.cbTrxConvertFlybysToCinematicFrames.Text = "Convert flyby cameras into cinematic frames";
+            this.cbTrxConvertFlybysToCinematicFrames.CheckedChanged += new System.EventHandler(this.cbTrxUseFlybysForCinematics_CheckedChanged);
             // 
             // lblTrxTextureDepth
             // 
@@ -2432,6 +2444,7 @@
         private System.Windows.Forms.TabPage tabTrx;
         private DarkUI.Controls.DarkComboBox comboTrxTextureDepth;
         private DarkUI.Controls.DarkLabel lblTrxTextureDepth;
+        private DarkUI.Controls.DarkCheckBox cbTrxConvertFlybysToCinematicFrames;
         private TombLib.Controls.DarkDataGridViewControls textureFileDataGridViewControls;
         private System.Windows.Forms.DataGridViewTextBoxColumn objectFileDataGridViewPathColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn objectFileDataGridViewSearchColumn;

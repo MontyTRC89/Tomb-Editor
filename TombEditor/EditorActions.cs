@@ -193,10 +193,29 @@ namespace TombEditor
                         case ArrowType.CornerNW: origin = SectorEdge.XnZp; break;
                         case ArrowType.CornerSE: origin = SectorEdge.XpZn; break;
                     }
+
+                    // GetSectorTryThroughPortal can return an empty pair (outside the room, no portal), so
+                    // guard the origin and every corner before reading heights. Corners default to true,
+                    // hence the explicit reset when the origin itself is missing.
                     var originSector = room.GetSectorTryThroughPortal(startCoord);
-                    var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
-                    for (int i = 0; i < 4; i++)
-                        corners[i] = originHeight == cornerSectors[i].Sector.GetHeight(vertical, (SectorEdge)i) + cornerSectors[i].Room.Position.Y;
+                    if (originSector.Sector == null || originSector.Room == null)
+                        Array.Fill(corners, false);
+                    else
+                    {
+                        var originHeight = originSector.Sector.GetHeight(vertical, origin) + originSector.Room.Position.Y;
+
+                        // A corner smooths only if it exists and sits at the same height as the edited corner.
+                        bool CornerMatchesOriginHeight(RoomSectorPair corner, SectorEdge edge)
+                        {
+                            if (corner.Sector == null || corner.Room == null)
+                                return false;
+
+                            return originHeight == corner.Sector.GetHeight(vertical, edge) + corner.Room.Position.Y;
+                        }
+
+                        for (int i = 0; i < 4; i++)
+                            corners[i] = CornerMatchesOriginHeight(cornerSectors[i], (SectorEdge)i);
+                    }
                 }
 
                 // Smoothly change sectors on the corners
@@ -1063,13 +1082,11 @@ namespace TombEditor
                 return;
             }
 
-            if (!VersionCheck(_editor.Level.IsTombEngine, "Object name"))
+            if (!VersionCheck(_editor.Level.IsTombEngine || _editor.Level.IsTRX, "Object name"))
                 return;
 
-            if (!(instance is PositionAndScriptBasedObjectInstance))
+            if (instance is not PositionAndScriptBasedObjectInstance luaInstance || !luaInstance.SupportsLuaName())
                 return;
-
-            var luaInstance = instance as PositionAndScriptBasedObjectInstance;
 
             using (var form = new FormInputBox("Edit object name", "Enter new Lua name for this object:", luaInstance.LuaName))
             {
@@ -2346,11 +2363,10 @@ namespace TombEditor
                 if (si.ScriptId == null)
                     si.AllocateNewScriptId();
             }
-            else if (instance is IHasLuaName && _editor.Level.IsTombEngine)
+            else if (instance is IHasLuaName luaInstance && luaInstance.SupportsLuaName())
             {
-                var li = instance as IHasLuaName;
-                if (string.IsNullOrEmpty(li.LuaName))
-                    li.AllocateNewLuaName();
+                if (string.IsNullOrEmpty(luaInstance.LuaName))
+                    luaInstance.AllocateNewLuaName();
             }
 
             if (instance is ObjectGroup)
@@ -2361,7 +2377,7 @@ namespace TombEditor
         // Batch-optimized version that allocates script IDs in bulk.
         public static void AllocateScriptIds(IEnumerable<PositionBasedObjectInstance> instances)
         {
-            if (_editor.Level.IsTombEngine)
+            if (_editor.Level.IsTombEngine || _editor.Level.IsTRX)
             {
                 var existingNames = _editor.Level.GetAllLuaNames();
                 foreach (var instance in instances)
@@ -2382,7 +2398,7 @@ namespace TombEditor
                 if (si.ScriptId == null)
                     si.AllocateNewScriptId();
             }
-            else if (instance is PositionAndScriptBasedObjectInstance scriptObj && _editor.Level.IsTombEngine)
+            else if (instance is PositionAndScriptBasedObjectInstance scriptObj && scriptObj.SupportsLuaName())
             {
                 if (string.IsNullOrEmpty(scriptObj.LuaName))
                     scriptObj.AllocateNewLuaName(luaNameCache);
@@ -2401,10 +2417,33 @@ namespace TombEditor
             _editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(type) { Color = color });
         }
 
+        private static bool ObjectInstanceIsMoveable(ObjectInstance instance) =>
+            instance is ItemInstance item && !item.ItemType.IsStatic;
+
+        private static bool ObjectGroupContainsMoveable(ObjectGroup group) =>
+            group.Any(ObjectInstanceIsMoveable);
+
+        private static bool IsInvalidMoveablePlacement(Room room, ObjectInstance instance)
+        {
+            if (!room.IsAlternate)
+                return false;
+
+            if (instance is ObjectGroup group)
+                return ObjectGroupContainsMoveable(group);
+
+            return ObjectInstanceIsMoveable(instance);
+        }
+
         public static void PlaceObject(Room room, VectorInt2 pos, ObjectInstance instance)
         {
             if (!(instance is ISpatial))
                 return;
+
+            if (IsInvalidMoveablePlacement(room, instance))
+            {
+                _editor.SendMessage("You can't add moveables to a flipped room.", PopupType.Info);
+                return;
+            }
 
             if (instance is ObjectGroup)
             {
@@ -5902,6 +5941,9 @@ namespace TombEditor
                         if (instance is SoundSourceInstance)
                         {
                             var soundSource = instance as SoundSourceInstance;
+                            if (soundSource.IsEmpty)
+                                continue;
+
                             if (!settings.SelectedSounds.Contains(soundSource.SoundId))
                                 settings.SelectedSounds.Add(soundSource.SoundId);
                         }

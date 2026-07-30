@@ -62,7 +62,21 @@ namespace TombIDE
 				tabPage_Plugins.Controls.Add(pluginManager);
 			}
 
+<<<<<<< HEAD
 			_scriptingStudioShell.Mount(tabPage_ScriptingStudio, this);
+=======
+			if (_ide.Project.GameVersion is TRVersion.Game.TR4 or TRVersion.Game.TRNG)
+				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
+			else if (_ide.Project.GameVersion is TRVersion.Game.TR2 or TRVersion.Game.TR3)
+				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
+			else if (_ide.Project.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X)
+				scriptingStudio = new ScriptingStudio.Tomb1MainStudio(_ide.Project.GameVersion) { Parent = this };
+			else if (_ide.Project.GameVersion is TRVersion.Game.TombEngine)
+				scriptingStudio = new ScriptingStudio.LuaStudio { Parent = this };
+
+			scriptingStudio.Dock = DockStyle.Fill;
+			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);
+>>>>>>> origin/develop
 
 			Text = "TombIDE - " + _ide.Project.Name;
 

@@ -37,6 +37,10 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 					_editingControl.Copy();
 					keyData = Keys.None;
 				}
+				else if (keyData == Keys.Delete)
+				{
+					keyData = Keys.None;
+				}
 			}
 			else
 			{
