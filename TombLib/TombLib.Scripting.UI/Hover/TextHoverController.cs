@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Hover;
+using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombLib.Scripting.UI.Hover;

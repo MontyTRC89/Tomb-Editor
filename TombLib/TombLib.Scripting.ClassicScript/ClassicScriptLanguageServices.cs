@@ -5,8 +5,11 @@ using TombLib.Scripting.ClassicScript.Hover;
 using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Signatures;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
+using Nickelony.LanguageServer.Core.Signatures;
 using TombLib.Scripting.Signatures;
 
 namespace TombLib.Scripting.ClassicScript;

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -12,8 +12,10 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;

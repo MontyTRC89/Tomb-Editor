@@ -15,7 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TombLib\TombLib.LanguageServer.Core\TombLib.LanguageServer.Core.csproj" />
+    <ProjectReference Include="..\..\TombLib\Nickelony.LanguageServer.Core\Nickelony.LanguageServer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\TestSupport\TestLoggerScope.cs" Link="Support\TestLoggerScope.cs" />
   </ItemGroup>
 
   <ItemGroup>

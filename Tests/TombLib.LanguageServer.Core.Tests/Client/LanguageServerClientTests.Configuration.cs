@@ -1,7 +1,8 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 using System.Text.Json;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 public partial class LanguageServerClientTests
 {
@@ -201,12 +202,12 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void WorkspaceConfiguration_WhenSettingsSerializationFails_ReturnsNullValuesAndLogsWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
 
 		var cyclicSettings = new Dictionary<string, object?>();
 		cyclicSettings["self"] = cyclicSettings;
 
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(() => cyclicSettings));
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", new LanguageServerClientOptions(() => cyclicSettings), logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 1, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);

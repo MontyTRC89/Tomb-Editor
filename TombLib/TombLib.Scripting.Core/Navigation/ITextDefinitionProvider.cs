@@ -1,3 +1,5 @@
+using Nickelony.LanguageServer.Core.Navigation;
+
 namespace TombLib.Scripting.Navigation;
 
 /// <summary>

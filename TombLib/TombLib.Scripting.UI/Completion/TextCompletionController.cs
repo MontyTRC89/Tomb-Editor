@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Presentation;

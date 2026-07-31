@@ -4,6 +4,7 @@ using ICSharpCode.AvalonEdit.Document;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Text.RegularExpressions;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX.Services;
 

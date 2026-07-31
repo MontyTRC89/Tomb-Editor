@@ -35,7 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-    <ProjectReference Include="..\..\TombLib\TombLib.LanguageServer.Lua\TombLib.LanguageServer.Lua.csproj" />
+    <ProjectReference Include="..\..\TombLib\Nickelony.LanguageServer.Lua\Nickelony.LanguageServer.Lua.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />

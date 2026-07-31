@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Nickelony.LanguageServer.Lua</RootNamespace>
+    <AssemblyName>Nickelony.LanguageServer.Lua</AssemblyName>
+    <PackageId>Nickelony.LanguageServer.Lua</PackageId>
+    <Authors>Nickelony</Authors>
+    <Description>Lua language-server provider and Lua-specific editor contracts for the Nickelony Language Server family.</Description>
+    <PackageTags>language-server;lsp;lua;intellisense;nickelony</PackageTags>
+    <RepositoryUrl>https://github.com/Nickelony/LanguageServer</RepositoryUrl>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nickelony.LanguageServer.Core\Nickelony.LanguageServer.Core.csproj" />
+  </ItemGroup>
+
+</Project>

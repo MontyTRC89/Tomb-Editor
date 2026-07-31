@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using TombIDE.ScriptingStudio.Messaging;
 using TombIDE.ScriptingStudio.Shell;
-using TombLib.LanguageServer.Core;
-using TombLib.LanguageServer.Lua;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core;
+using Nickelony.LanguageServer.Lua;
+using Nickelony.LanguageServer.Core.Diagnostics;
 
 namespace TombIDE.ScriptingStudio.Lua;
 

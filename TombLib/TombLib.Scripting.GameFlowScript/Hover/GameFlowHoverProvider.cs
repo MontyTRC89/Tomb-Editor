@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit.Document;
 using System.Windows.Documents;
 using TombLib.Scripting.GameFlowScript.Navigation;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
 
 namespace TombLib.Scripting.GameFlowScript.Hover;

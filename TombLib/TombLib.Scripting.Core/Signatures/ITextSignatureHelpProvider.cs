@@ -1,3 +1,5 @@
+using Nickelony.LanguageServer.Core.Signatures;
+
 namespace TombLib.Scripting.Signatures;
 
 /// <summary>

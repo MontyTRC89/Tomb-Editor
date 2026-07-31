@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics
 {

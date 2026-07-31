@@ -1,9 +1,10 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Testing;
 using System.Text.Json;
-using TombLib.Scripting.Editing;
-using TombLib.Scripting.Navigation;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerResponseParserTests
 {
@@ -391,9 +392,9 @@ public partial class LuaLanguageServerResponseParserTests
 			}
 		});
 
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
 
-		TextWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+		TextWorkspaceEdit? workspaceEdit = LuaLanguageServerResponseParser.ParseWorkspaceEdit(response, logScope);
 
 		Assert.IsNull(workspaceEdit);
 		Assert.AreEqual(1, logScope.Logs.Count);

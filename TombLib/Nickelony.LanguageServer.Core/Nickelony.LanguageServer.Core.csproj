@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Nickelony.LanguageServer.Core</RootNamespace>
+    <AssemblyName>Nickelony.LanguageServer.Core</AssemblyName>
+    <PackageId>Nickelony.LanguageServer.Core</PackageId>
+    <Authors>Nickelony</Authors>
+    <Description>Core abstractions and LSP client shared by the Nickelony Language Server family.</Description>
+    <PackageTags>language-server;lsp;editor;intellisense;nickelony</PackageTags>
+    <RepositoryUrl>https://github.com/Nickelony/LanguageServer</RepositoryUrl>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.*" />
+    <PackageReference Include="StreamJsonRpc" Version="2.24.84" />
+  </ItemGroup>
+
+</Project>

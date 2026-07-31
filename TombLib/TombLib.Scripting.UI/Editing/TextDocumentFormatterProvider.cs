@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TombLib.Scripting.Editing;
+using Nickelony.LanguageServer.Core.Editing;
 using TombLib.Scripting.UI.Cleaning;
 
 namespace TombLib.Scripting.UI.Editing;

@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 internal static class LuaLanguageServerIntellisenseProviderTestAccess
 {

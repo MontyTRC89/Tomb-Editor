@@ -1,3 +1,5 @@
+using Nickelony.LanguageServer.Core.Diagnostics;
+
 namespace TombLib.Scripting.Diagnostics;
 
 /// <summary>

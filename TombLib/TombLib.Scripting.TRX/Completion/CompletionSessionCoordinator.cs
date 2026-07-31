@@ -2,6 +2,7 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using System.Collections.Generic;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Text;
 

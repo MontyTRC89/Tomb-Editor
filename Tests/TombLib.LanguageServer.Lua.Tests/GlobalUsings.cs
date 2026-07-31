@@ -1,1 +1,2 @@
-global using TombLib.Scripting.Lua;global using TombLib.LanguageServer.Core;
+global using Nickelony.LanguageServer.Core;
+global using Nickelony.LanguageServer.Lua;

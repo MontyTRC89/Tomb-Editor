@@ -1,3 +1,4 @@
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Completion;
 
 namespace TombLib.Scripting.GameFlowScript.Completion;

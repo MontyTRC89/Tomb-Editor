@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Nickelony.LanguageServer.Core\Nickelony.LanguageServer.Core.csproj" />
+  </ItemGroup>
+
 </Project>

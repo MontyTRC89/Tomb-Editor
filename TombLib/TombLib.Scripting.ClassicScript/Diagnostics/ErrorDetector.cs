@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using Nickelony.LanguageServer.Core.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Diagnostics;

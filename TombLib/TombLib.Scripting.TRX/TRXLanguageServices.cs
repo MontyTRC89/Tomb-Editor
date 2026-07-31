@@ -1,8 +1,11 @@
 #nullable enable
 
 using System;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Completion;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Documents;

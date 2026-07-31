@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Nickelony.LanguageServer.Core.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.UI.Bases;
 

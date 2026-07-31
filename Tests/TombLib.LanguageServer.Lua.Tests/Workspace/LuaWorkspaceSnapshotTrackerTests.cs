@@ -1,4 +1,4 @@
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 [TestClass]
 public class LuaWorkspaceSnapshotTrackerTests

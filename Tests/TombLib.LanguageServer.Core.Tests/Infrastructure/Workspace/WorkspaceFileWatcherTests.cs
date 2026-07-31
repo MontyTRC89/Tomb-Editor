@@ -1,6 +1,7 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 [TestClass]
 public class WorkspaceFileWatcherTests
@@ -163,7 +164,7 @@ public class WorkspaceFileWatcherTests
 		FileChangeBatch? dispatchedBatch = null;
 		int dispatchAttemptCount = 0;
 
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 
 		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (batch, _) =>
 		{
@@ -174,7 +175,7 @@ public class WorkspaceFileWatcherTests
 
 			dispatchedBatch = batch;
 			return Task.CompletedTask;
-		}, watchSpecifications);
+		}, watchSpecifications, logger: logScope.CreateLogger<WorkspaceFileWatcher>());
 
 		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
@@ -202,9 +203,9 @@ public class WorkspaceFileWatcherTests
 		string workspaceRoot = workspace.DirectoryPath;
 		WorkspaceWatchSpecification[] watchSpecifications = [new("*.lua", IncludeSubdirectories: true)];
 
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 
-		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications);
+		await using var watcher = new WorkspaceFileWatcher(workspaceRoot, (_, _) => throw new IOException("Persistent dispatch failure."), watchSpecifications, logger: logScope.CreateLogger<WorkspaceFileWatcher>());
 
 		string filePath = Path.Combine(workspaceRoot, "test.lua");
 
@@ -672,13 +673,14 @@ public class WorkspaceFileWatcherTests
 	{
 		using var workspace = new TemporaryWorkspaceRoot("WorkspaceWatcherFailureCallback_");
 		string workspaceRoot = workspace.DirectoryPath;
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
 
 		using var watcher = new WorkspaceFileWatcher(
 			workspaceRoot,
 			(_, _) => Task.CompletedTask,
 			[new WorkspaceWatchSpecification("*.lua", IncludeSubdirectories: true)],
-			(_, _) => throw new InvalidOperationException("Simulated watcher failure callback exception."));
+			(_, _) => throw new InvalidOperationException("Simulated watcher failure callback exception."),
+			logger: logScope.CreateLogger<WorkspaceFileWatcher>());
 
 		Assert.IsTrue(watcher.Start());
 

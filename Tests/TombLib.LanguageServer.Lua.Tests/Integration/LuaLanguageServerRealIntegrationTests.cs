@@ -1,14 +1,13 @@
+using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using System.Reflection;
-using TombLib.Scripting.Completion;
-using TombLib.Scripting.Lua;
-using TombLib.Scripting.Editing;
-using TombLib.Scripting.Hover;
-using TombLib.Scripting.Navigation;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 /// <summary>
 /// Live integration coverage for the bundled Lua language server.

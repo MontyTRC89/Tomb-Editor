@@ -1,7 +1,7 @@
 #nullable enable
 
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using TombLib.Scripting.Navigation;
+using Nickelony.LanguageServer.Core.Navigation;
 
 namespace TombIDE.ScriptingStudio.Messaging;
 

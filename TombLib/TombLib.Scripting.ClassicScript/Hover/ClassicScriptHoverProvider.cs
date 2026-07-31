@@ -1,5 +1,6 @@
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Text;
 

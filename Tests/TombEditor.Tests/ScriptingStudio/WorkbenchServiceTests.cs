@@ -23,7 +23,7 @@ using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Services;
-using TombLib.Scripting.Lua;
+using Nickelony.LanguageServer.Lua;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.UI.Editors;

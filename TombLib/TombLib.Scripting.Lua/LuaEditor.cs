@@ -2,7 +2,7 @@ using NLog;
 using System;
 using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Resources;
-using TombLib.Scripting.Navigation;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Highlighting;

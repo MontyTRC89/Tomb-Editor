@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nickelony.LanguageServer.Lua\Nickelony.LanguageServer.Lua.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />

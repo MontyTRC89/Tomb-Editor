@@ -1,6 +1,6 @@
 #nullable enable
 
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
 
 namespace TombLib.Scripting.UI.Presentation;
 

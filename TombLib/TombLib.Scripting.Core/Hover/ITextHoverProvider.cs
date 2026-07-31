@@ -1,3 +1,5 @@
+using Nickelony.LanguageServer.Core.Hover;
+
 namespace TombLib.Scripting.Hover;
 
 /// <summary>

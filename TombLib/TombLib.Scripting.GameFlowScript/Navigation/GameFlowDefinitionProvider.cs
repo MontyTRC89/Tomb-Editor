@@ -1,4 +1,5 @@
 using TombLib.Scripting.GameFlowScript.Services;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Text;
 

@@ -1,5 +1,5 @@
 using System.Windows.Media;
-using TombLib.Scripting.Completion;
+using Nickelony.LanguageServer.Core.Completion;
 
 namespace TombLib.Scripting.Lua.Resources;
 

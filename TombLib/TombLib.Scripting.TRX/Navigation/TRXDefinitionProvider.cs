@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX.Services;

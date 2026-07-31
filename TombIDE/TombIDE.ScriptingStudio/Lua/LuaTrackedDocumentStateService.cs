@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.UI.Editors;
 

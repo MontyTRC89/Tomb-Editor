@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 internal sealed class FakeLanguageServerClient : ILanguageServerClient
 {

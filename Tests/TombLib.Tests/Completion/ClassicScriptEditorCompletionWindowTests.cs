@@ -1,4 +1,5 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using Nickelony.LanguageServer.Core.Completion;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;

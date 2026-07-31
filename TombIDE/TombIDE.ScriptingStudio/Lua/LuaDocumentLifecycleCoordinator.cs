@@ -7,7 +7,7 @@ using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Messaging;
 using TombIDE.ScriptingStudio.Shell;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Navigation;
+using Nickelony.LanguageServer.Core.Navigation;
 
 namespace TombIDE.ScriptingStudio.Lua;
 

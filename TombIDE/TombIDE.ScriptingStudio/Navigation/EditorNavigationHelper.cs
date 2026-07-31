@@ -4,7 +4,7 @@ using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Text.RegularExpressions;
 using TombIDE.ScriptingStudio.FindAndReplace;
-using TombLib.Scripting.Editing;
+using Nickelony.LanguageServer.Core.Editing;
 using TombLib.Scripting.UI.Bases;
 
 namespace TombIDE.ScriptingStudio.Navigation;

@@ -1,7 +1,6 @@
-using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Lua;
+using Nickelony.LanguageServer.Core.Diagnostics;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 [TestClass]
 public class LuaDocumentStoreTests

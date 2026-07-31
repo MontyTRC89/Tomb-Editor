@@ -1,3 +1,5 @@
+using Nickelony.LanguageServer.Core.Completion;
+
 namespace TombLib.Scripting.Completion;
 
 /// <summary>

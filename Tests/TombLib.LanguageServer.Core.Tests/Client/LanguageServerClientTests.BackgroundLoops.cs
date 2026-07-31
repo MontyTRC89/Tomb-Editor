@@ -1,16 +1,17 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 using System.Diagnostics;
 using System.Text.Json;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 public partial class LanguageServerClientTests
 {
 	[TestMethod]
 	public async Task WaitForBackgroundLoopsAsync_WhenLoopFaults_LogsSpecificWarningWithoutFallback()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 
 		await InvokePrivateTaskAsync(client, "WaitForBackgroundLoopsAsync",
 			Task.FromException(new IOException("Simulated loop failure.")),
@@ -27,8 +28,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task ObserveBackgroundLoop_WhenLoopFaultsBeforeDisposal_LogsImmediateWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 
 		InvokePrivateMethod(client,
 			"ObserveBackgroundLoop",
@@ -153,8 +154,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task WaitWithDisposeBudgetAsync_WhenLoopAlreadyLogged_DoesNotLogDuplicateDisposalWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		Task faultedLoopTask = Task.FromException(new IOException("Simulated callback pump failure."));
 
 		InvokePrivateMethod(client, "ObserveBackgroundLoop", faultedLoopTask, "callback dispatcher", true);
@@ -180,8 +181,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task WaitForBackgroundLoopsAsync_WhenLoopIsCanceled_LogsDebugWithoutWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 
 		await InvokePrivateTaskAsync(client, "WaitForBackgroundLoopsAsync",
 			Task.FromCanceled(new CancellationToken(canceled: true)),

@@ -1,8 +1,9 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Testing;
 using System.Text.Json;
-using TombLib.Scripting.Completion;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 [TestClass]
 public partial class LuaLanguageServerResponseParserTests
@@ -295,7 +296,9 @@ public partial class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void DeserializeCompletionResponse_IgnoresMalformedCompletionListItemsShape()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
+
+		CompletionResponseJsonConverter.InitializeLogger(logScope);
 
 		CompletionResponse? response = DeserializeCompletionResponse(new
 		{
@@ -317,7 +320,9 @@ public partial class LuaLanguageServerResponseParserTests
 	[TestMethod]
 	public void DeserializeCompletionResponse_LogsWhenCompletionListItemsPropertyIsMissing()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
+
+		CompletionResponseJsonConverter.InitializeLogger(logScope);
 
 		CompletionResponse? response = DeserializeCompletionResponse(new
 		{

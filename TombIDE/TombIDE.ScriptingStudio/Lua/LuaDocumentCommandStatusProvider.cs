@@ -2,7 +2,7 @@ using System;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.ScriptingStudio.UI;
-using TombLib.Scripting.Editing;
+using Nickelony.LanguageServer.Core.Editing;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;

@@ -1,11 +1,12 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 using StreamJsonRpc;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 [TestClass]
 public partial class LanguageServerClientTests
@@ -282,9 +283,9 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task SendRequestAsync_WhenActiveTransportFails_LogsRequestFailureWithGeneration()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using var serverOutputStream = new PendingReadStream();
-		await using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		await using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 7, process: null, serverOutputStream, Stream.Null, startListening: true);
 
 		SetActiveSession(client, session);
@@ -350,8 +351,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void JsonRpc_Disconnected_LocallyDisposedActiveTransport_LogsExpectedShutdownAtInfo()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 3, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -370,8 +371,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task JsonRpc_Disconnected_DuringClientDisposal_LogsDebugWithoutWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 4, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -402,8 +403,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void MarkTransportUnhealthy_WhenReady_LogsRestartBoundary()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 5, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -541,6 +542,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			null,
 			processStartedTestHook: null,
 			sessionActivatedTestHook: cancellationToken => WaitForStartupCancellationAsync(sessionActivated, cancellationToken));
 
@@ -569,6 +571,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			null,
 			processStartedTestHook: null,
 			sessionActivatedTestHook: cancellationToken => WaitForStartupCancellationAsync(sessionActivated, cancellationToken));
 
@@ -590,8 +593,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void RegisterCapability_IgnoresDynamicRegistrationAndLogsWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 1, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -616,8 +619,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void UnregisterCapability_IgnoresDynamicUnregistrationAndLogsWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 2, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -642,8 +645,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void RegisterCapability_StaleTransportGeneration_LogsDebugWithoutWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object oldSession = CreateTransportSession(client, 3, process: null, Stream.Null, Stream.Null);
 		object newSession = CreateTransportSession(client, 4, process: null, Stream.Null, Stream.Null);
 
@@ -672,8 +675,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void Hello_IgnoresArrayPayloadWithoutThrowing()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 5, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -742,8 +745,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void Process_Exited_SupersededTransportGenerationDoesNotAffectActiveSessionOrWarn()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object oldSession = CreateTransportSession(client, 1, process: null, Stream.Null, Stream.Null);
 		object newSession = CreateTransportSession(client, 2, process: null, Stream.Null, Stream.Null);
 
@@ -977,14 +980,18 @@ public partial class LanguageServerClientTests
 		Type targetType = typeof(LanguageServerClient).GetNestedType("LanguageServerClientRpcTarget", BindingFlags.NonPublic)
 			?? throw new InvalidOperationException("Nested type 'LanguageServerClientRpcTarget' was not found.");
 
+		string workspaceRootDirectoryPath = (string)GetPrivateField(client, "_workspaceRootDirectoryPath");
+		string workspaceFolderName = (string)GetPrivateField(client, "_workspaceFolderName");
+		ILogger logger = (ILogger)GetPrivateField(client, "_logger");
+
 		ConstructorInfo constructor = targetType.GetConstructor(
 			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
 			binder: null,
-			[typeof(LanguageServerClient), typeof(long)],
+			[typeof(LanguageServerClient), typeof(long), typeof(string), typeof(string), typeof(ILogger)],
 			modifiers: null)
 			?? throw new InvalidOperationException("Lua RPC target constructor was not found.");
 
-		return constructor.Invoke([client, generation]);
+		return constructor.Invoke([client, generation, workspaceRootDirectoryPath, workspaceFolderName, logger]);
 	}
 
 	private static object GetPropertyValue(object instance, string propertyName)

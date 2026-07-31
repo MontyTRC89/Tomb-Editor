@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 [TestClass]
 public class SemanticTokensDeltaParserTests

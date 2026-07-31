@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Windows.Media;
-using TombLib.Scripting.Completion;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua.Completion;

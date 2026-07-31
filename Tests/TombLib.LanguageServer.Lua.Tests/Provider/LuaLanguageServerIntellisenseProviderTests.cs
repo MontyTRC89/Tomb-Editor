@@ -1,9 +1,9 @@
+using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Core.Hover;
 using System.Text.Json;
-using TombLib.Scripting.Completion;
-using TombLib.Scripting.Editing;
-using TombLib.Scripting.Hover;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 [TestClass]
 public partial class LuaLanguageServerIntellisenseProviderTests

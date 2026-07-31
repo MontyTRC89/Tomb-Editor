@@ -5,7 +5,9 @@ using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
 using TombLib.Scripting.Navigation;
 
 namespace TombLib.Scripting.GameFlowScript;

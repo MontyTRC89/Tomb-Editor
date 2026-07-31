@@ -1,4 +1,4 @@
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 [TestClass]
 public class TrackedDocumentStateTests

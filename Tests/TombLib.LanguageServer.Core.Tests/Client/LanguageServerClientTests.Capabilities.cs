@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 public partial class LanguageServerClientTests
 {

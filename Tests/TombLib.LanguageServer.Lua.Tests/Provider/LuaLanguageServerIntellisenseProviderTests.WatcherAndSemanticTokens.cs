@@ -1,7 +1,6 @@
 using System.Text.Json;
-using TombLib.Scripting.Lua;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerIntellisenseProviderTests
 {

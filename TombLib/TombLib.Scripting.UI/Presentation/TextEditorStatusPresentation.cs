@@ -1,6 +1,6 @@
 #nullable enable
 
-using TombLib.Scripting.Signatures;
+using Nickelony.LanguageServer.Core.Signatures;
 
 namespace TombLib.Scripting.UI.Presentation;
 

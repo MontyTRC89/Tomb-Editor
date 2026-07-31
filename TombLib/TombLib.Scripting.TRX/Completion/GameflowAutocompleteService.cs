@@ -3,6 +3,7 @@
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.Generic;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.TRX.Services;
 

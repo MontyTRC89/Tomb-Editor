@@ -1,6 +1,6 @@
-using TombLib.Scripting.Signatures;
+using Nickelony.LanguageServer.Core.Signatures;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerResponseParserTests
 {

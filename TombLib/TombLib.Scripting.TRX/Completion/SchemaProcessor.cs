@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.Generic;
 using System.Linq;
-using TombLib.Scripting.Completion;
+using Nickelony.LanguageServer.Core.Completion;
 
 namespace TombLib.Scripting.TRX.Completion;
 

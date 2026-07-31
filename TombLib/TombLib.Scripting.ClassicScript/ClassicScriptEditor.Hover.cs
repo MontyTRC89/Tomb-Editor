@@ -3,7 +3,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using TombLib.Scripting.ClassicScript.Navigation;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Core.Hover;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Presentation;

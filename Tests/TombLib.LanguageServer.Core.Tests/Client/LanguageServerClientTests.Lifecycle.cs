@@ -1,20 +1,21 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 using StreamJsonRpc;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 public partial class LanguageServerClientTests
 {
 	[TestMethod]
 	public void Dispose_WritesGracefulShutdownMessagesAndLogsGracefulAttempt()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using Process process = StartDisposableProcess();
 		using var serverOutputStream = new PendingReadStream();
 		using var serverInputStream = new RecordingStream();
-		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions);
+		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 1, process, serverOutputStream, serverInputStream, startListening: true);
 
 		SetActiveSession(client, session);
@@ -112,7 +113,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task StartAsync_WhenStartupFailsBeforeSessionActivation_KillsSpawnedProcess()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		Process? startedProcess = null;
 		int? startedProcessId = null;
 
@@ -120,6 +121,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			logScope.CreateLogger<LanguageServerClient>(),
 			processStartedTestHook: async (process, _) =>
 			{
 				startedProcess = process;
@@ -143,7 +145,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task StartAsync_WhenCallerCancelsBeforeSessionActivation_CleansStartupProcessAndRethrows()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using var startupCancellation = new CancellationTokenSource();
 		var processStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowStartupToContinue = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -153,6 +155,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			logScope.CreateLogger<LanguageServerClient>(),
 			processStartedTestHook: async (process, cancellationToken) =>
 			{
 				startedProcessId = process.Id;
@@ -197,7 +200,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task StartAsync_WhenClientIsDisposedBeforeSessionActivation_CleansStartupProcessAndReturnsFalse()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		var processStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var allowStartupToContinue = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 		int? startedProcessId = null;
@@ -206,6 +209,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			logScope.CreateLogger<LanguageServerClient>(),
 			processStartedTestHook: async (process, cancellationToken) =>
 			{
 				startedProcessId = process.Id;
@@ -248,9 +252,9 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task DisposeStartupSessionResourcesAsync_WhenCancellationIsExpected_LogsDebugWithoutWarning()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using Process process = StartDisposableProcess();
-		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions);
+		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		int processId = process.Id;
 
 		await InvokePrivateTaskAsync(client, "DisposeStartupSessionResourcesAsync", null, process, true).ConfigureAwait(false);
@@ -269,11 +273,11 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void Dispose_WhenShutdownRequestTimesOut_LogsForcedTermination()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using Process process = StartDisposableProcess();
 		using var serverOutputStream = new PendingReadStream();
 		using var serverInputStream = new RecordingStream();
-		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions);
+		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 7, process, serverOutputStream, serverInputStream, startListening: true);
 
 		SetActiveSession(client, session);
@@ -300,7 +304,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task Dispose_WhenShutdownAcknowledgesWithinConfiguredBudget_DoesNotLogTimeoutOrForcedTermination()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using Process process = StartShortLivedProcess();
 		int processId = process.Id;
 
@@ -314,7 +318,7 @@ public partial class LanguageServerClientTests
 		{
 			ShutdownRequestTimeout = TimeSpan.FromMilliseconds(1500),
 			DisposeWaitTimeout = TimeSpan.FromMilliseconds(1500)
-		});
+		}, logScope.CreateLogger<LanguageServerClient>());
 
 		object session = CreateTransportSession(client, 8, process, serverOutputStream, serverInputStream, startListening: true);
 
@@ -336,7 +340,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void Dispose_WhenShutdownRequestTimesOut_UsesConfiguredTimeoutInLog()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		using Process process = StartDisposableProcess();
 		using var serverOutputStream = new PendingReadStream();
 		using var serverInputStream = new RecordingStream();
@@ -344,7 +348,7 @@ public partial class LanguageServerClientTests
 		using var client = new LanguageServerClient(@"C:\Workspace", process.StartInfo.FileName, new LanguageServerClientOptions(static () => new { })
 		{
 			ShutdownRequestTimeout = TimeSpan.FromMilliseconds(50)
-		});
+		}, logScope.CreateLogger<LanguageServerClient>());
 
 		object session = CreateTransportSession(client, 9, process, serverOutputStream, serverInputStream, startListening: true);
 
@@ -392,8 +396,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task DisposeStartLockAsync_WhenStartupGateStaysBusy_LogsTimeoutWithoutDisposingGate()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Warn);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Warning);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		SemaphoreSlim startLock = GetStartLock(client);
 		bool reacquiredStartLock = false;
 
@@ -435,6 +439,7 @@ public partial class LanguageServerClientTests
 			@"C:\Workspace",
 			Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 			DefaultClientOptions,
+			null,
 			processStartedTestHook: null,
 			sessionActivatedTestHook: cancellationToken => WaitForStartupCancellationAsync(sessionActivated, cancellationToken));
 
@@ -455,7 +460,7 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task StartAsync_WhenInitializationTimesOut_UsesConfiguredTimeoutAndLeavesClientNotReady()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
 		var initializeStarted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		using var client = new LanguageServerClient(
@@ -465,6 +470,7 @@ public partial class LanguageServerClientTests
 			{
 				InitializeTimeout = TimeSpan.FromMilliseconds(50)
 			},
+			logScope.CreateLogger<LanguageServerClient>(),
 			processStartedTestHook: null,
 			sessionActivatedTestHook: null,
 			beforeInitializeRequestTestHook: async cancellationToken =>
@@ -490,8 +496,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public void JsonRpc_Disconnected_UnexpectedDisconnect_LogsRecentStderrContext()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		object session = CreateTransportSession(client, 11, process: null, Stream.Null, Stream.Null);
 
 		SetActiveSession(client, session);
@@ -612,6 +618,7 @@ public partial class LanguageServerClientTests
 				@"C:\Workspace",
 				Path.Combine(Environment.SystemDirectory, "cmd.exe"),
 				DefaultClientOptions,
+				null,
 				processStartedTestHook: null,
 				sessionActivatedTestHook: cancellationToken => WaitForStartupCancellationAsync(sessionActivated, cancellationToken));
 

@@ -1,6 +1,7 @@
-using NLog;
+using Microsoft.Extensions.Logging;
+using Nickelony.LanguageServer.Testing;
 
-namespace TombLib.LanguageServer.Core.Tests;
+namespace Nickelony.LanguageServer.Core.Tests;
 
 public partial class LanguageServerClientTests
 {
@@ -157,8 +158,8 @@ public partial class LanguageServerClientTests
 	[TestMethod]
 	public async Task PumpDiagnosticsAsync_WhenHandlerThrows_LogsWarningAndContinuesProcessing()
 	{
-		using var logScope = new NLogMemoryScope(LogLevel.Debug);
-		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions);
+		using var logScope = new TestLoggerScope(LogLevel.Debug);
+		using var client = new LanguageServerClient(@"C:\Workspace", "lua-language-server.exe", DefaultClientOptions, logScope.CreateLogger<LanguageServerClient>());
 		int publishedCount = 0;
 		var publishedMessages = new List<string>();
 

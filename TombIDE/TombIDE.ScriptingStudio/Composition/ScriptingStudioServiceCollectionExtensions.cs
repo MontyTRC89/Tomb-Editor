@@ -22,7 +22,7 @@ using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared.Messaging;
 using TombIDE.Shared.Messaging.Scripting;
 using TombIDE.Shared.SharedClasses;
-using TombLib.LanguageServer.Lua;
+using Nickelony.LanguageServer.Lua;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;

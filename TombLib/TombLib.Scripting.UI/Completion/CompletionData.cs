@@ -1,4 +1,4 @@
-﻿using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TombLib.Scripting.Completion;
+using Nickelony.LanguageServer.Core.Completion;
 using TombLib.Scripting.UI.Rendering;
 using TombLib.Scripting.UI.Resources;
 

@@ -55,9 +55,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.ClassicSc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.Lua", "TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj", "{87D4149C-E716-49F6-848F-ACA345D11B30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.LanguageServer.Core", "TombLib\TombLib.LanguageServer.Core\TombLib.LanguageServer.Core.csproj", "{FDF8C618-7AFF-4756-A138-4AF3AD9F679D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nickelony.LanguageServer.Core", "TombLib\Nickelony.LanguageServer.Core\Nickelony.LanguageServer.Core.csproj", "{FDF8C618-7AFF-4756-A138-4AF3AD9F679D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.LanguageServer.Lua", "TombLib\TombLib.LanguageServer.Lua\TombLib.LanguageServer.Lua.csproj", "{BAC24926-D29E-4E42-905B-CDBAB29C0B53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nickelony.LanguageServer.Lua", "TombLib\Nickelony.LanguageServer.Lua\Nickelony.LanguageServer.Lua.csproj", "{BAC24926-D29E-4E42-905B-CDBAB29C0B53}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileAssociation", "FileAssociation\FileAssociation.csproj", "{934E79A8-2B20-4E0E-A145-08404493A7F6}"
 EndProject

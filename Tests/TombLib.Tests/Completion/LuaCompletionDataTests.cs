@@ -1,6 +1,6 @@
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Core.Completion;
 using System.Reflection;
-using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;

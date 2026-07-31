@@ -1,16 +1,15 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Core.Signatures;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using TombLib.Scripting.Completion;
-using TombLib.Scripting.Editing;
-using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.Hover;
-using TombLib.Scripting.Lua;
-using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Signatures;
 using TombLib.Scripting.UI.Completion;
 using static TombLib.Tests.WPFTestHelper;
 

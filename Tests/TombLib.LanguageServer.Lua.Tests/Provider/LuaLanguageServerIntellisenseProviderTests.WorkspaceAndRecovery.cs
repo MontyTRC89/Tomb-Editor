@@ -1,9 +1,9 @@
+using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Core.Signatures;
 using System.Text.Json;
-using TombLib.Scripting.Hover;
-using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Signatures;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerIntellisenseProviderTests
 {

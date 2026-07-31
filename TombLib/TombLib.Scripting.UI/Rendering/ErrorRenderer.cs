@@ -1,9 +1,9 @@
-﻿using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Windows;
 using System.Windows.Media;
-using TombLib.Scripting.Diagnostics;
+using Nickelony.LanguageServer.Core.Diagnostics;
 using TombLib.Scripting.UI.Bases;
 using static TombLib.WPF.BrushHelpers;
 

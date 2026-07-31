@@ -1,7 +1,7 @@
+using Nickelony.LanguageServer.Core.Hover;
 using System.Text.Json;
-using TombLib.Scripting.Hover;
 
-namespace TombLib.LanguageServer.Lua.Tests;
+namespace Nickelony.LanguageServer.Lua.Tests;
 
 public partial class LuaLanguageServerResponseParserTests
 {
