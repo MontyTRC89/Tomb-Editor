@@ -1,5 +1,3 @@
-using NLog;
-
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
@@ -8,7 +6,7 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly ILogger _logger;
 
 	private enum WorkspaceWatcherRecoveryResult
 	{
@@ -46,6 +44,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 	/// <param name="ensureStartedAsync">Starts the language server on demand before forwarding file changes.</param>
 	/// <param name="markTransportUnavailable">Marks one observed transport generation unhealthy after forwarding failures.</param>
 	/// <param name="raiseWorkspaceWatcherFailed">Reports unrecoverable watcher failures to the owner.</param>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
 	internal LuaWorkspaceChangeCoordinator(
 		string workspaceRootDirectoryPath,
 		IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications,
@@ -54,8 +53,11 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		Func<bool> isDisposedAccessor,
 		Func<CancellationToken, Task<bool>> ensureStartedAsync,
 		Action<long> markTransportUnavailable,
-		Action<WorkspaceWatcherFailure> raiseWorkspaceWatcherFailed)
+		Action<WorkspaceWatcherFailure> raiseWorkspaceWatcherFailed,
+		ILogger? logger = null)
 	{
+		_logger = logger ?? NullLogger.Instance;
+
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_workspaceApiDirectoryPath = Path.Combine(workspaceRootDirectoryPath, ".API");
 		_workspaceFileWatcherFactory = workspaceFileWatcherFactory;
@@ -64,7 +66,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		_ensureStartedAsync = ensureStartedAsync;
 		_markTransportUnavailable = markTransportUnavailable;
 		_raiseWorkspaceWatcherFailed = raiseWorkspaceWatcherFailed;
-		_workspaceSnapshotTracker = new LuaWorkspaceSnapshotTracker(workspaceRootDirectoryPath, watchSpecifications);
+		_workspaceSnapshotTracker = new LuaWorkspaceSnapshotTracker(workspaceRootDirectoryPath, watchSpecifications, _logger);
 		_workspaceFileChangeForwarder = new WorkspaceFileChangeForwarder(
 			// Buffering is reserved for temporary startup or transport failures after a client exists.
 			// When there is no client or the provider is disposed, workspace changes are intentionally ignored.
@@ -81,7 +83,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 				if (failure.WasDropped)
 				{
-					Log.Warn(failure.Exception,
+					_logger.LogWarning(failure.Exception,
 						"Dropped {BatchCount} Lua workspace file change(s) for '{Workspace}' after an unexpected forwarding failure. First path: '{FirstPath}'.",
 						failure.BatchCount,
 						_workspaceRootDirectoryPath,
@@ -89,7 +91,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 				}
 				else
 				{
-					Log.Debug(failure.Exception,
+					_logger.LogDebug(failure.Exception,
 						"Failed to forward {BatchCount} Lua workspace file change(s) for '{Workspace}' starting at '{FirstPath}'; the batch was buffered for replay.",
 						failure.BatchCount,
 						_workspaceRootDirectoryPath,
@@ -281,7 +283,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (_isDisposedAccessor())
 			return;
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Lua workspace watching failed for '{Workspace}'. Attempting to restart the watcher automatically and replay any missed tracked changes.",
 			_workspaceRootDirectoryPath);
 
@@ -298,6 +300,10 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			"Lua IntelliSense will continue to work for files edited in the editor, but external workspace changes - such as Git pull updates, generated .API files, or .luarc changes - may not be forwarded until the watcher can be restarted."));
 	}
 
+	/// <summary>
+	/// Restarts a failed workspace file watcher and reports whether recovery succeeded.
+	/// </summary>
+	/// <remarks>This method is used by <c>LuaLanguageServerIntellisenseProviderTests</c> via reflection. Do not remove without updating the tests.</remarks>
 	private bool TryRestartWorkspaceFileWatcher(WorkspaceFileWatcher failedWatcher)
 		=> RecoverWorkspaceFileWatcher(failedWatcher) == WorkspaceWatcherRecoveryResult.Recovered;
 
@@ -361,7 +367,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 		if (watcherRecovered)
 		{
-			Log.Info("Lua workspace watching recovered successfully for '{Workspace}'.", _workspaceRootDirectoryPath);
+			_logger.LogInformation("Lua workspace watching recovered successfully for '{Workspace}'.", _workspaceRootDirectoryPath);
 
 			// Reconcile any tracked changes that may have happened while the watcher was unavailable.
 			if (replacementWatcherStarted && previousSnapshot is not null && currentSnapshot is not null)
@@ -372,7 +378,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 		if (workspaceUnavailable)
 		{
-			Log.Info(
+			_logger.LogInformation(
 				"Lua workspace watching remains unavailable for '{Workspace}' because the workspace path does not exist.",
 				_workspaceRootDirectoryPath);
 
@@ -382,7 +388,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		// Log startup failures separately so the caller can surface the right watcher-failure message.
 		if (startupFailed)
 		{
-			Log.Warn(startupException,
+			_logger.LogWarning(startupException,
 				"Lua workspace watching could not be restarted for '{Workspace}' because watcher startup failed.",
 				_workspaceRootDirectoryPath);
 		}
@@ -395,7 +401,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (Interlocked.Exchange(ref _workspaceWatcherFailureReported, 1) != 0)
 			return;
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Lua workspace watching could not start for '{Workspace}'. External workspace changes will not be forwarded until the watcher can be started successfully.",
 			_workspaceRootDirectoryPath);
 
@@ -419,7 +425,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		if (batch.Count == 0)
 			return;
 
-		Log.Info(
+		_logger.LogInformation(
 			"Replaying {Count} reconciled workspace file change(s) after Lua workspace watcher recovery for '{Workspace}'.",
 			batch.Count,
 			_workspaceRootDirectoryPath);
@@ -429,13 +435,13 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 
 	private void ObserveBackgroundTask(Task task, string operationName)
 	{
-		task.ContinueWith(static (completedTask, state) =>
+		task.ContinueWith((completedTask, state) =>
 			{
 				if (completedTask.Exception is not { } exception)
 					return;
 
-				(string OperationName, string Workspace) capturedState = ((string OperationName, string Workspace))state!;
-				Log.Warn(exception.Flatten(), "{OperationName} failed for '{Workspace}'.", capturedState.OperationName, capturedState.Workspace);
+				(string OperationName, string Workspace) = ((string OperationName, string Workspace))state!;
+				_logger.LogWarning(exception.Flatten(), "{OperationName} failed for '{Workspace}'.", OperationName, Workspace);
 			},
 			(operationName, _workspaceRootDirectoryPath),
 			CancellationToken.None,
@@ -443,7 +449,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 			TaskScheduler.Default);
 	}
 
-	private static void DisposeWatcher(WorkspaceFileWatcher? watcher, string message, bool flushPendingChanges = true)
+	private void DisposeWatcher(WorkspaceFileWatcher? watcher, string message, bool flushPendingChanges = true)
 	{
 		if (watcher is null)
 			return;
@@ -457,7 +463,7 @@ internal sealed class LuaWorkspaceChangeCoordinator : IDisposable
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, message);
+			_logger.LogDebug(exception, message);
 		}
 	}
 }

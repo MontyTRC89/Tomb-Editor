@@ -30,4 +30,13 @@ public sealed class LanguageServerTransportUnavailableException : IOException
 	public LanguageServerTransportUnavailableException(string? message, Exception? innerException)
 		: base(message ?? DefaultMessage, innerException)
 	{ }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LanguageServerTransportUnavailableException"/> class.
+	/// </summary>
+	/// <param name="message">The exception message.</param>
+	/// <param name="hresult">The HRESULT error code.</param>
+	public LanguageServerTransportUnavailableException(string? message, int hresult)
+		: base(message, hresult)
+	{ }
 }

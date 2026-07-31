@@ -12,7 +12,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Failed to dispose detached language server transport generation {Generation} after {Reason}.",
 				session.Generation,
 				reason);
@@ -65,7 +65,7 @@ public sealed partial class LanguageServerClient
 		{
 			if (session.Process is not null && !session.Process.HasExited)
 			{
-				Log.Info("Attempting graceful shutdown for language server transport generation {Generation} in workspace '{Workspace}'.",
+				_logger.LogInformation("Attempting graceful shutdown for language server transport generation {Generation} in workspace '{Workspace}'.",
 					session.Generation,
 					_workspaceRootDirectoryPath);
 
@@ -74,7 +74,7 @@ public sealed partial class LanguageServerClient
 
 				if (!session.Process.HasExited)
 				{
-					Log.Warn("Language server transport generation {Generation} in workspace '{Workspace}' did not exit after graceful shutdown; forcing process termination.",
+					_logger.LogWarning("Language server transport generation {Generation} in workspace '{Workspace}' did not exit after graceful shutdown; forcing process termination.",
 						session.Generation,
 						_workspaceRootDirectoryPath);
 
@@ -86,7 +86,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Disposing language server transport generation {Generation} raised exceptions while stopping the server process.", session.Generation);
+			_logger.LogWarning(exception, "Disposing language server transport generation {Generation} raised exceptions while stopping the server process.", session.Generation);
 		}
 		finally
 		{
@@ -137,9 +137,9 @@ public sealed partial class LanguageServerClient
 			if (!process.HasExited)
 			{
 				if (isExpectedCancellation)
-					Log.Debug("Startup cleanup is terminating the language server process after cancellation before session activation completed.");
+					_logger.LogDebug("Startup cleanup is terminating the language server process after cancellation before session activation completed.");
 				else
-					Log.Warn("Startup cleanup is forcing language server process termination before session activation completed.");
+					_logger.LogWarning("Startup cleanup is forcing language server process termination before session activation completed.");
 
 				process.Kill(true);
 			}
@@ -147,9 +147,9 @@ public sealed partial class LanguageServerClient
 		catch (Exception exception)
 		{
 			if (isExpectedCancellation)
-				Log.Debug(exception, "Startup cleanup failed while terminating the language server process after cancellation before session activation completed.");
+				_logger.LogDebug(exception, "Startup cleanup failed while terminating the language server process after cancellation before session activation completed.");
 			else
-				Log.Warn(exception, "Startup cleanup failed while terminating the language server process after startup did not complete.");
+				_logger.LogWarning(exception, "Startup cleanup failed while terminating the language server process after startup did not complete.");
 		}
 		finally
 		{
@@ -210,7 +210,7 @@ public sealed partial class LanguageServerClient
 			if (shutdownTask is not null)
 				ObserveLateShutdownTask(shutdownTask);
 
-			Log.Warn("Language server transport generation {Generation} in workspace '{Workspace}' did not acknowledge shutdown within {TimeoutMs} ms; continuing teardown.",
+			_logger.LogWarning("Language server transport generation {Generation} in workspace '{Workspace}' did not acknowledge shutdown within {TimeoutMs} ms; continuing teardown.",
 				session.Generation,
 				_workspaceRootDirectoryPath,
 				(int)_shutdownRequestTimeout.TotalMilliseconds);
@@ -222,7 +222,7 @@ public sealed partial class LanguageServerClient
 			if (shutdownTask is not null)
 				ObserveLateShutdownTask(shutdownTask);
 
-			Log.Warn("Language server transport generation {Generation} in workspace '{Workspace}' did not acknowledge shutdown within {TimeoutMs} ms; continuing teardown.",
+			_logger.LogWarning("Language server transport generation {Generation} in workspace '{Workspace}' did not acknowledge shutdown within {TimeoutMs} ms; continuing teardown.",
 				session.Generation,
 				_workspaceRootDirectoryPath,
 				(int)_shutdownRequestTimeout.TotalMilliseconds);
@@ -231,7 +231,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception,
+			_logger.LogWarning(exception,
 				"Sending the language server shutdown request during disposal failed for transport generation {Generation} in workspace '{Workspace}'; continuing teardown.",
 				session.Generation,
 				_workspaceRootDirectoryPath);
@@ -265,7 +265,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Sending the language server exit notification during disposal failed for transport generation {Generation}; continuing teardown.", session.Generation);
+			_logger.LogDebug(exception, "Sending the language server exit notification during disposal failed for transport generation {Generation}; continuing teardown.", session.Generation);
 		}
 	}
 
@@ -286,7 +286,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (TimeoutException)
 		{
-			Log.Warn("Language server background loops did not complete within {TimeoutMs} ms during disposal.",
+			_logger.LogWarning("Language server background loops did not complete within {TimeoutMs} ms during disposal.",
 				(int)_disposeWaitTimeout.TotalMilliseconds);
 		}
 		catch (Exception exception)
@@ -298,7 +298,7 @@ public sealed partial class LanguageServerClient
 			loggedSpecificLoop |= TryLogFaultedBackgroundLoop(stderrLoopTask, "stderr read");
 
 			if (!loggedSpecificLoop)
-				Log.Warn(exception, "Language server background loop failed during disposal.");
+				_logger.LogWarning(exception, "Language server background loop failed during disposal.");
 		}
 	}
 
@@ -308,12 +308,12 @@ public sealed partial class LanguageServerClient
 	/// <param name="task">The loop task to inspect.</param>
 	/// <param name="loopName">The logical loop name for diagnostics.</param>
 	/// <returns><see langword="true"/> when cancellation was logged; otherwise, <see langword="false"/>.</returns>
-	private static bool TryLogCanceledBackgroundLoop(Task? task, string loopName)
+	private bool TryLogCanceledBackgroundLoop(Task? task, string loopName)
 	{
 		if (task?.IsCanceled != true)
 			return false;
 
-		Log.Debug("Language server background loop '{LoopName}' was canceled during disposal.", loopName);
+		_logger.LogDebug("Language server background loop '{LoopName}' was canceled during disposal.", loopName);
 		return true;
 	}
 
@@ -323,7 +323,7 @@ public sealed partial class LanguageServerClient
 	/// <param name="task">The loop task to inspect.</param>
 	/// <param name="loopName">The logical loop name for diagnostics.</param>
 	/// <returns><see langword="true"/> when a fault was logged; otherwise, <see langword="false"/>.</returns>
-	private static bool TryLogFaultedBackgroundLoop(Task? task, string loopName)
+	private bool TryLogFaultedBackgroundLoop(Task? task, string loopName)
 	{
 		if (task?.IsFaulted != true || task.Exception is not { } aggregateException)
 			return false;
@@ -332,7 +332,7 @@ public sealed partial class LanguageServerClient
 			? aggregateException.Flatten().InnerExceptions[0]
 			: aggregateException.Flatten();
 
-		Log.Warn(loggedException, "Language server background loop '{LoopName}' failed during disposal.", loopName);
+		_logger.LogWarning(loggedException, "Language server background loop '{LoopName}' failed during disposal.", loopName);
 		return true;
 	}
 
@@ -408,7 +408,7 @@ public sealed partial class LanguageServerClient
 		if (remainingDisposeBudget <= TimeSpan.Zero)
 		{
 			if (!task.IsCompleted)
-				Log.Warn(timeoutMessage, (int)_disposeWaitTimeout.TotalMilliseconds);
+				_logger.LogWarning(timeoutMessage, (int)_disposeWaitTimeout.TotalMilliseconds);
 
 			return;
 		}
@@ -419,14 +419,14 @@ public sealed partial class LanguageServerClient
 		}
 		catch (TimeoutException)
 		{
-			Log.Warn(timeoutMessage, (int)_disposeWaitTimeout.TotalMilliseconds);
+			_logger.LogWarning(timeoutMessage, (int)_disposeWaitTimeout.TotalMilliseconds);
 		}
 		catch (Exception exception)
 		{
 			if (WasObservedBackgroundLoopTermination(task))
 				return;
 
-			Log.Warn(exception, exceptionMessage);
+			_logger.LogWarning(exception, exceptionMessage);
 		}
 	}
 
@@ -451,7 +451,7 @@ public sealed partial class LanguageServerClient
 
 		if (waitTimeout <= TimeSpan.Zero)
 		{
-			Log.Warn("Language server startup gate did not become available within {TimeoutMs} ms during disposal.",
+			_logger.LogWarning("Language server startup gate did not become available within {TimeoutMs} ms during disposal.",
 				(int)_disposeWaitTimeout.TotalMilliseconds);
 
 			return;
@@ -461,7 +461,7 @@ public sealed partial class LanguageServerClient
 		{
 			if (!await _startLock.WaitAsync(waitTimeout).ConfigureAwait(false))
 			{
-				Log.Warn("Language server startup gate did not become available within {TimeoutMs} ms during disposal.",
+				_logger.LogWarning("Language server startup gate did not become available within {TimeoutMs} ms during disposal.",
 					(int)_disposeWaitTimeout.TotalMilliseconds);
 
 				return;

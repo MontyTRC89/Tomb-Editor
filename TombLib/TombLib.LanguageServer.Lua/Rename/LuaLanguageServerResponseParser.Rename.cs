@@ -1,4 +1,3 @@
-using NLog;
 using System.Diagnostics.CodeAnalysis;
 using TombLib.Scripting.Editing;
 
@@ -6,12 +5,13 @@ namespace TombLib.LanguageServer.Lua;
 
 internal static partial class LuaLanguageServerResponseParser
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-
 	/// <summary>
 	/// Parses a workspace edit from a LuaLS rename response.
 	/// </summary>
-	internal static TextWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response)
+	/// <param name="response">The workspace edit response payload, or <see langword="null"/> when unavailable.</param>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for no logging.</param>
+	/// <returns>The parsed workspace edit, or <see langword="null"/> when no edits are present.</returns>
+	internal static TextWorkspaceEdit? ParseWorkspaceEdit(WorkspaceEditResponse? response, ILogger? logger = null)
 	{
 		if (response is null)
 			return null;
@@ -20,7 +20,7 @@ internal static partial class LuaLanguageServerResponseParser
 
 		ParseChangeMap(response.Value.Changes, editsByFile);
 
-		if (!ParseDocumentChanges(response.Value.DocumentChanges, editsByFile))
+		if (!ParseDocumentChanges(response.Value.DocumentChanges, editsByFile, logger))
 			return null;
 
 		if (editsByFile.Count == 0)
@@ -58,7 +58,7 @@ internal static partial class LuaLanguageServerResponseParser
 	}
 
 	private static bool ParseDocumentChanges(IReadOnlyList<WorkspaceDocumentChangePayload>? documentChanges,
-		Dictionary<string, List<TextEdit>> editsByFile)
+		Dictionary<string, List<TextEdit>> editsByFile, ILogger? logger = null)
 	{
 		if (documentChanges is null)
 			return true;
@@ -69,7 +69,7 @@ internal static partial class LuaLanguageServerResponseParser
 
 			if (documentChange.IsResourceOperation)
 			{
-				Log.Warn(
+				logger?.LogWarning(
 					"Ignoring Lua rename workspace edit because it contains unsupported resource operation '{Kind}' (uri: '{Uri}', oldUri: '{OldUri}', newUri: '{NewUri}').",
 					documentChange.Kind,
 					documentChange.Uri ?? string.Empty,

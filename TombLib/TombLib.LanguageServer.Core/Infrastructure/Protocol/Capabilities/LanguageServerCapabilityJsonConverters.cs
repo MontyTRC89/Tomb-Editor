@@ -93,7 +93,7 @@ public sealed class TextDocumentSyncCapabilityJsonConverter : JsonConverter<Text
 }
 
 /// <summary>
-/// Deserializes the semantic-token full capability and whether delta refresh is supported.
+/// Deserializes the semantic token full capability and whether delta refresh is supported.
 /// </summary>
 public sealed class SemanticTokensFullCapabilityJsonConverter : JsonConverter<SemanticTokensFullCapability>
 {

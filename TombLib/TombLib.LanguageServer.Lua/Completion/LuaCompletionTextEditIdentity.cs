@@ -21,11 +21,13 @@ internal readonly record struct LuaCompletionTextEditIdentity(
 	/// <param name="textEdit">The parsed completion text edit.</param>
 	/// <returns>The normalized identity.</returns>
 	internal static LuaCompletionTextEditIdentity Create(TextCompletionTextEdit? textEdit)
-		=> textEdit is not { } value
+	{
+		return textEdit is not { } value
 			? default
 			: new(
 				value.InsertRange.Start,
 				value.InsertRange.End,
 				value.ReplaceRange?.Start,
 				value.ReplaceRange?.End);
+	}
 }

@@ -5,7 +5,8 @@ using TombLib.Scripting.Completion;
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
-/// Parses typed Lua language-server responses into shared editor-facing completion models.
+/// Parses typed Lua language-server responses into shared editor-facing models (completion items, hover info,
+/// definition locations, reference locations, workspace edits, signature help, and formatting edits).
 /// </summary>
 internal static partial class LuaLanguageServerResponseParser
 {

@@ -50,7 +50,7 @@ public sealed record ServerCapabilities
 	public SupportedCapability? DocumentFormattingProvider { get; init; }
 
 	/// <summary>
-	/// Gets the semantic-tokens provider capability.
+	/// Gets the semantic tokens provider capability.
 	/// </summary>
 	[JsonPropertyName("semanticTokensProvider")]
 	public SemanticTokensProviderCapability? SemanticTokensProvider { get; init; }
@@ -69,25 +69,25 @@ public sealed record CompletionProviderCapability
 }
 
 /// <summary>
-/// Represents semantic-tokens capabilities advertised by the server.
+/// Represents semantic tokens capabilities advertised by the server.
 /// </summary>
 public sealed record SemanticTokensProviderCapability
 {
 	/// <summary>
-	/// Gets the semantic-tokens full-refresh capability.
+	/// Gets the semantic tokens full-refresh capability.
 	/// </summary>
 	[JsonPropertyName("full")]
 	public SemanticTokensFullCapability? Full { get; init; }
 
 	/// <summary>
-	/// Gets the semantic-tokens legend advertised by the server.
+	/// Gets the semantic tokens legend advertised by the server.
 	/// </summary>
 	[JsonPropertyName("legend")]
 	public SemanticTokensLegendCapability? Legend { get; init; }
 }
 
 /// <summary>
-/// Represents the semantic-tokens legend advertised by the server.
+/// Represents the semantic tokens legend advertised by the server.
 /// </summary>
 public sealed record SemanticTokensLegendCapability
 {

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace TombLib.LanguageServer.Core;
 
 /// <summary>
-/// Represents the typed payload for a textDocument/didOpen notification.
+/// Represents the typed payload for a <c>textDocument/didOpen</c> notification.
 /// </summary>
 /// <param name="TextDocument">The opened document payload.</param>
 public readonly record struct DidOpenTextDocumentParams(

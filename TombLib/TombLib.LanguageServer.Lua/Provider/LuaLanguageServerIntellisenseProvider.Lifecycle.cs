@@ -53,7 +53,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 				if (GetStartupSucceeded())
 				{
-					Log.Info("Lua language server connection dropped for workspace '{Workspace}'; restarting and reopening {DocumentCount} tracked document(s).",
+					_logger.LogInformation("Lua language server connection dropped for workspace '{Workspace}'; restarting and reopening {DocumentCount} tracked document(s).",
 						_workspaceRootDirectoryPath,
 						documentsToReopen.Count);
 				}
@@ -68,7 +68,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 				if (!startupSucceeded)
 				{
-					Log.Warn("Failed to replay {DocumentCount} tracked document(s) after Lua language server restart for workspace '{Workspace}'.",
+					_logger.LogWarning("Failed to replay {DocumentCount} tracked document(s) after Lua language server restart for workspace '{Workspace}'.",
 						documentsToReopen.Count,
 						_workspaceRootDirectoryPath);
 				}
@@ -93,12 +93,12 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 				if (isPermanentFailure)
 				{
-					Log.Error("Lua language server failed to start {Count} times consecutively for workspace '{Workspace}'; IntelliSense is now disabled until the editor is restarted.",
+					_logger.LogError("Lua language server failed to start {Count} times consecutively for workspace '{Workspace}'; IntelliSense is now disabled until the editor is restarted.",
 						consecutiveStartupFailures, _workspaceRootDirectoryPath);
 				}
 				else
 				{
-					Log.Warn("Failed to start the Lua language server for workspace '{Workspace}' (attempt {Attempt}/{Threshold}).",
+					_logger.LogWarning("Failed to start the Lua language server for workspace '{Workspace}' (attempt {Attempt}/{Threshold}).",
 						_workspaceRootDirectoryPath, consecutiveStartupFailures, HardStartupFailureThreshold);
 				}
 
@@ -136,7 +136,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	/// <inheritdoc />
 	/// <remarks>
-	/// Disposal stops the workspace watcher, cancels queued document and semantic-token work, and releases the active
+	/// Disposal stops the workspace watcher, cancels queued document and semantic token work, and releases the active
 	/// Lua language-server client.
 	/// </remarks>
 	public void Dispose()

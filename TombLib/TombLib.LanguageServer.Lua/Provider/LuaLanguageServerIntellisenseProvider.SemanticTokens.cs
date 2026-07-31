@@ -92,7 +92,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			ClearSemanticTokensAfterFailure(document, effectiveToken);
 
-			Log.Debug(exception, "Lua semantic tokens request failed for '{FilePath}' due to a transport error; falling back to TextMate highlighting until the next sync.",
+			_logger.LogDebug(exception, "Lua semantic tokens request failed for '{FilePath}' due to a transport error; falling back to TextMate highlighting until the next sync.",
 				document.FilePath);
 		}
 		catch (ObjectDisposedException)
@@ -104,7 +104,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			ClearSemanticTokensAfterFailure(document, effectiveToken);
 
-			Log.Warn(exception, "Lua semantic tokens request failed for '{FilePath}'; falling back to TextMate highlighting.",
+			_logger.LogWarning(exception, "Lua semantic tokens request failed for '{FilePath}'; falling back to TextMate highlighting.",
 				document.FilePath);
 		}
 		finally
@@ -164,7 +164,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 					return new LuaSemanticTokensDecodeResult(tokens, patchedData, delta.ResultId, false);
 				}
 
-				Log.Debug("Lua semantic-tokens delta edits could not be applied for '{FilePath}'; falling back to a full reparse.", document.FilePath);
+				_logger.LogDebug("Lua semantic tokens delta edits could not be applied for '{FilePath}'; falling back to a full reparse.", document.FilePath);
 				return new LuaSemanticTokensDecodeResult([], null, null, true);
 			}
 
@@ -176,7 +176,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				return new LuaSemanticTokensDecodeResult(tokens, fullData, delta.ResultId, false);
 			}
 
-			Log.Debug("Lua semantic-tokens delta response for '{FilePath}' did not contain usable data; requesting a full refresh.", document.FilePath);
+			_logger.LogDebug("Lua semantic tokens delta response for '{FilePath}' did not contain usable data; requesting a full refresh.", document.FilePath);
 			return new LuaSemanticTokensDecodeResult([], null, null, true);
 		}
 

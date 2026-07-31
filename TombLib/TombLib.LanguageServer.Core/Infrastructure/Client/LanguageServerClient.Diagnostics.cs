@@ -51,13 +51,8 @@ public sealed partial class LanguageServerClient
 	private Task _callbackPumpTask = Task.CompletedTask;
 	private long _diagnosticsFallbackSequence;
 
-	private readonly SerializedDiagnosticsSubscriberSet<Action<PublishDiagnosticsParams>> _diagnosticsPublishedSubscribers =
-		new(static (handler, parameters) => handler(parameters),
-			exception => Log.Warn(exception, "Diagnostics handler threw; later subscribers will still be notified."));
-
-	private readonly SerializedSignalSubscriberSet<Action> _semanticTokensRefreshSubscribers =
-		new(static handler => handler(),
-			exception => Log.Warn(exception, "Semantic-tokens refresh request handler threw; later subscribers will still be notified."));
+	private readonly SerializedDiagnosticsSubscriberSet<Action<PublishDiagnosticsParams>> _diagnosticsPublishedSubscribers;
+	private readonly SerializedSignalSubscriberSet<Action> _semanticTokensRefreshSubscribers;
 
 	/// <summary>
 	/// Occurs when the server publishes diagnostics for a tracked document.
@@ -157,7 +152,7 @@ public sealed partial class LanguageServerClient
 	}
 
 	/// <summary>
-	/// Queues a semantic-tokens refresh callback for background subscriber dispatch.
+	/// Queues a semantic tokens refresh callback for background subscriber dispatch.
 	/// </summary>
 	private void QueueSemanticTokensRefreshCallback()
 	{

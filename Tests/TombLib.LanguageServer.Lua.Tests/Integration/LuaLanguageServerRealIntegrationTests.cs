@@ -14,7 +14,7 @@ namespace TombLib.LanguageServer.Lua.Tests;
 /// Live integration coverage for the bundled Lua language server.
 /// These tests require TombIDE/TombIDE.Shared/TIDE/LuaLS.zip to be present in the repository layout
 /// reachable from the test output directory, and they typically take several seconds each because they
-/// launch a real language-server process, wait for diagnostics and semantic-token round-trips, and
+/// launch a real language-server process, wait for diagnostics and semantic token round-trips, and
 /// exercise restart or shutdown behavior.
 /// </summary>
 [TestClass]

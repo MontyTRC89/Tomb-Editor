@@ -9,7 +9,7 @@ using TombLib.Scripting.Lua.Resources;
 namespace TombLib.Scripting.Lua.Highlighting;
 
 /// <summary>
-/// Applies Lua semantic-token styling on top of the editor's baseline syntax highlighting.
+/// Applies Lua semantic token styling on top of the editor's baseline syntax highlighting.
 /// </summary>
 internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 {
@@ -39,7 +39,7 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 	}
 
 	/// <summary>
-	/// Rebuilds the styled semantic-token cache for a new theme and redraws the text view.
+	/// Rebuilds the styled semantic token cache for a new theme and redraws the text view.
 	/// </summary>
 	/// <param name="themeBrushSet">The new active theme brush set.</param>
 	public void UpdateTheme(LuaThemeBrushSet themeBrushSet)
@@ -67,7 +67,7 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 	}
 
 	/// <summary>
-	/// Removes all semantic-token styling from the text view.
+	/// Removes all semantic token styling from the text view.
 	/// </summary>
 	public void ClearTokens()
 	{

@@ -9,6 +9,8 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses signature help metadata from a LuaLS signature-help response.
 	/// </summary>
+	/// <param name="response">The signature help response payload, or <see langword="null"/> when unavailable.</param>
+	/// <returns>The parsed signature help info, or <see langword="null"/> when no signatures are present.</returns>
 	internal static TextSignatureHelpInfo? ParseSignatureHelp(SignatureHelpResponse? response)
 	{
 		if (response?.Signatures is not { Length: > 0 } signatures)

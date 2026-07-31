@@ -69,7 +69,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Failed to resolve Lua completion item '{Label}'; falling back to the unresolved item.", unresolvedItem.Label);
+			_logger.LogWarning(exception, "Failed to resolve Lua completion item '{Label}'; falling back to the unresolved item.", unresolvedItem.Label);
 		}
 
 		return unresolvedItem;

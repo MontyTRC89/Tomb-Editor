@@ -124,6 +124,13 @@ public static class MarkupContentReader
 		return longestRun;
 	}
 
+	/// <summary>
+	/// Reads one string property while tolerating <see langword="null"/> values and rejecting non-string payloads.
+	/// </summary>
+	/// <param name="element">The JSON object to inspect.</param>
+	/// <param name="propertyName">The property name to read.</param>
+	/// <param name="value">Receives the string value when present.</param>
+	/// <returns><see langword="true"/> when the property is present and either a string or <see langword="null"/>.</returns>
 	private static bool TryGetStringProperty(JsonElement element, string propertyName, out string? value)
 	{
 		value = null;

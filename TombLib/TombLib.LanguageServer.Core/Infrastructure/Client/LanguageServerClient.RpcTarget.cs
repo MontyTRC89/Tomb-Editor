@@ -16,6 +16,21 @@ public sealed partial class LanguageServerClient
 		private readonly LanguageServerClient _owner;
 
 		/// <summary>
+		/// The logger for server callback diagnostics.
+		/// </summary>
+		private readonly ILogger _logger;
+
+		/// <summary>
+		/// The normalized workspace root directory path.
+		/// </summary>
+		private readonly string _workspaceRootDirectoryPath;
+
+		/// <summary>
+		/// The workspace folder name derived from the root path.
+		/// </summary>
+		private readonly string _workspaceFolderName;
+
+		/// <summary>
 		/// Captures the transport generation that delivered the callback.
 		/// </summary>
 		private readonly long _transportGeneration;
@@ -25,9 +40,16 @@ public sealed partial class LanguageServerClient
 		/// </summary>
 		/// <param name="owner">The owning client.</param>
 		/// <param name="transportGeneration">The transport generation associated with the callback target.</param>
-		public LanguageServerClientRpcTarget(LanguageServerClient owner, long transportGeneration)
+		/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory path.</param>
+		/// <param name="workspaceFolderName">The workspace folder name.</param>
+		/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+		public LanguageServerClientRpcTarget(LanguageServerClient owner, long transportGeneration,
+			string workspaceRootDirectoryPath, string workspaceFolderName, ILogger? logger = null)
 		{
 			_owner = owner;
+			_logger = logger ?? NullLogger.Instance;
+			_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
+			_workspaceFolderName = workspaceFolderName;
 			_transportGeneration = transportGeneration;
 		}
 
@@ -58,13 +80,13 @@ public sealed partial class LanguageServerClient
 			return
 			[
 				new WorkspaceFolder(
-					LanguageServerPathHelper.CreateFileUri(_owner._workspaceRootDirectoryPath),
-					_owner._workspaceFolderName)
+					LanguageServerPathHelper.CreateFileUri(_workspaceRootDirectoryPath),
+					_workspaceFolderName)
 			];
 		}
 
 		/// <summary>
-		/// Acknowledges a semantic-tokens refresh request and notifies the owner.
+		/// Acknowledges a semantic tokens refresh request and notifies the owner.
 		/// </summary>
 		/// <returns>A completed task that resolves to <see langword="null"/>.</returns>
 		[JsonRpcMethod("workspace/semanticTokens/refresh")]
@@ -120,7 +142,7 @@ public sealed partial class LanguageServerClient
 		{
 			if (!_owner.IsActiveTransportGeneration(_transportGeneration))
 			{
-				Log.Debug(
+				_logger.LogDebug(
 					"Ignoring unsupported dynamic capability request '{Method}' from stale language server transport generation {Generation}. Requested capabilities: {Capabilities}",
 					method,
 					_transportGeneration,
@@ -129,7 +151,7 @@ public sealed partial class LanguageServerClient
 				return null;
 			}
 
-			Log.Warn(
+			_logger.LogWarning(
 				"Ignoring unsupported dynamic capability request '{Method}' on transport generation {Generation} because the client advertises dynamicRegistration = false. Requested capabilities: {Capabilities}",
 				method,
 				_transportGeneration,
@@ -193,7 +215,7 @@ public sealed partial class LanguageServerClient
 		/// <param name="parameters">The window message payload.</param>
 		[JsonRpcMethod("window/logMessage", UseSingleObjectParameterDeserialization = true)]
 		public void LogMessage(WindowMessageParams parameters)
-			=> LogServerMessage("window/logMessage", parameters);
+			=> _owner.LogServerMessage("window/logMessage", parameters);
 
 		/// <summary>
 		/// Logs a modal-style server message through the host logger.
@@ -201,7 +223,7 @@ public sealed partial class LanguageServerClient
 		/// <param name="parameters">The window message payload.</param>
 		[JsonRpcMethod("window/showMessage", UseSingleObjectParameterDeserialization = true)]
 		public void ShowMessage(WindowMessageParams parameters)
-			=> LogServerMessage("window/showMessage", parameters);
+			=> _owner.LogServerMessage("window/showMessage", parameters);
 
 		/// <summary>
 		/// Ignores telemetry events that the host does not surface.
@@ -236,7 +258,7 @@ public sealed partial class LanguageServerClient
 		{
 			if (!_owner.IsActiveTransportGeneration(_transportGeneration))
 			{
-				Log.Debug(
+				_logger.LogDebug(
 					"Ignoring unsupported server callback '{Method}' from stale language server transport generation {Generation}. Reason: {Reason}",
 					method,
 					_transportGeneration,
@@ -245,7 +267,7 @@ public sealed partial class LanguageServerClient
 				return;
 			}
 
-			Log.Debug(
+			_logger.LogDebug(
 				"Ignoring unsupported server callback '{Method}' on transport generation {Generation}. Reason: {Reason}",
 				method,
 				_transportGeneration,

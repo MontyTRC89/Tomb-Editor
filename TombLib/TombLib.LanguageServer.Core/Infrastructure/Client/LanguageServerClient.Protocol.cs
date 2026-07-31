@@ -75,7 +75,7 @@ public sealed partial class LanguageServerClient
 
 		if (!CanAcceptRequestResultForSession(session))
 		{
-			Log.Debug(
+			_logger.LogDebug(
 				"Discarding language server request '{Method}' result from transport generation {Generation} because the transport was superseded or marked unavailable before completion.",
 				method,
 				session.Generation);
@@ -166,7 +166,7 @@ public sealed partial class LanguageServerClient
 				}
 				catch (Exception exception)
 				{
-					Log.Warn(exception,
+					_logger.LogWarning(exception,
 						"Failed to extract workspace/configuration section '{Section}'; returning null for that section.",
 						string.IsNullOrWhiteSpace(items[i].Section) ? "<root>" : items[i].Section);
 
@@ -178,7 +178,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception,
+			_logger.LogWarning(exception,
 				"Failed to build the workspace/configuration response; returning null values for {SectionCount} requested section(s).",
 				items.Length);
 
@@ -242,7 +242,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Failed to refresh the cached workspace settings snapshot from an outgoing didChangeConfiguration notification.");
 		}
 	}

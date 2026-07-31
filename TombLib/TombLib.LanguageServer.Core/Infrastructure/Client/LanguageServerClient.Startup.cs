@@ -38,7 +38,7 @@ public sealed partial class LanguageServerClient
 
 			if (previousSession is not null)
 			{
-				Log.Info("Restarting language server transport by replacing generation {Generation}.", previousSession.Generation);
+				_logger.LogInformation("Restarting language server transport by replacing generation {Generation}.", previousSession.Generation);
 				await DisposeSessionAsync(previousSession).ConfigureAwait(false);
 			}
 
@@ -75,7 +75,7 @@ public sealed partial class LanguageServerClient
 			sessionActivated = true;
 			StartTransportSession(session);
 
-			Log.Info("Activated language server transport generation {Generation} for workspace '{Workspace}'; completing initialization handshake.",
+			_logger.LogInformation("Activated language server transport generation {Generation} for workspace '{Workspace}'; completing initialization handshake.",
 				session.Generation,
 				_workspaceRootDirectoryPath);
 
@@ -107,12 +107,12 @@ public sealed partial class LanguageServerClient
 
 			SetCapabilityReadinessForGeneration(session.Generation, true);
 
-			Log.Info("Language server transport generation {Generation} completed initialization and is ready.", session.Generation);
+			_logger.LogInformation("Language server transport generation {Generation} completed initialization and is ready.", session.Generation);
 			return true;
 		}
 		catch (OperationCanceledException) when (sessionActivated && !effectiveCancellationToken.IsCancellationRequested)
 		{
-			Log.Warn("Language server transport generation {Generation} did not complete initialization within {TimeoutMs} ms for workspace '{Workspace}'; tearing down the session and leaving the client not ready.",
+			_logger.LogWarning("Language server transport generation {Generation} did not complete initialization within {TimeoutMs} ms for workspace '{Workspace}'; tearing down the session and leaving the client not ready.",
 				startedSession?.Generation ?? 0,
 				(int)_initializeTimeout.TotalMilliseconds,
 				_workspaceRootDirectoryPath);
@@ -140,7 +140,7 @@ public sealed partial class LanguageServerClient
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception,
+			_logger.LogWarning(exception,
 				"Failed to start the language server (executable='{Executable}', workspace='{Workspace}', generation={Generation}, stage='{Stage}').",
 				_serverExecutablePath,
 				_workspaceRootDirectoryPath,

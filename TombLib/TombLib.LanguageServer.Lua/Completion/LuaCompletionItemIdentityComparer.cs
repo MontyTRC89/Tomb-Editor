@@ -20,7 +20,8 @@ internal sealed class LuaCompletionItemIdentityComparer : IEqualityComparer<LuaC
 		&& x.TextEdit.Equals(y.TextEdit);
 
 	public int GetHashCode(LuaCompletionItemIdentity value)
-		=> HashCode.Combine(
+	{
+		return HashCode.Combine(
 			StringComparer.Ordinal.GetHashCode(value.Label),
 			StringComparer.Ordinal.GetHashCode(value.InsertText),
 			StringComparer.Ordinal.GetHashCode(value.FilterText),
@@ -28,4 +29,5 @@ internal sealed class LuaCompletionItemIdentityComparer : IEqualityComparer<LuaC
 			StringComparer.Ordinal.GetHashCode(value.Description),
 			value.Kind,
 			value.TextEdit);
+	}
 }

@@ -70,7 +70,7 @@ internal sealed class LuaDocumentState : TrackedDocumentState
 	internal LuaDiagnosticsCache DiagnosticsCache { get; } = new();
 
 	/// <summary>
-	/// Gets the cached semantic-token state for the tracked document.
+	/// Gets the cached semantic token state for the tracked document.
 	/// </summary>
 	internal LuaSemanticTokensCache SemanticTokensCache { get; } = new();
 }

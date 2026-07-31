@@ -3,26 +3,29 @@ using TombLib.Scripting.Diagnostics;
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
-/// Stores the local document state mirrored to LuaLS, including versions, diagnostics, and semantic-token caches.
+/// Stores the local document state mirrored to LuaLS, including versions, diagnostics, and semantic token caches.
 /// </summary>
 internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 {
 	/// <summary>
-	/// Gets the cached diagnostics for the specified normalized file path.
+	/// Gets the cached diagnostics for the specified file path.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The cached diagnostics, or an empty list when none are stored.</returns>
 	internal IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.DiagnosticsCache.Diagnostics, defaultValue: []);
 
 	/// <summary>
-	/// Gets the cached semantic tokens for the specified normalized file path.
+	/// Gets the cached semantic tokens for the specified file path.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The cached semantic tokens, or an empty list when none are stored.</returns>
 	internal IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.SemanticTokensCache.Tokens, defaultValue: []);
 
+	/// <summary>
+	/// Gets the number of documents currently tracked by the store.
+	/// </summary>
 	internal int TrackedDocumentCount
 		=> TrackedDocumentCountCore;
 
@@ -44,7 +47,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <summary>
 	/// Stores semantic tokens when they are not stale for the tracked document version.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="version">The document version associated with the tokens.</param>
 	/// <param name="semanticTokens">The semantic tokens to cache.</param>
 	/// <returns><see langword="true"/> when the token set was stored; otherwise, <see langword="false"/>.</returns>
@@ -58,10 +61,10 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	}
 
 	/// <summary>
-	/// Returns the cached semantic-tokens delta state for <paramref name="filePath"/>, if any.
+	/// Returns the cached semantic tokens delta state for <paramref name="filePath"/>, if any.
 	/// Used by the provider to send `semanticTokens/full/delta` requests with the previous result id.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The cached delta state, if available.</returns>
 	internal SemanticTokensDeltaState GetSemanticTokensDeltaState(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.SemanticTokensCache.GetDeltaState(), new SemanticTokensDeltaState(null, null));
@@ -70,17 +73,17 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// Stores the raw `data` payload returned by `semanticTokens/full(/delta)` along with the
 	/// associated `resultId`, so subsequent requests can ask LuaLS for incremental edits.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
-	/// <param name="resultId">The server-provided semantic-token result id.</param>
+	/// <param name="filePath">The local file path of the document.</param>
+	/// <param name="resultId">The server-provided semantic token result id.</param>
 	/// <param name="data">The cached integer token stream.</param>
 	internal void StoreSemanticTokensDeltaState(string filePath, string? resultId, int[]? data)
 		=> WithTrackedDocument(filePath, state => state.SemanticTokensCache.StoreDeltaState(resultId, data));
 
 	/// <summary>
-	/// Clears the cached semantic tokens for the specified normalized file path.
+	/// Clears the cached semantic tokens for the specified file path.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
-	/// <returns>The cleared semantic-token list, or an empty list when the document is not tracked.</returns>
+	/// <param name="filePath">The local file path of the document.</param>
+	/// <returns>The cleared semantic token list, or an empty list when the document is not tracked.</returns>
 	internal IReadOnlyList<LuaSemanticToken> ClearSemanticTokens(string filePath)
 	{
 		return WithTrackedDocument(
@@ -96,7 +99,7 @@ internal sealed class LuaDocumentStore : TrackedDocumentStore<LuaDocumentState>
 	/// <summary>
 	/// Marks the specified document as needing a fresh server-side open/sync before incremental updates can resume.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns><see langword="true"/> when the document was found and invalidated; otherwise, <see langword="false"/>.</returns>
 	internal bool InvalidateServerSynchronization(string filePath)
 	{

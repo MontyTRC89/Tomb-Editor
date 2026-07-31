@@ -1,5 +1,3 @@
-using NLog;
-
 namespace TombLib.LanguageServer.Core;
 
 /// <summary>
@@ -11,7 +9,7 @@ public sealed partial class WorkspaceFileWatcher : IDisposable, IAsyncDisposable
 	private const int DispatchFailureWarningThreshold = 3;
 	private const int DispatchFailureEscalationThreshold = 5;
 
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly ILogger _logger;
 
 	private static readonly TimeSpan DispatchDebounce = TimeSpan.FromMilliseconds(250);
 	private static readonly TimeSpan MaxDispatchRetryDelay = TimeSpan.FromSeconds(5.0f);
@@ -79,19 +77,21 @@ public sealed partial class WorkspaceFileWatcher : IDisposable, IAsyncDisposable
 	/// <param name="watchSpecifications">The explicit file patterns that should be watched under the workspace root.</param>
 	/// <param name="watcherFailed">The callback that reports an unrecoverable watcher failure to the owner.</param>
 	/// <param name="fileSystemWatcherFactory">Creates one file-system watcher for a watch specification.</param>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
 	public WorkspaceFileWatcher(
 		string workspaceRootDirectoryPath,
 		Func<FileChangeBatch, CancellationToken, Task> dispatchAsync,
 		IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications,
 		Action<WorkspaceFileWatcher, Exception?>? watcherFailed = null,
-		Func<string, WorkspaceWatchSpecification, FileSystemWatcher>? fileSystemWatcherFactory = null)
+		Func<string, WorkspaceWatchSpecification, FileSystemWatcher>? fileSystemWatcherFactory = null,
+		ILogger<WorkspaceFileWatcher>? logger = null)
 	{
 		ArgumentException.ThrowIfNullOrWhiteSpace(workspaceRootDirectoryPath);
-		ArgumentNullException.ThrowIfNull(dispatchAsync);
-		ArgumentNullException.ThrowIfNull(watchSpecifications);
 
 		if (watchSpecifications.Count == 0)
 			throw new ArgumentException("At least one watch specification is required.", nameof(watchSpecifications));
+
+		_logger = logger ?? NullLogger<WorkspaceFileWatcher>.Instance;
 
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_dispatchAsync = dispatchAsync;

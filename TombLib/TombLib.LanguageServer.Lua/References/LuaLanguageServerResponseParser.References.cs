@@ -7,6 +7,8 @@ internal static partial class LuaLanguageServerResponseParser
 	/// <summary>
 	/// Parses reference locations from a LuaLS references response.
 	/// </summary>
+	/// <param name="response">The references response payload, or <see langword="null"/> when unavailable.</param>
+	/// <returns>The resolved reference locations, or an empty list when none are available.</returns>
 	internal static IReadOnlyList<TextReferenceLocation> ParseReferenceLocations(IReadOnlyList<ReferenceResponse>? response)
 	{
 		if (response is not { Count: > 0 })

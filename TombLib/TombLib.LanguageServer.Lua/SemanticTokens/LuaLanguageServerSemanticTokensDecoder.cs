@@ -1,7 +1,7 @@
 namespace TombLib.LanguageServer.Lua;
 
 /// <summary>
-/// Decodes a raw LuaLS semantic-token integer stream (already cached on the client) into the typed
+/// Decodes a raw LuaLS semantic token integer stream (already cached on the client) into the typed
 /// <see cref="LuaSemanticToken"/> list expected by the editor's colorizer.
 /// </summary>
 internal static class LuaLanguageServerSemanticTokensDecoder
@@ -9,9 +9,9 @@ internal static class LuaLanguageServerSemanticTokensDecoder
 	private static readonly IReadOnlyList<string> EmptyModifiers = [];
 
 	/// <summary>
-	/// Decodes a raw semantic-token integer stream into the typed token objects expected by the editor.
+	/// Decodes a raw semantic token integer stream into the typed token objects expected by the editor.
 	/// </summary>
-	/// <param name="data">The raw LSP semantic-token integer stream.</param>
+	/// <param name="data">The raw LSP semantic token integer stream.</param>
 	/// <param name="document">The document snapshot associated with the token stream.</param>
 	/// <param name="tokenTypes">The semantic token types advertised by the server.</param>
 	/// <param name="tokenModifiers">The semantic token modifiers advertised by the server.</param>

@@ -266,7 +266,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 						return false;
 
 					// The document just dropped its last open reference; cancel any in-flight
-					// semantic-token request for it now that no editor will display the result.
+					// semantic token request for it now that no editor will display the result.
 					CancelSemanticTokenRequest(filePath);
 
 					// Only forward the close notification if the server is already running.
@@ -285,15 +285,15 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{ }
 		catch (IOException exception)
 		{
-			Log.Debug(exception, "Lua best-effort document close failed due to a transport error for '{FilePath}'.", filePath);
+			_logger.LogDebug(exception, "Lua best-effort document close failed due to a transport error for '{FilePath}'.", filePath);
 		}
 		catch (ObjectDisposedException exception)
 		{
-			Log.Debug(exception, "Lua best-effort document close raced with disposal for '{FilePath}'.", filePath);
+			_logger.LogDebug(exception, "Lua best-effort document close raced with disposal for '{FilePath}'.", filePath);
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Lua best-effort document close failed unexpectedly for '{FilePath}'.", filePath);
+			_logger.LogWarning(exception, "Lua best-effort document close failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 
@@ -306,7 +306,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			await _documentScheduler.EnqueuePerDocumentAsync(
 				filePath,
-				async token =>
+				async _ =>
 				{
 					// Caller cancellation must not skip request-reference cleanup, otherwise a canceled
 					// IntelliSense request can leave a request-only tracked document pinned indefinitely.
@@ -333,15 +333,15 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{ }
 		catch (IOException exception)
 		{
-			Log.Debug(exception, "Lua best-effort request-document release failed due to a transport error for '{FilePath}'.", filePath);
+			_logger.LogDebug(exception, "Lua best-effort request-document release failed due to a transport error for '{FilePath}'.", filePath);
 		}
 		catch (ObjectDisposedException exception)
 		{
-			Log.Debug(exception, "Lua best-effort request-document release raced with disposal for '{FilePath}'.", filePath);
+			_logger.LogDebug(exception, "Lua best-effort request-document release raced with disposal for '{FilePath}'.", filePath);
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Lua best-effort request-document release failed unexpectedly for '{FilePath}'.", filePath);
+			_logger.LogWarning(exception, "Lua best-effort request-document release failed unexpectedly for '{FilePath}'.", filePath);
 		}
 	}
 
@@ -352,7 +352,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		if (!LanguageServerPathHelper.TryGetFilePath(parameters.Uri, out string filePath))
 		{
-			Log.Debug("Lua diagnostics could not be matched to a local file path.");
+			_logger.LogDebug("Lua diagnostics could not be matched to a local file path.");
 			return;
 		}
 
@@ -366,7 +366,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		if (!LuaLanguageServerDiagnosticsParser.TryParse(parameters, filePath,
 			document.Content, document.Version, out LuaPublishedDiagnostics? publishedDiagnostics))
 		{
-			Log.Debug("Lua diagnostics payload could not be parsed for '{FilePath}'.", filePath);
+			_logger.LogDebug("Lua diagnostics payload could not be parsed for '{FilePath}'.", filePath);
 			return;
 		}
 
@@ -379,11 +379,11 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		RaiseDiagnosticsUpdated(publishedDiagnostics.FilePath, publishedDiagnostics.Diagnostics);
 	}
 
-	private static void ObserveBackgroundTask(Task task, string operation)
+	private void ObserveBackgroundTask(Task task, string operation)
 	{
 		_ = ObserveAsync(task, operation);
 
-		static async Task ObserveAsync(Task observedTask, string observedOperation)
+		async Task ObserveAsync(Task observedTask, string observedOperation)
 		{
 			try
 			{
@@ -393,13 +393,13 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			{ }
 			catch (IOException exception)
 			{
-				Log.Debug(exception, "Lua language server background operation '{Operation}' failed with a transport error.", observedOperation);
+				_logger.LogDebug(exception, "Lua language server background operation '{Operation}' failed with a transport error.", observedOperation);
 			}
 			catch (ObjectDisposedException)
 			{ }
 			catch (Exception exception)
 			{
-				Log.Warn(exception, "Lua language server background operation '{Operation}' failed.", observedOperation);
+				_logger.LogWarning(exception, "Lua language server background operation '{Operation}' failed.", observedOperation);
 			}
 		}
 	}

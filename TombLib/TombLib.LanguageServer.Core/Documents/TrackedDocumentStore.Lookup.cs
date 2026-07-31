@@ -6,7 +6,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <summary>
 	/// Gets the current snapshot for a tracked document.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <returns>The current snapshot, or <see langword="null"/> when the document is not tracked.</returns>
 	public DocumentSnapshot? GetDocumentSnapshot(string filePath)
 		=> WithTrackedDocument(filePath, static state => state.CreateSnapshot(), default);
@@ -47,7 +47,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// Executes a callback against a tracked document while holding the store lock.
 	/// </summary>
 	/// <typeparam name="TResult">The callback result type.</typeparam>
-	/// <param name="filePath">The normalized tracked file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="accessTrackedDocument">The callback to execute when the document exists.</param>
 	/// <param name="defaultValue">The result to return when the document is not tracked.</param>
 	/// <returns>The callback result, or <paramref name="defaultValue"/> when no document is tracked.</returns>
@@ -66,7 +66,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <summary>
 	/// Executes a callback against a tracked document while holding the store lock.
 	/// </summary>
-	/// <param name="filePath">The normalized tracked file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="mutateTrackedDocument">The callback to execute when the document exists.</param>
 	protected void WithTrackedDocument(string filePath, Action<TTrackedDocumentState> mutateTrackedDocument)
 	{

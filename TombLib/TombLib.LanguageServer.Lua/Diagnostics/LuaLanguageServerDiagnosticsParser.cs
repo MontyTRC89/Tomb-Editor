@@ -13,6 +13,12 @@ internal static class LuaLanguageServerDiagnosticsParser
 	/// <summary>
 	/// Parses a LuaLS diagnostics notification into editor diagnostics for a tracked document.
 	/// </summary>
+	/// <param name="parameters">The published diagnostics notification payload from the language server.</param>
+	/// <param name="filePath">The normalized file path of the tracked document.</param>
+	/// <param name="documentContent">The current document content.</param>
+	/// <param name="documentVersion">The tracked document version to match against the diagnostics version.</param>
+	/// <param name="publishedDiagnostics">When this method returns <see langword="true"/>, contains the parsed diagnostics payload.</param>
+	/// <returns><see langword="true"/> when the payload was parsed; otherwise, <see langword="false"/>.</returns>
 	internal static bool TryParse(PublishDiagnosticsParams parameters, string filePath,
 		string documentContent, int documentVersion, [NotNullWhen(true)] out LuaPublishedDiagnostics? publishedDiagnostics)
 	{

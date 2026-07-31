@@ -5,25 +5,20 @@ namespace TombLib.LanguageServer.Core;
 /// </summary>
 public sealed class FileChangeBatch
 {
-	private readonly IReadOnlyList<WorkspaceFileChange> _entries;
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="FileChangeBatch"/> class.
 	/// </summary>
 	/// <param name="entries">The coalesced entries captured for the batch.</param>
 	public FileChangeBatch(IEnumerable<WorkspaceFileChange> entries)
-	{
-		ArgumentNullException.ThrowIfNull(entries);
-		_entries = Array.AsReadOnly([.. entries]);
-	}
-
-	/// <summary>
-	/// Gets the number of coalesced entries in the batch.
-	/// </summary>
-	public int Count => _entries.Count;
+		=> Entries = Array.AsReadOnly([.. entries]);
 
 	/// <summary>
 	/// Gets the coalesced file-change entries.
 	/// </summary>
-	public IReadOnlyList<WorkspaceFileChange> Entries => _entries;
+	public IReadOnlyList<WorkspaceFileChange> Entries { get; }
+
+	/// <summary>
+	/// Gets the number of coalesced entries in the batch.
+	/// </summary>
+	public int Count => Entries.Count;
 }

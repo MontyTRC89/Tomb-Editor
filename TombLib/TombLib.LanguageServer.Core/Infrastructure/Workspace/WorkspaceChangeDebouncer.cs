@@ -76,8 +76,6 @@ internal sealed class WorkspaceChangeDebouncer : IDisposable
 	/// <param name="dispatchDelay">The delay before the next retry attempt.</param>
 	public void Requeue(FileChangeBatch batch, TimeSpan? dispatchDelay = null)
 	{
-		ArgumentNullException.ThrowIfNull(batch);
-
 		if (_isDisposed || batch.Count == 0)
 			return;
 
@@ -94,8 +92,6 @@ internal sealed class WorkspaceChangeDebouncer : IDisposable
 	/// <param name="batch">The batch to restore.</param>
 	public void Restore(FileChangeBatch batch)
 	{
-		ArgumentNullException.ThrowIfNull(batch);
-
 		if (_isDisposed || batch.Count == 0)
 			return;
 

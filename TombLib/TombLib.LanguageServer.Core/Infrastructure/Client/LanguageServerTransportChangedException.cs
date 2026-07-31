@@ -30,4 +30,13 @@ public sealed class LanguageServerTransportChangedException : IOException
 	public LanguageServerTransportChangedException(string? message, Exception? innerException)
 		: base(message ?? DefaultMessage, innerException)
 	{ }
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LanguageServerTransportChangedException"/> class.
+	/// </summary>
+	/// <param name="message">The exception message.</param>
+	/// <param name="hresult">The HRESULT error code.</param>
+	public LanguageServerTransportChangedException(string? message, int hresult)
+		: base(message, hresult)
+	{ }
 }

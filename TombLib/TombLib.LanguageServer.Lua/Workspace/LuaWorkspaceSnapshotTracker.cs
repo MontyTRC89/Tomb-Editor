@@ -1,4 +1,3 @@
-using NLog;
 using System.Buffers.Binary;
 using System.Security.Cryptography;
 
@@ -9,7 +8,7 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 internal sealed class LuaWorkspaceSnapshotTracker
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly ILogger _logger;
 
 	private readonly string _workspaceRootDirectoryPath;
 	private readonly IReadOnlyList<WorkspaceWatchSpecification> _watchSpecifications;
@@ -21,8 +20,11 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory.</param>
 	/// <param name="watchSpecifications">The file patterns that should participate in the tracked snapshot.</param>
-	internal LuaWorkspaceSnapshotTracker(string workspaceRootDirectoryPath, IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications)
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+	internal LuaWorkspaceSnapshotTracker(string workspaceRootDirectoryPath, IReadOnlyList<WorkspaceWatchSpecification> watchSpecifications, ILogger? logger = null)
 	{
+		_logger = logger ?? NullLogger.Instance;
+
 		_workspaceRootDirectoryPath = workspaceRootDirectoryPath;
 		_watchSpecifications = watchSpecifications;
 	}
@@ -80,9 +82,9 @@ internal sealed class LuaWorkspaceSnapshotTracker
 					continue;
 				}
 
-				if (TryCreateSnapshotEntry(change.Path, out LuaWorkspaceSnapshotEntry entry))
+				if (TryCreateSnapshotEntry(change.Path, out LuaWorkspaceSnapshotEntry entry, _logger))
 					_trackedSnapshot[change.Path] = entry;
-				else if (TryDeterminePathMissing(change.Path, out bool isMissing) && isMissing)
+				else if (TryDeterminePathMissing(change.Path, out bool isMissing, _logger) && isMissing)
 					_trackedSnapshot.Remove(change.Path);
 			}
 		}
@@ -158,7 +160,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 			TryAddSnapshotPath(snapshot, filePath);
 	}
 
-	private void TryAddSnapshotPath(Dictionary<string, LuaWorkspaceSnapshotEntry> snapshot, string path)
+	private static void TryAddSnapshotPath(Dictionary<string, LuaWorkspaceSnapshotEntry> snapshot, string path)
 	{
 		if (!LanguageServerPathHelper.TryNormalizeLocalPath(path, out string normalizedPath))
 			return;
@@ -170,7 +172,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 	private static Dictionary<string, LuaWorkspaceSnapshotEntry> CloneSnapshot(Dictionary<string, LuaWorkspaceSnapshotEntry> snapshot)
 		=> new(snapshot, StringComparer.OrdinalIgnoreCase);
 
-	private static bool TryCreateSnapshotEntry(string normalizedPath, out LuaWorkspaceSnapshotEntry entry)
+	private static bool TryCreateSnapshotEntry(string normalizedPath, out LuaWorkspaceSnapshotEntry entry, ILogger? logger = null)
 	{
 		entry = default;
 
@@ -179,11 +181,13 @@ internal sealed class LuaWorkspaceSnapshotTracker
 			if (File.Exists(normalizedPath))
 			{
 				var fileInfo = new FileInfo(normalizedPath);
+
 				entry = new LuaWorkspaceSnapshotEntry(
 					IsDirectory: false,
 					fileInfo.LastWriteTimeUtc.Ticks,
 					fileInfo.Length,
 					ComputeFileContentFingerprint(normalizedPath));
+
 				return true;
 			}
 
@@ -196,7 +200,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Failed to capture a Lua workspace snapshot entry for '{Path}'.", normalizedPath);
+			logger?.LogDebug(exception, "Failed to capture a Lua workspace snapshot entry for '{Path}'.", normalizedPath);
 		}
 
 		return false;
@@ -209,7 +213,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		return BinaryPrimitives.ReadUInt64LittleEndian(hash.AsSpan(0, sizeof(ulong)));
 	}
 
-	private static bool TryDeterminePathMissing(string normalizedPath, out bool isMissing)
+	private static bool TryDeterminePathMissing(string normalizedPath, out bool isMissing, ILogger? logger = null)
 	{
 		isMissing = false;
 
@@ -230,7 +234,7 @@ internal sealed class LuaWorkspaceSnapshotTracker
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Failed to determine whether the Lua workspace path '{Path}' is missing.", normalizedPath);
+			logger?.LogDebug(exception, "Failed to determine whether the Lua workspace path '{Path}' is missing.", normalizedPath);
 			return false;
 		}
 	}

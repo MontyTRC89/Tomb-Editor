@@ -12,24 +12,11 @@ public sealed class LanguageServerClientOptions
 	private TimeSpan _disposeWaitTimeout = TimeSpan.FromSeconds(5.0f);
 
 	/// <summary>
-	/// Stores the client capabilities payload factory.
-	/// </summary>
-	private Func<string, object?> _clientCapabilitiesProvider = static _ => new { };
-
-	/// <summary>
-	/// Stores the initialization options payload factory.
-	/// </summary>
-	private Func<string, object?> _initializationOptionsProvider = static _ => new { };
-
-	/// <summary>
 	/// Initializes a new instance of the <see cref="LanguageServerClientOptions"/> class.
 	/// </summary>
 	/// <param name="settingsProvider">Produces the current settings payload for <c>workspace/didChangeConfiguration</c>.</param>
 	public LanguageServerClientOptions(Func<object> settingsProvider)
-	{
-		ArgumentNullException.ThrowIfNull(settingsProvider);
-		SettingsProvider = settingsProvider;
-	}
+		=> SettingsProvider = settingsProvider;
 
 	/// <summary>
 	/// Gets the settings payload factory for <c>workspace/didChangeConfiguration</c>.
@@ -70,21 +57,13 @@ public sealed class LanguageServerClientOptions
 	/// Gets or initializes the client capabilities payload factory for the <c>initialize</c> request.
 	/// This delegate may run on a background transport thread during startup.
 	/// </summary>
-	public Func<string, object?> ClientCapabilitiesProvider
-	{
-		get => _clientCapabilitiesProvider;
-		init => _clientCapabilitiesProvider = value ?? throw new ArgumentNullException(nameof(value));
-	}
+	public Func<string, object?> ClientCapabilitiesProvider { get; init; } = static _ => new { };
 
 	/// <summary>
 	/// Gets or initializes the language-specific initialization options factory for the <c>initialize</c> request.
 	/// This delegate may run on a background transport thread during startup.
 	/// </summary>
-	public Func<string, object?> InitializationOptionsProvider
-	{
-		get => _initializationOptionsProvider;
-		init => _initializationOptionsProvider = value ?? throw new ArgumentNullException(nameof(value));
-	}
+	public Func<string, object?> InitializationOptionsProvider { get; init; } = static _ => new { };
 
 	private static TimeSpan ValidateTimeout(TimeSpan value, string propertyName)
 	{

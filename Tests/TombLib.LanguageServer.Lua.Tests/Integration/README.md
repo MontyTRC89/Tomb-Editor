@@ -10,7 +10,7 @@ Prerequisites:
 
 Runtime expectations:
 
-- Each integration test can take several seconds because it extracts the LuaLS bundle, launches a real process, waits for diagnostics and semantic-token round-trips, and may simulate a transport crash plus restart.
+- Each integration test can take several seconds because it extracts the LuaLS bundle, launches a real process, waits for diagnostics and semantic token round-trips, and may simulate a transport crash plus restart.
 - Run them as focused integration slices rather than as part of every tight inner-loop unit-test run.
 
 Skip behavior:

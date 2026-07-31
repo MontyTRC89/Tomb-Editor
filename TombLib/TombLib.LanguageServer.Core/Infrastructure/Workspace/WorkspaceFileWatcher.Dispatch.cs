@@ -100,14 +100,14 @@ public sealed partial class WorkspaceFileWatcher
 
 			if (consecutiveDispatchFailures >= DispatchFailureEscalationThreshold)
 			{
-				Log.Warn(exception,
+				_logger.LogWarning(exception,
 					"Workspace file watcher dispatch failed for '{Workspace}' {FailureCount} times in a row; no further retries will be attempted and the owner will be notified.",
 					_workspaceRootDirectoryPath,
 					consecutiveDispatchFailures);
 			}
 			else if (consecutiveDispatchFailures >= DispatchFailureWarningThreshold)
 			{
-				Log.Warn(exception,
+				_logger.LogWarning(exception,
 					"Workspace file watcher dispatch failed for '{Workspace}' with {Count} queued change(s) {FailureCount} times in a row; retrying in {RetryDelayMs} ms with backoff.",
 					_workspaceRootDirectoryPath,
 					batch?.Count ?? 0,
@@ -116,7 +116,7 @@ public sealed partial class WorkspaceFileWatcher
 			}
 			else if (willRetry)
 			{
-				Log.Debug(exception,
+				_logger.LogDebug(exception,
 					"Workspace file watcher dispatch failed for '{Workspace}' with {Count} queued change(s); retrying in {RetryDelayMs} ms.",
 					_workspaceRootDirectoryPath,
 					batch?.Count ?? 0,

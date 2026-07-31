@@ -30,7 +30,7 @@ public sealed partial class LanguageServerClient
 		Process? process = session.Process;
 
 		session.MessageHandler = CreateMessageHandler(session.ServerInputStream, session.ServerOutputStream);
-		session.RpcTarget = new LanguageServerClientRpcTarget(this, session.Generation);
+		session.RpcTarget = new LanguageServerClientRpcTarget(this, session.Generation, _workspaceRootDirectoryPath, _workspaceFolderName, _logger);
 		session.JsonRpc = CreateJsonRpc(session);
 		session.RpcCompletionTask = session.JsonRpc.Completion;
 
@@ -136,6 +136,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="allowDisposed">Whether disposed-state checks should be skipped.</param>
 	/// <returns>The active transport session.</returns>
+	/// <remarks>This method is used by <c>LanguageServerClientTests</c> via reflection. Do not remove without updating the tests.</remarks>
 	private LanguageServerTransportSession GetRequiredActiveSession(bool allowDisposed)
 	{
 		ThrowIfDisposed(allowDisposed);
@@ -213,7 +214,7 @@ public sealed partial class LanguageServerClient
 
 		if (!_isDisposed)
 		{
-			Log.Warn("Language server process for transport generation {Generation} in workspace '{Workspace}' exited unexpectedly{ExitCodeSuffix}; the host will recreate the session on the next startup attempt.",
+			_logger.LogWarning("Language server process for transport generation {Generation} in workspace '{Workspace}' exited unexpectedly{ExitCodeSuffix}; the host will recreate the session on the next startup attempt.",
 				session.Generation,
 				_workspaceRootDirectoryPath,
 				exitCode is not null ? $" with code {exitCode.Value}" : string.Empty);
@@ -270,7 +271,7 @@ public sealed partial class LanguageServerClient
 	{
 		if (!TryDetachSpecificActiveSession(session))
 		{
-			Log.Debug("Ignoring disconnect from stale language server transport generation {Generation}: {Description}",
+			_logger.LogDebug("Ignoring disconnect from stale language server transport generation {Generation}: {Description}",
 				session.Generation,
 				eventArgs.Description);
 
@@ -281,7 +282,7 @@ public sealed partial class LanguageServerClient
 
 		if (_isDisposed)
 		{
-			Log.Debug("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected during client disposal: {Description}",
+			_logger.LogDebug("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected during client disposal: {Description}",
 				session.Generation,
 				_workspaceRootDirectoryPath,
 				eventArgs.Description);
@@ -291,7 +292,7 @@ public sealed partial class LanguageServerClient
 
 		if (eventArgs.Reason == DisconnectedReason.LocallyDisposed)
 		{
-			Log.Info("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected during expected local shutdown: {Description}",
+			_logger.LogInformation("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected during expected local shutdown: {Description}",
 				session.Generation,
 				_workspaceRootDirectoryPath,
 				eventArgs.Description);
@@ -303,7 +304,7 @@ public sealed partial class LanguageServerClient
 
 		if (exception is not null)
 		{
-			Log.Warn(exception,
+			_logger.LogWarning(exception,
 				"Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected unexpectedly (reason={Reason}); the host will recreate the session on the next startup attempt: {Description}",
 				session.Generation,
 				_workspaceRootDirectoryPath,
@@ -315,7 +316,7 @@ public sealed partial class LanguageServerClient
 			return;
 		}
 
-		Log.Warn("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected unexpectedly (reason={Reason}); the host will recreate the session on the next startup attempt: {Description}",
+		_logger.LogWarning("Language server JSON-RPC transport generation {Generation} for workspace '{Workspace}' disconnected unexpectedly (reason={Reason}); the host will recreate the session on the next startup attempt: {Description}",
 			session.Generation,
 			_workspaceRootDirectoryPath,
 			eventArgs.Reason,
@@ -368,7 +369,7 @@ public sealed partial class LanguageServerClient
 
 		if (generation != 0 && generation != TransportGeneration)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Language server {OperationKind} '{Method}' failed on stale transport generation {Generation} for workspace '{Workspace}'.",
 				operationKind,
 				method,
@@ -378,7 +379,7 @@ public sealed partial class LanguageServerClient
 			return;
 		}
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Language server {OperationKind} '{Method}' failed on transport generation {Generation} for workspace '{Workspace}'; the host will recover by recreating the session when needed.",
 			operationKind,
 			method,
@@ -393,7 +394,7 @@ public sealed partial class LanguageServerClient
 
 		if (generation != 0 && generation != TransportGeneration)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Language server request '{Method}' failed on stale transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
 				method,
 				generation,
@@ -402,7 +403,7 @@ public sealed partial class LanguageServerClient
 			return;
 		}
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Language server request '{Method}' failed on transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
 			method,
 			generation,
@@ -416,7 +417,7 @@ public sealed partial class LanguageServerClient
 
 		if (generation != 0 && generation != TransportGeneration)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Language server notification '{Method}' failed on stale transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
 				method,
 				generation,
@@ -425,7 +426,7 @@ public sealed partial class LanguageServerClient
 			return;
 		}
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Language server notification '{Method}' failed on transport generation {Generation} for workspace '{Workspace}' without invalidating the active session.",
 			method,
 			generation,
@@ -437,14 +438,14 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="session">The session whose recent stderr should be reported.</param>
 	/// <param name="context">The failure context label.</param>
-	private static void LogRecentStandardErrorContext(LanguageServerTransportSession? session, string context)
+	private void LogRecentStandardErrorContext(LanguageServerTransportSession? session, string context)
 	{
 		string? recentStandardError = session?.GetRecentStandardErrorSummary();
 
 		if (string.IsNullOrWhiteSpace(recentStandardError))
 			return;
 
-		Log.Warn("{Context} recent language server stderr: {RecentStandardError}", context, recentStandardError);
+		_logger.LogWarning("{Context} recent language server stderr: {RecentStandardError}", context, recentStandardError);
 	}
 
 	/// <summary>
@@ -452,6 +453,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="backgroundLoop">The background loop delegate.</param>
 	/// <param name="loopName">The logical loop name used for diagnostics.</param>
+	/// <param name="markTransportUnhealthyOnUnexpectedTermination">Whether unexpected termination should mark the transport unhealthy.</param>
 	/// <returns>The started background loop task.</returns>
 	private Task StartObservedBackgroundLoop(
 		Func<Task> backgroundLoop,
@@ -499,6 +501,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="task">The background loop task to observe.</param>
 	/// <param name="loopName">The logical loop name used for diagnostics.</param>
+	/// <param name="markTransportUnhealthyOnUnexpectedTermination">Whether unexpected termination should mark the transport unhealthy.</param>
 	private void ObserveBackgroundLoop(
 		Task task,
 		string loopName,
@@ -525,6 +528,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="task">The completed background loop task.</param>
 	/// <param name="loopName">The logical loop name used for diagnostics.</param>
+	/// <param name="markTransportUnhealthyOnUnexpectedTermination">Whether unexpected termination should mark the transport unhealthy.</param>
 	private void LogUnexpectedBackgroundLoopTermination(
 		Task task,
 		string loopName,
@@ -545,17 +549,17 @@ public sealed partial class LanguageServerClient
 				? aggregateException.Flatten().InnerExceptions[0]
 				: aggregateException.Flatten();
 
-			Log.Warn(loggedException, "Language server background loop '{LoopName}' terminated unexpectedly while the client was still active.", loopName);
+			_logger.LogWarning(loggedException, "Language server background loop '{LoopName}' terminated unexpectedly while the client was still active.", loopName);
 			return;
 		}
 
 		if (task.IsCanceled)
 		{
-			Log.Warn("Language server background loop '{LoopName}' was canceled unexpectedly while the client was still active.", loopName);
+			_logger.LogWarning("Language server background loop '{LoopName}' was canceled unexpectedly while the client was still active.", loopName);
 			return;
 		}
 
-		Log.Warn("Language server background loop '{LoopName}' completed unexpectedly while the client was still active.", loopName);
+		_logger.LogWarning("Language server background loop '{LoopName}' completed unexpectedly while the client was still active.", loopName);
 	}
 
 	/// <summary>
@@ -591,6 +595,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="Owner">The owning client.</param>
 	/// <param name="LoopName">The logical loop name.</param>
+	/// <param name="MarkTransportUnhealthyOnUnexpectedTermination">Whether unexpected termination should mark the transport unhealthy.</param>
 	private readonly record struct BackgroundLoopObservation(
 		LanguageServerClient Owner,
 		string LoopName,
@@ -619,7 +624,7 @@ public sealed partial class LanguageServerClient
 				if (!string.IsNullOrWhiteSpace(line))
 				{
 					session.RecordStandardErrorLine(line);
-					Log.Debug("[LS stderr] {Line}", line);
+					_logger.LogDebug("[LS stderr] {Line}", line);
 				}
 			}
 		}
@@ -627,7 +632,7 @@ public sealed partial class LanguageServerClient
 		{ }
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Language server stderr read loop failed.");
+			_logger.LogDebug(exception, "Language server stderr read loop failed.");
 		}
 	}
 
@@ -636,7 +641,7 @@ public sealed partial class LanguageServerClient
 	/// </summary>
 	/// <param name="method">The originating method name.</param>
 	/// <param name="parameters">The message payload.</param>
-	private static void LogServerMessage(string method, WindowMessageParams parameters)
+	private void LogServerMessage(string method, WindowMessageParams parameters)
 	{
 		string? messageText = parameters.Message;
 
@@ -647,10 +652,10 @@ public sealed partial class LanguageServerClient
 
 		switch (messageType)
 		{
-			case 1: Log.Error("[LS {Method}] {Message}", method, messageText); break;
-			case 2: Log.Warn("[LS {Method}] {Message}", method, messageText); break;
-			case 3: Log.Info("[LS {Method}] {Message}", method, messageText); break;
-			default: Log.Debug("[LS {Method}] {Message}", method, messageText); break;
+			case 1: _logger.LogError("[LS {Method}] {Message}", method, messageText); break;
+			case 2: _logger.LogWarning("[LS {Method}] {Message}", method, messageText); break;
+			case 3: _logger.LogInformation("[LS {Method}] {Message}", method, messageText); break;
+			default: _logger.LogDebug("[LS {Method}] {Message}", method, messageText); break;
 		}
 	}
 

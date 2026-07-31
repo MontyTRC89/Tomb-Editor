@@ -59,13 +59,13 @@ public interface ILanguageServerClient : IDisposable, IAsyncDisposable
 	bool SupportsFormatting { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether the server supports full semantic-token requests.
+	/// Gets a value indicating whether the server supports full semantic token requests.
 	/// Returns <see langword="false"/> until the active transport explicitly negotiates the capability.
 	/// </summary>
 	bool SupportsSemanticTokensFull { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether the server supports semantic-token delta responses.
+	/// Gets a value indicating whether the server supports semantic token delta responses.
 	/// Returns <see langword="false"/> until the active transport explicitly negotiates the capability.
 	/// </summary>
 	bool SupportsSemanticTokensDelta { get; }
@@ -79,7 +79,7 @@ public interface ILanguageServerClient : IDisposable, IAsyncDisposable
 	event Action<PublishDiagnosticsParams>? DiagnosticsPublished;
 
 	/// <summary>
-	/// Occurs when the server requests a semantic-token refresh for open documents.
+	/// Occurs when the server requests a semantic token refresh for open documents.
 	/// Each subscribed handler is queued independently on the thread pool. Reentrant notifications for the same handler
 	/// are serialized, and repeated pending refresh requests may coalesce while a handler is still busy.
 	/// Different handlers may run concurrently and must marshal to a UI thread when required.

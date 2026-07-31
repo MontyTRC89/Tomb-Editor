@@ -18,12 +18,12 @@ internal sealed class LuaSemanticTokensCache
 	internal int Version { get; private set; }
 
 	/// <summary>
-	/// Gets the previously cached raw semantic-token data stream used for delta requests.
+	/// Gets the previously cached raw semantic token data stream used for delta requests.
 	/// </summary>
 	internal int[]? PreviousData { get; private set; }
 
 	/// <summary>
-	/// Gets the previously cached semantic-token result identifier used for delta requests.
+	/// Gets the previously cached semantic token result identifier used for delta requests.
 	/// </summary>
 	internal string? PreviousResultId { get; private set; }
 
@@ -39,7 +39,7 @@ internal sealed class LuaSemanticTokensCache
 	}
 
 	/// <summary>
-	/// Returns the current semantic-token delta state used for incremental refreshes.
+	/// Returns the current semantic token delta state used for incremental refreshes.
 	/// </summary>
 	/// <returns>The current delta-request state.</returns>
 	internal SemanticTokensDeltaState GetDeltaState()
@@ -56,10 +56,10 @@ internal sealed class LuaSemanticTokensCache
 	}
 
 	/// <summary>
-	/// Stores the raw semantic-token delta-request state returned by the language server.
+	/// Stores the raw semantic token delta-request state returned by the language server.
 	/// </summary>
 	/// <param name="resultId">The server-provided result identifier.</param>
-	/// <param name="data">The raw semantic-token integer stream.</param>
+	/// <param name="data">The raw semantic token integer stream.</param>
 	internal void StoreDeltaState(string? resultId, int[]? data)
 	{
 		PreviousResultId = resultId;

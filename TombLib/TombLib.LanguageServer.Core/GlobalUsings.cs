@@ -1,4 +1,2 @@
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
-global using TombLib.LanguageServer.Core;
-global using TombLib.Scripting.Lua;

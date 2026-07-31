@@ -1,15 +1,15 @@
 namespace TombLib.LanguageServer.Core;
 
 /// <summary>
-/// Parses semantic-token delta responses and applies them to a cached token stream.
+/// Parses semantic token delta responses and applies them to a cached token stream.
 /// </summary>
 public static class SemanticTokensDeltaParser
 {
 	/// <summary>
-	/// Parses a semantic-token response that may contain either a full token stream or incremental edits.
+	/// Parses a semantic token response that may contain either a full token stream or incremental edits.
 	/// </summary>
-	/// <param name="response">The raw semantic-token wire response.</param>
-	/// <returns>The parsed semantic-token delta response.</returns>
+	/// <param name="response">The raw semantic token wire response.</param>
+	/// <returns>The parsed semantic token delta response.</returns>
 	public static SemanticTokensDeltaResponse Parse(SemanticTokensWireResponse? response)
 	{
 		if (response is not { } payload)
@@ -42,12 +42,12 @@ public static class SemanticTokensDeltaParser
 	}
 
 	/// <summary>
-	/// Applies a list of semantic-token edits to a previously cached integer stream.
+	/// Applies a list of semantic token edits to a previously cached integer stream.
 	/// Returns the new stream, or <see langword="null"/> if any edit is out of range, moves backward, or overlaps a prior edit.
 	/// </summary>
-	/// <param name="previousData">The previously cached semantic-token integer stream.</param>
+	/// <param name="previousData">The previously cached semantic token integer stream.</param>
 	/// <param name="edits">The edits to apply in order.</param>
-	/// <returns>The updated semantic-token integer stream, or <see langword="null"/> when the edits are invalid.</returns>
+	/// <returns>The updated semantic token integer stream, or <see langword="null"/> when the edits are invalid.</returns>
 	public static int[]? ApplyEdits(int[] previousData, IReadOnlyList<SemanticTokensEdit> edits)
 	{
 		int newLength = previousData.Length;

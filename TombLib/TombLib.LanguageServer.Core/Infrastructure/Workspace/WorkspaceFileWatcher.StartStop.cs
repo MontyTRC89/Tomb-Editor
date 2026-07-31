@@ -26,7 +26,7 @@ public sealed partial class WorkspaceFileWatcher
 		{
 			if (!Directory.Exists(_workspaceRootDirectoryPath))
 			{
-				Log.Debug("Workspace file watcher start skipped because '{Workspace}' does not exist.", _workspaceRootDirectoryPath);
+				_logger.LogDebug("Workspace file watcher start skipped because '{Workspace}' does not exist.", _workspaceRootDirectoryPath);
 				return WorkspaceWatcherStartStatus.WorkspaceRootMissing;
 			}
 		}
@@ -34,7 +34,7 @@ public sealed partial class WorkspaceFileWatcher
 		{
 			startupException = exception;
 
-			Log.Debug(exception, "Failed to validate the workspace root for '{Workspace}' before starting the workspace watcher.", _workspaceRootDirectoryPath);
+			_logger.LogDebug(exception, "Failed to validate the workspace root for '{Workspace}' before starting the workspace watcher.", _workspaceRootDirectoryPath);
 
 			Dispose();
 
@@ -56,7 +56,7 @@ public sealed partial class WorkspaceFileWatcher
 
 				Interlocked.Exchange(ref _watcherFailureReported, 0);
 
-				Log.Debug("Started workspace file watcher for '{Workspace}' with {Count} watcher(s).",
+				_logger.LogDebug("Started workspace file watcher for '{Workspace}' with {Count} watcher(s).",
 					_workspaceRootDirectoryPath,
 					_watchers.Count);
 
@@ -67,7 +67,7 @@ public sealed partial class WorkspaceFileWatcher
 		{
 			startupException = exception;
 
-			Log.Debug(exception, "Failed to start the workspace file watcher for '{Workspace}'.", _workspaceRootDirectoryPath);
+			_logger.LogDebug(exception, "Failed to start the workspace file watcher for '{Workspace}'.", _workspaceRootDirectoryPath);
 
 			Dispose();
 
@@ -122,7 +122,7 @@ public sealed partial class WorkspaceFileWatcher
 		if (Interlocked.Exchange(ref _watcherFailureReported, 1) != 0)
 			return;
 
-		Log.Warn(exception,
+		_logger.LogWarning(exception,
 			"Workspace file watcher encountered an internal error for '{Workspace}' and stopped watching until the owner handles recovery.",
 			_workspaceRootDirectoryPath);
 
@@ -132,7 +132,7 @@ public sealed partial class WorkspaceFileWatcher
 		}
 		catch (Exception callbackException)
 		{
-			Log.Warn(callbackException, "Workspace watcher failure handler threw.");
+			_logger.LogWarning(callbackException, "Workspace watcher failure handler threw.");
 		}
 
 		if (_isDisposed)

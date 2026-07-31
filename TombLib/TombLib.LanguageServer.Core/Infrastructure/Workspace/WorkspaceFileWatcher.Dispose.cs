@@ -78,14 +78,14 @@ public sealed partial class WorkspaceFileWatcher
 
 			if (finalFlushTimedOut)
 			{
-				Log.Warn("Workspace file watcher final dispose flush exceeded {Timeout} for '{Workspace}'; cancellation was requested and disposal waited for the callback to unwind.",
+				_logger.LogWarning("Workspace file watcher final dispose flush exceeded {Timeout} for '{Workspace}'; cancellation was requested and disposal waited for the callback to unwind.",
 					DisposeFinalFlushTimeout,
 					_workspaceRootDirectoryPath);
 			}
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Workspace file watcher final dispose flush failed for '{Workspace}'.",
 				_workspaceRootDirectoryPath);
 		}
@@ -215,7 +215,7 @@ public sealed partial class WorkspaceFileWatcher
 	/// </summary>
 	/// <param name="disposable">The resource to dispose.</param>
 	/// <param name="resourceName">The resource name used for diagnostics.</param>
-	private static void TryDispose(IDisposable disposable, string resourceName)
+	private void TryDispose(IDisposable disposable, string resourceName)
 	{
 		try
 		{
@@ -223,7 +223,7 @@ public sealed partial class WorkspaceFileWatcher
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Failed to dispose workspace watcher resource '{ResourceName}'.", resourceName);
+			_logger.LogDebug(exception, "Failed to dispose workspace watcher resource '{ResourceName}'.", resourceName);
 		}
 	}
 

@@ -10,7 +10,7 @@ namespace TombLib.LanguageServer.Lua;
 /// <param name="FilterText">The filter text used during completion matching.</param>
 /// <param name="Detail">The normalized detail text.</param>
 /// <param name="Description">The normalized description text.</param>
-/// <param name="IconKind">The resolved completion icon kind.</param>
+/// <param name="Kind">The resolved completion icon kind.</param>
 /// <param name="TextEdit">The normalized text-edit identity.</param>
 internal readonly record struct LuaCompletionItemIdentity(
 	string Label,

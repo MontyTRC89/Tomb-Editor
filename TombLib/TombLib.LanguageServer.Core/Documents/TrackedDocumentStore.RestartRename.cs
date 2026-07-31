@@ -4,10 +4,10 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	where TTrackedDocumentState : TrackedDocumentState
 {
 	/// <summary>
-	/// Rekeys a tracked document to a new normalized file path.
+	/// Rekeys a tracked document to a new file path.
 	/// </summary>
-	/// <param name="oldFilePath">The current normalized file path.</param>
-	/// <param name="newFilePath">The replacement normalized file path.</param>
+	/// <param name="oldFilePath">The current local file path.</param>
+	/// <param name="newFilePath">The replacement local file path.</param>
 	/// <param name="content">The latest editor content.</param>
 	/// <returns>The rename request that should be mirrored to the server, or <see langword="null"/> when no document was tracked.</returns>
 	public DocumentRenameRequest? Rename(string oldFilePath, string newFilePath, string? content = null)

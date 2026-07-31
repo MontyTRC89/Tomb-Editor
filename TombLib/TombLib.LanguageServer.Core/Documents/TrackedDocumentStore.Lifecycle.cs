@@ -7,6 +7,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// Releases one temporary request-driven reference for <paramref name="filePath"/> without
 	/// immediately evicting the cached request-only document.
 	/// </summary>
+	/// <param name="filePath">The local file path of the document.</param>
 	public void ReleaseRequest(string filePath)
 	{
 		string normalizedFilePath = NormalizeTrackedFilePath(filePath);
@@ -22,9 +23,10 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	}
 
 	/// <summary>
-	/// Releases one temporary request-driven reference for <paramref name="filePath"/>.
+	/// Releases one temporary request-driven reference for <paramref name="filePath"/> and
+	/// removes the document from local tracking when no references remain.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="document">When this method returns, contains the closing snapshot if the server copy is still open.</param>
 	/// <returns><see langword="true"/> when the document was removed locally; otherwise, <see langword="false"/>.</returns>
 	public bool TryReleaseRequest(string filePath, out DocumentSnapshot? document)
@@ -58,6 +60,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// Evicts the oldest fully idle request-only documents until at most <paramref name="maxCount"/>
 	/// idle request-only documents remain tracked.
 	/// </summary>
+	/// <param name="maxCount">The maximum number of idle request-only documents to keep tracked.</param>
 	public IReadOnlyList<DocumentSnapshot> TrimRequestOnlyDocuments(int maxCount)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(maxCount);
@@ -96,7 +99,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <summary>
 	/// Releases one open reference for <paramref name="filePath"/>.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="document">When this method returns, contains the closing snapshot if the server copy is still open.</param>
 	/// <returns><see langword="true"/> when the document was removed locally; otherwise, <see langword="false"/>.</returns>
 	public bool TryClose(string filePath, out DocumentSnapshot? document)

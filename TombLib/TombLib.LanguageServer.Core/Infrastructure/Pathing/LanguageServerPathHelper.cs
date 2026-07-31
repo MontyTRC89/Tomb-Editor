@@ -137,6 +137,11 @@ public static class LanguageServerPathHelper
 		}
 	}
 
+	/// <summary>
+	/// Gets the case-normalized dictionary key for a normalized local path.
+	/// </summary>
+	/// <param name="normalizedFilePath">The normalized local file path.</param>
+	/// <returns>The dictionary key, uppercased when the local file system is case-insensitive.</returns>
 	internal static string GetPathKeyFromNormalizedPath(string normalizedFilePath)
 		=> UsesCaseSensitiveLocalPaths ? normalizedFilePath : normalizedFilePath.ToUpperInvariant();
 

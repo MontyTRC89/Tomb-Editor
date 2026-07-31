@@ -9,8 +9,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 {
 	public async Task<IReadOnlyList<TextReferenceLocation>> GetReferencesAsync(TextReferenceRequest request, CancellationToken cancellationToken = default)
 	{
-		ArgumentNullException.ThrowIfNull(request);
-
 		return await GetReferencesAsync(
 			request.FilePath,
 			request.DocumentText,
@@ -43,6 +41,15 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			cancellationToken);
 	}
 
+	/// <summary>
+	/// Resolves reference locations for a symbol at a position within a document.
+	/// </summary>
+	/// <param name="filePath">The local file path of the document.</param>
+	/// <param name="content">The current document content.</param>
+	/// <param name="line">The zero-based line index.</param>
+	/// <param name="column">The zero-based column index.</param>
+	/// <param name="cancellationToken">A token that can cancel the request.</param>
+	/// <returns>The resolved reference locations, or an empty list when none are available.</returns>
 	public async Task<IReadOnlyList<TextReferenceLocation>> GetReferencesAsync(string filePath, string content,
 		int line, int column, CancellationToken cancellationToken = default)
 	{
@@ -83,8 +90,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	public async Task<TextWorkspaceEdit?> RenameSymbolAsync(TextRenameRequest request, CancellationToken cancellationToken = default)
 	{
-		ArgumentNullException.ThrowIfNull(request);
-
 		if (string.IsNullOrWhiteSpace(request.NewName))
 			return null;
 
@@ -115,7 +120,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 				timeoutValue: null,
 				cancellationToken).ConfigureAwait(false);
 
-			return LuaLanguageServerResponseParser.ParseWorkspaceEdit(response);
+			return LuaLanguageServerResponseParser.ParseWorkspaceEdit(response, _logger);
 		}
 		finally
 		{
@@ -125,8 +130,6 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 	public async Task<TextWorkspaceEdit?> FormatDocumentAsync(TextFormatRequest request, CancellationToken cancellationToken = default)
 	{
-		ArgumentNullException.ThrowIfNull(request);
-
 		ILanguageServerClient? client = _client;
 
 		if (client is null)
@@ -202,13 +205,13 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 
 		try
 		{
-			// Synchronize the document without triggering post-edit semantic-token refresh.
+			// Synchronize the document without triggering post-edit semantic token refresh.
 			if (
 				// Request-driven sync paths (completion / hover / definition / signature) intentionally
-				// skip the semantic-token refresh: typing a single identifier character can otherwise turn
+				// skip the semantic token refresh: typing a single identifier character can otherwise turn
 				// into didChange + completion + semanticTokens/full per keystroke, which is the dominant
 				// performance regression observed during normal editing. UpdateDocument (TextChangedDelayed)
-				// remains the single owner of post-edit semantic-token refresh.
+				// remains the single owner of post-edit semantic token refresh.
 				!await SynchronizeDocumentAsync(normalizedFilePath, content,
 					acquireOpenReference: false, acquireRequestReference: true, refreshSemanticTokens: false, cancellationToken).ConfigureAwait(false))
 			{
@@ -266,7 +269,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' was canceled before the provider timeout elapsed on generation {Generation}; returning the fallback value without counting a timeout or forcing a restart.",
+			_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' was canceled before the provider timeout elapsed on generation {Generation}; returning the fallback value without counting a timeout or forcing a restart.",
 				method,
 				_workspaceRootDirectoryPath,
 				transportGeneration);
@@ -275,14 +278,14 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' crossed a transport restart boundary on generation {Generation}; retrying once.",
+			_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' crossed a transport restart boundary on generation {Generation}; retrying once.",
 				method,
 				_workspaceRootDirectoryPath,
 				transportGeneration);
 		}
 		catch (LanguageServerTransportUnavailableException exception) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Lua language server request '{Method}' for workspace '{Workspace}' failed after transport generation {Generation} became unavailable; retrying once.",
 				method,
 				_workspaceRootDirectoryPath,
@@ -316,7 +319,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' was canceled before the provider timeout elapsed during the retry on generation {Generation}; returning the fallback value without counting a timeout or forcing a restart.",
+			_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' was canceled before the provider timeout elapsed during the retry on generation {Generation}; returning the fallback value without counting a timeout or forcing a restart.",
 				method,
 				_workspaceRootDirectoryPath,
 				transportGeneration);
@@ -325,7 +328,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (LanguageServerTransportChangedException) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' crossed a second transport restart boundary on generation {Generation}; returning the fallback value.",
+			_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' crossed a second transport restart boundary on generation {Generation}; returning the fallback value.",
 				method,
 				_workspaceRootDirectoryPath,
 				transportGeneration);
@@ -334,7 +337,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		}
 		catch (LanguageServerTransportUnavailableException exception) when (!cancellationToken.IsCancellationRequested)
 		{
-			Log.Debug(exception,
+			_logger.LogDebug(exception,
 				"Lua language server request '{Method}' for workspace '{Workspace}' failed again after transport generation {Generation} became unavailable; returning the fallback value.",
 				method,
 				_workspaceRootDirectoryPath,
@@ -371,7 +374,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 		{
 			if (client.TryMarkTransportUnhealthy(transportGeneration))
 			{
-				Log.Warn("Lua language server request '{Method}' for workspace '{Workspace}' timed out after {Timeout}s {Count} consecutive times on transport generation {Generation} (threshold {Threshold}); marking that transport unhealthy so the next IntelliSense request restarts it.",
+				_logger.LogWarning("Lua language server request '{Method}' for workspace '{Workspace}' timed out after {Timeout}s {Count} consecutive times on transport generation {Generation} (threshold {Threshold}); marking that transport unhealthy so the next IntelliSense request restarts it.",
 					method,
 					_workspaceRootDirectoryPath,
 					_requestTimeout.TotalSeconds,
@@ -381,7 +384,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			}
 			else
 			{
-				Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' timed out on superseded transport generation {Generation}; leaving the active transport unchanged.",
+				_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' timed out on superseded transport generation {Generation}; leaving the active transport unchanged.",
 					method,
 					_workspaceRootDirectoryPath,
 					transportGeneration);
@@ -390,7 +393,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider
 			return;
 		}
 
-		Log.Debug("Lua language server request '{Method}' for workspace '{Workspace}' timed out after {Timeout}s (consecutive {Count}/{Threshold}, generation {Generation}).",
+		_logger.LogDebug("Lua language server request '{Method}' for workspace '{Workspace}' timed out after {Timeout}s (consecutive {Count}/{Threshold}, generation {Generation}).",
 			method,
 			_workspaceRootDirectoryPath,
 			_requestTimeout.TotalSeconds,

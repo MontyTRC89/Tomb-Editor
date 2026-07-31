@@ -1,4 +1,3 @@
-using NLog;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -10,7 +9,14 @@ namespace TombLib.LanguageServer.Core;
 /// </summary>
 public sealed class CompletionResponseJsonConverter : JsonConverter<CompletionResponse>
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private static ILogger _logger = NullLogger.Instance;
+
+	/// <summary>
+	/// Sets the logger used for malformed-payload diagnostics.
+	/// </summary>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+	internal static void InitializeLogger(ILogger logger)
+		=> _logger = logger ?? NullLogger.Instance;
 
 	public override CompletionResponse? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
@@ -49,12 +55,12 @@ public sealed class CompletionResponseJsonConverter : JsonConverter<CompletionRe
 				}
 				else
 				{
-					Log.Warn("Ignoring malformed completion-list payload because 'items' had unsupported JSON kind {Kind}.", itemsElement.ValueKind);
+					_logger.LogWarning("Ignoring malformed completion-list payload because 'items' had unsupported JSON kind {Kind}.", itemsElement.ValueKind);
 				}
 			}
 			else
 			{
-				Log.Warn("Ignoring malformed completion-list payload because the 'items' property was missing.");
+				_logger.LogWarning("Ignoring malformed completion-list payload because the 'items' property was missing.");
 			}
 
 			if (hasSupportedItemsShape
@@ -184,9 +190,11 @@ public sealed class CompletionResponseJsonConverter : JsonConverter<CompletionRe
 	}
 
 	private static bool LooksLikeProtocolRange(JsonElement element)
-		=> element.ValueKind == JsonValueKind.Object
+	{
+		return element.ValueKind == JsonValueKind.Object
 			&& element.TryGetProperty("start", out _)
 			&& element.TryGetProperty("end", out _);
+	}
 
 	private static bool TryGetObjectProperty(JsonElement element, string propertyName, out JsonElement propertyValue)
 	{

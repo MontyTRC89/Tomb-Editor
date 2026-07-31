@@ -1,4 +1,3 @@
-using NLog;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -9,7 +8,7 @@ namespace TombLib.LanguageServer.Core;
 /// </summary>
 public sealed partial class LanguageServerClient : ILanguageServerClient
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly ILogger _logger;
 
 	private static readonly IReadOnlyList<string> EmptyCapabilityList = Array.AsReadOnly(Array.Empty<string>());
 
@@ -123,41 +122,44 @@ public sealed partial class LanguageServerClient : ILanguageServerClient
 	public bool SupportsFormatting => Volatile.Read(ref _publishedCapabilitySnapshot).SupportsFormatting == true;
 
 	/// <summary>
-	/// Gets a value indicating whether the server supports full semantic-token requests.
+	/// Gets a value indicating whether the server supports full semantic token requests.
 	/// </summary>
 	public bool SupportsSemanticTokensFull => Volatile.Read(ref _publishedCapabilitySnapshot).SupportsSemanticTokensFull;
 
 	/// <summary>
-	/// Gets a value indicating whether the server supports semantic-token delta responses.
+	/// Gets a value indicating whether the server supports semantic token delta responses.
 	/// </summary>
 	public bool SupportsSemanticTokensDelta => Volatile.Read(ref _publishedCapabilitySnapshot).SupportsSemanticTokensDelta;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LanguageServerClient"/> class.
 	/// </summary>
-	/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory.</param>
+	/// <param name="workspaceRootDirectoryPath">The workspace root directory to host.</param>
 	/// <param name="serverExecutablePath">The language-server executable path.</param>
 	/// <param name="options">Provides the host-specific settings, capabilities, and initialization payload factories.</param>
-	public LanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, LanguageServerClientOptions options)
-		: this(workspaceRootDirectoryPath, serverExecutablePath, options, processStartedTestHook: null, sessionActivatedTestHook: null, beforeInitializeRequestTestHook: null)
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+	public LanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, LanguageServerClientOptions options, ILogger<LanguageServerClient>? logger = null)
+		: this(workspaceRootDirectoryPath, serverExecutablePath, options, logger, processStartedTestHook: null, sessionActivatedTestHook: null, beforeInitializeRequestTestHook: null)
 	{ }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LanguageServerClient"/> class.
 	/// </summary>
-	/// <param name="workspaceRootDirectoryPath">The normalized workspace root directory.</param>
+	/// <param name="workspaceRootDirectoryPath">The workspace root directory to host.</param>
 	/// <param name="serverExecutablePath">The language-server executable path.</param>
 	/// <param name="options">Provides the host-specific settings, capabilities, and initialization payload factories.</param>
 	/// <param name="processStartedTestHook">A test seam invoked after the process starts but before session activation.</param>
 	/// <param name="sessionActivatedTestHook">A test seam invoked after session activation but before handshake completion.</param>
 	/// <param name="beforeInitializeRequestTestHook">A test seam invoked after the handshake timeout starts but before the initialize request is sent.</param>
 	internal LanguageServerClient(string workspaceRootDirectoryPath, string serverExecutablePath, LanguageServerClientOptions options,
+		ILogger<LanguageServerClient>? logger,
 		Func<Process, CancellationToken, Task>? processStartedTestHook, Func<CancellationToken, Task>? sessionActivatedTestHook = null,
 		Func<CancellationToken, Task>? beforeInitializeRequestTestHook = null)
 	{
 		ArgumentException.ThrowIfNullOrWhiteSpace(workspaceRootDirectoryPath);
 		ArgumentException.ThrowIfNullOrWhiteSpace(serverExecutablePath);
-		ArgumentNullException.ThrowIfNull(options);
+
+		_logger = logger ?? NullLogger<LanguageServerClient>.Instance;
 
 		string normalizedWorkspaceRootDirectoryPath = LanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath);
 
@@ -173,6 +175,19 @@ public sealed partial class LanguageServerClient : ILanguageServerClient
 		_processStartedTestHook = processStartedTestHook;
 		_sessionActivatedTestHook = sessionActivatedTestHook;
 		_beforeInitializeRequestTestHook = beforeInitializeRequestTestHook;
+
+		CompletionResponseJsonConverter.InitializeLogger(_logger);
+
+		if (OperatingSystem.IsWindows())
+			ProcessJobObject.InitializeLogger(_logger);
+
+		_diagnosticsPublishedSubscribers = new(
+			static (handler, parameters) => handler(parameters),
+			exception => _logger.LogWarning(exception, "Diagnostics handler threw; later subscribers will still be notified."));
+
+		_semanticTokensRefreshSubscribers = new(
+			static handler => handler(),
+			exception => _logger.LogWarning(exception, "Semantic tokens refresh request handler threw; later subscribers will still be notified."));
 
 		EnsureTransportBackgroundLoopsRunning(includeDiagnosticsPump: false);
 	}

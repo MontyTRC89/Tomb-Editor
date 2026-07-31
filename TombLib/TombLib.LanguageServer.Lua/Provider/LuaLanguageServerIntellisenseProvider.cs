@@ -1,4 +1,3 @@
-using NLog;
 using System.Collections.Concurrent;
 using TombLib.Scripting.Diagnostics;
 
@@ -9,13 +8,16 @@ namespace TombLib.LanguageServer.Lua;
 /// </summary>
 public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellisenseProvider
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private readonly ILogger _logger;
 
 	private static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(10);
 	private const int DefaultRequestTimeoutRestartThreshold = 2;
 	private const int HardStartupFailureThreshold = 3;
 	private const int MaxTrackedRequestOnlyDocuments = 16;
 
+	/// <summary>
+	/// Gets the workspace file patterns mirrored to the Lua language server for external-change watching.
+	/// </summary>
 	internal static IReadOnlyList<WorkspaceWatchSpecification> WorkspaceWatchSpecifications { get; } = Array.AsReadOnly(
 	[
 		new WorkspaceWatchSpecification(".API", IncludeSubdirectories: false),
@@ -91,18 +93,33 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 	/// </summary>
 	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
 	/// <param name="serverExecutablePath">The LuaLS executable path, or <see langword="null"/> when unavailable.</param>
-	public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string? serverExecutablePath)
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+	public LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, string? serverExecutablePath, ILogger<LuaLanguageServerIntellisenseProvider>? logger = null)
 		: this(workspaceRootDirectoryPath,
 			CreateClient(workspaceRootDirectoryPath, serverExecutablePath),
 			DefaultRequestTimeout,
-			DefaultRequestTimeoutRestartThreshold)
+			DefaultRequestTimeoutRestartThreshold,
+			logger: logger)
 	{ }
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LuaLanguageServerIntellisenseProvider"/> class
+	/// for testing and dependency injection.
+	/// </summary>
+	/// <param name="workspaceRootDirectoryPath">The root directory of the current Lua script workspace.</param>
+	/// <param name="client">The language server client, or <see langword="null"/> when unavailable.</param>
+	/// <param name="requestTimeout">The per-request timeout, or <see langword="null"/> for the default.</param>
+	/// <param name="requestTimeoutRestartThreshold">The consecutive timeout count that triggers an automatic restart.</param>
+	/// <param name="workspaceFileWatcherFactory">A factory for creating workspace file watchers, used for testing.</param>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
 	internal LuaLanguageServerIntellisenseProvider(string workspaceRootDirectoryPath, ILanguageServerClient? client,
 		TimeSpan? requestTimeout = null,
 		int requestTimeoutRestartThreshold = DefaultRequestTimeoutRestartThreshold,
-		Func<string, Func<FileChangeBatch, CancellationToken, Task>, Action<WorkspaceFileWatcher, Exception?>, WorkspaceFileWatcher>? workspaceFileWatcherFactory = null)
+		Func<string, Func<FileChangeBatch, CancellationToken, Task>, Action<WorkspaceFileWatcher, Exception?>, WorkspaceFileWatcher>? workspaceFileWatcherFactory = null,
+		ILogger<LuaLanguageServerIntellisenseProvider>? logger = null)
 	{
+		_logger = logger ?? NullLogger<LuaLanguageServerIntellisenseProvider>.Instance;
+
 		_workspaceRootDirectoryPath = LanguageServerPathHelper.NormalizeLocalPath(workspaceRootDirectoryPath);
 		_client = client;
 		_requestTimeout = requestTimeout ?? DefaultRequestTimeout;
@@ -115,7 +132,8 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 			() => _isDisposed,
 			EnsureStartedAsync,
 			MarkWorkspaceTransportUnavailable,
-			RaiseWorkspaceWatcherFailed);
+			RaiseWorkspaceWatcherFailed,
+			_logger);
 
 		if (_client is not null)
 		{
@@ -215,7 +233,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Failed to mark the Lua language server transport unhealthy after a workspace-watcher send failure.");
+			_logger.LogDebug(exception, "Failed to mark the Lua language server transport unhealthy after a workspace-watcher send failure.");
 		}
 	}
 
@@ -238,7 +256,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 		InvokeSubscribersSafely(
 			SemanticTokensUpdated,
 			handler => ((Action<string, IReadOnlyList<LuaSemanticToken>>)handler)(filePath, semanticTokens),
-			"Lua semantic-token subscriber");
+			"Lua semantic token subscriber");
 	}
 
 	private void RaiseStartupFailed(LanguageServerStartupFailure failure)
@@ -279,7 +297,7 @@ public sealed partial class LuaLanguageServerIntellisenseProvider : ILuaIntellis
 			}
 			catch (Exception exception)
 			{
-				Log.Warn(exception, "{SubscriberDescription} threw; later subscribers will still be notified.", subscriberDescription);
+				_logger.LogWarning(exception, "{SubscriberDescription} threw; later subscribers will still be notified.", subscriberDescription);
 			}
 		}
 	}

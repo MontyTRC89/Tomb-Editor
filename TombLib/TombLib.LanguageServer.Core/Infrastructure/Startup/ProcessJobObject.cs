@@ -1,4 +1,3 @@
-using NLog;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -14,10 +13,18 @@ namespace TombLib.LanguageServer.Core;
 [SupportedOSPlatform("windows")]
 internal static class ProcessJobObject
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private static ILogger _logger = NullLogger.Instance;
+
 	private static readonly object SyncRoot = new();
 	private static IntPtr _jobHandle = IntPtr.Zero;
 	private static bool _initializationFailed;
+
+	/// <summary>
+	/// Sets the logger used for job-object allocation diagnostics.
+	/// </summary>
+	/// <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+	internal static void InitializeLogger(ILogger logger)
+		=> _logger = logger ?? NullLogger.Instance;
 
 	/// <summary>
 	/// Attempts to assign the supplied process to the shared kill-on-close Windows job object.
@@ -43,12 +50,12 @@ internal static class ProcessJobObject
 				int errorCode = Marshal.GetLastWin32Error();
 
 				// ERROR_ACCESS_DENIED is expected when the process is already inside an unbreakable job.
-				Log.Debug("AssignProcessToJobObject failed with Win32 error {ErrorCode} for the language-server process.", errorCode);
+				_logger.LogDebug("AssignProcessToJobObject failed with Win32 error {ErrorCode} for the language-server process.", errorCode);
 			}
 		}
 		catch (Exception exception)
 		{
-			Log.Debug(exception, "Failed to assign the language-server process to the kill-on-close job object.");
+			_logger.LogDebug(exception, "Failed to assign the language-server process to the kill-on-close job object.");
 		}
 	}
 
@@ -78,7 +85,7 @@ internal static class ProcessJobObject
 			{
 				_initializationFailed = true;
 
-				Log.Debug("CreateJobObject returned NULL (Win32 error {ErrorCode}); the language server will rely on graceful shutdown.", Marshal.GetLastWin32Error());
+				_logger.LogDebug("CreateJobObject returned NULL (Win32 error {ErrorCode}); the language server will rely on graceful shutdown.", Marshal.GetLastWin32Error());
 
 				return IntPtr.Zero;
 			}
@@ -100,7 +107,7 @@ internal static class ProcessJobObject
 					CloseHandle(handle);
 					_initializationFailed = true;
 
-					Log.Debug("SetInformationJobObject failed with Win32 error {ErrorCode}; the language server will rely on graceful shutdown.", errorCode);
+					_logger.LogDebug("SetInformationJobObject failed with Win32 error {ErrorCode}; the language server will rely on graceful shutdown.", errorCode);
 
 					return IntPtr.Zero;
 				}

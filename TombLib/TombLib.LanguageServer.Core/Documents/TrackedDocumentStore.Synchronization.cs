@@ -6,7 +6,7 @@ public abstract partial class TrackedDocumentStore<TTrackedDocumentState>
 	/// <summary>
 	/// Synchronizes the tracked state for a document and returns the LSP action required to mirror it to the server.
 	/// </summary>
-	/// <param name="filePath">The normalized file path.</param>
+	/// <param name="filePath">The local file path of the document.</param>
 	/// <param name="content">The latest document content.</param>
 	/// <param name="acquireOpenReference">Whether an additional open-editor reference should be recorded.</param>
 	/// <param name="acquireRequestReference">Whether a temporary request-driven reference should be recorded.</param>

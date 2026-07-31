@@ -167,6 +167,7 @@ public sealed partial class DocumentOperationScheduler
 	/// <summary>
 	/// Marks a queued update as running so later replacements stop treating it as cancelable pending work.
 	/// </summary>
+	/// <param name="registration">The queued-update registration to mark as running.</param>
 	private bool TryMarkQueuedUpdateStarted(QueuedUpdateRegistration registration)
 	{
 		lock (_syncRoot)
@@ -182,6 +183,7 @@ public sealed partial class DocumentOperationScheduler
 	/// <summary>
 	/// Cancels a superseded queued update only while it is still pending.
 	/// </summary>
+	/// <param name="registration">The queued-update registration to cancel, or <see langword="null"/>.</param>
 	private static void CancelSupersededQueuedUpdate(QueuedUpdateRegistration? registration)
 	{
 		if (registration is null || registration.HasStarted)
@@ -193,6 +195,7 @@ public sealed partial class DocumentOperationScheduler
 	/// <summary>
 	/// Cancels a queued update source without disposing it so the owning delegate controls source lifetime.
 	/// </summary>
+	/// <param name="registration">The queued-update registration to cancel, or <see langword="null"/>.</param>
 	private static void CancelQueuedUpdate(QueuedUpdateRegistration? registration)
 	{
 		if (registration is null)
