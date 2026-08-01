@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Presentation;
 

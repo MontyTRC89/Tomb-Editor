@@ -1,6 +1,6 @@
 #nullable enable
 
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Hover;
 

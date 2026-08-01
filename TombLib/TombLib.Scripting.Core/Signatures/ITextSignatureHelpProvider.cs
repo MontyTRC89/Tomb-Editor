@@ -1,4 +1,4 @@
-using Nickelony.LanguageServer.Core.Signatures;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 
 namespace TombLib.Scripting.Signatures;
 

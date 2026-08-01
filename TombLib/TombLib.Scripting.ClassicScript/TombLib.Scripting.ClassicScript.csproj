@@ -32,6 +32,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
   </ItemGroup>

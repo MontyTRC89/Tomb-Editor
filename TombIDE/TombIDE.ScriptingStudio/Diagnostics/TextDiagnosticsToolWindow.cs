@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using TombIDE.ScriptingStudio.Shell;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombIDE.ScriptingStudio.Diagnostics;

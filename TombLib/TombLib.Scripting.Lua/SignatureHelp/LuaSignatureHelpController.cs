@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Resources;
-using Nickelony.LanguageServer.Core.Signatures;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.UI.Signatures;
 
 namespace TombLib.Scripting.Lua;

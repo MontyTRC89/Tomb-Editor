@@ -2,7 +2,9 @@
 
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MvvmDialogs;
+using NLog.Extensions.Logging;
 using System;
 using System.Windows.Input;
 using TombIDE.ScriptingStudio.ClassicScript;
@@ -22,7 +24,6 @@ using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared.Messaging;
 using TombIDE.Shared.Messaging.Scripting;
 using TombIDE.Shared.SharedClasses;
-using Nickelony.LanguageServer.Lua;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;
@@ -38,10 +39,6 @@ using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.TRX;
-using TombLib.Scripting.TRX.Completion;
-using TombLib.Scripting.TRX.Documents;
-using TombLib.Scripting.TRX.Hover;
-using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
@@ -56,6 +53,9 @@ public static class ScriptingStudioServiceCollectionExtensions
 	public static IServiceCollection AddScriptingStudioHostComposition(this IServiceCollection services)
 	{
 		ArgumentNullException.ThrowIfNull(services);
+
+		// Route Microsoft.Extensions.Logging (used by the Nickelony language server packages) into the app's NLog targets.
+		services.AddLogging(builder => builder.AddNLog());
 
 		services.AddSingleton<IMessenger>(_ => new WeakReferenceMessenger());
 		services.AddTransient<IUiDispatcherService>(_ => SynchronizationContextUiDispatcherService.FromCurrentContext());
@@ -160,8 +160,11 @@ public static class ScriptingStudioServiceCollectionExtensions
 					"Lua IntelliSense");
 			}
 
+			ILogger<LuaLanguageServerIntellisenseProvider> logger =
+				sp.GetRequiredService<ILogger<LuaLanguageServerIntellisenseProvider>>();
+
 			return new LuaLanguageServerIntellisenseProvider(
-				projectContext.ScriptRootDirectoryPath, executablePath);
+				projectContext.ScriptRootDirectoryPath, executablePath, logger);
 		});
 
 		// Text editor host adapter (bridges document controller to the editor host interface).

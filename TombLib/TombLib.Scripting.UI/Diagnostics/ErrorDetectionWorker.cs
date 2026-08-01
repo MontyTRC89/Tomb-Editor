@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics

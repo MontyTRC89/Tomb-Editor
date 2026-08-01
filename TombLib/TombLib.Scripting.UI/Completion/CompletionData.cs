@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.UI.Rendering;
 using TombLib.Scripting.UI.Resources;
 

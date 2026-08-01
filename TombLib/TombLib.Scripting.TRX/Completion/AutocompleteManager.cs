@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Completion;

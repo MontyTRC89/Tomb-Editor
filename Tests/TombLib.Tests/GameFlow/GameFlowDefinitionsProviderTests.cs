@@ -1,5 +1,5 @@
-using Nickelony.LanguageServer.Core.Hover;
-using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Abstractions.Hover;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics
 {

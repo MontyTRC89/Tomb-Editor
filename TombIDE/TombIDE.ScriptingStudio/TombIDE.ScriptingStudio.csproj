@@ -14,6 +14,10 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Dirkster.AvalonDock" Version="4.74.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.5.0" />
+    <PackageReference Include="StreamJsonRpc" Version="2.24.84" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">
@@ -35,7 +39,15 @@
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
-    <ProjectReference Include="..\..\TombLib\Nickelony.LanguageServer.Lua\Nickelony.LanguageServer.Lua.csproj" />
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Client">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Lua">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
+    </Reference>
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />

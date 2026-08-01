@@ -4,7 +4,7 @@ using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics;
 

@@ -1,6 +1,6 @@
 using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
-using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Text;
 

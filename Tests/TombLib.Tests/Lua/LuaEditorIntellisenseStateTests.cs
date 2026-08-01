@@ -3,12 +3,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Core.Completion;
-using Nickelony.LanguageServer.Core.Diagnostics;
-using Nickelony.LanguageServer.Core.Editing;
-using Nickelony.LanguageServer.Core.Hover;
-using Nickelony.LanguageServer.Core.Navigation;
-using Nickelony.LanguageServer.Core.Signatures;
+using Nickelony.LanguageServer.Abstractions.Completion;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Editing;
+using Nickelony.LanguageServer.Abstractions.Hover;
+using Nickelony.LanguageServer.Abstractions.Navigation;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.UI.Presentation;
 using static TombLib.Tests.WPFTestHelper;
 
@@ -946,6 +946,18 @@ public class LuaEditorIntellisenseStateTests
 		public List<ProviderRequest> SignatureRequests { get; } = [];
 
 		public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated
+		{
+			add { }
+			remove { }
+		}
+
+		public event Action<LanguageServerStartupFailure>? StartupFailed
+		{
+			add { }
+			remove { }
+		}
+
+		public event Action<WorkspaceWatcherFailure>? WorkspaceWatcherFailed
 		{
 			add { }
 			remove { }

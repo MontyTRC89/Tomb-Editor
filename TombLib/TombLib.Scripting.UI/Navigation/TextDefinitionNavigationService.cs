@@ -2,9 +2,9 @@
 
 using ICSharpCode.AvalonEdit.Document;
 using System;
-using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Abstractions.Hover;
 using TombLib.Scripting.Hover;
-using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 

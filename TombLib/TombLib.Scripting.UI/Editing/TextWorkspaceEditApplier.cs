@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Abstractions.Editing;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
 

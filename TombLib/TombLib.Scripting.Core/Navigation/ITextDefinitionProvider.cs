@@ -1,4 +1,4 @@
-using Nickelony.LanguageServer.Core.Navigation;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 
 namespace TombLib.Scripting.Navigation;
 

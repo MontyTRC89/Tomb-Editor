@@ -3,7 +3,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Windows;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.UI.Bases;
 using static TombLib.WPF.BrushHelpers;
 

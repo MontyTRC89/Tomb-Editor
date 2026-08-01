@@ -1,5 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
-using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Reflection;
 using TombLib.Scripting.UI.Completion;
 

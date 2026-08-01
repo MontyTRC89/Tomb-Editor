@@ -1,5 +1,5 @@
 using System.Windows.Media;
-using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 
 namespace TombLib.Scripting.ClassicScript.Completion;
 

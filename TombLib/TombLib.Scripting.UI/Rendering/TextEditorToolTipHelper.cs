@@ -2,7 +2,7 @@
 
 using System;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.UI.Rendering;

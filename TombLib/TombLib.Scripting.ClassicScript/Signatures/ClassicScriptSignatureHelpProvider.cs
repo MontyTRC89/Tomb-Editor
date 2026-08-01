@@ -1,5 +1,5 @@
 using TombLib.Scripting.ClassicScript.Services;
-using Nickelony.LanguageServer.Core.Signatures;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;
 

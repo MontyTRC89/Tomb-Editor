@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX.Resources;

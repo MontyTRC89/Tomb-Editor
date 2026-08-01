@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Core.Signatures;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombLib.Scripting.UI.Signatures;

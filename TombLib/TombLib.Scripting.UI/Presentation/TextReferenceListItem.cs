@@ -1,6 +1,6 @@
 #nullable enable
 
-using Nickelony.LanguageServer.Core.Editing;
+using Nickelony.LanguageServer.Abstractions.Editing;
 
 namespace TombLib.Scripting.UI.Presentation;
 

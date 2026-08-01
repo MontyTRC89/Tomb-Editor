@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Core.Completion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Lua.Completion;
 using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Parsing;

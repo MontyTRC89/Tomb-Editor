@@ -1,4 +1,4 @@
-using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Abstractions.Hover;
 
 namespace TombLib.Scripting.Hover;
 

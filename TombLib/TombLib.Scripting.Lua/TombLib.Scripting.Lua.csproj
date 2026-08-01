@@ -18,7 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nickelony.LanguageServer.Lua\Nickelony.LanguageServer.Lua.csproj" />
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Lua">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
+    </Reference>
     <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />

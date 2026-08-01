@@ -2,7 +2,7 @@
 
 using CommunityToolkit.Mvvm.Messaging.Messages;
 using System.Collections.Generic;
-using Nickelony.LanguageServer.Core.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombIDE.ScriptingStudio.Messaging;
 

@@ -29,6 +29,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Client">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Lua">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

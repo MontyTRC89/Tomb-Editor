@@ -4,8 +4,8 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Core.Diagnostics;
-using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Hover;
 
 namespace TombLib.Scripting.UI.Rendering;
 

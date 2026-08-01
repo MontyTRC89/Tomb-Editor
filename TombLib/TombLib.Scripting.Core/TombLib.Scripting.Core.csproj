@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nickelony.LanguageServer.Core\Nickelony.LanguageServer.Core.csproj" />
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

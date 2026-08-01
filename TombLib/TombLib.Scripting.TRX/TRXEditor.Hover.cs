@@ -2,8 +2,8 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Core.Diagnostics;
-using Nickelony.LanguageServer.Core.Hover;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Hover;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Hover;
 
