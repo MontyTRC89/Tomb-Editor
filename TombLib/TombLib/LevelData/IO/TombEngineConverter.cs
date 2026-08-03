@@ -677,9 +677,8 @@ namespace TombLib.LevelData.IO
             foreach (var texture in level.Settings.Textures)
             {
                 cancelToken.ThrowIfCancellationRequested();
-                ConvertLegacyMaterialSidecar(level.Settings, texture.AbsolutePath, texture.BumpPath);
 
-                if (!string.IsNullOrEmpty(texture.BumpPath))
+                if (ConvertLegacyMaterialSidecar(level.Settings, texture.AbsolutePath, texture.BumpPath))
                     convertedLevelTextures.Add(texture);
             }
 
@@ -703,23 +702,38 @@ namespace TombLib.LevelData.IO
                 texture.BumpPath = null;
         }
 
-        private static void ConvertLegacyMaterialSidecar(LevelSettings settings, string textureAbsolutePath, string legacyBumpRelativePath = null)
+        private static bool ConvertLegacyMaterialSidecar(LevelSettings settings, string textureAbsolutePath, string legacyBumpRelativePath = null)
         {
             if (string.IsNullOrEmpty(textureAbsolutePath))
-                return;
-
-            var materialData = MaterialData.TrySidecarLoadOrLoadExisting(textureAbsolutePath);
-            if (materialData is null)
-                return;
-
-            if (string.IsNullOrEmpty(materialData.NormalMap) && !string.IsNullOrEmpty(legacyBumpRelativePath))
-                materialData.NormalMap = settings.MakeAbsolute(legacyBumpRelativePath);
+                return false;
 
             string externalMaterialDataPath = Path.Combine(
                 Path.GetDirectoryName(textureAbsolutePath),
                 Path.GetFileNameWithoutExtension(textureAbsolutePath) + ".xml");
 
+            var materialData = MaterialData.TrySidecarLoadOrLoadExisting(textureAbsolutePath);
+            if (materialData is null)
+                return false;
+
+            bool hasLegacyBumpPath = !string.IsNullOrEmpty(legacyBumpRelativePath);
+            if (!File.Exists(externalMaterialDataPath) && !hasLegacyBumpPath && !HasLegacyMaterialSidecars(materialData))
+                return false;
+
+            if (string.IsNullOrEmpty(materialData.NormalMap) && hasLegacyBumpPath)
+                materialData.NormalMap = settings.MakeAbsolute(legacyBumpRelativePath);
+
             MaterialData.SaveToXml(externalMaterialDataPath, materialData);
+            return hasLegacyBumpPath && !string.IsNullOrEmpty(materialData.NormalMap);
+        }
+
+        private static bool HasLegacyMaterialSidecars(MaterialData materialData)
+        {
+            return materialData.IsNormalMapFound ||
+                   materialData.IsHeightMapFound ||
+                   materialData.IsSpecularMapFound ||
+                   materialData.IsRoughnessMapFound ||
+                   materialData.IsAmbientOcclusionMapFound ||
+                   materialData.IsEmissiveMapFound;
         }
     }
 }

@@ -28,14 +28,42 @@ public class TombEngineConverterTests
 				LevelFilePath = Path.Combine(tempDirectory, "test.prj2")
 			};
 
-			ConvertLegacyMaterialSidecarMethod.Invoke(null, [settings, texturePath, bumpPath]);
-
+			var migratedLegacyBumpPath = ConvertLegacyMaterialSidecarMethod.Invoke(null, [settings, texturePath, bumpPath]);
 			var xmlPath = Path.Combine(tempDirectory, "default.xml");
 			var materialData = MaterialData.ReadFromXml(xmlPath);
 
+			Assert.AreEqual(true, migratedLegacyBumpPath);
 			Assert.IsNotNull(materialData);
 			Assert.AreEqual(texturePath, materialData.ColorMap);
 			Assert.AreEqual(bumpPath, materialData.NormalMap);
+		}
+		finally
+		{
+			Directory.Delete(tempDirectory, true);
+		}
+	}
+
+	[TestMethod]
+	public void ConvertLegacyMaterialSidecar_WithoutLegacyData_DoesNotCreateXml()
+	{
+		var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(tempDirectory);
+
+		try
+		{
+			var texturePath = Path.Combine(tempDirectory, "default.png");
+			File.WriteAllBytes(texturePath, [1]);
+
+			var settings = new LevelSettings
+			{
+				LevelFilePath = Path.Combine(tempDirectory, "test.prj2")
+			};
+
+			var migratedLegacyBumpPath = ConvertLegacyMaterialSidecarMethod.Invoke(null, [settings, texturePath, null]);
+			var xmlPath = Path.Combine(tempDirectory, "default.xml");
+
+			Assert.AreEqual(false, migratedLegacyBumpPath);
+			Assert.IsFalse(File.Exists(xmlPath));
 		}
 		finally
 		{
