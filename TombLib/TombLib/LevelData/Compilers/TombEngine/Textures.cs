@@ -77,7 +77,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // will require a dedicated material handling.
 
             // Add a generic material (to use for example with embedded Wad2 textures)
-            _materialDictionary.Add("Default", new MaterialData());
+            var defaultMaterial = new MaterialData();
+            defaultMaterial.Normalize();
+            _materialDictionary.Add("Default", defaultMaterial);
             _materialNames.Add("Default");
 
             // Sidecar load level textures
@@ -161,7 +163,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 usedNames[baseName] = count;
 
                 var uniqueName = baseName + "_" + count;
-                _progressReporter.ReportWarn($"Duplicate material name '{baseName}' detected. Renamed compiled material to '{uniqueName}'.");
+                _progressReporter.ReportInfo($"Duplicate material name '{baseName}' detected. Renamed compiled material to '{uniqueName}'.");
                 material.Value.Name = uniqueName;
             }
         }

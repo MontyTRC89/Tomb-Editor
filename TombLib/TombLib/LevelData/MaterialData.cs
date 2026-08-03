@@ -94,9 +94,42 @@ namespace TombLib.LevelData
 			(materialData.RoughnessMap, materialData.IsRoughnessMapFound) = LoadPath(materialData.RoughnessMap);
 			(materialData.AmbientOcclusionMap, materialData.IsAmbientOcclusionMapFound) = LoadPath(materialData.AmbientOcclusionMap);
 
+			// Detect old format: Name was absent in pre-2.0 XML sidecars.
+			// Migrate the file to the new format so it won't be flagged again.
+			bool isLegacyFormat = string.IsNullOrWhiteSpace(materialData.Name);
+
 			materialData.Normalize();
 
+			if (isLegacyFormat)
+			{
+				// SaveToXml mutates map paths to relative, so pass a snapshot to preserve
+				// the absolute paths on the in-memory object that the caller will use.
+				var snapshot = ShallowCopyForSave(materialData);
+				SaveToXml(filename, snapshot);
+			}
+
 			return materialData;
+		}
+
+		// Creates a shallow copy of map path strings so SaveToXml can relativize them
+		// without corrupting the original in-memory materialData's absolute paths.
+		private static MaterialData ShallowCopyForSave(MaterialData source)
+		{
+			return new MaterialData
+			{
+				Type                = source.Type,
+				Name                = source.Name,
+				ColorMap            = source.ColorMap,
+				NormalMap           = source.NormalMap,
+				HeightMap           = source.HeightMap,
+				SpecularMap         = source.SpecularMap,
+				RoughnessMap        = source.RoughnessMap,
+				AmbientOcclusionMap = source.AmbientOcclusionMap,
+				AlphaMaskMap        = source.AlphaMaskMap,
+				AdditionalColorMap  = source.AdditionalColorMap,
+				EmissiveMap         = source.EmissiveMap,
+				Properties          = source.Properties != null ? (string[])source.Properties.Clone() : null
+			};
 		}
 
 		public static bool SaveToXml(string filename, MaterialData materialData)
@@ -144,7 +177,19 @@ namespace TombLib.LevelData
 
 			// If XML material file exists, just load it.
 			if (!string.IsNullOrEmpty(externalMaterialDataPath) && File.Exists(externalMaterialDataPath))
-				return ReadFromXml(externalMaterialDataPath);
+			{
+				var loaded = ReadFromXml(externalMaterialDataPath);
+
+				// Old XML sidecars may have had an empty or missing ColorMap, which causes
+				// GetDefaultMaterialName() to fall back to "Default" and collide with the
+				// built-in Default material entry. Ensure Name is always derived from the
+				// actual texture path so every material has a unique, meaningful name.
+				if (string.IsNullOrWhiteSpace(loaded.Name) ||
+					loaded.Name.Equals("Default", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(loaded.ColorMap))
+					loaded.Name = baseName;
+
+				return loaded;
+			}
 
 			var materialData = new MaterialData { ColorMap = textureAbsolutePath };
 
