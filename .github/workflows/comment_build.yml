@@ -85,8 +85,10 @@ jobs:
 
             // A single comment is edited in place, so that a long lived pull
             // request does not accumulate one per push.
+            // Every page is walked: missing the marker on a talkative pull
+            // request would post a fresh comment on each push instead.
             const marker = '<!-- bot: build-links -->';
-            const { data: comments } = await github.rest.issues.listComments({
+            const comments = await github.paginate(github.rest.issues.listComments, {
                 owner, repo, issue_number: pr.number,
             });
             const existing = comments.filter(c => c.body.includes(marker)).pop();
