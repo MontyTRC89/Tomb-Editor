@@ -22,6 +22,26 @@
 			category="Trap parameters"
 			description="Horizontal travel speed of the ball along the ceiling rail, in world units per frame."
 		/>
+		<property
+			internalName="SearchRadius"
+			displayName="Search Radius"
+			type="Int"
+			defaultValue="16"
+			minValue="0"
+			maxValue="64"
+			category="Trap parameters"
+			description="Maximum distance in sectors the ball will travel to seek Lara. Set to 0 for an unlimited search range."
+		/>
+
+		<!-- Shatterable statics -->
+		<property
+			internalName="ShatterStatics"
+			displayName="Shatter Statics"
+			type="Bool"
+			defaultValue="true"
+			category="Trap parameters"
+			description="Whether the falling ball shatters statics flagged as shatterable on impact."
+		/>
 
 		<!-- Roaming behavior -->
 		<property
