@@ -42,6 +42,14 @@
 			category="Trap parameters"
 			description="Whether the falling ball shatters statics flagged as shatterable on impact."
 		/>
+		<property
+			internalName="KillEnemies"
+			displayName="Kill Enemies"
+			type="Bool"
+			defaultValue="true"
+			category="Trap parameters"
+			description="Whether the falling ball crushes enemies caught beneath it on impact."
+		/>
 
 		<!-- Roaming behavior -->
 		<property
