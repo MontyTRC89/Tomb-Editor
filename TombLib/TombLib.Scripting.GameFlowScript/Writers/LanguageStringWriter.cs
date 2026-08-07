@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editing;
 

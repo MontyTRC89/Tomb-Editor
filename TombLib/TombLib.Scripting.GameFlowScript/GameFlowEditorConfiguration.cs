@@ -33,5 +33,4 @@ public sealed class GameFlowEditorConfiguration : ColorSchemeConfigBase<ColorSch
 
 		SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
 	}
-
 }

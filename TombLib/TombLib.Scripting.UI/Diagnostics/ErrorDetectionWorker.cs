@@ -131,5 +131,4 @@ public class ErrorDetectionWorker
 		_isBusy = false;
 		RunWorkerCompleted?.Invoke(this, new RunWorkerCompletedEventArgs(result, error, false));
 	}
-
 }

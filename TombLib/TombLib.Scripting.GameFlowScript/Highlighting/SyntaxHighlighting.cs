@@ -116,5 +116,4 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	/// </summary>
 	public HighlightingRuleSet? GetNamedRuleSet(string name)
 		=> name == MainRuleSet.Name ? MainRuleSet : null;
-
 }

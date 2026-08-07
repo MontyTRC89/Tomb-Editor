@@ -51,5 +51,4 @@ public sealed class ClassicScriptEditorConfiguration : ColorSchemeConfigBase<Col
 
 		SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
 	}
-
 }

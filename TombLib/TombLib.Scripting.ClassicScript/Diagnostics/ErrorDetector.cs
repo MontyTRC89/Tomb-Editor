@@ -308,5 +308,4 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 
 		return false;
 	}
-
 }

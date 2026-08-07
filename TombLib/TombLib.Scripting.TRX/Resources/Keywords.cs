@@ -1,5 +1,3 @@
-using System;
-
 namespace TombLib.Scripting.TRX.Resources;
 
 /// <summary>
@@ -42,4 +40,3 @@ public static class Keywords
 		new("picture_path", new(4, 8), "Instead, use the \"background_path\" property for \"total_stats\", or the \"path\" property for everything else."),
 	};
 }
-

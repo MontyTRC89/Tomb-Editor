@@ -58,5 +58,4 @@ public abstract class TextEditorConfigBase : ConfigurationBase
 
 	public bool ShowVisualSpaces { get; set; } = TextEditorBaseDefaults.ShowVisualSpaces;
 	public bool ShowVisualTabs { get; set; } = TextEditorBaseDefaults.ShowVisualTabs;
-
 }

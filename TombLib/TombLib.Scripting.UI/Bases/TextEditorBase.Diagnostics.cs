@@ -90,5 +90,4 @@ public abstract partial class TextEditorBase
 		ShowDiagnosticToolTip(message, severity);
 		return true;
 	}
-
 }

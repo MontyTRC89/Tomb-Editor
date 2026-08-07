@@ -29,6 +29,7 @@ public sealed partial class TRXEditor : TextEditorBase
 	// TextArea.PerformTextInput calls that re-enter OnLanguageTextEntered, so the in-progress
 	// marker and the captured line must survive across those nested calls.
 	private DocumentLine? _bracketAutospacingLine;
+
 	private bool _suppressBracketAutospacing;
 
 	private readonly ITextDefinitionProvider _definitionProvider;
@@ -159,5 +160,4 @@ public sealed partial class TRXEditor : TextEditorBase
 	/// <inheritdoc />
 	public override void GoToObject(string objectName, object? identifyingObject = null)
 		=> GoToDefinition(_definitionProvider, objectName, identifyingObject);
-
 }

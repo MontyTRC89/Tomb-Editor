@@ -92,5 +92,4 @@ public abstract partial class TextEditorBase
 
 		TryRunContentChangedWorker();
 	}
-
 }

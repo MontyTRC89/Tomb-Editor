@@ -47,5 +47,4 @@ public sealed class ColorScheme : ColorSchemeBase
 			return hashCode;
 		}
 	}
-
 }

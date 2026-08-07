@@ -7,7 +7,6 @@ using TombLib.Scripting.ClassicScript.Cleaning;
 using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Highlighting;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;

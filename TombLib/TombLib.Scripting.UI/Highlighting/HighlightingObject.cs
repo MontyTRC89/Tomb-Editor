@@ -34,5 +34,4 @@ public class HighlightingObject
 			return hashCode;
 		}
 	}
-
 }

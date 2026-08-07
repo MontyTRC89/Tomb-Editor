@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
-using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Services;

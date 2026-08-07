@@ -102,5 +102,4 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 
 		return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
 	}
-
 }

@@ -67,5 +67,4 @@ public abstract partial class TextEditorBase
 		e.Handled = true;
 		return true;
 	}
-
 }

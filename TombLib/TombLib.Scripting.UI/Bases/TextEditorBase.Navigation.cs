@@ -150,5 +150,4 @@ public abstract partial class TextEditorBase
 	/// <returns>True if a definition was found and navigated to; otherwise false.</returns>
 	protected bool TryGoToDefinition(ITextDefinitionProvider definitionProvider, ITextHoverProvider hoverProvider, int offset)
 		=> _definitionNavigationService.TryGoToDefinition(this, definitionProvider, hoverProvider, offset);
-
 }

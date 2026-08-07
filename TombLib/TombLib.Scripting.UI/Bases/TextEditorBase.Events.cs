@@ -139,5 +139,4 @@ public abstract partial class TextEditorBase
 
 	private void ScheduleDefinitionToolTipClose()
 		=> _toolTipPresenter.ScheduleClose();
-
 }

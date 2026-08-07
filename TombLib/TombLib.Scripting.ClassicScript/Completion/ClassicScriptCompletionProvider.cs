@@ -1,6 +1,5 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Text.RegularExpressions;
-using System.Windows.Documents;
 using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;

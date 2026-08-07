@@ -138,5 +138,4 @@ public sealed class ErrorRenderer : IBackgroundRenderer
 		pen.Freeze();
 		return pen;
 	}
-
 }

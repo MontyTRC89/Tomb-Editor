@@ -32,5 +32,4 @@ internal sealed class BookmarkRenderer : IBackgroundRenderer
 				drawingContext.DrawRectangle(BackgroundBrush, null, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
 		}
 	}
-
 }

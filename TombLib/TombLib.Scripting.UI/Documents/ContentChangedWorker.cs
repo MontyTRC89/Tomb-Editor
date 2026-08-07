@@ -251,5 +251,4 @@ public class ContentChangedWorker : IDisposable
 		lock (_syncRoot)
 			return _latestRequestId;
 	}
-
 }

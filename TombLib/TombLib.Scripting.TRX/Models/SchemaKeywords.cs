@@ -1,5 +1,3 @@
-using System;
-
 namespace TombLib.Scripting.TRX.Models;
 
 /// <summary>

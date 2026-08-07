@@ -77,5 +77,4 @@ public abstract class ConfigurationBase
 
 	public void Save()
 		=> Save(DefaultPath);
-
 }

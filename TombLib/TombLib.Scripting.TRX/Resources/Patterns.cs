@@ -68,6 +68,7 @@ public sealed class Patterns
 	/// Gets the pattern matching a TRX title property.
 	/// </summary>
 	public static string LevelProperty => "\"title\":\\s*\"";
+
 	/// <summary>
 	/// Gets the pattern matching a level-name comment such as <c>// Level 1: Name</c>.
 	/// </summary>

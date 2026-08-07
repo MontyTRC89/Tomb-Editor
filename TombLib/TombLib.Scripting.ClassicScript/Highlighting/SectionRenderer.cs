@@ -69,5 +69,4 @@ public sealed class SectionRenderer : IBackgroundRenderer
 				drawingContext.DrawLine(_sectionBorderPen, new Point(rect.Location.X, rect.Location.Y), new Point(textView.ActualWidth, rect.Location.Y));
 		}
 	}
-
 }

@@ -84,5 +84,4 @@ public interface IEditorControl : IDisposable
 	event EventHandler StatusChanged;
 
 	event EventHandler ZoomChanged;
-
 }

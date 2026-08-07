@@ -52,6 +52,7 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	/// Foreground brush used for editor tooltip text.
 	/// </summary>
 	public static readonly SolidColorBrush ToolTipForeground = TextEditorColorPalette.ToolTipForeground;
+
 	private static readonly TextEditorFormattingService FormattingService = new();
 
 	/// <summary>
@@ -420,5 +421,4 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		_statusCoordinator.Dispose();
 		_contentPersistenceCoordinator.Dispose();
 	}
-
 }

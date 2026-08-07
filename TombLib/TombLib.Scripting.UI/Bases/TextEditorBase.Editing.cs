@@ -276,5 +276,4 @@ public abstract partial class TextEditorBase
 	/// <param name="trimOnly">Whether only trailing whitespace should be trimmed.</param>
 	public virtual void TidyCode(bool trimOnly = false)
 		=> FormattingService.FormatDocument(this, DocumentFormatter, trimOnly);
-
 }
