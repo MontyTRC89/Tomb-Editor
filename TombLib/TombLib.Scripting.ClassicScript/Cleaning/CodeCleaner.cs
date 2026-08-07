@@ -75,7 +75,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 			builder.Append(' ');
 	}
 
-	private void ApplySpacingAfterToken(System.Text.StringBuilder builder, char token, string line, int nextIndex)
+	private void ApplySpacingAfterToken(StringBuilder builder, char token, string line, int nextIndex)
 	{
 		bool needsSpace = token == '=' ? SpaceAfterEquals : SpaceAfterComma;
 
@@ -95,7 +95,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 
 	private static string RemoveSpacesBeforeEquals(string line)
 	{
-		var builder = new System.Text.StringBuilder(line.Length);
+		var builder = new StringBuilder(line.Length);
 
 		for (int index = 0; index < line.Length; index++)
 		{

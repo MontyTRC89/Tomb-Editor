@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- ImplicitUsings intentionally NOT enabled: this project relies on explicit usings (per-project policy). -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
@@ -13,6 +14,7 @@
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
+  <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Compatibility owned by the language-server integration. -->
   <ItemGroup>
     <Reference Include="Nickelony.LanguageServer.Abstractions">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>

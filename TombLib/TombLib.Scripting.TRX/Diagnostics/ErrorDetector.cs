@@ -9,25 +9,39 @@ using TombLib.Scripting.UI.Diagnostics;
 
 namespace TombLib.Scripting.TRX.Diagnostics;
 
+/// <summary>
+/// Detects errors in TRX documents, such as removed keywords for the target engine version.
+/// </summary>
 public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 {
 	private readonly ITRXLineService _lineService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ErrorDetector"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to analyze document lines.</param>
 	public ErrorDetector(ITRXLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
 	}
 
+	/// <summary>
+	/// Finds the errors present in the given editor content for the target engine version.
+	/// </summary>
+	/// <param name="editorContent">The editor content to inspect.</param>
+	/// <param name="engineVersion">The engine version errors are checked against.</param>
+	/// <returns>The diagnostics found in the content.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
 	{
 		// Anything before 4.8 should not have errors checked
 		if (engineVersion < new Version(4, 8))
-			return Array.Empty<TextEditorDiagnostic>();
+			return [];
 
 		return DetectErrorLines(new StringTextSnapshot(editorContent), engineVersion);
 	}
 
+	/// <inheritdoc />
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 	{
 		ArgumentNullException.ThrowIfNull(request);
@@ -59,7 +73,17 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 	private static TextEditorDiagnostic? FindErrorsInLine(ITextLine line, string lineText, Version engineVersion)
 	{
 		// Check whether there are JSON keys which are marked as "Removed"
-		foreach (RemovedKeyword keyword in Keywords.RemovedProperties)
+		TextEditorDiagnostic? removedProperty = FindRemovedKeyword(line, lineText, Keywords.RemovedProperties, engineVersion, "property");
+
+		if (removedProperty is not null)
+			return removedProperty;
+
+		return FindRemovedKeyword(line, lineText, Keywords.RemovedConstants, engineVersion, "constant");
+	}
+
+	private static TextEditorDiagnostic? FindRemovedKeyword(ITextLine line, string lineText, IReadOnlyList<RemovedKeyword> keywords, Version engineVersion, string kindLabel)
+	{
+		foreach (RemovedKeyword keyword in keywords)
 		{
 			if (engineVersion < keyword.RemovedVersion)
 				continue;
@@ -69,22 +93,7 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 			if (lineText.Contains(keyPattern))
 			{
 				return CreateDiagnostic(line, lineText,
-					$"This property has been removed from the script syntax and cannot be used in TRX {keyword.RemovedVersion} or newer."
-					+ (string.IsNullOrEmpty(keyword.Message) ? "" : "\n" + keyword.Message), keyPattern);
-			}
-		}
-
-		foreach (RemovedKeyword keyword in Keywords.RemovedConstants)
-		{
-			if (engineVersion < keyword.RemovedVersion)
-				continue;
-
-			string keyPattern = $"\"{keyword.Keyword}\"";
-
-			if (lineText.Contains(keyPattern))
-			{
-				return CreateDiagnostic(line, lineText,
-					$"This constant has been removed from the script syntax and cannot be used in TRX {keyword.RemovedVersion} or newer."
+					$"This {kindLabel} has been removed from the script syntax and cannot be used in TRX {keyword.RemovedVersion} or newer."
 					+ (string.IsNullOrEmpty(keyword.Message) ? "" : "\n" + keyword.Message), keyPattern);
 			}
 		}

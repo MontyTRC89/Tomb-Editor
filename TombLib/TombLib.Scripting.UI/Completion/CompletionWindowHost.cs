@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Editing;
 using System;
@@ -8,6 +6,11 @@ using System.Windows.Media;
 
 namespace TombLib.Scripting.UI.Completion;
 
+/// <summary>
+/// Owns the completion window lifecycle for a single text area and tracks at most one open window.
+/// Creating a new window force-closes any previously tracked window, so the host always reflects the
+/// latest completion window only.
+/// </summary>
 internal sealed class CompletionWindowHost
 {
 	private readonly TextArea _textArea;
@@ -18,6 +21,10 @@ internal sealed class CompletionWindowHost
 	public CompletionWindowHost(TextArea textArea)
 		=> _textArea = textArea;
 
+	/// <summary>
+	/// Creates a new completion window. Any previously tracked window is closed first, so only the
+	/// most recently created window remains open.
+	/// </summary>
 	public CompletionWindow Create(double width, double height, Brush borderBrush, Brush background, Brush foreground)
 	{
 		CloseTrackedWindow();

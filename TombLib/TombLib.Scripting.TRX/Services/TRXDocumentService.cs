@@ -14,11 +14,7 @@ public class TRXDocumentService : ITRXDocumentService
 {
 	private readonly ITRXLineService _lineService;
 
-	// Legacy regex patterns retained for exact parity.
-	// Patterns.LevelProperty does not have a ^ anchor, so leading whitespace
-	// before the title property is tolerated.
-	private static readonly Regex LevelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);
-
+	// Legacy regex pattern retained for exact parity.
 	private static readonly Regex LevelCommentNameRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
 
 	/// <summary>
@@ -40,11 +36,9 @@ public class TRXDocumentService : ITRXDocumentService
 		{
 			string lineText = source.GetText(line.Offset, line.Length);
 
-			if (LevelPropertyRegex.IsMatch(lineText))
+			if (TRXLevelNameParser.LevelPropertyRegex.IsMatch(lineText))
 			{
-				string scriptLevelName = LevelPropertyRegex.Replace(
-					_lineService.RemoveComments(lineText), string.Empty)
-					.Trim().TrimEnd(',').Trim('"');
+				string scriptLevelName = TRXLevelNameParser.ExtractTitleName(_lineService.RemoveComments(lineText));
 
 				if (scriptLevelName == levelName)
 					return true;
@@ -65,8 +59,7 @@ public class TRXDocumentService : ITRXDocumentService
 			string lineText = source.GetText(line.Offset, line.Length);
 
 			// First check: title property match with StartsWith (legacy quirk).
-			string normalizedTitle = LevelPropertyRegex.Replace(lineText, string.Empty)
-				.Trim().TrimEnd(',').Trim('"');
+			string normalizedTitle = TRXLevelNameParser.ExtractTitleName(lineText);
 
 			if (normalizedTitle.StartsWith(levelName, StringComparison.Ordinal))
 				return line.LineNumber;

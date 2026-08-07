@@ -21,12 +21,15 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptSyntaxCatalogService syntaxCatalogService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-		_syntaxCatalogService = syntaxCatalogService ?? throw new ArgumentNullException(nameof(syntaxCatalogService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
+		ArgumentNullException.ThrowIfNull(syntaxCatalogService);
+		_syntaxCatalogService = syntaxCatalogService;
 	}
 
-	#region Public methods
+	// Public methods
 
 	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
 		=> DetectErrorLines(new StringTextSnapshot(editorContent));
@@ -34,9 +37,7 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 		=> DetectErrorLines(new StringTextSnapshot(request.DocumentText));
 
-	#endregion Public methods
-
-	#region Error line finding
+	// Error line finding
 
 	private List<TextEditorDiagnostic> DetectErrorLines(ITextSnapshot source)
 	{
@@ -84,7 +85,7 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		return null;
 	}
 
-	private TextEditorDiagnostic FindErrorsInNGStringLine(ITextSnapshot source, ITextLine line, string lineText)
+	private TextEditorDiagnostic? FindErrorsInNGStringLine(ITextSnapshot source, ITextLine line, string lineText)
 	{
 		if (!IsNGStringLineWellFormatted(lineText))
 			return CreateDiagnostic(source, line,
@@ -112,45 +113,32 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 				"Invalid command. Please check its spelling.", errorSegmentText);
 		}
 
-		if (commandSectionCheckRequired && !IsCommandLineInCorrectSection(source, line.LineNumber, commandKey))
+		if (commandSectionCheckRequired && commandKey is not null && !IsCommandLineInCorrectSection(source, line.LineNumber, commandKey))
 			return CreateDiagnostic(source, line,
 				"Command is placed in the wrong section. Please check the command syntax.",
 				_lineService.RemoveComments(lineText));
 
 		if (ContainsBrokenNextLines(source, line.Offset))
-		{
-			string errorSegmentText = Regex.Match(_lineService.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
-
-			if (errorSegmentText.Length == 0)
-				errorSegmentText = _lineService.RemoveComments(lineText);
-
-			return CreateDiagnostic(source, line,
-				"Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.",
-				errorSegmentText);
-		}
+			return CreateArgumentDiagnostic(source, line, lineText,
+				"Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.");
 
 		if (!IsArgumentCountValid(source, line.Offset))
-		{
-			string errorSegmentText = Regex.Match(_lineService.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
-
-			if (errorSegmentText.Length == 0)
-				errorSegmentText = _lineService.RemoveComments(lineText);
-
-			return CreateDiagnostic(source, line,
-				"Invalid argument count. Please check the command syntax.", errorSegmentText);
-		}
+			return CreateArgumentDiagnostic(source, line, lineText, "Invalid argument count. Please check the command syntax.");
 
 		if (ContainsEmptyArguments(source, line.Offset))
-		{
-			string errorSegmentText = Regex.Match(_lineService.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
-
-			if (errorSegmentText.Length == 0)
-				errorSegmentText = _lineService.RemoveComments(lineText);
-
-			return CreateDiagnostic(source, line, "Empty arguments were found.", errorSegmentText);
-		}
+			return CreateArgumentDiagnostic(source, line, lineText, "Empty arguments were found.");
 
 		return null;
+	}
+
+	private TextEditorDiagnostic? CreateArgumentDiagnostic(ITextSnapshot source, ITextLine line, string lineText, string message)
+	{
+		string errorSegmentText = Regex.Match(_lineService.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
+
+		if (errorSegmentText.Length == 0)
+			errorSegmentText = _lineService.RemoveComments(lineText);
+
+		return CreateDiagnostic(source, line, message, errorSegmentText);
 	}
 
 	private static TextEditorDiagnostic CreateDiagnostic(ITextSnapshot source, ITextLine line, string message, string errorSegmentText)
@@ -177,13 +165,14 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		return new TextEditorDiagnostic(TextEditorDiagnosticSeverity.Error, message, startOffset, endOffset);
 	}
 
-	#endregion Error line finding
-
-	#region Error detection methods
+	// Error detection methods
 
 	private bool IsValidSectionName(string sectionHeaderLineText)
 	{
-		string section = sectionHeaderLineText.Split('[')[1].Split(']')[0];
+		string? section = _lineService.GetSectionHeaderText(sectionHeaderLineText);
+
+		if (string.IsNullOrEmpty(section))
+			return false;
 
 		foreach (string entry in _commandCatalogService.Sections)
 			if (section.Equals(entry, StringComparison.OrdinalIgnoreCase))
@@ -197,7 +186,7 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 
 	private bool IsValidCommandKey(string? commandKey)
 	{
-		return _syntaxCatalogService.GetCommandDefinition(commandKey) is not null;
+		return commandKey is not null && _syntaxCatalogService.GetCommandDefinition(commandKey) is not null;
 	}
 
 	private bool IsLineInStandardStringSection(ITextSnapshot source, ITextLine line)
@@ -220,28 +209,19 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		if (string.IsNullOrWhiteSpace(correctSection) || correctSection.Equals("any", StringComparison.OrdinalIgnoreCase))
 			return true;
 
-		for (int i = lineNumber - 1; i > 0; i--)
-		{
-			ITextLine currentLine = source.GetLineByNumber(i);
-			string currentLineText = source.GetText(currentLine.Offset, currentLine.Length);
+		ITextLine line = source.GetLineByNumber(lineNumber);
+		int? sectionStartLineNumber = _commandService.GetStartLineOfCurrentSection(source, line.Offset);
 
-			if (currentLineText.TrimStart().StartsWith("["))
-			{
-				if (correctSection.Equals("level", StringComparison.OrdinalIgnoreCase))
-				{
-					if (Regex.IsMatch(currentLineText, @"\[(level|title)\]", RegexOptions.IgnoreCase))
-						return true;
-					else
-						return false;
-				}
-				else if (Regex.IsMatch(currentLineText, @"\[" + correctSection + @"\]", RegexOptions.IgnoreCase))
-					return true;
-				else
-					return false;
-			}
-		}
+		if (sectionStartLineNumber is null)
+			return false;
 
-		return false;
+		ITextLine sectionStartLine = source.GetLineByNumber(sectionStartLineNumber.Value);
+		string sectionHeaderText = source.GetText(sectionStartLine.Offset, sectionStartLine.Length);
+
+		if (correctSection.Equals("level", StringComparison.OrdinalIgnoreCase))
+			return Regex.IsMatch(sectionHeaderText, @"\[(level|title)\]", RegexOptions.IgnoreCase);
+
+		return Regex.IsMatch(sectionHeaderText, @"\[" + correctSection + @"\]", RegexOptions.IgnoreCase);
 	}
 
 	private bool ContainsBrokenNextLines(ITextSnapshot source, int lineOffset)
@@ -306,8 +286,9 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		if (definition is null)
 			return false;
 
+		// Array-argument commands accept any number of arguments, so the count is always valid.
 		if (definition.HasArrayArguments)
-			return true; // Whatever.
+			return true;
 
 		return argumentCount == definition.ArgumentCount;
 	}
@@ -328,5 +309,4 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		return false;
 	}
 
-	#endregion Error detection methods
 }

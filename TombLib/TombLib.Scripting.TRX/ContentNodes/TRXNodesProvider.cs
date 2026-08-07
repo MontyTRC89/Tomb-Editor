@@ -1,5 +1,3 @@
-#nullable enable
-
 using DarkUI.Controls;
 using System;
 using System.Collections.Generic;
@@ -11,16 +9,31 @@ using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.TRX.ContentNodes;
 
+/// <summary>
+/// Builds content nodes for level names found in TRX documents.
+/// </summary>
 public sealed class TRXNodesProvider : ContentNodesProviderBase
 {
+	private static readonly Regex LevelCommentRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
+
 	private readonly ITRXLineService _lineService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TRXNodesProvider"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to strip comments from lines.</param>
 	public TRXNodesProvider(ITRXLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
 	}
 
+	/// <summary>
+	/// Builds the level-name nodes for the given content and filter.
+	/// </summary>
+	/// <param name="content">The document content to scan.</param>
+	/// <param name="filter">The filter used to match level names.</param>
+	/// <returns>The content nodes that match the filter.</returns>
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
 	{
 		var nodes = new List<string>();
@@ -40,19 +53,16 @@ public sealed class TRXNodesProvider : ContentNodesProviderBase
 
 	private string? GetLevelNode(string lineText, string filter)
 	{
-		var regex = new Regex(Patterns.LevelProperty, RegexOptions.IgnoreCase);
-
-		if (regex.IsMatch(lineText))
+		if (TRXLevelNameParser.LevelPropertyRegex.IsMatch(lineText))
 		{
 			lineText = _lineService.RemoveComments(lineText);
-			string levelName = regex.Replace(lineText, string.Empty).Trim().TrimEnd(',').Trim('"');
+			string levelName = TRXLevelNameParser.ExtractTitleName(lineText);
 
 			if (!string.IsNullOrWhiteSpace(levelName) && levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))
 				return levelName;
 		}
 
-		regex = new Regex(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
-		Match regexMatch = regex.Match(lineText);
+		Match regexMatch = LevelCommentRegex.Match(lineText);
 
 		if (regexMatch.Success)
 		{

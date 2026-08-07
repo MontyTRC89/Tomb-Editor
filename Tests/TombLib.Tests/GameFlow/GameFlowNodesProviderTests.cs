@@ -1,7 +1,7 @@
 using DarkUI.Controls;
 using TombLib.Scripting.GameFlowScript.ContentNodes;
-using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.GameFlowScript.Types;
 
 namespace TombLib.Tests;
 

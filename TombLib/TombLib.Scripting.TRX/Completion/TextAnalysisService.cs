@@ -1,12 +1,19 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 
 namespace TombLib.Scripting.TRX.Completion;
 
+/// <summary>
+/// Analyzes document text to determine valid completion contexts and words.
+/// </summary>
 public sealed class TextAnalysisService
 {
-	public bool IsValidPositionForCtrlSpaceAutocomplete(TextDocument document, int caretOffset)
+	/// <summary>
+	/// Determines whether Ctrl+Space completion is valid at the given caret offset.
+	/// </summary>
+	/// <param name="document">The current document.</param>
+	/// <param name="caretOffset">The caret offset to validate.</param>
+	/// <returns>True if completion is valid at the position; otherwise false.</returns>
+	public bool IsValidPositionForCtrlSpaceCompletion(TextDocument document, int caretOffset)
 	{
 		// Don't allow Ctrl+Space in the middle of a word
 		// Only allow it at the end of a word or in whitespace
@@ -52,10 +59,17 @@ public sealed class TextAnalysisService
 		return true;
 	}
 
-	public bool IsValidContextForAutocomplete(TextDocument document, int caretOffset)
+	/// <summary>
+	/// Determines whether completion is valid in the current typing context.
+	/// </summary>
+	/// <param name="document">The current document.</param>
+	/// <param name="caretOffset">The caret offset to validate.</param>
+	/// <returns>True when the caret is not inside a string literal; otherwise false.</returns>
+	public bool IsValidContextForCompletion(TextDocument document, int caretOffset)
 	{
-		// Simple check to avoid triggering autocomplete inside existing strings
-		// Count quotes on the current line before the caret to determine if we're inside a string
+		// Completion is only valid when the caret is not inside a string value.
+		// Count unescaped quotes on the current line before the caret: an odd count means the
+		// caret sits inside a string literal, where schema completion would be meaningless.
 
 		DocumentLine currentLine = document.GetLineByOffset(caretOffset);
 		int lineStart = currentLine.Offset;
@@ -65,7 +79,7 @@ public sealed class TextAnalysisService
 		// Remove escaped quotes from consideration
 		string cleanedText = lineText.Replace("\\\"", "");
 
-		// Count unescaped quotes - if odd number, we're inside a string
+		// Count unescaped quotes - an even count means the caret is outside any string
 		int quoteCount = 0;
 
 		for (int i = 0; i < cleanedText.Length; i++)
@@ -74,10 +88,16 @@ public sealed class TextAnalysisService
 				quoteCount++;
 		}
 
-		// If odd number of quotes, we're inside a string (the quote we just typed makes it odd)
-		return quoteCount % 2 == 1; // Odd count: caret is inside a string
+		// Even quote count: the caret is not inside a string, so the context is valid.
+		return quoteCount % 2 == 0;
 	}
 
+	/// <summary>
+	/// Gets the word currently being typed at the given caret offset.
+	/// </summary>
+	/// <param name="document">The current document.</param>
+	/// <param name="caretOffset">The caret offset to inspect.</param>
+	/// <returns>The word being typed, which may include a leading quote.</returns>
 	public string GetCurrentWordBeingTyped(TextDocument document, int caretOffset)
 	{
 		if (caretOffset == 0)

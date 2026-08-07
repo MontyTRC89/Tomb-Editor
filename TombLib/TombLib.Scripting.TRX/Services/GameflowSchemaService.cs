@@ -1,7 +1,7 @@
-#nullable enable
-
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,23 +9,35 @@ using TombLib.Scripting.TRX.Models;
 
 namespace TombLib.Scripting.TRX.Services;
 
-public sealed class GameflowSchemaService : IGameflowSchemaService
+/// <summary>
+/// Loads and serves the GameFlow level schema used for schema-driven completion and validation.
+/// </summary>
+public sealed class GameFlowSchemaService : IGameFlowSchemaService
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+	/// <inheritdoc />
 	public JSchema? Schema { get; }
 
-	public GameflowSchemaService(string schemaFilePath)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GameFlowSchemaService"/> class.
+	/// </summary>
+	/// <param name="schemaFilePath">The path of the schema file to load.</param>
+	public GameFlowSchemaService(string schemaFilePath)
 	{
 		try
 		{
 			string schemaContent = File.ReadAllText(schemaFilePath);
 			Schema = JSchema.Parse(schemaContent);
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to load the GameFlow schema from '{Path}'; schema-aware features are disabled.", schemaFilePath);
 			Schema = null;
 		}
 	}
 
+	/// <inheritdoc />
 	public SchemaKeywords? GetSchemaKeywords()
 	{
 		var schema = Schema;
@@ -67,73 +79,32 @@ public sealed class GameflowSchemaService : IGameflowSchemaService
 
 	private static void ExtractKeywordsRecursively(JSchema schema, HashSet<string> collections, HashSet<string> properties, HashSet<string> constants)
 	{
-		// Extract top-level properties
-		if (schema.Properties is not null)
+		foreach (JSchema currentSchema in SchemaTraversal.FlattenSchemas(schema))
 		{
-			foreach (var property in schema.Properties)
-			{
-				if (property.Value.Type == JSchemaType.Array)
-					collections.Add(property.Key);
-				else
-					properties.Add(property.Key);
+			// Extract const values at any level
+			if (currentSchema.Const is not null && currentSchema.Const.Type == JTokenType.String)
+				constants.Add(currentSchema.Const.ToString());
 
-				// Extract enum values as constants
-				if (property.Value.Enum is not null)
+			// Extract enum values at any level
+			if (currentSchema.Enum is not null)
+			{
+				foreach (var enumValue in currentSchema.Enum)
 				{
-					foreach (var enumValue in property.Value.Enum)
-					{
-						if (enumValue.Type == JTokenType.String)
-							constants.Add(enumValue.ToString());
-					}
+					if (enumValue.Type == JTokenType.String)
+						constants.Add(enumValue.ToString());
 				}
-
-				// Extract const values as constants
-				if (property.Value.Const is not null && property.Value.Const.Type == JTokenType.String)
-					constants.Add(property.Value.Const.ToString());
-
-				// Recursively process nested schemas
-				ExtractKeywordsRecursively(property.Value, collections, properties, constants);
 			}
-		}
 
-		// Extract from array items
-		if (schema.Items?.Count > 0)
-		{
-			foreach (var item in schema.Items)
-				ExtractKeywordsRecursively(item, collections, properties, constants);
-		}
-
-		// Extract from oneOf/anyOf schemas
-		if (schema.OneOf is not null)
-		{
-			foreach (var oneOfSchema in schema.OneOf)
-				ExtractKeywordsRecursively(oneOfSchema, collections, properties, constants);
-		}
-
-		if (schema.AnyOf is not null)
-		{
-			foreach (var anyOfSchema in schema.AnyOf)
-				ExtractKeywordsRecursively(anyOfSchema, collections, properties, constants);
-		}
-
-		// Extract from allOf schemas
-		if (schema.AllOf is not null)
-		{
-			foreach (var allOfSchema in schema.AllOf)
-				ExtractKeywordsRecursively(allOfSchema, collections, properties, constants);
-		}
-
-		// Extract const values at any level
-		if (schema.Const is not null && schema.Const.Type == JTokenType.String)
-			constants.Add(schema.Const.ToString());
-
-		// Extract enum values at any level
-		if (schema.Enum is not null)
-		{
-			foreach (var enumValue in schema.Enum)
+			// Classify the schema's own properties
+			if (currentSchema.Properties is not null)
 			{
-				if (enumValue.Type == JTokenType.String)
-					constants.Add(enumValue.ToString());
+				foreach (var property in currentSchema.Properties)
+				{
+					if (property.Value.Type == JSchemaType.Array)
+						collections.Add(property.Key);
+					else
+						properties.Add(property.Key);
+				}
 			}
 		}
 	}

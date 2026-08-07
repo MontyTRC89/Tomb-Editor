@@ -64,7 +64,7 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 			previousLineText,
 			lineText,
 			previousLineIndentation,
-			LuaIndentationStrategy.CreateIndentationUnit(_options.ConvertTabsToSpaces, _options.IndentationSize, 4),
+			LuaIndentationStrategy.CreateIndentationUnit(_options.ConvertTabsToSpaces, _options.IndentationSize, _options.IndentationSize),
 			ShouldUseSmartIndent(document, previousLine));
 	}
 

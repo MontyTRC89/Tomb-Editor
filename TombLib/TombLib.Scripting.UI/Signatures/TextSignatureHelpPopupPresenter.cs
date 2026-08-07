@@ -1,10 +1,9 @@
-#nullable enable
-
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Presentation;
 using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.UI.Signatures;
@@ -22,23 +21,14 @@ public sealed class TextSignatureHelpPopupPresenter
 
 	public TextSignatureHelpPopupPresenter(TextEditorBase editor, Action? prepareForShow = null)
 	{
-		_editor = editor ?? throw new ArgumentNullException(nameof(editor));
+		ArgumentNullException.ThrowIfNull(editor);
+		_editor = editor;
 		_prepareForShow = prepareForShow;
 
-		_popup.AllowsTransparency = true;
-		_popup.PopupAnimation = PopupAnimation.None;
-		_popup.StaysOpen = true;
-		_popup.Placement = PlacementMode.RelativePoint;
+		(_popup, _popupBorder, _popupPresenter) = PopupShell.Create();
 
-		_popupBorder.SnapsToDevicePixels = true;
-		_popupBorder.CornerRadius = new CornerRadius(3.0);
-		_popupBorder.BorderThickness = new Thickness(1.0);
-		_popupBorder.Padding = new Thickness(8.0, 6.0, 8.0, 6.0);
 		_popupBorder.BorderBrush = TextEditorColorPalette.ToolTipBorder;
 		_popupBorder.Background = TextEditorColorPalette.ToolTipBackground;
-		_popupBorder.Child = _popupPresenter;
-
-		_popup.Child = _popupBorder;
 	}
 
 	public bool IsOpen => _popup.IsOpen;
@@ -51,7 +41,7 @@ public sealed class TextSignatureHelpPopupPresenter
 		_popupPresenter.Content = null;
 	}
 
-	public void Show(Func<double, FrameworkElement> createContent, double maxPopupWidth = 500.0)
+	public void Show(Func<double, FrameworkElement> createContent, double maxPopupWidth = ToolTipDefaults.PopupMaxWidth)
 	{
 		ArgumentNullException.ThrowIfNull(createContent);
 

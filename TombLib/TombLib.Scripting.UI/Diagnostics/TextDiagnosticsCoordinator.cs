@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -50,6 +48,13 @@ public sealed class TextDiagnosticsCoordinator
 
 	private void ErrorDetectionWorker_RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
 	{
+		if (e.Cancelled)
+			return;
+
+		// Keep the last known diagnostics when the provider failed; the worker already logged the failure.
+		if (e.Error is not null)
+			return;
+
 		if (e.Result is IReadOnlyList<TextEditorDiagnostic> diagnostics)
 			_editor.SetDiagnostics(diagnostics);
 	}

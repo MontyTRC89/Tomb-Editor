@@ -23,20 +23,52 @@ using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.UI.Bases;
 
+/// <summary>
+/// Base class for language-specific script editors built on AvalonEdit.
+/// </summary>
 public abstract partial class TextEditorBase : TextEditor, IEditorControl
 {
-	public const double ToolTipTextMaxWidth = 500.0;
-	public static readonly double ToolTipTextFontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, 14.0);
+	/// <summary>
+	/// Maximum width of editor tooltip text.
+	/// </summary>
+	public const double ToolTipTextMaxWidth = ToolTipDefaults.TextMaxWidth;
+
+	/// <summary>
+	/// Font size used for editor tooltip text.
+	/// </summary>
+	public static readonly double ToolTipTextFontSize = ToolTipDefaults.TextFontSize;
+
+	/// <summary>
+	/// Default border brush used for editor tooltips.
+	/// </summary>
 	public static readonly SolidColorBrush DefaultToolTipBorder = TextEditorColorPalette.ToolTipBorder;
+
+	/// <summary>
+	/// Default background brush used for editor tooltips.
+	/// </summary>
 	public static readonly SolidColorBrush DefaultToolTipBackground = TextEditorColorPalette.ToolTipBackground;
+
+	/// <summary>
+	/// Foreground brush used for editor tooltip text.
+	/// </summary>
 	public static readonly SolidColorBrush ToolTipForeground = TextEditorColorPalette.ToolTipForeground;
 	private static readonly TextEditorFormattingService FormattingService = new();
 
+	/// <summary>
+	/// Gets the editor type of this control.
+	/// </summary>
 	public EditorType EditorType => EditorType.Text;
+
+	/// <summary>
+	/// Gets the default file extension (including the leading dot) used for documents of this editor.
+	/// </summary>
 	public abstract string DefaultFileExtension { get; }
 
-	#region Properties
+	// Properties
 
+	/// <summary>
+	/// Gets or sets the file path of the current document.
+	/// </summary>
 	public string FilePath
 	{
 		get => Document.FileName;
@@ -47,70 +79,164 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		}
 	}
 
+	/// <inheritdoc />
 	public bool IsSilentSession { get; set; }
 
+	/// <summary>
+	/// Gets or sets whether backup files are created for the current document.
+	/// </summary>
 	public bool CreateBackupFiles
 	{
 		get => IsSilentSession ? false : _contentPersistenceCoordinator.CreateBackupFiles;
 		set => _contentPersistenceCoordinator.CreateBackupFiles = value;
 	}
 
+	/// <inheritdoc />
 	public string Content
 	{
 		get => Text;
 		set => SetContent(value);
 	}
 
+	/// <summary>
+	/// Gets or sets whether the content of the current document has unsaved changes.
+	/// </summary>
 	public bool IsContentChanged { get; set; }
 
+	/// <summary>
+	/// Gets or sets the timestamp of the last content modification.
+	/// </summary>
 	public DateTime LastModified { get; set; }
 
+	/// <summary>
+	/// Gets the line number of the caret position.
+	/// </summary>
 	public int CurrentRow => TextArea.Caret.Position.Line;
+
+	/// <summary>
+	/// Gets the column of the caret position.
+	/// </summary>
 	public int CurrentColumn => TextArea.Caret.Position.Column;
 
+	/// <summary>
+	/// Gets the currently selected content.
+	/// </summary>
 	public object SelectedContent => SelectedText;
 
+	/// <summary>
+	/// Gets the formatter used when tidying the document.
+	/// </summary>
 	protected virtual ITextDocumentFormatter DocumentFormatter => TrimTrailingWhitespaceFormatter.Instance;
 
+	/// <summary>
+	/// Gets or sets the minimum allowed zoom percentage.
+	/// </summary>
 	public int MinZoom { get; set; } = 25;
+
+	/// <summary>
+	/// Gets or sets the maximum allowed zoom percentage.
+	/// </summary>
 	public int MaxZoom { get; set; } = 400;
+
+	/// <summary>
+	/// Gets or sets the zoom percentage change per step.
+	/// </summary>
 	public int ZoomStepSize { get; set; } = 15;
 
+	/// <summary>
+	/// Gets or sets the prefix used to comment out lines.
+	/// </summary>
 	public string CommentPrefix { get; set; } = string.Empty;
 
+	/// <summary>
+	/// Gets or sets the delay before the delayed text-changed notification fires.
+	/// </summary>
 	public TimeSpan TextChangedDelayedInterval
 	{
 		get => _contentPersistenceCoordinator.DelayedInterval;
 		set => _contentPersistenceCoordinator.DelayedInterval = value;
 	}
 
+	/// <summary>
+	/// Gets or sets the string inserted to close an auto-closed parenthesis.
+	/// </summary>
 	public string ParenthesesClosingString { get; set; } = ")";
+
+	/// <summary>
+	/// Gets or sets the string inserted to close an auto-closed brace.
+	/// </summary>
 	public string BracesClosingString { get; set; } = "}";
+
+	/// <summary>
+	/// Gets or sets the string inserted to close an auto-closed bracket.
+	/// </summary>
 	public string BracketsClosingString { get; set; } = "]";
+
+	/// <summary>
+	/// Gets or sets the string inserted to close an auto-closed quote.
+	/// </summary>
 	public string QuotesClosingString { get; set; } = "\"";
 
+	/// <summary>
+	/// Gets or sets the engine version targeted by this editor.
+	/// </summary>
 	public Version EngineVersion { get; set; } = new Version(0, 0);
 
-	#endregion Properties
-
-	#region Configuration
+	// Configuration
 
 	/// <summary>
 	/// Basically FontSize but zooming doesn't affect its value.
 	/// </summary>
 	public double DefaultFontSize { get; set; } = TextEditorBaseDefaults.FontSize;
 
+	/// <summary>
+	/// Gets or sets whether intellisense features are enabled for this editor.
+	/// </summary>
 	public bool IntellisenseEnabled { get; set; } = TextEditorBaseDefaults.IntellisenseEnabled;
+
+	/// <summary>
+	/// Gets or sets whether autocomplete suggestions are shown while typing.
+	/// </summary>
 	public bool AutocompleteEnabled { get; set; } = TextEditorBaseDefaults.AutocompleteEnabled;
+
+	/// <summary>
+	/// Gets or sets whether errors are underlined as they are detected.
+	/// </summary>
 	public bool LiveErrorUnderlining { get; set; } = TextEditorBaseDefaults.LiveErrorUnderlining;
+
+	/// <summary>
+	/// Gets or sets whether signature help popups are shown.
+	/// </summary>
 	public bool SignatureHelpPopupsEnabled { get; set; } = TextEditorBaseDefaults.SignatureHelpPopupsEnabled;
 
+	/// <summary>
+	/// Gets or sets whether opening parentheses are auto-closed.
+	/// </summary>
 	public bool AutoCloseParentheses { get; set; } = TextEditorBaseDefaults.AutoCloseParentheses;
+
+	/// <summary>
+	/// Gets or sets whether opening braces are auto-closed.
+	/// </summary>
 	public bool AutoCloseBraces { get; set; } = TextEditorBaseDefaults.AutoCloseBraces;
+
+	/// <summary>
+	/// Gets or sets whether opening brackets are auto-closed.
+	/// </summary>
 	public bool AutoCloseBrackets { get; set; } = TextEditorBaseDefaults.AutoCloseBrackets;
+
+	/// <summary>
+	/// Gets or sets whether double quotes are auto-closed.
+	/// </summary>
 	public bool AutoCloseDoubleQuotes { get; set; } = TextEditorBaseDefaults.AutoCloseDoubleQuotes;
+
+	/// <summary>
+	/// Gets or sets whether single quotes are auto-closed.
+	/// </summary>
 	public bool AutoCloseSingleQuotes { get; set; } = TextEditorBaseDefaults.AutoCloseSingleQuotes;
 
+	/// <summary>
+	/// Gets or sets whether both double and single quotes are auto-closed.
+	/// </summary>
 	public bool AutoCloseQuotes
 	{
 		get => AutoCloseDoubleQuotes && AutoCloseSingleQuotes;
@@ -121,10 +247,11 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		}
 	}
 
-	#endregion Configuration
+	// Fields
 
-	#region Fields
-
+	/// <summary>
+	/// The popup used to show special (non-text) tooltips over the editor.
+	/// </summary>
 	protected Popup _specialToolTip;
 
 	private readonly BookmarkCoordinator _bookmarkCoordinator;
@@ -147,10 +274,12 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 
 	internal IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnosticToolTipService.Diagnostics;
 
-	#endregion Fields
+	// Construction
 
-	#region Construction
-
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TextEditorBase"/> class for the given engine version.
+	/// </summary>
+	/// <param name="engineVersion">The engine version the editor targets.</param>
 	public TextEditorBase(Version engineVersion)
 	{
 		TextEditorBaseServiceCollection services = TextEditorBaseServiceCollection.Create(this);
@@ -229,10 +358,12 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		MouseRightButtonDown += TextEditor_MouseRightButtonDown;
 	}
 
-	#endregion Construction
+	// Settings
 
-	#region Settings
-
+	/// <summary>
+	/// Applies the given configuration to this editor.
+	/// </summary>
+	/// <param name="configuration">The configuration to apply.</param>
 	public virtual void UpdateSettings(ConfigurationBase configuration)
 	{
 		if (configuration is not TextEditorConfigBase config)
@@ -265,22 +396,29 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		Options.ShowTabs = config.ShowVisualTabs;
 	}
 
-	#endregion Settings
-
-	#region IEditorControl methods
+	// IEditorControl methods
 
 	void IEditorControl.Undo() => Undo();
 
 	void IEditorControl.Redo() => Redo();
 
+	/// <summary>
+	/// Navigates to the definition of <paramref name="objectName"/> when the language has a
+	/// synchronous name-based lookup path (ClassicScript, GameFlowScript, TRX override this).
+	/// The default is an intentional no-op: Lua resolves definitions through the LSP
+	/// (<c>NavigateToDefinitionAtCaretAsync</c>) and <see cref="PlainTextEditor"/> has no
+	/// definitions, so this base implementation deliberately does nothing rather than throw.
+	/// </summary>
 	public virtual void GoToObject(string objectName, object? identifyingObject = null)
 	{ }
 
+	/// <summary>
+	/// Releases the resources used by this editor.
+	/// </summary>
 	public void Dispose()
 	{
 		_statusCoordinator.Dispose();
 		_contentPersistenceCoordinator.Dispose();
 	}
 
-	#endregion IEditorControl methods
 }

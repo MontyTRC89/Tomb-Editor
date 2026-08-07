@@ -1,12 +1,10 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Documents;
 using TombLib.Scripting.UI.Presentation;
 using TombLib.Scripting.UI.Resources;
 using TombLib.WPF;
@@ -50,13 +49,12 @@ public sealed record TextCompletionControllerOptions(
 
 /// <summary>
 /// Coordinates shared completion popup lifecycle, tooltip ownership, sizing, and request scheduling.
+/// The popup is owned through <see cref="CompletionWindowHost"/>, which tracks at most one window:
+/// opening a new completion window force-closes the previous one.
 /// </summary>
 public sealed class TextCompletionController
 {
-	private static readonly Lazy<FieldInfo?> CompletionToolTipFieldAccessor = new(() =>
-		typeof(CompletionWindow).GetField("toolTip", BindingFlags.NonPublic | BindingFlags.Instance));
-
-	private static FieldInfo? CompletionToolTipField => CompletionToolTipFieldAccessor.Value;
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
 	private readonly TextEditorBase _editor;
 	private readonly TextCompletionControllerOptions _options;
@@ -67,7 +65,7 @@ public sealed class TextCompletionController
 	private readonly DispatcherTimer _toolTipUpdateTimer = new();
 	private Func<Task>? _scheduledRequestAsync;
 	private ToolTip? _pendingCompletionToolTip;
-	private int _requestToken;
+	private readonly RequestTokenSource _requestTokens = new();
 	private int _toolTipUpdateToken;
 
 	public TextCompletionController(
@@ -108,13 +106,13 @@ public sealed class TextCompletionController
 	public CompletionWindow? ActiveWindow => _editor.ActiveCompletionWindow;
 
 	public int BeginRequest()
-		=> ++_requestToken;
+		=> _requestTokens.Begin();
 
 	public bool IsRequestCurrent(int requestToken)
-		=> requestToken == _requestToken;
+		=> _requestTokens.IsCurrent(requestToken);
 
 	public void InvalidateRequests()
-		=> _requestToken++;
+		=> _requestTokens.Invalidate();
 
 	public void ScheduleRequest()
 	{
@@ -138,7 +136,7 @@ public sealed class TextCompletionController
 		CancelTooltipUpdate();
 
 		if (ActiveWindow is CompletionWindow completionWindow
-			&& CompletionToolTipField?.GetValue(completionWindow) is ToolTip tooltip)
+			&& CompletionWindowToolTipAccess.TryGetToolTip(completionWindow, out ToolTip? tooltip))
 		{
 			tooltip.IsOpen = false;
 		}
@@ -233,7 +231,10 @@ public sealed class TextCompletionController
 		}
 		catch (Exception exception)
 		{
-			_handleRequestFailure?.Invoke(exception);
+			if (_handleRequestFailure is null)
+				Log.Warn(exception, "Completion request failed.");
+			else
+				_handleRequestFailure(exception);
 		}
 	}
 
@@ -252,7 +253,7 @@ public sealed class TextCompletionController
 		if (completionWindow.CompletionList.ListBox is not ListBox listBox)
 			return;
 
-		if (CompletionToolTipField?.GetValue(completionWindow) is not ToolTip tooltip)
+		if (!CompletionWindowToolTipAccess.TryGetToolTip(completionWindow, out ToolTip? tooltip))
 			return;
 
 		tooltip.Background = TextEditorColorPalette.ToolTipBackground;
@@ -344,7 +345,11 @@ public sealed class TextCompletionController
 		{
 			tooltip.IsOpen = false;
 			SetTooltipState(null, false);
-			_handleRequestFailure?.Invoke(exception);
+
+			if (_handleRequestFailure is null)
+				Log.Warn(exception, "Failed to resolve completion tooltip content.");
+			else
+				_handleRequestFailure(exception);
 		}
 	}
 
@@ -481,7 +486,7 @@ public sealed class TextCompletionController
 		if (_editor.Document is null)
 			return string.Empty;
 
-		int startOffset = Math.Max(0, Math.Min(completionWindow.StartOffset, _editor.Document.TextLength));
+		int startOffset = _editor.Document.ClampOffset(completionWindow.StartOffset);
 		int endOffset = Math.Max(startOffset, Math.Min(completionWindow.EndOffset, _editor.Document.TextLength));
 
 		return endOffset > startOffset

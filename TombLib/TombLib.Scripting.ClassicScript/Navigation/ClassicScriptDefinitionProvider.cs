@@ -1,6 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Navigation;
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Text;
 
@@ -12,7 +12,8 @@ public sealed class ClassicScriptDefinitionProvider : ITextDefinitionProvider
 
 	public ClassicScriptDefinitionProvider(IClassicScriptCommandService commandService)
 	{
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
 	}
 
 	public TextDefinitionLocation? GetDefinition(TextDefinitionRequest request)

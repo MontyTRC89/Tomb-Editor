@@ -177,7 +177,7 @@ public sealed partial class LuaEditor
 			LuaIndentationStrategy.CreateIndentationUnit(
 				textArea.Options.ConvertTabsToSpaces,
 				textArea.Options.IndentationSize,
-				4));
+				textArea.Options.IndentationSize));
 
 		return new CompletionDataInsertionResult(normalizedInsertion.Text, normalizedInsertion.CaretOffset);
 	}

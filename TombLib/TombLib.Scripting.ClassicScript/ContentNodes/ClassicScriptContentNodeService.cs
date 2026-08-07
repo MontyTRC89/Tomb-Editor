@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Commands;
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.ContentNodes;
@@ -13,7 +13,8 @@ internal sealed class ClassicScriptContentNodeService
 
 	public ClassicScriptContentNodeService(IClassicScriptLineService lineService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
 	}
 
 	private static readonly Regex DefineCommandRegex = new(@"^\s*#define\s+(\w*)\s+(\w*)", RegexOptions.IgnoreCase);

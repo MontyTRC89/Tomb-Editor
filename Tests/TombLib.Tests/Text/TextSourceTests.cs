@@ -35,6 +35,26 @@ public class TextSourceTests
     }
 
     [TestMethod]
+    public void StringTextSnapshot_NullText_TreatedAsEmpty()
+    {
+        var source = new StringTextSnapshot(null);
+
+        Assert.AreEqual(0, source.TextLength);
+        Assert.AreEqual(1, source.LineCount);
+        Assert.AreEqual(string.Empty, source.GetText(0, 0));
+    }
+
+    [TestMethod]
+    public void StringTextSnapshot_EmptyText_HasSingleEmptyLine()
+    {
+        var source = new StringTextSnapshot(string.Empty);
+
+        Assert.AreEqual(0, source.TextLength);
+        Assert.AreEqual(1, source.LineCount);
+        Assert.AreEqual(string.Empty, source.GetText(0, 0));
+    }
+
+    [TestMethod]
     public void EmptyDocument_GetLineByNumber_ReturnsEmptyLine()
     {
         foreach (ITextSnapshot source in CreateSources(string.Empty))

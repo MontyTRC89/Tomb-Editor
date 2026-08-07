@@ -1,5 +1,5 @@
-using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Tests.ClassicScript.Services;

@@ -6,18 +6,32 @@ namespace TombLib.Scripting.UI.Bases;
 
 public abstract partial class TextEditorBase
 {
-	#region Events
+	// Events
 
+	/// <summary>
+	/// Occurs when the status of the editor changes.
+	/// </summary>
 	public event EventHandler? StatusChanged;
 
+	/// <summary>
+	/// Raises the <see cref="StatusChanged"/> event.
+	/// </summary>
+	/// <param name="e">The event arguments.</param>
 	protected virtual void OnStatusChanged(EventArgs e)
 		=> StatusChanged?.Invoke(this, e);
 
 	internal void RaiseStatusChanged()
 		=> OnStatusChanged(EventArgs.Empty);
 
+	/// <summary>
+	/// Occurs when the zoom level of the editor changes.
+	/// </summary>
 	public event EventHandler? ZoomChanged;
 
+	/// <summary>
+	/// Raises the <see cref="ZoomChanged"/> event.
+	/// </summary>
+	/// <param name="e">The event arguments.</param>
 	protected virtual void OnZoomChanged(EventArgs e)
 	{
 		ZoomChanged?.Invoke(this, e);
@@ -27,13 +41,27 @@ public abstract partial class TextEditorBase
 	internal void RaiseZoomChanged()
 		=> OnZoomChanged(EventArgs.Empty);
 
+	/// <summary>
+	/// Occurs after the delayed text-changed interval elapses.
+	/// </summary>
 	public event EventHandler? TextChangedDelayed;
 
+	/// <summary>
+	/// Raises the <see cref="TextChangedDelayed"/> event.
+	/// </summary>
+	/// <param name="e">The event arguments.</param>
 	protected virtual void OnTextChangedDelayed(EventArgs e)
 		=> TextChangedDelayed?.Invoke(this, e);
 
+	/// <summary>
+	/// Occurs when a content-change worker run has completed.
+	/// </summary>
 	public event EventHandler? ContentChangedWorkerRunCompleted;
 
+	/// <summary>
+	/// Raises the <see cref="ContentChangedWorkerRunCompleted"/> event.
+	/// </summary>
+	/// <param name="e">The event arguments.</param>
 	protected virtual void OnContentChangedWorkerRunCompleted(EventArgs e)
 		=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
@@ -102,11 +130,14 @@ public abstract partial class TextEditorBase
 		e.Handled = true;
 	}
 
+	/// <summary>
+	/// Closes the definition tooltip, optionally forcing immediate close.
+	/// </summary>
+	/// <param name="force">Whether to close the tooltip immediately regardless of its current state.</param>
 	protected void CloseDefinitionToolTip(bool force = false)
 		=> _toolTipPresenter.Close(force);
 
 	private void ScheduleDefinitionToolTipClose()
 		=> _toolTipPresenter.ScheduleClose();
 
-	#endregion Events
 }

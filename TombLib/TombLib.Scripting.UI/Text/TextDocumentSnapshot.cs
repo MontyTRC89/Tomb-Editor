@@ -20,7 +20,8 @@ public sealed class TextDocumentSnapshot : ITextSnapshot
 	/// <exception cref="ArgumentNullException"><paramref name="document"/> is null.</exception>
 	public TextDocumentSnapshot(TextDocument document)
 	{
-		_document = document ?? throw new ArgumentNullException(nameof(document));
+		ArgumentNullException.ThrowIfNull(document);
+		_document = document;
 	}
 
 	/// <inheritdoc />

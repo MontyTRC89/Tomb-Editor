@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using System.Windows;
 using System.Windows.Controls;

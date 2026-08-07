@@ -2,8 +2,14 @@ using System;
 
 namespace TombLib.Scripting.TRX.Resources;
 
+/// <summary>
+/// Defines the TRX keywords used for highlighting, completion and error detection.
+/// </summary>
 public static class Keywords
 {
+	/// <summary>
+	/// Gets the primitive JSON keyword values.
+	/// </summary>
 	public static readonly string[] Values = new string[]
 	{
 		"true",
@@ -11,6 +17,9 @@ public static class Keywords
 		"null"
 	};
 
+	/// <summary>
+	/// Gets the constants that have been removed from the TRX syntax.
+	/// </summary>
 	public static readonly RemovedKeyword[] RemovedConstants = new RemovedKeyword[]
 	{
 		new("cutscene", new(4, 8), "Instead, the cutscenes need to be placed in the top-level \"cutscenes\" array."),
@@ -21,6 +30,9 @@ public static class Keywords
 		new("draw_distance_max", new(4, 10), "Instead, use \"fog_start\" and \"fog_end\" properties for every level."),
 	};
 
+	/// <summary>
+	/// Gets the properties that have been removed from the TRX syntax.
+	/// </summary>
 	public static readonly RemovedKeyword[] RemovedProperties = new RemovedKeyword[]
 	{
 		new("file", new(4, 8), "Instead, use the \"path\" property for every level."),
@@ -31,4 +43,3 @@ public static class Keywords
 	};
 }
 
-public record struct RemovedKeyword(string Keyword, Version RemovedVersion, string Message = "");

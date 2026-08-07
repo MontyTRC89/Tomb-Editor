@@ -14,7 +14,7 @@ public sealed class StringTextSnapshot : ITextSnapshot
 	/// <summary>
 	/// Initializes a new instance of the <see cref="StringTextSnapshot"/> class.
 	/// </summary>
-	/// <param name="text">The source text. Must not be null; an empty string is used for null input.</param>
+	/// <param name="text">The source text. A null value is treated as an empty string.</param>
 	/// <param name="fileName">An optional file name associated with this text.</param>
 	public StringTextSnapshot(string? text, string? fileName = null)
 	{

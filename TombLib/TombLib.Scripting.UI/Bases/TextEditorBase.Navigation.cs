@@ -17,7 +17,7 @@ namespace TombLib.Scripting.UI.Bases;
 
 public abstract partial class TextEditorBase
 {
-	#region Language seam
+	// Language seam
 
 	/// <summary>
 	/// Gets the completion controller that drives completion windows and decisions for this editor.
@@ -130,15 +130,25 @@ public abstract partial class TextEditorBase
 		_diagnosticsCoordinator.RunOnIdle(Text);
 	}
 
-	#endregion Language seam
+	// Definition navigation
 
-	#region Definition navigation
-
+	/// <summary>
+	/// Navigates to the definition of the given object name using the specified provider.
+	/// </summary>
+	/// <param name="definitionProvider">The provider used to resolve the definition.</param>
+	/// <param name="objectName">The name of the object to navigate to.</param>
+	/// <param name="identifyingObject">An optional object used to disambiguate the target.</param>
 	protected void GoToDefinition(ITextDefinitionProvider definitionProvider, string objectName, object? identifyingObject = null)
 		=> _definitionNavigationService.GoToObject(this, definitionProvider, objectName, identifyingObject);
 
+	/// <summary>
+	/// Attempts to navigate to the definition at the given offset using the specified providers.
+	/// </summary>
+	/// <param name="definitionProvider">The provider used to resolve the definition.</param>
+	/// <param name="hoverProvider">The provider used to identify the hovered symbol.</param>
+	/// <param name="offset">The document offset to inspect.</param>
+	/// <returns>True if a definition was found and navigated to; otherwise false.</returns>
 	protected bool TryGoToDefinition(ITextDefinitionProvider definitionProvider, ITextHoverProvider hoverProvider, int offset)
 		=> _definitionNavigationService.TryGoToDefinition(this, definitionProvider, hoverProvider, offset);
 
-	#endregion Definition navigation
 }

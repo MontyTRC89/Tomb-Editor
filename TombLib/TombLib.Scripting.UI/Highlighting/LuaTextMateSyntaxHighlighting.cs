@@ -1,107 +1,92 @@
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Xml;
 using TextMateSharp.Grammars;
 using TextMateSharp.Model;
 using TextMateSharp.Registry;
 
-namespace TombLib.Scripting.UI.Highlighting
+namespace TombLib.Scripting.UI.Highlighting;
+
+public static class LuaTextMateSyntaxHighlighting
 {
-	public static class LuaTextMateSyntaxHighlighting
+	private static readonly Lazy<IGrammar?> GrammarState = new Lazy<IGrammar?>(LoadGrammarState);
+	private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
+
+	public static bool TryInstall(TextEditor editor, [NotNullWhen(true)] out LuaTextMateInstallation? installation)
+		=> TryInstall(editor, DefaultTheme, out installation);
+
+	public static bool TryInstall(TextEditor editor, TextMateTokenTheme theme, [NotNullWhen(true)] out LuaTextMateInstallation? installation)
 	{
-		private static readonly Lazy<IGrammar> GrammarState = new Lazy<IGrammar>(LoadGrammarState);
-		private static readonly Lazy<IHighlightingDefinition> FallbackHighlightingState = new Lazy<IHighlightingDefinition>(LoadFallbackHighlightingCore);
-		private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
+		installation = null;
 
-		public static bool TryInstall(TextEditor editor, out LuaTextMateInstallation installation)
-			=> TryInstall(editor, DefaultTheme, out installation);
+		if (editor?.Document is null)
+			return false;
 
-		public static bool TryInstall(TextEditor editor, TextMateTokenTheme theme, out LuaTextMateInstallation installation)
-		{
-			installation = null;
+		IGrammar? grammar = GrammarState.Value;
 
-			if (editor?.Document is null)
-				return false;
+		if (grammar is null)
+			return false;
 
-			IGrammar grammar = GrammarState.Value;
+		var documentLines = new TextMateDocumentLineList(editor.Document);
+		var model = new TMModel(documentLines);
+		model.SetGrammar(grammar);
+		var styleResolver = new TextMateThemeStyleResolver(theme ?? DefaultTheme);
+		var transformer = new TextMateColorizingTransformer(editor.TextArea.TextView, model, styleResolver);
 
-			if (grammar is null)
-				return false;
-
-			var documentLines = new TextMateDocumentLineList(editor.Document);
-			var model = new TMModel(documentLines);
-			model.SetGrammar(grammar);
-			var styleResolver = new TextMateThemeStyleResolver(theme ?? DefaultTheme);
-			var transformer = new TextMateColorizingTransformer(editor.TextArea.TextView, model, styleResolver);
-
-			editor.TextArea.TextView.LineTransformers.Add(transformer);
-			installation = new LuaTextMateInstallation(editor, documentLines, model, transformer);
-			return true;
-		}
-
-		public static IHighlightingDefinition LoadFallbackHighlighting()
-			=> FallbackHighlightingState.Value;
-
-		private static IGrammar LoadGrammarState()
-		{
-			string grammarFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "Grammars", "Lua", "lua.tmLanguage.json");
-
-			if (!File.Exists(grammarFilePath))
-				return null;
-
-			var registry = new Registry(new RegistryOptions(ThemeName.DarkPlus));
-			return registry.LoadGrammarFromPathSync(grammarFilePath, 0, new Dictionary<string, int>());
-		}
-
-		private static IHighlightingDefinition LoadFallbackHighlightingCore()
-		{
-			string fallbackFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "ColorSchemes", "Lua", "Default.xml");
-
-			if (!File.Exists(fallbackFilePath))
-				return null;
-
-			using var stream = File.OpenRead(fallbackFilePath);
-			using var reader = XmlReader.Create(stream);
-			return HighlightingLoader.Load(reader, HighlightingManager.Instance);
-		}
+		editor.TextArea.TextView.LineTransformers.Add(transformer);
+		installation = new LuaTextMateInstallation(editor, documentLines, model, transformer);
+		return true;
 	}
 
-	public sealed class LuaTextMateInstallation : IDisposable
+	public static IHighlightingDefinition? LoadFallbackHighlighting()
+		=> LuaFallbackHighlightingLoader.Load();
+
+	private static IGrammar? LoadGrammarState()
 	{
-		private readonly TextEditor _editor;
-		private readonly TextMateDocumentLineList _documentLines;
-		private readonly TextMateColorizingTransformer _transformer;
-		private bool _isDisposed;
+		string grammarFilePath = Path.Combine(AppContext.BaseDirectory, "Configs", "TextEditors", "Grammars", "Lua", "lua.tmLanguage.json");
 
-		internal LuaTextMateInstallation(TextEditor editor, TextMateDocumentLineList documentLines, TMModel model,
-			TextMateColorizingTransformer transformer)
-		{
-			_editor = editor;
-			_documentLines = documentLines;
-			_transformer = transformer;
-			Model = model;
-		}
+		if (!File.Exists(grammarFilePath))
+			return null;
 
-		public TMModel Model { get; }
+		var registry = new Registry(new RegistryOptions(ThemeName.DarkPlus));
+		return registry.LoadGrammarFromPathSync(grammarFilePath, 0, new Dictionary<string, int>());
+	}
+}
 
-		public void Dispose()
-		{
-			if (_isDisposed)
-				return;
+public sealed class LuaTextMateInstallation : IDisposable
+{
+	private readonly TextEditor _editor;
+	private readonly TextMateDocumentLineList _documentLines;
+	private readonly TextMateColorizingTransformer _transformer;
+	private bool _isDisposed;
 
-			_isDisposed = true;
+	internal LuaTextMateInstallation(TextEditor editor, TextMateDocumentLineList documentLines, TMModel model,
+		TextMateColorizingTransformer transformer)
+	{
+		_editor = editor;
+		_documentLines = documentLines;
+		_transformer = transformer;
+		Model = model;
+	}
 
-			_transformer.Dispose();
+	public TMModel Model { get; }
 
-			if (_editor.TextArea.TextView.LineTransformers.Contains(_transformer))
-				_editor.TextArea.TextView.LineTransformers.Remove(_transformer);
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
 
-			Model.Dispose();
-			_documentLines.Dispose();
-		}
+		_isDisposed = true;
+
+		_transformer.Dispose();
+
+		if (_editor.TextArea.TextView.LineTransformers.Contains(_transformer))
+			_editor.TextArea.TextView.LineTransformers.Remove(_transformer);
+
+		Model.Dispose();
+		_documentLines.Dispose();
 	}
 }

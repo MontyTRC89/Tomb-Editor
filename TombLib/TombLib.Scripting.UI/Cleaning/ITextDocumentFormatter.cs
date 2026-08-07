@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace TombLib.Scripting.UI.Cleaning;
 
 /// <summary>

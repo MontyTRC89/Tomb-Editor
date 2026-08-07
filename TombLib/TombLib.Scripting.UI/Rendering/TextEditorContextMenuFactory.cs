@@ -1,7 +1,6 @@
-#nullable enable
-
 using System.Windows.Controls;
 using System.Windows.Input;
+using TombLib.WPF;
 
 namespace TombLib.Scripting.UI.Rendering;
 
@@ -11,10 +10,10 @@ internal static class TextEditorContextMenuFactory
 	{
 		var menu = new ContextMenu();
 
-		var cutItem = new MenuItem { Header = "Cut", Command = ApplicationCommands.Cut };
-		var copyItem = new MenuItem { Header = "Copy", Command = ApplicationCommands.Copy };
-		var pasteItem = new MenuItem { Header = "Paste", Command = ApplicationCommands.Paste };
-		var selectAllItem = new MenuItem { Header = "Select All", Command = ApplicationCommands.SelectAll };
+		var cutItem = new MenuItem { Header = Localizer.Instance["Common.Cut"], Command = ApplicationCommands.Cut };
+		var copyItem = new MenuItem { Header = Localizer.Instance["Common.Copy"], Command = ApplicationCommands.Copy };
+		var pasteItem = new MenuItem { Header = Localizer.Instance["Common.Paste"], Command = ApplicationCommands.Paste };
+		var selectAllItem = new MenuItem { Header = Localizer.Instance["Common.SelectAll"], Command = ApplicationCommands.SelectAll };
 
 		menu.Items.Add(cutItem);
 		menu.Items.Add(copyItem);

@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace TombLib.Scripting.ClassicScript.Syntaxes;
 
 public sealed record class ClassicScriptSyntaxDefinition(

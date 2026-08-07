@@ -1,8 +1,9 @@
+using NLog;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.Text;
 
@@ -14,12 +15,13 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// </summary>
 public class ClassicScriptCommandService : IClassicScriptCommandService
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly IClassicScriptLineService _lineService;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
 	private readonly ClassicScriptSyntaxCatalogService _syntaxCatalogService;
 
-	// Legacy regex patterns inlined for Phase 4 parity.
-	// These will be replaced with lexer token checks in Phase 5/6.
+	// Regex patterns retained for parity with the legacy editor behavior.
 	private static readonly Regex NextLineKeyRegex = new(@">\s*(;.*)?$", RegexOptions.Compiled);
 	private static readonly Regex CustomizeCommandRegex = new(@"^\s*\bCustomize\s*=\s*\b.*\b\s*,", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 	private static readonly Regex ParametersCommandRegex = new(@"^\s*\bParameters\s*=\s*\b.*\b\s*,", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -35,9 +37,12 @@ public class ClassicScriptCommandService : IClassicScriptCommandService
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService,
 		ClassicScriptSyntaxCatalogService syntaxCatalogService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
-		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
-		_syntaxCatalogService = syntaxCatalogService ?? throw new ArgumentNullException(nameof(syntaxCatalogService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
+		_mnemonicCatalogService = mnemonicCatalogService;
+		ArgumentNullException.ThrowIfNull(syntaxCatalogService);
+		_syntaxCatalogService = syntaxCatalogService;
 	}
 
 	// ------------------------------------------------------------------
@@ -207,8 +212,9 @@ public class ClassicScriptCommandService : IClassicScriptCommandService
 
 			return currentSyntaxArgument.Split('.')[0].Split('(')[1];
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to determine the flag prefix of the current argument.");
 			return null;
 		}
 	}
@@ -284,7 +290,7 @@ public class ClassicScriptCommandService : IClassicScriptCommandService
 		ITextLine sectionStartLine = source.GetLineByNumber(sectionStartLineNumber.Value);
 		string lineText = source.GetText(sectionStartLine.Offset, sectionStartLine.Length);
 
-		return lineText.Split('[')[1].Split(']')[0];
+		return _lineService.GetSectionHeaderText(lineText);
 	}
 
 	/// <inheritdoc />

@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Editing;
 using System;
 
@@ -15,9 +13,12 @@ internal sealed class TextEditorStatusCoordinator : IDisposable
 
 	public TextEditorStatusCoordinator(TextArea textArea, Action raiseStatusChanged, Action raiseZoomChanged)
 	{
-		_textArea = textArea ?? throw new ArgumentNullException(nameof(textArea));
-		_raiseStatusChanged = raiseStatusChanged ?? throw new ArgumentNullException(nameof(raiseStatusChanged));
-		_raiseZoomChanged = raiseZoomChanged ?? throw new ArgumentNullException(nameof(raiseZoomChanged));
+		ArgumentNullException.ThrowIfNull(textArea);
+		_textArea = textArea;
+		ArgumentNullException.ThrowIfNull(raiseStatusChanged);
+		_raiseStatusChanged = raiseStatusChanged;
+		ArgumentNullException.ThrowIfNull(raiseZoomChanged);
+		_raiseZoomChanged = raiseZoomChanged;
 	}
 
 	public int Zoom

@@ -2,10 +2,9 @@ using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
 
-namespace TombLib.Scripting.UI.Diagnostics
+namespace TombLib.Scripting.UI.Diagnostics;
+
+public interface IErrorDetector
 {
-	public interface IErrorDetector
-	{
-		IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion);
-	}
+	IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion);
 }

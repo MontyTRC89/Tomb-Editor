@@ -9,7 +9,8 @@ public sealed class ClassicScriptFileClassificationService
 
 	public ClassicScriptFileClassificationService(IClassicScriptLineService lineService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
 	}
 
 	private static readonly HashSet<string> ScriptSections = new(StringComparer.OrdinalIgnoreCase)
@@ -20,14 +21,6 @@ public sealed class ClassicScriptFileClassificationService
 		"Options",
 		"Title",
 		"Level"
-	};
-
-	private static readonly HashSet<string> StringSections = new(StringComparer.OrdinalIgnoreCase)
-	{
-		"Strings",
-		"PSXStrings",
-		"PCStrings",
-		"ExtraNG"
 	};
 
 	public ClassicScriptFileKind GetFileKind(string filePath)
@@ -44,7 +37,7 @@ public sealed class ClassicScriptFileClassificationService
 			if (string.IsNullOrWhiteSpace(sectionName))
 				continue;
 
-			if (StringSections.Contains(sectionName))
+			if (_lineService.IsStringSectionName(sectionName))
 				return ClassicScriptFileKind.Strings;
 
 			if (ScriptSections.Contains(sectionName))

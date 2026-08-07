@@ -1,44 +1,52 @@
-#nullable enable
-
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using NLog;
+using System;
 using System.Collections.Generic;
 using TombLib.Scripting.Completion;
+using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Completion;
 
-public sealed class GameflowAutocompleteService : ITextCompletionProvider
+/// <summary>
+/// Builds completion items from the GameFlow JSON schema.
+/// </summary>
+public sealed class GameFlowCompletionService : ITextCompletionProvider
 {
-	private static readonly string[] JsonPrimitives = { "true", "false", "null" };
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	private readonly IGameflowSchemaService _schemaService;
+	private readonly IGameFlowSchemaService _schemaService;
 
-	public GameflowAutocompleteService(IGameflowSchemaService schemaService)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GameFlowCompletionService"/> class.
+	/// </summary>
+	/// <param name="schemaService">The schema service used to source the GameFlow schema.</param>
+	public GameFlowCompletionService(IGameFlowSchemaService schemaService)
 		=> _schemaService = schemaService;
 
+	/// <inheritdoc />
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
 	{
-		_ = context;
-
 		try
 		{
 			var completionBuilder = new CompletionDataBuilder();
 			var schema = _schemaService.Schema;
 
-			if (schema is null || schema.Properties is null)
-				return completionBuilder.Build();
+			if (schema is not null && schema.Properties is not null)
+			{
+				// Process schema data
+				ProcessTopLevelProperties(completionBuilder, schema);
+				ProcessDefinitions(completionBuilder, schema);
+				AddJsonPrimitives(completionBuilder);
+			}
 
-			// Process schema data
-			ProcessTopLevelProperties(completionBuilder, schema);
-			ProcessDefinitions(completionBuilder, schema);
-			AddJsonPrimitives(completionBuilder);
-
-			return completionBuilder.Build();
+			return TextCompletionFilter.FilterByCurrentWord(completionBuilder.Build(), context);
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to build GameFlow completion items; returning an empty list.");
 			return [];
 		}
 	}
@@ -71,7 +79,7 @@ public sealed class GameflowAutocompleteService : ITextCompletionProvider
 
 	private static void AddJsonPrimitives(CompletionDataBuilder builder)
 	{
-		foreach (var primitive in JsonPrimitives)
+		foreach (string primitive in Keywords.Values)
 			builder.TryAdd(primitive, TextCompletionItemKind.Constant);
 	}
 }

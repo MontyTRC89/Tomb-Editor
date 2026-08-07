@@ -5,7 +5,9 @@ using System.Text;
 namespace TombLib.Scripting.Lua.Parsing;
 
 /// <summary>
-/// Identifies the long-block parser mode that must continue across Lua document lines.
+/// Identifies the parser mode that must continue across Lua document lines.
+/// Single and double quoted strings cannot legally span lines, so only the
+/// long-bracket modes are ever persisted in <see cref="LuaLineParserState"/>.
 /// </summary>
 internal enum LuaLineParserStateKind
 {
@@ -13,6 +15,16 @@ internal enum LuaLineParserStateKind
 	/// The parser is not inside a multi-line Lua construct.
 	/// </summary>
 	None,
+
+	/// <summary>
+	/// The parser is inside a single-quoted string literal.
+	/// </summary>
+	SingleQuotedString,
+
+	/// <summary>
+	/// The parser is inside a double-quoted string literal.
+	/// </summary>
+	DoubleQuotedString,
 
 	/// <summary>
 	/// The parser is inside a long-bracket string literal.
@@ -46,13 +58,25 @@ internal readonly struct LuaLineParserState(LuaLineParserStateKind kind, int lon
 /// </summary>
 internal static class LuaLineParser
 {
-	private enum ParserState
+	/// <summary>
+	/// Controls what the shared line walker emits for each scanned character.
+	/// </summary>
+	private enum ScanMode
 	{
-		None,
-		SingleQuotedString,
-		DoubleQuotedString,
-		LongString,
-		LongComment
+		/// <summary>
+		/// Emits nothing; only tracks the resulting parser state.
+		/// </summary>
+		Detect,
+
+		/// <summary>
+		/// Emits quoted and long-bracket string content, stripping comments.
+		/// </summary>
+		PreserveStrings,
+
+		/// <summary>
+		/// Emits only code characters, skipping comments and string content.
+		/// </summary>
+		CodeOnly
 	}
 
 	/// <summary>
@@ -81,86 +105,16 @@ internal static class LuaLineParser
 
 	internal static bool IsInsideCommentOrString(string lineText, LuaLineParserState initialState, out LuaLineParserState finalState)
 	{
-		ParserState state = GetInitialParserState(initialState);
-		int longBracketEqualsCount = initialState.LongBracketEqualsCount;
+		(LuaLineParserStateKind stateKind, int longBracketEqualsCount, bool lineCommentFound) = ScanLine(lineText, initialState, ScanMode.Detect, null);
 
-		if (string.IsNullOrEmpty(lineText))
+		if (lineCommentFound)
 		{
-			finalState = CreateContinuationState(state, longBracketEqualsCount);
-			return state != ParserState.None;
+			finalState = default;
+			return true;
 		}
 
-		for (int i = 0; i < lineText.Length; i++)
-		{
-			char currentChar = lineText[i];
-
-			if (state == ParserState.LongString || state == ParserState.LongComment)
-			{
-				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
-				{
-					i += endTokenLength - 1;
-					state = ParserState.None;
-				}
-
-				continue;
-			}
-
-			if (state == ParserState.SingleQuotedString)
-			{
-				if (currentChar == '\\' && i + 1 < lineText.Length)
-				{
-					i++;
-					continue;
-				}
-
-				if (currentChar == '\'')
-					state = ParserState.None;
-
-				continue;
-			}
-
-			if (state == ParserState.DoubleQuotedString)
-			{
-				if (currentChar == '\\' && i + 1 < lineText.Length)
-				{
-					i++;
-					continue;
-				}
-
-				if (currentChar == '"')
-					state = ParserState.None;
-
-				continue;
-			}
-
-			if (TryMatchLongCommentStart(lineText, i, out longBracketEqualsCount, out int longCommentStartLength))
-			{
-				state = ParserState.LongComment;
-				i += longCommentStartLength - 1;
-				continue;
-			}
-
-			if (IsLineCommentStart(lineText, i))
-			{
-				finalState = default;
-				return true;
-			}
-
-			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
-			{
-				state = ParserState.LongString;
-				i += longStringStartLength - 1;
-				continue;
-			}
-
-			if (currentChar == '\'')
-				state = ParserState.SingleQuotedString;
-			else if (currentChar == '"')
-				state = ParserState.DoubleQuotedString;
-		}
-
-		finalState = CreateContinuationState(state, longBracketEqualsCount);
-		return state != ParserState.None;
+		finalState = CreateContinuationState(stateKind, longBracketEqualsCount);
+		return stateKind != LuaLineParserStateKind.None;
 	}
 
 	/// <summary>
@@ -174,86 +128,7 @@ internal static class LuaLineParser
 			return string.Empty;
 
 		var builder = new StringBuilder(lineText.Length);
-		ParserState state = ParserState.None;
-		int longBracketEqualsCount = 0;
-
-		for (int i = 0; i < lineText.Length; i++)
-		{
-			char currentChar = lineText[i];
-
-			if (state == ParserState.LongComment)
-			{
-				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
-				{
-					i += endTokenLength - 1;
-					state = ParserState.None;
-				}
-
-				continue;
-			}
-
-			if (state == ParserState.LongString)
-			{
-				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
-				{
-					builder.Append(lineText, i, endTokenLength);
-					i += endTokenLength - 1;
-					state = ParserState.None;
-				}
-				else
-				{
-					builder.Append(currentChar);
-				}
-
-				continue;
-			}
-
-			if (state == ParserState.SingleQuotedString || state == ParserState.DoubleQuotedString)
-			{
-				builder.Append(currentChar);
-
-				if (currentChar == '\\' && i + 1 < lineText.Length)
-				{
-					builder.Append(lineText[i + 1]);
-					i++;
-					continue;
-				}
-
-				if ((state == ParserState.SingleQuotedString && currentChar == '\'')
-					|| (state == ParserState.DoubleQuotedString && currentChar == '"'))
-				{
-					state = ParserState.None;
-				}
-
-				continue;
-			}
-
-			if (TryMatchLongCommentStart(lineText, i, out longBracketEqualsCount, out int longCommentStartLength))
-			{
-				state = ParserState.LongComment;
-				i += longCommentStartLength - 1;
-				continue;
-			}
-
-			if (IsLineCommentStart(lineText, i))
-				break;
-
-			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
-			{
-				builder.Append(lineText, i, longStringStartLength);
-				state = ParserState.LongString;
-				i += longStringStartLength - 1;
-				continue;
-			}
-
-			if (currentChar == '\'')
-				state = ParserState.SingleQuotedString;
-			else if (currentChar == '"')
-				state = ParserState.DoubleQuotedString;
-
-			builder.Append(currentChar);
-		}
-
+		ScanLine(lineText, default, ScanMode.PreserveStrings, builder);
 		return builder.ToString();
 	}
 
@@ -268,74 +143,7 @@ internal static class LuaLineParser
 			return string.Empty;
 
 		var builder = new StringBuilder(lineText.Length);
-		ParserState state = ParserState.None;
-		int longBracketEqualsCount = 0;
-
-		for (int i = 0; i < lineText.Length; i++)
-		{
-			char currentChar = lineText[i];
-
-			if (state == ParserState.LongComment || state == ParserState.LongString)
-			{
-				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
-				{
-					i += endTokenLength - 1;
-					state = ParserState.None;
-					longBracketEqualsCount = 0;
-				}
-
-				continue;
-			}
-
-			if (state == ParserState.SingleQuotedString || state == ParserState.DoubleQuotedString)
-			{
-				if (currentChar == '\\' && i + 1 < lineText.Length)
-				{
-					i++;
-					continue;
-				}
-
-				if ((state == ParserState.SingleQuotedString && currentChar == '\'')
-					|| (state == ParserState.DoubleQuotedString && currentChar == '"'))
-				{
-					state = ParserState.None;
-				}
-
-				continue;
-			}
-
-			if (TryMatchLongCommentStart(lineText, i, out longBracketEqualsCount, out int longCommentStartLength))
-			{
-				state = ParserState.LongComment;
-				i += longCommentStartLength - 1;
-				continue;
-			}
-
-			if (IsLineCommentStart(lineText, i))
-				break;
-
-			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
-			{
-				state = ParserState.LongString;
-				i += longStringStartLength - 1;
-				continue;
-			}
-
-			if (currentChar == '\'')
-			{
-				state = ParserState.SingleQuotedString;
-				continue;
-			}
-
-			if (currentChar == '"')
-			{
-				state = ParserState.DoubleQuotedString;
-				continue;
-			}
-
-			builder.Append(currentChar);
-		}
-
+		ScanLine(lineText, default, ScanMode.CodeOnly, builder);
 		return builder.ToString();
 	}
 
@@ -345,54 +153,74 @@ internal static class LuaLineParser
 	/// <param name="lineText">The line text to inspect.</param>
 	/// <returns>The structural characters that participate in brace and delimiter analysis.</returns>
 	public static IEnumerable<char> EnumerateStructuralCharacters(string lineText)
-		=> EnumerateStructuralCharactersCore(lineText, default, captureFinalState: null);
+		=> EnumerateStructuralCharacters(lineText, default, captureFinalState: null);
 
 	/// <summary>
 	/// Enumerates structural characters from a line while carrying long-string and long-comment
-	/// continuation state across line boundaries. Use the returned <paramref name="finalState"/>
-	/// as the next line's <paramref name="initialState"/> so multi-line <c>[[...]]</c> blocks can
-	/// not break callers that do brace tracking across the whole document.
+	/// continuation state across line boundaries. Use the captured state as the next line's
+	/// initial state so multi-line <c>[[...]]</c> blocks can not break callers that do brace
+	/// tracking across the whole document.
 	/// </summary>
-	internal static IEnumerable<char> EnumerateStructuralCharacters(string lineText, LuaLineParserState initialState, Action<LuaLineParserState> captureFinalState)
-		=> EnumerateStructuralCharactersCore(lineText, initialState, captureFinalState);
-
-	private static IEnumerable<char> EnumerateStructuralCharactersCore(string lineText, LuaLineParserState initialState, Action<LuaLineParserState>? captureFinalState)
+	internal static IEnumerable<char> EnumerateStructuralCharacters(string lineText, LuaLineParserState initialState, Action<LuaLineParserState>? captureFinalState)
 	{
-		ParserState state = GetInitialParserState(initialState);
-		int longBracketEqualsCount = initialState.LongBracketEqualsCount;
+		var builder = new StringBuilder(lineText.Length);
+		(LuaLineParserStateKind stateKind, int longBracketEqualsCount, _) = ScanLine(lineText, initialState, ScanMode.CodeOnly, builder);
 
-		if (string.IsNullOrEmpty(lineText))
-		{
-			captureFinalState?.Invoke(CreateContinuationState(state, longBracketEqualsCount));
-			yield break;
-		}
+		captureFinalState?.Invoke(CreateContinuationState(stateKind, longBracketEqualsCount));
+
+		foreach (char character in builder.ToString())
+			yield return character;
+	}
+
+	private static (LuaLineParserStateKind FinalState, int LongBracketEqualsCount, bool LineCommentFound) ScanLine(string lineText, LuaLineParserState initialState, ScanMode mode, StringBuilder? output)
+	{
+		LuaLineParserStateKind state = initialState.Kind;
+		int longBracketEqualsCount = initialState.LongBracketEqualsCount;
+		bool lineCommentFound = false;
 
 		for (int i = 0; i < lineText.Length; i++)
 		{
 			char currentChar = lineText[i];
 
-			if (state == ParserState.LongComment || state == ParserState.LongString)
+			if (state == LuaLineParserStateKind.LongString || state == LuaLineParserStateKind.LongComment)
 			{
 				if (TryMatchLongBracketEnd(lineText, i, longBracketEqualsCount, out int endTokenLength))
 				{
+					if (mode == ScanMode.PreserveStrings && state == LuaLineParserStateKind.LongString)
+						output?.Append(lineText, i, endTokenLength);
+
 					i += endTokenLength - 1;
-					state = ParserState.None;
-					longBracketEqualsCount = 0;
+					state = LuaLineParserStateKind.None;
+
+					if (mode == ScanMode.CodeOnly)
+						longBracketEqualsCount = 0;
+				}
+				else if (mode == ScanMode.PreserveStrings && state == LuaLineParserStateKind.LongString)
+				{
+					output?.Append(currentChar);
 				}
 
 				continue;
 			}
 
-			if (state == ParserState.SingleQuotedString || state == ParserState.DoubleQuotedString)
+			if (state == LuaLineParserStateKind.SingleQuotedString || state == LuaLineParserStateKind.DoubleQuotedString)
 			{
+				if (mode == ScanMode.PreserveStrings)
+					output?.Append(currentChar);
+
 				if (currentChar == '\\' && i + 1 < lineText.Length)
 				{
+					if (mode == ScanMode.PreserveStrings)
+						output?.Append(lineText[i + 1]);
+
 					i++;
+					continue;
 				}
-				else if ((state == ParserState.SingleQuotedString && currentChar == '\'')
-					|| (state == ParserState.DoubleQuotedString && currentChar == '"'))
+
+				if ((state == LuaLineParserStateKind.SingleQuotedString && currentChar == '\'')
+					|| (state == LuaLineParserStateKind.DoubleQuotedString && currentChar == '"'))
 				{
-					state = ParserState.None;
+					state = LuaLineParserStateKind.None;
 				}
 
 				continue;
@@ -400,45 +228,50 @@ internal static class LuaLineParser
 
 			if (TryMatchLongCommentStart(lineText, i, out longBracketEqualsCount, out int longCommentStartLength))
 			{
-				state = ParserState.LongComment;
+				state = LuaLineParserStateKind.LongComment;
 				i += longCommentStartLength - 1;
 				continue;
 			}
 
 			if (IsLineCommentStart(lineText, i))
 			{
-				captureFinalState?.Invoke(CreateContinuationState(ParserState.None, 0));
-				yield break;
+				lineCommentFound = true;
+				break;
 			}
 
 			if (TryMatchLongBracketStart(lineText, i, out longBracketEqualsCount, out int longStringStartLength))
 			{
-				state = ParserState.LongString;
+				if (mode == ScanMode.PreserveStrings)
+					output?.Append(lineText, i, longStringStartLength);
+
+				state = LuaLineParserStateKind.LongString;
 				i += longStringStartLength - 1;
 				continue;
 			}
 
 			if (currentChar == '\'')
 			{
-				state = ParserState.SingleQuotedString;
+				if (mode == ScanMode.PreserveStrings)
+					output?.Append(currentChar);
+
+				state = LuaLineParserStateKind.SingleQuotedString;
 				continue;
 			}
 
 			if (currentChar == '"')
 			{
-				state = ParserState.DoubleQuotedString;
+				if (mode == ScanMode.PreserveStrings)
+					output?.Append(currentChar);
+
+				state = LuaLineParserStateKind.DoubleQuotedString;
 				continue;
 			}
 
-			yield return currentChar;
+			if (mode is ScanMode.PreserveStrings or ScanMode.CodeOnly)
+				output?.Append(currentChar);
 		}
 
-		// Single/double-quoted strings do not legally span lines in Lua, so they implicitly
-		// terminate at the newline; only long-bracket modes are propagated to the next line.
-		if (state != ParserState.LongString && state != ParserState.LongComment)
-			state = ParserState.None;
-
-		captureFinalState?.Invoke(CreateContinuationState(state, longBracketEqualsCount));
+		return (state, longBracketEqualsCount, lineCommentFound);
 	}
 
 	private static bool TryMatchLongCommentStart(string lineText, int index, out int equalsCount, out int tokenLength)
@@ -506,17 +339,8 @@ internal static class LuaLineParser
 	private static bool IsLineCommentStart(string lineText, int index)
 		=> lineText[index] == '-' && index + 1 < lineText.Length && lineText[index + 1] == '-';
 
-	private static ParserState GetInitialParserState(LuaLineParserState initialState) => initialState.Kind switch
-	{
-		LuaLineParserStateKind.LongString => ParserState.LongString,
-		LuaLineParserStateKind.LongComment => ParserState.LongComment,
-		_ => ParserState.None
-	};
-
-	private static LuaLineParserState CreateContinuationState(ParserState state, int longBracketEqualsCount) => state switch
-	{
-		ParserState.LongString => new LuaLineParserState(LuaLineParserStateKind.LongString, longBracketEqualsCount),
-		ParserState.LongComment => new LuaLineParserState(LuaLineParserStateKind.LongComment, longBracketEqualsCount),
-		_ => default
-	};
+	private static LuaLineParserState CreateContinuationState(LuaLineParserStateKind state, int longBracketEqualsCount)
+		=> state is LuaLineParserStateKind.LongString or LuaLineParserStateKind.LongComment
+			? new LuaLineParserState(state, longBracketEqualsCount)
+			: default;
 }

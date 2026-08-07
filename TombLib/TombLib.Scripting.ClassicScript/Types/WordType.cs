@@ -1,4 +1,4 @@
-namespace TombLib.Scripting.ClassicScript;
+namespace TombLib.Scripting.ClassicScript.Types;
 
 public enum WordType
 {

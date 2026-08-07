@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.ComponentModel;
 using System.Windows.Threading;
@@ -19,8 +17,10 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 		Func<bool> silentSessionProvider,
 		bool useDelayedScheduling = false)
 	{
-		_contentProvider = contentProvider ?? throw new ArgumentNullException(nameof(contentProvider));
-		_silentSessionProvider = silentSessionProvider ?? throw new ArgumentNullException(nameof(silentSessionProvider));
+		ArgumentNullException.ThrowIfNull(contentProvider);
+		_contentProvider = contentProvider;
+		ArgumentNullException.ThrowIfNull(silentSessionProvider);
+		_silentSessionProvider = silentSessionProvider;
 		_contentChangedWorker = new ContentChangedWorker();
 
 		if (useDelayedScheduling)

@@ -22,5 +22,5 @@ public class TRXLineService : ITRXLineService
 
 	/// <inheritdoc />
 	public bool IsEmptyOrComments(string? lineText)
-		=> string.IsNullOrWhiteSpace(lineText) || lineText!.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
+		=> string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
 }

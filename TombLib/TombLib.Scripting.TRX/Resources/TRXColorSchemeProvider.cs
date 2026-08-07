@@ -2,29 +2,47 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Providers;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.TRX.Resources;
 
 /// <summary>
 /// Provides the TRX color schemes, including legacy file tiers, through the shared scripting color provider contract.
 /// </summary>
-public sealed class TRXColorSchemeProvider : ITextEditorColorProvider
+public sealed class TRXColorSchemeProvider : FileSystemColorSchemeProvider<TRXEditorConfiguration>
 {
-	/// <inheritdoc />
-	public IReadOnlyList<string> GetAvailableNames()
-		=> TRXEditorConfiguration.GetAvailableColorSchemeFiles()
-			.Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
-			.Where(static name => !string.IsNullOrWhiteSpace(name))
-			.OrderBy(static name => name, StringComparer.OrdinalIgnoreCase)
-			.ToArray();
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TRXColorSchemeProvider"/> class.
+	/// </summary>
+	public TRXColorSchemeProvider()
+		: base(DefaultPaths.TRXColorConfigsDirectory)
+	{
+	}
 
 	/// <inheritdoc />
-	public string GetSelectedName(TextEditorConfigBase config)
-		=> ((TRXEditorConfiguration)config).SelectedColorSchemeName;
+	public override IReadOnlyList<string> GetAvailableNames()
+		=> FilterNames(GetAvailableColorSchemeFiles());
 
-	/// <inheritdoc />
-	public void SetSelectedName(TextEditorConfigBase config, string name)
-		=> ((TRXEditorConfiguration)config).SelectedColorSchemeName = name;
+	private static IReadOnlyList<string> GetAvailableColorSchemeFiles()
+	{
+		if (!Directory.Exists(DefaultPaths.TRXColorConfigsDirectory))
+			return [];
+
+		var filePathsByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.OldLegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
+
+		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.LegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
+
+		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
+
+		return [..
+			filePathsByName
+				.OrderBy(entry => entry.Key, StringComparer.OrdinalIgnoreCase)
+				.Select(entry => entry.Value)];
+	}
 }

@@ -1,6 +1,5 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Signatures;
+using NLog;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -13,6 +12,8 @@ namespace TombLib.Scripting.UI.Signatures;
 /// </summary>
 public sealed class TextSignatureHelpController
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly Func<int> _getCurrentCaretOffset;
 	private readonly Func<int, int, Task<TextSignatureHelpInfo?>> _requestSignatureHelpAsync;
 	private readonly Action<TextSignatureHelpInfo> _showSignatureHelp;
@@ -20,8 +21,7 @@ public sealed class TextSignatureHelpController
 	private readonly Action<TextSignatureHelpPresentationState>? _applySignatureState;
 	private readonly Action<Exception>? _handleRequestFailure;
 	private readonly DispatcherTimer _refreshTimer = new();
-
-	private int _signatureRequestToken;
+	private readonly RequestTokenSource _signatureRequestTokens = new();
 	private int _pendingSignatureHelpOffset = -1;
 	private bool _signatureRefreshPending;
 	private bool _signatureRequestInFlight;
@@ -119,7 +119,7 @@ public sealed class TextSignatureHelpController
 	/// </summary>
 	public void InvalidateRequests()
 	{
-		_signatureRequestToken++;
+		_signatureRequestTokens.Invalidate();
 		_signatureRequestInFlight = false;
 		ApplyPresentationState();
 	}
@@ -161,14 +161,14 @@ public sealed class TextSignatureHelpController
 
 		_signatureRequestInFlight = true;
 		bool wasVisibleAtRequestStart = _isVisible;
-		int requestToken = ++_signatureRequestToken;
+		int requestToken = _signatureRequestTokens.Begin();
 		ApplyPresentationState();
 
 		try
 		{
 			TextSignatureHelpInfo? signatureInfo = await _requestSignatureHelpAsync(offset, requestToken).ConfigureAwait(true);
 
-			if (requestToken != _signatureRequestToken)
+			if (!_signatureRequestTokens.IsCurrent(requestToken))
 				return;
 
 			if (signatureInfo is null)
@@ -186,7 +186,10 @@ public sealed class TextSignatureHelpController
 		}
 		catch (Exception exception)
 		{
-			_handleRequestFailure?.Invoke(exception);
+			if (_handleRequestFailure is null)
+				Log.Warn(exception, "Signature help request failed.");
+			else
+				_handleRequestFailure(exception);
 		}
 		finally
 		{

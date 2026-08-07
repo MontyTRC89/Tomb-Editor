@@ -1,5 +1,4 @@
-#nullable enable
-
+using NLog;
 using System.IO;
 using System.Text.Json;
 
@@ -12,6 +11,8 @@ namespace TombLib.Scripting.ClassicScript.Commands;
 // an empty catalog, matching the legacy command and syntax loaders.
 public sealed class ClassicScriptCommandsLoader
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	public ClassicScriptCommandsCatalog Load()
 		=> Load(ClassicScriptResourcePaths.GetCommandsPath());
 
@@ -31,8 +32,9 @@ public sealed class ClassicScriptCommandsLoader
 				ReadSections(document.RootElement),
 				ReadCommands(document.RootElement));
 		}
-		catch (Exception)
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to load the command catalog from '{Path}'; using an empty catalog.", filePath);
 			return new ClassicScriptCommandsCatalog([], []);
 		}
 	}

@@ -1,6 +1,7 @@
 using Nickelony.LanguageServer.Abstractions.Hover;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Text;
 
@@ -17,9 +18,12 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
+		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
+		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)
@@ -57,8 +61,15 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		if (type is WordType.MnemonicConstant or WordType.Hexadecimal or WordType.Decimal)
 			return CreateConstantHoverInfo(source, hoveredOffset, hoveredWord, type);
 
-		return new TextHoverInfo($"For more information about the \"{hoveredWord}\" {type}, Press F12.", SymbolName: hoveredWord, Identifier: type);
+		return new TextHoverInfo($"For more information about the \"{hoveredWord}\" {type}, Press F12.", SymbolName: hoveredWord, Identifier: GetDefinitionIdentifier(type));
 	}
+
+	private static object? GetDefinitionIdentifier(WordType type)
+		=> type switch
+		{
+			WordType.Header => ObjectType.Section,
+			_ => null
+		};
 
 	private TextHoverInfo? CreateConstantHoverInfo(ITextSnapshot source, int hoveredOffset, string hoveredWord, WordType type)
 	{

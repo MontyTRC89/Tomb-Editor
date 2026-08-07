@@ -1,5 +1,4 @@
-#nullable enable
-
+using NLog;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ namespace TombLib.Scripting.UI.Navigation;
 /// </summary>
 public sealed class TextDefinitionTriggerController
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly FrameworkElement _owner;
 	private readonly Func<Point, int> _getOffsetFromPoint;
 	private readonly Func<int, CancellationToken, Task<bool>> _tryNavigateAsync;
@@ -44,7 +45,7 @@ public sealed class TextDefinitionTriggerController
 		if (e.Key != Key.F12)
 			return false;
 
-		if (!await _tryNavigateAsync(caretOffset, cancellationToken).ConfigureAwait(true))
+		if (!await TryNavigateAsync(caretOffset, cancellationToken).ConfigureAwait(true))
 			return false;
 
 		e.Handled = true;
@@ -66,10 +67,29 @@ public sealed class TextDefinitionTriggerController
 		if (hoveredOffset == -1)
 			return false;
 
-		if (!await _tryNavigateAsync(hoveredOffset, cancellationToken).ConfigureAwait(true))
+		if (!await TryNavigateAsync(hoveredOffset, cancellationToken).ConfigureAwait(true))
 			return false;
 
 		e.Handled = true;
 		return true;
+	}
+
+	// Definition navigation is user-triggered; a failure must not escape the async void editor
+	// event handler that raised it, so the provider call is bounded here and logged.
+	private async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
+	{
+		try
+		{
+			return await _tryNavigateAsync(offset, cancellationToken).ConfigureAwait(true);
+		}
+		catch (OperationCanceledException)
+		{
+			return false;
+		}
+		catch (Exception exception)
+		{
+			Log.Warn(exception, "Definition navigation failed.");
+			return false;
+		}
 	}
 }

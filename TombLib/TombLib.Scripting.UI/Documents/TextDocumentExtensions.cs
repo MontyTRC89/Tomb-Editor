@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using System;
 

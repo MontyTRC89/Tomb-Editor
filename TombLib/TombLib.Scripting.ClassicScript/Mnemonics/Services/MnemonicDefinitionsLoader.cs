@@ -1,5 +1,4 @@
-#nullable enable
-
+using NLog;
 using System.Data;
 using System.IO;
 using TombLib.Scripting.ClassicScript.Mnemonics.Models;
@@ -9,6 +8,8 @@ namespace TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
 public sealed class MnemonicDefinitionsLoader
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly ClassicScriptReferenceTableLoader _referenceTableLoader = new();
 
 	public MnemonicDefinitions Load(string mnemonicConstantsJsonPath, string pluginScriptsDirectoryPath)
@@ -37,8 +38,9 @@ public sealed class MnemonicDefinitionsLoader
 
 			return definitions;
 		}
-		catch (Exception)
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to load standard mnemonics from '{Path}'; using an empty list.", mnemonicConstantsJsonPath);
 			return [];
 		}
 	}
@@ -102,16 +104,18 @@ public sealed class MnemonicDefinitionsLoader
 							decimalValue,
 							FormatHexValue(decimalValue)));
 					}
-					catch (Exception)
+					catch (Exception exception)
 					{
+						Log.Warn(exception, "Failed to parse a mnemonic line in '{File}'.", file);
 					}
 				}
 			}
 
 			return pluginMnemonics;
 		}
-		catch (Exception)
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to load plugin mnemonics from '{Directory}'; using an empty list.", pluginScriptsDirectoryPath);
 			return [];
 		}
 	}

@@ -57,7 +57,7 @@ public class ClassicScriptReferenceTableLoaderTests
 
 		foreach ((string tableName, int expectedRows) in tables)
 		{
-			DataTable table = _loader.Load(ClassicScriptResourcePaths.GetReferenceTablePath(tableName + ".json"));
+			DataTable table = _loader.Load(ClassicScriptResourcePaths.GetResourcePath(tableName + ".json"));
 
 			Assert.IsTrue(table.Rows.Count > 0, $"{tableName} should contain rows.");
 			Assert.AreEqual(expectedRows, table.Rows.Count, $"{tableName} row count mismatch.");
@@ -67,7 +67,7 @@ public class ClassicScriptReferenceTableLoaderTests
 	[TestMethod]
 	public void Load_EnemyDamageValues_PreservesEmptyArgumentCells()
 	{
-		DataTable table = _loader.Load(ClassicScriptResourcePaths.GetReferenceTablePath("EnemyDamageValues.json"));
+		DataTable table = _loader.Load(ClassicScriptResourcePaths.GetResourcePath("EnemyDamageValues.json"));
 
 		Assert.AreEqual(5, table.Columns.Count);
 		Assert.AreEqual("decimal", table.Columns[0].ColumnName);
@@ -86,7 +86,7 @@ public class ClassicScriptReferenceTableLoaderTests
 	[TestMethod]
 	public void Load_OCBList_ReadsNameColumn()
 	{
-		DataTable table = _loader.Load(ClassicScriptResourcePaths.GetReferenceTablePath("OCBList.json"));
+		DataTable table = _loader.Load(ClassicScriptResourcePaths.GetResourcePath("OCBList.json"));
 
 		Assert.AreEqual(1, table.Columns.Count);
 		Assert.AreEqual("Name", table.Columns[0].ColumnName);

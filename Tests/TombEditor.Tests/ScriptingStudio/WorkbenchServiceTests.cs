@@ -22,12 +22,16 @@ using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Hover;
+using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using Nickelony.LanguageServer.Lua;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
+using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -179,7 +183,7 @@ public class WorkbenchServiceTests
         return new GameFlowLanguageServices(
             new Mock<ITextDefinitionProvider>().Object,
             new Mock<ITextHoverProvider>().Object,
-            new GameFlowAutocompleteService(lineService),
+            new GameFlowCompletionProvider(),
             lineService,
             documentService,
             new GameFlowDocumentLookupService(documentService));
@@ -189,9 +193,16 @@ public class WorkbenchServiceTests
     {
         var lineService = new TRXLineService();
         var documentService = new TRXDocumentService(lineService);
-        var schemaService = new GameflowSchemaService(TrxResourcePaths.GetGameflowSchemaPath());
+        var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
-        return new TRXLanguageServices(schemaService, lineService, documentService);
+        return new TRXLanguageServices(
+            schemaService,
+            lineService,
+            documentService,
+            new TRXDefinitionProvider(documentService),
+            new TRXGameFlowCompletionService(schemaService),
+            new GameFlowHoverService(schemaService),
+            new TRXDocumentLookupService(documentService));
     }
 
     [TestMethod]

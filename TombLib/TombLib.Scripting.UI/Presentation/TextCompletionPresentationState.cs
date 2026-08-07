@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace TombLib.Scripting.UI.Presentation;
 
 public readonly record struct TextCompletionPresentationState(

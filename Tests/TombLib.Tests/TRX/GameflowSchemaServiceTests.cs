@@ -6,12 +6,12 @@ using TombLib.Scripting.TRX.Services;
 namespace TombLib.Tests;
 
 [TestClass]
-public class GameflowSchemaServiceTests
+public class GameFlowSchemaServiceTests
 {
 	[TestMethod]
 	public void GetSchemaKeywords_ReturnsBundledSchemaKeywords()
 	{
-		var service = new GameflowSchemaService(TrxResourcePaths.GetGameflowSchemaPath());
+		var service = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
 		var keywords = service.GetSchemaKeywords();
 

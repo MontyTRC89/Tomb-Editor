@@ -1,24 +1,24 @@
-#nullable enable
-
-using System;
-using System.IO;
+using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.TRX;
 
-public static class TrxResourcePaths
+/// <summary>
+/// Provides resource paths used by the TRX scripting project.
+/// </summary>
+public static class TRXResourcePaths
 {
+	/// <summary>
+	/// Gets the resource path for the given relative segments under the TRX resource root.
+	/// </summary>
+	/// <param name="relativeSegments">The relative path segments.</param>
+	/// <returns>The combined resource path.</returns>
 	public static string GetResourcePath(params string[] relativeSegments)
-	{
-		var pathSegments = new string[relativeSegments.Length + 3];
-		pathSegments[0] = AppContext.BaseDirectory;
-		pathSegments[1] = "Resources";
-		pathSegments[2] = "TRX";
+		=> ScriptingResourcePaths.GetResourcePath("TRX", relativeSegments);
 
-		Array.Copy(relativeSegments, 0, pathSegments, 3, relativeSegments.Length);
-
-		return Path.Combine(pathSegments);
-	}
-
-	public static string GetGameflowSchemaPath()
+	/// <summary>
+	/// Gets the path of the GameFlow schema resource.
+	/// </summary>
+	/// <returns>The path of the GameFlow schema file.</returns>
+	public static string GetGameFlowSchemaPath()
 		=> GetResourcePath("gameflow.schema.json");
 }

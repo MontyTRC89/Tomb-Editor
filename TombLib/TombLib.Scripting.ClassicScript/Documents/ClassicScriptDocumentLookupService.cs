@@ -3,13 +3,21 @@ using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Documents;
 
+/// <summary>
+/// Boundary facade over <see cref="IClassicScriptCommandService"/> that answers
+/// document-level lookups (level-script existence, language-string existence and
+/// include-file resolution) on behalf of host consumers such as TombIDE.
+/// Retained as a thin abstraction so host consumers do not depend on the command
+/// service surface directly; it is consumed by TombIDE and tests.
+/// </summary>
 public sealed class ClassicScriptDocumentLookupService
 {
 	private readonly IClassicScriptCommandService _commandService;
 
 	public ClassicScriptDocumentLookupService(IClassicScriptCommandService commandService)
 	{
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
 	}
 
 	public bool IsLevelScriptDefined(ITextSnapshot source, string levelName)

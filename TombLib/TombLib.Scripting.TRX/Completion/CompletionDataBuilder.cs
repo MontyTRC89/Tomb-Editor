@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Collections.Generic;
 
@@ -13,6 +11,13 @@ public sealed class CompletionDataBuilder
 	private readonly List<TextCompletionItem> _data = new();
 	private readonly HashSet<string> _addedTexts = new();
 
+	/// <summary>
+	/// Adds a completion item with the given text, kind and description when it is not already present.
+	/// </summary>
+	/// <param name="text">The text of the completion item.</param>
+	/// <param name="kind">The completion item kind.</param>
+	/// <param name="description">The optional completion item description.</param>
+	/// <returns>True if the item was added; otherwise false if a duplicate was rejected.</returns>
 	public bool TryAdd(string text, TextCompletionItemKind kind = TextCompletionItemKind.Generic, string? description = null)
 	{
 		if (!_addedTexts.Add(text))
@@ -22,5 +27,9 @@ public sealed class CompletionDataBuilder
 		return true;
 	}
 
+	/// <summary>
+	/// Builds the collected completion items.
+	/// </summary>
+	/// <returns>The collected completion items.</returns>
 	public IReadOnlyList<TextCompletionItem> Build() => _data;
 }

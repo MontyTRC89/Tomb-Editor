@@ -1,7 +1,6 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using NLog;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +15,8 @@ namespace TombLib.Scripting.UI.Hover;
 /// </summary>
 public sealed class TextHoverController
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly FrameworkElement _owner;
 	private readonly Func<Point, int> _getOffsetFromPoint;
 	private readonly Func<int, TextHoverRequestState> _buildRequestState;
@@ -28,7 +29,7 @@ public sealed class TextHoverController
 	private readonly Action<Exception>? _handleRequestFailure;
 
 	private CancellationTokenSource? _hoverCancellationTokenSource;
-	private int _hoverRequestToken;
+	private readonly RequestTokenSource _hoverRequestTokens = new();
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextHoverController"/> class.
@@ -78,31 +79,34 @@ public sealed class TextHoverController
 	{
 		ArgumentNullException.ThrowIfNull(e);
 
-		int hoveredOffset = _getOffsetFromPoint(e.GetPosition(_owner));
-
-		if (hoveredOffset == -1)
-		{
-			ApplyHoverState(TextHoverPresentationState.Empty(hoveredOffset));
-			return;
-		}
-
-		TextHoverRequestState requestState = _buildRequestState(hoveredOffset);
-
-		if (!requestState.ShouldRequestHover)
-		{
-			ApplyHoverState(CreatePresentationState(hoveredOffset, requestState, null));
-			ShowDiagnosticToolTipIfAvailable(requestState);
-			return;
-		}
-
-		CancellationToken cancellationToken = ResetCancellationTokenSource();
-		int hoverRequestToken = ++_hoverRequestToken;
+		int hoveredOffset = -1;
+		TextHoverRequestState requestState = default;
 
 		try
 		{
+			hoveredOffset = _getOffsetFromPoint(e.GetPosition(_owner));
+
+			if (hoveredOffset == -1)
+			{
+				ApplyHoverState(TextHoverPresentationState.Empty(hoveredOffset));
+				return;
+			}
+
+			requestState = _buildRequestState(hoveredOffset);
+
+			if (!requestState.ShouldRequestHover)
+			{
+				ApplyHoverState(CreatePresentationState(hoveredOffset, requestState, null));
+				ShowDiagnosticToolTipIfAvailable(requestState);
+				return;
+			}
+
+			CancellationToken cancellationToken = ResetCancellationTokenSource();
+			int hoverRequestToken = _hoverRequestTokens.Begin();
+
 			TextHoverInfo? hoverInfo = await _requestHoverAsync(requestState.RequestOffset, cancellationToken).ConfigureAwait(true);
 
-			if (cancellationToken.IsCancellationRequested || hoverRequestToken != _hoverRequestToken)
+			if (cancellationToken.IsCancellationRequested || !_hoverRequestTokens.IsCurrent(hoverRequestToken))
 				return;
 
 			int currentHoveredOffset = _getOffsetFromPoint(Mouse.GetPosition(_owner));
@@ -124,9 +128,16 @@ public sealed class TextHoverController
 		}
 		catch (Exception exception)
 		{
-			_handleRequestFailure?.Invoke(exception);
-			ShowDiagnosticToolTipIfAvailable(requestState);
-			ApplyHoverState(CreatePresentationState(hoveredOffset, requestState, null));
+			if (_handleRequestFailure is null)
+				Log.Warn(exception, "Hover request failed.");
+			else
+				_handleRequestFailure(exception);
+
+			if (hoveredOffset >= 0)
+			{
+				ShowDiagnosticToolTipIfAvailable(requestState);
+				ApplyHoverState(CreatePresentationState(hoveredOffset, requestState, null));
+			}
 		}
 	}
 
@@ -144,7 +155,7 @@ public sealed class TextHoverController
 	/// Marks outstanding hover requests as stale so completed results are ignored.
 	/// </summary>
 	public void InvalidateRequests()
-		=> _hoverRequestToken++;
+		=> _hoverRequestTokens.Invalidate();
 
 	private void ApplyHoverState(TextHoverPresentationState state)
 	{

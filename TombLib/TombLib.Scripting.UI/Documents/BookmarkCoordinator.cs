@@ -1,6 +1,5 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,13 +11,16 @@ namespace TombLib.Scripting.UI.Documents;
 [SupportedOSPlatform("windows")]
 internal sealed class BookmarkCoordinator
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly Func<TextDocument> _documentProvider;
 	private readonly Action? _onBookmarksChanged;
 	private readonly List<TextAnchor> _bookmarkAnchors = [];
 
 	public BookmarkCoordinator(Func<TextDocument> documentProvider, Action? onBookmarksChanged = null)
 	{
-		_documentProvider = documentProvider ?? throw new ArgumentNullException(nameof(documentProvider));
+		ArgumentNullException.ThrowIfNull(documentProvider);
+		_documentProvider = documentProvider;
 		_onBookmarksChanged = onBookmarksChanged;
 	}
 
@@ -74,9 +76,9 @@ internal sealed class BookmarkCoordinator
 				File.Delete(bookmarkFileName);
 			}
 		}
-		catch
+		catch (Exception exception)
 		{
-			// Too bad.
+			Log.Warn(exception, "Failed to save bookmarks to '{Path}'.", bookmarkFileName);
 		}
 	}
 
@@ -110,9 +112,9 @@ internal sealed class BookmarkCoordinator
 				}
 			}
 		}
-		catch
+		catch (Exception exception)
 		{
-			// Too bad.
+			Log.Warn(exception, "Failed to restore bookmarks from '{Path}'.", bookmarkFileName);
 		}
 	}
 

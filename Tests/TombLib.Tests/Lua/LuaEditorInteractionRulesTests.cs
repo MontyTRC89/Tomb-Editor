@@ -1,5 +1,6 @@
 using ICSharpCode.AvalonEdit.Document;
 using TombLib.Scripting.Lua;
+using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Tests;
 
@@ -79,17 +80,17 @@ public class LuaEditorInteractionRulesTests
 	}
 
 	[TestMethod]
-	public void CanRequestHover_ReturnsFalseWhenCompletionWindowIsOpen()
+	public void CanShowHover_ReturnsFalseWhenCompletionWindowIsOpen()
 	{
-		bool result = LuaEditorInteractionRules.CanRequestHover(true, false);
+		bool result = TextPopupInteractionRules.CanShowHover(true, false);
 
 		Assert.IsFalse(result);
 	}
 
 	[TestMethod]
-	public void CanRequestHover_ReturnsFalseWhenSignatureHelpIsOpen()
+	public void CanShowHover_ReturnsFalseWhenSignatureHelpIsOpen()
 	{
-		bool result = LuaEditorInteractionRules.CanRequestHover(false, true);
+		bool result = TextPopupInteractionRules.CanShowHover(false, true);
 
 		Assert.IsFalse(result);
 	}

@@ -1,180 +1,164 @@
-﻿using System.Diagnostics;
+using NLog;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
-using TombLib.Scripting.ClassicScript.Cleaning;
+using TombLib.Scripting.IO;
 
-namespace TombLib.Scripting.ClassicScript.Compilers
+namespace TombLib.Scripting.ClassicScript.Compilers;
+
+public static class NGCompiler
 {
-	public static class NGCompiler
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+	public static bool AreLibrariesRegistered()
 	{
-		private static Stack<string> _visitedFiles = new();
+		bool requiredFilesExist = File.Exists(DefaultPaths.MscomctlSystemFile)
+			&& File.Exists(DefaultPaths.Richtx32SystemFile)
+			&& File.Exists(DefaultPaths.PicFormat32SystemFile)
+			&& File.Exists(DefaultPaths.Comdlg32SystemFile);
 
-		public static bool AreLibrariesRegistered()
+		if (!requiredFilesExist)
 		{
-			bool requiredFilesExist = File.Exists(DefaultPaths.MscomctlSystemFile)
-				&& File.Exists(DefaultPaths.Richtx32SystemFile)
-				&& File.Exists(DefaultPaths.PicFormat32SystemFile)
-				&& File.Exists(DefaultPaths.Comdlg32SystemFile);
-
-			if (!requiredFilesExist)
+			try
 			{
+				var process = new ProcessStartInfo
+				{
+					FileName = DefaultPaths.LibraryRegistrationExecutable,
+					UseShellExecute = true
+				};
+
+				Process.Start(process)?.WaitForExit();
+			}
+			catch (Exception exception)
+			{
+				Log.Warn(exception, "Failed to register the required libraries.");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static bool Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
+	{
+		if (!AreLibrariesRegistered())
+			throw new Exception("The required libraries are not registered.");
+
+		CopyFilesToVGEScriptDirectory(projectScriptPath, DefaultPaths.VGEScriptDirectory);
+
+		if (newIncludeMethod)
+			MergeIncludes();
+
+		var process = new ProcessStartInfo
+		{
+			FileName = DefaultPaths.NGCExecutable,
+			Arguments = $"\"{DefaultPaths.VGEScriptDirectory}\\Script.txt\" -Log -NoMsgBox -NoWait -Concise",
+			UseShellExecute = true
+		};
+
+		Process.Start(process)?.WaitForExit();
+
+		FixLogs(projectEnginePath, out bool containsError);
+		CopyCompiledFilesToProject(projectEnginePath);
+
+		return !containsError;
+	}
+
+	private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
+		=> ScriptDirectoryCopier.CopyScriptDirectory(projectScriptPath, vgeScriptPath, clearTarget: true, CompilerFileCopy.CopyTextFormatted);
+
+	private static void MergeIncludes()
+	{
+		string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
+
+		string[] lines = File.ReadAllLines(vgeScriptFilePath);
+
+		// The visited set tracks the include path currently being expanded so recursive
+		// includes cannot loop. It is scoped to this merge call rather than stored statically.
+		var visitedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { vgeScriptFilePath };
+		lines = ReplaceIncludesWithFileContents(lines, visitedFiles);
+
+		string newFileContent = string.Join(Environment.NewLine, lines);
+		File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
+	}
+
+	private static string[] ReplaceIncludesWithFileContents(string[] lines, HashSet<string> visitedFiles)
+	{
+		var newLines = new List<string>();
+
+		foreach (string line in lines)
+		{
+			if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
 				try
 				{
-					var process = new ProcessStartInfo
+					string partialIncludePath = line.Split('"')[1].Trim();
+					string includedFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, partialIncludePath);
+
+					if (File.Exists(includedFilePath) && visitedFiles.Add(includedFilePath))
 					{
-						FileName = DefaultPaths.LibraryRegistrationExecutable,
-						UseShellExecute = true
-					};
+						newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
 
-					Process.Start(process)?.WaitForExit();
-				}
-				catch
-				{
-					return false;
-				}
-			}
+						string[] includeLines = File.ReadAllLines(includedFilePath);
+						includeLines = ReplaceIncludesWithFileContents(includeLines, visitedFiles);
 
-			return true;
-		}
+						newLines.AddRange(includeLines);
 
-		public static bool Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
-		{
-			if (!AreLibrariesRegistered())
-				throw new Exception("The required libraries are not registered.");
+						newLines.Add("; // // // // </" + partialIncludePath.ToUpper() + "> // // // //");
 
-			CopyFilesToVGEScriptDirectory(projectScriptPath, DefaultPaths.VGEScriptDirectory);
-
-			if (newIncludeMethod)
-				MergeIncludes();
-
-			var process = new ProcessStartInfo
-			{
-				FileName = DefaultPaths.NGCExecutable,
-				Arguments = $"\"{DefaultPaths.VGEScriptDirectory}\\Script.txt\" -Log -NoMsgBox -NoWait -Concise",
-				UseShellExecute = true
-			};
-
-			Process.Start(process)?.WaitForExit();
-
-			FixLogs(projectEnginePath, out bool containsError);
-			CopyCompiledFilesToProject(projectEnginePath);
-
-			return !containsError;
-		}
-
-		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
-		{
-			// Delete the old /Script/ directory in the VGE folder (if it exists)
-			if (Directory.Exists(vgeScriptPath))
-				Directory.Delete(vgeScriptPath, true);
-
-			// Recreate the directory
-			Directory.CreateDirectory(vgeScriptPath);
-
-			// Create all of the subdirectories from the original project directory
-			foreach (string dirPath in Directory.GetDirectories(projectScriptPath, "*", SearchOption.AllDirectories))
-				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, vgeScriptPath));
-
-			// Copy all the files into the VGE /Script/ directory
-			foreach (string file in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories)
-				.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
-			{
-				string newPath = file.Replace(projectScriptPath, vgeScriptPath);
-
-				if (file.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
-				{
-					string fileContent = File.ReadAllText(file);
-					fileContent = ClassicScriptDocumentFormatter.FormatCompilerOutput(fileContent);
-					File.WriteAllText(newPath, fileContent, Encoding.GetEncoding(1252));
-				}
-				else
-					File.Copy(file, newPath);
-			}
-		}
-
-		private static void MergeIncludes()
-		{
-			_visitedFiles.Clear();
-
-			string vgeScriptFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, "Script.txt");
-
-			_visitedFiles.Push(vgeScriptFilePath);
-
-			string[] lines = File.ReadAllLines(vgeScriptFilePath);
-			lines = ReplaceIncludesWithFileContents(lines);
-
-			string newFileContent = string.Join(Environment.NewLine, lines);
-			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
-
-			_visitedFiles.Clear();
-		}
-
-		private static string[] ReplaceIncludesWithFileContents(string[] lines)
-		{
-			var newLines = new List<string>();
-
-			foreach (string line in lines)
-			{
-				if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
-					try
-					{
-						string partialIncludePath = line.Split('"')[1].Trim();
-						string includedFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, partialIncludePath);
-
-						if (File.Exists(includedFilePath))
-						{
-							if (_visitedFiles.Any(x => x.Equals(includedFilePath, StringComparison.OrdinalIgnoreCase)))
-								continue;
-
-							_visitedFiles.Push(includedFilePath);
-
-							newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
-
-							string[] includeLines = File.ReadAllLines(includedFilePath);
-							includeLines = ReplaceIncludesWithFileContents(includeLines);
-
-							newLines.AddRange(includeLines);
-
-							newLines.Add("; // // // // </" + partialIncludePath.ToUpper() + "> // // // //");
-
-							_visitedFiles.Pop();
-						}
-
-						continue;
+						visitedFiles.Remove(includedFilePath);
 					}
-					catch { }
 
-				newLines.Add(line);
-			}
+					continue;
+				}
+				catch (Exception exception)
+				{
+					Log.Warn(exception, "Failed to merge include line '{Line}'.", line);
+				}
 
-			return newLines.ToArray();
+			newLines.Add(line);
 		}
 
-		private static void FixLogs(string projectEnginePath, out bool constainsError)
+		return newLines.ToArray();
+	}
+
+	private static void FixLogs(string projectEnginePath, out bool constainsError)
+	{
+		string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
+		string? newFileContent = FixLogFile(logFilePath, projectEnginePath, DefaultPaths.VGEDirectory);
+
+		if (newFileContent is null)
 		{
-			string logFilePath = Path.Combine(DefaultPaths.VGEDirectory, "LastCompilerLog.txt");
-			string logFileContent = File.ReadAllText(logFilePath);
-
-			// Replace the VGE paths in the log file with the current project ones
-			string newFileContent = logFileContent
-				.Replace(DefaultPaths.VGEDirectory, projectEnginePath)
-				.Replace("ERROR: unknonw ", "ERROR: unknown ");
-
-			constainsError = newFileContent.Contains("ERROR:");
-			File.WriteAllText(logFilePath, newFileContent);
+			constainsError = false;
+			return;
 		}
 
-		private static void CopyCompiledFilesToProject(string projectEnginePath)
-		{
-			// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-			string compiledScriptFilePath = Path.Combine(DefaultPaths.VGEDirectory, "Script.dat");
-			string compiledEnglishFilePath = Path.Combine(DefaultPaths.VGEDirectory, "English.dat");
+		constainsError = newFileContent.Contains("ERROR:");
+	}
 
-			if (File.Exists(compiledScriptFilePath))
-				File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
+	internal static string? FixLogFile(string logFilePath, string projectEnginePath, string vgeDirectory)
+	{
+		if (!File.Exists(logFilePath))
+			return null;
 
-			if (File.Exists(compiledEnglishFilePath))
-				File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
-		}
+		// Replace the VGE paths in the log file with the current project ones
+		string newFileContent = File.ReadAllText(logFilePath)
+			.Replace(vgeDirectory, projectEnginePath)
+			.Replace("ERROR: unknonw ", "ERROR: unknown ");
+
+		File.WriteAllText(logFilePath, newFileContent);
+		return newFileContent;
+	}
+
+	private static void CopyCompiledFilesToProject(string projectEnginePath)
+	{
+		// Copy the compiled files from the Virtual Game Engine folder to the current project folder
+		string compiledScriptFilePath = Path.Combine(DefaultPaths.VGEDirectory, "Script.dat");
+		string compiledEnglishFilePath = Path.Combine(DefaultPaths.VGEDirectory, "English.dat");
+
+		if (File.Exists(compiledScriptFilePath))
+			File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
+
+		if (File.Exists(compiledEnglishFilePath))
+			File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
 	}
 }

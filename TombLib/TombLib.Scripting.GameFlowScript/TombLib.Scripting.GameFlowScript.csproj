@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- ImplicitUsings is intentionally enabled here (per-project policy; UI/TRX/Lua use explicit usings by design). -->
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -16,6 +17,7 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Compatibility owned by the language-server integration. -->
   <ItemGroup>
     <Reference Include="Nickelony.LanguageServer.Abstractions">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>

@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.Windows;
 using TombLib.Scripting.UI.Bases;

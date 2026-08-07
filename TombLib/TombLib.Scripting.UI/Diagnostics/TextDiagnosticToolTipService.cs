@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
@@ -11,7 +9,7 @@ namespace TombLib.Scripting.UI.Diagnostics;
 internal sealed class TextDiagnosticToolTipService
 {
 	private readonly Action? _onDiagnosticsChanged;
-	private IReadOnlyList<TextEditorDiagnostic> _diagnostics = Array.Empty<TextEditorDiagnostic>();
+	private IReadOnlyList<TextEditorDiagnostic> _diagnostics = [];
 
 	public TextDiagnosticToolTipService(Action? onDiagnosticsChanged = null)
 		=> _onDiagnosticsChanged = onDiagnosticsChanged;
@@ -20,7 +18,7 @@ internal sealed class TextDiagnosticToolTipService
 
 	public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic>? diagnostics)
 	{
-		_diagnostics = diagnostics ?? Array.Empty<TextEditorDiagnostic>();
+		_diagnostics = diagnostics ?? [];
 		_onDiagnosticsChanged?.Invoke();
 	}
 
@@ -29,7 +27,7 @@ internal sealed class TextDiagnosticToolTipService
 		if (_diagnostics.Count == 0)
 			return false;
 
-		_diagnostics = Array.Empty<TextEditorDiagnostic>();
+		_diagnostics = [];
 		_onDiagnosticsChanged?.Invoke();
 		return true;
 	}
@@ -56,10 +54,7 @@ internal sealed class TextDiagnosticToolTipService
 		if (hoveredDiagnostics.Count == 0)
 			return false;
 
-		TextEditorDiagnosticSeverity severity = hoveredDiagnostics
-			.OrderBy(diagnostic => diagnostic.Severity)
-			.Select(diagnostic => diagnostic.Severity)
-			.First();
+		TextEditorDiagnosticSeverity severity = hoveredDiagnostics.Min(diagnostic => diagnostic.Severity);
 
 		string message = string.Join(Environment.NewLine + Environment.NewLine,
 			hoveredDiagnostics
@@ -73,13 +68,6 @@ internal sealed class TextDiagnosticToolTipService
 
 		info = new TextDiagnosticToolTipInfo(message, severity);
 		return true;
-	}
-
-	public bool HasDiagnosticsOnLine(TextDocument document, DocumentLine? line)
-	{
-		ArgumentNullException.ThrowIfNull(document);
-
-		return line is not null && GetDiagnosticsForLine(document, line).Count > 0;
 	}
 
 	private List<TextEditorDiagnostic> GetDiagnosticsAtOffset(int offset)

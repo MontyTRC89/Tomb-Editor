@@ -1,7 +1,4 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
-using System;
 using System.Windows.Media;
 using TombLib.Scripting.UI.Resources;
 
@@ -63,19 +60,15 @@ public static class TextEditorToolTipHelper
 	/// </summary>
 	public static object CreateMarkdownToolTipContent(string content, Brush foreground, Brush background)
 	{
-		string normalizedContent = NormalizeToolTipLineEndings(content);
-
-		if (string.IsNullOrWhiteSpace(normalizedContent))
+		if (string.IsNullOrWhiteSpace(content))
 			return CreatePlainToolTipContent(string.Empty, foreground);
 
-		return MarkdownToolTipRenderer.CreateContent(normalizedContent, foreground, background);
+		return MarkdownToolTipRenderer.CreateContent(content, foreground, background);
 	}
 
 	/// <summary>
 	/// Normalizes line endings in tooltip text to LF.
 	/// </summary>
 	public static string NormalizeToolTipLineEndings(string text)
-		=> (text ?? string.Empty)
-			.Replace("\r\n", "\n", StringComparison.Ordinal)
-			.Replace('\r', '\n');
+		=> MarkdownToolTipRenderer.NormalizeLineEndings(text);
 }

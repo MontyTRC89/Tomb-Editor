@@ -39,9 +39,13 @@ using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Hover;
+using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
+using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombIDE.ScriptingStudio.Composition;
 
@@ -98,24 +102,31 @@ public static class ScriptingStudioServiceCollectionExtensions
 			return new GameFlowLanguageServices(
 				new GameFlowDefinitionProvider(documentService),
 				new GameFlowHoverProvider(),
-				new GameFlowAutocompleteService(lineService),
+				new GameFlowCompletionProvider(),
 				lineService,
 				documentService,
 				new GameFlowDocumentLookupService(documentService));
 		});
 
 		// TRX services.
-		services.AddSingleton<IGameflowSchemaService>(_ =>
-			new GameflowSchemaService(TrxResourcePaths.GetGameflowSchemaPath()));
+		services.AddSingleton<IGameFlowSchemaService>(_ =>
+			new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath()));
 		services.AddSingleton<ITRXLineService, TRXLineService>();
 		services.AddSingleton<ITRXDocumentService, TRXDocumentService>();
 		services.AddSingleton<TRXLanguageServices>(sp =>
 		{
-			var schemaService = sp.GetRequiredService<IGameflowSchemaService>();
+			var schemaService = sp.GetRequiredService<IGameFlowSchemaService>();
 			var lineService = sp.GetRequiredService<ITRXLineService>();
 			var documentService = sp.GetRequiredService<ITRXDocumentService>();
 
-			return new TRXLanguageServices(schemaService, lineService, documentService);
+			return new TRXLanguageServices(
+				schemaService,
+				lineService,
+				documentService,
+				new TRXDefinitionProvider(documentService),
+				new TRXGameFlowCompletionService(schemaService),
+				new GameFlowHoverService(schemaService),
+				new TRXDocumentLookupService(documentService));
 		});
 
 		AddScriptingStudioShellServices(services);

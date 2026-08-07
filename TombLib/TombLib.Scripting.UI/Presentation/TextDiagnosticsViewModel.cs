@@ -1,5 +1,3 @@
-#nullable enable
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
@@ -8,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using TombLib.Scripting.UI.Documents;
 
 namespace TombLib.Scripting.UI.Presentation;
 
@@ -34,7 +33,8 @@ public sealed partial class TextDiagnosticsViewModel : ObservableObject
 
 	public TextDiagnosticsViewModel(TextDiagnosticsPresentation presentation)
 	{
-		_presentation = presentation ?? throw new ArgumentNullException(nameof(presentation));
+		ArgumentNullException.ThrowIfNull(presentation);
+		_presentation = presentation;
 		Diagnostics = CollectionViewSource.GetDefaultView(_diagnostics);
 		Diagnostics.Filter = FilterDiagnostic;
 
@@ -115,7 +115,7 @@ public sealed partial class TextDiagnosticsViewModel : ObservableObject
 	private static TextDiagnosticListItem CreateItem(string filePath, TextDocument document, TextEditorDiagnostic diagnostic)
 	{
 		int documentLength = document.TextLength;
-		int startOffset = Math.Max(0, Math.Min(diagnostic.StartOffset, documentLength));
+		int startOffset = document.ClampOffset(diagnostic.StartOffset);
 		int endOffset = Math.Max(startOffset, Math.Min(diagnostic.EndOffset, documentLength));
 
 		DocumentLine line = document.GetLineByOffset(startOffset);

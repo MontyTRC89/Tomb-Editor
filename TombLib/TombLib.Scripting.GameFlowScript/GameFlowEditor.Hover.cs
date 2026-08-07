@@ -5,6 +5,6 @@ namespace TombLib.Scripting.GameFlowScript;
 
 public sealed partial class GameFlowEditor
 {
-	private Task<TextHoverInfo?> RequestHoverAsync(int hoveredOffset, CancellationToken cancellationToken)
+	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)
 		=> Task.FromResult(_languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(Document.Text, hoveredOffset)));
 }

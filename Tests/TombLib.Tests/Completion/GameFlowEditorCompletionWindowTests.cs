@@ -22,7 +22,7 @@ public class GameFlowEditorCompletionWindowTests
 		return new GameFlowLanguageServices(
 			new GameFlowDefinitionProvider(documentService),
 			new GameFlowHoverProvider(),
-			new GameFlowAutocompleteService(lineService),
+			new GameFlowCompletionProvider(),
 			lineService,
 			documentService,
 			new GameFlowDocumentLookupService(documentService));

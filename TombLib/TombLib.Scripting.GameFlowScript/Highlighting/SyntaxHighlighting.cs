@@ -1,127 +1,120 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.GameFlowScript.Resources;
+using TombLib.Scripting.UI.Highlighting;
 
-namespace TombLib.Scripting.GameFlowScript.Highlighting
+namespace TombLib.Scripting.GameFlowScript.Highlighting;
+
+public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
-	public sealed class SyntaxHighlighting : IHighlightingDefinition
+	private readonly ColorScheme _scheme;
+
+	// Construction
+
+	public SyntaxHighlighting(ColorScheme scheme)
+		=> _scheme = scheme;
+
+	// Rules
+
+	private HighlightingRuleSet? _cachedRuleSet;
+
+	public HighlightingRuleSet MainRuleSet
 	{
-		private readonly ColorScheme _scheme;
-
-		#region Construction
-
-		public SyntaxHighlighting(ColorScheme scheme)
-			=> _scheme = scheme;
-
-		#endregion Construction
-
-		#region Rules
-
-		public HighlightingRuleSet MainRuleSet
+		get
 		{
-			get
-			{
-				var ruleSet = new HighlightingRuleSet();
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Comments),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
-						FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.BlockComments),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
-						FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Sections, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Sections.HtmlColor)),
-						FontWeight = _scheme.Sections.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Sections.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.SpecialProperties, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.SpecialProperties.HtmlColor)),
-						FontWeight = _scheme.SpecialProperties.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.SpecialProperties.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Properties, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Properties.HtmlColor)),
-						FontWeight = _scheme.Properties.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Properties.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Constants, RegexOptions.IgnoreCase),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Constants.HtmlColor)),
-						FontWeight = _scheme.Constants.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Constants.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(Patterns.Values),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Values.HtmlColor)),
-						FontWeight = _scheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _scheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
-					}
-				});
-
-				ruleSet.Name = "GameFlowScript Rules";
-				return ruleSet;
-			}
+			_cachedRuleSet ??= BuildRuleSet();
+			return _cachedRuleSet;
 		}
-
-		#endregion Rules
-
-		#region Other
-
-		public string Name => "GameFlowScript Rules";
-
-		public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
-		public IDictionary<string, string> Properties => throw new NotImplementedException();
-
-		public HighlightingColor GetNamedColor(string name)
-			=> throw new NotImplementedException();
-
-		public HighlightingRuleSet GetNamedRuleSet(string name)
-			=> throw new NotImplementedException();
-
-		#endregion Other
 	}
+
+	private HighlightingRuleSet BuildRuleSet()
+	{
+		var ruleSet = new HighlightingRuleSet();
+
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(Patterns.Comments),
+			Color = CreateColor(_scheme.Comments)
+		});
+
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(Patterns.BlockComments),
+			Color = CreateColor(_scheme.Comments)
+		});
+
+		if (GameFlowDefinitionCatalog.Sections.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(Patterns.Sections, RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.Sections)
+			});
+
+		if (GameFlowDefinitionCatalog.SpecialProperties.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(Patterns.SpecialProperties, RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.SpecialProperties)
+			});
+
+		if (GameFlowDefinitionCatalog.Properties.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(Patterns.Properties, RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.Properties)
+			});
+
+		if (GameFlowDefinitionCatalog.Constants.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(Patterns.Constants, RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.Constants)
+			});
+
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(Patterns.Values),
+			Color = CreateColor(_scheme.Values)
+		});
+
+		ruleSet.Name = "GameFlowScript Rules";
+		return ruleSet;
+	}
+
+	private static HighlightingColor CreateColor(HighlightingObject scheme)
+		=> new()
+		{
+			Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(scheme.HtmlColor)),
+			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
+			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
+		};
+
+	// Other
+
+	public string Name => "GameFlowScript Rules";
+
+	/// <summary>
+	/// Gets the named highlighting colors. GameFlow highlighting defines no named colors.
+	/// </summary>
+	public IEnumerable<HighlightingColor> NamedHighlightingColors => [];
+
+	/// <summary>
+	/// Gets the highlighting properties. GameFlow highlighting defines no custom properties.
+	/// </summary>
+	public IDictionary<string, string> Properties => new Dictionary<string, string>();
+
+	/// <summary>
+	/// Resolves a named highlighting color. GameFlow highlighting defines no named colors.
+	/// </summary>
+	public HighlightingColor? GetNamedColor(string name)
+		=> null;
+
+	/// <summary>
+	/// Resolves a named rule set. Only the main rule set is defined by GameFlow highlighting.
+	/// </summary>
+	public HighlightingRuleSet? GetNamedRuleSet(string name)
+		=> name == MainRuleSet.Name ? MainRuleSet : null;
+
 }

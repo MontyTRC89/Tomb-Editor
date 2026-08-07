@@ -13,7 +13,11 @@ using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Hover;
+using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
+using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -46,7 +50,7 @@ internal static class ScriptingLanguageServicesTestFactory
         return new GameFlowLanguageServices(
             new GameFlowDefinitionProvider(documentService),
             new GameFlowHoverProvider(),
-            new GameFlowAutocompleteService(lineService),
+            new GameFlowCompletionProvider(),
             lineService,
             documentService,
             new GameFlowDocumentLookupService(documentService));
@@ -56,8 +60,15 @@ internal static class ScriptingLanguageServicesTestFactory
     {
         var lineService = new TRXLineService();
         var documentService = new TRXDocumentService(lineService);
-        var schemaService = new GameflowSchemaService(TrxResourcePaths.GetGameflowSchemaPath());
+        var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
-        return new TRXLanguageServices(schemaService, lineService, documentService);
+        return new TRXLanguageServices(
+            schemaService,
+            lineService,
+            documentService,
+            new TRXDefinitionProvider(documentService),
+            new TRXGameFlowCompletionService(schemaService),
+            new GameFlowHoverService(schemaService),
+            new TRXDocumentLookupService(documentService));
     }
 }

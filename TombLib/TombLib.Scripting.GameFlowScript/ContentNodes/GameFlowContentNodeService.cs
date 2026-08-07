@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.GameFlowScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.GameFlowScript.ContentNodes;
@@ -66,7 +66,7 @@ internal sealed class GameFlowContentNodeService
 		bool isEndHeader = headerText.Equals("END", StringComparison.OrdinalIgnoreCase);
 
 		if (isLevelHeader || isEndHeader
-			|| !GameFlowDefinitionsProvider.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
+			|| !GameFlowDefinitionCatalog.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
 			|| !headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
 		{
 			return null;

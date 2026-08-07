@@ -4,103 +4,105 @@ using System;
 using System.Collections.Generic;
 using TextMateSharp.Model;
 
-namespace TombLib.Scripting.UI.Highlighting
+namespace TombLib.Scripting.UI.Highlighting;
+
+internal sealed class TextMateColorizingTransformer : DocumentColorizingTransformer, IDisposable, IModelTokensChangedListener
 {
-	internal sealed class TextMateColorizingTransformer : DocumentColorizingTransformer, IDisposable, IModelTokensChangedListener
+	private readonly TextView _textView;
+	private readonly TMModel _model;
+	private readonly TextMateThemeStyleResolver _styleResolver;
+	private bool _isDisposed;
+
+	public TextMateColorizingTransformer(TextView textView, TMModel model, TextMateThemeStyleResolver styleResolver)
 	{
-		private readonly TextView _textView;
-		private readonly TMModel _model;
-		private readonly TextMateThemeStyleResolver _styleResolver;
-		private bool _isDisposed;
+		ArgumentNullException.ThrowIfNull(textView);
+		_textView = textView;
+		ArgumentNullException.ThrowIfNull(model);
+		_model = model;
+		ArgumentNullException.ThrowIfNull(styleResolver);
+		_styleResolver = styleResolver;
 
-		public TextMateColorizingTransformer(TextView textView, TMModel model, TextMateThemeStyleResolver styleResolver)
+		_model.AddModelTokensChangedListener(this);
+	}
+
+	protected override void ColorizeLine(DocumentLine line)
+	{
+		if (_isDisposed || line is null)
+			return;
+
+		int lineIndex = Math.Max(0, line.LineNumber - 1);
+		List<TMToken> tokens = _model.GetLineTokens(lineIndex);
+
+		if (tokens is null || _model.IsLineInvalid(lineIndex))
 		{
-			_textView = textView ?? throw new ArgumentNullException(nameof(textView));
-			_model = model ?? throw new ArgumentNullException(nameof(model));
-			_styleResolver = styleResolver ?? throw new ArgumentNullException(nameof(styleResolver));
-
-			_model.AddModelTokensChangedListener(this);
+			_model.ForceTokenization(lineIndex);
+			tokens = _model.GetLineTokens(lineIndex);
 		}
 
-		protected override void ColorizeLine(DocumentLine line)
+		if (tokens is null || tokens.Count == 0)
+			return;
+
+		int lineLength = line.Length;
+
+		for (int i = 0; i < tokens.Count; i++)
 		{
-			if (_isDisposed || line is null)
-				return;
+			TMToken token = tokens[i];
+			int startIndex = ClampToLine(token.StartIndex, lineLength);
+			int endIndex = i + 1 < tokens.Count
+				? ClampToLine(tokens[i + 1].StartIndex, lineLength)
+				: lineLength;
 
-			int lineIndex = Math.Max(0, line.LineNumber - 1);
-			List<TMToken> tokens = _model.GetLineTokens(lineIndex);
+			if (endIndex <= startIndex)
+				continue;
 
-			if (tokens is null || _model.IsLineInvalid(lineIndex))
-			{
-				_model.ForceTokenization(lineIndex);
-				tokens = _model.GetLineTokens(lineIndex);
-			}
+			TextMateHighlightingStyle style = _styleResolver.Resolve(token.Scopes);
 
-			if (tokens is null || tokens.Count == 0)
-				return;
+			if (!style.HasFormatting)
+				continue;
 
-			int lineLength = line.Length;
+			int startOffset = line.Offset + startIndex;
+			int endOffset = line.Offset + endIndex;
 
-			for (int i = 0; i < tokens.Count; i++)
-			{
-				TMToken token = tokens[i];
-				int startIndex = ClampToLine(token.StartIndex, lineLength);
-				int endIndex = i + 1 < tokens.Count
-					? ClampToLine(tokens[i + 1].StartIndex, lineLength)
-					: lineLength;
-
-				if (endIndex <= startIndex)
-					continue;
-
-				TextMateHighlightingStyle style = _styleResolver.Resolve(token.Scopes);
-
-				if (!style.HasFormatting)
-					continue;
-
-				int startOffset = line.Offset + startIndex;
-				int endOffset = line.Offset + endIndex;
-
-				ChangeLinePart(startOffset, endOffset, element => ApplyStyle(element, style));
-			}
+			ChangeLinePart(startOffset, endOffset, element => ApplyStyle(element, style));
 		}
+	}
 
-		public void Dispose()
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		_model.RemoveModelTokensChangedListener(this);
+	}
+
+	void IModelTokensChangedListener.ModelTokensChanged(ModelTokensChangedEvent e)
+	{
+		if (_isDisposed)
+			return;
+
+		// Always defer to avoid reentrancy during visual line construction.
+		_textView.Dispatcher.BeginInvoke(new Action(() =>
 		{
-			if (_isDisposed)
-				return;
+			if (!_isDisposed)
+				_textView.Redraw();
+		}));
+	}
 
-			_isDisposed = true;
-			_model.RemoveModelTokensChangedListener(this);
-		}
+	private static int ClampToLine(int index, int lineLength)
+		=> Math.Max(0, Math.Min(index, lineLength));
 
-		void IModelTokensChangedListener.ModelTokensChanged(ModelTokensChangedEvent e)
-		{
-			if (_isDisposed)
-				return;
+	private static void ApplyStyle(VisualLineElement element, TextMateHighlightingStyle style)
+	{
+		VisualLineElementTextRunProperties properties = element.TextRunProperties;
 
-			// Always defer to avoid reentrancy during visual line construction.
-			_textView.Dispatcher.BeginInvoke(new Action(() =>
-			{
-				if (!_isDisposed)
-					_textView.Redraw();
-			}));
-		}
+		if (style.Foreground is not null)
+			properties.SetForegroundBrush(style.Foreground);
 
-		private static int ClampToLine(int index, int lineLength)
-			=> Math.Max(0, Math.Min(index, lineLength));
+		if (style.IsBold || style.IsItalic)
+			properties.SetTypeface(style.CreateTypeface(properties.Typeface));
 
-		private static void ApplyStyle(VisualLineElement element, TextMateHighlightingStyle style)
-		{
-			VisualLineElementTextRunProperties properties = element.TextRunProperties;
-
-			if (style.Foreground is not null)
-				properties.SetForegroundBrush(style.Foreground);
-
-			if (style.IsBold || style.IsItalic)
-				properties.SetTypeface(style.CreateTypeface(properties.Typeface));
-
-			if (style.TextDecorations is not null)
-				properties.SetTextDecorations(style.TextDecorations);
-		}
+		if (style.TextDecorations is not null)
+			properties.SetTextDecorations(style.TextDecorations);
 	}
 }

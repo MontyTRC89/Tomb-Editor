@@ -1,3 +1,4 @@
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Services;
@@ -57,6 +58,12 @@ public interface IClassicScriptLineService
 	/// The comparison is case-insensitive.
 	/// </summary>
 	bool IsExtraNGSectionName(string? sectionName);
+
+	/// <summary>
+	/// Determines whether the supplied section name is any string section
+	/// (Strings, PCStrings, PSXStrings or ExtraNG). The comparison is case-insensitive.
+	/// </summary>
+	bool IsStringSectionName(string? sectionName);
 
 	/// <summary>
 	/// Removes line comments from the text, including preceding whitespace.

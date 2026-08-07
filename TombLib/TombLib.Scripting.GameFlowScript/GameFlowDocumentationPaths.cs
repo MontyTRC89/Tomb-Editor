@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace TombLib.Scripting.GameFlowScript;
 
 public static class GameFlowDocumentationPaths

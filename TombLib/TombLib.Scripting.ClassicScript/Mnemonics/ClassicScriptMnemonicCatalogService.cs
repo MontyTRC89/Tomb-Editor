@@ -5,21 +5,48 @@ using TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
 namespace TombLib.Scripting.ClassicScript.Mnemonics;
 
+/// <summary>
+/// Serves the ClassicScript mnemonic catalog as an immutable snapshot.
+/// The snapshot is shared process-wide through a static field so that every catalog instance
+/// observes reloads (for example after plugin deployment). The reference is published with
+/// volatile semantics and a version counter: a reload replaces the snapshot reference and
+/// increments the version under the lock, making the new snapshot visible to readers on other
+/// threads without torn reads.
+/// </summary>
 public sealed class ClassicScriptMnemonicCatalogService
 {
 	private static readonly object SyncRoot = new();
 	private static readonly MnemonicDefinitionsLoader Loader = new();
-	private static ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(DefaultPaths.InternalNGCDirectory);
+	private static volatile ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(DefaultPaths.InternalNGCDirectory);
+	private static int _snapshotVersion;
 
+	/// <summary>
+	/// Gets the current catalog snapshot version. Callers that cache derived data (for example
+	/// highlighting rule sets) can invalidate that cache when the version changes.
+	/// </summary>
+	internal static int CurrentSnapshotVersion => Volatile.Read(ref _snapshotVersion);
+
+	/// <summary>
+	/// Gets all known mnemonic flags.
+	/// </summary>
 	public IReadOnlyList<string> GetAllFlags()
 		=> _snapshot.AllFlags;
 
+	/// <summary>
+	/// Builds a word-boundary regex pattern that matches any known mnemonic flag.
+	/// </summary>
 	public string GetMnemonicPattern()
 		=> @"\b(" + string.Join("|", _snapshot.AllFlags) + @")\b";
 
+	/// <summary>
+	/// Returns whether the given name is a known mnemonic flag.
+	/// </summary>
 	public bool ContainsFlag(string? flag)
 		=> !string.IsNullOrWhiteSpace(flag) && _snapshot.EntriesByFlag.ContainsKey(flag);
 
+	/// <summary>
+	/// Attempts to resolve a flag to its decimal value.
+	/// </summary>
 	public bool TryGetDecimalValue(string flag, out int decimalValue)
 	{
 		decimalValue = 0;
@@ -30,6 +57,10 @@ public sealed class ClassicScriptMnemonicCatalogService
 		return int.TryParse(entry.DecimalValue, out decimalValue);
 	}
 
+	/// <summary>
+	/// Attempts to resolve a value to its flag name, optionally constraining the match to flags
+	/// that start with the given prefix.
+	/// </summary>
 	public bool TryResolveFlagByValue(string value, bool isHexValue, string? prefix, out string flagName)
 	{
 		flagName = string.Empty;
@@ -57,6 +88,9 @@ public sealed class ClassicScriptMnemonicCatalogService
 		return false;
 	}
 
+	/// <summary>
+	/// Attempts to get the description for a flag.
+	/// </summary>
 	public bool TryGetDescription(string flag, out string description)
 	{
 		description = string.Empty;
@@ -71,6 +105,9 @@ public sealed class ClassicScriptMnemonicCatalogService
 	internal bool TryGetEntry(string flag, out ClassicScriptMnemonicEntry entry)
 		=> _snapshot.EntriesByFlag.TryGetValue(flag, out entry);
 
+	/// <summary>
+	/// Attempts to extract the plugin syntax for a plugin-defined flag.
+	/// </summary>
 	public bool TryGetPluginSyntax(string key, out string syntax)
 	{
 		syntax = string.Empty;
@@ -87,16 +124,28 @@ public sealed class ClassicScriptMnemonicCatalogService
 		return true;
 	}
 
+	/// <summary>
+	/// Creates a copy of the mnemonic data table used for display.
+	/// </summary>
 	public DataTable CreateMnemonicTable()
 		=> _snapshot.DataTable.Copy();
 
+	/// <summary>
+	/// Reloads the catalog from the default NG-C directory.
+	/// </summary>
 	public void Reload()
 		=> Reload(DefaultPaths.InternalNGCDirectory);
 
+	/// <summary>
+	/// Reloads the catalog from the given plugin scripts directory, publishing the new snapshot.
+	/// </summary>
 	public void Reload(string pluginScriptsDirectoryPath)
 	{
 		lock (SyncRoot)
+		{
 			_snapshot = LoadSnapshot(pluginScriptsDirectoryPath);
+			Volatile.Write(ref _snapshotVersion, _snapshotVersion + 1);
+		}
 	}
 
 	private static ClassicScriptMnemonicCatalogSnapshot LoadSnapshot(string pluginScriptsDirectoryPath)

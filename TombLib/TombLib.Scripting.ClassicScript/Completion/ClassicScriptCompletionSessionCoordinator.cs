@@ -1,7 +1,6 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using NLog;
 using System.IO;
 using System.Windows.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
@@ -16,6 +15,8 @@ namespace TombLib.Scripting.ClassicScript.Completion;
 
 public sealed class ClassicScriptCompletionSessionCoordinator
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly IClassicScriptLineService _lineService;
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ITextCompletionProvider _completionProvider;
@@ -27,8 +28,10 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
 		_completionProvider = new ClassicScriptCompletionProvider(commandService, mnemonicCatalogService);
 	}
 
@@ -118,9 +121,7 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 	private async Task<TextCompletionSessionDecision> GetAfterSpaceDecisionAsync(TextDocument document, ITextSnapshot source, string? filePath, int caretOffset)
 	{
-		char previousCharacter = source.GetCharAt(caretOffset - 2);
-
-		if (previousCharacter is '=' or ',' or '_' or '+' or '-' or '*' or '/')
+		if (caretOffset >= 2 && source.GetCharAt(caretOffset - 2) is '=' or ',' or '_' or '+' or '-' or '*' or '/')
 			return await GetContextualDecisionAsync(document, caretOffset, -1, insertAtCaret: true).ConfigureAwait(false);
 
 		return GetIncludeDecision(document, source, filePath, caretOffset);
@@ -137,21 +138,25 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		int? startOffset = null;
 		int? endOffset = null;
 
-		if (source.GetCharAt(caretOffset - 1) == '"')
+		if (caretOffset > 0 && source.GetCharAt(caretOffset - 1) == '"')
 		{
 			startOffset = caretOffset - 1;
 		}
-		else if (source.GetCharAt(caretOffset - 1) != ' ')
+		else if (caretOffset > 0 && source.GetCharAt(caretOffset - 1) != ' ')
 		{
 			int wordStartOffset = TextUtilities.GetNextCaretPosition(document, caretOffset, LogicalDirection.Backward, CaretPositioningMode.WordStart);
-			string word = document.GetText(wordStartOffset, caretOffset - wordStartOffset);
 
-			if (!word.StartsWith('#'))
+			if (wordStartOffset >= 0)
 			{
-				startOffset = wordStartOffset;
+				string word = document.GetText(wordStartOffset, caretOffset - wordStartOffset);
 
-				if (wordStartOffset - 1 > 0 && source.GetCharAt(wordStartOffset - 1) == '"')
-					startOffset--;
+				if (!word.StartsWith('#'))
+				{
+					startOffset = wordStartOffset;
+
+					if (wordStartOffset - 1 > 0 && source.GetCharAt(wordStartOffset - 1) == '"')
+						startOffset--;
+				}
 			}
 		}
 
@@ -181,6 +186,9 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 	private TextCompletionSessionDecision GetWordDecision(TextDocument document, int caretOffset)
 	{
+		if (caretOffset <= 0)
+			return TextCompletionSessionDecision.None;
+
 		int wordStartOffset = TextUtilities.GetNextCaretPosition(document, caretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
 
 		if (wordStartOffset < 0)
@@ -229,8 +237,9 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 			completionItems = await Task.Run(() => _completionProvider.GetCompletionItems(
 				new TextCompletionContext(documentText, caretOffset, TextCompletionTrigger.Contextual, argumentIndex))).ConfigureAwait(false);
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to retrieve ClassicScript completion items; suppressing the completion session.");
 			return TextCompletionSessionDecision.None;
 		}
 

@@ -1,4 +1,5 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System;
 using System.Collections.Concurrent;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Resources;
@@ -11,7 +12,9 @@ namespace TombLib.Scripting.Lua.Completion;
 /// </summary>
 internal static class LuaCompletionIconFactory
 {
-	private static readonly ConcurrentDictionary<string, ImageSource> Cache = new();
+	private static readonly ConcurrentDictionary<LuaCompletionIconCacheKey, ImageSource> Cache = new();
+
+	private static volatile string? _cachedThemeName;
 
 	/// <summary>
 	/// Gets the themed icon image for the supplied completion kind.
@@ -20,7 +23,19 @@ internal static class LuaCompletionIconFactory
 	/// <param name="brushSet">The brush set used to color the icon.</param>
 	/// <returns>A cached frozen image for the requested icon.</returns>
 	public static ImageSource GetIcon(TextCompletionItemKind kind, LuaThemeBrushSet brushSet)
-		=> Cache.GetOrAdd(brushSet.ThemeName + ":" + kind, _ => CreateIcon(kind, brushSet));
+	{
+		// Icons are themed per active theme; when the theme changes, drop the stale entries so the
+		// cache stays bounded to the currently active theme.
+		if (!string.Equals(_cachedThemeName, brushSet.ThemeName, StringComparison.Ordinal))
+		{
+			Cache.Clear();
+			_cachedThemeName = brushSet.ThemeName;
+		}
+
+		return Cache.GetOrAdd(new LuaCompletionIconCacheKey(brushSet.ThemeName, kind), _ => CreateIcon(kind, brushSet));
+	}
+
+	private readonly record struct LuaCompletionIconCacheKey(string ThemeName, TextCompletionItemKind Kind);
 
 	private static DrawingImage CreateIcon(TextCompletionItemKind kind, LuaThemeBrushSet brushSet)
 	{

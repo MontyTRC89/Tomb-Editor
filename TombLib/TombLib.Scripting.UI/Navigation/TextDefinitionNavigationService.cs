@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using Nickelony.LanguageServer.Abstractions.Navigation;

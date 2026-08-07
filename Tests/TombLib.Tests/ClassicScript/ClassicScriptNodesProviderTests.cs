@@ -1,7 +1,7 @@
 using DarkUI.Controls;
 using TombLib.Scripting.ClassicScript.ContentNodes;
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 
 namespace TombLib.Tests;
 

@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Windows.Media;
 

@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Signatures;
 
 namespace TombLib.Scripting.UI.Presentation;

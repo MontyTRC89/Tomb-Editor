@@ -83,6 +83,25 @@ public class ClassicScriptEditorCompletionWindowTests
 	}
 
 	[TestMethod]
+	public void ContextualCompletion_HorizonEquals_OffersEnabledDisabled()
+	{
+		IReadOnlyList<TextCompletionItem> completionItems = CompletionProvider.GetCompletionItems(
+			new TextCompletionContext("Horizon= ", 9, TextCompletionTrigger.Contextual, -1));
+
+		Assert.IsTrue(completionItems.Any(item => item.Label == "ENABLED"));
+		Assert.IsTrue(completionItems.Any(item => item.Label == "DISABLED"));
+	}
+
+	[TestMethod]
+	public void WordCompletion_CaretAtStart_ReturnsNoItems()
+	{
+		IReadOnlyList<TextCompletionItem> completionItems = CompletionProvider.GetCompletionItems(
+			new TextCompletionContext("CUST_", 0, TextCompletionTrigger.Word));
+
+		Assert.AreEqual(0, completionItems.Count);
+	}
+
+	[TestMethod]
 	public void EmptyLineCompletion_OpensCompletionWindowAtLineOffset()
 	{
 		WPFTestHelper.RunInSta(() =>

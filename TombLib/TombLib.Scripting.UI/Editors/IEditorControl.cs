@@ -1,94 +1,88 @@
-﻿using System;
+using System;
 
-namespace TombLib.Scripting.UI.Editors
+namespace TombLib.Scripting.UI.Editors;
+
+public interface IEditorControl : IDisposable
 {
-	public interface IEditorControl : IDisposable
-	{
-		#region Properties
+	// Properties
 
-		EditorType EditorType { get; }
+	EditorType EditorType { get; }
 
-		string FilePath { get; set; }
+	string FilePath { get; set; }
 
-		/// <summary>
-		/// Silent session prevents the control from checking if the content has changed, therefore not running background processing to do so.
-		/// <para>Setting this to <c>true</c> will also prevent the creation of backup files.</para>
-		/// </summary>
-		bool IsSilentSession { get; set; }
+	/// <summary>
+	/// Silent session prevents the control from checking if the content has changed, therefore not running background processing to do so.
+	/// <para>Setting this to <c>true</c> will also prevent the creation of backup files.</para>
+	/// </summary>
+	bool IsSilentSession { get; set; }
 
-		bool CreateBackupFiles { get; set; }
+	bool CreateBackupFiles { get; set; }
 
-		/// <summary>
-		/// A string representation of the editor's content.
-		/// <para><b>Note:</b> Every <c>IEditorControl</c> should have some way of representing its contents using a string!</para>
-		/// </summary>
-		string Content { get; set; }
+	/// <summary>
+	/// A string representation of the editor's content.
+	/// <para><b>Note:</b> Every <c>IEditorControl</c> should have some way of representing its contents using a string!</para>
+	/// </summary>
+	string Content { get; set; }
 
-		bool IsContentChanged { get; set; }
+	bool IsContentChanged { get; set; }
 
-		void ApplyPersistedContent(string content);
+	void ApplyPersistedContent(string content);
 
-		DateTime LastModified { get; set; }
+	DateTime LastModified { get; set; }
 
-		bool CanUndo { get; }
-		bool CanRedo { get; }
+	bool CanUndo { get; }
+	bool CanRedo { get; }
 
-		/* Status data */
+	/* Status data */
 
-		int CurrentRow { get; }
-		int CurrentColumn { get; }
+	int CurrentRow { get; }
+	int CurrentColumn { get; }
 
-		object SelectedContent { get; }
-		int SelectionLength { get; }
+	object SelectedContent { get; }
+	int SelectionLength { get; }
 
-		int Zoom { get; set; }
+	int Zoom { get; set; }
 
-		int MinZoom { get; set; }
-		int MaxZoom { get; set; }
-		int ZoomStepSize { get; set; }
+	int MinZoom { get; set; }
+	int MaxZoom { get; set; }
+	int ZoomStepSize { get; set; }
 
-		string DefaultFileExtension { get; }
+	string DefaultFileExtension { get; }
 
-		Version EngineVersion { get; set; }
+	Version EngineVersion { get; set; }
 
-		#endregion Properties
+	// Methods
 
-		#region Methods
+	void Load(string fileName, bool silentSession);
 
-		void Load(string fileName, bool silentSession);
+	void Save();
 
-		void Save();
+	void Save(string fileName);
 
-		void Save(string fileName);
+	void Undo();
 
-		void Undo();
+	void Redo();
 
-		void Redo();
+	void Cut();
 
-		void Cut();
+	void Copy();
 
-		void Copy();
+	void Paste();
 
-		void Paste();
+	void SelectAll();
 
-		void SelectAll();
+	void GoToObject(string objectName, object? identifyingObject = null);
 
-		void GoToObject(string objectName, object? identifyingObject = null);
+	void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration);
 
-		void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration);
+	void TryRunContentChangedWorker();
 
-		void TryRunContentChangedWorker();
+	// Events
 
-		#endregion Methods
+	event EventHandler ContentChangedWorkerRunCompleted;
 
-		#region Events
+	event EventHandler StatusChanged;
 
-		event EventHandler ContentChangedWorkerRunCompleted;
+	event EventHandler ZoomChanged;
 
-		event EventHandler StatusChanged;
-
-		event EventHandler ZoomChanged;
-
-		#endregion Events
-	}
 }

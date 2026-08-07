@@ -1,7 +1,7 @@
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 using System.IO;
 

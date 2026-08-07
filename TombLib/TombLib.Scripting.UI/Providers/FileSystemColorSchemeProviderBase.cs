@@ -28,11 +28,7 @@ public abstract class FileSystemColorSchemeProviderBase : ITextEditorColorProvid
 		if (!Directory.Exists(_colorSchemesDirectory))
 			return [];
 
-		return Directory.GetFiles(_colorSchemesDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly)
-			.Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
-			.Where(static name => !string.IsNullOrWhiteSpace(name))
-			.OrderBy(static name => name, StringComparer.OrdinalIgnoreCase)
-			.ToArray();
+		return FilterNames(Directory.GetFiles(_colorSchemesDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly));
 	}
 
 	/// <inheritdoc />
@@ -40,4 +36,14 @@ public abstract class FileSystemColorSchemeProviderBase : ITextEditorColorProvid
 
 	/// <inheritdoc />
 	public abstract void SetSelectedName(TextEditorConfigBase config, string name);
+
+	/// <summary>
+	/// Reduces a set of color scheme file paths to their sorted, de-duplicated display names.
+	/// </summary>
+	protected static IReadOnlyList<string> FilterNames(IEnumerable<string> filePaths)
+		=> filePaths
+			.Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
+			.Where(static name => !string.IsNullOrWhiteSpace(name))
+			.OrderBy(static name => name, StringComparer.OrdinalIgnoreCase)
+			.ToArray();
 }

@@ -11,7 +11,8 @@ public sealed class ClassicScriptSignatureHelpProvider : ITextSignatureHelpProvi
 
 	public ClassicScriptSignatureHelpProvider(IClassicScriptCommandService commandService)
 	{
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
 	}
 
 	public TextSignatureHelpInfo? GetSignatureHelp(TextSignatureHelpRequest request)

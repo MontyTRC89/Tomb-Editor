@@ -1,24 +1,33 @@
-#nullable enable
-
-using ICSharpCode.AvalonEdit.Document;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using NLog;
+using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Hover;
 
-public sealed class GameflowHoverService : ITextHoverProvider
+/// <summary>
+/// Resolves hover information for GameFlow schema properties.
+/// </summary>
+public sealed class GameFlowHoverService : ITextHoverProvider
 {
-	private static readonly Regex _wordPattern = new(@"""([^""]+)""|(\w+)", RegexOptions.Compiled);
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	private readonly IGameflowSchemaService _schemaService;
+	private static readonly Regex WordPattern = new(@"""([^""]+)""|(\w+)", RegexOptions.Compiled);
 
-	public GameflowHoverService(IGameflowSchemaService schemaService)
+	private readonly IGameFlowSchemaService _schemaService;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GameFlowHoverService"/> class.
+	/// </summary>
+	/// <param name="schemaService">The schema service used to resolve hover information.</param>
+	public GameFlowHoverService(IGameFlowSchemaService schemaService)
 		=> _schemaService = schemaService;
 
+	/// <inheritdoc />
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)
 	{
 		try
@@ -28,10 +37,8 @@ public sealed class GameflowHoverService : ITextHoverProvider
 			if (schema is null)
 				return null;
 
-			var document = new TextDocument(request.DocumentText);
-
 			// Get the word at the current position
-			var wordAtPosition = GetWordAtPosition(document, request.HoveredOffset);
+			var wordAtPosition = GetWordAtPosition(request.DocumentText, request.HoveredOffset);
 
 			if (string.IsNullOrWhiteSpace(wordAtPosition))
 				return null;
@@ -45,23 +52,31 @@ public sealed class GameflowHoverService : ITextHoverProvider
 				? null
 				: new TextHoverInfo(content, TextHoverContentKind.Markdown, cleanWord);
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Failed to resolve GameFlow hover information.");
 			return null;
 		}
 	}
 
-	private static string? GetWordAtPosition(IDocument document, int offset)
+	private static string? GetWordAtPosition(string documentText, int offset)
 	{
-		if (offset < 0 || offset >= document.TextLength)
+		if (offset < 0 || offset >= documentText.Length)
 			return null;
 
-		var line = document.GetLineByOffset(offset);
-		var lineText = document.GetText(line.Offset, line.Length);
-		var relativeOffset = offset - line.Offset;
+		int lineStart = documentText.LastIndexOf('\n', offset) + 1;
+		int lineEnd = documentText.IndexOf('\n', offset);
+
+		if (lineEnd < 0)
+			lineEnd = documentText.Length;
+		else if (lineEnd > lineStart && documentText[lineEnd - 1] == '\r')
+			lineEnd--;
+
+		string lineText = documentText.Substring(lineStart, lineEnd - lineStart);
+		int relativeOffset = offset - lineStart;
 
 		// Use regex to find JSON property names and values
-		var matches = _wordPattern.Matches(lineText);
+		var matches = WordPattern.Matches(lineText);
 
 		foreach (Match match in matches)
 		{

@@ -1,4 +1,5 @@
 using NCalc;
+using NLog;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.Extensions;
@@ -12,6 +13,8 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// </summary>
 public class ClassicScriptIndexService : IClassicScriptIndexService
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly IClassicScriptLineService _lineService;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
@@ -32,9 +35,12 @@ public class ClassicScriptIndexService : IClassicScriptIndexService
 		IClassicScriptLineService lineService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
-		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
+		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
 	/// <inheritdoc />
@@ -83,38 +89,11 @@ public class ClassicScriptIndexService : IClassicScriptIndexService
 
 	private int GetFirstId(ITextSnapshot source, string commandKey, int loopStartLine, EvaluationContext context)
 	{
-		int result = 0;
 		var firstIdRegex = new Regex(
 			$@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		try
-		{
-			for (int i = loopStartLine; i <= source.LineCount; i++)
-			{
-				ITextLine line = source.GetLineByNumber(i);
-				string? lineText = _commandService.GetWholeCommandLineText(source, line.Offset);
-
-				if (lineText is null)
-					continue;
-
-				lineText = _lineService.EscapeCommentsAndNewLines(lineText);
-				Match match = firstIdRegex.Match(lineText);
-
-				if (match.Success)
-				{
-					string expressionString = match.Groups[1].Value;
-					expressionString = ResolveExpressionVariables(source, expressionString, context);
-					result = EvaluateExpression(expressionString);
-				}
-			}
-		}
-		catch
-		{
-			// Legacy behavior: silently swallow evaluation errors.
-		}
-
-		return result < 1 ? 1 : result;
+		return EvaluateDefinePattern(source, firstIdRegex, loopStartLine, context, clampToMinOne: true);
 	}
 
 	// ------------------------------------------------------------------
@@ -149,30 +128,45 @@ public class ClassicScriptIndexService : IClassicScriptIndexService
 		if (!context.VisitedVariables.Add(variable))
 			return 0;
 
-		int result = 0;
 		var defineRegex = new Regex(
 			$@"^\s*#DEFINE\s+{Regex.Escape(variable)}\s+(.*)\s*(;.*)?$",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		foreach (ITextLine line in source.Lines)
+		return EvaluateDefinePattern(source, defineRegex, loopStartLine: 1, context, clampToMinOne: false);
+	}
+
+	private int EvaluateDefinePattern(ITextSnapshot source, Regex defineRegex, int loopStartLine, EvaluationContext context, bool clampToMinOne)
+	{
+		int result = 0;
+
+		try
 		{
-			string? lineText = _commandService.GetWholeCommandLineText(source, line.Offset);
-
-			if (lineText is null)
-				continue;
-
-			lineText = _lineService.EscapeCommentsAndNewLines(lineText);
-			Match match = defineRegex.Match(lineText);
-
-			if (match.Success)
+			for (int i = loopStartLine; i <= source.LineCount; i++)
 			{
-				string expressionString = match.Groups[1].Value;
-				expressionString = ResolveExpressionVariables(source, expressionString, context);
-				result = EvaluateExpression(expressionString);
+				ITextLine line = source.GetLineByNumber(i);
+				string? lineText = _commandService.GetWholeCommandLineText(source, line.Offset);
+
+				if (lineText is null)
+					continue;
+
+				lineText = _lineService.EscapeCommentsAndNewLines(lineText);
+				Match match = defineRegex.Match(lineText);
+
+				if (match.Success)
+				{
+					string expressionString = match.Groups[1].Value;
+					expressionString = ResolveExpressionVariables(source, expressionString, context);
+					result = EvaluateExpression(expressionString);
+				}
 			}
 		}
+		catch (Exception exception)
+		{
+			// Legacy behavior: a malformed define expression yields the default result instead of failing the scan.
+			Log.Warn(exception, "Failed to evaluate a define expression; using the default result.");
+		}
 
-		return result;
+		return clampToMinOne && result < 1 ? 1 : result;
 	}
 
 	// ------------------------------------------------------------------

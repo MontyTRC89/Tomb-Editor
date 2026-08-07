@@ -13,15 +13,6 @@ internal static class LuaEditorInteractionRules
 	private static readonly ConditionalWeakTable<TextDocument, LuaDocumentLineParserStateCache> LineStartStateCaches = [];
 
 	/// <summary>
-	/// Determines whether a hover request should be attempted.
-	/// </summary>
-	/// <param name="isCompletionWindowOpen">Whether the completion window is currently open.</param>
-	/// <param name="isSignatureHelpOpen">Whether signature help is currently open.</param>
-	/// <returns><see langword="true"/> if hover may be requested; otherwise, <see langword="false"/>.</returns>
-	public static bool CanRequestHover(bool isCompletionWindowOpen, bool isSignatureHelpOpen)
-		=> !isCompletionWindowOpen && !isSignatureHelpOpen;
-
-	/// <summary>
 	/// Attempts to resolve the exact offset that should be used for a hover request.
 	/// </summary>
 	/// <param name="document">The document being inspected.</param>

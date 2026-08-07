@@ -145,37 +145,37 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 	{
 		Brush? foreground = token.Type switch
 		{
-			"namespace" => brushSet.TypeBrush,
-			"type" => brushSet.TypeBrush,
-			"class" => brushSet.TypeBrush,
-			"enum" => brushSet.TypeBrush,
-			"interface" => brushSet.TypeBrush,
-			"struct" => brushSet.TypeBrush,
-			"typeParameter" => brushSet.TypeBrush,
-			"function" => token.HasModifier("defaultLibrary") ? brushSet.TypeBrush : brushSet.MethodBrush,
-			"method" => token.HasModifier("defaultLibrary") ? brushSet.TypeBrush : brushSet.MethodBrush,
-			"parameter" => brushSet.VariableBrush,
-			"property" => brushSet.PropertyBrush,
-			"event" => brushSet.VariableBrush,
-			"enumMember" => brushSet.ConstantBrush,
-			"decorator" => brushSet.KeywordBrush,
-			"macro" => brushSet.KeywordBrush,
-			"variable" => ResolveVariableBrush(token, brushSet),
+			LuaSemanticTokenKinds.Namespace => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Type => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Class => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Enum => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Interface => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Struct => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.TypeParameter => brushSet.TypeBrush,
+			LuaSemanticTokenKinds.Function => token.HasModifier(LuaSemanticTokenKinds.DefaultLibrary) ? brushSet.TypeBrush : brushSet.MethodBrush,
+			LuaSemanticTokenKinds.Method => token.HasModifier(LuaSemanticTokenKinds.DefaultLibrary) ? brushSet.TypeBrush : brushSet.MethodBrush,
+			LuaSemanticTokenKinds.Parameter => brushSet.VariableBrush,
+			LuaSemanticTokenKinds.Property => brushSet.PropertyBrush,
+			LuaSemanticTokenKinds.Event => brushSet.VariableBrush,
+			LuaSemanticTokenKinds.EnumMember => brushSet.ConstantBrush,
+			LuaSemanticTokenKinds.Decorator => brushSet.KeywordBrush,
+			LuaSemanticTokenKinds.Macro => brushSet.KeywordBrush,
+			LuaSemanticTokenKinds.Variable => ResolveVariableBrush(token, brushSet),
 			_ => null
 		};
 
 		return new LuaSemanticTokenStyle(
 			foreground,
-			token.HasModifier("declaration") && (token.Type == "function" || token.Type == "method"),
-			token.HasModifier("deprecated") ? DeprecatedDecorations : null);
+			token.HasModifier(LuaSemanticTokenKinds.Declaration) && (token.Type == LuaSemanticTokenKinds.Function || token.Type == LuaSemanticTokenKinds.Method),
+			token.HasModifier(LuaSemanticTokenKinds.Deprecated) ? DeprecatedDecorations : null);
 	}
 
 	private static SolidColorBrush? ResolveVariableBrush(LuaSemanticToken token, LuaThemeBrushSet brushSet)
 	{
-		if (token.HasModifier("defaultLibrary"))
+		if (token.HasModifier(LuaSemanticTokenKinds.DefaultLibrary))
 			return brushSet.TypeBrush;
 
-		if (token.HasModifier("global"))
+		if (token.HasModifier(LuaSemanticTokenKinds.Global))
 			return brushSet.PropertyBrush;
 
 		return brushSet.VariableBrush;

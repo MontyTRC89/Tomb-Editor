@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Text.RegularExpressions;
@@ -44,45 +42,44 @@ public sealed partial class TombEngineLevelScriptService
 
 	private static string? TryResolveLevelKey(TextDocument languageDocument, string levelName)
 	{
-		LuaLineParserState parserState = default;
+		string? matchedKey = null;
 
-		foreach (DocumentLine line in languageDocument.Lines)
+		bool found = ScanForMatch(languageDocument, lineText =>
 		{
-			string lineText = languageDocument.GetText(line);
-			bool insideLongBlockAtLineStart = parserState.Kind != LuaLineParserStateKind.None;
-			LuaLineParser.IsInsideCommentOrString(lineText, parserState, out LuaLineParserState nextState);
+			Match match = LanguageEntryRegex.Match(LuaLineParser.StripLineComment(lineText));
 
-			if (!insideLongBlockAtLineStart)
+			if (match.Success && string.Equals(match.Groups["name"].Value, levelName, StringComparison.Ordinal))
 			{
-				Match match = LanguageEntryRegex.Match(LuaLineParser.StripLineComment(lineText));
-
-				if (match.Success && string.Equals(match.Groups["name"].Value, levelName, StringComparison.Ordinal))
-					return match.Groups["key"].Value;
+				matchedKey = match.Groups["key"].Value;
+				return true;
 			}
 
-			parserState = nextState;
-		}
+			return false;
+		});
 
-		return null;
+		return found ? matchedKey : null;
 	}
 
 	private static bool ContainsAddLevelRegistration(TextDocument scriptDocument, string levelKey)
+		=> ScanForMatch(scriptDocument, lineText =>
+		{
+			Match match = AddLevelRegex.Match(LuaLineParser.StripLineComment(lineText));
+
+			return match.Success && string.Equals(match.Groups["key"].Value, levelKey, StringComparison.Ordinal);
+		});
+
+	private static bool ScanForMatch(TextDocument document, Func<string, bool> lineMatcher)
 	{
 		LuaLineParserState parserState = default;
 
-		foreach (DocumentLine line in scriptDocument.Lines)
+		foreach (DocumentLine line in document.Lines)
 		{
-			string lineText = scriptDocument.GetText(line);
+			string lineText = document.GetText(line);
 			bool insideLongBlockAtLineStart = parserState.Kind != LuaLineParserStateKind.None;
 			LuaLineParser.IsInsideCommentOrString(lineText, parserState, out LuaLineParserState nextState);
 
-			if (!insideLongBlockAtLineStart)
-			{
-				Match match = AddLevelRegex.Match(LuaLineParser.StripLineComment(lineText));
-
-				if (match.Success && string.Equals(match.Groups["key"].Value, levelKey, StringComparison.Ordinal))
-					return true;
-			}
+			if (!insideLongBlockAtLineStart && lineMatcher(lineText))
+				return true;
 
 			parserState = nextState;
 		}

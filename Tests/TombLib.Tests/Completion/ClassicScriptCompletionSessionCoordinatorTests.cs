@@ -58,4 +58,24 @@ public class ClassicScriptCompletionSessionCoordinatorTests
 		Assert.AreEqual(text.Length, decision.StartOffset);
 		Assert.AreEqual(text.Length, decision.EndOffset);
 	}
+
+	[TestMethod]
+	public async Task GetCtrlSpaceDecisionAsync_EmptyDocument_ReturnsEmptyLineCompletion()
+	{
+		var coordinator = CreateCoordinator();
+
+		TextCompletionSessionDecision decision = await coordinator.GetCtrlSpaceDecisionAsync(string.Empty, null, 0, false);
+
+		Assert.IsNotNull(decision.Items);
+	}
+
+	[TestMethod]
+	public async Task GetCtrlSpaceDecisionAsync_CaretAtStartOfCommandLine_DoesNotThrow()
+	{
+		var coordinator = CreateCoordinator();
+
+		TextCompletionSessionDecision decision = await coordinator.GetCtrlSpaceDecisionAsync("Horizon=", null, 0, false);
+
+		Assert.AreEqual(TextCompletionSessionDecision.None, decision);
+	}
 }

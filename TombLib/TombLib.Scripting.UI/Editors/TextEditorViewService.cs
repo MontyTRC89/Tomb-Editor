@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using System;
@@ -15,7 +13,8 @@ internal sealed class TextEditorViewService
 
 	public TextEditorViewService(TextEditor editor)
 	{
-		_editor = editor ?? throw new ArgumentNullException(nameof(editor));
+		ArgumentNullException.ThrowIfNull(editor);
+		_editor = editor;
 	}
 
 	public int GetOffsetFromPoint(Point point)

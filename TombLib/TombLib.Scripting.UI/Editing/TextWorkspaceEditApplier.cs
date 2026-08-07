@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
@@ -25,7 +23,8 @@ public sealed class TextWorkspaceEditApplier
 	/// <param name="textEditorHost">The host used to open and synchronize text editors.</param>
 	public TextWorkspaceEditApplier(ITextEditorHost textEditorHost)
 	{
-		_textEditorHost = textEditorHost ?? throw new ArgumentNullException(nameof(textEditorHost));
+		ArgumentNullException.ThrowIfNull(textEditorHost);
+		_textEditorHost = textEditorHost;
 	}
 
 	/// <summary>

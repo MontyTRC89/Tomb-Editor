@@ -1,5 +1,3 @@
-#nullable enable
-
 using TombLib.Scripting.Extensions;
 
 namespace TombLib.Scripting.UI.Cleaning;

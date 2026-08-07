@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,28 +20,10 @@ internal sealed class EditorToolTipPresenter
 	{
 		_owner = owner;
 
-		Popup = new Popup
-		{
-			AllowsTransparency = true,
-			PopupAnimation = PopupAnimation.None,
-			StaysOpen = true,
-			Placement = PlacementMode.RelativePoint
-		};
+		(Popup, Border, ContentPresenter) = PopupShell.Create();
 
-		Border = new Border
-		{
-			SnapsToDevicePixels = true,
-			CornerRadius = new CornerRadius(3.0),
-			BorderThickness = new Thickness(1.0),
-			Padding = new Thickness(8.0, 6.0, 8.0, 6.0)
-		};
-
-		ContentPresenter = new ContentPresenter();
-		Border.Child = ContentPresenter;
 		Border.MouseEnter += Border_MouseEnter;
 		Border.MouseLeave += Border_MouseLeave;
-
-		Popup.Child = Border;
 
 		_closeTimer.Interval = CloseDelay;
 		_closeTimer.Tick += CloseTimer_Tick;

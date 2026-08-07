@@ -1,4 +1,3 @@
-using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
@@ -13,6 +12,8 @@ namespace TombLib.Scripting.ClassicScript.Completion;
 
 public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 {
+	private static readonly Regex FlagSyntaxRegex = new(@"\(.*_\.*\)");
+
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
 	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
@@ -21,8 +22,10 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		_commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-		_mnemonicCatalogService = mnemonicCatalogService ?? throw new ArgumentNullException(nameof(mnemonicCatalogService));
+		ArgumentNullException.ThrowIfNull(commandService);
+		_commandService = commandService;
+		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
+		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
@@ -65,9 +68,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		if (string.IsNullOrEmpty(syntax))
 			return [];
 
-		var regex = new Regex(@"\(.*_\.*\)");
-
-		if (!regex.IsMatch(syntax) && !syntax.Contains("ENABLED", StringComparison.OrdinalIgnoreCase) && !syntax.Contains("DISABLED", StringComparison.OrdinalIgnoreCase))
+		if (!FlagSyntaxRegex.IsMatch(syntax) && !syntax.Contains("ENABLED", StringComparison.OrdinalIgnoreCase) && !syntax.Contains("DISABLED", StringComparison.OrdinalIgnoreCase))
 			return [];
 
 		string[] arguments = syntax.Split(',');
@@ -81,7 +82,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		string currentArgument = arguments[argumentIndex];
 		var items = new List<TextCompletionItem>();
 
-		if (regex.IsMatch(currentArgument))
+		if (FlagSyntaxRegex.IsMatch(currentArgument))
 		{
 			string mnemonicPrefix = currentArgument.Split('(')[1].Split(')')[0].Trim('.').Trim();
 
@@ -102,21 +103,13 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 	private IReadOnlyList<TextCompletionItem> GetWordCompletionItems(string documentText, int caretOffset)
 	{
-		if (caretOffset <= 0)
+		if (caretOffset <= 0 || caretOffset > documentText.Length)
 			return [];
 
-		// Word completion uses AvalonEdit's TextUtilities for caret positioning.
-		// This remains a UI-level concern that requires a TextDocument.
-		var document = new TextDocument(documentText);
+		string word = GetWordPrefix(documentText, caretOffset);
 
-		int wordStartOffset = TextUtilities.GetNextCaretPosition(document, caretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
-
-		if (wordStartOffset < 0)
-			return [];
-
-		string word = document.GetText(wordStartOffset, caretOffset - wordStartOffset);
-
-		if (!_mnemonicCatalogService.GetAllFlags().Any(constant => constant.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
+		if (string.IsNullOrEmpty(word)
+			|| !_mnemonicCatalogService.GetAllFlags().Any(constant => constant.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
 			return [];
 
 		var items = new List<TextCompletionItem>();
@@ -129,6 +122,19 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 		return items;
 	}
+
+	private static string GetWordPrefix(string documentText, int caretOffset)
+	{
+		int start = caretOffset - 1;
+
+		while (start >= 0 && IsWordCharacter(documentText[start]))
+			start--;
+
+		return documentText.Substring(start + 1, caretOffset - start - 1);
+	}
+
+	private static bool IsWordCharacter(char character)
+		=> char.IsLetterOrDigit(character) || character == '_';
 
 	private static void AddItems(List<TextCompletionItem> items, IEnumerable<string> values, string suffix, TextCompletionItemKind kind)
 	{

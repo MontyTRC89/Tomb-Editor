@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Services;
@@ -13,10 +14,8 @@ public class ClassicScriptLineService : IClassicScriptLineService
 	private const string CommentDelimiter = ";";
 	private const char ContinuationMarker = '>';
 
-	// Legacy regex patterns retained for parity during Phase 4 extraction.
-	// These will be replaced with lexer tokens in Phase 5/6.
-	private static readonly Regex SectionHeaderRegex = new(@"^\s*\[\b.*\b\]\s*(;.*)?$", RegexOptions.Compiled);
-	private static readonly Regex SectionHeaderExtractRegex = new(@"^\s*\[(\b.*\b)\]\s*(;.*)?$", RegexOptions.Compiled);
+	// Regex patterns retained for parity with the legacy editor behavior.
+	private static readonly Regex SectionHeaderRegex = new(@"^\s*\[(\b.*\b)\]\s*(;.*)?$", RegexOptions.Compiled);
 	private static readonly Regex IncludeLineRegex = new("\".*\"", RegexOptions.Compiled);
 	private static readonly Regex NGStringIndexRegex = new(@"^\d+:\s*", RegexOptions.Compiled | RegexOptions.Multiline);
 
@@ -143,7 +142,7 @@ public class ClassicScriptLineService : IClassicScriptLineService
 	/// <inheritdoc />
 	public string? GetSectionHeaderText(string sectionHeaderLine)
 	{
-		Match match = SectionHeaderExtractRegex.Match(sectionHeaderLine);
+		Match match = SectionHeaderRegex.Match(sectionHeaderLine);
 
 		if (!match.Success)
 			return null;
@@ -153,7 +152,7 @@ public class ClassicScriptLineService : IClassicScriptLineService
 
 	/// <inheritdoc />
 	public bool IsEmptyOrComments(string? lineText)
-		=> string.IsNullOrWhiteSpace(lineText) || lineText!.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
+		=> string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
 
 	/// <inheritdoc />
 	public bool IsValidIncludeLine(string lineText)
@@ -179,6 +178,10 @@ public class ClassicScriptLineService : IClassicScriptLineService
 
 		return sectionName.Equals("extrang", StringComparison.OrdinalIgnoreCase);
 	}
+
+	/// <inheritdoc />
+	public bool IsStringSectionName(string? sectionName)
+		=> IsStandardStringSectionName(sectionName) || IsExtraNGSectionName(sectionName);
 
 	/// <inheritdoc />
 	public string RemoveComments(string lineText)

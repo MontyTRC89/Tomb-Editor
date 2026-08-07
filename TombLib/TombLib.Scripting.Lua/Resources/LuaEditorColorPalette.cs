@@ -1,3 +1,6 @@
+using NLog;
+using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 using TombLib.Scripting.Lua.Themes;
 using TombLib.Scripting.UI.Resources;
@@ -10,6 +13,8 @@ namespace TombLib.Scripting.Lua.Resources;
 /// </summary>
 internal static class LuaEditorColorPalette
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	/// <summary>
 	/// Creates the editor brush set for the supplied Lua theme.
 	/// </summary>
@@ -20,23 +25,26 @@ internal static class LuaEditorColorPalette
 		LuaTheme effectiveTheme = (theme ?? new LuaTheme()).Normalize(ConfigurationDefaults.SelectedThemeName);
 		LuaThemeSemanticColors semanticColors = effectiveTheme.SemanticColors;
 
-		return new LuaThemeBrushSet(
-			effectiveTheme.Name,
-			CreateBrush(effectiveTheme.Background, LuaBuiltInThemes.DefaultBackground),
-			CreateBrush(effectiveTheme.Foreground, LuaBuiltInThemes.DefaultForeground),
-			CreateBrush(semanticColors.MutedText, LuaBuiltInThemes.DefaultMutedText),
-			CreateBrush(semanticColors.Misc, LuaBuiltInThemes.DefaultMisc),
-			CreateBrush(semanticColors.Method, LuaBuiltInThemes.DefaultMethod),
-			CreateBrush(semanticColors.Variable, LuaBuiltInThemes.DefaultVariable),
-			CreateBrush(semanticColors.Property, LuaBuiltInThemes.DefaultProperty),
-			CreateBrush(semanticColors.Type, LuaBuiltInThemes.DefaultType),
-			CreateBrush(semanticColors.Keyword, LuaBuiltInThemes.DefaultKeyword),
-			CreateBrush(semanticColors.LanguageConstant, LuaBuiltInThemes.DefaultLanguageConstant),
-			CreateBrush(semanticColors.Constant, LuaBuiltInThemes.DefaultConstant),
-			CreateBrush(semanticColors.File, LuaBuiltInThemes.DefaultFile),
-			CreateBrush(semanticColors.SignatureParameterDocumentation, LuaBuiltInThemes.DefaultSignatureParameterDocumentation),
-			CreateBrush(semanticColors.SignatureActiveParameter, LuaBuiltInThemes.DefaultSignatureActiveParameter),
-			CreateBrush(semanticColors.SignatureText, ColorToString(TextEditorColorPalette.ToolTipForeground.Color)));
+		var brushes = new Dictionary<LuaThemeBrushRole, SolidColorBrush>
+		{
+			[LuaThemeBrushRole.EditorBackground] = CreateBrush(effectiveTheme.Background, LuaBuiltInThemes.DefaultBackground),
+			[LuaThemeBrushRole.EditorForeground] = CreateBrush(effectiveTheme.Foreground, LuaBuiltInThemes.DefaultForeground),
+			[LuaThemeBrushRole.MutedText] = CreateBrush(semanticColors.MutedText, LuaBuiltInThemes.DefaultMutedText),
+			[LuaThemeBrushRole.Misc] = CreateBrush(semanticColors.Misc, LuaBuiltInThemes.DefaultMisc),
+			[LuaThemeBrushRole.Method] = CreateBrush(semanticColors.Method, LuaBuiltInThemes.DefaultMethod),
+			[LuaThemeBrushRole.Variable] = CreateBrush(semanticColors.Variable, LuaBuiltInThemes.DefaultVariable),
+			[LuaThemeBrushRole.Property] = CreateBrush(semanticColors.Property, LuaBuiltInThemes.DefaultProperty),
+			[LuaThemeBrushRole.Type] = CreateBrush(semanticColors.Type, LuaBuiltInThemes.DefaultType),
+			[LuaThemeBrushRole.Keyword] = CreateBrush(semanticColors.Keyword, LuaBuiltInThemes.DefaultKeyword),
+			[LuaThemeBrushRole.LanguageConstant] = CreateBrush(semanticColors.LanguageConstant, LuaBuiltInThemes.DefaultLanguageConstant),
+			[LuaThemeBrushRole.Constant] = CreateBrush(semanticColors.Constant, LuaBuiltInThemes.DefaultConstant),
+			[LuaThemeBrushRole.File] = CreateBrush(semanticColors.File, LuaBuiltInThemes.DefaultFile),
+			[LuaThemeBrushRole.SignatureParamDoc] = CreateBrush(semanticColors.SignatureParameterDocumentation, LuaBuiltInThemes.DefaultSignatureParameterDocumentation),
+			[LuaThemeBrushRole.SignatureActiveParam] = CreateBrush(semanticColors.SignatureActiveParameter, LuaBuiltInThemes.DefaultSignatureActiveParameter),
+			[LuaThemeBrushRole.SignatureForeground] = CreateBrush(semanticColors.SignatureText, ColorToString(TextEditorColorPalette.ToolTipForeground.Color))
+		};
+
+		return new LuaThemeBrushSet(effectiveTheme.Name, brushes);
 	}
 
 	private static SolidColorBrush CreateBrush(string colorValue, string fallbackColorValue)
@@ -49,8 +57,9 @@ internal static class LuaEditorColorPalette
 
 			return CreateFrozenBrush(effectiveColorValue);
 		}
-		catch
+		catch (Exception exception)
 		{
+			Log.Warn(exception, "Invalid color value '{ColorValue}' in Lua theme; using the fallback color.", colorValue);
 			return CreateFrozenBrush(fallbackColorValue);
 		}
 	}

@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Hover;

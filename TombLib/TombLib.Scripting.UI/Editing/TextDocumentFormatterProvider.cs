@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using System.Threading;
@@ -17,7 +15,8 @@ public sealed class TextDocumentFormatterProvider : ITextFormattingProvider
 
 	public TextDocumentFormatterProvider(ITextDocumentFormatter documentFormatter)
 	{
-		_documentFormatter = documentFormatter ?? throw new ArgumentNullException(nameof(documentFormatter));
+		ArgumentNullException.ThrowIfNull(documentFormatter);
+		_documentFormatter = documentFormatter;
 	}
 
 	public bool SupportsFormatting => true;

@@ -1,9 +1,10 @@
-﻿using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
@@ -13,147 +14,147 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
 	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
-	#region Construction
+	// Construction
 
 	public SyntaxHighlighting(ColorScheme scheme)
 		=> _scheme = scheme;
 
-	#endregion Construction
+	// Rules
 
-	#region Rules
+	private HighlightingRuleSet? _cachedRuleSet;
+	private int _cachedMnemonicVersion = -1;
 
 	public HighlightingRuleSet MainRuleSet
 	{
 		get
 		{
-			var ruleSet = new HighlightingRuleSet();
+			// Rebuild only when the rule set has not been built yet or the mnemonic catalog
+			// snapshot changed (for example after plugin deployment).
+			int mnemonicVersion = ClassicScriptMnemonicCatalogService.CurrentSnapshotVersion;
 
-			/* Comments */
-			ruleSet.Rules.Add(new HighlightingRule
+			if (_cachedRuleSet is null || _cachedMnemonicVersion != mnemonicVersion)
 			{
-				Regex = new Regex(";.*$"),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
-					FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
+				_cachedRuleSet = BuildRuleSet();
+				_cachedMnemonicVersion = mnemonicVersion;
+			}
 
-			/* Sections */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(@"\[\b(" + string.Join("|", _commandCatalogService.Sections) + @")\b\]", RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Sections.HtmlColor)),
-					FontWeight = _scheme.Sections.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.Sections.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* Standard commands */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.StandardCommands.HtmlColor)),
-					FontWeight = _scheme.StandardCommands.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.StandardCommands.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* New commands */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#'))) + @")\b\s*=", RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),
-					FontWeight = _scheme.NewCommands.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.NewCommands.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* Next line keys */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(">"),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),
-					FontWeight = FontWeights.Bold // Always bold
-				}
-			});
-
-			/* Mnemonics */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(_mnemonicCatalogService.GetMnemonicPattern(), RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
-					FontWeight = _scheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* Hex values */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(@"\$[a-f0-9]*", RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
-					FontWeight = _scheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* Directives (#...) */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex(@"#(define|first_id|include)\s", RegexOptions.IgnoreCase),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.References.HtmlColor)),
-					FontWeight = _scheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			/* Values */
-			ruleSet.Rules.Add(new HighlightingRule
-			{
-				Regex = new Regex("\\d|\\w|\"|'|\\.|\\\\"),
-				Color = new HighlightingColor
-				{
-					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Values.HtmlColor)),
-					FontWeight = _scheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
-					FontStyle = _scheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
-				}
-			});
-
-			ruleSet.Name = "ClassicScript Rules";
-			return ruleSet;
+			return _cachedRuleSet;
 		}
 	}
 
-	#endregion Rules
+	private HighlightingRuleSet BuildRuleSet()
+	{
+		var ruleSet = new HighlightingRuleSet();
 
-	#region Other
+		/* Comments */
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(";.*$"),
+			Color = CreateColor(_scheme.Comments)
+		});
+
+		/* Sections */
+		if (_commandCatalogService.Sections.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(@"\[\b(" + string.Join("|", _commandCatalogService.Sections) + @")\b\]", RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.Sections)
+			});
+
+		/* Standard commands */
+		if (_commandCatalogService.OldCommands.Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.StandardCommands)
+			});
+
+		/* New commands */
+		string[] newCommands = _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#')).ToArray();
+
+		if (newCommands.Length > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(@"\b(" + string.Join("|", newCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.NewCommands)
+			});
+
+		/* Next line keys */
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(">"),
+			Color = new HighlightingColor
+			{
+				Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),
+				FontWeight = FontWeights.Bold // Always bold
+			}
+		});
+
+		/* Mnemonics */
+		if (_mnemonicCatalogService.GetAllFlags().Count > 0)
+			ruleSet.Rules.Add(new HighlightingRule
+			{
+				Regex = new Regex(_mnemonicCatalogService.GetMnemonicPattern(), RegexOptions.IgnoreCase),
+				Color = CreateColor(_scheme.References)
+			});
+
+		/* Hex values */
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(@"\$[a-f0-9]*", RegexOptions.IgnoreCase),
+			Color = CreateColor(_scheme.References)
+		});
+
+		/* Directives (#...) */
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex(@"#(define|first_id|include)\s", RegexOptions.IgnoreCase),
+			Color = CreateColor(_scheme.References)
+		});
+
+		/* Values */
+		ruleSet.Rules.Add(new HighlightingRule
+		{
+			Regex = new Regex("\\d|\\w|\"|'|\\.|\\\\"),
+			Color = CreateColor(_scheme.Values)
+		});
+
+		ruleSet.Name = "ClassicScript Rules";
+		return ruleSet;
+	}
+
+	private static HighlightingColor CreateColor(HighlightingObject scheme)
+		=> new()
+		{
+			Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(scheme.HtmlColor)),
+			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
+			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
+		};
+
+	// Other
 
 	public string Name => "ClassicScript Rules";
 
-	public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
-	public IDictionary<string, string> Properties => throw new NotImplementedException();
+	/// <summary>
+	/// Gets the named highlighting colors. ClassicScript highlighting defines no named colors.
+	/// </summary>
+	public IEnumerable<HighlightingColor> NamedHighlightingColors => [];
 
-	public HighlightingColor GetNamedColor(string name)
-		=> throw new NotImplementedException();
+	/// <summary>
+	/// Gets the highlighting properties. ClassicScript highlighting defines no custom properties.
+	/// </summary>
+	public IDictionary<string, string> Properties => new Dictionary<string, string>();
 
-	public HighlightingRuleSet GetNamedRuleSet(string name)
-		=> throw new NotImplementedException();
+	/// <summary>
+	/// Resolves a named highlighting color. ClassicScript highlighting defines no named colors.
+	/// </summary>
+	public HighlightingColor? GetNamedColor(string name)
+		=> null;
 
-	#endregion Other
+	/// <summary>
+	/// Resolves a named rule set. Only the main rule set is defined by ClassicScript highlighting.
+	/// </summary>
+	public HighlightingRuleSet? GetNamedRuleSet(string name)
+		=> name == MainRuleSet.Name ? MainRuleSet : null;
+
 }

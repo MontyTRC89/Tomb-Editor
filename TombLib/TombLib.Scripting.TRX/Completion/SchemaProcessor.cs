@@ -1,9 +1,6 @@
-#nullable enable
-
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Nickelony.LanguageServer.Abstractions.Completion;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace TombLib.Scripting.TRX.Completion;
@@ -14,24 +11,32 @@ namespace TombLib.Scripting.TRX.Completion;
 public sealed class SchemaProcessor
 {
 	private readonly CompletionDataBuilder _builder;
-	private readonly HashSet<JSchema> _processedSchemas = new();
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SchemaProcessor"/> class.
+	/// </summary>
+	/// <param name="builder">The completion data builder that receives extracted data.</param>
 	public SchemaProcessor(CompletionDataBuilder builder)
 		=> _builder = builder;
 
+	/// <summary>
+	/// Processes the given schema, extracting completion data from all reachable schemas.
+	/// </summary>
+	/// <param name="schema">The schema to process.</param>
 	public void ProcessSchema(JSchema schema)
 	{
-		// Prevent infinite recursion
-		if (!_processedSchemas.Add(schema))
-			return;
-
-		ExtractProperties(schema);
-		ExtractEnumValues(schema);
-		ExtractConstValue(schema);
-
-		ProcessNestedSchemas(schema);
+		foreach (JSchema currentSchema in SchemaTraversal.FlattenSchemas(schema))
+		{
+			ExtractProperties(currentSchema);
+			ExtractEnumValues(currentSchema);
+			ExtractConstValue(currentSchema);
+		}
 	}
 
+	/// <summary>
+	/// Processes only the top-level properties of the given schema.
+	/// </summary>
+	/// <param name="schema">The schema to process.</param>
 	public void ProcessTopLevelPropertiesOnly(JSchema schema)
 		=> ExtractProperties(schema);
 
@@ -70,43 +75,6 @@ public sealed class SchemaProcessor
 			var constValue = $"\"{schema.Const}\"";
 			_builder.TryAdd(constValue, TextCompletionItemKind.Constant);
 		}
-	}
-
-	private void ProcessNestedSchemas(JSchema schema)
-	{
-		ProcessSchemaProperties(schema);
-		ProcessArrayItems(schema);
-
-		ProcessSchemaCollection(schema.OneOf);
-		ProcessSchemaCollection(schema.AnyOf);
-		ProcessSchemaCollection(schema.AllOf);
-	}
-
-	private void ProcessSchemaProperties(JSchema schema)
-	{
-		if (schema.Properties is null)
-			return;
-
-		foreach (var property in schema.Properties.Values)
-			ProcessSchema(property);
-	}
-
-	private void ProcessArrayItems(JSchema schema)
-	{
-		if (schema.Items?.Count > 0)
-		{
-			foreach (var item in schema.Items)
-				ProcessSchema(item);
-		}
-	}
-
-	private void ProcessSchemaCollection(IList<JSchema>? schemas)
-	{
-		if (schemas is null)
-			return;
-
-		foreach (var nestedSchema in schemas)
-			ProcessSchema(nestedSchema);
 	}
 
 	private static TextCompletionItemKind GetCompletionKind(JSchema schema) => schema.Type switch

@@ -1,5 +1,3 @@
-#nullable enable
-
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Hover;

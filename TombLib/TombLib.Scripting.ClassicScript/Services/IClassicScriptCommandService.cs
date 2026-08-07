@@ -1,5 +1,5 @@
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Services;
@@ -44,6 +44,8 @@ public interface IClassicScriptCommandService
 
 	/// <summary>
 	/// Gets all registered command syntax definitions from the syntax catalog.
+	/// Retained while tests and public interfaces exercise it; replace only with an
+	/// intentional contract change.
 	/// </summary>
 	IReadOnlyList<ClassicScriptSyntaxDefinition> GetCommandSyntaxDefinitions();
 

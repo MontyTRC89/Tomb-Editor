@@ -1,9 +1,11 @@
-#nullable enable
-
 using TombLib.Scripting.ClassicScript.Commands;
 
 namespace TombLib.Scripting.ClassicScript.Syntaxes;
 
+/// <summary>
+/// Loads command syntax definitions from Commands.json (Resources/ClassicScript/Commands.json)
+/// once and serves them as read-only lookups.
+/// </summary>
 public sealed class ClassicScriptSyntaxCatalogService
 {
 	private readonly ClassicScriptCommandsLoader _loader;
@@ -15,22 +17,38 @@ public sealed class ClassicScriptSyntaxCatalogService
 
 	internal ClassicScriptSyntaxCatalogService(ClassicScriptCommandsLoader loader)
 	{
-		_loader = loader ?? throw new ArgumentNullException(nameof(loader));
+		ArgumentNullException.ThrowIfNull(loader);
+		_loader = loader;
 		_snapshot = new Lazy<ClassicScriptSyntaxCatalogSnapshot>(LoadSnapshot);
 	}
 
+	/// <summary>
+	/// Gets all command syntax definitions, old commands first, then new commands.
+	/// </summary>
 	public IReadOnlyList<ClassicScriptSyntaxDefinition> GetCommandSyntaxDefinitions()
 		=> _snapshot.Value.CommandDefinitions;
 
+	/// <summary>
+	/// Gets the syntax definition for the given command key, or null when the key is unknown.
+	/// </summary>
 	public ClassicScriptSyntaxDefinition? GetCommandDefinition(string key)
 		=> GetDefinition(_snapshot.Value.CommandDefinitionsByKey, key);
 
+	/// <summary>
+	/// Gets the syntax text for the given command key, or null when the key is unknown.
+	/// </summary>
 	public string? GetCommandSyntax(string key)
 		=> GetCommandDefinition(key)?.SyntaxText;
 
+	/// <summary>
+	/// Gets the syntax text for the given Customize command key, or null when the key is unknown.
+	/// </summary>
 	public string? GetCustomizeSyntax(string key)
 		=> GetDefinition(_snapshot.Value.CustomizeSyntaxesByKey, key)?.SyntaxText;
 
+	/// <summary>
+	/// Gets the syntax text for the given Parameters command key, or null when the key is unknown.
+	/// </summary>
 	public string? GetParameterSyntax(string key)
 		=> GetDefinition(_snapshot.Value.ParameterSyntaxesByKey, key)?.SyntaxText;
 

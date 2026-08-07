@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using System;

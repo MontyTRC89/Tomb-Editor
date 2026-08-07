@@ -1,5 +1,3 @@
-#nullable enable
-
 using Nickelony.LanguageServer.Abstractions.Completion;
 using System;
 using System.Collections.Generic;
@@ -10,16 +8,29 @@ using TombLib.Scripting.UI.Completion;
 
 namespace TombLib.Scripting.TRX.Completion;
 
-public sealed class AutocompleteManager
+/// <summary>
+/// Filters and shapes completion data for TRX documents.
+/// </summary>
+public sealed class CompletionManager
 {
 	private readonly ITRXLineService _lineService;
 
-	public AutocompleteManager(ITRXLineService lineService)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="CompletionManager"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to analyze document lines.</param>
+	public CompletionManager(ITRXLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
 	}
 
+	/// <summary>
+	/// Filters the given completion items against the current word being typed.
+	/// </summary>
+	/// <param name="autocompleteData">The completion items to filter.</param>
+	/// <param name="currentWord">The word currently being typed.</param>
+	/// <returns>The completion items that match the current word.</returns>
 	public IReadOnlyList<TextCompletionItem> FilterCompletions(IReadOnlyList<TextCompletionItem> autocompleteData, string currentWord)
 	{
 		if (string.IsNullOrEmpty(currentWord))
@@ -61,7 +72,13 @@ public sealed class AutocompleteManager
 		.ToList();
 	}
 
-	public bool ShouldTriggerAutocompleteOnEmptyLine(ITextSnapshot source, int caretOffset)
+	/// <summary>
+	/// Determines whether completion should be triggered on an empty line at the given caret offset.
+	/// </summary>
+	/// <param name="source">The document snapshot to inspect.</param>
+	/// <param name="caretOffset">The current caret offset.</param>
+	/// <returns>True if completion should be triggered; otherwise false.</returns>
+	public bool ShouldTriggerCompletionOnEmptyLine(ITextSnapshot source, int caretOffset)
 	{
 		ITextLine line = source.GetLineByOffset(caretOffset);
 		string lineText = source.GetText(line.Offset, line.Length);
@@ -71,6 +88,13 @@ public sealed class AutocompleteManager
 			|| currentLineText.Equals("\"\"");
 	}
 
+	/// <summary>
+	/// Computes the document offsets that should be replaced when accepting a completion.
+	/// </summary>
+	/// <param name="source">The document snapshot to inspect.</param>
+	/// <param name="caretOffset">The current caret offset.</param>
+	/// <param name="currentWord">The word currently being typed.</param>
+	/// <returns>The start and end offsets of the completion replacement range.</returns>
 	public (int startOffset, int endOffset) GetCompletionWindowOffsets(ITextSnapshot source, int caretOffset, string currentWord)
 	{
 		if (!string.IsNullOrEmpty(currentWord))

@@ -85,4 +85,40 @@ public class TextDefinitionTriggerControllerTests
 			}
 		});
 	}
+
+	[TestMethod]
+	public void TryHandleKeyDownAsync_ThrowingNavigation_ReturnsFalseWithoutEscaping()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var owner = new Border();
+			Window hostWindow = WPFTestHelper.ShowInHostWindow(owner);
+
+			try
+			{
+				var controller = new TextDefinitionTriggerController(
+					owner,
+					_ => -1,
+					(offset, cancellationToken) => throw new InvalidOperationException("Navigation failed."));
+
+				var eventArgs = new KeyEventArgs(
+					Keyboard.PrimaryDevice,
+					PresentationSource.FromVisual(hostWindow)!,
+					0,
+					Key.F12)
+				{
+					RoutedEvent = Keyboard.KeyDownEvent
+				};
+
+				bool handled = controller.TryHandleKeyDownAsync(eventArgs, 42).GetAwaiter().GetResult();
+
+				Assert.IsFalse(handled);
+				Assert.IsFalse(eventArgs.Handled);
+			}
+			finally
+			{
+				hostWindow.Close();
+			}
+		});
+	}
 }

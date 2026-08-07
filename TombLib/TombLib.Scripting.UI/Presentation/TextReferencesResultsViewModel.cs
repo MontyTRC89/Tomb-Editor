@@ -1,5 +1,3 @@
-#nullable enable
-
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -17,7 +15,10 @@ public sealed partial class TextReferencesResultsViewModel : ObservableObject
 	private string _statusText = string.Empty;
 
 	public TextReferencesResultsViewModel(TextReferencesPresentation presentation)
-		=> _presentation = presentation ?? throw new ArgumentNullException(nameof(presentation));
+	{
+		ArgumentNullException.ThrowIfNull(presentation);
+		_presentation = presentation;
+	}
 
 	public ObservableCollection<TextReferenceGroup> Groups => _groups;
 

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
-using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Resources;
+using TombLib.Scripting.GameFlowScript.Types;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.GameFlowScript.Services;

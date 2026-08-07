@@ -1,5 +1,3 @@
-#nullable enable
-
 namespace TombLib.Scripting.GameFlowScript;
 
 public sealed class GameFlowDefinitionSet

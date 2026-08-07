@@ -4,13 +4,14 @@ using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.GameFlowScript.Types;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
 
 namespace TombLib.Tests;
 
 [TestClass]
-public class GameFlowDefinitionsProviderTests
+public class GameFlowDefinitionCatalogTests
 {
 	[TestMethod]
 	public void SectionHover_ProvidesDefinitionIdentifier()
@@ -35,8 +36,8 @@ public class GameFlowDefinitionsProviderTests
 	[TestMethod]
 	public void Definitions_AreLoadedFromBundledJson()
 	{
-		Assert.IsTrue(GameFlowDefinitionsProvider.Sections.Count > 0);
-		Assert.IsTrue(GameFlowDefinitionsProvider.Properties.Count > 0);
-		Assert.IsTrue(GameFlowDefinitionsProvider.Constants.Count > 0);
+		Assert.IsTrue(GameFlowDefinitionCatalog.Sections.Count > 0);
+		Assert.IsTrue(GameFlowDefinitionCatalog.Properties.Count > 0);
+		Assert.IsTrue(GameFlowDefinitionCatalog.Constants.Count > 0);
 	}
 }

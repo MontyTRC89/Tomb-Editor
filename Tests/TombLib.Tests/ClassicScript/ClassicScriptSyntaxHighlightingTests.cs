@@ -1,11 +1,27 @@
 using ICSharpCode.AvalonEdit.Highlighting;
 using TombLib.Scripting.ClassicScript.Highlighting;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 
 namespace TombLib.Tests;
 
 [TestClass]
 public class ClassicScriptSyntaxHighlightingTests
 {
+	[TestMethod]
+	public void MainRuleSet_IsRebuiltWhenMnemonicCatalogReloads()
+	{
+		var highlighting = new SyntaxHighlighting(new ColorScheme());
+		HighlightingRuleSet first = highlighting.MainRuleSet;
+
+		// Reloading the shared catalog bumps the snapshot version, which must invalidate the cache.
+		int versionBefore = ClassicScriptMnemonicCatalogService.CurrentSnapshotVersion;
+		new ClassicScriptMnemonicCatalogService().Reload();
+		int versionAfter = ClassicScriptMnemonicCatalogService.CurrentSnapshotVersion;
+
+		Assert.AreNotEqual(versionBefore, versionAfter);
+		Assert.AreNotSame(first, highlighting.MainRuleSet);
+	}
+
 	[TestMethod]
 	public void MainRuleSet_CommandAndSectionRegexesComeFromCatalog()
 	{
@@ -26,5 +42,20 @@ public class ClassicScriptSyntaxHighlightingTests
 		Assert.IsTrue(newCommandsRule.Regex.IsMatch("FMV=")); // One of the four entries absent from the legacy array.
 
 		Assert.IsFalse(newCommandsRule.Regex.IsMatch("#DEFINE=")); // Directives are not command alternatives.
+	}
+
+	[TestMethod]
+	public void HighlightingContract_AllIHighlightingDefinitionMembersAreUsable()
+	{
+		var highlighting = new SyntaxHighlighting(new ColorScheme());
+
+		Assert.AreEqual("ClassicScript Rules", highlighting.Name);
+		Assert.IsNotNull(highlighting.MainRuleSet);
+		Assert.IsFalse(highlighting.NamedHighlightingColors.Any());
+		Assert.IsNotNull(highlighting.Properties);
+		Assert.AreEqual(0, highlighting.Properties.Count);
+		Assert.IsNull(highlighting.GetNamedColor("anything"));
+		Assert.IsNull(highlighting.GetNamedRuleSet("DoesNotExist"));
+		Assert.IsNotNull(highlighting.GetNamedRuleSet(highlighting.Name));
 	}
 }

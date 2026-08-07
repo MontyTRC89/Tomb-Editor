@@ -1,20 +1,11 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editing;
 
-namespace TombLib.Scripting.GameFlowScript.Writers
-{
-	public static class LanguageStringWriter
-	{
-		public static void WriteNewLevelNameString(TextEditorBase textEditor, string levelName)
-		{
-			AssignStockLevelNameStringSlot(textEditor, levelName);
-		}
+namespace TombLib.Scripting.GameFlowScript.Writers;
 
-		private static bool AssignStockLevelNameStringSlot(TextEditorBase textEditor, string levelName)
-			=> TextEditorLineOperations.TryReplaceFirstMatchingLine(
-				textEditor,
-				lineText => Regex.IsMatch(lineText, @"EMPTY\sSTRING\sSLOT\s\d+") ? levelName : null,
-				scrollToLine: false);
-	}
+public static class LanguageStringWriter
+{
+	public static void WriteNewLevelNameString(TextEditorBase textEditor, string levelName)
+		=> TextEditorLineOperations.TryAssignStockLevelNameStringSlot(textEditor, levelName);
 }

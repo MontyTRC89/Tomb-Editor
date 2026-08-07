@@ -11,7 +11,8 @@ public sealed class StringFileNodesProvider : ContentNodesProviderBase
 
 	public StringFileNodesProvider(IClassicScriptLineService lineService)
 	{
-		_lineService = lineService ?? throw new ArgumentNullException(nameof(lineService));
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
 	}
 
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
@@ -25,9 +26,9 @@ public sealed class StringFileNodesProvider : ContentNodesProviderBase
 
 			if (_lineService.IsSectionHeaderLine(lineText))
 			{
-				string headerText = _lineService.GetSectionHeaderText(lineText);
+				string? headerText = _lineService.GetSectionHeaderText(lineText);
 
-				if (headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
+				if (headerText is not null && headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
 					nodes.Add(new DarkTreeNode(headerText));
 			}
 		}

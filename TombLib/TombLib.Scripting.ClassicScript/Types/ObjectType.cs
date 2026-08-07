@@ -1,4 +1,4 @@
-﻿namespace TombLib.Scripting.ClassicScript.Documents;
+namespace TombLib.Scripting.ClassicScript.Types;
 
 public enum ObjectType
 {

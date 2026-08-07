@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
@@ -36,10 +34,13 @@ public sealed class TextEditorStatusPresentationService
 	}
 
 	private static string BuildRowLabel(IEditorControl editorControl, TextEditorStatusText text)
-		=> editorControl switch
-		{
-			_ when editorControl.EditorType == EditorType.Strings => string.Format(text.RowFormatText, editorControl.CurrentRow),
-			TextEditorBase => string.Format(text.LineFormatText, editorControl.CurrentRow),
-			_ => string.Empty
-		};
+	{
+		if (editorControl.EditorType == EditorType.Strings)
+			return string.Format(text.RowFormatText, editorControl.CurrentRow);
+
+		if (editorControl is TextEditorBase)
+			return string.Format(text.LineFormatText, editorControl.CurrentRow);
+
+		return string.Empty;
+	}
 }

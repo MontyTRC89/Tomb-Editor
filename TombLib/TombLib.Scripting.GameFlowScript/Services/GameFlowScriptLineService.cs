@@ -13,7 +13,7 @@ public class GameFlowScriptLineService : IGameFlowScriptLineService
 {
 	private const string CommentDelimiter = "//";
 
-	// Legacy regex patterns retained for parity during Phase 9A extraction.
+	// Regex pattern retained for parity with the legacy editor behavior.
 	private static readonly Regex SectionHeaderRegex = new(Patterns.Sections, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 	/// <inheritdoc />
@@ -26,7 +26,7 @@ public class GameFlowScriptLineService : IGameFlowScriptLineService
 
 	/// <inheritdoc />
 	public bool IsEmptyOrComments(string? lineText)
-		=> string.IsNullOrWhiteSpace(lineText) || lineText!.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
+		=> string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
 
 	/// <inheritdoc />
 	public bool IsSectionHeaderLine(string lineText)

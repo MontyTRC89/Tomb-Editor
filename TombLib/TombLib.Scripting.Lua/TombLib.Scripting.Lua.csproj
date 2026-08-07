@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- ImplicitUsings intentionally NOT enabled: this project relies on explicit usings (per-project policy). -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
@@ -16,6 +17,7 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Checked-in preview binaries (0.1.0-preview) under Libs/; not NuGet packages. Compatibility owned by the language-server integration. -->
   <ItemGroup>
     <Reference Include="Nickelony.LanguageServer.Abstractions">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>

@@ -1,5 +1,3 @@
-#nullable enable
-
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using System;
 using System.Collections.Generic;
@@ -26,10 +24,14 @@ internal sealed class CompletionWindowCoordinator
 		Brush defaultBackground,
 		Brush defaultForeground)
 	{
-		_host = host ?? throw new ArgumentNullException(nameof(host));
-		_defaultBorderBrush = defaultBorderBrush ?? throw new ArgumentNullException(nameof(defaultBorderBrush));
-		_defaultBackground = defaultBackground ?? throw new ArgumentNullException(nameof(defaultBackground));
-		_defaultForeground = defaultForeground ?? throw new ArgumentNullException(nameof(defaultForeground));
+		ArgumentNullException.ThrowIfNull(host);
+		_host = host;
+		ArgumentNullException.ThrowIfNull(defaultBorderBrush);
+		_defaultBorderBrush = defaultBorderBrush;
+		ArgumentNullException.ThrowIfNull(defaultBackground);
+		_defaultBackground = defaultBackground;
+		ArgumentNullException.ThrowIfNull(defaultForeground);
+		_defaultForeground = defaultForeground;
 	}
 
 	public CompletionWindow? ActiveWindow => _window;
