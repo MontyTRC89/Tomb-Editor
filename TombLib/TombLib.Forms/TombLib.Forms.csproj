@@ -8,7 +8,6 @@
   </ItemGroup>
   <PropertyGroup>
     <RootNamespace>TombLib</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -33,9 +32,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
-      <Link>GlobalAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="..\..\GlobalPaths.cs" Link="GlobalPaths.cs" />
     <Compile Update="Controls\AnimationTrackBar.cs">
       <SubType>UserControl</SubType>

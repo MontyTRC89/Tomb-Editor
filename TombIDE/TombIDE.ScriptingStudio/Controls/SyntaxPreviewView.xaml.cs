@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Commands;
 
 namespace TombIDE.ScriptingStudio.Controls;
 
@@ -30,6 +31,7 @@ public partial class SyntaxPreviewView : UserControl
 	private const double CharacterWidth = 7.0;
 
 	private ClassicScriptEditorConfiguration? _config;
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 	private int _viewStart;
 
 	public SyntaxPreviewView()
@@ -78,9 +80,9 @@ public partial class SyntaxPreviewView : UserControl
 
 		Color[] colors = Enumerable.Repeat(CreateColor(_config.ColorScheme.Values.HtmlColor), text.Length).ToArray();
 
-		ApplyColorPattern(colors, text, @"\[\b(" + string.Join("|", ClassicScriptKeywords.Sections) + @"|Any)\b\]", _config.ColorScheme.Sections.HtmlColor);
-		ApplyColorPattern(colors, text, @"\b(" + string.Join("|", ClassicScriptKeywords.OldCommands) + @")\b\s*=", _config.ColorScheme.StandardCommands.HtmlColor);
-		ApplyColorPattern(colors, text, @"\b(" + string.Join("|", ClassicScriptKeywords.NewCommands) + @")\b\s*=", _config.ColorScheme.NewCommands.HtmlColor);
+		ApplyColorPattern(colors, text, @"\[\b(" + string.Join("|", _commandCatalogService.Sections) + @"|Any)\b\]", _config.ColorScheme.Sections.HtmlColor);
+		ApplyColorPattern(colors, text, @"\b(" + string.Join("|", _commandCatalogService.OldCommands) + @")\b\s*=", _config.ColorScheme.StandardCommands.HtmlColor);
+		ApplyColorPattern(colors, text, @"\b(" + string.Join("|", _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#'))) + @")\b\s*=", _config.ColorScheme.NewCommands.HtmlColor);
 		ApplyColorPattern(colors, text, "(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", _config.ColorScheme.References.HtmlColor);
 		ApplyColorPattern(colors, text, @"\(.*?_.*?\)", _config.ColorScheme.References.HtmlColor);
 		ApplyColorPattern(colors, text, @"(,|/|\(\*Array\*\))", _config.ColorScheme.Foreground);

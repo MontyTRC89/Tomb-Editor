@@ -1,10 +1,9 @@
 #nullable enable
 
-using System.Diagnostics.CodeAnalysis;
-using System.Windows.Input;
-using TombLib.Scripting.ClassicScript.Navigation;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using System.Diagnostics.CodeAnalysis;
+using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Presentation;
@@ -16,21 +15,12 @@ public sealed partial class ClassicScriptEditor
 	private sealed class ClassicScriptHoverController
 	{
 		private readonly ClassicScriptEditor _editor;
-		private readonly TextHoverController _controller;
 		private WordDefinitionEventArgs? _hoveredWordArgs;
 
 		internal ClassicScriptHoverController(ClassicScriptEditor editor)
 		{
 			_editor = editor;
-			_controller = HoverControllerFactory.Create(
-				editor,
-				BuildRequestState,
-				RequestAsync,
-				ApplyHoverState);
 		}
-
-		internal Task HandleMouseHoverAsync(MouseEventArgs e)
-			=> _controller.HandleMouseHoverAsync(e);
 
 		internal bool TryGetRequestedDefinitionArgs(int caretOffset, bool specialToolTipIsOpen, [NotNullWhen(true)] out WordDefinitionEventArgs? definitionArgs)
 		{
@@ -57,7 +47,7 @@ public sealed partial class ClassicScriptEditor
 			return definitionArgs is not null;
 		}
 
-		private TextHoverRequestState BuildRequestState(int hoveredOffset)
+		internal TextHoverRequestState BuildRequestState(int hoveredOffset)
 		{
 			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
 
@@ -71,10 +61,10 @@ public sealed partial class ClassicScriptEditor
 				DiagnosticSeverity: diagnosticSeverity);
 		}
 
-		private Task<TextHoverInfo?> RequestAsync(int hoveredOffset, CancellationToken cancellationToken)
+		internal Task<TextHoverInfo?> RequestAsync(int hoveredOffset, CancellationToken cancellationToken)
 			=> Task.FromResult(_editor._languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(_editor.Document.Text, hoveredOffset)));
 
-		private void ApplyHoverState(TextHoverPresentationState state)
+		internal void ApplyHoverState(TextHoverPresentationState state)
 			=> _hoveredWordArgs = state.HoverInfo is null ? null : CreateWordDefinitionArgs(state.HoverInfo, state.HoveredOffset);
 
 		private static WordDefinitionEventArgs? CreateWordDefinitionArgs(TextHoverInfo hoverInfo, int hoveredOffset)

@@ -22,8 +22,8 @@ internal static class LuaEditorColorPalette
 
 		return new LuaThemeBrushSet(
 			effectiveTheme.Name,
-			CreateBrush(effectiveTheme.EditorBackground, LuaBuiltInThemes.DefaultEditorBackground),
-			CreateBrush(effectiveTheme.EditorForeground, LuaBuiltInThemes.DefaultEditorForeground),
+			CreateBrush(effectiveTheme.Background, LuaBuiltInThemes.DefaultBackground),
+			CreateBrush(effectiveTheme.Foreground, LuaBuiltInThemes.DefaultForeground),
 			CreateBrush(semanticColors.MutedText, LuaBuiltInThemes.DefaultMutedText),
 			CreateBrush(semanticColors.Misc, LuaBuiltInThemes.DefaultMisc),
 			CreateBrush(semanticColors.Method, LuaBuiltInThemes.DefaultMethod),

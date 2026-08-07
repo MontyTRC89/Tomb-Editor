@@ -5,7 +5,7 @@ namespace TombLib.Scripting.ClassicScript.Navigation;
 
 public sealed class ClassicScriptReferenceInfoService
 {
-	private readonly ClassicScriptDescriptionArchiveService _descriptionArchiveService = new();
+	private readonly ClassicScriptDescriptionCatalogService _descriptionCatalogService = new();
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
 
 	public ClassicScriptReferenceInfo GetReferenceInfo(string keyword, ReferenceType type)
@@ -35,10 +35,10 @@ public sealed class ClassicScriptReferenceInfoService
 	{
 		string description = type switch
 		{
-			ReferenceType.MnemonicConstant => _descriptionArchiveService.GetMnemonicConstantDescription(keyword),
-			ReferenceType.OldCommand => _descriptionArchiveService.GetOldCommandDescription(keyword),
-			ReferenceType.NewCommand => _descriptionArchiveService.GetNewCommandDescription(keyword),
-			ReferenceType.OCB => _descriptionArchiveService.GetOcbDescription(keyword),
+			ReferenceType.MnemonicConstant => _descriptionCatalogService.GetMnemonicConstantDescription(keyword),
+			ReferenceType.OldCommand => _descriptionCatalogService.GetOldCommandDescription(keyword),
+			ReferenceType.NewCommand => _descriptionCatalogService.GetNewCommandDescription(keyword),
+			ReferenceType.OCB => _descriptionCatalogService.GetOcbDescription(keyword),
 			_ => string.Empty
 		};
 

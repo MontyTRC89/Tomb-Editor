@@ -5,6 +5,7 @@ using System.Linq;
 using TombLib.Scripting.TRX.Highlighting;
 using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Resources;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.TRX
@@ -35,11 +36,16 @@ namespace TombLib.Scripting.TRX
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = ReadColorScheme(schemeFilePath);
 			}
 		}
 
 		public ColorScheme ColorScheme = new ColorScheme();
+
+		private static ColorScheme ReadColorScheme(string schemeFilePath)
+			=> Path.GetExtension(schemeFilePath).Equals(ScriptingDefaults.ColorSchemeFileExtension, StringComparison.OrdinalIgnoreCase)
+				? JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath)
+				: XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
 
 		#endregion Color scheme
 
@@ -51,7 +57,7 @@ namespace TombLib.Scripting.TRX
 
 			AutoCloseParentheses = false;
 
-			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+			SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
 		}
 
 		public static TRXEditorConfiguration LoadWithLegacyFallback()
@@ -75,10 +81,13 @@ namespace TombLib.Scripting.TRX
 
 			var filePathsByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+			foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.OldLegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+				filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
+
 			foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.LegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
 				filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
 
-			foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+			foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
 				filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
 
 			return [..
@@ -93,17 +102,16 @@ namespace TombLib.Scripting.TRX
 
 			string preferredPath = GetPreferredColorSchemeFilePath(schemeName);
 			string legacyPath = Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
+			string oldLegacyPath = Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
 
-			return string.Equals(preferredPath, legacyPath, StringComparison.OrdinalIgnoreCase)
-				? [preferredPath]
-				: [preferredPath, legacyPath];
+			return [preferredPath, legacyPath, oldLegacyPath];
 		}
 
 		public static string GetPreferredColorSchemeFilePath(string schemeName)
 		{
 			ArgumentNullException.ThrowIfNull(schemeName);
 
-			return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.ColorSchemeFileExtension);
+			return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
 		}
 
 		public static string GetExistingColorSchemeFilePath(string schemeName)
@@ -115,7 +123,12 @@ namespace TombLib.Scripting.TRX
 			if (File.Exists(preferredPath))
 				return preferredPath;
 
-			return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
+			string legacyPath = Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
+
+			if (File.Exists(legacyPath))
+				return legacyPath;
+
+			return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
 		}
 
 		#endregion Construction

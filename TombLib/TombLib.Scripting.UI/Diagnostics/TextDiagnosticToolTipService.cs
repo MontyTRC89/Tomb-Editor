@@ -1,10 +1,10 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics;
 

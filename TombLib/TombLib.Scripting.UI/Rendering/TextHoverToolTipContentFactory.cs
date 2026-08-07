@@ -1,11 +1,11 @@
 #nullable enable
 
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Hover;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
-using Nickelony.LanguageServer.Abstractions.Hover;
 
 namespace TombLib.Scripting.UI.Rendering;
 

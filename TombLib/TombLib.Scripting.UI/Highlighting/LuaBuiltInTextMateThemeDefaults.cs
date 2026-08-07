@@ -4,8 +4,8 @@ namespace TombLib.Scripting.UI.Highlighting
 {
 	public static class LuaBuiltInTextMateThemeDefaults
 	{
-		public const string DefaultEditorBackground = "#2D2D2D";
-		public const string DefaultEditorForeground = "#CCCCCC";
+		public const string DefaultBackground = "#2D2D2D";
+		public const string DefaultForeground = "#CCCCCC";
 
 		public const string DefaultMutedText = "#999999";
 		public const string DefaultMisc = "#CCCCCC";

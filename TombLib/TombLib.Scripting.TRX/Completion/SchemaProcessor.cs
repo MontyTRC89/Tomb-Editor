@@ -2,9 +2,9 @@
 
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Collections.Generic;
 using System.Linq;
-using Nickelony.LanguageServer.Abstractions.Completion;
 
 namespace TombLib.Scripting.TRX.Completion;
 

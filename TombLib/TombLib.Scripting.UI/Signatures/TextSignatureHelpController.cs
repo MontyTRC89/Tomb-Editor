@@ -1,9 +1,9 @@
 #nullable enable
 
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombLib.Scripting.UI.Signatures;

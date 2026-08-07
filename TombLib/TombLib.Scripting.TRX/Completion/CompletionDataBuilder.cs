@@ -1,7 +1,7 @@
 #nullable enable
 
-using System.Collections.Generic;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System.Collections.Generic;
 
 namespace TombLib.Scripting.TRX.Completion;
 

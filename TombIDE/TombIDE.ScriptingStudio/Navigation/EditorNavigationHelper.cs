@@ -1,10 +1,10 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using System.Text.RegularExpressions;
 using TombIDE.ScriptingStudio.FindAndReplace;
-using Nickelony.LanguageServer.Abstractions.Editing;
 using TombLib.Scripting.UI.Bases;
 
 namespace TombIDE.ScriptingStudio.Navigation;

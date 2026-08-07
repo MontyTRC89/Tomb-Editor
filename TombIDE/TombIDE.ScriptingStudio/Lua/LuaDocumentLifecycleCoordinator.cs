@@ -1,13 +1,12 @@
 #nullable enable
 
 using CommunityToolkit.Mvvm.Messaging;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using System;
 using System.Linq;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Messaging;
 using TombIDE.ScriptingStudio.Shell;
-using TombLib.Scripting.Lua;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 
 namespace TombIDE.ScriptingStudio.Lua;
 

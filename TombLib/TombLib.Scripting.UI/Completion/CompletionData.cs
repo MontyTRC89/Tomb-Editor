@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -10,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.UI.Rendering;
 using TombLib.Scripting.UI.Resources;
 

@@ -1,6 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
@@ -22,7 +21,7 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
     <ProjectReference Include="..\TombLib\TombLib.csproj" />
     <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj" />
-    <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>
 </Project>

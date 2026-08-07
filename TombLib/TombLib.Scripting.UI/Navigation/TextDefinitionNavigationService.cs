@@ -1,10 +1,10 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
-using System;
 using Nickelony.LanguageServer.Abstractions.Hover;
-using TombLib.Scripting.Hover;
 using Nickelony.LanguageServer.Abstractions.Navigation;
+using System;
+using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 

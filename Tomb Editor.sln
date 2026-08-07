@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombIDE.REGSVR", "TombIDE\T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TombLib", "TombLib", "{642147AB-23FD-4715-AE26-90BE6C755FD0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.Core", "TombLib\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj", "{F3AFCF41-1F6C-46C9-920A-A19BAA0D1067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting", "TombLib\TombLib.Scripting\TombLib.Scripting.csproj", "{F3AFCF41-1F6C-46C9-920A-A19BAA0D1067}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TombLib.Scripting.UI", "TombLib\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj", "{EA375184-410A-4986-9135-EBAA26A16366}"
 EndProject

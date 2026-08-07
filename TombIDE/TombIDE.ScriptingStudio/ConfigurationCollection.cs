@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Lua;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.UI.Bases;
 

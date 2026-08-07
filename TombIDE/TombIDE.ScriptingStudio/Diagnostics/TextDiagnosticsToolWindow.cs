@@ -1,11 +1,11 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using TombIDE.ScriptingStudio.Shell;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombIDE.ScriptingStudio.Diagnostics;

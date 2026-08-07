@@ -1,4 +1,4 @@
-using TombLib.Scripting.ClassicScript.Descriptions;
+using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Text;
@@ -7,7 +7,7 @@ namespace TombLib.Scripting.ClassicScript.Navigation;
 
 public sealed class ClassicScriptReferenceDefinitionService
 {
-	private readonly ClassicScriptDescriptionArchiveService _descriptionArchiveService = new();
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
 	private readonly IClassicScriptCommandService _commandService;
 
@@ -34,7 +34,7 @@ public sealed class ClassicScriptReferenceDefinitionService
 		ReferenceType referenceType = wordType switch
 		{
 			WordType.Header => ReferenceType.OldCommand,
-			WordType.Command => _descriptionArchiveService.IsOldCommand(word) ? ReferenceType.OldCommand : ReferenceType.NewCommand,
+			WordType.Command => _commandCatalogService.IsOldCommand(word) ? ReferenceType.OldCommand : ReferenceType.NewCommand,
 			WordType.Directive => ReferenceType.NewCommand,
 			_ => ReferenceType.MnemonicConstant
 		};

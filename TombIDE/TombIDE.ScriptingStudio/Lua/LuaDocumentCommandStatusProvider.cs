@@ -1,9 +1,8 @@
+using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.ScriptingStudio.UI;
-using Nickelony.LanguageServer.Abstractions.Editing;
-using TombLib.Scripting.Lua;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
 

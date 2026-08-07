@@ -1,7 +1,9 @@
 ﻿using System.IO;
+using System.Xml.Serialization;
 using TombLib.Scripting.ClassicScript.Highlighting;
 using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Resources;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.ClassicScript
@@ -14,13 +16,20 @@ namespace TombLib.Scripting.ClassicScript
 
 		public bool ShowSectionSeparators { get; set; } = ConfigurationDefaults.ShowSectionSeparators;
 
-		public bool Tidy_PreEqualSpace { get; set; } = ConfigurationDefaults.Tidy_PreEqualSpace;
-		public bool Tidy_PostEqualSpace { get; set; } = ConfigurationDefaults.Tidy_PostEqualSpace;
+		[XmlElement("Tidy_PreEqualSpace")]
+		public bool SpaceBeforeEquals { get; set; } = ConfigurationDefaults.SpaceBeforeEquals;
 
-		public bool Tidy_PreCommaSpace { get; set; } = ConfigurationDefaults.Tidy_PreCommaSpace;
-		public bool Tidy_PostCommaSpace { get; set; } = ConfigurationDefaults.Tidy_PostCommaSpace;
+		[XmlElement("Tidy_PostEqualSpace")]
+		public bool SpaceAfterEquals { get; set; } = ConfigurationDefaults.SpaceAfterEquals;
 
-		public bool Tidy_ReduceSpaces { get; set; } = ConfigurationDefaults.Tidy_ReduceSpaces;
+		[XmlElement("Tidy_PreCommaSpace")]
+		public bool SpaceBeforeComma { get; set; } = ConfigurationDefaults.SpaceBeforeComma;
+
+		[XmlElement("Tidy_PostCommaSpace")]
+		public bool SpaceAfterComma { get; set; } = ConfigurationDefaults.SpaceAfterComma;
+
+		[XmlElement("Tidy_ReduceSpaces")]
+		public bool CollapseMultipleSpaces { get; set; } = ConfigurationDefaults.CollapseMultipleSpaces;
 
 		#endregion Properties
 
@@ -35,12 +44,12 @@ namespace TombLib.Scripting.ClassicScript
 				_selectedColorSchemeName = value;
 
 				string schemeFilePath =
-					Path.Combine(DefaultPaths.ClassicScriptColorConfigsDirectory, value + ConfigurationDefaults.ColorSchemeFileExtension);
+					Path.Combine(DefaultPaths.ClassicScriptColorConfigsDirectory, value + ScriptingDefaults.ColorSchemeFileExtension);
 
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath);
 			}
 		}
 
@@ -58,28 +67,9 @@ namespace TombLib.Scripting.ClassicScript
 			AutoCloseParentheses = false;
 			AutoCloseBraces = false;
 
-			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+			SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
 		}
 
 		#endregion Construction
-
-		#region Override methods
-
-		public override void ResetToDefaultSettings()
-		{
-			ShowSectionSeparators = ConfigurationDefaults.ShowSectionSeparators;
-
-			Tidy_PreEqualSpace = ConfigurationDefaults.Tidy_PreEqualSpace;
-			Tidy_PostEqualSpace = ConfigurationDefaults.Tidy_PostEqualSpace;
-
-			Tidy_PreCommaSpace = ConfigurationDefaults.Tidy_PreCommaSpace;
-			Tidy_PostCommaSpace = ConfigurationDefaults.Tidy_PostCommaSpace;
-
-			Tidy_ReduceSpaces = ConfigurationDefaults.Tidy_ReduceSpaces;
-
-			base.ResetToDefaultSettings();
-		}
-
-		#endregion Override methods
 	}
 }

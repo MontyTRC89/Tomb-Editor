@@ -12,67 +12,67 @@ namespace TombLib.Scripting.GameFlowScript.Services;
 /// </summary>
 public class GameFlowScriptDocumentService : IGameFlowScriptDocumentService
 {
-    private readonly IGameFlowScriptLineService _lineService;
-    private readonly Regex _levelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);
+	private readonly IGameFlowScriptLineService _lineService;
+	private readonly Regex _levelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GameFlowScriptDocumentService"/> class.
-    /// </summary>
-    public GameFlowScriptDocumentService(IGameFlowScriptLineService lineService)
-    {
-        ArgumentNullException.ThrowIfNull(lineService);
-        _lineService = lineService;
-    }
+	/// <summary>
+	/// Initializes a new instance of the <see cref="GameFlowScriptDocumentService"/> class.
+	/// </summary>
+	public GameFlowScriptDocumentService(IGameFlowScriptLineService lineService)
+	{
+		ArgumentNullException.ThrowIfNull(lineService);
+		_lineService = lineService;
+	}
 
-    /// <inheritdoc />
-    public bool IsLevelScriptDefined(ITextSnapshot source, string levelName)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(levelName);
+	/// <inheritdoc />
+	public bool IsLevelScriptDefined(ITextSnapshot source, string levelName)
+	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(levelName);
 
-        foreach (ITextLine line in source.Lines)
-        {
-            string lineText = source.GetText(line.Offset, line.Length);
+		foreach (ITextLine line in source.Lines)
+		{
+			string lineText = source.GetText(line.Offset, line.Length);
 
-            if (_levelPropertyRegex.IsMatch(lineText))
-            {
-                string scriptLevelName = _levelPropertyRegex.Replace(
-                    _lineService.RemoveComments(lineText), string.Empty).Trim();
+			if (_levelPropertyRegex.IsMatch(lineText))
+			{
+				string scriptLevelName = _levelPropertyRegex.Replace(
+					_lineService.RemoveComments(lineText), string.Empty).Trim();
 
-                if (scriptLevelName == levelName)
-                    return true;
-            }
-        }
+				if (scriptLevelName == levelName)
+					return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /// <inheritdoc />
-    public int? FindDocumentLineOfObject(ITextSnapshot source, string objectName, ObjectType type)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(objectName);
+	/// <inheritdoc />
+	public int? FindDocumentLineOfObject(ITextSnapshot source, string objectName, ObjectType type)
+	{
+		ArgumentNullException.ThrowIfNull(source);
+		ArgumentNullException.ThrowIfNull(objectName);
 
-        foreach (ITextLine line in source.Lines)
-        {
-            string lineText = source.GetText(line.Offset, line.Length);
+		foreach (ITextLine line in source.Lines)
+		{
+			string lineText = source.GetText(line.Offset, line.Length);
 
-            switch (type)
-            {
-                case ObjectType.Section:
-                    if (lineText.StartsWith(objectName, StringComparison.Ordinal))
-                        return line.LineNumber;
-                    break;
+			switch (type)
+			{
+				case ObjectType.Section:
+					if (lineText.StartsWith(objectName, StringComparison.Ordinal))
+						return line.LineNumber;
+					break;
 
-                case ObjectType.Level:
-                    string levelText = _levelPropertyRegex.Replace(lineText, string.Empty);
+				case ObjectType.Level:
+					string levelText = _levelPropertyRegex.Replace(lineText, string.Empty);
 
-                    if (levelText.StartsWith(objectName, StringComparison.Ordinal))
-                        return line.LineNumber;
-                    break;
-            }
-        }
+					if (levelText.StartsWith(objectName, StringComparison.Ordinal))
+						return line.LineNumber;
+					break;
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 }

@@ -1,8 +1,8 @@
 #nullable enable
 
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using System.Collections.Generic;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using System.Collections.Generic;
 
 namespace TombIDE.ScriptingStudio.Messaging;
 

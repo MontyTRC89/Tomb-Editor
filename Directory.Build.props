@@ -17,6 +17,13 @@
     <SharedReleaseOutputRoot Condition="'$(UseSharedOutputPath)' == 'true' and '$(MSBuildProjectName)' == 'NgXmlBuilder'">BuildNgXmlBuilderRelease</SharedReleaseOutputRoot>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Version>2.1</Version>
+    <Company>Tomb Engine Team</Company>
+    <Copyright>Copyright © Tomb Engine Team 2017 - 2026</Copyright>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Debug' and '$(UseSharedOutputPath)' == 'true'">
     <OutputPath>$(MSBuildThisFileDirectory)$(SharedDebugOutputRoot) ($(NormalizedPlatform))\</OutputPath>
   </PropertyGroup>

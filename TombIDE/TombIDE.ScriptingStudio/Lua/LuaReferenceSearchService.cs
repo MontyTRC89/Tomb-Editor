@@ -1,15 +1,14 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Editing;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Abstractions.Editing;
-using TombLib.Scripting.Lua;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
 using TombLib.Scripting.UI.Presentation;

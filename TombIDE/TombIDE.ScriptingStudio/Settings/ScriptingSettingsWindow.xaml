@@ -122,11 +122,11 @@
 
 						<GroupBox Header="Classic script formatting" Visibility="{Binding SupportsClassicFormatting, Converter={StaticResource BoolToVisibilityConverter}}">
 							<controls:SpacedStack Margin="{x:Static darkUI:Defaults.MediumThickness}" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-								<CheckBox Content="Insert space before =" IsChecked="{Binding TidyPreEqualSpace}" />
-								<CheckBox Content="Insert space after =" IsChecked="{Binding TidyPostEqualSpace}" />
-								<CheckBox Content="Insert space before ," IsChecked="{Binding TidyPreCommaSpace}" />
-								<CheckBox Content="Insert space after ," IsChecked="{Binding TidyPostCommaSpace}" />
-								<CheckBox Content="Reduce repeated spaces" IsChecked="{Binding TidyReduceSpaces}" />
+								<CheckBox Content="Insert space before =" IsChecked="{Binding SpaceBeforeEquals}" />
+								<CheckBox Content="Insert space after =" IsChecked="{Binding SpaceAfterEquals}" />
+								<CheckBox Content="Insert space before ," IsChecked="{Binding SpaceBeforeComma}" />
+								<CheckBox Content="Insert space after ," IsChecked="{Binding SpaceAfterComma}" />
+								<CheckBox Content="Reduce repeated spaces" IsChecked="{Binding CollapseMultipleSpaces}" />
 							</controls:SpacedStack>
 						</GroupBox>
 

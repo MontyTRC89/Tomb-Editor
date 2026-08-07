@@ -14,17 +14,10 @@ public sealed partial class LuaEditor
 
 	private void BindLuaIntellisenseEvents()
 	{
-		_completionController.InitializeScheduling(RequestScheduledCompletionAsync);
-
 		Document.Changed += LuaEditor_DocumentChanged;
 		IsKeyboardFocusWithinChanged += LuaEditor_IsKeyboardFocusWithinChanged;
 		Loaded += LuaEditor_Loaded;
-		TextChanged += LuaEditor_TextChanged;
-		TextArea.TextEntering += TextArea_TextEntering;
-		TextArea.TextEntered += TextArea_TextEntered;
-		AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TextEditor_KeyDown), true);
 		AddHandler(PreviewMouseDownEvent, new MouseButtonEventHandler(TextEditor_PreviewMouseDown), true);
-		AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(TextEditor_PreviewMouseLeftButtonDown), true);
 		Unloaded += LuaEditor_Unloaded;
 	}
 
@@ -34,7 +27,7 @@ public sealed partial class LuaEditor
 	private void LuaEditor_DocumentChanged(object? sender, DocumentChangeEventArgs e)
 		=> ClearDiagnostics();
 
-	private void LuaEditor_TextChanged(object? sender, EventArgs e)
+	protected override void OnLanguageTextChanged(EventArgs e)
 	{
 		_editorDocumentVersion++;
 		RebaseOpenCompletionItems();
@@ -80,7 +73,7 @@ public sealed partial class LuaEditor
 		CancelPendingCompletionRequest();
 		_hoverController.CancelPendingRequest();
 
-		_completionController.CancelTooltipUpdate();
+		CompletionController.CancelTooltipUpdate();
 
 		_definitionNavigationController.CancelPendingRequest();
 		CloseCompletionWindow();
@@ -97,7 +90,7 @@ public sealed partial class LuaEditor
 		IntellisenseProvider?.CloseDocument(FilePath);
 	}
 
-	private async void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
+	protected override async void OnLanguageTextEntering(TextCompositionEventArgs e)
 	{
 		if (!AutocompleteEnabled || !IsIntellisenseAvailable())
 			return;
@@ -112,7 +105,7 @@ public sealed partial class LuaEditor
 		}
 	}
 
-	private async void TextArea_TextEntered(object? sender, TextCompositionEventArgs e)
+	protected override async void OnLanguageTextEntered(TextCompositionEventArgs e)
 	{
 		if (!IsIntellisenseAvailable())
 			return;
@@ -252,7 +245,7 @@ public sealed partial class LuaEditor
 	private void InvalidateAsyncEditorRequests()
 	{
 		_editorRequestGeneration++;
-		_completionController.InvalidateRequests();
+		CompletionController.InvalidateRequests();
 		_hoverController.InvalidateRequests();
 		_signatureHelpController.InvalidateRequests();
 		_definitionNavigationController.InvalidateRequests();

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
@@ -24,7 +23,7 @@
     <Reference Include="Nickelony.LanguageServer.Lua">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
     <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
   </ItemGroup>

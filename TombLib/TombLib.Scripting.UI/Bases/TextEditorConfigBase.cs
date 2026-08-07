@@ -60,35 +60,5 @@ namespace TombLib.Scripting.UI.Bases
 		public bool ShowVisualTabs { get; set; } = TextEditorBaseDefaults.ShowVisualTabs;
 
 		#endregion Properties
-
-		#region Virtual methods
-
-		public virtual void ResetToDefaultSettings()
-		{
-			FontSize = TextEditorBaseDefaults.FontSize;
-			FontFamily = TextEditorBaseDefaults.FontFamily;
-
-			UndoStackSize = TextEditorBaseDefaults.UndoStackSize;
-
-			IntellisenseEnabled = TextEditorBaseDefaults.IntellisenseEnabled;
-			AutocompleteEnabled = TextEditorBaseDefaults.AutocompleteEnabled;
-			LiveErrorUnderlining = TextEditorBaseDefaults.LiveErrorUnderlining;
-			SignatureHelpPopupsEnabled = TextEditorBaseDefaults.SignatureHelpPopupsEnabled;
-
-			AutoCloseParentheses = TextEditorBaseDefaults.AutoCloseParentheses;
-			AutoCloseBraces = TextEditorBaseDefaults.AutoCloseBraces;
-			AutoCloseBrackets = TextEditorBaseDefaults.AutoCloseBrackets;
-			AutoCloseDoubleQuotes = TextEditorBaseDefaults.AutoCloseDoubleQuotes;
-			AutoCloseSingleQuotes = TextEditorBaseDefaults.AutoCloseSingleQuotes;
-
-			WordWrapping = TextEditorBaseDefaults.WordWrapping;
-
-			ShowLineNumbers = TextEditorBaseDefaults.ShowLineNumbers;
-
-			ShowVisualSpaces = TextEditorBaseDefaults.ShowVisualSpaces;
-			ShowVisualTabs = TextEditorBaseDefaults.ShowVisualTabs;
-		}
-
-		#endregion Virtual methods
 	}
 }

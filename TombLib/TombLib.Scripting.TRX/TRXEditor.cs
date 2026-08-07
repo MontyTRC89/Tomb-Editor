@@ -5,11 +5,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
-using Nickelony.LanguageServer.Abstractions.Hover;
 using TombLib.Scripting.Hover;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Diagnostics;
@@ -17,9 +14,6 @@ using TombLib.Scripting.TRX.Highlighting;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
-using TombLib.Scripting.UI.Diagnostics;
-using TombLib.Scripting.UI.Hover;
-using TombLib.Scripting.UI.Navigation;
 
 namespace TombLib.Scripting.TRX
 {
@@ -29,7 +23,6 @@ namespace TombLib.Scripting.TRX
 
 		private DocumentLine? _cachedLine;
 		private bool _suppressBracketAutospacing;
-		private readonly TextDiagnosticsCoordinator _diagnosticsCoordinator;
 
 		private readonly ITextDefinitionProvider _definitionProvider;
 		private readonly IGameflowSchemaService _schemaService;
@@ -38,9 +31,6 @@ namespace TombLib.Scripting.TRX
 		private readonly TextAnalysisService _textAnalysisService;
 		private readonly AutocompleteManager _autocompleteManager;
 		private readonly CompletionSessionCoordinator _completionCoordinator;
-		private readonly TextCompletionController _completionController;
-		private readonly TextDefinitionTriggerController _definitionTriggerController;
-		private readonly TextHoverController _hoverController;
 
 		public TRXEditor(Version engineVersion, TRXLanguageServices languageServices) : base(engineVersion)
 		{
@@ -53,38 +43,24 @@ namespace TombLib.Scripting.TRX
 			_textAnalysisService = new TextAnalysisService();
 			_autocompleteManager = new AutocompleteManager(languageServices.LineService);
 			_completionCoordinator = new CompletionSessionCoordinator(_autocompleteService, _textAnalysisService, _autocompleteManager);
-			_completionController = new TextCompletionController(this);
-			_definitionTriggerController = new TextDefinitionTriggerController(
-				this,
-				GetOffsetFromPoint,
-				(offset, cancellationToken) => Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverService, offset)));
-			_hoverController = CreateHoverController();
+
+			InitializeDefinitionNavigation((offset, cancellationToken) => Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverService, offset)));
+			InitializeHover(BuildStandardHoverRequestState, RequestHoverAsync);
 
 			var errorDetector = new ErrorDetector(languageServices.LineService);
-			_diagnosticsCoordinator = new TextDiagnosticsCoordinator(this, EngineVersion, errorDetector, errorDetector);
+			InitializeDiagnostics(EngineVersion, errorDetector, errorDetector);
 
-			BindEventMethods();
 			CommentPrefix = "//";
-		}
-
-		private void BindEventMethods()
-		{
-			TextArea.TextEntering += TextArea_TextEntering;
-			TextArea.TextEntered += TextEditor_TextEntered;
-			TextChanged += TextEditor_TextChanged;
-			AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TextEditor_KeyDown), true);
-			AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(TextEditor_PreviewMouseLeftButtonDown), true);
-			TextArea.TextView.MouseHover += TextView_MouseHover;
 		}
 
 		#region Event handlers
 
-		private void TextArea_TextEntering(object sender, TextCompositionEventArgs e)
+		protected override void OnLanguageTextEntering(TextCompositionEventArgs e)
 		{
 			if (TryHandleCtrlSpaceCompletion(
 				e,
-				() => _completionController.ApplyDecision(
-					_completionCoordinator.GetCtrlSpaceDecision(Document, CaretOffset, _completionController.ActiveWindow is not null),
+				() => CompletionController.ApplyDecision(
+					_completionCoordinator.GetCtrlSpaceDecision(Document, CaretOffset, CompletionController.ActiveWindow is not null),
 					item => new CompletionData(item, TRXCompletionIconProvider.GetImage))))
 			{
 				return;
@@ -106,34 +82,17 @@ namespace TombLib.Scripting.TRX
 			}
 		}
 
-		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
+		protected override void OnLanguageTextEntered(TextCompositionEventArgs e)
 		{
 			if (AutocompleteEnabled)
-				_completionController.ApplyDecision(
-					_completionCoordinator.GetTextEnteredDecision(Document, CaretOffset, e.Text, _completionController.ActiveWindow is not null),
+				CompletionController.ApplyDecision(
+					_completionCoordinator.GetTextEnteredDecision(Document, CaretOffset, e.Text, CompletionController.ActiveWindow is not null),
 					item => new CompletionData(item, TRXCompletionIconProvider.GetImage));
 
 			HandleBracketAutospacing();
 		}
 
-		private void TextEditor_TextChanged(object? sender, EventArgs e)
-		{
-			if (LiveErrorUnderlining)
-				_diagnosticsCoordinator.RunOnIdle(Text);
-		}
-
-		private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
-			=> await _definitionTriggerController.TryHandleKeyDownAsync(e, CaretOffset).ConfigureAwait(true);
-
-		private async void TextEditor_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
-			=> await _definitionTriggerController.TryHandlePointerNavigationAsync(e).ConfigureAwait(true);
-
-		private async void TextView_MouseHover(object? sender, MouseEventArgs e)
-			=> await _hoverController.HandleMouseHoverAsync(e).ConfigureAwait(true);
-
 		#endregion Event handlers
-
-
 
 		#region Text manipulation helpers
 
@@ -161,9 +120,6 @@ namespace TombLib.Scripting.TRX
 		#endregion Text manipulation helpers
 
 		#region Public methods
-
-		public override void TidyCode(bool trimOnly = false)
-			=> base.TidyCode(trimOnly);
 
 		public override void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 		{

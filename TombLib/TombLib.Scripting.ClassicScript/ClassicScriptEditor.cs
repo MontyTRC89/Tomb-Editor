@@ -1,5 +1,5 @@
-using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using Nickelony.LanguageServer.Abstractions.Signatures;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -8,17 +8,12 @@ using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Highlighting;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Navigation;
-using TombLib.Scripting.ClassicScript.Services;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
-using Nickelony.LanguageServer.Abstractions.Signatures;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;
-using TombLib.Scripting.UI.Diagnostics;
-using TombLib.Scripting.UI.Navigation;
 using TombLib.Scripting.UI.Signatures;
 using TombLib.Scripting.UI.Text;
 
@@ -65,10 +60,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Fields
 
-		private TextDiagnosticsCoordinator _diagnosticsCoordinator;
 		private readonly ClassicScriptCompletionSessionCoordinator _completionCoordinator;
-		private readonly TextCompletionController _completionController;
-		private readonly TextDefinitionTriggerController _definitionTriggerController;
 		private readonly ClassicScriptHoverController _hoverController;
 
 		private IBackgroundRenderer _sectionRenderer;
@@ -86,25 +78,15 @@ namespace TombLib.Scripting.ClassicScript
 				languageServices.LineService,
 				languageServices.CommandService,
 				new ClassicScriptMnemonicCatalogService());
-			_completionController = new TextCompletionController(this);
-			_definitionTriggerController = new TextDefinitionTriggerController(this, GetOffsetFromPoint, TryNavigateDefinitionAsync);
 			_hoverController = new ClassicScriptHoverController(this);
-			InitializeBackgroundWorkers();
+
+			InitializeDefinitionNavigation((offset, cancellationToken) => TryNavigateDefinitionAsync(offset, cancellationToken));
+			InitializeHover(_hoverController.BuildRequestState, _hoverController.RequestAsync, _hoverController.ApplyHoverState);
+			InitializeDiagnostics(new Version(1, 3, 0, 7), _languageServices.ErrorDetector, _languageServices.ErrorDetector);
+
 			InitializeRenderers();
 
-			BindEventMethods();
-
 			CommentPrefix = ";";
-		}
-
-		[MemberNotNull(nameof(_diagnosticsCoordinator))]
-		private void InitializeBackgroundWorkers()
-		{
-			_diagnosticsCoordinator = new TextDiagnosticsCoordinator(
-				this,
-				new Version(1, 3, 0, 7),
-				_languageServices.ErrorDetector,
-				_languageServices.ErrorDetector);
 		}
 
 		[MemberNotNull(nameof(_sectionRenderer))]
@@ -116,63 +98,37 @@ namespace TombLib.Scripting.ClassicScript
 				TextArea.TextView.BackgroundRenderers.Add(_sectionRenderer);
 		}
 
-		private void BindEventMethods()
-		{
-			TextArea.TextEntering += TextArea_TextEntering;
-			TextArea.TextEntered += TextEditor_TextEntered;
-			TextChanged += TextEditor_TextChanged;
-
-			AddHandler(PreviewKeyDownEvent, new KeyEventHandler(TextEditor_KeyDown), true);
-			AddHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(TextEditor_PreviewMouseLeftButtonDown), true);
-			MouseHover += TextEditor_MouseHover;
-		}
-
 		#endregion Construction
 
 		#region Events
 
-		private void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
+		protected override void OnLanguageTextEntering(TextCompositionEventArgs e)
 		{
 			if (!SuppressAutocomplete)
 				TryHandleCtrlSpaceCompletion(e, QueueCtrlSpaceCompletionDecision);
 		}
 
-		private void TextEditor_TextEntered(object? sender, TextCompositionEventArgs e)
+		protected override void OnLanguageTextEntered(TextCompositionEventArgs e)
 		{
 			if (AutocompleteEnabled && !SuppressAutocomplete)
 				QueueTextEnteredCompletionDecision(e.Text);
 		}
-
-		private void TextEditor_TextChanged(object? sender, EventArgs e)
-		{
-			if (LiveErrorUnderlining)
-				_diagnosticsCoordinator.RunOnIdle(Text);
-		}
-
-		private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
-			=> await _definitionTriggerController.TryHandleKeyDownAsync(e, CaretOffset).ConfigureAwait(true);
-
-		private async void TextEditor_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
-			=> await _definitionTriggerController.TryHandlePointerNavigationAsync(e).ConfigureAwait(true);
-
-		private async void TextEditor_MouseHover(object? sender, MouseEventArgs e)
-			=> await _hoverController.HandleMouseHoverAsync(e).ConfigureAwait(true);
 
 		#endregion Events
 
 		#region Autocomplete
 
 		private void QueueCtrlSpaceCompletionDecision()
-			=> QueueCompletionDecision(_completionCoordinator.GetCtrlSpaceDecisionAsync(Text, FilePath, CaretOffset, _completionController.ActiveWindow is not null));
+			=> QueueCompletionDecision(_completionCoordinator.GetCtrlSpaceDecisionAsync(Text, FilePath, CaretOffset, CompletionController.ActiveWindow is not null));
 
 		private void QueueTextEnteredCompletionDecision(string inputText)
-			=> QueueCompletionDecision(_completionCoordinator.GetTextEnteredDecisionAsync(Text, FilePath, CaretOffset, inputText, _completionController.ActiveWindow is not null));
+			=> QueueCompletionDecision(_completionCoordinator.GetTextEnteredDecisionAsync(Text, FilePath, CaretOffset, inputText, CompletionController.ActiveWindow is not null));
 
 		private void QueueCompletionDecision(Task<TextCompletionSessionDecision> decisionTask)
 		{
 			string requestText = Text;
 			int requestCaretOffset = CaretOffset;
-			int requestToken = _completionController.BeginRequest();
+			int requestToken = CompletionController.BeginRequest();
 			_ = ApplyCompletionDecisionAsync(decisionTask, requestText, requestCaretOffset, requestToken);
 		}
 
@@ -184,8 +140,8 @@ namespace TombLib.Scripting.ClassicScript
 		{
 			TextCompletionSessionDecision decision = await decisionTask;
 
-			if (!_completionController.IsRequestCurrent(requestToken)
-				|| _completionController.ActiveWindow is not null
+			if (!CompletionController.IsRequestCurrent(requestToken)
+				|| CompletionController.ActiveWindow is not null
 				|| decision.Items is null
 				|| !decision.StartOffset.HasValue
 				|| !decision.EndOffset.HasValue
@@ -195,17 +151,12 @@ namespace TombLib.Scripting.ClassicScript
 				return;
 			}
 
-			_completionController.ApplyDecision(decision, item => new CompletionData(item, ClassicScriptCompletionIconProvider.GetImage));
+			CompletionController.ApplyDecision(decision, item => new CompletionData(item, ClassicScriptCompletionIconProvider.GetImage));
 		}
 
 		#endregion Autocomplete
 
-		#region Error handling
-
-		public void CheckForErrors()
-		{
-			_diagnosticsCoordinator.CheckAsync(Text);
-		}
+		#region Navigation
 
 		private Task<bool> TryNavigateDefinitionAsync(int offset, CancellationToken cancellationToken)
 		{
@@ -218,11 +169,7 @@ namespace TombLib.Scripting.ClassicScript
 			return Task.FromResult(false);
 		}
 
-		#endregion Error handling
-
-		#region Other public methods
-
-		#endregion Other public methods
+		#endregion Navigation
 
 		// TODO: Refactor
 
@@ -249,11 +196,11 @@ namespace TombLib.Scripting.ClassicScript
 
 			ShowSectionSeparators = config.ShowSectionSeparators;
 
-			Formatter.PreEqualSpace = config.Tidy_PreEqualSpace;
-			Formatter.PostEqualSpace = config.Tidy_PostEqualSpace;
-			Formatter.PreCommaSpace = config.Tidy_PreCommaSpace;
-			Formatter.PostCommaSpace = config.Tidy_PostCommaSpace;
-			Formatter.ReduceSpaces = config.Tidy_ReduceSpaces;
+			Formatter.SpaceBeforeEquals = config.SpaceBeforeEquals;
+			Formatter.SpaceAfterEquals = config.SpaceAfterEquals;
+			Formatter.SpaceBeforeComma = config.SpaceBeforeComma;
+			Formatter.SpaceAfterComma = config.SpaceAfterComma;
+			Formatter.CollapseMultipleSpaces = config.CollapseMultipleSpaces;
 
 			base.UpdateSettings(configuration);
 		}

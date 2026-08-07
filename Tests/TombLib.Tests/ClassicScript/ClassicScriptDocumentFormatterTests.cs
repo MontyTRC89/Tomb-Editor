@@ -10,11 +10,11 @@ public class ClassicScriptDocumentFormatterTests
 	{
 		var formatter = new ClassicScriptDocumentFormatter
 		{
-			PreEqualSpace = true,
-			PostEqualSpace = true,
-			PreCommaSpace = false,
-			PostCommaSpace = true,
-			ReduceSpaces = false
+			SpaceBeforeEquals = true,
+			SpaceAfterEquals = true,
+			SpaceBeforeComma = false,
+			SpaceAfterComma = true,
+			CollapseMultipleSpaces = false
 		};
 
 		string formatted = formatter.FormatDocument("Customize= CUST_BAR,foo   \r\nLegend =1\t");
@@ -27,11 +27,11 @@ public class ClassicScriptDocumentFormatterTests
 	{
 		var formatter = new ClassicScriptDocumentFormatter
 		{
-			PreEqualSpace = false,
-			PostEqualSpace = false,
-			PreCommaSpace = false,
-			PostCommaSpace = false,
-			ReduceSpaces = false
+			SpaceBeforeEquals = false,
+			SpaceAfterEquals = false,
+			SpaceBeforeComma = false,
+			SpaceAfterComma = false,
+			CollapseMultipleSpaces = false
 		};
 
 		string formatted = formatter.FormatDocument("Legend = 1   \r\nCustomize = CUST_BAR, foo\t", trimOnly: true);

@@ -1,39 +1,50 @@
 #nullable enable
 
+using System.Data;
 using System.IO;
-using System.Xml.Linq;
 using TombLib.Scripting.ClassicScript.Mnemonics.Models;
+using TombLib.Scripting.ClassicScript.ReferenceTables;
 
 namespace TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
 public sealed class MnemonicDefinitionsLoader
 {
-	public MnemonicDefinitions Load(string mnemonicConstantsXmlPath, string pluginScriptsDirectoryPath)
+	private readonly ClassicScriptReferenceTableLoader _referenceTableLoader = new();
+
+	public MnemonicDefinitions Load(string mnemonicConstantsJsonPath, string pluginScriptsDirectoryPath)
 		=> new MnemonicDefinitions(
-			LoadStandardConstants(mnemonicConstantsXmlPath),
+			LoadStandardConstants(mnemonicConstantsJsonPath),
 			LoadPluginMnemonics(pluginScriptsDirectoryPath));
 
-	private static IReadOnlyList<MnemonicConstantDefinition> LoadStandardConstants(string mnemonicConstantsXmlPath)
+	private IReadOnlyList<MnemonicConstantDefinition> LoadStandardConstants(string mnemonicConstantsJsonPath)
 	{
 		try
 		{
-			var document = XDocument.Load(mnemonicConstantsXmlPath);
-			var definitions = document.Root?
-				.Elements("row")
-				.Select(row => new MnemonicConstantDefinition(
-					row.Element("decimal")?.Value ?? string.Empty,
-					row.Element("hex")?.Value ?? string.Empty,
-					row.Element("flag")?.Value ?? string.Empty))
-				.Where(definition => !string.IsNullOrWhiteSpace(definition.FlagName))
-				.ToList();
+			DataTable table = _referenceTableLoader.Load(mnemonicConstantsJsonPath);
 
-			return definitions ?? [];
+			var definitions = new List<MnemonicConstantDefinition>();
+
+			foreach (DataRow row in table.Rows)
+			{
+				var definition = new MnemonicConstantDefinition(
+					CellText(row["decimal"]),
+					CellText(row["hex"]),
+					CellText(row["flag"]));
+
+				if (!string.IsNullOrWhiteSpace(definition.FlagName))
+					definitions.Add(definition);
+			}
+
+			return definitions;
 		}
 		catch (Exception)
 		{
 			return [];
 		}
 	}
+
+	private static string CellText(object? value)
+		=> value is null || value == DBNull.Value ? string.Empty : value.ToString() ?? string.Empty;
 
 	private static IReadOnlyList<PluginMnemonicDefinition> LoadPluginMnemonics(string pluginScriptsDirectoryPath)
 	{

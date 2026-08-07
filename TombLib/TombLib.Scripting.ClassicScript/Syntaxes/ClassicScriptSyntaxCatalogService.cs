@@ -1,18 +1,19 @@
 #nullable enable
 
+using TombLib.Scripting.ClassicScript.Commands;
+
 namespace TombLib.Scripting.ClassicScript.Syntaxes;
 
 public sealed class ClassicScriptSyntaxCatalogService
 {
-	private readonly ClassicScriptSyntaxDefinitionsLoader _loader;
+	private readonly ClassicScriptCommandsLoader _loader;
 	private readonly Lazy<ClassicScriptSyntaxCatalogSnapshot> _snapshot;
 
 	public ClassicScriptSyntaxCatalogService()
-		: this(new ClassicScriptSyntaxDefinitionsLoader())
-	{
-	}
+		: this(new ClassicScriptCommandsLoader())
+	{ }
 
-	internal ClassicScriptSyntaxCatalogService(ClassicScriptSyntaxDefinitionsLoader loader)
+	internal ClassicScriptSyntaxCatalogService(ClassicScriptCommandsLoader loader)
 	{
 		_loader = loader ?? throw new ArgumentNullException(nameof(loader));
 		_snapshot = new Lazy<ClassicScriptSyntaxCatalogSnapshot>(LoadSnapshot);
@@ -45,20 +46,71 @@ public sealed class ClassicScriptSyntaxCatalogService
 
 	private ClassicScriptSyntaxCatalogSnapshot LoadSnapshot()
 	{
-		IReadOnlyList<ClassicScriptSyntaxDefinition> customizeSyntaxes = _loader.Load(ClassicScriptResourcePaths.GetSyntaxPath("CustSyntaxes.resx"));
-		IReadOnlyList<ClassicScriptSyntaxDefinition> newCommandSyntaxes = _loader.Load(ClassicScriptResourcePaths.GetSyntaxPath("NewCommandSyntaxes.resx"));
-		IReadOnlyList<ClassicScriptSyntaxDefinition> oldCommandSyntaxes = _loader.Load(ClassicScriptResourcePaths.GetSyntaxPath("OldCommandSyntaxes.resx"));
-		IReadOnlyList<ClassicScriptSyntaxDefinition> parameterSyntaxes = _loader.Load(ClassicScriptResourcePaths.GetSyntaxPath("ParamSyntaxes.resx"));
+		ClassicScriptCommandsCatalog catalog = _loader.Load();
 
-		var commandDefinitions = new List<ClassicScriptSyntaxDefinition>(oldCommandSyntaxes.Count + newCommandSyntaxes.Count);
-		commandDefinitions.AddRange(oldCommandSyntaxes);
-		commandDefinitions.AddRange(newCommandSyntaxes);
+		// Keep the legacy ordering: old command syntaxes first, then new command syntaxes.
+		IReadOnlyList<ClassicScriptSyntaxDefinition> oldCommandDefinitions = CreateDefinitions(catalog, ClassicScriptCommandKind.Old);
+		IReadOnlyList<ClassicScriptSyntaxDefinition> newCommandDefinitions = CreateDefinitions(catalog, ClassicScriptCommandKind.New);
+
+		var commandDefinitions = new List<ClassicScriptSyntaxDefinition>(oldCommandDefinitions.Count + newCommandDefinitions.Count);
+		commandDefinitions.AddRange(oldCommandDefinitions);
+		commandDefinitions.AddRange(newCommandDefinitions);
 
 		return new ClassicScriptSyntaxCatalogSnapshot(
 			commandDefinitions,
 			ToLookup(commandDefinitions),
-			ToLookup(customizeSyntaxes),
-			ToLookup(parameterSyntaxes));
+			ToLookup(CreateDefinitions(catalog, ClassicScriptCommandKind.Customize)),
+			ToLookup(CreateDefinitions(catalog, ClassicScriptCommandKind.Parameter)));
+	}
+
+	private static IReadOnlyList<ClassicScriptSyntaxDefinition> CreateDefinitions(
+		ClassicScriptCommandsCatalog catalog,
+		ClassicScriptCommandKind kind)
+	{
+		var definitions = new List<ClassicScriptSyntaxDefinition>();
+
+		foreach (ClassicScriptCommandEntry entry in catalog.Commands)
+		{
+			if (entry.Kind != kind)
+				continue;
+
+			foreach (ClassicScriptSyntaxEntry syntax in entry.Syntaxes)
+				definitions.Add(CreateDefinition(syntax.Key, syntax.Text));
+		}
+
+		return definitions;
+	}
+
+	private static ClassicScriptSyntaxDefinition CreateDefinition(string key, string syntaxText) => new(
+		key,
+		syntaxText,
+		GetApplicableSection(syntaxText),
+		GetArgumentCount(syntaxText),
+		ContainsArrayArgument(syntaxText));
+
+	private static bool ContainsArrayArgument(string syntaxText)
+		=> syntaxText.Contains("ARRAY", StringComparison.OrdinalIgnoreCase);
+
+	private static string GetApplicableSection(string syntaxText)
+	{
+		int sectionStart = syntaxText.IndexOf('[');
+		int sectionEnd = syntaxText.IndexOf(']');
+
+		if (sectionStart < 0 || sectionEnd <= sectionStart)
+			return string.Empty;
+
+		return syntaxText.Substring(sectionStart + 1, sectionEnd - sectionStart - 1).Trim();
+	}
+
+	private static int GetArgumentCount(string syntaxText)
+	{
+		int sectionEnd = syntaxText.IndexOf(']');
+		string argumentsText = sectionEnd >= 0 ? syntaxText[(sectionEnd + 1)..].Trim() : syntaxText.Trim();
+
+		if (string.IsNullOrWhiteSpace(argumentsText))
+			return 0;
+
+		return argumentsText.Split(',').Length;
 	}
 
 	private static IReadOnlyDictionary<string, ClassicScriptSyntaxDefinition> ToLookup(IReadOnlyList<ClassicScriptSyntaxDefinition> definitions)

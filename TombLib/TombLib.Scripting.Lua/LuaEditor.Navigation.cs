@@ -6,7 +6,7 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
-	private async void TextEditor_KeyDown(object? sender, KeyEventArgs e)
+	protected override void OnLanguageKeyDown(KeyEventArgs e)
 	{
 		if (e.Key == Key.Escape && (IsCompletionWindowOpen || _signatureHelpController.IsVisible || _specialToolTip.IsOpen))
 		{
@@ -19,7 +19,7 @@ public sealed partial class LuaEditor
 		if (_signatureHelpController.IsVisible && (e.Key == Key.Back || e.Key == Key.Delete))
 			ScheduleSignatureHelpRefresh();
 
-		await _definitionTriggerController.TryHandleKeyDownAsync(e, CaretOffset).ConfigureAwait(true);
+		base.OnLanguageKeyDown(e);
 	}
 
 	private void TextEditor_PreviewMouseDown(object? sender, MouseButtonEventArgs e)
@@ -30,9 +30,6 @@ public sealed partial class LuaEditor
 			DismissTransientToolTips();
 		}
 	}
-
-	private async void TextEditor_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
-		=> await _definitionTriggerController.TryHandlePointerNavigationAsync(e).ConfigureAwait(true);
 
 	/// <summary>
 	/// Attempts to resolve and navigate to the symbol definition at the current caret position.

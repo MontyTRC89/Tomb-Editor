@@ -1,10 +1,10 @@
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Lua.Completion;
 using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Parsing;
@@ -17,15 +17,15 @@ public sealed partial class LuaEditor
 {
 	private void CloseCompletionWindow()
 	{
-		_completionController.InvalidateRequests();
-		_completionController.CloseWindow();
+		CompletionController.InvalidateRequests();
+		CompletionController.CloseWindow();
 	}
 
 	private void ScheduleCompletionRequest()
-		=> _completionController.ScheduleRequest();
+		=> CompletionController.ScheduleRequest();
 
 	private void CancelPendingCompletionRequest()
-		=> _completionController.CancelPendingRequest();
+		=> CompletionController.CancelPendingRequest();
 
 	private Task RequestCompletionAsync(int offset, char? triggerCharacter)
 		=> RequestCompletionAsyncCore(offset, triggerCharacter);
@@ -35,7 +35,7 @@ public sealed partial class LuaEditor
 			item.RequestGeneration, _editorRequestGeneration, IsLoaded, IsIntellisenseAvailable());
 
 	private void RebaseOpenCompletionItems()
-		=> _completionController.RebaseOpenCompletionItems(_editorDocumentVersion, _editorRequestGeneration);
+		=> CompletionController.RebaseOpenCompletionItems(_editorDocumentVersion, _editorRequestGeneration);
 
 	private static bool IsCompletionItemCurrent(int? requestDocumentVersion,
 		int currentDocumentVersion,
@@ -58,7 +58,7 @@ public sealed partial class LuaEditor
 	}
 
 	private void ScheduleCloseIfEmpty()
-		=> _completionController.ScheduleCloseIfEmpty();
+		=> CompletionController.ScheduleCloseIfEmpty();
 
 	private async Task RequestScheduledCompletionAsync()
 	{
@@ -74,7 +74,7 @@ public sealed partial class LuaEditor
 	private async Task RequestCompletionAsyncCore(int offset, char? triggerCharacter)
 	{
 		CancellationToken cancellationToken = CancellationToken.None;
-		int requestToken = _completionController.BeginRequest();
+		int requestToken = CompletionController.BeginRequest();
 		int requestDocumentVersion = _editorDocumentVersion;
 		int requestGeneration = _editorRequestGeneration;
 
@@ -112,7 +112,7 @@ public sealed partial class LuaEditor
 				return;
 
 			(int startOffset, int endOffset) = GetCompletionWindowOffsets(offset);
-			_completionController.OpenOrRefresh(completionDataItems, startOffset, endOffset);
+			CompletionController.OpenOrRefresh(completionDataItems, startOffset, endOffset);
 		}
 		catch (OperationCanceledException)
 		{
@@ -125,7 +125,7 @@ public sealed partial class LuaEditor
 	}
 
 	private bool IsCompletionRequestCurrent(CancellationToken cancellationToken, int requestToken, int requestDocumentVersion, int requestGeneration)
-		=> _completionController.IsRequestCurrent(requestToken)
+		=> CompletionController.IsRequestCurrent(requestToken)
 			&& IsAsyncEditorResultCurrent(cancellationToken, requestToken, requestToken, requestDocumentVersion, requestGeneration);
 
 	private CompletionData[] CreateCompletionDataItems(IReadOnlyList<TextCompletionItem> items, int requestDocumentVersion, int requestGeneration)

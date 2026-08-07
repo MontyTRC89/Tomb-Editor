@@ -1,6 +1,8 @@
 #nullable enable
 
 using CommunityToolkit.Mvvm.Messaging;
+using Nickelony.LanguageServer.Abstractions;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,11 +29,8 @@ using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared;
 using TombIDE.Shared.Messaging.Scripting;
 using TombLib.Forms;
-using Nickelony.LanguageServer.Abstractions;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Lua;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;

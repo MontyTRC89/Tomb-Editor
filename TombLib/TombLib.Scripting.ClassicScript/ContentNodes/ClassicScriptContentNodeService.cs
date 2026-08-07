@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Text;
@@ -8,6 +9,7 @@ namespace TombLib.Scripting.ClassicScript.ContentNodes;
 internal sealed class ClassicScriptContentNodeService
 {
 	private readonly IClassicScriptLineService _lineService;
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
 	public ClassicScriptContentNodeService(IClassicScriptLineService lineService)
 	{
@@ -89,7 +91,7 @@ internal sealed class ClassicScriptContentNodeService
 		bool isLevelHeader = headerText.Equals("Level", StringComparison.OrdinalIgnoreCase);
 
 		if (isLevelHeader
-			|| !ClassicScriptKeywords.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
+			|| !_commandCatalogService.Sections.Any(x => x.Equals(headerText, StringComparison.OrdinalIgnoreCase))
 			|| !headerText.Contains(filter, StringComparison.OrdinalIgnoreCase))
 		{
 			return null;

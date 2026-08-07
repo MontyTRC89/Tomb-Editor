@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Diagnostics;

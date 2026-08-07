@@ -1,9 +1,9 @@
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using Nickelony.LanguageServer.Abstractions.Hover;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
-using Nickelony.LanguageServer.Abstractions.Hover;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Rendering;

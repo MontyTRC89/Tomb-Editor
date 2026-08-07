@@ -1,9 +1,10 @@
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Extensions;
 using TombLib.Scripting.Text;
@@ -14,6 +15,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 {
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
 	public ClassicScriptCompletionProvider(
 		IClassicScriptCommandService commandService,
@@ -45,9 +47,9 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 		var items = new List<TextCompletionItem>();
 
-		AddItems(items, ClassicScriptKeywords.OldCommands, "=", TextCompletionItemKind.OldCommand);
-		AddItems(items, ClassicScriptKeywords.NewCommands, "=", TextCompletionItemKind.NewCommand);
-		AddItems(items, ClassicScriptKeywords.Sections.Select(section => $"[{section}]"), string.Empty, TextCompletionItemKind.Section);
+		AddItems(items, _commandCatalogService.OldCommands, "=", TextCompletionItemKind.OldCommand);
+		AddItems(items, _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#')), "=", TextCompletionItemKind.NewCommand);
+		AddItems(items, _commandCatalogService.Sections.Select(section => $"[{section}]"), string.Empty, TextCompletionItemKind.Section);
 
 		items.Add(CreateItem("#INCLUDE ", "#INCLUDE ", TextCompletionItemKind.Directive));
 		items.Add(CreateItem("#DEFINE ", "#DEFINE ", TextCompletionItemKind.Directive));

@@ -1,6 +1,9 @@
 ﻿namespace TombLib.Scripting.UI.Resources
 {
-	public struct TextEditorBaseDefaults
+	/// <summary>
+	/// Defines default values used by the base text editor configuration.
+	/// </summary>
+	public static class TextEditorBaseDefaults
 	{
 		public const double FontSize = 16d;
 		public const string FontFamily = "Consolas";

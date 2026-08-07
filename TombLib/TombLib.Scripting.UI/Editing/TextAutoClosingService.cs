@@ -1,7 +1,9 @@
 #nullable enable
 
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using System;
+using System.Windows.Input;
 
 namespace TombLib.Scripting.UI.Editing;
 
@@ -35,6 +37,37 @@ internal sealed class TextAutoClosingService
 			return true;
 
 		return TryGetAction(inputText, "'", options.AutoCloseSingleQuotes, options.SingleQuotesClosingString, document, caretOffset, true, out action);
+	}
+
+	public void HandleTextEntering(
+		TextEditor editor,
+		TextCompositionEventArgs e,
+		TextAutoClosingOptions options,
+		Action<string>? onElementSkipped = null)
+	{
+		if (!TryGetAction(editor.Document, editor.CaretOffset, e.Text, options, out TextAutoClosingAction action))
+			return;
+
+		ApplyAction(editor, e, action, onElementSkipped);
+	}
+
+	private static void ApplyAction(TextEditor editor, TextCompositionEventArgs e, TextAutoClosingAction action, Action<string>? onElementSkipped)
+	{
+		switch (action.Kind)
+		{
+			case TextAutoClosingActionKind.InsertClosingElement:
+				editor.SelectedText += action.Element;
+				editor.CaretOffset -= action.Element.Length;
+				editor.SelectionStart = editor.CaretOffset;
+				editor.SelectionLength = 0;
+				break;
+
+			case TextAutoClosingActionKind.SkipExistingClosingElement:
+				editor.CaretOffset++;
+				e.Handled = true;
+				onElementSkipped?.Invoke(action.Element);
+				break;
+		}
 	}
 
 	private static bool TryGetAction(

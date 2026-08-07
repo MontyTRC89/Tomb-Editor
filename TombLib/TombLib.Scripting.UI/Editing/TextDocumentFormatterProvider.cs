@@ -1,9 +1,9 @@
 #nullable enable
 
+using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Abstractions.Editing;
 using TombLib.Scripting.UI.Cleaning;
 
 namespace TombLib.Scripting.UI.Editing;

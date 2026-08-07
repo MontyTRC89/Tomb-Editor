@@ -1,7 +1,7 @@
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 
 namespace TombLib.Scripting.Lua;
 

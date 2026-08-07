@@ -1,11 +1,11 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using Nickelony.LanguageServer.Abstractions.Editing;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
 

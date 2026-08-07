@@ -1,4 +1,5 @@
-﻿using TombLib.Scripting.ClassicScript.Resources;
+﻿using System.Text;
+using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Extensions;
 using TombLib.Scripting.UI.Cleaning;
 
@@ -6,13 +7,13 @@ namespace TombLib.Scripting.ClassicScript.Cleaning;
 
 public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 {
-	public bool PreEqualSpace { get; set; } = ConfigurationDefaults.Tidy_PreEqualSpace;
-	public bool PostEqualSpace { get; set; } = ConfigurationDefaults.Tidy_PostEqualSpace;
+	public bool SpaceBeforeEquals { get; set; } = ConfigurationDefaults.SpaceBeforeEquals;
+	public bool SpaceAfterEquals { get; set; } = ConfigurationDefaults.SpaceAfterEquals;
 
-	public bool PreCommaSpace { get; set; } = ConfigurationDefaults.Tidy_PreCommaSpace;
-	public bool PostCommaSpace { get; set; } = ConfigurationDefaults.Tidy_PostCommaSpace;
+	public bool SpaceBeforeComma { get; set; } = ConfigurationDefaults.SpaceBeforeComma;
+	public bool SpaceAfterComma { get; set; } = ConfigurationDefaults.SpaceAfterComma;
 
-	public bool ReduceSpaces { get; set; } = ConfigurationDefaults.Tidy_ReduceSpaces;
+	public bool CollapseMultipleSpaces { get; set; } = ConfigurationDefaults.CollapseMultipleSpaces;
 
 	public string FormatDocument(string editorContent, bool trimOnly = false)
 	{
@@ -39,7 +40,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 
 	private string FormatLine(string line)
 	{
-		var builder = new System.Text.StringBuilder(line.Length);
+		var builder = new StringBuilder(line.Length);
 
 		for (int index = 0; index < line.Length; index++)
 		{
@@ -54,7 +55,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 				continue;
 			}
 
-			if (ReduceSpaces && currentChar == ' ' && builder.Length > 0 && builder[builder.Length - 1] == ' ')
+			if (CollapseMultipleSpaces && currentChar == ' ' && builder.Length > 0 && builder[builder.Length - 1] == ' ')
 				continue;
 
 			builder.Append(currentChar);
@@ -63,12 +64,12 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 		return builder.ToString();
 	}
 
-	private void ApplySpacingBeforeToken(System.Text.StringBuilder builder, char token)
+	private void ApplySpacingBeforeToken(StringBuilder builder, char token)
 	{
 		while (builder.Length > 0 && builder[builder.Length - 1] == ' ')
 			builder.Length--;
 
-		bool needsSpace = token == '=' ? PreEqualSpace : PreCommaSpace;
+		bool needsSpace = token == '=' ? SpaceBeforeEquals : SpaceBeforeComma;
 
 		if (needsSpace && builder.Length > 0)
 			builder.Append(' ');
@@ -76,7 +77,7 @@ public sealed class ClassicScriptDocumentFormatter : ITextDocumentFormatter
 
 	private void ApplySpacingAfterToken(System.Text.StringBuilder builder, char token, string line, int nextIndex)
 	{
-		bool needsSpace = token == '=' ? PostEqualSpace : PostCommaSpace;
+		bool needsSpace = token == '=' ? SpaceAfterEquals : SpaceAfterComma;
 
 		if (!needsSpace || nextIndex >= line.Length)
 			return;

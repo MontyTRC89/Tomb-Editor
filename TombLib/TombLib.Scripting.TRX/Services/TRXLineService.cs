@@ -10,17 +10,17 @@ namespace TombLib.Scripting.TRX.Services;
 /// </summary>
 public class TRXLineService : ITRXLineService
 {
-    private const string CommentDelimiter = "//";
+	private const string CommentDelimiter = "//";
 
-    /// <inheritdoc />
-    public string RemoveComments(string lineText)
-        => LineCommentHelper.RemoveLineComment(lineText, CommentDelimiter);
+	/// <inheritdoc />
+	public string RemoveComments(string lineText)
+		=> LineCommentHelper.RemoveLineComment(lineText, CommentDelimiter);
 
-    /// <inheritdoc />
-    public string EscapeComments(string lineText)
-        => LineCommentHelper.MaskLineComment(lineText, CommentDelimiter);
+	/// <inheritdoc />
+	public string EscapeComments(string lineText)
+		=> LineCommentHelper.MaskLineComment(lineText, CommentDelimiter);
 
-    /// <inheritdoc />
-    public bool IsEmptyOrComments(string? lineText)
-        => string.IsNullOrWhiteSpace(lineText) || lineText!.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
+	/// <inheritdoc />
+	public bool IsEmptyOrComments(string? lineText)
+		=> string.IsNullOrWhiteSpace(lineText) || lineText!.TrimStart().StartsWith(CommentDelimiter, StringComparison.Ordinal);
 }

@@ -1,5 +1,6 @@
 #nullable enable
 
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Text;
@@ -58,6 +59,16 @@ internal sealed class TextLineCommentService
 			Math.Max(0, replacementText.Length - 1));
 
 		return true;
+	}
+
+	public void ApplyEdit(TextEditor editor, string commentPrefix, TextLineCommentAction action)
+	{
+		if (!TryCreateEdit(editor.Document, editor.SelectionStart, editor.SelectionLength, commentPrefix, action, out TextLineCommentEdit edit))
+			return;
+
+		editor.Select(edit.ReplaceOffset, edit.ReplaceLength);
+		editor.SelectedText = edit.ReplacementText;
+		editor.Select(edit.SelectionStart, edit.SelectionLength);
 	}
 
 	private static bool ShouldUncommentSelectedLines(TextDocument document, DocumentLine startLine, DocumentLine endLine, string commentPrefix)

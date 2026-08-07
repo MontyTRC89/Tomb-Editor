@@ -9,16 +9,16 @@ namespace TombLib.Scripting.GameFlowScript.Services;
 /// </summary>
 public interface IGameFlowScriptDocumentService
 {
-    /// <summary>
-    /// Returns <c>true</c> when a level property line with the given <paramref name="levelName"/>
-    /// exists in the document. Matches legacy <c>DocumentParser.IsLevelScriptDefined</c> behavior.
-    /// </summary>
-    bool IsLevelScriptDefined(ITextSnapshot source, string levelName);
+	/// <summary>
+	/// Returns <c>true</c> when a level property line with the given <paramref name="levelName"/>
+	/// exists in the document. Matches legacy <c>DocumentParser.IsLevelScriptDefined</c> behavior.
+	/// </summary>
+	bool IsLevelScriptDefined(ITextSnapshot source, string levelName);
 
-    /// <summary>
-    /// Finds the one-based line number of a section header or level property line
-    /// matching the given <paramref name="objectName"/>. Returns <c>null</c> when
-    /// no matching line is found.
-    /// </summary>
-    int? FindDocumentLineOfObject(ITextSnapshot source, string objectName, ObjectType type);
+	/// <summary>
+	/// Finds the one-based line number of a section header or level property line
+	/// matching the given <paramref name="objectName"/>. Returns <c>null</c> when
+	/// no matching line is found.
+	/// </summary>
+	int? FindDocumentLineOfObject(ITextSnapshot source, string objectName, ObjectType type);
 }

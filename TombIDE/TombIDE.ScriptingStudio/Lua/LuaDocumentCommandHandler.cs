@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.UI;
-using TombLib.Scripting.Lua;
 
 namespace TombIDE.ScriptingStudio.Lua;
 

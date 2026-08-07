@@ -12,6 +12,6 @@ public sealed class ClassicScriptReferenceTableService
 	{
 		ArgumentNullException.ThrowIfNull(tableName);
 
-		return _loader.Load(ClassicScriptResourcePaths.GetReferenceTablePath(tableName + ".xml"));
+		return _loader.Load(ClassicScriptResourcePaths.GetReferenceTablePath(tableName + ".json"));
 	}
 }

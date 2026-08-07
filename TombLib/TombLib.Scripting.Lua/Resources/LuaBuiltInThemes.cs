@@ -11,8 +11,8 @@ internal static class LuaBuiltInThemes
 	public const string DefaultThemeName = "SharpLua Classic";
 	public const string DefaultThemeAlias = "SharpLua";
 
-	public const string DefaultEditorBackground = LuaBuiltInTextMateThemeDefaults.DefaultEditorBackground;
-	public const string DefaultEditorForeground = LuaBuiltInTextMateThemeDefaults.DefaultEditorForeground;
+	public const string DefaultBackground = LuaBuiltInTextMateThemeDefaults.DefaultBackground;
+	public const string DefaultForeground = LuaBuiltInTextMateThemeDefaults.DefaultForeground;
 
 	public const string DefaultMutedText = LuaBuiltInTextMateThemeDefaults.DefaultMutedText;
 	public const string DefaultMisc = LuaBuiltInTextMateThemeDefaults.DefaultMisc;
@@ -38,8 +38,8 @@ internal static class LuaBuiltInThemes
 		{
 			Name = DefaultThemeName,
 			Aliases = [DefaultThemeAlias],
-			EditorBackground = DefaultEditorBackground,
-			EditorForeground = DefaultEditorForeground,
+			Background = DefaultBackground,
+			Foreground = DefaultForeground,
 
 			SemanticColors = new LuaThemeSemanticColors
 			{

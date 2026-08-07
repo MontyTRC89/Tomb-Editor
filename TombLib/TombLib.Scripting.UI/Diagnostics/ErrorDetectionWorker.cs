@@ -1,12 +1,12 @@
 #nullable enable
 
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics

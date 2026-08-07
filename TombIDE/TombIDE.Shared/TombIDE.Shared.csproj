@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Product>TombIDE Shared Classes</Product>
+    <AssemblyTitle>$(Product)</AssemblyTitle>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 

@@ -1,12 +1,10 @@
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using NLog;
 using System;
 using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Resources;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.UI.Bases;
-using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Highlighting;
-using TombLib.Scripting.UI.Navigation;
 
 namespace TombLib.Scripting.Lua;
 
@@ -16,8 +14,6 @@ namespace TombLib.Scripting.Lua;
 public sealed partial class LuaEditor : TextEditorBase
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-	private readonly TextCompletionController _completionController;
-	private readonly TextDefinitionTriggerController _definitionTriggerController;
 	private readonly LuaDefinitionNavigationController _definitionNavigationController;
 	private readonly LuaHoverController _hoverController;
 	private readonly LuaSignatureHelpController _signatureHelpController;
@@ -50,9 +46,9 @@ public sealed partial class LuaEditor : TextEditorBase
 	{
 		CommentPrefix = "--";
 		TextArea.IndentationStrategy = new LuaAutoIndentationStrategy(Options);
-		_completionController = new TextCompletionController(this);
-		_definitionTriggerController = new TextDefinitionTriggerController(this, GetOffsetFromPoint, TryNavigateDefinitionAsync);
+		CompletionController.InitializeScheduling(RequestScheduledCompletionAsync);
 		_definitionNavigationController = new LuaDefinitionNavigationController(this);
+		InitializeDefinitionNavigation(TryNavigateDefinitionAsync);
 		_hoverController = new LuaHoverController(this);
 		_signatureHelpController = new LuaSignatureHelpController(this);
 		BindLuaIntellisenseEvents();

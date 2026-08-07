@@ -25,15 +25,11 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Writers;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Text;
-using TombLib.Scripting.UI.Text;
-using TombLib.Scripting.GameFlowScript.Documents;
-using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Documents;
 using TombLib.Scripting.TRX;
-using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Text;
 using GameFlowScriptReplacer = TombLib.Scripting.GameFlowScript.Writers.ScriptReplacer;
 using TRXScriptReplacer = TombLib.Scripting.TRX.Writers.ScriptReplacer;
 

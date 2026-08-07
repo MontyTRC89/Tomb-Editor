@@ -14,7 +14,6 @@ using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Lua;
 using TombLib.Scripting.TRX;
 
 namespace TombIDE.ScriptingStudio.WorkspaceProfile;

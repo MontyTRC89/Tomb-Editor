@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Services;
 

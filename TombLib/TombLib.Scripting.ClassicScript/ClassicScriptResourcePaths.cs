@@ -18,11 +18,11 @@ public static class ClassicScriptResourcePaths
 		return Path.Combine(pathSegments);
 	}
 
-	public static string GetSyntaxPath(string fileName)
-		=> GetResourcePath("Syntaxes", fileName);
+	public static string GetCommandsPath()
+		=> GetResourcePath("Commands.json");
 
 	public static string GetMnemonicConstantsPath()
-		=> GetResourcePath("MnemonicConstants.xml");
+		=> GetResourcePath("MnemonicConstants.json");
 
 	public static string GetReferenceTablePath(string fileName)
 		=> GetResourcePath(fileName);

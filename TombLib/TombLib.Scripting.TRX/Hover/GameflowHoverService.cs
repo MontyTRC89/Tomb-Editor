@@ -3,8 +3,8 @@
 using ICSharpCode.AvalonEdit.Document;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
-using System.Text.RegularExpressions;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using System.Text.RegularExpressions;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX.Services;
 

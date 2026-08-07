@@ -1,9 +1,9 @@
 #nullable enable
 
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.UI.Bases;
 

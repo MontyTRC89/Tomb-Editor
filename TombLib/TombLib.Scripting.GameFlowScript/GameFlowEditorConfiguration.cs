@@ -2,6 +2,7 @@
 using TombLib.Scripting.GameFlowScript.Highlighting;
 using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Resources;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.GameFlowScript
@@ -21,12 +22,12 @@ namespace TombLib.Scripting.GameFlowScript
 				_selectedColorSchemeName = value;
 
 				string schemeFilePath =
-					Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, value + ConfigurationDefaults.ColorSchemeFileExtension);
+					Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, value + ScriptingDefaults.ColorSchemeFileExtension);
 
 				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ColorScheme();
 				else
-					ColorScheme = XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
+					ColorScheme = JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath);
 			}
 		}
 
@@ -46,7 +47,7 @@ namespace TombLib.Scripting.GameFlowScript
 			AutoCloseDoubleQuotes = false;
 			AutoCloseSingleQuotes = false;
 
-			SelectedColorSchemeName = ConfigurationDefaults.SelectedColorSchemeName;
+			SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
 		}
 
 		#endregion Construction

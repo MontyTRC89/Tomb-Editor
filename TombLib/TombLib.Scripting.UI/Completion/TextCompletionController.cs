@@ -1,6 +1,7 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Presentation;

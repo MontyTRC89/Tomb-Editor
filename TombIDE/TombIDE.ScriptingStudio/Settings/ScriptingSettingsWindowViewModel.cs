@@ -6,7 +6,6 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -15,14 +14,15 @@ using System.Windows.Media;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.GameFlowScript;
-using TombLib.Scripting.Lua;
+using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.Lua.Resources;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Providers;
 using TombLib.Scripting.UI.Resources;
-using ClassicScriptDefaults = TombLib.Scripting.ClassicScript.Resources.ConfigurationDefaults;
-using GameFlowDefaults = TombLib.Scripting.GameFlowScript.Resources.ConfigurationDefaults;
 
 namespace TombIDE.ScriptingStudio.Settings;
 
@@ -201,17 +201,17 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 	private double _fontSize;
 	private bool _highlightCurrentLine;
 	private bool _intellisenseEnabled;
+	private bool _collapseMultipleSpaces;
 	private string _selectedThemeName = string.Empty;
 	private bool _showLineNumbers;
 	private bool _showSectionSeparators;
 	private bool _showVisibleSpaces;
 	private bool _showVisibleTabs;
 	private bool _signatureHelpPopupsEnabled;
-	private bool _tidyPostCommaSpace;
-	private bool _tidyPostEqualSpace;
-	private bool _tidyPreCommaSpace;
-	private bool _tidyPreEqualSpace;
-	private bool _tidyReduceSpaces;
+	private bool _spaceAfterComma;
+	private bool _spaceAfterEquals;
+	private bool _spaceBeforeComma;
+	private bool _spaceBeforeEquals;
 	private bool _wordWrapping;
 	private readonly ClassicScriptLanguageServices _languageServices;
 	private readonly GameFlowLanguageServices _gameFlowLanguageServices;
@@ -395,34 +395,34 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		set => SetAndRefresh(ref _signatureHelpPopupsEnabled, value);
 	}
 
-	public bool TidyPostCommaSpace
+	public bool SpaceAfterComma
 	{
-		get => _tidyPostCommaSpace;
-		set => SetAndRefresh(ref _tidyPostCommaSpace, value);
+		get => _spaceAfterComma;
+		set => SetAndRefresh(ref _spaceAfterComma, value);
 	}
 
-	public bool TidyPostEqualSpace
+	public bool SpaceAfterEquals
 	{
-		get => _tidyPostEqualSpace;
-		set => SetAndRefresh(ref _tidyPostEqualSpace, value);
+		get => _spaceAfterEquals;
+		set => SetAndRefresh(ref _spaceAfterEquals, value);
 	}
 
-	public bool TidyPreCommaSpace
+	public bool SpaceBeforeComma
 	{
-		get => _tidyPreCommaSpace;
-		set => SetAndRefresh(ref _tidyPreCommaSpace, value);
+		get => _spaceBeforeComma;
+		set => SetAndRefresh(ref _spaceBeforeComma, value);
 	}
 
-	public bool TidyPreEqualSpace
+	public bool SpaceBeforeEquals
 	{
-		get => _tidyPreEqualSpace;
-		set => SetAndRefresh(ref _tidyPreEqualSpace, value);
+		get => _spaceBeforeEquals;
+		set => SetAndRefresh(ref _spaceBeforeEquals, value);
 	}
 
-	public bool TidyReduceSpaces
+	public bool CollapseMultipleSpaces
 	{
-		get => _tidyReduceSpaces;
-		set => SetAndRefresh(ref _tidyReduceSpaces, value);
+		get => _collapseMultipleSpaces;
+		set => SetAndRefresh(ref _collapseMultipleSpaces, value);
 	}
 
 	public bool WordWrapping
@@ -486,29 +486,21 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 	{
 		ApplySharedSettings(config);
 
+		GetColorProvider().SetSelectedName(config, SelectedThemeName);
+
 		switch (config)
 		{
 			case ClassicScriptEditorConfiguration classicConfig:
-				classicConfig.SelectedColorSchemeName = SelectedThemeName;
 				classicConfig.ShowSectionSeparators = ShowSectionSeparators;
-				classicConfig.Tidy_PreEqualSpace = TidyPreEqualSpace;
-				classicConfig.Tidy_PostEqualSpace = TidyPostEqualSpace;
-				classicConfig.Tidy_PreCommaSpace = TidyPreCommaSpace;
-				classicConfig.Tidy_PostCommaSpace = TidyPostCommaSpace;
-				classicConfig.Tidy_ReduceSpaces = TidyReduceSpaces;
-				break;
-
-			case GameFlowEditorConfiguration gameFlowConfig:
-				gameFlowConfig.SelectedColorSchemeName = SelectedThemeName;
+				classicConfig.SpaceBeforeEquals = SpaceBeforeEquals;
+				classicConfig.SpaceAfterEquals = SpaceAfterEquals;
+				classicConfig.SpaceBeforeComma = SpaceBeforeComma;
+				classicConfig.SpaceAfterComma = SpaceAfterComma;
+				classicConfig.CollapseMultipleSpaces = CollapseMultipleSpaces;
 				break;
 
 			case TRXEditorConfiguration trxConfig:
-				trxConfig.SelectedColorSchemeName = SelectedThemeName;
 				trxConfig.AutoAddCommas = AutoAddCommas;
-				break;
-
-			case LuaEditorConfiguration luaConfig:
-				luaConfig.SelectedThemeName = SelectedThemeName;
 				break;
 		}
 	}
@@ -551,11 +543,11 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 
 	private string CreateClassicPreviewText()
 	{
-		string preEqual = TidyPreEqualSpace ? " " : string.Empty;
-		string postEqual = TidyPostEqualSpace ? " " : string.Empty;
-		string preComma = TidyPreCommaSpace ? " " : string.Empty;
-		string postComma = TidyPostCommaSpace ? " " : string.Empty;
-		string commentGap = TidyReduceSpaces ? " " : "  ";
+		string preEqual = SpaceBeforeEquals ? " " : string.Empty;
+		string postEqual = SpaceAfterEquals ? " " : string.Empty;
+		string preComma = SpaceBeforeComma ? " " : string.Empty;
+		string postComma = SpaceAfterComma ? " " : string.Empty;
+		string commentGap = CollapseMultipleSpaces ? " " : "  ";
 
 		return ClassicPreviewSection + "\n"
 			+ "Rain" + preEqual + "=" + postEqual + "ENABLED" + preComma + "," + postComma + "12" + commentGap + "; Has error\n"
@@ -576,34 +568,31 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 
 	private static IReadOnlyList<string> LoadThemeOptions(ScriptingSettingsPageKind kind, TextEditorConfigBase config)
 	{
-		IEnumerable<string> options = kind switch
-		{
-			ScriptingSettingsPageKind.ClassicScript => GetThemeNames(DefaultPaths.ClassicScriptColorConfigsDirectory, "*" + ClassicScriptDefaults.ColorSchemeFileExtension),
-			ScriptingSettingsPageKind.GameFlowScript => GetThemeNames(DefaultPaths.GameFlowColorConfigsDirectory, "*" + GameFlowDefaults.ColorSchemeFileExtension),
-			ScriptingSettingsPageKind.TRX => TRXEditorConfiguration.GetAvailableColorSchemeFiles().Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty),
-			ScriptingSettingsPageKind.Lua => LuaThemeRepository.GetAvailableThemes().Select(static theme => theme.Name),
-			_ => []
-		};
+		ITextEditorColorProvider colorProvider = GetColorProvider(kind);
 
-		List<string> values = [.. options
+		List<string> values = [.. colorProvider.GetAvailableNames()
 			.Where(static option => !string.IsNullOrWhiteSpace(option))
 			.Distinct(StringComparer.OrdinalIgnoreCase)
 			.OrderBy(static option => option, StringComparer.OrdinalIgnoreCase)];
 
-		string selectedValue = kind switch
-		{
-			ScriptingSettingsPageKind.ClassicScript => ((ClassicScriptEditorConfiguration)config).SelectedColorSchemeName,
-			ScriptingSettingsPageKind.GameFlowScript => ((GameFlowEditorConfiguration)config).SelectedColorSchemeName,
-			ScriptingSettingsPageKind.TRX => ((TRXEditorConfiguration)config).SelectedColorSchemeName,
-			ScriptingSettingsPageKind.Lua => ((LuaEditorConfiguration)config).SelectedThemeName,
-			_ => string.Empty
-		};
+		string selectedValue = colorProvider.GetSelectedName(config);
 
 		if (!string.IsNullOrWhiteSpace(selectedValue) && !values.Contains(selectedValue, StringComparer.OrdinalIgnoreCase))
 			values.Add(selectedValue);
 
 		return values;
 	}
+
+	private static ITextEditorColorProvider GetColorProvider(ScriptingSettingsPageKind kind) => kind switch
+	{
+		ScriptingSettingsPageKind.ClassicScript => new ClassicScriptColorSchemeProvider(),
+		ScriptingSettingsPageKind.GameFlowScript => new GameFlowColorSchemeProvider(),
+		ScriptingSettingsPageKind.TRX => new TRXColorSchemeProvider(),
+		ScriptingSettingsPageKind.Lua => new LuaThemeProvider(),
+		_ => throw new NotSupportedException($"Unsupported scripting settings page kind: {kind}.")
+	};
+
+	private ITextEditorColorProvider GetColorProvider() => GetColorProvider(Kind);
 
 	private void LoadFromConfig(TextEditorConfigBase config)
 	{
@@ -626,50 +615,39 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		_showVisibleSpaces = config.ShowVisualSpaces;
 		_showVisibleTabs = config.ShowVisualTabs;
 
+		_selectedThemeName = GetColorProvider().GetSelectedName(config);
+
 		switch (config)
 		{
 			case ClassicScriptEditorConfiguration classicConfig:
-				_selectedThemeName = classicConfig.SelectedColorSchemeName;
 				_showSectionSeparators = classicConfig.ShowSectionSeparators;
-				_tidyPreEqualSpace = classicConfig.Tidy_PreEqualSpace;
-				_tidyPostEqualSpace = classicConfig.Tidy_PostEqualSpace;
-				_tidyPreCommaSpace = classicConfig.Tidy_PreCommaSpace;
-				_tidyPostCommaSpace = classicConfig.Tidy_PostCommaSpace;
-				_tidyReduceSpaces = classicConfig.Tidy_ReduceSpaces;
+				_spaceBeforeEquals = classicConfig.SpaceBeforeEquals;
+				_spaceAfterEquals = classicConfig.SpaceAfterEquals;
+				_spaceBeforeComma = classicConfig.SpaceBeforeComma;
+				_spaceAfterComma = classicConfig.SpaceAfterComma;
+				_collapseMultipleSpaces = classicConfig.CollapseMultipleSpaces;
 				_autoAddCommas = false;
 				break;
 
-			case GameFlowEditorConfiguration gameFlowConfig:
-				_selectedThemeName = gameFlowConfig.SelectedColorSchemeName;
+			case GameFlowEditorConfiguration:
+			case LuaEditorConfiguration:
 				_showSectionSeparators = false;
-				_tidyPreEqualSpace = false;
-				_tidyPostEqualSpace = false;
-				_tidyPreCommaSpace = false;
-				_tidyPostCommaSpace = false;
-				_tidyReduceSpaces = false;
+				_spaceBeforeEquals = false;
+				_spaceAfterEquals = false;
+				_spaceBeforeComma = false;
+				_spaceAfterComma = false;
+				_collapseMultipleSpaces = false;
 				_autoAddCommas = false;
 				break;
 
 			case TRXEditorConfiguration trxConfig:
-				_selectedThemeName = trxConfig.SelectedColorSchemeName;
 				_showSectionSeparators = false;
-				_tidyPreEqualSpace = false;
-				_tidyPostEqualSpace = false;
-				_tidyPreCommaSpace = false;
-				_tidyPostCommaSpace = false;
-				_tidyReduceSpaces = false;
+				_spaceBeforeEquals = false;
+				_spaceAfterEquals = false;
+				_spaceBeforeComma = false;
+				_spaceAfterComma = false;
+				_collapseMultipleSpaces = false;
 				_autoAddCommas = trxConfig.AutoAddCommas;
-				break;
-
-			case LuaEditorConfiguration luaConfig:
-				_selectedThemeName = luaConfig.SelectedThemeName;
-				_showSectionSeparators = false;
-				_tidyPreEqualSpace = false;
-				_tidyPostEqualSpace = false;
-				_tidyPreCommaSpace = false;
-				_tidyPostCommaSpace = false;
-				_tidyReduceSpaces = false;
-				_autoAddCommas = false;
 				break;
 		}
 
@@ -708,18 +686,6 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 
 		RefreshPreview();
 		return true;
-	}
-
-	private static IReadOnlyList<string> GetThemeNames(string directoryPath, string searchPattern)
-	{
-		if (!Directory.Exists(directoryPath))
-			return Array.Empty<string>();
-
-		return Directory.GetFiles(directoryPath, searchPattern, SearchOption.TopDirectoryOnly)
-			.Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
-			.Where(static name => !string.IsNullOrWhiteSpace(name))
-			.OrderBy(static name => name, StringComparer.OrdinalIgnoreCase)
-			.ToArray();
 	}
 
 	private static IReadOnlyList<LuaSemanticToken> CreateLuaPreviewTokens()

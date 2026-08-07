@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Product>TombIDE Scripting Studio Module</Product>
+    <AssemblyTitle>$(Product)</AssemblyTitle>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -48,7 +49,7 @@
     <Reference Include="Nickelony.LanguageServer.Lua">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
     </Reference>
-    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Core\TombLib.Scripting.Core.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
     <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />

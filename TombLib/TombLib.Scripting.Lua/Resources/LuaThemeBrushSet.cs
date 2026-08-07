@@ -1,5 +1,5 @@
-using System.Windows.Media;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System.Windows.Media;
 
 namespace TombLib.Scripting.Lua.Resources;
 

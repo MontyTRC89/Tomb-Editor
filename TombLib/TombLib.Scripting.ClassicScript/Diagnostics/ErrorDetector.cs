@@ -1,7 +1,8 @@
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System.Text.RegularExpressions;
+using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Syntaxes;
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Diagnostics;
@@ -13,6 +14,7 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 	private readonly IClassicScriptLineService _lineService;
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ClassicScriptSyntaxCatalogService _syntaxCatalogService;
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
 	public ErrorDetector(
 		IClassicScriptLineService lineService,
@@ -179,11 +181,11 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 
 	#region Error detection methods
 
-	private static bool IsValidSectionName(string sectionHeaderLineText)
+	private bool IsValidSectionName(string sectionHeaderLineText)
 	{
 		string section = sectionHeaderLineText.Split('[')[1].Split(']')[0];
 
-		foreach (string entry in ClassicScriptKeywords.Sections)
+		foreach (string entry in _commandCatalogService.Sections)
 			if (section.Equals(entry, StringComparison.OrdinalIgnoreCase))
 				return true;
 

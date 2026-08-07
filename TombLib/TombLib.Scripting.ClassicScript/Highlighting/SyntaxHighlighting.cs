@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
@@ -10,6 +11,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
 	private readonly ColorScheme _scheme;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
+	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
 	#region Construction
 
@@ -41,7 +43,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Sections */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\[\b(" + string.Join("|", ClassicScriptKeywords.Sections) + @")\b\]", RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\[\b(" + string.Join("|", _commandCatalogService.Sections) + @")\b\]", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Sections.HtmlColor)),
@@ -53,7 +55,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* Standard commands */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\b(" + string.Join("|", ClassicScriptKeywords.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.StandardCommands.HtmlColor)),
@@ -65,7 +67,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			/* New commands */
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\b(" + string.Join("|", ClassicScriptKeywords.NewCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#'))) + @")\b\s*=", RegexOptions.IgnoreCase),
 				Color = new HighlightingColor
 				{
 					Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),

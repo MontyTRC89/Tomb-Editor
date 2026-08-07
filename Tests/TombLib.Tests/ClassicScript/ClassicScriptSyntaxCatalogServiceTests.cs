@@ -39,4 +39,16 @@ public class ClassicScriptSyntaxCatalogServiceTests
 		StringAssert.Contains(customizeSyntax, "CUST_BAR");
 		StringAssert.Contains(parameterSyntax, "PARAM_RECT");
 	}
+
+	[TestMethod]
+	public void GetCommandSyntax_ReturnsSyntaxForKnownCommand()
+	{
+		var service = new ClassicScriptSyntaxCatalogService();
+
+		string? syntax = service.GetCommandSyntax("AddEffect");
+
+		Assert.IsFalse(string.IsNullOrWhiteSpace(syntax));
+		StringAssert.Contains(syntax, "AddEffect=");
+		StringAssert.Contains(syntax, "(*Array*)");
+	}
 }

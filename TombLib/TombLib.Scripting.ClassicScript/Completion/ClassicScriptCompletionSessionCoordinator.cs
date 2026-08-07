@@ -1,12 +1,11 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Completion;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
-using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Extensions;
 using TombLib.Scripting.Text;

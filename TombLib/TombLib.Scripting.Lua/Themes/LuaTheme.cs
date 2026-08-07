@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using TombLib.Scripting.Lua.Resources;
+using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Scripting.Lua.Themes;
@@ -7,27 +7,16 @@ namespace TombLib.Scripting.Lua.Themes;
 /// <summary>
 /// Describes a Lua editor theme, including editor colors, semantic colors, and TextMate token colors.
 /// </summary>
-public sealed class LuaTheme
+public sealed class LuaTheme : ColorSchemeBase
 {
 	/// <summary>
-	/// Gets or sets the display name of the theme.
+	/// Initializes a new instance of the <see cref="LuaTheme"/> class with the built-in editor colors.
 	/// </summary>
-	public string Name { get; set; } = string.Empty;
-
-	/// <summary>
-	/// Gets or sets additional names that can be used to resolve this theme.
-	/// </summary>
-	public List<string> Aliases { get; set; } = [];
-
-	/// <summary>
-	/// Gets or sets the editor background color.
-	/// </summary>
-	public string EditorBackground { get; set; } = LuaBuiltInThemes.DefaultEditorBackground;
-
-	/// <summary>
-	/// Gets or sets the editor foreground color.
-	/// </summary>
-	public string EditorForeground { get; set; } = LuaBuiltInThemes.DefaultEditorForeground;
+	public LuaTheme()
+	{
+		Background = LuaBuiltInThemes.DefaultBackground;
+		Foreground = LuaBuiltInThemes.DefaultForeground;
+	}
 
 	/// <summary>
 	/// Gets or sets the TextMate token theme used for syntax highlighting.
@@ -44,18 +33,16 @@ public sealed class LuaTheme
 	/// </summary>
 	/// <param name="fallbackName">The theme name to use when no explicit name was provided.</param>
 	/// <returns>The current theme instance.</returns>
-	public LuaTheme Normalize(string fallbackName)
+	public override LuaTheme Normalize(string fallbackName)
 	{
-		if (string.IsNullOrWhiteSpace(Name))
-			Name = fallbackName;
+		base.Normalize(fallbackName);
 
-		if (string.IsNullOrWhiteSpace(EditorBackground))
-			EditorBackground = LuaBuiltInThemes.DefaultEditorBackground;
+		if (string.IsNullOrWhiteSpace(Background))
+			Background = LuaBuiltInThemes.DefaultBackground;
 
-		if (string.IsNullOrWhiteSpace(EditorForeground))
-			EditorForeground = LuaBuiltInThemes.DefaultEditorForeground;
+		if (string.IsNullOrWhiteSpace(Foreground))
+			Foreground = LuaBuiltInThemes.DefaultForeground;
 
-		Aliases ??= [];
 		TextMateTheme ??= new TextMateTokenTheme();
 		SemanticColors ??= new LuaThemeSemanticColors();
 		SemanticColors.Normalize();

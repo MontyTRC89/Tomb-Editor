@@ -1,8 +1,8 @@
 #nullable enable
 
 using ICSharpCode.AvalonEdit.Document;
-using System.Collections.Generic;
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System.Collections.Generic;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.UI.Text;
 

@@ -63,6 +63,26 @@ public class ClassicScriptEditorCompletionWindowTests
 	}
 
 	[TestMethod]
+	public void EmptyLineCompletion_CommandItemsComeFromCatalog()
+	{
+		IReadOnlyList<TextCompletionItem> completionItems = CompletionProvider.GetCompletionItems(
+			new TextCompletionContext(string.Empty, 0, TextCompletionTrigger.EmptyLine));
+
+		// FMV (one of the four entries absent from the legacy new-command array) is a new command.
+		Assert.IsTrue(completionItems.Any(item => item.Label.Equals("FMV", StringComparison.Ordinal)
+			&& item.Kind == TextCompletionItemKind.NewCommand));
+
+		// Legacy array-only old-command names are kept.
+		Assert.IsTrue(completionItems.Any(item => item.Label.Equals("Cut", StringComparison.Ordinal)
+			&& item.Kind == TextCompletionItemKind.OldCommand));
+
+		// Directives are offered with a trailing space and are not duplicated with '='.
+		Assert.IsFalse(completionItems.Any(item => item.Label.StartsWith("#DEFINE=", StringComparison.Ordinal)));
+		Assert.IsTrue(completionItems.Any(item => item.Kind == TextCompletionItemKind.Directive
+			&& item.Label.StartsWith("#DEFINE ", StringComparison.Ordinal)));
+	}
+
+	[TestMethod]
 	public void EmptyLineCompletion_OpensCompletionWindowAtLineOffset()
 	{
 		WPFTestHelper.RunInSta(() =>
