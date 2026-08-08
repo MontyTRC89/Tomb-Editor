@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
+
 namespace TombLib.Scripting.Text;
 
 /// <summary>
 /// Represents an immutable snapshot of text used by provider services.
 /// Implementations never observe later document edits and may be retained freely;
 /// they capture their content at construction time.
-/// Offsets are zero-based. Line numbers are one-based, matching the AvalonEdit model.
+/// Offsets are zero-based. Line numbers are one-based; both conventions are defined by
+/// this library rather than by any host editor.
 /// </summary>
 public interface ITextSnapshot
 {

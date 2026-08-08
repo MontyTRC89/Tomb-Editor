@@ -1,4 +1,6 @@
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -90,13 +92,19 @@ public static class NGCompiler
 		// The visited set tracks the include path currently being expanded so recursive
 		// includes cannot loop. It is scoped to this merge call rather than stored statically.
 		var visitedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { vgeScriptFilePath };
-		lines = ReplaceIncludesWithFileContents(lines, visitedFiles);
+		lines = ReplaceIncludesWithFileContents(lines, visitedFiles, DefaultPaths.VGEScriptDirectory);
 
 		string newFileContent = string.Join(Environment.NewLine, lines);
 		File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
 	}
 
-	private static string[] ReplaceIncludesWithFileContents(string[] lines, HashSet<string> visitedFiles)
+	/// <summary>
+	/// Recursively expands <c>#include</c> directives in the given lines, resolving relative
+	/// include paths against <paramref name="includeBaseDirectory"/> and guarding against include
+	/// cycles through the visited set.
+	/// </summary>
+	/// <returns>The lines with all include directives replaced by their file contents.</returns>
+	internal static string[] ReplaceIncludesWithFileContents(string[] lines, HashSet<string> visitedFiles, string includeBaseDirectory)
 	{
 		var newLines = new List<string>();
 
@@ -106,14 +114,14 @@ public static class NGCompiler
 				try
 				{
 					string partialIncludePath = line.Split('"')[1].Trim();
-					string includedFilePath = Path.Combine(DefaultPaths.VGEScriptDirectory, partialIncludePath);
+					string includedFilePath = Path.Combine(includeBaseDirectory, partialIncludePath);
 
 					if (File.Exists(includedFilePath) && visitedFiles.Add(includedFilePath))
 					{
 						newLines.Add("; // // // // <" + partialIncludePath.ToUpper() + "> // // // //");
 
 						string[] includeLines = File.ReadAllLines(includedFilePath);
-						includeLines = ReplaceIncludesWithFileContents(includeLines, visitedFiles);
+						includeLines = ReplaceIncludesWithFileContents(includeLines, visitedFiles, includeBaseDirectory);
 
 						newLines.AddRange(includeLines);
 

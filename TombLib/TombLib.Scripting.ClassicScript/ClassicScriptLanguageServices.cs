@@ -1,4 +1,7 @@
+using System;
+using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Diagnostics;
+using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
@@ -81,4 +84,14 @@ public sealed class ClassicScriptLanguageServices
 	/// Gets the ClassicScript index service.
 	/// </summary>
 	public IClassicScriptIndexService IndexService { get; }
+
+	/// <summary>
+	/// Creates a completion session coordinator for a single editor instance.
+	/// The coordinator tracks per-request completion ordering (it is shared across editors
+	/// only at the service level, never as a single instance), so each editor owns its own
+	/// coordinator created through this composition root.
+	/// </summary>
+	/// <returns>A completion session coordinator bound to this service set.</returns>
+	public ClassicScriptCompletionSessionCoordinator CreateCompletionCoordinator()
+		=> new(LineService, CommandService, new ClassicScriptMnemonicCatalogService());
 }

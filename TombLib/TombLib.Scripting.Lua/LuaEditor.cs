@@ -60,8 +60,10 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// <param name="configuration">The editor configuration to apply.</param>
 	public override void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 	{
-		var config = configuration as LuaEditorConfiguration;
-		var theme = config?.Theme ?? LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
+		if (configuration is not LuaEditorConfiguration config)
+			return;
+
+		var theme = config.Theme ?? LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
 		_themeBrushSet = LuaEditorColorPalette.Create(theme);
 		_textMateHighlighting?.Dispose();
 		_textMateHighlighting = null;

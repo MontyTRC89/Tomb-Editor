@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace TombLib.Scripting.Threading;
 
 /// <summary>

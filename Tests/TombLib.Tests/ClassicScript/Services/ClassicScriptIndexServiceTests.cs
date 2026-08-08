@@ -214,6 +214,51 @@ public class ClassicScriptIndexServiceTests
     }
 
     [TestMethod]
+    public void GetNextFreeIndex_LaterSectionIndices_DoNotLeak()
+    {
+        // Indices are section-scoped: the second [Level] section reuses index 2, which must
+        // not be treated as taken when computing the first section's next free index.
+        var source = new StringTextSnapshot(
+            "[Level]\nTriggerGroup= 1, $2000, 80, $FF\n" +
+            "[Level]\nTriggerGroup= 2, $2000, 80, $FF");
+
+        int firstSectionCommandOffset = source.GetLineByNumber(2).Offset;
+        int result = _indexService.GetNextFreeIndex(source, firstSectionCommandOffset + 1);
+
+        Assert.AreEqual(2, result);
+    }
+
+    [TestMethod]
+    public void GetNextFreeIndex_FirstIdInLaterSection_DoesNotLeak()
+    {
+        // #FIRST_ID is section-scoped (Scope: [Title] or [Level] sections); a #FIRST_ID in a
+        // later section must not change the first section's free-index baseline.
+        var source = new StringTextSnapshot(
+            "[Level]\nTriggerGroup= 1, $2000, 80, $FF\n" +
+            "[Level]\n#FIRST_ID TriggerGroup= 100\nTriggerGroup= 100, $2000, 80, $FF");
+
+        int firstSectionCommandOffset = source.GetLineByNumber(2).Offset;
+        int result = _indexService.GetNextFreeIndex(source, firstSectionCommandOffset + 1);
+
+        Assert.AreEqual(2, result);
+    }
+
+    [TestMethod]
+    public void GetNextFreeIndex_FirstIdInLaterSection_DoesNotOverrideCurrentSection()
+    {
+        // When both the current and a later section declare #FIRST_ID, only the current
+        // section's directive participates in the scan.
+        var source = new StringTextSnapshot(
+            "[Level]\n#FIRST_ID TriggerGroup= 10\nTriggerGroup= 10, $2000, 80, $FF\n" +
+            "[Level]\n#FIRST_ID TriggerGroup= 100\nTriggerGroup= 100, $2000, 80, $FF");
+
+        int firstSectionCommandOffset = source.GetLineByNumber(3).Offset;
+        int result = _indexService.GetNextFreeIndex(source, firstSectionCommandOffset + 1);
+
+        Assert.AreEqual(11, result);
+    }
+
+    [TestMethod]
     public void GetNextFreeIndex_NoSections_ScansEntireDocument()
     {
         var source = new StringTextSnapshot(

@@ -277,7 +277,7 @@ public class StudioContributionSurfaceTests
 
 		public int CurrentColumn => 1;
 
-		public object SelectedContent => string.Empty;
+		public string? SelectedContent => string.Empty;
 
 		public int SelectionLength => 0;
 
@@ -322,9 +322,6 @@ public class StudioContributionSurfaceTests
 		public void Dispose()
 		{ }
 
-		public void GoToObject(string objectName, object? identifyingObject = null)
-		{ }
-
 		public void Load(string fileName, bool silentSession)
 		{
 			FilePath = fileName;
@@ -346,7 +343,7 @@ public class StudioContributionSurfaceTests
 		public void SelectAll()
 		{ }
 
-		public void TryRunContentChangedWorker()
+		public void RunContentChangedWorker()
 			=> ContentChangedWorkerRunCompleted?.Invoke(this, EventArgs.Empty);
 
 		public void Undo()

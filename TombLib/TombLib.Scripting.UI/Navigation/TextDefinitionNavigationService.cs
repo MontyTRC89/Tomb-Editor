@@ -10,9 +10,6 @@ namespace TombLib.Scripting.UI.Navigation;
 
 internal sealed class TextDefinitionNavigationService
 {
-	public void GoToObject(TextEditorBase editor, ITextDefinitionProvider definitionProvider, string objectName, object? identifyingObject = null)
-		=> TryGoToObject(editor, definitionProvider, objectName, identifyingObject);
-
 	public bool TryGoToDefinition(TextEditorBase editor, ITextDefinitionProvider definitionProvider, ITextHoverProvider hoverProvider, int offset)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
@@ -27,10 +24,10 @@ internal sealed class TextDefinitionNavigationService
 		if (hoverInfo is null || string.IsNullOrWhiteSpace(hoverInfo.SymbolName))
 			return false;
 
-		return TryGoToObject(editor, definitionProvider, hoverInfo.SymbolName, hoverInfo.Identifier);
+		return TryGoToObject(editor, definitionProvider, hoverInfo.SymbolName, hoverInfo.Identifier as TextDefinitionDiscriminator);
 	}
 
-	private static bool TryGoToObject(TextEditorBase editor, ITextDefinitionProvider definitionProvider, string objectName, object? identifyingObject)
+	public bool TryGoToObject(TextEditorBase editor, ITextDefinitionProvider definitionProvider, string objectName, TextDefinitionDiscriminator? identifyingObject)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
 		ArgumentNullException.ThrowIfNull(definitionProvider);

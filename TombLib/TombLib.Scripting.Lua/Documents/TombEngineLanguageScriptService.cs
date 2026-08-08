@@ -16,12 +16,12 @@ public sealed partial class TombEngineLanguageScriptService
 	private static readonly Regex SetStringsRegex = GetSetStringsRegex();
 
 	/// <summary>
-	/// Attempts to insert a generated language entry into the strings table referenced by <c>TEN.Flow.SetStrings(...)</c>.
+	/// Inserts a generated language entry into the strings table referenced by <c>TEN.Flow.SetStrings(...)</c>.
 	/// </summary>
 	/// <param name="document">The document to modify.</param>
 	/// <param name="languageScript">The generated language-table entry to insert.</param>
 	/// <returns>The one-based line number of the inserted entry, or <see langword="null"/> when no suitable strings table could be found.</returns>
-	public int? TryInsertLanguageScript(TextDocument document, string languageScript)
+	public int? InsertLanguageScript(TextDocument document, string languageScript)
 	{
 		string? stringsVariableName = TryGetStringsVariableName(document);
 

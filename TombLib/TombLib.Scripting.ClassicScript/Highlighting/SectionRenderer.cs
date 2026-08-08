@@ -1,5 +1,6 @@
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using System;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Services;

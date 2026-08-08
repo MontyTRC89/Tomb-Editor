@@ -1,6 +1,8 @@
 using NLog;
 using System;
 using System.IO;
+using System.Text;
+using TombLib.Scripting.UI.Configuration;
 using TombLib.Utils;
 
 namespace TombLib.Scripting.UI.Bases;
@@ -32,7 +34,7 @@ public abstract class ConfigurationBase
 	{
 		try
 		{
-			return XmlUtils.ReadXmlFile<T>(stream);
+			return DeserializeMigrated<T>(ReadMigratedXml(stream));
 		}
 		catch (Exception exception)
 		{
@@ -54,13 +56,29 @@ public abstract class ConfigurationBase
 	{
 		try
 		{
-			return XmlUtils.ReadXmlFile<T>(filePath);
+			return DeserializeMigrated<T>(ReadMigratedXml(filePath));
 		}
 		catch (Exception exception)
 		{
 			Log.Warn(exception, "Configuration '{Type}' could not be loaded from '{Path}'; using defaults.", typeof(T).Name, filePath);
 			return new T();
 		}
+	}
+
+	private static string ReadMigratedXml(string filePath)
+		=> ConfigurationXmlMigration.MigrateLegacyAutoCloseQuotes(File.ReadAllText(filePath));
+
+	private static string ReadMigratedXml(Stream stream)
+	{
+		// The caller owns the stream; leave it open after reading so Load does not take ownership.
+		using var reader = new StreamReader(stream, leaveOpen: true);
+		return ConfigurationXmlMigration.MigrateLegacyAutoCloseQuotes(reader.ReadToEnd());
+	}
+
+	private static T DeserializeMigrated<T>(string xml) where T : ConfigurationBase
+	{
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
+		return XmlUtils.ReadXmlFile<T>(stream);
 	}
 
 	/// <summary>

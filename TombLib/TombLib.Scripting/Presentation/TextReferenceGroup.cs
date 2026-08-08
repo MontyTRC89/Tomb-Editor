@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace TombLib.Scripting.Presentation;
 
 /// <summary>
@@ -15,7 +18,7 @@ public sealed class TextReferenceGroup
 	{
 		FilePath = filePath;
 		DisplayPath = displayPath;
-		Items = items;
+		Items = Array.AsReadOnly([.. (items ?? [])]);
 	}
 
 	/// <summary>

@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TombLib.Scripting.ClassicScript.Commands;
 
 namespace TombLib.Scripting.ClassicScript.Syntaxes;
@@ -69,7 +72,7 @@ public sealed class ClassicScriptSyntaxCatalogService
 	{
 		ClassicScriptCommandsCatalog catalog = _loader.Load();
 
-		// Keep the legacy ordering: old command syntaxes first, then new command syntaxes.
+		// Keep classic command syntaxes before new command syntaxes; the catalog and completion ordering depend on it.
 		IReadOnlyList<ClassicScriptSyntaxDefinition> oldCommandDefinitions = CreateDefinitions(catalog, ClassicScriptCommandKind.Old);
 		IReadOnlyList<ClassicScriptSyntaxDefinition> newCommandDefinitions = CreateDefinitions(catalog, ClassicScriptCommandKind.New);
 

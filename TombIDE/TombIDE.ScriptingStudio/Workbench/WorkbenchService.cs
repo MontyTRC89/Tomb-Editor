@@ -686,12 +686,12 @@ internal sealed class WorkbenchService : IWorkbenchService
 			if (word is not null)
 				classicEditor.GoToObject(word);
 		}
-		else if (_documentController.CurrentEditor is TextEditorBase textEditor)
+		else if (_documentController.CurrentEditor is TextEditorBase textEditor and INameBasedObjectNavigator navigator)
 		{
 			string? word = textEditor.GetWordFromOffset(textEditor.CaretOffset);
 
 			if (word is not null)
-				textEditor.GoToObject(word);
+				navigator.GoToObject(word);
 		}
 	}
 

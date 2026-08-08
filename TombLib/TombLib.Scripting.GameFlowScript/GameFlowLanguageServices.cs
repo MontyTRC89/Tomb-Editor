@@ -1,3 +1,5 @@
+using System;
+using TombLib.Scripting.Completion;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
@@ -10,6 +12,8 @@ namespace TombLib.Scripting.GameFlowScript;
 /// </summary>
 public sealed class GameFlowLanguageServices
 {
+	private readonly GameFlowCompletionProvider _completionProvider;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="GameFlowLanguageServices"/> class.
 	/// </summary>
@@ -33,7 +37,7 @@ public sealed class GameFlowLanguageServices
 
 		DefinitionProvider = definitionProvider;
 		HoverProvider = hoverProvider;
-		CompletionProvider = completionProvider;
+		_completionProvider = completionProvider;
 		LineService = lineService;
 		DocumentService = documentService;
 	}
@@ -51,7 +55,7 @@ public sealed class GameFlowLanguageServices
 	/// <summary>
 	/// Gets the completion provider.
 	/// </summary>
-	public GameFlowCompletionProvider CompletionProvider { get; }
+	public ITextCompletionProvider CompletionProvider => _completionProvider;
 
 	/// <summary>
 	/// Gets the GameFlow line service.
@@ -62,4 +66,12 @@ public sealed class GameFlowLanguageServices
 	/// Gets the GameFlow document service.
 	/// </summary>
 	public IGameFlowScriptDocumentService DocumentService { get; }
+
+	/// <summary>
+	/// Creates a completion session coordinator for a single editor instance.
+	/// Each editor owns its own coordinator created through this composition root.
+	/// </summary>
+	/// <returns>A completion session coordinator bound to this service set.</returns>
+	public GameFlowCompletionSessionCoordinator CreateCompletionCoordinator()
+		=> new(_completionProvider, LineService);
 }

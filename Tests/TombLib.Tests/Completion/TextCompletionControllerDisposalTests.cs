@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using TombLib.Scripting.Completion;
@@ -11,6 +12,63 @@ namespace TombLib.Tests;
 [TestClass]
 public class TextCompletionControllerDisposalTests
 {
+	[TestMethod]
+	public void BeginRequest_ProvidesCancellationToken_CancelledOnInvalidate()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new PlainTextEditor(new Version(1, 0));
+			var controller = new TextCompletionController(editor);
+
+			int requestToken = controller.BeginRequest();
+			CancellationToken token = controller.CurrentRequestCancellationToken;
+
+			Assert.IsTrue(controller.IsRequestCurrent(requestToken));
+			Assert.IsFalse(token.IsCancellationRequested);
+
+			controller.InvalidateRequests();
+
+			Assert.IsFalse(controller.IsRequestCurrent(requestToken));
+			Assert.IsTrue(token.IsCancellationRequested);
+		});
+	}
+
+	[TestMethod]
+	public void BeginRequest_NewRequest_CancelsPreviousRequestToken()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new PlainTextEditor(new Version(1, 0));
+			var controller = new TextCompletionController(editor);
+
+			controller.BeginRequest();
+			CancellationToken firstToken = controller.CurrentRequestCancellationToken;
+
+			controller.BeginRequest();
+			CancellationToken secondToken = controller.CurrentRequestCancellationToken;
+
+			Assert.IsTrue(firstToken.IsCancellationRequested);
+			Assert.IsFalse(secondToken.IsCancellationRequested);
+		});
+	}
+
+	[TestMethod]
+	public void Dispose_CancelsInFlightRequestToken()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new PlainTextEditor(new Version(1, 0));
+			var controller = new TextCompletionController(editor);
+
+			controller.BeginRequest();
+			CancellationToken token = controller.CurrentRequestCancellationToken;
+
+			controller.Dispose();
+
+			Assert.IsTrue(token.IsCancellationRequested);
+		});
+	}
+
 	[TestMethod]
 	public void PublicOperations_AfterDisposal_ReturnSafeDefaultsAndDoNotThrow()
 	{
@@ -60,6 +118,27 @@ public class TextCompletionControllerDisposalTests
 			// Disposal must be idempotent and must unsubscribe both timer handlers.
 			Assert.AreEqual(0, GetTickHandlerCount(requestTimer));
 			Assert.AreEqual(0, GetTickHandlerCount(toolTipUpdateTimer));
+		});
+	}
+
+	[TestMethod]
+	public void InitializeScheduling_RepeatedInitialization_DoesNotDuplicateTimerHandlers()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new PlainTextEditor(new Version(1, 0));
+			var controller = new TextCompletionController(editor);
+
+			controller.InitializeScheduling(() => Task.CompletedTask);
+			controller.InitializeScheduling(() => Task.CompletedTask);
+			controller.InitializeScheduling(() => Task.CompletedTask);
+
+			DispatcherTimer requestTimer = WPFTestHelper.GetPrivateField<DispatcherTimer>(controller, "_requestTimer");
+			DispatcherTimer toolTipUpdateTimer = WPFTestHelper.GetPrivateField<DispatcherTimer>(controller, "_toolTipUpdateTimer");
+
+			// Re-initializing scheduling must replace the subscription, not accumulate handlers.
+			Assert.AreEqual(1, GetTickHandlerCount(requestTimer));
+			Assert.AreEqual(1, GetTickHandlerCount(toolTipUpdateTimer));
 		});
 	}
 

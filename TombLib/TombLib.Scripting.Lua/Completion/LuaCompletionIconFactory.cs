@@ -10,6 +10,14 @@ namespace TombLib.Scripting.Lua.Completion;
 /// <summary>
 /// Creates themed completion icons from the vendored Codicon geometry set.
 /// </summary>
+/// <remarks>
+/// The icon cache is process-wide and immutable after creation: entries are frozen
+/// <see cref="DrawingImage"/> instances keyed by theme name and completion kind. The cache is
+/// owned by this factory and is safe to call from any thread (a concurrent dictionary keyed by
+/// theme and kind plus a volatile theme-name guard). It is invalidated in place whenever the
+/// active theme name changes, so entries stay bounded to the current theme and stale themed
+/// brushes are never returned after a theme switch.
+/// </remarks>
 internal static class LuaCompletionIconFactory
 {
 	private static readonly ConcurrentDictionary<LuaCompletionIconCacheKey, ImageSource> Cache = new();

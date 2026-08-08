@@ -162,7 +162,7 @@ public sealed partial class LuaEditor
 
 			_signatureHelpController.CancelPendingRefresh();
 
-			// The signature-help request is asynchronous and exception-safe; the hook stays synchronous.
+			// The signature help request is asynchronous and exception-safe; the hook stays synchronous.
 			_ = RequestSignatureHelpAsync(CaretOffset);
 			return;
 		}

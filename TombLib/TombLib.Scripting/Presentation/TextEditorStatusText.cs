@@ -8,7 +8,7 @@ namespace TombLib.Scripting.Presentation;
 /// <param name="ColumnFormatText">The format string for the column value.</param>
 /// <param name="SelectionFormatText">The format string for the selection value.</param>
 /// <param name="ZoomFormatText">The format string for the zoom value.</param>
-/// <param name="ResetZoomToolTipText">The tool tip text for the reset zoom action.</param>
+	/// <param name="ResetZoomToolTipText">The tooltip text for the reset zoom action.</param>
 public sealed record class TextEditorStatusText(
 	string RowFormatText,
 	string LineFormatText,

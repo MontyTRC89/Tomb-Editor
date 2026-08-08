@@ -1,4 +1,6 @@
 using ICSharpCode.AvalonEdit.Highlighting;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
@@ -67,7 +69,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		if (_commandCatalogService.Sections.Count > 0)
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\[\b(" + string.Join("|", _commandCatalogService.Sections) + @")\b\]", RegexOptions.IgnoreCase),
+				Regex = BuildWordBoundaryAlternation(@"\[\b({0})\b\]", _commandCatalogService.Sections, RegexOptions.IgnoreCase | RegexOptions.Compiled),
 				Color = CreateColor(_scheme.Sections)
 			});
 
@@ -75,7 +77,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		if (_commandCatalogService.OldCommands.Count > 0)
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\b(" + string.Join("|", _commandCatalogService.OldCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Regex = BuildWordBoundaryAlternation(@"\b({0})\b\s*=", _commandCatalogService.OldCommands, RegexOptions.IgnoreCase | RegexOptions.Compiled),
 				Color = CreateColor(_scheme.StandardCommands)
 			});
 
@@ -85,7 +87,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		if (newCommands.Length > 0)
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(@"\b(" + string.Join("|", newCommands) + @")\b\s*=", RegexOptions.IgnoreCase),
+				Regex = BuildWordBoundaryAlternation(@"\b({0})\b\s*=", newCommands, RegexOptions.IgnoreCase | RegexOptions.Compiled),
 				Color = CreateColor(_scheme.NewCommands)
 			});
 
@@ -104,7 +106,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		if (_mnemonicCatalogService.GetAllFlags().Count > 0)
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(_mnemonicCatalogService.GetMnemonicPattern(), RegexOptions.IgnoreCase),
+				Regex = _mnemonicCatalogService.GetMnemonicRegex(),
 				Color = CreateColor(_scheme.References)
 			});
 
@@ -141,6 +143,11 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
 		};
 
+	/// <summary>
+	/// Builds a compiled regex from a word-boundary template with every alternative regex-escaped.
+	/// </summary>
+	private static Regex BuildWordBoundaryAlternation(string template, IEnumerable<string> names, RegexOptions options)
+		=> new Regex(string.Format(template, string.Join("|", names.Select(Regex.Escape))), options);
 	// Other
 
 	/// <summary>

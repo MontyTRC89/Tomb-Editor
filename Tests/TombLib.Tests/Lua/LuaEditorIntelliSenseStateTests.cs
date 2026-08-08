@@ -1,15 +1,11 @@
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Threading;
 using Nickelony.LanguageServer.Abstractions.Completion;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Editing;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using Nickelony.LanguageServer.Abstractions.Signatures;
-using TombLib.Scripting.UI.Presentation;
 using static TombLib.Tests.WPFTestHelper;
 
 namespace TombLib.Tests;
@@ -60,71 +56,6 @@ public class LuaEditorIntelliSenseStateTests
 		Assert.IsFalse(shouldDismissOtherElement);
 	}
 
-	[Ignore("Obsolete reflection-based coverage for pre-shared signature controller internals. Replace with shared controller tests.")]
-	public void ScheduleSignatureHelpRefresh_StoresCaretOffsetAndStartsTimer()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				Text = "spawn(room)",
-				CaretOffset = 6
-			};
-
-			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "ScheduleRefresh");
-
-			Assert.IsTrue(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-			Assert.AreEqual(6, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-			Assert.IsTrue(GetSignatureHelpField<DispatcherTimer>(editor, "_refreshTimer").IsEnabled);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared signature controller internals. Replace with shared controller tests.")]
-	public void CancelPendingSignatureHelpRefresh_ClearsPendingStateAndStopsTimer()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				Text = "spawn(room)",
-				CaretOffset = 6
-			};
-
-			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "ScheduleRefresh");
-			InvokeControllerInstanceMethod(editor, "_signatureHelpController", "CancelPendingRefresh");
-
-			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-			Assert.AreEqual(-1, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-			Assert.IsFalse(GetSignatureHelpField<DispatcherTimer>(editor, "_refreshTimer").IsEnabled);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared signature controller internals. Replace with shared controller tests.")]
-	public void DismissSignatureHelp_ClearsPendingStateAndInvalidatesOutstandingRequests()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-			ContentPresenter presenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-			Popup popup = GetSignatureHelpField<Popup>(editor, "_signaturePopup");
-
-			presenter.Content = new TextBlock { Text = "signature" };
-			SetSignatureHelpField(editor, "_signatureRequestToken", 5);
-			SetSignatureHelpField(editor, "_signatureRequestInFlight", true);
-			SetSignatureHelpField(editor, "_signatureRefreshPending", true);
-			SetSignatureHelpField(editor, "_pendingSignatureHelpOffset", 9);
-
-			InvokeInstanceMethod(editor, "DismissSignatureHelp", Type.EmptyTypes);
-
-			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRequestInFlight"));
-			Assert.AreEqual(6, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
-			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-			Assert.AreEqual(-1, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-			Assert.IsNull(presenter.Content);
-			Assert.IsFalse(popup.IsOpen);
-		});
-	}
-
 	[TestMethod]
 	public void TryGetCompletionTrigger_ReturnsExplicitAndImplicitTriggers()
 	{
@@ -169,22 +100,6 @@ public class LuaEditorIntelliSenseStateTests
 			"ShouldKeepCompletionWindowOpen",
 			[typeof(string)],
 			"."));
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared completion controller internals. Replace with shared controller tests.")]
-	public void ScheduleCompletionRequest_StartsTimerAndCancelPendingCompletionRequest_StopsIt()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-			object completionController = GetCompletionController(editor);
-
-			InvokeControllerInstanceMethod(editor, "_completionController", "ScheduleRequest");
-			Assert.IsTrue(GetPrivateField<DispatcherTimer>(completionController, "_completionRequestTimer").IsEnabled);
-
-			InvokeControllerInstanceMethod(editor, "_completionController", "CancelPendingRequest");
-			Assert.IsFalse(GetPrivateField<DispatcherTimer>(completionController, "_completionRequestTimer").IsEnabled);
-		});
 	}
 
 	[TestMethod]
@@ -358,199 +273,6 @@ public class LuaEditorIntelliSenseStateTests
 			false));
 	}
 
-	[Ignore("Obsolete reflection-based coverage for pre-shared completion controller internals. Replace with shared controller tests.")]
-	public void CloseCompletionWindow_InvalidatesPendingRequests_ButRefreshCloseDoesNot()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-			object completionController = GetCompletionController(editor);
-
-			SetPrivateField(completionController, "_completionRequestToken", 5);
-			InvokeInstanceMethod(editor, "CloseCompletionWindow", Type.EmptyTypes);
-			Assert.AreEqual(6, GetPrivateField<int>(completionController, "_completionRequestToken"));
-
-			InvokeControllerInstanceMethod(editor, "_completionController", "CloseWindowForRefresh");
-			Assert.AreEqual(6, GetPrivateField<int>(completionController, "_completionRequestToken"));
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover controller internals. Replace with shared controller tests.")]
-	public void TryGetHoverRequestOffset_ReturnsIdentifierOffsetWhenEligible()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				Text = "spawn(room)"
-			};
-
-			bool result = InvokeTryGetHoverRequestOffset(editor, 2, out int hoverOffset);
-
-			Assert.IsTrue(result);
-			Assert.AreEqual(2, hoverOffset);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover controller internals. Replace with shared controller tests.")]
-	public void TryGetHoverRequestOffset_BlocksRequestsWhenCompletionWindowIsOpen()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				Text = "spawn(room)"
-			};
-
-			editor.InitializeCompletionWindow();
-
-			bool result = InvokeTryGetHoverRequestOffset(editor, 2, out _);
-
-			Assert.IsFalse(result);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover tooltip internals. Replace with shared controller tests.")]
-	public void ShowBestHoverToolTip_ShowsCombinedTooltipWhenHoverAndDiagnosticAreAvailable()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-
-			InvokeControllerInstanceMethod(
-				editor,
-				"_hoverController",
-				"ShowBestToolTip",
-				[typeof(TextHoverInfo), typeof(bool), typeof(string), typeof(TextEditorDiagnosticSeverity)],
-				new TextHoverInfo("Hover docs.", TextHoverContentKind.PlainText),
-				true,
-				"Warning message.",
-				TextEditorDiagnosticSeverity.Warning);
-
-			Popup popup = GetPrivateField<Popup>(editor, "_specialToolTip");
-			ContentPresenter presenter = GetPrivateField<EditorToolTipPresenter>(editor, "_toolTipPresenter").ContentPresenter;
-
-			Assert.IsTrue(popup.IsOpen);
-			Assert.IsInstanceOfType(presenter.Content, typeof(StackPanel));
-
-			var panel = (StackPanel)presenter.Content!;
-			Assert.AreEqual(2, panel.Children.Count);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover tooltip internals. Replace with shared controller tests.")]
-	public void ShowBestHoverToolTip_ShowsHoverTooltipWhenOnlyHoverIsAvailable()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-
-			InvokeControllerInstanceMethod(
-				editor,
-				"_hoverController",
-				"ShowBestToolTip",
-				[typeof(TextHoverInfo), typeof(bool), typeof(string), typeof(TextEditorDiagnosticSeverity)],
-				new TextHoverInfo("Hover docs.", TextHoverContentKind.PlainText),
-				false,
-				string.Empty,
-				TextEditorDiagnosticSeverity.Warning);
-
-			Popup popup = GetPrivateField<Popup>(editor, "_specialToolTip");
-			ContentPresenter presenter = GetPrivateField<EditorToolTipPresenter>(editor, "_toolTipPresenter").ContentPresenter;
-
-			Assert.IsTrue(popup.IsOpen);
-			Assert.IsNotNull(presenter.Content);
-			Assert.IsNotInstanceOfType(presenter.Content, typeof(StackPanel));
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover tooltip internals. Replace with shared controller tests.")]
-	public void ShowBestHoverToolTip_ShowsDiagnosticTooltipWhenOnlyDiagnosticIsAvailable()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-
-			InvokeControllerInstanceMethod(
-				editor,
-				"_hoverController",
-				"ShowBestToolTip",
-				[typeof(TextHoverInfo), typeof(bool), typeof(string), typeof(TextEditorDiagnosticSeverity)],
-				null,
-				true,
-				"Warning message.",
-				TextEditorDiagnosticSeverity.Warning);
-
-			Popup popup = GetPrivateField<Popup>(editor, "_specialToolTip");
-			ContentPresenter presenter = GetPrivateField<EditorToolTipPresenter>(editor, "_toolTipPresenter").ContentPresenter;
-
-			Assert.IsTrue(popup.IsOpen);
-			Assert.IsNotNull(presenter.Content);
-			Assert.IsNotInstanceOfType(presenter.Content, typeof(StackPanel));
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared hover tooltip internals. Replace with shared controller tests.")]
-	public void ShowBestHoverToolTip_SuppressesTooltipWhenCompletionWindowIsOpen()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-			editor.InitializeCompletionWindow();
-
-			InvokeControllerInstanceMethod(
-				editor,
-				"_hoverController",
-				"ShowBestToolTip",
-				[typeof(TextHoverInfo), typeof(bool), typeof(string), typeof(TextEditorDiagnosticSeverity)],
-				new TextHoverInfo("Hover docs.", TextHoverContentKind.PlainText),
-				true,
-				"Warning message.",
-				TextEditorDiagnosticSeverity.Warning);
-
-			Popup popup = GetPrivateField<Popup>(editor, "_specialToolTip");
-			ContentPresenter presenter = GetPrivateField<EditorToolTipPresenter>(editor, "_toolTipPresenter").ContentPresenter;
-
-			Assert.IsFalse(popup.IsOpen);
-			Assert.IsNull(presenter.Content);
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared transient tooltip internals. Replace with shared controller tests.")]
-	public void DismissTransientToolTips_CancelsHoverAndClearsTransientUi()
-	{
-		RunInSta(() =>
-		{
-			var editor = new LuaEditor(new Version(1, 0));
-			var hoverCancellationTokenSource = new CancellationTokenSource();
-			ContentPresenter signaturePresenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-
-			SetHoverField(editor, "_hoverCancellationTokenSource", hoverCancellationTokenSource);
-			SetHoverField(editor, "_hoverRequestToken", 4);
-			SetSignatureHelpField(editor, "_signatureRequestToken", 2);
-			SetSignatureHelpField(editor, "_signatureRequestInFlight", true);
-			SetSignatureHelpField(editor, "_signatureRefreshPending", true);
-			SetSignatureHelpField(editor, "_pendingSignatureHelpOffset", 7);
-			signaturePresenter.Content = new TextBlock { Text = "signature" };
-
-			editor.InitializeCompletionWindow();
-			editor.ShowToolTip("Hover docs.");
-
-			InvokeInstanceMethod(editor, "DismissTransientToolTips", Type.EmptyTypes);
-
-			Assert.IsTrue(hoverCancellationTokenSource.IsCancellationRequested);
-			Assert.IsNull(GetHoverFieldValue(editor, "_hoverCancellationTokenSource"));
-			Assert.AreEqual(5, GetHoverField<int>(editor, "_hoverRequestToken"));
-			Assert.IsNotNull(editor.ActiveCompletionWindow);
-			Assert.AreEqual(3, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
-			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRequestInFlight"));
-			Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-			Assert.AreEqual(-1, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-			Assert.IsNull(signaturePresenter.Content);
-			Assert.IsFalse(GetPrivateField<Popup>(editor, "_specialToolTip").IsOpen);
-		});
-	}
-
 	[TestMethod]
 	public void NavigateToDefinitionAtCaretAsync_RaisesDefinitionNavigationRequestedForResolvedLocation()
 	{
@@ -630,7 +352,7 @@ public class LuaEditorIntelliSenseStateTests
 	}
 
 	[TestMethod]
-	public void RequestSignatureHelpAsync_DismissesExistingPopupWhenProviderReturnsNoSignature()
+	public void RequestSignatureHelpAsync_RoutesRequestToProvider()
 	{
 		RunInSta(() =>
 		{
@@ -647,96 +369,16 @@ public class LuaEditorIntelliSenseStateTests
 
 			try
 			{
-				Popup popup = GetSignatureHelpField<Popup>(editor, "_signaturePopup");
-				ContentPresenter presenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-
-				presenter.Content = new TextBlock { Text = "signature" };
-				popup.IsOpen = true;
-
 				Task requestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
 				requestTask.GetAwaiter().GetResult();
 
-				Assert.IsFalse(popup.IsOpen);
-				Assert.IsNull(presenter.Content);
+				// The editor routes the caret position to the signature-help provider. Popup
+				// visibility is owned by the shared TextSignatureHelpController (see its tests).
 				Assert.AreEqual(1, provider.SignatureRequests.Count);
-			}
-			finally
-			{
-				window.Close();
-			}
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared signature refresh internals. Replace with shared controller tests.")]
-	public void RequestSignatureHelpAsync_WhenRequestIsInFlight_DefersRefreshToLatestOffset()
-	{
-		RunInSta(() =>
-		{
-			var firstResponse = new TaskCompletionSource<TextSignatureHelpInfo?>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-			TextSignatureHelpInfo secondSignature = new(
-				"spawn(room, objectName)",
-				1,
-				"Spawns an object.",
-				[new TextSignatureParameterInfo("room", "Room id."), new TextSignatureParameterInfo("objectName", "Object name.")]);
-
-			int servedResponses = 0;
-
-			var provider = new FakeLuaIntellisenseProvider
-			{
-				SignatureHelpHandler = (_, _) =>
-				{
-					servedResponses++;
-
-					return servedResponses == 1
-						? firstResponse.Task
-						: Task.FromResult<TextSignatureHelpInfo?>(secondSignature);
-				}
-			};
-
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				FilePath = @"C:\Workspace\Scripts\test.lua",
-				Text = "spawn(room)",
-				IntelliSenseProvider = provider
-			};
-
-			Window window = ShowInHostWindow(editor);
-
-			try
-			{
-				Task firstRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
-					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
-
-				Task deferredRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 11)
-					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
-
-				deferredRequestTask.GetAwaiter().GetResult();
-
-				Assert.IsTrue(GetSignatureHelpField<bool>(editor, "_signatureRequestInFlight"));
-				Assert.IsTrue(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-				Assert.AreEqual(11, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-				Assert.AreEqual(1, provider.SignatureRequests.Count);
-
-				firstResponse.SetResult(new TextSignatureHelpInfo(
-					"spawn(room)",
-					0,
-					"Spawns an object.",
-					[new TextSignatureParameterInfo("room", "Room id.")]));
-
-				firstRequestTask.GetAwaiter().GetResult();
-				Assert.IsTrue(GetSignatureHelpField<DispatcherTimer>(editor, "_refreshTimer").IsEnabled);
-
-				InvokeControllerInstanceMethod(editor, "_signatureHelpController", "RefreshTimer_Tick", [typeof(object), typeof(EventArgs)], null, EventArgs.Empty);
-				window.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() => { }));
-
-				Assert.AreEqual(2, provider.SignatureRequests.Count);
-				Assert.AreEqual(11, provider.SignatureRequests[1].Column);
-				Assert.IsFalse(GetSignatureHelpField<bool>(editor, "_signatureRefreshPending"));
-				Assert.AreEqual(11, GetSignatureHelpField<int>(editor, "_pendingSignatureHelpOffset"));
-				Assert.IsTrue(GetSignatureHelpField<Popup>(editor, "_signaturePopup").IsOpen);
+				Assert.AreEqual(0, provider.SignatureRequests[0].Line);
+				Assert.AreEqual(6, provider.SignatureRequests[0].Column);
 			}
 			finally
 			{
@@ -746,66 +388,7 @@ public class LuaEditorIntelliSenseStateTests
 	}
 
 	[TestMethod]
-	public void RequestSignatureHelpAsync_PreservesVisiblePopupWhenRefreshReturnsNoSignature()
-	{
-		RunInSta(() =>
-		{
-			int servedResponses = 0;
-
-			var provider = new FakeLuaIntellisenseProvider
-			{
-				SignatureHelpHandler = (_, _) =>
-				{
-					servedResponses++;
-					return Task.FromResult<TextSignatureHelpInfo?>(servedResponses == 1
-						? new TextSignatureHelpInfo(
-							"spawn(room)",
-							0,
-							"Spawns an object.",
-							[new TextSignatureParameterInfo("room", "Room id.")])
-						: null);
-				}
-			};
-
-			var editor = new LuaEditor(new Version(1, 0))
-			{
-				FilePath = @"C:\Workspace\Scripts\test.lua",
-				Text = "spawn(room)",
-				IntelliSenseProvider = provider
-			};
-
-			Window window = ShowInHostWindow(editor);
-
-			try
-			{
-				Task firstRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
-					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
-
-				firstRequestTask.GetAwaiter().GetResult();
-
-				Popup popup = GetSignatureHelpField<Popup>(editor, "_signaturePopup");
-				ContentPresenter presenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-				object? originalContent = presenter.Content;
-
-				Task secondRequestTask = (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 11)
-					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
-
-				secondRequestTask.GetAwaiter().GetResult();
-
-				Assert.IsTrue(popup.IsOpen);
-				Assert.IsNotNull(presenter.Content);
-				Assert.AreSame(originalContent, presenter.Content);
-				Assert.AreEqual(2, provider.SignatureRequests.Count);
-			}
-			finally
-			{
-				window.Close();
-			}
-		});
-	}
-
-	[TestMethod]
-	public void RequestSignatureHelpAsync_ShowsSignaturePopupForResolvedSignature()
+	public void RequestSignatureHelpAsync_ResolvedSignature_IsRequestedFromProvider()
 	{
 		RunInSta(() =>
 		{
@@ -833,20 +416,17 @@ public class LuaEditorIntelliSenseStateTests
 					?? throw new InvalidOperationException("Private instance method 'RequestSignatureHelpAsync' returned null."));
 
 				requestTask.GetAwaiter().GetResult();
+
+				// The editor routes the caret position to the signature-help provider. Popup
+				// visibility is owned by the shared TextSignatureHelpController (see its tests).
+				Assert.AreEqual(1, provider.SignatureRequests.Count);
+				Assert.AreEqual(0, provider.SignatureRequests[0].Line);
+				Assert.AreEqual(6, provider.SignatureRequests[0].Column);
 			}
 			finally
 			{
 				window.Close();
 			}
-
-			Popup popup = GetSignatureHelpField<Popup>(editor, "_signaturePopup");
-			ContentPresenter presenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-
-			Assert.IsTrue(popup.IsOpen);
-			Assert.IsNotNull(presenter.Content);
-			Assert.AreEqual(1, provider.SignatureRequests.Count);
-			Assert.AreEqual(0, provider.SignatureRequests[0].Line);
-			Assert.AreEqual(6, provider.SignatureRequests[0].Column);
 		});
 	}
 
@@ -873,54 +453,6 @@ public class LuaEditorIntelliSenseStateTests
 		triggerCharacter = arguments[1] as char?;
 		return result;
 	}
-
-	private static bool InvokeTryGetHoverRequestOffset(LuaEditor editor, int hoveredOffset, out int hoverOffset)
-	{
-		MethodInfo method = GetHoverController(editor).GetType().GetMethod(
-			"TryGetRequestOffset",
-			BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-			binder: null,
-			[typeof(int), typeof(int).MakeByRefType()],
-			modifiers: null)
-			?? throw new InvalidOperationException("Hover controller method 'TryGetRequestOffset' was not found.");
-
-		object?[] arguments = [hoveredOffset, 0];
-		bool result = (bool)(method.Invoke(GetHoverController(editor), arguments)
-			?? throw new InvalidOperationException("Hover controller method 'TryGetRequestOffset' returned null."));
-
-		hoverOffset = (int)arguments[1]!;
-		return result;
-	}
-
-	private static void InvokeControllerInstanceMethod(LuaEditor editor, string controllerFieldName, string methodName)
-		=> InvokeInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, Type.EmptyTypes);
-
-	private static object? InvokeControllerInstanceMethod(LuaEditor editor, string controllerFieldName, string methodName, Type[] parameterTypes, params object?[] arguments)
-		=> InvokeInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, parameterTypes, arguments);
-
-	private static object GetCompletionController(LuaEditor editor)
-		=> GetPrivateField<object>(editor, "_completionController");
-
-	private static T GetSignatureHelpField<T>(LuaEditor editor, string fieldName)
-		=> GetPrivateField<T>(GetSignatureHelpController(editor), fieldName);
-
-	private static T GetHoverField<T>(LuaEditor editor, string fieldName)
-		=> GetPrivateField<T>(GetHoverController(editor), fieldName);
-
-	private static object GetHoverController(LuaEditor editor)
-		=> GetPrivateField<object>(editor, "_hoverController");
-
-	private static object? GetHoverFieldValue(LuaEditor editor, string fieldName)
-		=> GetPrivateFieldValue(GetHoverController(editor), fieldName);
-
-	private static object GetSignatureHelpController(LuaEditor editor)
-		=> GetPrivateField<object>(editor, "_signatureHelpController");
-
-	private static void SetHoverField(LuaEditor editor, string fieldName, object value)
-		=> SetPrivateField(GetHoverController(editor), fieldName, value);
-
-	private static void SetSignatureHelpField(LuaEditor editor, string fieldName, object value)
-		=> SetPrivateField(GetSignatureHelpController(editor), fieldName, value);
 
 	private readonly record struct ProviderRequest(string FilePath, string Content, int Line, int Column);
 

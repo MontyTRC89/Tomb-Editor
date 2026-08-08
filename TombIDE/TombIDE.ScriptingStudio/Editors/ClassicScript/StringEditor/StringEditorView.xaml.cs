@@ -10,13 +10,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Documents;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Editors.ClassicScript.StringEditor;
 
-public partial class StringEditorView : UserControl, IEditorControl, IStringSectionNavigator
+public partial class StringEditorView : UserControl, IEditorControl, IStringSectionNavigator, INameBasedObjectNavigator
 {
 	#region IEditorControl properties
 
@@ -68,18 +69,18 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		}
 	}
 
-	public object SelectedContent
+	public string? SelectedContent
 	{
 		get
 		{
 			DataGrid? grid = GetCurrentDataGrid();
 			if (grid is null)
-				return string.Empty;
+				return null;
 
 			if (grid.CurrentCell.Item is StringTableRow row && grid.CurrentColumn is not null)
-				return GetCellValue(row, grid.CurrentColumn.DisplayIndex) ?? string.Empty;
+				return GetCellValue(row, grid.CurrentColumn.DisplayIndex)?.ToString();
 
-			return string.Empty;
+			return null;
 		}
 	}
 
@@ -150,7 +151,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 			section.Rows.Remove(lastRow);
 
 			IsContentChanged = true;
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 	}
 
@@ -255,7 +256,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 
 	#region Content
 
-	public void TryRunContentChangedWorker()
+	public void RunContentChangedWorker()
 	{
 		IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
 	}
@@ -316,7 +317,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 
 		AttachRowCollectionListeners();
 		ApplyZoomToAllGrids();
-		TryRunContentChangedWorker();
+		RunContentChangedWorker();
 	}
 
 	private static void PopulateNormalRows(StringTableSection section, List<string> strings, int idOffset)
@@ -363,14 +364,14 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	{
 		_viewModel.Undo();
 		LastModified = DateTime.Now;
-		TryRunContentChangedWorker();
+		RunContentChangedWorker();
 	}
 
 	public void Redo()
 	{
 		_viewModel.Redo();
 		LastModified = DateTime.Now;
-		TryRunContentChangedWorker();
+		RunContentChangedWorker();
 	}
 
 	public void Cut()
@@ -436,7 +437,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 				cachedValue));
 
 			IsContentChanged = true;
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 	}
 
@@ -446,7 +447,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		grid?.SelectAll();
 	}
 
-	public void GoToObject(string objectName, object? identifyingObject = null)
+	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 	{
 		// Callers pass the bare section name; the model stores it with brackets
 		// (e.g. "[Section1]"), matching the old WinForms behavior.
@@ -636,7 +637,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		// Always run the dirty check when a cell edit ends, so the file is
 		// marked as modified regardless of whether the cached begin-edit
 		// value matches the final value.
-		TryRunContentChangedWorker();
+		RunContentChangedWorker();
 	}
 
 	private void DataGrid_LoadingRow(object? sender, DataGridRowEventArgs e)
@@ -757,7 +758,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 			e.Action == NotifyCollectionChangedAction.Remove)
 		{
 			LastModified = DateTime.Now;
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 	}
 

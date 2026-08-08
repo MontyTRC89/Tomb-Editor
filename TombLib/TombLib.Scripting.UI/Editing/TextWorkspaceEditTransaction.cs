@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
 
@@ -10,9 +11,10 @@ namespace TombLib.Scripting.UI.Editing;
 public sealed class TextWorkspaceEditTransaction(IReadOnlyList<TextWorkspaceDocumentChange> documentChanges)
 {
 	/// <summary>
-	/// Gets the per-document changes captured in the transaction.
+	/// Gets the per-document changes captured in the transaction. The caller-provided collection is
+	/// copied into owned read-only storage so later caller mutations cannot leak into the transaction.
 	/// </summary>
-	public IReadOnlyList<TextWorkspaceDocumentChange> DocumentChanges { get; } = documentChanges ?? [];
+	public IReadOnlyList<TextWorkspaceDocumentChange> DocumentChanges { get; } = Array.AsReadOnly([.. (documentChanges ?? [])]);
 
 	/// <summary>
 	/// Gets a value indicating whether the transaction contains any changes.

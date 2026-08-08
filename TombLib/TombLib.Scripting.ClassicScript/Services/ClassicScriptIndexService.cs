@@ -1,5 +1,8 @@
 using NCalc;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.Extensions;
@@ -60,6 +63,7 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 			return -1;
 
 		int loopStartLine = 1;
+		int loopEndLine = source.LineCount;
 
 		if (_commandService.DocumentContainsSections(source))
 		{
@@ -69,11 +73,12 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 				return -1;
 
 			loopStartLine = sectionStartLineNumber.Value + 1;
+			loopEndLine = GetSectionEndLine(source, sectionStartLineNumber.Value);
 		}
 
 		var context = new EvaluationContext();
-		int firstId = GetFirstId(source, commandKey, loopStartLine, context);
-		IEnumerable<int> takenIndicesList = GetTakenIndicesList(source, commandKey, loopStartLine);
+		int firstId = GetFirstId(source, commandKey, loopStartLine, loopEndLine, context);
+		IEnumerable<int> takenIndicesList = GetTakenIndicesList(source, commandKey, loopStartLine, loopEndLine);
 
 		int nextFreeIndex = firstId;
 
@@ -87,13 +92,13 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 	// #FIRST_ID evaluation
 	// ------------------------------------------------------------------
 
-	private int GetFirstId(ITextSnapshot source, string commandKey, int loopStartLine, EvaluationContext context)
+	private int GetFirstId(ITextSnapshot source, string commandKey, int loopStartLine, int loopEndLine, EvaluationContext context)
 	{
 		var firstIdRegex = new Regex(
 			$@"^\s*#FIRST_ID\s+{Regex.Escape(commandKey)}\s*=\s*(.*)\s*(;.*)?$",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		return EvaluateDefinePattern(source, firstIdRegex, loopStartLine, context, clampToMinOne: true);
+		return EvaluateDefinePattern(source, firstIdRegex, loopStartLine, loopEndLine, context, clampToMinOne: true);
 	}
 
 	// ------------------------------------------------------------------
@@ -132,16 +137,16 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 			$@"^\s*#DEFINE\s+{Regex.Escape(variable)}\s+(.*)\s*(;.*)?$",
 			RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-		return EvaluateDefinePattern(source, defineRegex, loopStartLine: 1, context, clampToMinOne: false);
+		return EvaluateDefinePattern(source, defineRegex, loopStartLine: 1, loopEndLine: source.LineCount, context, clampToMinOne: false);
 	}
 
-	private int EvaluateDefinePattern(ITextSnapshot source, Regex defineRegex, int loopStartLine, EvaluationContext context, bool clampToMinOne)
+	private int EvaluateDefinePattern(ITextSnapshot source, Regex defineRegex, int loopStartLine, int loopEndLine, EvaluationContext context, bool clampToMinOne)
 	{
 		int result = 0;
 
 		try
 		{
-			for (int i = loopStartLine; i <= source.LineCount; i++)
+			for (int i = loopStartLine; i <= loopEndLine; i++)
 			{
 				ITextLine line = source.GetLineByNumber(i);
 				string? lineText = _commandService.GetWholeCommandLineText(source, line.Offset);
@@ -190,9 +195,9 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 	// Taken indices
 	// ------------------------------------------------------------------
 
-	private IEnumerable<int> GetTakenIndicesList(ITextSnapshot source, string commandKey, int loopStartLine)
+	private IEnumerable<int> GetTakenIndicesList(ITextSnapshot source, string commandKey, int loopStartLine, int loopEndLine)
 	{
-		for (int i = loopStartLine; i <= source.LineCount; i++)
+		for (int i = loopStartLine; i <= loopEndLine; i++)
 		{
 			ITextLine processedLine = source.GetLineByNumber(i);
 			string processedLineText = source.GetText(processedLine.Offset, processedLine.Length);
@@ -209,9 +214,19 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 		}
 	}
 
-	// ------------------------------------------------------------------
-	// Per-call context for cyclic define detection
-	// ------------------------------------------------------------------
+	private static int GetSectionEndLine(ITextSnapshot source, int sectionStartLineNumber)
+	{
+		for (int i = sectionStartLineNumber + 1; i <= source.LineCount; i++)
+		{
+			ITextLine line = source.GetLineByNumber(i);
+			string lineText = source.GetText(line.Offset, line.Length);
+
+			if (lineText.StartsWith("[", StringComparison.Ordinal))
+				return i - 1;
+		}
+
+		return source.LineCount;
+	}
 
 	/// <summary>
 	/// Holds per-call state for #DEFINE variable resolution to detect cycles.
@@ -222,7 +237,7 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 	{
 		/// <summary>
 		/// Gets the set of variable names already visited in the current resolution chain.
-		/// Case-insensitive comparison matches legacy behavior.
+		/// Case-insensitive comparison for #DEFINE variable names.
 		/// </summary>
 		public HashSet<string> VisitedVariables { get; } = new(StringComparer.OrdinalIgnoreCase);
 	}

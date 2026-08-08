@@ -88,26 +88,6 @@ public abstract class TextEditorConfigBase : ConfigurationBase
 	}
 
 	/// <summary>
-	/// Backs the legacy <c>AutoCloseQuotes</c> serialized element.
-	/// </summary>
-	[XmlElement("AutoCloseQuotes")]
-	public bool LegacyAutoCloseQuotes
-	{
-		get => AutoCloseQuotes;
-		set => AutoCloseQuotes = value;
-	}
-
-	/// <summary>
-	/// Controls whether the legacy <c>AutoCloseQuotes</c> element is serialized.
-	/// </summary>
-	[XmlIgnore]
-	public bool LegacyAutoCloseQuotesSpecified
-	{
-		get => false;
-		set { }
-	}
-
-	/// <summary>
 	/// Gets or sets whether word wrapping is enabled in the editor.
 	/// </summary>
 	public bool WordWrapping { get; set; } = TextEditorBaseDefaults.WordWrapping;

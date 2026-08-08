@@ -5,7 +5,7 @@ namespace TombLib.Scripting.UI.Highlighting;
 
 internal sealed class TextMateHighlightingStyle
 {
-	public static readonly TextMateHighlightingStyle Empty = new TextMateHighlightingStyle(null, false, false, null);
+	public static TextMateHighlightingStyle Empty { get; } = new TextMateHighlightingStyle(null, false, false, null);
 
 	public TextMateHighlightingStyle(Brush? foreground, bool isBold, bool isItalic, TextDecorationCollection? textDecorations)
 	{

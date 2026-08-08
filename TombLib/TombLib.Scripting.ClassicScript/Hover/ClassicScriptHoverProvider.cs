@@ -1,8 +1,10 @@
 using Nickelony.LanguageServer.Abstractions.Hover;
+using System;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Hover;
@@ -78,12 +80,8 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		return new TextHoverInfo($"For more information about the \"{hoveredWord}\" {type}, Press F12.", SymbolName: hoveredWord, Identifier: GetDefinitionIdentifier(type));
 	}
 
-	private static object? GetDefinitionIdentifier(WordType type)
-		=> type switch
-		{
-			WordType.Header => ObjectType.Section,
-			_ => null
-		};
+	private static TextDefinitionDiscriminator? GetDefinitionIdentifier(WordType type)
+		=> type == WordType.Header ? new ClassicScriptObjectDiscriminator(ObjectType.Section) : null;
 
 	private TextHoverInfo? CreateConstantHoverInfo(ITextSnapshot source, int hoveredOffset, string hoveredWord, WordType type)
 	{
@@ -92,7 +90,7 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		if (currentFlagPrefix is null)
 		{
 			return type == WordType.MnemonicConstant
-				? new TextHoverInfo($"For more information about the \"{hoveredWord}\" Constant, Press F12.", SymbolName: hoveredWord, Identifier: type)
+				? new TextHoverInfo($"For more information about the \"{hoveredWord}\" Constant, Press F12.", SymbolName: hoveredWord, Identifier: null)
 				: null;
 		}
 
@@ -101,7 +99,7 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 
 		string content = $"{flagName}\n{hexValue}\n{decimalValue}\n\nFor more information about the \"{flagName}\" Constant, Press F12.";
 
-		return new TextHoverInfo(content, SymbolName: hoveredWord, Identifier: type);
+		return new TextHoverInfo(content, SymbolName: hoveredWord, Identifier: null);
 	}
 
 	private bool TryGetMnemonicInfo(string hoveredWord, WordType type, string currentFlagPrefix, out string flagName, out string hexValue, out string decimalValue)

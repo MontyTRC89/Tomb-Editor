@@ -23,7 +23,7 @@ public class TRXGameFlowHoverServiceTests
 	{
 		var service = new TRXGameFlowHoverService(new StubSchemaService(null));
 
-		var result = service.GetHoverInfo(new TextHoverRequest("\"name\"", 2));
+		var result = service.GetHoverInfo(new TextHoverRequest("\"name\":", 2));
 
 		Assert.IsNull(result);
 	}
@@ -36,7 +36,7 @@ public class TRXGameFlowHoverServiceTests
 			TRXSchemaKeywords.Empty);
 		var service = new TRXGameFlowHoverService(new StubSchemaService(model));
 
-		var result = service.GetHoverInfo(new TextHoverRequest("\"name\"", 2));
+		var result = service.GetHoverInfo(new TextHoverRequest("\"name\":", 2));
 
 		Assert.IsNotNull(result);
 		Assert.AreEqual(TextHoverContentKind.Markdown, result.ContentKind);
@@ -52,7 +52,7 @@ public class TRXGameFlowHoverServiceTests
 			TRXSchemaKeywords.Empty);
 		var service = new TRXGameFlowHoverService(new StubSchemaService(model));
 
-		var result = service.GetHoverInfo(new TextHoverRequest("\"levels\"", 2));
+		var result = service.GetHoverInfo(new TextHoverRequest("\"levels\":", 2));
 
 		Assert.IsNotNull(result);
 		Assert.IsTrue(result.Content.Contains("Type: `Array`"));
@@ -67,7 +67,36 @@ public class TRXGameFlowHoverServiceTests
 			TRXSchemaKeywords.Empty);
 		var service = new TRXGameFlowHoverService(new StubSchemaService(model));
 
-		var result = service.GetHoverInfo(new TextHoverRequest("\"unknown\"", 2));
+		var result = service.GetHoverInfo(new TextHoverRequest("\"unknown\":", 2));
+
+		Assert.IsNull(result);
+	}
+
+	[TestMethod]
+	public void GetHoverInfo_ValueEqualToKnownProperty_ReturnsNull()
+	{
+		var model = new TRXGameFlowSchemaModel(
+			[new TRXGameFlowProperty("secret", [TRXGameFlowPropertyType.String], "A hidden property.")],
+			TRXSchemaKeywords.Empty);
+		var service = new TRXGameFlowHoverService(new StubSchemaService(model));
+
+		// Hovering the value position of "secret" (equal to a known property name) yields no
+		// hover information because only property-name positions are hoverable.
+		var result = service.GetHoverInfo(new TextHoverRequest("\"name\": \"secret\"", 11));
+
+		Assert.IsNull(result);
+	}
+
+	[TestMethod]
+	public void GetHoverInfo_ColonAfterPropertyName_ReturnsNull()
+	{
+		var model = new TRXGameFlowSchemaModel(
+			[new TRXGameFlowProperty("name", [TRXGameFlowPropertyType.String], null)],
+			TRXSchemaKeywords.Empty);
+		var service = new TRXGameFlowHoverService(new StubSchemaService(model));
+
+		// Hovering the colon immediately after the property name is outside the property range.
+		var result = service.GetHoverInfo(new TextHoverRequest("\"name\":", 6));
 
 		Assert.IsNull(result);
 	}

@@ -9,7 +9,7 @@ using TombLib.Scripting.Threading;
 namespace TombLib.Scripting.UI.Signatures;
 
 /// <summary>
-/// Coordinates shared signature-help request state, refresh scheduling, and optional presentation updates.
+/// Coordinates shared signature help request state, refresh scheduling, and optional presentation updates.
 /// </summary>
 public sealed class TextSignatureHelpController : IDisposable
 {
@@ -21,6 +21,7 @@ public sealed class TextSignatureHelpController : IDisposable
 	private readonly Action _dismissSignatureHelp;
 	private readonly Action<TextSignatureHelpPresentationState>? _applySignatureState;
 	private readonly Action<Exception>? _handleRequestFailure;
+	private readonly Action? _cancelInFlightRequest;
 	private readonly DispatcherTimer _refreshTimer = new();
 	private readonly RequestTokenSource _signatureRequestTokens = new();
 	private int _pendingSignatureHelpOffset = -1;
@@ -39,6 +40,7 @@ public sealed class TextSignatureHelpController : IDisposable
 		Action dismissSignatureHelp,
 		Action<TextSignatureHelpPresentationState>? applySignatureState = null,
 		Action<Exception>? handleRequestFailure = null,
+		Action? cancelInFlightRequest = null,
 		double refreshDebounceDelayInMilliseconds = 50.0)
 	{
 		ArgumentNullException.ThrowIfNull(getCurrentCaretOffset);
@@ -52,18 +54,19 @@ public sealed class TextSignatureHelpController : IDisposable
 		_dismissSignatureHelp = dismissSignatureHelp;
 		_applySignatureState = applySignatureState;
 		_handleRequestFailure = handleRequestFailure;
+		_cancelInFlightRequest = cancelInFlightRequest;
 
 		_refreshTimer.Interval = TimeSpan.FromMilliseconds(refreshDebounceDelayInMilliseconds);
 		_refreshTimer.Tick += RefreshTimer_Tick;
 	}
 
 	/// <summary>
-	/// Gets the currently displayed signature-help state, if any.
+	/// Gets the currently displayed signature help state, if any.
 	/// </summary>
 	public TextSignatureHelpInfo? CurrentSignatureHelp { get; private set; }
 
 	/// <summary>
-	/// Gets the current shared signature-help presentation state.
+	/// Gets the current shared signature help presentation state.
 	/// </summary>
 	public TextSignatureHelpPresentationState CurrentPresentation { get; private set; } = TextSignatureHelpPresentationState.Empty;
 
@@ -78,7 +81,7 @@ public sealed class TextSignatureHelpController : IDisposable
 	public bool IsActiveOrPending => _isVisible || _signatureRequestInFlight || _signatureRefreshPending;
 
 	/// <summary>
-	/// Dismisses the current signature-help presentation and invalidates pending work.
+	/// Dismisses the current signature help presentation and invalidates pending work.
 	/// </summary>
 	public void Dismiss()
 	{
@@ -202,6 +205,10 @@ public sealed class TextSignatureHelpController : IDisposable
 	{
 		if (_signatureRequestInFlight)
 		{
+			// A superseding request cancels the active provider call before the replacement is
+			// scheduled, and invalidates its token so its result is dropped when it completes.
+			_cancelInFlightRequest?.Invoke();
+			_signatureRequestTokens.Invalidate();
 			_pendingSignatureHelpOffset = offset;
 			_signatureRefreshPending = true;
 			return;

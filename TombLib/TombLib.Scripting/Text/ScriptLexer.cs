@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace TombLib.Scripting.Text;
 
 /// <summary>
@@ -30,13 +33,13 @@ public static class ScriptLexer
 	/// </summary>
 	/// <param name="source">The text source to tokenize.</param>
 	/// <param name="options">Lexer options for the target language.</param>
-	/// <returns>A list of every token in the document.</returns>
+	/// <returns>A read-only list of every token in the document.</returns>
 	/// <remarks>
 	/// This method allocates a line string per source line and collects all tokens
 	/// into a list. Callers in hot paths should prefer <see cref="TokenizeLine"/>
 	/// with a span obtained from a string-backed source.
 	/// </remarks>
-	public static List<ScriptToken> TokenizeDocument(ITextSnapshot source, ScriptLexerOptions options)
+	public static IReadOnlyList<ScriptToken> TokenizeDocument(ITextSnapshot source, ScriptLexerOptions options)
 	{
 		if (source is null)
 			throw new ArgumentNullException(nameof(source));

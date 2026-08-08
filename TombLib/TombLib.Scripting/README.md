@@ -2,6 +2,10 @@
 
 Purpose: UI-free scripting contracts, DTOs, and reusable abstractions.
 
+This is the neutral core of the scripting provider libraries. Targets portable `net8.0` and
+uses explicit usings. See [ScriptingLibraries_Architecture.md](../ScriptingLibraries_Architecture.md)
+for the full library standards, dependency direction, and type-placement rules.
+
 Use this project for:
 - diagnostics, edits, ranges, and other transportable text models
 - completion, hover, signature, definition, reference, and semantic token DTOs

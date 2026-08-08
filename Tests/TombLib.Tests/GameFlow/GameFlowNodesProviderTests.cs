@@ -22,12 +22,12 @@ public class GameFlowNodesProviderTests
         Assert.AreEqual("Sections", nodes[0].Text);
         Assert.AreEqual(1, nodes[0].Nodes.Count);
         Assert.AreEqual("TITLE", nodes[0].Nodes[0].Text);
-        Assert.AreEqual(ObjectType.Section, nodes[0].Nodes[0].Tag);
+        Assert.AreEqual(new GameFlowObjectDiscriminator(ObjectType.Section), nodes[0].Nodes[0].Tag);
 
         Assert.AreEqual("Levels", nodes[1].Text);
         Assert.AreEqual(1, nodes[1].Nodes.Count);
         Assert.AreEqual("Caves", nodes[1].Nodes[0].Text);
-        Assert.AreEqual(ObjectType.Level, nodes[1].Nodes[0].Tag);
+        Assert.AreEqual(new GameFlowObjectDiscriminator(ObjectType.Level), nodes[1].Nodes[0].Tag);
     }
 
     [TestMethod]

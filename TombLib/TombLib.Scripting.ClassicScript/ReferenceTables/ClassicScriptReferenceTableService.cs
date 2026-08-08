@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 
 namespace TombLib.Scripting.ClassicScript.ReferenceTables;

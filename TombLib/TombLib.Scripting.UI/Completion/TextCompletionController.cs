@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -83,6 +84,7 @@ public sealed class TextCompletionController : IDisposable
 	private Func<Task>? _scheduledRequestAsync;
 	private ToolTip? _pendingCompletionToolTip;
 	private readonly RequestTokenSource _requestTokens = new();
+	private CancellationTokenSource? _requestCancellation;
 	private int _toolTipUpdateToken;
 	private bool _isDisposed;
 
@@ -142,6 +144,14 @@ public sealed class TextCompletionController : IDisposable
 	public CompletionWindow? ActiveWindow => _isDisposed ? null : _editor.ActiveCompletionWindow;
 
 	/// <summary>
+	/// Gets the cancellation token for the current request, or <see cref="CancellationToken.None"/>
+	/// when no request is in flight. The token is cancelled when requests are invalidated, when a
+	/// newer request begins, or when the controller is disposed.
+	/// </summary>
+	public CancellationToken CurrentRequestCancellationToken
+		=> _requestCancellation?.Token ?? CancellationToken.None;
+
+	/// <summary>
 	/// Begins a new request and returns its token.
 	/// </summary>
 	/// <returns>The token of the new request.</returns>
@@ -150,6 +160,8 @@ public sealed class TextCompletionController : IDisposable
 		if (_isDisposed)
 			return -1;
 
+		CancelInFlightRequest();
+		_requestCancellation = new CancellationTokenSource();
 		return _requestTokens.Begin();
 	}
 
@@ -170,6 +182,17 @@ public sealed class TextCompletionController : IDisposable
 			return;
 
 		_requestTokens.Invalidate();
+		CancelInFlightRequest();
+	}
+
+	private void CancelInFlightRequest()
+	{
+		if (_requestCancellation is null)
+			return;
+
+		_requestCancellation.Cancel();
+		_requestCancellation.Dispose();
+		_requestCancellation = null;
 	}
 
 	/// <summary>
@@ -357,6 +380,7 @@ public sealed class TextCompletionController : IDisposable
 		_toolTipUpdateTimer.Stop();
 		_toolTipUpdateTimer.Tick -= ToolTipUpdateTimer_Tick;
 		_requestTokens.Invalidate();
+		CancelInFlightRequest();
 		CloseWindowCore();
 	}
 

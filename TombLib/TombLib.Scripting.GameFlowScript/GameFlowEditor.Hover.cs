@@ -1,4 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Hover;
+using System.Threading;
+using System.Threading.Tasks;
 using TombLib.Scripting.Hover;
 
 namespace TombLib.Scripting.GameFlowScript;

@@ -380,6 +380,45 @@ public class ClassicScriptCommandServiceTests
         Assert.AreEqual("CUST_", _commandService.GetFlagPrefixOfCurrentArgument(source, 12));
     }
 
+    [TestMethod]
+    public void GetFlagPrefixOfCurrentArgument_FewerArgsThanSyntax_ReturnsPrefix()
+    {
+        // The command provides two arguments but the GlobalTrigger syntax defines seven
+        // slots; the caret on the second argument must still resolve to the FGT_ prefix.
+        var source = new StringTextSnapshot("GlobalTrigger= 1, 2");
+
+        Assert.AreEqual("FGT_", _commandService.GetFlagPrefixOfCurrentArgument(source, 18));
+    }
+
+    [TestMethod]
+    public void GetFlagPrefixOfCurrentArgument_TooManyArguments_ReturnsNull()
+    {
+        // Customize defines two syntax slots; the caret on the third argument is past the
+        // last slot and must return a deliberate no-result instead of an out-of-range access.
+        var source = new StringTextSnapshot("Customize= UNKNOWN, 5, 6");
+
+        Assert.IsNull(_commandService.GetFlagPrefixOfCurrentArgument(source, 23));
+    }
+
+    [TestMethod]
+    public void GetFlagPrefixOfCurrentArgument_ArrayArgument_ReturnsNull()
+    {
+        // The second Customize argument is an (*Array*) slot, which has no flag prefix.
+        var source = new StringTextSnapshot("Customize= UNKNOWN, 5");
+
+        Assert.IsNull(_commandService.GetFlagPrefixOfCurrentArgument(source, 19));
+    }
+
+    [TestMethod]
+    public void GetFlagPrefixOfCurrentArgument_MalformedCommandLine_ReturnsNull()
+    {
+        // Empty/extra argument slots produce an argument index beyond the syntax definition;
+        // the service must return null without throwing.
+        var source = new StringTextSnapshot("Customize= 5, , ,");
+
+        Assert.IsNull(_commandService.GetFlagPrefixOfCurrentArgument(source, source.TextLength - 1));
+    }
+
     // ------------------------------------------------------------------
     // Include path resolution
     // ------------------------------------------------------------------

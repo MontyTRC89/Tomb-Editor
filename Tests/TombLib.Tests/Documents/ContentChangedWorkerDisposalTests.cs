@@ -39,7 +39,7 @@ public class ContentChangedWorkerDisposalTests
 
 				worker.Run("content");
 				worker.SetPersistedContent("content");
-				worker.CreateBackupFile("content");
+				_ = worker.CreateBackupFileAsync("content");
 				worker.DeleteBackupFile();
 				worker.FilePath = Path.Combine(directory, "other.txt");
 				worker.CreateBackupFiles = false;
@@ -118,6 +118,70 @@ public class ContentChangedWorkerDisposalTests
 				Assert.IsTrue(processingTask.Wait(TimeSpan.FromSeconds(5)), "In-flight task did not settle after disposal.");
 
 				// The in-flight pass must not leave a backup file behind after disposal.
+				Assert.IsFalse(File.Exists(filePath + ".backup"));
+			}
+			finally
+			{
+				Directory.Delete(directory, true);
+			}
+		});
+	}
+
+	[TestMethod]
+	public void DisableBackups_WhileWriteInFlight_LeavesNoBackupFile()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			string directory = CreateTempDirectory();
+			string filePath = Path.Combine(directory, "document.txt");
+
+			try
+			{
+				var worker = new ContentChangedWorker { FilePath = filePath, CreateBackupFiles = true };
+
+				// Start an asynchronous backup write without awaiting it, then disable backups while
+				// the write may still be in flight. The obsolete write must not recreate the backup.
+				var syncTask = (Task)WPFTestHelper.InvokeInstanceMethod(
+					worker,
+					"SynchronizeBackupStateAsync",
+					new[] { typeof(string), typeof(string), typeof(bool), typeof(int), typeof(int) },
+					filePath,
+					"content that differs",
+					true,
+					1,
+					1)!;
+
+				worker.CreateBackupFiles = false;
+
+				syncTask.GetAwaiter().GetResult();
+
+				Assert.IsFalse(File.Exists(filePath + ".backup"));
+			}
+			finally
+			{
+				Directory.Delete(directory, true);
+			}
+		});
+	}
+
+	[TestMethod]
+	public void FailingBackupPath_SurfacesFailure_AsObservedException()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			string directory = CreateTempDirectory();
+			string filePath = Path.Combine(directory, "missing", "document.txt");
+
+			try
+			{
+				var worker = new ContentChangedWorker { FilePath = filePath, CreateBackupFiles = true };
+
+				// The parent directory does not exist, so the backup write fails. Awaiting the
+				// returned task must surface the failure deterministically instead of leaving an
+				// unobserved task fault.
+				Task backupTask = worker.CreateBackupFileAsync("content");
+
+				Assert.ThrowsException<DirectoryNotFoundException>(() => backupTask.GetAwaiter().GetResult());
 				Assert.IsFalse(File.Exists(filePath + ".backup"));
 			}
 			finally

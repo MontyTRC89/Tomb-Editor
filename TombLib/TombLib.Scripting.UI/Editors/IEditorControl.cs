@@ -75,9 +75,9 @@ public interface IEditorControl : IDisposable
 	int CurrentColumn { get; }
 
 	/// <summary>
-	/// Gets the selected content, or <c>null</c> when there is no selection.
+	/// Gets the selected content as text, or <c>null</c> when there is no selection.
 	/// </summary>
-	object SelectedContent { get; }
+	string? SelectedContent { get; }
 
 	/// <summary>
 	/// Gets the length of the current selection.
@@ -165,13 +165,6 @@ public interface IEditorControl : IDisposable
 	void SelectAll();
 
 	/// <summary>
-	/// Navigates to the definition of the given object.
-	/// </summary>
-	/// <param name="objectName">The name of the object to navigate to.</param>
-	/// <param name="identifyingObject">An optional object that identifies the target definition.</param>
-	void GoToObject(string objectName, object? identifyingObject = null);
-
-	/// <summary>
 	/// Applies the given configuration to the editor.
 	/// </summary>
 	/// <param name="configuration">The configuration to apply.</param>
@@ -180,7 +173,7 @@ public interface IEditorControl : IDisposable
 	/// <summary>
 	/// Runs the content-changed worker if the editor has pending content changes.
 	/// </summary>
-	void TryRunContentChangedWorker();
+	void RunContentChangedWorker();
 
 	// Events
 

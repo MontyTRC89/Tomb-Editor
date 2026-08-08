@@ -1,6 +1,9 @@
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using TombLib.Scripting.ClassicScript.Mnemonics.Models;
 using TombLib.Scripting.ClassicScript.ReferenceTables;
 

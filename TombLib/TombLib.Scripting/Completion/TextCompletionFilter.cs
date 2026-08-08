@@ -1,4 +1,7 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TombLib.Scripting.Completion;
 
@@ -25,7 +28,7 @@ public static class TextCompletionFilter
 		string word = GetCurrentWord(context.DocumentText, context.CaretOffset);
 
 		if (string.IsNullOrEmpty(word))
-			return items;
+			return [.. items];
 
 		return items
 			.Where(item => MatchesWord(item, word))

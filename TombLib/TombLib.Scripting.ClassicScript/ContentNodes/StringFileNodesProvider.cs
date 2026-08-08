@@ -1,4 +1,6 @@
 using DarkUI.Controls;
+using System;
+using System.Collections.Generic;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.ContentNodes;

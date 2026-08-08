@@ -73,8 +73,8 @@ public sealed partial class LuaEditor
 
 	private async Task RequestCompletionAsyncCore(int offset, char? triggerCharacter)
 	{
-		CancellationToken cancellationToken = CancellationToken.None;
 		int requestToken = CompletionController.BeginRequest();
+		CancellationToken cancellationToken = CompletionController.CurrentRequestCancellationToken;
 		int requestDocumentVersion = _editorDocumentVersion;
 		int requestGeneration = _editorRequestGeneration;
 

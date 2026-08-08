@@ -6,7 +6,7 @@ namespace TombLib.Scripting.UI.Presentation;
 
 /// <summary>
 /// Builds the shared WPF shell (popup, bordered content presenter) used by editor
-/// tool tips and signature-help popups.
+/// tooltips and signature help popups.
 /// </summary>
 internal static class PopupShell
 {

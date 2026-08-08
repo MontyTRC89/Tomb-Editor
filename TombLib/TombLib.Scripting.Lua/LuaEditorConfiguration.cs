@@ -39,7 +39,8 @@ public sealed class LuaEditorConfiguration : TextEditorConfigBase
 	public LuaTheme Theme { get; private set; } = LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
 
 	/// <summary>
-	/// Gets or sets the legacy color-scheme alias used by existing serialized configuration data.
+	/// Gets or sets the serialized name of the selected color scheme. This maps to
+	/// <see cref="SelectedThemeName"/> so existing serialized configuration data round-trips.
 	/// </summary>
 	public string SelectedColorSchemeName
 	{

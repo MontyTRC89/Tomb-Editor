@@ -9,7 +9,7 @@ public class TombEngineLanguageScriptServiceTests
 	private readonly TombEngineLanguageScriptService _service = new();
 
 	[TestMethod]
-	public void TryInsertLanguageScript_InsertsAfterExistingEntry()
+	public void InsertLanguageScript_InsertsAfterExistingEntry()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -18,7 +18,7 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { \"Existing\" },");
@@ -26,7 +26,7 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_InsertsIntoEmptyTable()
+	public void InsertLanguageScript_InsertsIntoEmptyTable()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -34,14 +34,14 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(2, insertedLineNumber);
 		StringAssert.Contains(document.Text, "local strings = {" + Environment.NewLine + "    newLevel = { \"New Level\" }" + Environment.NewLine + "}");
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_IgnoresQuotedBracesAndCommentMarkers()
+	public void InsertLanguageScript_IgnoresQuotedBracesAndCommentMarkers()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -50,7 +50,7 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { \"A } brace and -- comment marker\" },");
@@ -58,7 +58,7 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_PlacesCommaBeforeTrailingComment()
+	public void InsertLanguageScript_PlacesCommaBeforeTrailingComment()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -67,7 +67,7 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { \"Existing\" }, -- note");
@@ -75,7 +75,7 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_IgnoresEscapedQuotesAndCommentMarkersInsideStrings()
+	public void InsertLanguageScript_IgnoresEscapedQuotesAndCommentMarkersInsideStrings()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -84,7 +84,7 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { \"A \\\"quoted\\\" } brace and -- marker\" }, -- note");
@@ -92,7 +92,7 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_IgnoresBracesInsideLongStrings()
+	public void InsertLanguageScript_IgnoresBracesInsideLongStrings()
 	{
 		var document = CreateDocument(
 			"local strings = {",
@@ -101,7 +101,7 @@ public class TombEngineLanguageScriptServiceTests
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.AreEqual(3, insertedLineNumber);
 		StringAssert.Contains(document.Text, "existing = { [[A } brace inside a long string]] },");
@@ -109,14 +109,14 @@ public class TombEngineLanguageScriptServiceTests
 	}
 
 	[TestMethod]
-	public void TryInsertLanguageScript_ReturnsNullWhenStringsTableIsMissing()
+	public void InsertLanguageScript_ReturnsNullWhenStringsTableIsMissing()
 	{
 		var document = CreateDocument(
 			"local other = {}",
 			string.Empty,
 			"TEN.Flow.SetStrings(strings)");
 
-		int? insertedLineNumber = _service.TryInsertLanguageScript(document, "    newLevel = { \"New Level\" }");
+		int? insertedLineNumber = _service.InsertLanguageScript(document, "    newLevel = { \"New Level\" }");
 
 		Assert.IsNull(insertedLineNumber);
 		Assert.IsFalse(document.Text.Contains("newLevel"));

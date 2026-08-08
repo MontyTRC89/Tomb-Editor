@@ -11,7 +11,7 @@ namespace TombLib.Scripting.Presentation;
 /// <param name="SelectionLabelText">The localized label for the selection value.</param>
 /// <param name="ZoomLabelText">The localized label for the zoom value.</param>
 /// <param name="CanResetZoom">Whether the zoom can be reset.</param>
-/// <param name="ResetZoomToolTipText">The tool tip text for the reset zoom action.</param>
+	/// <param name="ResetZoomToolTipText">The tooltip text for the reset zoom action.</param>
 /// <param name="ShowSyntaxPreview">Whether the syntax preview is visible.</param>
 /// <param name="SyntaxPreview">The signature help info for the syntax preview, when visible.</param>
 public readonly record struct TextEditorStatusPresentation(

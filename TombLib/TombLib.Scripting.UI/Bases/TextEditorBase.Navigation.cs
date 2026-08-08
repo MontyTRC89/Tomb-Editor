@@ -137,9 +137,10 @@ public abstract partial class TextEditorBase
 	/// </summary>
 	/// <param name="definitionProvider">The provider used to resolve the definition.</param>
 	/// <param name="objectName">The name of the object to navigate to.</param>
-	/// <param name="identifyingObject">An optional object used to disambiguate the target.</param>
-	protected void GoToDefinition(ITextDefinitionProvider definitionProvider, string objectName, object? identifyingObject = null)
-		=> _definitionNavigationService.GoToObject(this, definitionProvider, objectName, identifyingObject);
+	/// <param name="identifyingObject">An optional discriminator used to disambiguate the target.</param>
+	/// <returns>True if a definition was found and navigated to; otherwise false.</returns>
+	protected bool GoToDefinition(ITextDefinitionProvider definitionProvider, string objectName, TextDefinitionDiscriminator? identifyingObject = null)
+		=> _definitionNavigationService.TryGoToObject(this, definitionProvider, objectName, identifyingObject);
 
 	/// <summary>
 	/// Attempts to navigate to the definition at the given offset using the specified providers.

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;

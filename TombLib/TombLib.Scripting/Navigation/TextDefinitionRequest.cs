@@ -1,3 +1,5 @@
+using System;
+
 namespace TombLib.Scripting.Navigation;
 
 /// <summary>
@@ -10,11 +12,11 @@ public sealed record TextDefinitionRequest
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="symbolName">The target symbol or object name.</param>
-	/// <param name="identifier">An optional language-specific identifier that disambiguates the target.</param>
+	/// <param name="identifier">An optional language-specific discriminator that disambiguates the target.</param>
 	/// <exception cref="ArgumentNullException">
 	/// <paramref name="documentText"/> or <paramref name="symbolName"/> is null.
 	/// </exception>
-	public TextDefinitionRequest(string documentText, string symbolName, object? identifier = null)
+	public TextDefinitionRequest(string documentText, string symbolName, TextDefinitionDiscriminator? identifier = null)
 	{
 		ArgumentNullException.ThrowIfNull(documentText);
 		ArgumentNullException.ThrowIfNull(symbolName);
@@ -35,10 +37,8 @@ public sealed record TextDefinitionRequest
 	public string SymbolName { get; }
 
 	/// <summary>
-	/// Gets the optional language-specific discriminator forwarded from the hover provider.
-	/// This is an intentional, isolated escape hatch: providers pattern-match a known
-	/// language-specific type (such as <c>ObjectType</c>) and must return no result for
-	/// unsupported identifier types.
+	/// Gets the optional language-specific discriminator forwarded from the hover or outline provider.
+	/// Providers that do not recognize the discriminator must return no result.
 	/// </summary>
-	public object? Identifier { get; }
+	public TextDefinitionDiscriminator? Identifier { get; }
 }

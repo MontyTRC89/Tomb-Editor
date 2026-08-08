@@ -1,7 +1,5 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 
 namespace TombLib.Scripting.UI.Completion;
@@ -54,34 +52,4 @@ internal sealed class CompletionWindowCoordinator
 
 	public void Dispose()
 		=> Close();
-
-	public bool TryOpen(
-		IEnumerable<ICompletionData> items,
-		int? startOffset = null,
-		int? endOffset = null,
-		int width = 300,
-		int height = 300)
-	{
-		ICompletionData[] completionItems = items?.ToArray() ?? [];
-
-		if (completionItems.Length == 0)
-			return false;
-
-		Initialize(width, height);
-
-		if (_window is null)
-			return false;
-
-		if (startOffset.HasValue)
-			_window.StartOffset = startOffset.Value;
-
-		if (endOffset.HasValue)
-			_window.EndOffset = endOffset.Value;
-
-		foreach (ICompletionData item in completionItems)
-			_window.CompletionList.CompletionData.Add(item);
-
-		Show();
-		return true;
-	}
 }

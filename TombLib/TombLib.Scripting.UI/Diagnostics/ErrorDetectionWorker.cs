@@ -3,10 +3,10 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using TombLib.Scripting.Diagnostics;
+using TombLib.Scripting.Threading;
 
 namespace TombLib.Scripting.UI.Diagnostics;
 
@@ -15,6 +15,9 @@ namespace TombLib.Scripting.UI.Diagnostics;
 /// through <see cref="RunWorkerCompleted"/>. Requests are latest-request-wins: when a newer request
 /// is issued before an older one completes, the older result is discarded. When a silent-session
 /// provider is supplied, checks are not started while the session is silent.
+/// The worker is created on and confined to the UI thread; the full-document provider call runs on
+/// the thread pool because error detection is CPU-bound and the provider contract explicitly
+/// permits background execution.
 /// </summary>
 public sealed class ErrorDetectionWorker : IDisposable
 {
@@ -56,9 +59,9 @@ public sealed class ErrorDetectionWorker : IDisposable
 	private readonly Dispatcher _dispatcher;
 	private readonly DispatcherTimer _errorUpdateTimer = new();
 	private readonly Func<bool>? _silentSessionProvider;
+	private readonly RequestTokenSource _requestTokens = new();
 
 	private volatile bool _isBusy;
-	private int _latestRequestId;
 	private string _editorContent = string.Empty;
 	private bool _isDisposed;
 
@@ -120,7 +123,7 @@ public sealed class ErrorDetectionWorker : IDisposable
 			return;
 
 		_editorContent = editorContent ?? string.Empty;
-		int requestId = Interlocked.Increment(ref _latestRequestId);
+		int requestId = _requestTokens.Begin();
 		_isBusy = true;
 
 		_ = RunErrorCheckCoreAsync(_editorContent, requestId);
@@ -149,6 +152,8 @@ public sealed class ErrorDetectionWorker : IDisposable
 
 		try
 		{
+			// Full-document error detection is CPU-bound and the provider contracts (ITextDiagnosticsProvider /
+			// IErrorDetector) explicitly permit background execution, so the provider runs on the thread pool.
 			result = await Task.Run(() => (object)GetDiagnostics(editorContent)).ConfigureAwait(false);
 		}
 		catch (Exception ex)
@@ -176,7 +181,7 @@ public sealed class ErrorDetectionWorker : IDisposable
 
 	private void CompleteRequest(int requestId, object result, Exception? error)
 	{
-		if (requestId != _latestRequestId)
+		if (!_requestTokens.IsCurrent(requestId))
 			return;
 
 		_isBusy = false;
@@ -194,6 +199,6 @@ public sealed class ErrorDetectionWorker : IDisposable
 		_errorUpdateTimer.Stop();
 		_errorUpdateTimer.Tick -= ErrorUpdateTimer_Tick;
 		_isBusy = false;
-		Interlocked.Increment(ref _latestRequestId);
+		_requestTokens.Invalidate();
 	}
 }

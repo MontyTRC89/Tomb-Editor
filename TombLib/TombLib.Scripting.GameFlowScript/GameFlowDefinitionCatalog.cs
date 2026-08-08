@@ -1,4 +1,6 @@
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
@@ -40,18 +42,18 @@ public static class GameFlowDefinitionCatalog
 		if (!File.Exists(filePath))
 		{
 			Log.Warn("GameFlow definitions resource '{Path}' was not found; using an empty catalog.", filePath);
-			return new GameFlowDefinitionSet();
+			return GameFlowDefinitionSet.Empty;
 		}
 
 		try
 		{
 			string json = File.ReadAllText(filePath);
-			return JsonSerializer.Deserialize<GameFlowDefinitionSet>(json) ?? new GameFlowDefinitionSet();
+			return JsonSerializer.Deserialize<GameFlowDefinitionSet>(json) ?? GameFlowDefinitionSet.Empty;
 		}
 		catch (Exception exception)
 		{
 			Log.Warn(exception, "Failed to load GameFlow definitions from '{Path}'; using an empty catalog.", filePath);
-			return new GameFlowDefinitionSet();
+			return GameFlowDefinitionSet.Empty;
 		}
 	}
 }

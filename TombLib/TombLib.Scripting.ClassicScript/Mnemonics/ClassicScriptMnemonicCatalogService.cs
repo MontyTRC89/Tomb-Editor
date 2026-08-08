@@ -1,5 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using TombLib.Scripting.ClassicScript.Mnemonics.Models;
 using TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
@@ -19,6 +23,8 @@ public sealed class ClassicScriptMnemonicCatalogService
 	private static readonly MnemonicDefinitionsLoader Loader = new();
 	private static volatile ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(DefaultPaths.InternalNGCDirectory);
 	private static int _snapshotVersion;
+	private Regex? _cachedMnemonicRegex;
+	private int _cachedSnapshotVersion = -1;
 
 	/// <summary>
 	/// Gets the current catalog snapshot version. Callers that cache derived data (for example
@@ -33,10 +39,22 @@ public sealed class ClassicScriptMnemonicCatalogService
 		=> _snapshot.AllFlags;
 
 	/// <summary>
-	/// Builds a word-boundary regex pattern that matches any known mnemonic flag.
+	/// Builds a word-boundary regex that matches any known mnemonic flag, with every flag name
+	/// regex-escaped and the pattern compiled. The compiled pattern is cached and rebuilt only
+	/// when the catalog snapshot changes.
 	/// </summary>
-	public string GetMnemonicPattern()
-		=> @"\b(" + string.Join("|", _snapshot.AllFlags) + @")\b";
+	internal Regex GetMnemonicRegex()
+	{
+		int snapshotVersion = CurrentSnapshotVersion;
+
+		if (_cachedMnemonicRegex is null || _cachedSnapshotVersion != snapshotVersion)
+		{
+			_cachedMnemonicRegex = new Regex(@"\b(" + string.Join("|", _snapshot.AllFlags.Select(Regex.Escape)) + @")\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+			_cachedSnapshotVersion = snapshotVersion;
+		}
+
+		return _cachedMnemonicRegex;
+	}
 
 	/// <summary>
 	/// Returns whether the given name is a known mnemonic flag.

@@ -1,6 +1,5 @@
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using System;
-using System.Collections.Generic;
 using System.Windows.Input;
 using TombLib.Scripting.UI.Completion;
 
@@ -33,22 +32,6 @@ public abstract partial class TextEditorBase
 
 	internal void CloseSharedCompletionWindow()
 		=> _completionWindowCoordinator.Close();
-
-	/// <summary>
-	/// Attempts to open the completion window with the given completion items.
-	/// </summary>
-	/// <param name="items">The completion items to display.</param>
-	/// <param name="startOffset">The start offset of the completion segment.</param>
-	/// <param name="endOffset">The end offset of the completion segment.</param>
-	/// <param name="width">The width of the completion window.</param>
-	/// <param name="height">The height of the completion window.</param>
-	/// <returns>True if the completion window was opened; otherwise false.</returns>
-	protected bool TryOpenCompletionWindow(IEnumerable<ICompletionData> items,
-		int? startOffset = null,
-		int? endOffset = null,
-		int width = 300,
-		int height = 300)
-		=> _completionWindowCoordinator.TryOpen(items, startOffset, endOffset, width, height);
 
 	/// <summary>
 	/// Handles Ctrl+Space to trigger completion when completion is enabled.

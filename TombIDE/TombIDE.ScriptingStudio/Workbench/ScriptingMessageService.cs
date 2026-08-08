@@ -239,6 +239,7 @@ internal sealed class ScriptingMessageService : IDisposable
 		GameFlowLanguageServices languageServices)
 	{
 		var textEditorHost = new DocumentControllerTextEditorHost(documentController);
+		var scriptReplacer = new GameFlowScriptReplacer();
 		var silentActionService = new StudioSilentActionService(documentController, hostOperations);
 
 		return new GameFlowWorkspaceAutomationProvider(
@@ -263,7 +264,7 @@ internal sealed class ScriptingMessageService : IDisposable
 				(oldName, newName) =>
 				{
 					TextEditorBase editor = textEditorHost.OpenTextEditor(PathHelper.GetScriptFilePath(documentController.ScriptRootDirectoryPath, TRVersion.Game.TR2));
-					GameFlowScriptReplacer.RenameLevelScript(editor, oldName, newName);
+					scriptReplacer.RenameLevelScript(editor, oldName, newName);
 				},
 				documentController.SaveAll,
 				showCompilerLogsPane,
@@ -301,7 +302,7 @@ internal sealed class ScriptingMessageService : IDisposable
 					if (result.LanguageScript.Length > 0
 						&& textEditorHost.OpenTextEditor(PathHelper.GetLanguageFilePath(documentController.ScriptRootDirectoryPath, TRVersion.Game.TombEngine)) is TextEditorBase stringsEditor)
 					{
-						int? insertedLineNumber = languageScriptService.TryInsertLanguageScript(stringsEditor.Document, result.LanguageScript);
+						int? insertedLineNumber = languageScriptService.InsertLanguageScript(stringsEditor.Document, result.LanguageScript);
 
 						if (insertedLineNumber is not null)
 						{

@@ -2,6 +2,8 @@ using System;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
+using TombLib.Scripting.TRX.Completion;
+using TombLib.Scripting.TRX.Diagnostics;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX;
@@ -41,6 +43,7 @@ public sealed class TRXLanguageServices
 		DefinitionProvider = definitionProvider;
 		CompletionProvider = completionProvider;
 		HoverProvider = hoverProvider;
+		ErrorDetector = new ErrorDetector(lineService);
 	}
 
 	/// <summary>
@@ -72,4 +75,18 @@ public sealed class TRXLanguageServices
 	/// Gets the hover provider.
 	/// </summary>
 	public ITextHoverProvider HoverProvider { get; }
+
+	/// <summary>
+	/// Gets the error detector used to diagnose TRX documents.
+	/// </summary>
+	public ErrorDetector ErrorDetector { get; }
+
+	/// <summary>
+	/// Creates a completion session coordinator for a single editor instance.
+	/// Each editor owns its own coordinator created through this composition root; the
+	/// coordinator's analysis and filtering helpers are constructed here as well.
+	/// </summary>
+	/// <returns>A completion session coordinator bound to this service set.</returns>
+	public TRXCompletionSessionCoordinator CreateCompletionCoordinator()
+		=> new(CompletionProvider, new TextAnalysisService(), new CompletionManager(LineService));
 }

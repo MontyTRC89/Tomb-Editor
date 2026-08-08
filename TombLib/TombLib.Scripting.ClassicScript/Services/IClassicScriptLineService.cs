@@ -67,7 +67,6 @@ public interface IClassicScriptLineService
 
 	/// <summary>
 	/// Removes line comments from the text, including preceding whitespace.
-	/// Matches the legacy <c>\s*;.*$</c> multiline behavior.
 	/// </summary>
 	string RemoveComments(string lineText);
 

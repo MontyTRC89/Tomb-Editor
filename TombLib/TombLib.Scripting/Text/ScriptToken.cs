@@ -1,3 +1,5 @@
+using System;
+
 namespace TombLib.Scripting.Text;
 
 /// <summary>
@@ -39,8 +41,16 @@ public readonly struct ScriptToken : IEquatable<ScriptToken>
 	/// <param name="offset">The zero-based absolute offset in the source text.</param>
 	/// <param name="length">The length of the token in characters.</param>
 	/// <param name="lineNumber">The one-based line number.</param>
+	/// <exception cref="ArgumentOutOfRangeException">
+	/// <paramref name="offset"/> or <paramref name="length"/> is negative.
+	/// </exception>
 	public ScriptToken(ScriptTokenType type, int offset, int length, int lineNumber)
 	{
+		if (offset < 0)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+
 		Type = type;
 		Offset = offset;
 		Length = length;
@@ -52,11 +62,17 @@ public readonly struct ScriptToken : IEquatable<ScriptToken>
 	/// </summary>
 	/// <param name="source">The full source text.</param>
 	/// <returns>The substring covered by this token.</returns>
+	/// <exception cref="ArgumentOutOfRangeException">
+	/// The token extends beyond the length of <paramref name="source"/>.
+	/// </exception>
 	public string GetText(string source)
 	{
 		if (source is null)
 			throw new ArgumentNullException(nameof(source));
-		if (Offset + Length > source.Length)
+
+		// Overflow-safe bounds check: the subtraction cannot overflow because
+		// Offset is verified to be within the source length first.
+		if (Offset > source.Length || Length > source.Length - Offset)
 			throw new ArgumentOutOfRangeException(nameof(source));
 
 		return source.Substring(Offset, Length);

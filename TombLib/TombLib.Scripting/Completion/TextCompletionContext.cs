@@ -1,3 +1,5 @@
+using System;
+
 namespace TombLib.Scripting.Completion;
 
 /// <summary>

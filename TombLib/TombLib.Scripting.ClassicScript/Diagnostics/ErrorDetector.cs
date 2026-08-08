@@ -1,4 +1,7 @@
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Services;
@@ -43,7 +46,9 @@ public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 	/// Finds the errors present in the given editor content.
 	/// </summary>
 	/// <param name="editorContent">The content of the editor.</param>
-	/// <param name="engineVersion">The engine version used to detect the errors.</param>
+	/// <param name="engineVersion">The engine version used to detect the errors.
+	/// ClassicScript error detection does not currently branch on the engine version; the
+	/// parameter is retained for interface parity with <see cref="IErrorDetector"/> and is unused.</param>
 	/// <returns>The diagnostics describing the detected errors.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
 		=> DetectErrorLines(new StringTextSnapshot(editorContent));

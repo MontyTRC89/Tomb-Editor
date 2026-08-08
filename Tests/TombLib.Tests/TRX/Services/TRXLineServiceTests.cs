@@ -65,11 +65,28 @@ public class TRXLineServiceTests
     }
 
     [TestMethod]
-    public void RemoveComments_CommentInsideQuotedString_StillRemoves()
+    public void RemoveComments_SlashSlashInsideQuotedString_PreservesUrl()
     {
+        // The // inside a double-quoted string is not a comment in the JSON-like TRX format.
         string result = _lineService.RemoveComments("\"url\": \"http://example.com\",");
 
-        Assert.AreEqual("\"url\": \"http:", result);
+        Assert.AreEqual("\"url\": \"http://example.com\",", result);
+    }
+
+    [TestMethod]
+    public void RemoveComments_CommentAfterQuotedUrl_RemovesComment()
+    {
+        string result = _lineService.RemoveComments("\"url\": \"http://example.com\", // the site");
+
+        Assert.AreEqual("\"url\": \"http://example.com\",", result);
+    }
+
+    [TestMethod]
+    public void RemoveComments_QuotedSlashSlashThenComment_RemovesOnlyComment()
+    {
+        string result = _lineService.RemoveComments("\"path\": \"a//b\", \"title\": \"Caves\" // level");
+
+        Assert.AreEqual("\"path\": \"a//b\", \"title\": \"Caves\"", result);
     }
 
     // ---- EscapeComments ----

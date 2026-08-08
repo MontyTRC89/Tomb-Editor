@@ -97,7 +97,7 @@ public sealed partial class LuaEditor
 	}
 
 	/// <summary>
-	/// Owns signature-help popup state, refresh scheduling, and provider request flow for Lua call-site assistance.
+	/// Owns signature help popup state, refresh scheduling, and provider request flow for Lua call-site assistance.
 	/// </summary>
 	private sealed class LuaSignatureHelpController
 	{
@@ -106,6 +106,7 @@ public sealed partial class LuaEditor
 		private readonly LuaEditor _editor;
 		private readonly TextSignatureHelpController _controller;
 		private readonly TextSignatureHelpPopupPresenter _popupPresenter;
+		private CancellationTokenSource? _requestCancellation;
 		private bool _disposed;
 
 		internal LuaSignatureHelpController(LuaEditor editor)
@@ -118,6 +119,7 @@ public sealed partial class LuaEditor
 				showSignatureHelp: ShowToolTip,
 				dismissSignatureHelp: DismissPopup,
 				handleRequestFailure: exception => LogEditorFailure("Signature help", exception),
+				cancelInFlightRequest: CancelInFlightRequest,
 				refreshDebounceDelayInMilliseconds: SignatureHelpRefreshDebounceDelayInMilliseconds);
 		}
 
@@ -138,7 +140,10 @@ public sealed partial class LuaEditor
 			=> _controller.CancelPendingRefresh();
 
 		internal void InvalidateRequests()
-			=> _controller.InvalidateRequests();
+		{
+			CancelInFlightRequest();
+			_controller.InvalidateRequests();
+		}
 
 		internal void Dispose()
 		{
@@ -146,8 +151,19 @@ public sealed partial class LuaEditor
 				return;
 
 			_disposed = true;
+			CancelInFlightRequest();
 			_controller.Dispose();
 			_popupPresenter.Dispose();
+		}
+
+		private void CancelInFlightRequest()
+		{
+			if (_requestCancellation is null)
+				return;
+
+			_requestCancellation.Cancel();
+			_requestCancellation.Dispose();
+			_requestCancellation = null;
 		}
 
 		private void DismissPopup()
@@ -178,6 +194,9 @@ public sealed partial class LuaEditor
 
 		private async Task<TextSignatureHelpInfo?> RequestSignatureHelpAsync(int offset, int requestToken)
 		{
+			// The shared controller performs the authoritative request-token check after the await,
+			// so the token parameter is not needed here. The document-version and request-generation
+			// checks below additionally drop results computed for stale document state.
 			if (!_editor.IsIntelliSenseAvailable())
 				return null;
 
@@ -186,7 +205,11 @@ public sealed partial class LuaEditor
 			if (intelliSenseProvider is null)
 				return null;
 
-			CancellationToken cancellationToken = CancellationToken.None;
+			// A newer request supersedes the previous one, so its in-flight provider call is
+			// cancelled rather than being allowed to complete and then be discarded.
+			CancelInFlightRequest();
+			_requestCancellation = new CancellationTokenSource();
+			CancellationToken cancellationToken = _requestCancellation.Token;
 			int requestDocumentVersion = _editor._editorDocumentVersion;
 			int requestGeneration = _editor._editorRequestGeneration;
 

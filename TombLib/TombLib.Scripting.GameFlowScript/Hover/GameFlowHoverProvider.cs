@@ -1,4 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Hover;
+using System;
+using System.Collections.Generic;
 using TombLib.Scripting.GameFlowScript.Types;
 using TombLib.Scripting.Hover;
 
@@ -22,16 +24,16 @@ public sealed class GameFlowHoverProvider : ITextHoverProvider
 			return null;
 
 		if (Contains(GameFlowDefinitionCatalog.Sections, hoveredWord))
-			return new TextHoverInfo($"GameFlow section \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: ObjectType.Section);
+			return new TextHoverInfo($"GameFlow section \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: new GameFlowObjectDiscriminator(ObjectType.Section));
 
 		if (Contains(GameFlowDefinitionCatalog.SpecialProperties, hoveredWord))
-			return new TextHoverInfo($"GameFlow special property \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: ObjectType.SpecialProperty);
+			return new TextHoverInfo($"GameFlow special property \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: new GameFlowObjectDiscriminator(ObjectType.SpecialProperty));
 
 		if (Contains(GameFlowDefinitionCatalog.Properties, hoveredWord))
-			return new TextHoverInfo($"GameFlow property \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: ObjectType.Property);
+			return new TextHoverInfo($"GameFlow property \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: new GameFlowObjectDiscriminator(ObjectType.Property));
 
 		if (Contains(GameFlowDefinitionCatalog.Constants, hoveredWord))
-			return new TextHoverInfo($"GameFlow constant \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: ObjectType.Constant);
+			return new TextHoverInfo($"GameFlow constant \"{hoveredWord}\".", SymbolName: hoveredWord, Identifier: new GameFlowObjectDiscriminator(ObjectType.Constant));
 
 		return null;
 	}

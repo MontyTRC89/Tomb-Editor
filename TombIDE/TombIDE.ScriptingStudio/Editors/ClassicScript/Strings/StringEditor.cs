@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib.Controls;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Documents;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 {
-	public class StringEditor : DarkTabbedContainer, IEditorControl
+	public class StringEditor : DarkTabbedContainer, IEditorControl, INameBasedObjectNavigator
 	{
 		public EditorType EditorType => EditorType.Strings;
 		public string DefaultFileExtension => ".txt";
@@ -46,14 +47,14 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		public int CurrentRow => CurrentDataGrid.CurrentCell?.RowIndex ?? 0;
 		public int CurrentColumn => CurrentDataGrid.CurrentCell?.ColumnIndex ?? 0;
 
-		public object SelectedContent
+		public string? SelectedContent
 		{
 			get
 			{
 				if (CurrentDataGrid.IsCurrentCellInEditMode)
-					return (CurrentDataGrid.EditingControl as TextBox).SelectedText;
-				else
-					return CurrentDataGrid.CurrentCell?.Value;
+					return (CurrentDataGrid.EditingControl as TextBox)?.SelectedText;
+
+				return CurrentDataGrid.CurrentCell?.Value?.ToString();
 			}
 		}
 
@@ -243,7 +244,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			_redoStack.Clear();
 			LastModified = DateTime.Now;
 
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 
 		private void ExtraNGDataGrid_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -262,7 +263,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		}
 
 		private void ExtraNGDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-			=> TryRunContentChangedWorker();
+			=> RunContentChangedWorker();
 
 		#endregion Events
 
@@ -298,7 +299,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 
 		#region Content
 
-		public void TryRunContentChangedWorker()
+		public void RunContentChangedWorker()
 		{
 			IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
 		}
@@ -352,7 +353,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				SelectTab(TabPages[0]);
 
 			RecalculateFontSizes();
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 
 		private void HandleStringDataGrid(StringDataGridView dataGrid, List<string> strings, int idOffset)
@@ -454,7 +455,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				(CurrentDataGrid.EditingControl as TextBox).SelectAll();
 		}
 
-		public void GoToObject(string objectName, object identifyingObject = null)
+		public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 		{
 			TabPage targetTab = TabPages.Cast<TabPage>().ToList().Find(x => x.Name.Equals($"[{objectName}]", StringComparison.OrdinalIgnoreCase));
 
@@ -488,7 +489,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			}
 
 			LastModified = DateTime.Now;
-			TryRunContentChangedWorker();
+			RunContentChangedWorker();
 		}
 
 		#endregion Edit methods

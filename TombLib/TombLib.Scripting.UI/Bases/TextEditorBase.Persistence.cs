@@ -59,7 +59,7 @@ public abstract partial class TextEditorBase
 	/// <summary>
 	/// Runs the content-change worker check and updates the changed state.
 	/// </summary>
-	public void TryRunContentChangedWorker()
+	public void RunContentChangedWorker()
 	{
 		EnsureNotDisposed();
 		IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
@@ -96,6 +96,6 @@ public abstract partial class TextEditorBase
 		else
 			ResetSelection();
 
-		TryRunContentChangedWorker();
+		RunContentChangedWorker();
 	}
 }

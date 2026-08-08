@@ -122,7 +122,7 @@ public class TextEditorBaseDisposalTests
 	}
 
 	[TestMethod]
-	public void TryRunContentChangedWorker_AfterDispose_ThrowsObjectDisposedException()
+	public void RunContentChangedWorker_AfterDispose_ThrowsObjectDisposedException()
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
@@ -133,7 +133,7 @@ public class TextEditorBaseDisposalTests
 			{
 				editor.Dispose();
 
-				Assert.ThrowsException<ObjectDisposedException>(() => editor.TryRunContentChangedWorker());
+				Assert.ThrowsException<ObjectDisposedException>(() => editor.RunContentChangedWorker());
 			}
 			finally
 			{

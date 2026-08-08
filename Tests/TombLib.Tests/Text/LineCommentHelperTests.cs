@@ -326,4 +326,61 @@ public class LineCommentHelperTests
         Assert.AreEqual(input.Length, result.Length);
         Assert.IsFalse(result.Contains(";"));
     }
+
+    // ---------------------------------------------------------------------------
+    // // delimiter — quote-aware behavior (GameFlow / TRX)
+    // ---------------------------------------------------------------------------
+
+    [TestMethod]
+    public void FindCommentStart_SlashSlashInsideQuotedString_ReturnsNegative()
+    {
+        int result = LineCommentHelper.FindCommentStart("\"url\": \"http://example.com\",", "//");
+
+        Assert.AreEqual(-1, result);
+    }
+
+    [TestMethod]
+    public void FindCommentStart_SlashSlashInsideQuotesThenRealComment_FindsRealComment()
+    {
+        const string input = "\"url\": \"http://example.com\", // note";
+        int result = LineCommentHelper.FindCommentStart(input, "//");
+
+        int realCommentIndex = input.IndexOf("//", 20, StringComparison.Ordinal);
+        Assert.AreEqual(realCommentIndex - 1, result);
+    }
+
+    [TestMethod]
+    public void RemoveLineComment_SlashSlashInsideQuotedString_PreservesUrl()
+    {
+        string result = LineCommentHelper.RemoveLineComment("\"url\": \"http://example.com\",", "//");
+
+        Assert.AreEqual("\"url\": \"http://example.com\",", result);
+    }
+
+    [TestMethod]
+    public void RemoveLineComment_UrlThenRealComment_RemovesOnlyComment()
+    {
+        string result = LineCommentHelper.RemoveLineComment("\"url\": \"http://example.com\", // note", "//");
+
+        Assert.AreEqual("\"url\": \"http://example.com\",", result);
+    }
+
+    [TestMethod]
+    public void RemoveLineComment_EscapedQuote_StillSkipsQuotedSlashSlash()
+    {
+        // The \" is an escaped quote, so the // before the closing quote stays inside the string.
+        string result = LineCommentHelper.RemoveLineComment("\"path\": \"a\\\"b//c\" // real", "//");
+
+        Assert.AreEqual("\"path\": \"a\\\"b//c\"", result);
+    }
+
+    [TestMethod]
+    public void RemoveLineComment_QuotedSlashSlashAcrossLines_ResetsQuoteStatePerLine()
+    {
+        string input = "\"path\": \"a//b\"\n\"title\": \"Caves\" // only this is a comment";
+
+        string result = LineCommentHelper.RemoveLineComment(input, "//");
+
+        Assert.AreEqual("\"path\": \"a//b\"\n\"title\": \"Caves\"", result);
+    }
 }

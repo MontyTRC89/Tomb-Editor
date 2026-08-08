@@ -1,3 +1,4 @@
+using System;
 using TombLib.Scripting.ClassicScript.Descriptions;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 

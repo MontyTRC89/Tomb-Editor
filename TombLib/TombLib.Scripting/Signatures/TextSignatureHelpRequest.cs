@@ -1,7 +1,9 @@
+using System;
+
 namespace TombLib.Scripting.Signatures;
 
 /// <summary>
-/// Represents an in-process signature-help request against an immutable document snapshot.
+/// Represents an in-process signature help request against an immutable document snapshot.
 /// </summary>
 /// <remarks>
 /// Signature help requests use a zero-based document offset so they can be constructed directly

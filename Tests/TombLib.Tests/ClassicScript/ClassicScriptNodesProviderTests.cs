@@ -22,19 +22,19 @@ public class ClassicScriptNodesProviderTests
 		Assert.AreEqual(4, nodes.Count);
 		Assert.AreEqual("Sections", nodes[0].Text);
 		Assert.AreEqual("[Options]", nodes[0].Nodes[0].Text);
-		Assert.AreEqual(ObjectType.Section, nodes[0].Nodes[0].Tag);
+		Assert.AreEqual(new ClassicScriptObjectDiscriminator(ObjectType.Section), nodes[0].Nodes[0].Tag);
 
 		Assert.AreEqual("Levels", nodes[1].Text);
 		Assert.AreEqual("Caves", nodes[1].Nodes[0].Text);
-		Assert.AreEqual(ObjectType.Level, nodes[1].Nodes[0].Tag);
+		Assert.AreEqual(new ClassicScriptObjectDiscriminator(ObjectType.Level), nodes[1].Nodes[0].Tag);
 
 		Assert.AreEqual("Includes", nodes[2].Text);
 		Assert.AreEqual("strings.txt", nodes[2].Nodes[0].Text);
-		Assert.AreEqual(ObjectType.Include, nodes[2].Nodes[0].Tag);
+		Assert.AreEqual(new ClassicScriptObjectDiscriminator(ObjectType.Include), nodes[2].Nodes[0].Tag);
 
 		Assert.AreEqual("Defines", nodes[3].Text);
 		Assert.AreEqual("SECRET_FLAG", nodes[3].Nodes[0].Text);
-		Assert.AreEqual(ObjectType.Define, nodes[3].Nodes[0].Tag);
+		Assert.AreEqual(new ClassicScriptObjectDiscriminator(ObjectType.Define), nodes[3].Nodes[0].Tag);
 	}
 
 	[TestMethod]

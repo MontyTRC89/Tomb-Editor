@@ -14,7 +14,7 @@ public sealed class TRXDocumentService : ITRXDocumentService
 {
 	private readonly ITRXLineService _lineService;
 
-	// Legacy regex pattern retained for exact parity.
+	// Regex pattern matching the TRX level-name comment syntax (for example, "// Level 1: Caves").
 	private static readonly Regex LevelCommentNameRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
 
 	/// <summary>
@@ -58,7 +58,7 @@ public sealed class TRXDocumentService : ITRXDocumentService
 		{
 			string lineText = source.GetText(line.Offset, line.Length);
 
-			// First check: title property match with StartsWith (legacy quirk).
+			// First check: a title property whose value starts with the requested level name.
 			string normalizedTitle = TRXLevelNameParser.ExtractTitleName(lineText);
 
 			if (normalizedTitle.StartsWith(levelName, StringComparison.Ordinal))

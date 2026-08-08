@@ -135,6 +135,117 @@ public class TextSignatureHelpControllerTests
 	}
 
 	[TestMethod]
+	public void RequestAsync_ProviderReturnsNull_WhenNotVisible_DismissesSignatureHelp()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			int dismissCount = 0;
+			int showCount = 0;
+
+			var controller = new TextSignatureHelpController(
+				() => 0,
+				(offset, requestToken) => Task.FromResult<TextSignatureHelpInfo?>(null),
+				_ => showCount++,
+				() => dismissCount++);
+
+			controller.RequestAsync(5).GetAwaiter().GetResult();
+
+			// A null result with nothing visible dismisses signature help.
+			Assert.AreEqual(1, dismissCount);
+			Assert.AreEqual(0, showCount);
+			Assert.IsFalse(controller.IsVisible);
+			Assert.IsNull(controller.CurrentSignatureHelp);
+		});
+	}
+
+	[TestMethod]
+	public void RequestAsync_ProviderReturnsNull_WhenVisible_PreservesVisibleSignatureHelp()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			int servedResponses = 0;
+			int dismissCount = 0;
+			int showCount = 0;
+
+			var controller = new TextSignatureHelpController(
+				() => 0,
+				(offset, requestToken) =>
+				{
+					servedResponses++;
+					return Task.FromResult<TextSignatureHelpInfo?>(servedResponses == 1
+						? new TextSignatureHelpInfo("spawn(room)", 0, "Spawns an object.", [])
+						: null);
+				},
+				_ => showCount++,
+				() => dismissCount++);
+
+			controller.RequestAsync(5).GetAwaiter().GetResult();
+			controller.RequestAsync(9).GetAwaiter().GetResult();
+
+			// A null refresh result must not tear down an already-visible signature popup.
+			Assert.AreEqual(1, showCount);
+			Assert.AreEqual(0, dismissCount);
+			Assert.IsTrue(controller.IsVisible);
+			Assert.IsNotNull(controller.CurrentSignatureHelp);
+		});
+	}
+
+	[TestMethod]
+	public void RequestAsync_ProviderReturnsSignature_ShowsSignatureHelp()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var signature = new TextSignatureHelpInfo("spawn(room)", 0, "Spawns an object.", []);
+			TextSignatureHelpInfo? shownSignature = null;
+
+			var controller = new TextSignatureHelpController(
+				() => 0,
+				(offset, requestToken) => Task.FromResult<TextSignatureHelpInfo?>(signature),
+				info => shownSignature = info,
+				() => { });
+
+			controller.RequestAsync(5).GetAwaiter().GetResult();
+
+			Assert.IsNotNull(shownSignature);
+			Assert.AreEqual(signature, shownSignature);
+			Assert.IsTrue(controller.IsVisible);
+			Assert.AreEqual(signature, controller.CurrentSignatureHelp);
+		});
+	}
+
+	[TestMethod]
+	public void RequestAsync_SupersedingRequest_InvokesCancelHookAndDropsInFlightResult()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			int cancelHookCalls = 0;
+			bool shown = false;
+			var completion = new TaskCompletionSource<TextSignatureHelpInfo?>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+			var controller = new TextSignatureHelpController(
+				() => 0,
+				(offset, requestToken) => completion.Task,
+				_ => shown = true,
+				() => { },
+				cancelInFlightRequest: () => cancelHookCalls++);
+
+			Task firstRequest = controller.RequestAsync(5);
+			Task secondRequest = controller.RequestAsync(9);
+
+			// A superseding request must cancel the active provider call instead of queueing behind it.
+			Assert.AreEqual(1, cancelHookCalls);
+
+			completion.TrySetResult(new TextSignatureHelpInfo("spawn(room)", 0, "Spawns an object.", []));
+			firstRequest.GetAwaiter().GetResult();
+			secondRequest.GetAwaiter().GetResult();
+
+			// The cancelled in-flight result is dropped; the pending offset is refreshed separately.
+			Assert.IsFalse(shown);
+			Assert.IsFalse(controller.IsVisible);
+		});
+	}
+
+	[TestMethod]
 	public void Dispose_UnsubscribesRefreshTimerTickHandler()
 	{
 		WPFTestHelper.RunInSta(() =>

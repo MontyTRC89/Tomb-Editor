@@ -81,7 +81,7 @@ internal sealed class FileReloadCoordinator
 			}
 			else if (result == DialogResult.No)
 			{
-				editor.TryRunContentChangedWorker();
+				editor.RunContentChangedWorker();
 			}
 		}
 	}

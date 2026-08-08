@@ -124,29 +124,62 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	public int CurrentColumn => TextArea.Caret.Position.Column;
 
 	/// <summary>
-	/// Gets the currently selected content.
+	/// Gets the currently selected content as text, or <c>null</c> when there is no selection.
 	/// </summary>
-	public object SelectedContent => SelectedText;
+	public string? SelectedContent => SelectedText.Length == 0 ? null : SelectedText;
 
 	/// <summary>
 	/// Gets the formatter used when tidying the document.
 	/// </summary>
 	protected virtual ITextDocumentFormatter DocumentFormatter => TrimTrailingWhitespaceFormatter.Instance;
 
+	private int _minZoom = 25;
+
 	/// <summary>
 	/// Gets or sets the minimum allowed zoom percentage.
 	/// </summary>
-	public int MinZoom { get; set; } = 25;
+	/// <exception cref="ArgumentOutOfRangeException">The value is less than or equal to zero.</exception>
+	public int MinZoom
+	{
+		get => _minZoom;
+		set
+		{
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+			_minZoom = value;
+		}
+	}
+
+	private int _maxZoom = 400;
 
 	/// <summary>
 	/// Gets or sets the maximum allowed zoom percentage.
 	/// </summary>
-	public int MaxZoom { get; set; } = 400;
+	/// <exception cref="ArgumentOutOfRangeException">The value is less than or equal to zero.</exception>
+	public int MaxZoom
+	{
+		get => _maxZoom;
+		set
+		{
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+			_maxZoom = value;
+		}
+	}
+
+	private int _zoomStepSize = 15;
 
 	/// <summary>
 	/// Gets or sets the zoom percentage change per step.
 	/// </summary>
-	public int ZoomStepSize { get; set; } = 15;
+	/// <exception cref="ArgumentOutOfRangeException">The value is less than or equal to zero.</exception>
+	public int ZoomStepSize
+	{
+		get => _zoomStepSize;
+		set
+		{
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+			_zoomStepSize = value;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the prefix used to comment out lines.
@@ -162,30 +195,85 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		set => _contentPersistenceCoordinator.DelayedInterval = value;
 	}
 
+	private string _parenthesesClosingString = ")";
+
 	/// <summary>
 	/// Gets or sets the string inserted to close an auto-closed parenthesis.
 	/// </summary>
-	public string ParenthesesClosingString { get; set; } = ")";
+	/// <exception cref="ArgumentNullException">The value is null.</exception>
+	public string ParenthesesClosingString
+	{
+		get => _parenthesesClosingString;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			_parenthesesClosingString = value;
+		}
+	}
+
+	private string _bracesClosingString = "}";
 
 	/// <summary>
 	/// Gets or sets the string inserted to close an auto-closed brace.
 	/// </summary>
-	public string BracesClosingString { get; set; } = "}";
+	/// <exception cref="ArgumentNullException">The value is null.</exception>
+	public string BracesClosingString
+	{
+		get => _bracesClosingString;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			_bracesClosingString = value;
+		}
+	}
+
+	private string _bracketsClosingString = "]";
 
 	/// <summary>
 	/// Gets or sets the string inserted to close an auto-closed bracket.
 	/// </summary>
-	public string BracketsClosingString { get; set; } = "]";
+	/// <exception cref="ArgumentNullException">The value is null.</exception>
+	public string BracketsClosingString
+	{
+		get => _bracketsClosingString;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			_bracketsClosingString = value;
+		}
+	}
+
+	private string _quotesClosingString = "\"";
 
 	/// <summary>
 	/// Gets or sets the string inserted to close an auto-closed quote.
 	/// </summary>
-	public string QuotesClosingString { get; set; } = "\"";
+	/// <exception cref="ArgumentNullException">The value is null.</exception>
+	public string QuotesClosingString
+	{
+		get => _quotesClosingString;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			_quotesClosingString = value;
+		}
+	}
+
+	private Version _engineVersion = new Version(0, 0);
 
 	/// <summary>
 	/// Gets or sets the engine version targeted by this editor.
 	/// </summary>
-	public Version EngineVersion { get; set; } = new Version(0, 0);
+	/// <exception cref="ArgumentNullException">The value is null.</exception>
+	public Version EngineVersion
+	{
+		get => _engineVersion;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			_engineVersion = value;
+		}
+	}
 
 	// Configuration
 
@@ -288,7 +376,7 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	/// <param name="engineVersion">The engine version the editor targets.</param>
 	public TextEditorBase(Version engineVersion)
 	{
-		TextEditorBaseServiceCollection services = TextEditorBaseServiceCollection.Create(this);
+		TextEditorServiceComposition services = TextEditorServiceComposition.Create(this);
 
 		SetNewDefaultSettings();
 		_autoClosingService = services.AutoClosingService;
@@ -409,16 +497,6 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	void IEditorControl.Undo() => Undo();
 
 	void IEditorControl.Redo() => Redo();
-
-	/// <summary>
-	/// Navigates to the definition of <paramref name="objectName"/> when the language has a
-	/// synchronous name-based lookup path (ClassicScript, GameFlowScript, TRX override this).
-	/// The default is an intentional no-op: Lua resolves definitions through the LSP
-	/// (<c>NavigateToDefinitionAtCaretAsync</c>) and <see cref="PlainTextEditor"/> has no
-	/// definitions, so this base implementation deliberately does nothing rather than throw.
-	/// </summary>
-	public virtual void GoToObject(string objectName, object? identifyingObject = null)
-	{ }
 
 	/// <summary>
 	/// Releases the resources used by this editor. Disposal is idempotent; a disposed editor must not be reused.

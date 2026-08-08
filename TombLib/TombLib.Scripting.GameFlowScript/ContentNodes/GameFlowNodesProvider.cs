@@ -1,5 +1,8 @@
 using DarkUI.Controls;
+using System;
+using System.Collections.Generic;
 using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.GameFlowScript.Types;
 using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.GameFlowScript.ContentNodes;
@@ -28,5 +31,5 @@ public sealed class GameFlowNodesProvider : ContentNodesProviderBase
 			group => group.Header,
 			group => group.Nodes,
 			node => node.Text,
-			node => node.ObjectType);
+			node => new GameFlowObjectDiscriminator(node.ObjectType));
 }

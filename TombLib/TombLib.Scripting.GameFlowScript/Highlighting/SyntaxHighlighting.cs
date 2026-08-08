@@ -1,4 +1,5 @@
 using ICSharpCode.AvalonEdit.Highlighting;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;

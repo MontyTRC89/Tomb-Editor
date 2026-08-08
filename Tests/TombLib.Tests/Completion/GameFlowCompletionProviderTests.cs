@@ -45,4 +45,20 @@ public class GameFlowCompletionProviderTests
 		Assert.IsTrue(items.Count > 0);
 		Assert.IsTrue(items.Any(item => item.InsertText == "LEVEL: "));
 	}
+
+	[TestMethod]
+	public void GetCompletionItems_BundledCatalog_HasUniqueInsertionTextsIncludingOverlappingNames()
+	{
+		IReadOnlyList<TextCompletionItem> items = CreateProvider().GetCompletionItems(new TextCompletionContext(string.Empty, 0));
+
+		// No two items may share a case-insensitive insertion text, even when a name belongs to
+		// both the constants and the properties categories (e.g. KEY1 and PICKUP1).
+		Assert.AreEqual(items.Count, items.Select(item => item.InsertText).Distinct(StringComparer.OrdinalIgnoreCase).Count());
+
+		// The overlapping constant/property names keep both their constant and property forms.
+		Assert.IsTrue(items.Any(item => item.InsertText == "KEY1"));
+		Assert.IsTrue(items.Any(item => item.InsertText == "KEY1: "));
+		Assert.IsTrue(items.Any(item => item.InsertText == "PICKUP1"));
+		Assert.IsTrue(items.Any(item => item.InsertText == "PICKUP1: "));
+	}
 }

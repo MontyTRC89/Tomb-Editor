@@ -10,19 +10,21 @@ using TombLib.Scripting.UI.Presentation;
 namespace TombLib.Scripting.UI.Bases;
 
 /// <summary>
-/// Internal construction-time bundle of the per-editor services created in the
+/// Construction-time composition of the per-editor services created in the
 /// <see cref="TextEditorBase"/> constructor.
-/// This is not a general-purpose service locator: every member is 1:1 with the editor
-/// instance it was created for and depends on the editor being constructed (document,
-/// text area, popup host, etc.), so real DI composition is not applicable here.
-/// Ownership and lifetime: the bundle (and each service) is owned by the editor instance
-/// that created it and lives exactly as long as that editor; the constructor fields it
-/// into <see cref="TextEditorBase"/> readonly fields, after which the bundle itself is
-/// discarded.
+/// This is not a general-purpose service locator or DI service collection: every member is
+/// 1:1 with the editor instance it was created for and depends on the editor being
+/// constructed (document, text area, popup host, etc.), so real DI composition is not
+/// applicable here. The name intentionally uses "composition" rather than "collection" to
+/// reflect that it is a fixed, narrow set of services rather than an extensible registry.
+/// Ownership and lifetime: the composition object (and each service) is owned by the editor
+/// instance that created it and lives exactly as long as that editor; the constructor fields
+/// it into <see cref="TextEditorBase"/> readonly fields, after which the composition object
+/// itself is discarded.
 /// </summary>
-internal sealed class TextEditorBaseServiceCollection
+internal sealed class TextEditorServiceComposition
 {
-	private TextEditorBaseServiceCollection(
+	private TextEditorServiceComposition(
 		TextAutoClosingService autoClosingService,
 		BookmarkCoordinator bookmarkCoordinator,
 		TextLineCommentService commentService,
@@ -97,15 +99,15 @@ internal sealed class TextEditorBaseServiceCollection
 	public TextEditorViewService ViewService { get; }
 
 	/// <summary>
-	/// Creates the service collection for the given editor.
+	/// Creates the service composition for the given editor.
 	/// </summary>
 	/// <param name="editor">The editor the services are created for.</param>
-	/// <returns>The service collection bound to the editor.</returns>
-	public static TextEditorBaseServiceCollection Create(TextEditorBase editor)
+	/// <returns>The service composition bound to the editor.</returns>
+	public static TextEditorServiceComposition Create(TextEditorBase editor)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
 
-		return new TextEditorBaseServiceCollection(
+		return new TextEditorServiceComposition(
 			autoClosingService: new TextAutoClosingService(),
 			bookmarkCoordinator: new BookmarkCoordinator(
 				() => editor.Document,

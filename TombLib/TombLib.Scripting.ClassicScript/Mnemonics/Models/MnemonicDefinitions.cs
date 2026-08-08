@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace TombLib.Scripting.ClassicScript.Mnemonics.Models;
 
 /// <summary>

@@ -116,22 +116,19 @@ public class ClassicScriptEditorCompletionWindowTests
 
 			try
 			{
-				ICompletionData[] completionItems = [..
+				CompletionData[] completionItems = [..
 					CompletionProvider.GetCompletionItems(
 						new TextCompletionContext(editor.Text, editor.CaretOffset, TextCompletionTrigger.EmptyLine))
 						.Select(item => new CompletionData(item))];
 				int lineOffset = editor.Document.GetLineByOffset(editor.CaretOffset).Offset;
 
-				bool opened = (bool)(WPFTestHelper.InvokeInstanceMethod(
+				var completionController = (TextCompletionController)WPFTestHelper.InvokeInstanceMethod(
 					editor,
-					"TryOpenCompletionWindow",
-					[typeof(IEnumerable<ICompletionData>), typeof(int?), typeof(int?), typeof(int), typeof(int)],
-					completionItems,
-					lineOffset,
-					null,
-					300,
-					300)
-					?? throw new InvalidOperationException("Instance method 'TryOpenCompletionWindow' returned null."));
+					"get_CompletionController",
+					Type.EmptyTypes)
+					?? throw new InvalidOperationException("Completion controller was not found.");
+
+				bool opened = completionController.OpenOrRefresh(completionItems, lineOffset);
 
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 

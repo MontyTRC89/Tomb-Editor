@@ -137,6 +137,51 @@ public class TRXGameFlowSchemaServiceTests
 		}
 	}
 
+	[TestMethod]
+	public void SchemaWithDuplicateKeywords_DeduplicatesKeywords()
+	{
+		string path = WriteFixture("gameflow-duplicate-keywords-fixture.json", DuplicateKeywordsFixture);
+
+		try
+		{
+			var service = new TRXGameFlowSchemaService(path);
+
+			Assert.AreEqual(TRXSchemaLoadState.Loaded, service.LoadState);
+			Assert.IsNotNull(service.Model);
+
+			// A keyword reachable through both the root and a referenced definition is surfaced
+			// exactly once, in both the keyword lists and the model properties.
+			Assert.AreEqual(1, service.Keywords.Properties.Count(name => name == "shared"));
+			Assert.AreEqual(1, service.Keywords.Constants.Count(name => name == "ENGINE_1"));
+			Assert.AreEqual(1, service.Model.Properties.Count(property => property.Name == "shared"));
+		}
+		finally
+		{
+			File.Delete(path);
+		}
+	}
+
+	[TestMethod]
+	public void SchemaWithDescriptions_SurfacesPropertyDescriptions()
+	{
+		string path = WriteFixture("gameflow-descriptions-fixture.json", DescriptionsFixture);
+
+		try
+		{
+			var service = new TRXGameFlowSchemaService(path);
+
+			Assert.AreEqual(TRXSchemaLoadState.Loaded, service.LoadState);
+			Assert.IsNotNull(service.Model);
+
+			Assert.AreEqual("Human-readable level name.", service.Model.Properties.First(p => p.Name == "name").Description);
+			Assert.AreEqual("Name of an individual level.", service.Model.Properties.First(p => p.Name == "level_name").Description);
+		}
+		finally
+		{
+			File.Delete(path);
+		}
+	}
+
 	private static string WriteFixture(string fileName, string content)
 	{
 		string path = Path.Combine(Path.GetTempPath(), fileName);
@@ -199,6 +244,49 @@ public class TRXGameFlowSchemaServiceTests
 		  "type": "object",
 		  "properties": {
 		    "root_prop": { "type": "string" }
+		  }
+		}
+		""";
+
+	private const string DuplicateKeywordsFixture =
+		"""
+		{
+		  "$defs": {
+		    "shared": {
+		      "type": "object",
+		      "properties": {
+		        "shared": { "type": "string" },
+		        "engine": { "enum": [ "ENGINE_1", "ENGINE_2" ] }
+		      }
+		    }
+		  },
+		  "type": "object",
+		  "properties": {
+		    "name": { "type": "string" },
+		    "shared": { "$ref": "#/$defs/shared" },
+		    "engine": { "enum": [ "ENGINE_1" ] }
+		  }
+		}
+		""";
+
+	private const string DescriptionsFixture =
+		"""
+		{
+		  "$defs": {
+		    "level": {
+		      "type": "object",
+		      "properties": {
+		        "level_name": { "type": "string", "description": "Name of an individual level." }
+		      }
+		    }
+		  },
+		  "type": "object",
+		  "properties": {
+		    "name": { "type": "string", "description": "Human-readable level name." },
+		    "levels": {
+		      "type": "array",
+		      "items": { "$ref": "#/$defs/level" }
+		    }
 		  }
 		}
 		""";

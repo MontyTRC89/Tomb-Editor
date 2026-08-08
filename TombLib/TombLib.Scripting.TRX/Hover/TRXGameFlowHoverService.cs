@@ -16,7 +16,7 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	private static readonly Regex WordPattern = new(@"""([^""]+)""|(\w+)", RegexOptions.Compiled);
+	private static readonly Regex PropertyNamePattern = new(@"""([^""]+)""(?=\s*:)", RegexOptions.Compiled);
 
 	private readonly ITRXGameFlowSchemaService _schemaService;
 
@@ -37,20 +37,17 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 			if (model is null)
 				return null;
 
-			// Get the word at the current position.
-			var wordAtPosition = GetWordAtPosition(request.DocumentText, request.HoveredOffset);
+			// Only JSON property-name positions are hoverable: a quoted key followed by a colon.
+			string? propertyName = GetPropertyNameAtPosition(request.DocumentText, request.HoveredOffset);
 
-			if (string.IsNullOrWhiteSpace(wordAtPosition))
+			if (string.IsNullOrWhiteSpace(propertyName))
 				return null;
 
-			// Clean the word (remove quotes if present).
-			var cleanWord = wordAtPosition.Trim('"');
-
-			// Try to find schema information for this word.
-			string? content = FindHoverInfo(model, cleanWord);
+			// Try to find schema information for this property.
+			string? content = FindHoverInfo(model, propertyName);
 			return string.IsNullOrWhiteSpace(content)
 				? null
-				: new TextHoverInfo(content, TextHoverContentKind.Markdown, cleanWord);
+				: new TextHoverInfo(content, TextHoverContentKind.Markdown, propertyName);
 		}
 		catch (Exception exception)
 		{
@@ -59,7 +56,7 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 		}
 	}
 
-	private static string? GetWordAtPosition(string documentText, int offset)
+	private static string? GetPropertyNameAtPosition(string documentText, int offset)
 	{
 		if (offset < 0 || offset >= documentText.Length)
 			return null;
@@ -75,24 +72,20 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 		string lineText = documentText.Substring(lineStart, lineEnd - lineStart);
 		int relativeOffset = offset - lineStart;
 
-		// Use regex to find JSON property names and values.
-		var matches = WordPattern.Matches(lineText);
-
-		foreach (Match match in matches)
+		// The character immediately after a matched property (the colon) is outside the property
+		// range, so hovering the colon yields no information.
+		foreach (Match match in PropertyNamePattern.Matches(lineText))
 		{
-			if (relativeOffset >= match.Index && relativeOffset <= match.Index + match.Length)
-			{
-				// Return the captured group (without quotes for quoted strings).
-				return match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value;
-			}
+			if (relativeOffset >= match.Index && relativeOffset < match.Index + match.Length)
+				return match.Groups[1].Value;
 		}
 
 		return null;
 	}
 
-	private static string? FindHoverInfo(TRXGameFlowSchemaModel model, string word)
+	private static string? FindHoverInfo(TRXGameFlowSchemaModel model, string propertyName)
 	{
-		var property = model.Properties.FirstOrDefault(candidate => candidate.Name == word);
+		var property = model.Properties.FirstOrDefault(candidate => candidate.Name == propertyName);
 
 		if (property is null)
 			return null;

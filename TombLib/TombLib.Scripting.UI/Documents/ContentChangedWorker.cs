@@ -61,7 +61,17 @@ public sealed class ContentChangedWorker : IDisposable
 				return;
 
 			if (value == false)
+			{
 				DeleteBackupFile();
+
+				// Invalidate any pending or in-flight backup synchronization so an obsolete
+				// asynchronous write cannot recreate a backup that is now disabled.
+				lock (_syncRoot)
+				{
+					_stateVersion++;
+					_latestRequestId++;
+				}
+			}
 
 			_createBackupFiles = value;
 		}
@@ -183,7 +193,14 @@ public sealed class ContentChangedWorker : IDisposable
 			_isBusy = false;
 		}
 
-		_ = SynchronizeBackupStateAsync(filePath, _persistedContent, false, stateVersion, requestId);
+		_ = SynchronizeBackupStateAsync(filePath, _persistedContent, false, stateVersion, requestId)
+			.ContinueWith(
+				task =>
+				{
+					if (task.Exception is not null)
+						Log.Warn(task.Exception, "Failed to synchronize the backup state for '{Path}'.", filePath);
+				},
+				TaskContinuationOptions.OnlyOnFaulted);
 	}
 
 	/// <summary>
@@ -201,15 +218,17 @@ public sealed class ContentChangedWorker : IDisposable
 	}
 
 	/// <summary>
-	/// Creates a backup file for the given editor content.
+	/// Creates a backup file for the given editor content and returns the synchronization task so
+	/// write failures are observable by the caller rather than becoming unobserved task faults.
 	/// </summary>
 	/// <param name="editorContent">The editor content to back up.</param>
-	public void CreateBackupFile(string editorContent)
+	/// <returns>The backup synchronization task; awaiting it surfaces write failures.</returns>
+	public Task CreateBackupFileAsync(string editorContent)
 	{
 		if (_isDisposed)
-			return;
+			return Task.CompletedTask;
 
-		_ = SynchronizeBackupStateAsync(FilePath, editorContent ?? string.Empty, true, CaptureStateVersion(), CaptureRequestId());
+		return SynchronizeBackupStateAsync(FilePath, editorContent ?? string.Empty, true, CaptureStateVersion(), CaptureRequestId());
 	}
 
 	/// <summary>
@@ -298,7 +317,9 @@ public sealed class ContentChangedWorker : IDisposable
 
 		await File.WriteAllTextAsync(backupFilePath, editorContent ?? string.Empty).ConfigureAwait(false);
 
-		if (!IsLatestRequest(requestId, stateVersion) || !string.Equals(originalFilePath, FilePath, StringComparison.OrdinalIgnoreCase))
+		// Re-check the setting and version after the write: backups may have been disabled or a newer
+		// request issued while the write was in flight, in which case the file must not be left behind.
+		if (!CreateBackupFiles || !IsLatestRequest(requestId, stateVersion) || !string.Equals(originalFilePath, FilePath, StringComparison.OrdinalIgnoreCase))
 			DeleteBackupFileByBackupPath(backupFilePath);
 	}
 

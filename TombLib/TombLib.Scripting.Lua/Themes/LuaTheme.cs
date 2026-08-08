@@ -107,7 +107,7 @@ public sealed class LuaThemeSemanticColors
 	public string File { get; set; } = LuaBuiltInThemes.DefaultFile;
 
 	/// <summary>
-	/// Gets or sets the color used for signature-help documentation text.
+	/// Gets or sets the color used for signature help documentation text.
 	/// </summary>
 	public string SignatureParameterDocumentation { get; set; } = LuaBuiltInThemes.DefaultSignatureParameterDocumentation;
 

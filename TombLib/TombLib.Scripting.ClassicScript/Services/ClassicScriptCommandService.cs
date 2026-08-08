@@ -1,4 +1,6 @@
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,7 +23,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
 	private readonly ClassicScriptSyntaxCatalogService _syntaxCatalogService;
 
-	// Regex patterns retained for parity with the legacy editor behavior.
+	// Regex patterns for the ClassicScript continuation, directive, and command syntax.
 	private static readonly Regex NextLineKeyRegex = new(@">\s*(;.*)?$", RegexOptions.Compiled);
 	private static readonly Regex CustomizeCommandRegex = new(@"^\s*\bCustomize\s*=\s*\b.*\b\s*,", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 	private static readonly Regex ParametersCommandRegex = new(@"^\s*\bParameters\s*=\s*\b.*\b\s*,", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -201,7 +203,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 
 			string[] syntaxArguments = syntax.Split(',');
 
-			if (syntaxArguments.Length < currentArgumentIndex)
+			if (currentArgumentIndex >= syntaxArguments.Length)
 				return null;
 
 			string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];

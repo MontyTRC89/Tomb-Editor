@@ -1,15 +1,20 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Highlighting;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombLib.Scripting.GameFlowScript;
 
 /// <summary>
 /// The GameFlow script editor.
 /// </summary>
-public sealed partial class GameFlowEditor : TextEditorBase
+public sealed partial class GameFlowEditor : TextEditorBase, INameBasedObjectNavigator
 {
 	private readonly GameFlowLanguageServices _languageServices;
 	private readonly GameFlowCompletionSessionCoordinator _completionCoordinator;
@@ -27,7 +32,7 @@ public sealed partial class GameFlowEditor : TextEditorBase
 		ArgumentNullException.ThrowIfNull(languageServices);
 
 		_languageServices = languageServices;
-		_completionCoordinator = new GameFlowCompletionSessionCoordinator(_languageServices.CompletionProvider, _languageServices.LineService);
+		_completionCoordinator = languageServices.CreateCompletionCoordinator();
 
 		InitializeDefinitionNavigation(TryNavigateDefinition);
 		InitializeHover(BuildStandardHoverRequestState, RequestHover);
@@ -70,6 +75,6 @@ public sealed partial class GameFlowEditor : TextEditorBase
 		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
 
 	/// <inheritdoc/>
-	public override void GoToObject(string objectName, object? identifyingObject = null)
+	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 		=> GoToDefinition(_languageServices.DefinitionProvider, objectName, identifyingObject);
 }

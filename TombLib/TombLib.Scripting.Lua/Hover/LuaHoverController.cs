@@ -3,11 +3,9 @@ using Nickelony.LanguageServer.Abstractions.Hover;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Hover;
-using TombLib.Scripting.UI.Rendering;
 
 namespace TombLib.Scripting.Lua;
 
@@ -35,8 +33,9 @@ public sealed partial class LuaEditor
 				requestHoverAsync: RequestAsync,
 				getCurrentRequestOffset: TryGetCurrentRequestOffset,
 				showDiagnosticToolTip: editor.ShowDiagnosticToolTip,
-				showHoverToolTip: ShowHoverToolTip,
-				showCombinedToolTip: ShowCombinedToolTip,
+				showHoverToolTip: hoverInfo => HoverControllerFactory.ShowStandardHoverToolTip(_editor, hoverInfo),
+				showCombinedToolTip: (hoverInfo, diagnosticMessage, diagnosticSeverity) =>
+					HoverControllerFactory.ShowStandardCombinedToolTip(_editor, hoverInfo, diagnosticMessage, diagnosticSeverity),
 				applyHoverState: _ => { },
 				handleRequestFailure: exception => LogEditorFailure("Hover request", exception));
 		}
@@ -88,34 +87,6 @@ public sealed partial class LuaEditor
 			return string.IsNullOrWhiteSpace(_editor.GetWordFromOffset(hoverOffset))
 				? null
 				: hoverOffset;
-		}
-
-		private void ShowHoverToolTip(TextHoverInfo hoverInfo)
-			=> _editor.ShowToolTip(
-				TextHoverToolTipContentFactory.CreateHoverContent(hoverInfo, ToolTipForeground, DefaultToolTipBackground),
-				DefaultToolTipBorder,
-				DefaultToolTipBackground);
-
-		private void ShowCombinedToolTip(TextHoverInfo hoverInfo, string diagnosticMessage, TextEditorDiagnosticSeverity diagnosticSeverity)
-		{
-			_editor.ShowToolTip(
-				TextHoverToolTipContentFactory.CreateCombinedContent(
-					hoverInfo,
-					diagnosticMessage,
-					diagnosticSeverity,
-					ToolTipForeground,
-					DefaultToolTipBackground,
-					ToolTipTextMaxWidth,
-					ToolTipTextFontSize,
-					GetDiagnosticColors),
-				DefaultToolTipBorder,
-				DefaultToolTipBackground);
-		}
-
-		private static (SolidColorBrush Border, SolidColorBrush Background) GetDiagnosticColors(TextEditorDiagnosticSeverity severity)
-		{
-			TextEditorToolTipHelper.GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
-			return (border, background);
 		}
 
 		private async Task<TextHoverInfo?> RequestAsync(int offset, CancellationToken cancellationToken)

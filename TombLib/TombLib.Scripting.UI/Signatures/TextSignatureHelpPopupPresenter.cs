@@ -9,7 +9,7 @@ using TombLib.Scripting.UI.Resources;
 namespace TombLib.Scripting.UI.Signatures;
 
 /// <summary>
-/// Presents signature-help content in a caret-anchored popup for editors that use popup-based signature help.
+/// Presents signature help content in a caret-anchored popup for editors that use popup-based signature help.
 /// </summary>
 public sealed class TextSignatureHelpPopupPresenter
 {

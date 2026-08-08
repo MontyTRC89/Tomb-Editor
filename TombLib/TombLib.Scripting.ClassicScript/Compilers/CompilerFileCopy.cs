@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using TombLib.Scripting.ClassicScript.Cleaning;

@@ -60,7 +60,7 @@ public sealed class TRXCompletionSessionCoordinator
 		if (completionWindowIsOpen)
 			return HasMatchingCompletions(document, caretOffset)
 				? TextCompletionSessionDecision.None
-				: TextCompletionSessionDecision.Close();
+				: TextCompletionSessionDecision.Close;
 
 		if (ShouldTriggerCompletion(inputText))
 		{

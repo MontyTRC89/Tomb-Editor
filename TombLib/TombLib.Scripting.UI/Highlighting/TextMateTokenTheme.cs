@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace TombLib.Scripting.UI.Highlighting;
@@ -7,10 +8,17 @@ namespace TombLib.Scripting.UI.Highlighting;
 /// </summary>
 public sealed class TextMateTokenTheme
 {
+	private IReadOnlyList<TextMateTokenThemeRule> _rules = [];
+
 	/// <summary>
-	/// Gets or sets the token rules of the theme.
+	/// Gets or initializes the token rules of the theme.
+	/// The assigned collection is copied into owned read-only storage; later caller mutations cannot leak in.
 	/// </summary>
-	public List<TextMateTokenThemeRule> Rules { get; set; } = new List<TextMateTokenThemeRule>();
+	public IReadOnlyList<TextMateTokenThemeRule> Rules
+	{
+		get => _rules;
+		init => _rules = value is null ? [] : Array.AsReadOnly([.. value]);
+	}
 }
 
 /// <summary>

@@ -1,91 +1,151 @@
+using System;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace TombLib.Scripting.Text;
 
 /// <summary>
 /// Converts between space and tab indentation in text.
+/// Conversion operates on indentation only and preserves the original line-ending
+/// convention and all non-indentation content.
 /// </summary>
 public static class WhiteSpaceConverter
 {
-	private static readonly Regex TrailingDoubleSpacesRegex = new(@" {2,}$");
-
 	/// <summary>
-	/// Converts runs of spaces to tabs using the specified tab size.
+	/// Converts leading space indentation to tabs using the specified tab size.
+	/// Only leading whitespace is converted; existing tabs, partial groups of spaces
+	/// that do not reach a tab stop, and all non-indentation content are preserved.
 	/// </summary>
 	/// <param name="input">The text to convert.</param>
-	/// <param name="tabSize">The number of spaces per tab.</param>
+	/// <param name="tabSize">The number of spaces per tab stop.</param>
 	/// <returns>The converted text.</returns>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="tabSize"/> is less than or equal to zero.</exception>
 	public static string ConvertSpacesToTabs(string input, int tabSize)
 	{
-		string[] lines = input.Replace("\r", string.Empty).Split('\n');
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tabSize);
 
-		var resultBuilder = new StringBuilder();
-
-		for (int i = 0; i < lines.Length; i++)
-		{
-			string line = lines[i];
-
-			var lineBuilder = new StringBuilder();
-
-			for (int j = 0; j < line.Length; j += tabSize)
-			{
-				int length = Math.Min(line.Length - j, tabSize);
-				Match match = TrailingDoubleSpacesRegex.Match(line, j, length);
-
-				if (match.Success)
-				{
-					lineBuilder.Append(line.Substring(j, tabSize - match.Length));
-					lineBuilder.Append('\t');
-				}
-				else
-					lineBuilder.Append(line.Substring(j, length));
-			}
-
-			resultBuilder.Append(lineBuilder.ToString());
-
-			if (i < lines.Length - 1)
-				resultBuilder.Append(Environment.NewLine); // Prevents adding an extra line at the end
-		}
-
-		return resultBuilder.ToString();
+		return TransformLines(input, line => ConvertLineIndentationToTabs(line, tabSize));
 	}
 
 	/// <summary>
-	/// Converts tabs to spaces using the specified tab size.
+	/// Converts every tab in the text to the number of spaces that reach the next tab stop.
 	/// </summary>
 	/// <param name="input">The text to convert.</param>
-	/// <param name="tabSize">The number of spaces per tab.</param>
+	/// <param name="tabSize">The number of spaces per tab stop.</param>
 	/// <returns>The converted text.</returns>
+	/// <exception cref="ArgumentOutOfRangeException"><paramref name="tabSize"/> is less than or equal to zero.</exception>
 	public static string ConvertTabsToSpaces(string input, int tabSize)
 	{
-		string[] lines = input.Replace("\r", string.Empty).Split('\n');
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tabSize);
 
-		var resultBuilder = new StringBuilder();
+		return TransformLines(input, line => ExpandTabs(line, tabSize));
+	}
 
-		for (int i = 0; i < lines.Length; i++)
+	private static string TransformLines(string input, Func<string, string> lineTransform)
+	{
+		if (string.IsNullOrEmpty(input))
+			return string.Empty;
+
+		var builder = new StringBuilder(input.Length);
+		int lineStart = 0;
+
+		while (lineStart < input.Length)
 		{
-			string line = lines[i];
+			int newlineIndex = input.IndexOf('\n', lineStart);
+			int contentEnd = newlineIndex < 0 ? input.Length : newlineIndex;
+			bool hasCarriageReturn = contentEnd > lineStart && input[contentEnd - 1] == '\r';
+			int pureContentEnd = hasCarriageReturn ? contentEnd - 1 : contentEnd;
 
-			string[] lineSegments = line.Split('\t');
+			builder.Append(lineTransform(input.Substring(lineStart, pureContentEnd - lineStart)));
 
-			if (lineSegments.Length > 1)
-				for (int j = 0; j < lineSegments.Length; j++)
-				{
-					string segment = lineSegments[j];
+			if (newlineIndex < 0)
+				break;
 
-					if (j == lineSegments.Length - 1)
-						resultBuilder.Append(segment); // Prevents adding extra spaces at the end of the line
-					else
-						resultBuilder.Append(segment + new string(' ', tabSize - segment.Length % tabSize));
-				}
-			else
-				resultBuilder.Append(line);
-
-			if (i < lines.Length - 1)
-				resultBuilder.Append(Environment.NewLine); // Prevents adding an extra line at the end
+			int endingStart = hasCarriageReturn ? contentEnd - 1 : contentEnd;
+			builder.Append(input, endingStart, newlineIndex - endingStart + 1);
+			lineStart = newlineIndex + 1;
 		}
 
-		return resultBuilder.ToString();
+		return builder.ToString();
+	}
+
+	private static string ConvertLineIndentationToTabs(string line, int tabSize)
+	{
+		int indentLength = 0;
+
+		while (indentLength < line.Length && (line[indentLength] == ' ' || line[indentLength] == '\t'))
+			indentLength++;
+
+		if (indentLength == 0)
+			return line;
+
+		var builder = new StringBuilder(line.Length);
+		int column = 0;
+
+		for (int i = 0; i < indentLength; )
+		{
+			if (line[i] == '\t')
+			{
+				builder.Append('\t');
+				column = ((column / tabSize) + 1) * tabSize;
+				i++;
+				continue;
+			}
+
+			int runStart = i;
+
+			while (i < indentLength && line[i] == ' ')
+				i++;
+
+			int spaceCount = i - runStart;
+
+			// Replace groups of spaces that reach a tab stop with a single tab.
+			// Remaining spaces that would not reach a tab stop stay as spaces.
+			while (spaceCount > 0)
+			{
+				int spacesToNextStop = tabSize - (column % tabSize);
+
+				if (spaceCount < spacesToNextStop)
+					break;
+
+				builder.Append('\t');
+				column += spacesToNextStop;
+				spaceCount -= spacesToNextStop;
+			}
+
+			if (spaceCount > 0)
+			{
+				builder.Append(' ', spaceCount);
+				column += spaceCount;
+			}
+		}
+
+		builder.Append(line, indentLength, line.Length - indentLength);
+		return builder.ToString();
+	}
+
+	private static string ExpandTabs(string line, int tabSize)
+	{
+		if (!line.Contains('\t'))
+			return line;
+
+		var builder = new StringBuilder(line.Length);
+		int column = 0;
+
+		foreach (char c in line)
+		{
+			if (c == '\t')
+			{
+				int spaces = tabSize - (column % tabSize);
+				builder.Append(' ', spaces);
+				column += spaces;
+			}
+			else
+			{
+				builder.Append(c);
+				column++;
+			}
+		}
+
+		return builder.ToString();
 	}
 }

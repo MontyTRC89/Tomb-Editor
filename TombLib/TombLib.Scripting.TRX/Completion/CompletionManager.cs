@@ -37,14 +37,14 @@ public sealed class CompletionManager
 		ArgumentNullException.ThrowIfNull(currentWord);
 
 		if (string.IsNullOrEmpty(currentWord))
-			return completionData;
+			return [.. completionData];
 
 		// Extract the actual word content for matching (remove quotes if present).
 		string wordForMatching = currentWord.Trim('"');
 
 		// No actual word content (only quotes): keep every candidate.
 		if (string.IsNullOrEmpty(wordForMatching))
-			return completionData;
+			return [.. completionData];
 
 		var matches = new List<TextCompletionItem>(completionData.Count);
 

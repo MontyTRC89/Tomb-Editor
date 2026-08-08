@@ -90,7 +90,7 @@ public class GameFlowEditorCompletionWindowTests
 	}
 
 	[TestMethod]
-	public void TryOpenCompletionWindow_PopulatesItemsAndOffsets()
+	public void OpenOrRefreshCompletionWindow_PopulatesItemsAndOffsets()
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
@@ -103,16 +103,13 @@ public class GameFlowEditorCompletionWindowTests
 
 			try
 			{
-				bool opened = (bool)(WPFTestHelper.InvokeInstanceMethod(
+				var completionController = (TextCompletionController)WPFTestHelper.InvokeInstanceMethod(
 					editor,
-					"TryOpenCompletionWindow",
-					[typeof(IEnumerable<ICompletionData>), typeof(int?), typeof(int?), typeof(int), typeof(int)],
-					new List<ICompletionData> { new CompletionData("Level") },
-					1,
-					3,
-					300,
-					300)
-					?? throw new InvalidOperationException("Instance method 'TryOpenCompletionWindow' returned null."));
+					"get_CompletionController",
+					Type.EmptyTypes)
+					?? throw new InvalidOperationException("Completion controller was not found.");
+
+				bool opened = completionController.OpenOrRefresh([new CompletionData("Level")], 1, 3);
 
 				WPFTestHelper.PumpDispatcher(editor.Dispatcher, DispatcherPriority.Background);
 

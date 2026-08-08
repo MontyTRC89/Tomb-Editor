@@ -1,4 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System;
+using System.Collections.Generic;
 using TombLib.Scripting.Completion;
 
 namespace TombLib.Scripting.GameFlowScript.Completion;
@@ -18,20 +20,28 @@ public sealed class GameFlowCompletionProvider : ITextCompletionProvider
 		ArgumentNullException.ThrowIfNull(context);
 
 		var items = new List<TextCompletionItem>();
+		var seenInsertionTexts = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-		AddItems(items, GameFlowDefinitionCatalog.Sections, ": ");
-		AddItems(items, GameFlowDefinitionCatalog.SpecialProperties, ": ");
-		AddItems(items, GameFlowDefinitionCatalog.Properties, ": ");
-		AddItems(items, GameFlowDefinitionCatalog.Constants, string.Empty);
+		AddItems(items, seenInsertionTexts, GameFlowDefinitionCatalog.Sections, ": ");
+		AddItems(items, seenInsertionTexts, GameFlowDefinitionCatalog.SpecialProperties, ": ");
+		AddItems(items, seenInsertionTexts, GameFlowDefinitionCatalog.Properties, ": ");
+		AddItems(items, seenInsertionTexts, GameFlowDefinitionCatalog.Constants, string.Empty);
 
 		// The provider returns the full contextually-valid candidate set; the session
 		// coordinator owns word filtering so candidates are not filtered twice.
 		return items;
 	}
 
-	private static void AddItems(List<TextCompletionItem> items, IReadOnlyList<string> values, string suffix)
+	private static void AddItems(List<TextCompletionItem> items, HashSet<string> seenInsertionTexts, IReadOnlyList<string> values, string suffix)
 	{
 		foreach (string value in values)
-			items.Add(new TextCompletionItem(value, value + suffix));
+		{
+			string insertionText = value + suffix;
+
+			// A name that belongs to more than one category keeps its first insertion text, so the
+			// intended category (sections, special properties, properties, then constants) wins.
+			if (seenInsertionTexts.Add(insertionText))
+				items.Add(new TextCompletionItem(value, insertionText));
+		}
 	}
 }

@@ -125,9 +125,11 @@ public class TextRequestValidationTests
     [TestMethod]
     public void DefinitionRequest_Identifier_PassesThrough()
     {
-        object identifier = 42;
+        TextDefinitionDiscriminator identifier = new TestDiscriminator();
         var request = new TextDefinitionRequest("text", "Level", identifier);
 
         Assert.AreSame(identifier, request.Identifier);
     }
+
+    private sealed record TestDiscriminator : TextDefinitionDiscriminator;
 }

@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;
@@ -8,6 +9,8 @@ using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Signatures;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.ClassicScript.Types;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Navigation;
 
 namespace TombLib.Tests;
@@ -33,6 +36,28 @@ public class ClassicScriptDefinitionNavigationTests
 			commandService,
 			indexService);
 	}
+
+	[TestMethod]
+	public void DefinitionProvider_RequiresClassicScriptDiscriminator()
+	{
+		var lineService = new ClassicScriptLineService();
+		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
+		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
+		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+		var definitionProvider = new ClassicScriptDefinitionProvider(commandService);
+		const string document = "[Level]\nName=Level1";
+
+		Assert.IsNull(definitionProvider.GetDefinition(new TextDefinitionRequest(document, "[Level]")));
+		Assert.IsNull(definitionProvider.GetDefinition(new TextDefinitionRequest(document, "[Level]", new UnrecognizedDiscriminator())));
+
+		TextDefinitionLocation? location = definitionProvider.GetDefinition(
+			new TextDefinitionRequest(document, "[Level]", new ClassicScriptObjectDiscriminator(ObjectType.Section)));
+
+		Assert.IsNotNull(location);
+		Assert.AreEqual(1, location!.LineNumber);
+	}
+
+	private sealed record UnrecognizedDiscriminator : TextDefinitionDiscriminator;
 
 	[TestMethod]
 	public void TryHandleKeyDownAsync_F12OnSectionHeader_MovesToDefinition()

@@ -1,4 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Text;

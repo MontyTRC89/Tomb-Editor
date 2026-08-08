@@ -6,6 +6,7 @@ using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.DocumentOutline;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Workbench;
 
@@ -33,5 +34,8 @@ internal sealed class DocumentOutlinePaneProvider : IStudioPaneContributionProvi
 	}
 
 	private void DocumentOutline_ObjectClicked(object? sender, ObjectClickedEventArgs e)
-		=> _documentController.CurrentEditor?.GoToObject(e.ObjectName, e.IdentifyingObject);
+	{
+		if (_documentController.CurrentEditor is INameBasedObjectNavigator navigator)
+			navigator.GoToObject(e.ObjectName, e.IdentifyingObject);
+	}
 }

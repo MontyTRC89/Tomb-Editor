@@ -146,6 +146,11 @@ public sealed class TRXGameFlowSchemaService : ITRXGameFlowSchemaService
 
 		foreach (var property in schema.Properties)
 		{
+			// The same name can be reachable through the root and through a referenced
+			// definition; the first occurrence (the root context) wins.
+			if (result.Any(candidate => candidate.Name == property.Key))
+				continue;
+
 			result.Add(new TRXGameFlowProperty(
 				property.Key,
 				ToPropertyTypes(property.Value.Type),

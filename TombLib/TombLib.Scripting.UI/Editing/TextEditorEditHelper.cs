@@ -54,6 +54,6 @@ public static class TextEditorEditHelper
 			document.UndoStack.EndUndoGroup();
 		}
 
-		textEditor.TryRunContentChangedWorker();
+		textEditor.RunContentChangedWorker();
 	}
 }

@@ -1,7 +1,11 @@
 using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Completion;
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.ClassicScript.Services;
@@ -25,6 +29,11 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 	private readonly ITextCompletionProvider _completionProvider;
 
 	private int _latestRequestId;
+
+	private static readonly TimeSpan IncludeDiscoveryCacheDuration = TimeSpan.FromSeconds(30);
+	private readonly object _includeDiscoverySyncRoot = new();
+	private readonly Dictionary<string, IncludeDiscoveryCacheEntry> _includeDiscoveryCache = new();
+	private CancellationTokenSource? _includeDiscoveryCancellation;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ClassicScriptCompletionSessionCoordinator"/> class.
@@ -100,12 +109,12 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 		if (inputText == "\"" && caretOffset > 1)
 		{
-			TextCompletionSessionDecision includeDecision = GetIncludeDecision(document, source, filePath, caretOffset);
 			TextCompletionSessionDecision afterSpaceDecision = await GetAfterSpaceDecisionAsync(document, source, filePath, caretOffset).ConfigureAwait(false);
 
-			return HasItems(afterSpaceDecision)
-				? afterSpaceDecision
-				: includeDecision;
+			if (HasItems(afterSpaceDecision))
+				return afterSpaceDecision;
+
+			return await GetIncludeDecisionAsync(document, source, filePath, caretOffset).ConfigureAwait(false);
 		}
 
 		if (caretOffset > 1)
@@ -121,7 +130,7 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		if (HasItems(emptyLineDecision))
 			return emptyLineDecision;
 
-		TextCompletionSessionDecision includeDecision = GetIncludeDecision(document, source, filePath, caretOffset);
+		TextCompletionSessionDecision includeDecision = await GetIncludeDecisionAsync(document, source, filePath, caretOffset).ConfigureAwait(false);
 
 		return HasItems(includeDecision)
 			? includeDecision
@@ -130,12 +139,12 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 	private async Task<TextCompletionSessionDecision> ResolveCtrlSpaceFromContextAsync(TextDocument document, ITextSnapshot source, string? filePath, int caretOffset)
 	{
-		TextCompletionSessionDecision includeDecision = GetIncludeDecision(document, source, filePath, caretOffset);
+		TextCompletionSessionDecision includeDecision = await GetIncludeDecisionAsync(document, source, filePath, caretOffset).ConfigureAwait(false);
 		TextCompletionSessionDecision wordDecision = HasItems(includeDecision)
 			? TextCompletionSessionDecision.None
 			: GetWordDecision(document, caretOffset);
 
-		TextCompletionSessionDecision contextualDecision = await GetContextualDecisionAsync(document, caretOffset, -1).ConfigureAwait(false);
+		TextCompletionSessionDecision contextualDecision = await GetContextualDecisionAsync(document, caretOffset).ConfigureAwait(false);
 
 		if (HasItems(contextualDecision))
 			return contextualDecision;
@@ -148,12 +157,12 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 	private async Task<TextCompletionSessionDecision> GetAfterSpaceDecisionAsync(TextDocument document, ITextSnapshot source, string? filePath, int caretOffset)
 	{
 		if (caretOffset >= 2 && source.GetCharAt(caretOffset - 2) is '=' or ',' or '_' or '+' or '-' or '*' or '/')
-			return await GetContextualDecisionAsync(document, caretOffset, -1, insertAtCaret: true).ConfigureAwait(false);
+			return await GetContextualDecisionAsync(document, caretOffset, insertAtCaret: true).ConfigureAwait(false);
 
-		return GetIncludeDecision(document, source, filePath, caretOffset);
+		return await GetIncludeDecisionAsync(document, source, filePath, caretOffset).ConfigureAwait(false);
 	}
 
-	private TextCompletionSessionDecision GetIncludeDecision(TextDocument document, ITextSnapshot source, string? filePath, int caretOffset)
+	private async Task<TextCompletionSessionDecision> GetIncludeDecisionAsync(TextDocument document, ITextSnapshot source, string? filePath, int caretOffset)
 	{
 		ITextLine currentLine = source.GetLineByOffset(caretOffset);
 		string lineText = source.GetText(currentLine.Offset, currentLine.Length);
@@ -189,26 +198,91 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		if (caretOffset < source.TextLength && source.GetCharAt(caretOffset) == '"')
 			endOffset = caretOffset + 1;
 
+		if (string.IsNullOrWhiteSpace(filePath))
+			return TextCompletionSessionDecision.None;
+
 		string? directoryPath = Path.GetDirectoryName(filePath);
 
 		if (string.IsNullOrWhiteSpace(directoryPath))
 			return TextCompletionSessionDecision.None;
 
-		var fileDirectory = new DirectoryInfo(directoryPath);
-		var completionItems = new List<TextCompletionItem>();
+		// Recursive directory enumeration is I/O-bound and can be slow for large trees, so it
+		// must not run on the editor input path. Results are cached per document and invalidated
+		// after a short interval or when a newer request supersedes an in-flight enumeration.
+		IReadOnlyList<TextCompletionItem> completionItems;
 
-		foreach (FileInfo file in fileDirectory.GetFiles("*.txt", SearchOption.AllDirectories).Where(file => !file.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase)))
+		try
 		{
-			string pathPart = file.FullName.Replace(directoryPath, string.Empty).TrimStart('\\');
-			string completionDataString = $"\"{pathPart}\"";
-
-			completionItems.Add(new TextCompletionItem(completionDataString));
+			completionItems = await GetIncludeCompletionItemsAsync(directoryPath, filePath).ConfigureAwait(false);
+		}
+		catch (OperationCanceledException)
+		{
+			return TextCompletionSessionDecision.None;
+		}
+		catch (Exception exception)
+		{
+			Log.Warn(exception, "Failed to enumerate ClassicScript include files; suppressing the include completion session.");
+			return TextCompletionSessionDecision.None;
 		}
 
 		return completionItems.Count == 0
 			? TextCompletionSessionDecision.None
 			: CreateOpenDecision(completionItems, startOffset, endOffset);
 	}
+
+	private Task<IReadOnlyList<TextCompletionItem>> GetIncludeCompletionItemsAsync(string directoryPath, string filePath)
+	{
+		string cacheKey = directoryPath + "|" + filePath;
+		CancellationTokenSource? cancellationSource;
+
+		lock (_includeDiscoverySyncRoot)
+		{
+			if (_includeDiscoveryCache.TryGetValue(cacheKey, out IncludeDiscoveryCacheEntry cachedEntry)
+				&& DateTime.UtcNow - cachedEntry.EnumeratedAt < IncludeDiscoveryCacheDuration)
+			{
+				return Task.FromResult(cachedEntry.Items);
+			}
+
+			_includeDiscoveryCancellation?.Cancel();
+			_includeDiscoveryCancellation?.Dispose();
+			cancellationSource = _includeDiscoveryCancellation = new CancellationTokenSource();
+		}
+
+		CancellationToken cancellationToken = cancellationSource.Token;
+
+		return Task.Run(
+			() =>
+			{
+				List<TextCompletionItem> items = EnumerateIncludeCompletionItems(directoryPath, filePath, cancellationToken);
+
+				lock (_includeDiscoverySyncRoot)
+					_includeDiscoveryCache[cacheKey] = new IncludeDiscoveryCacheEntry(DateTime.UtcNow, items);
+
+				return (IReadOnlyList<TextCompletionItem>)items;
+			},
+			cancellationToken);
+	}
+
+	private static List<TextCompletionItem> EnumerateIncludeCompletionItems(string directoryPath, string filePath, CancellationToken cancellationToken)
+	{
+		var completionItems = new List<TextCompletionItem>();
+		var fileDirectory = new DirectoryInfo(directoryPath);
+
+		foreach (FileInfo file in fileDirectory.GetFiles("*.txt", SearchOption.AllDirectories))
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+
+			if (file.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase))
+				continue;
+
+			string pathPart = file.FullName.Replace(directoryPath, string.Empty).TrimStart('\\');
+			completionItems.Add(new TextCompletionItem($"\"{pathPart}\""));
+		}
+
+		return completionItems;
+	}
+
+	private readonly record struct IncludeDiscoveryCacheEntry(DateTime EnumeratedAt, IReadOnlyList<TextCompletionItem> Items);
 
 	private TextCompletionSessionDecision GetWordDecision(TextDocument document, int caretOffset)
 	{
@@ -243,7 +317,7 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 			: CreateOpenDecision(completionItems, source.GetLineByOffset(caretOffset).Offset, caretOffset);
 	}
 
-	private async Task<TextCompletionSessionDecision> GetContextualDecisionAsync(TextDocument document, int caretOffset, int argumentIndex, bool insertAtCaret = false)
+	private async Task<TextCompletionSessionDecision> GetContextualDecisionAsync(TextDocument document, int caretOffset, bool insertAtCaret = false)
 	{
 		int requestId = Interlocked.Increment(ref _latestRequestId);
 		string documentText = document.Text;
@@ -260,8 +334,10 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 		try
 		{
+			// The completion provider scans large catalogs to build items, so the work is CPU-bound.
+			// The provider contract (ITextCompletionProvider) explicitly permits background execution.
 			completionItems = await Task.Run(() => _completionProvider.GetCompletionItems(
-				new TextCompletionContext(documentText, caretOffset, TextCompletionTrigger.Contextual, argumentIndex))).ConfigureAwait(false);
+				new TextCompletionContext(documentText, caretOffset, TextCompletionTrigger.Contextual, -1))).ConfigureAwait(false);
 		}
 		catch (Exception exception)
 		{

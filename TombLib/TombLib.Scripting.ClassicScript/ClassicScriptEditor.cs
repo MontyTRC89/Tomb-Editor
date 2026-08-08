@@ -1,19 +1,23 @@
 using ICSharpCode.AvalonEdit.Rendering;
 using Nickelony.LanguageServer.Abstractions.Signatures;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Cleaning;
 using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Highlighting;
-using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.Cleaning;
 using TombLib.Scripting.Completion;
+using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Editing;
+using TombLib.Scripting.UI.Editors;
 using TombLib.Scripting.UI.Signatures;
 using TombLib.Scripting.UI.Text;
 
@@ -22,7 +26,7 @@ namespace TombLib.Scripting.ClassicScript;
 /// <summary>
 /// The ClassicScript editor.
 /// </summary>
-public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreviewSource
+public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreviewSource, INameBasedObjectNavigator
 {
 	private readonly ClassicScriptLanguageServices _languageServices;
 
@@ -89,14 +93,11 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		ArgumentNullException.ThrowIfNull(languageServices);
 
 		_languageServices = languageServices;
-		_completionCoordinator = new ClassicScriptCompletionSessionCoordinator(
-			languageServices.LineService,
-			languageServices.CommandService,
-			new ClassicScriptMnemonicCatalogService());
+		_completionCoordinator = languageServices.CreateCompletionCoordinator();
 
 		InitializeDefinitionNavigation((offset, cancellationToken) => TryNavigateDefinition(offset, cancellationToken));
 		InitializeHover(BuildHoverRequestState, RequestHover);
-		InitializeDiagnostics(new Version(1, 3, 0, 7), _languageServices.ErrorDetector, _languageServices.ErrorDetector);
+		InitializeDiagnostics(engineVersion, _languageServices.ErrorDetector, _languageServices.ErrorDetector);
 
 		InitializeRenderers();
 
@@ -210,7 +211,7 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	}
 
 	/// <inheritdoc/>
-	public override void GoToObject(string objectName, object? identifyingObject = null)
+	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 		=> GoToDefinition(_languageServices.DefinitionProvider, objectName, identifyingObject);
 
 	/// <summary>

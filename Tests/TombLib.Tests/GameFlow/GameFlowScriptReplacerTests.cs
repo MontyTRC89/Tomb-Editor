@@ -37,7 +37,7 @@ public class GameFlowScriptReplacerTests
 
 			try
 			{
-				ScriptReplacer.RenameLanguageString(editor, "MyString", "NewString");
+				new ScriptReplacer().RenameLanguageString(editor, "MyString", "NewString");
 
 				Assert.AreEqual("MY_LEVEL\r\n  NewString\r\n", editor.Text);
 			}
@@ -61,7 +61,7 @@ public class GameFlowScriptReplacerTests
 
 			try
 			{
-				ScriptReplacer.RenameLanguageString(editor, "Missing", "NewString");
+				new ScriptReplacer().RenameLanguageString(editor, "Missing", "NewString");
 
 				Assert.AreEqual("MY_LEVEL\r\n  MyString\r\n", editor.Text);
 			}

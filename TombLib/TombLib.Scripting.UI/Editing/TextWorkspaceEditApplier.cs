@@ -110,7 +110,7 @@ public sealed class TextWorkspaceEditApplier
 			textEditor.Document.UndoStack.EndUndoGroup();
 		}
 
-		textEditor.TryRunContentChangedWorker();
+		textEditor.RunContentChangedWorker();
 	}
 
 	private IReadOnlyList<string> ApplyContentSnapshots(TextWorkspaceEditTransaction transaction, Func<TextWorkspaceDocumentChange, string> selectContent)

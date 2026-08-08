@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.GameFlowScript.Types;

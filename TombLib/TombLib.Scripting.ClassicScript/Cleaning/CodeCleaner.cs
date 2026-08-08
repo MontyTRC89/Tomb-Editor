@@ -1,4 +1,5 @@
-﻿using System.Text;
+using System;
+using System.Text;
 using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Cleaning;
 using TombLib.Scripting.Extensions;

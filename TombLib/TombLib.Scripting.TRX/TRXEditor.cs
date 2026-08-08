@@ -3,23 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
-using TombLib.Scripting.Completion;
-using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.TRX.Completion;
-using TombLib.Scripting.TRX.Diagnostics;
 using TombLib.Scripting.TRX.Highlighting;
-using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Editing;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombLib.Scripting.TRX;
 
 /// <summary>
 /// The TRX (Tomb Raider X) gameflow script editor.
 /// </summary>
-public sealed partial class TRXEditor : TextEditorBase
+public sealed partial class TRXEditor : TextEditorBase, INameBasedObjectNavigator
 {
 	/// <inheritdoc />
 	public override string DefaultFileExtension => ".json5";
@@ -28,12 +25,7 @@ public sealed partial class TRXEditor : TextEditorBase
 	// Direct document edits no longer re-enter the language handlers, so only this intent flag is needed.
 	private bool _pendingBracketAutospacing;
 
-	private readonly ITextDefinitionProvider _definitionProvider;
-	private readonly ITRXGameFlowSchemaService _schemaService;
-	private readonly ITextCompletionProvider _completionProvider;
-	private readonly ITextHoverProvider _hoverProvider;
-	private readonly TextAnalysisService _textAnalysisService;
-	private readonly CompletionManager _completionManager;
+	private readonly TRXLanguageServices _languageServices;
 	private readonly TRXCompletionSessionCoordinator _completionCoordinator;
 
 	/// <summary>
@@ -45,19 +37,13 @@ public sealed partial class TRXEditor : TextEditorBase
 	{
 		ArgumentNullException.ThrowIfNull(languageServices);
 
-		_definitionProvider = languageServices.DefinitionProvider;
-		_schemaService = languageServices.SchemaService;
-		_completionProvider = languageServices.CompletionProvider;
-		_hoverProvider = languageServices.HoverProvider;
-		_textAnalysisService = new TextAnalysisService();
-		_completionManager = new CompletionManager(languageServices.LineService);
-		_completionCoordinator = new TRXCompletionSessionCoordinator(_completionProvider, _textAnalysisService, _completionManager);
+		_languageServices = languageServices;
+		_completionCoordinator = languageServices.CreateCompletionCoordinator();
 
 		InitializeDefinitionNavigation(TryNavigateDefinition);
 		InitializeHover(BuildStandardHoverRequestState, RequestHover);
 
-		var errorDetector = new ErrorDetector(languageServices.LineService);
-		InitializeDiagnostics(EngineVersion, errorDetector, errorDetector);
+		InitializeDiagnostics(EngineVersion, _languageServices.ErrorDetector, _languageServices.ErrorDetector);
 
 		CommentPrefix = "//";
 	}
@@ -117,7 +103,16 @@ public sealed partial class TRXEditor : TextEditorBase
 			return;
 
 		_pendingBracketAutospacing = false;
-		TextEditorEditHelper.InsertText(this, CaretOffset, Environment.NewLine + "\t");
+		TextEditorEditHelper.InsertText(this, CaretOffset, Environment.NewLine + GetIndentationUnit());
+	}
+
+	private string GetIndentationUnit()
+	{
+		if (!Options.ConvertTabsToSpaces)
+			return "\t";
+
+		int indentationSize = Options.IndentationSize > 0 ? Options.IndentationSize : 4;
+		return new string(' ', indentationSize);
 	}
 
 	// Public methods
@@ -125,10 +120,10 @@ public sealed partial class TRXEditor : TextEditorBase
 	/// <inheritdoc />
 	public override void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 	{
-		var config = configuration as TRXEditorConfiguration;
+		if (configuration is not TRXEditorConfiguration config)
+			return;
 
-		ArgumentNullException.ThrowIfNull(config);
-		SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme, _schemaService);
+		SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme, _languageServices.SchemaService);
 
 		Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
 		Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
@@ -140,9 +135,9 @@ public sealed partial class TRXEditor : TextEditorBase
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverProvider, offset));
+		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
 
 	/// <inheritdoc />
-	public override void GoToObject(string objectName, object? identifyingObject = null)
-		=> GoToDefinition(_definitionProvider, objectName, identifyingObject);
+	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
+		=> GoToDefinition(_languageServices.DefinitionProvider, objectName, identifyingObject);
 }

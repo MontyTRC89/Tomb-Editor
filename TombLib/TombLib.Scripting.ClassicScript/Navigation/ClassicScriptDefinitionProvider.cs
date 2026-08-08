@@ -1,4 +1,5 @@
 using Nickelony.LanguageServer.Abstractions.Navigation;
+using System;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Navigation;
@@ -30,11 +31,11 @@ public sealed class ClassicScriptDefinitionProvider : ITextDefinitionProvider
 	/// <returns>The definition location, or <c>null</c> when the object cannot be located.</returns>
 	public TextDefinitionLocation? GetDefinition(TextDefinitionRequest request)
 	{
-		if (request.Identifier is not ObjectType objectType || string.IsNullOrWhiteSpace(request.SymbolName))
+		if (request.Identifier is not ClassicScriptObjectDiscriminator discriminator || string.IsNullOrWhiteSpace(request.SymbolName))
 			return null;
 
 		var source = new StringTextSnapshot(request.DocumentText);
-		int? lineNumber = _commandService.FindDocumentLineOfObject(source, request.SymbolName, objectType);
+		int? lineNumber = _commandService.FindDocumentLineOfObject(source, request.SymbolName, discriminator.ObjectType);
 
 		return lineNumber is null ? null : new TextDefinitionLocation(lineNumber.Value);
 	}

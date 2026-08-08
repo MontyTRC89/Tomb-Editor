@@ -8,7 +8,6 @@ using Nickelony.LanguageServer.Abstractions.Signatures;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using TombLib.Scripting.UI.Completion;
 using static TombLib.Tests.WPFTestHelper;
@@ -145,139 +144,6 @@ public class LuaEditorCompletionWindowTests
 		});
 	}
 
-	[Ignore("Obsolete reflection-based coverage for pre-shared completion/signature internals. Replace with shared controller tests.")]
-	public void RequestCompletionAsync_DismissesSignatureHelpBeforeOpeningWindow()
-	{
-		RunInSta(() =>
-		{
-			var provider = new FakeLuaCompletionProvider();
-
-			provider.EnqueueCompletionResponse(
-			[
-				new TextCompletionItem("spawn_room", detail: "local variable")
-			]);
-
-			var editor = CreateEditor(provider, "spa");
-			Window hostWindow = ShowInHostWindow(editor);
-
-			try
-			{
-				Popup signaturePopup = GetSignatureHelpField<Popup>(editor, "_signaturePopup");
-				ContentPresenter signaturePresenter = GetSignatureHelpField<ContentPresenter>(editor, "_signaturePopupPresenter");
-
-				signaturePresenter.Content = new TextBlock { Text = "signature" };
-				signaturePopup.IsOpen = true;
-				SetSignatureHelpField(editor, "_signatureRequestToken", 4);
-
-				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
-				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
-
-				Assert.IsFalse(signaturePopup.IsOpen);
-				Assert.IsNull(signaturePresenter.Content);
-				Assert.AreEqual(5, GetSignatureHelpField<int>(editor, "_signatureRequestToken"));
-				Assert.IsNotNull(editor.ActiveCompletionWindow);
-			}
-			finally
-			{
-				CloseCompletionWindow(editor);
-				hostWindow.Close();
-			}
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared completion tooltip internals. Replace with shared controller tests.")]
-	public void UpdateCompletionTooltipAsync_ResolvesSelectedCompletionItem()
-	{
-		RunInSta(() =>
-		{
-			int resolveCallCount = 0;
-			var provider = new FakeLuaCompletionProvider();
-
-			provider.EnqueueCompletionResponse(
-			[
-				new TextCompletionItem(
-					"spawn_room",
-					resolveAsync: _ =>
-					{
-						resolveCallCount++;
-						return Task.FromResult(new TextCompletionItem("spawn_room", detail: "resolved detail"));
-					})
-			]);
-
-			var editor = CreateEditor(provider, "spa");
-			Window hostWindow = ShowInHostWindow(editor);
-
-			try
-			{
-				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
-				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
-
-				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
-				Assert.IsNotNull(completionWindow);
-				ToolTip toolTip = GetCompletionToolTip(completionWindow);
-				completionWindow.CompletionList.ListBox.SelectedItem = completionWindow.CompletionList.CompletionData[0];
-
-				int updateToken = GetPrivateField<int>(GetCompletionController(editor), "_completionToolTipUpdateToken");
-				InvokeControllerTask(editor, "_completionController", "UpdateTooltipAsync", [typeof(ToolTip), typeof(int)], toolTip, updateToken).GetAwaiter().GetResult();
-
-				Assert.AreEqual(1, resolveCallCount);
-				Assert.IsTrue(toolTip.IsOpen);
-				Assert.IsInstanceOfType(toolTip.Content, typeof(Border));
-
-				var contentBorder = (Border)toolTip.Content!;
-				var contentPanel = (StackPanel)(contentBorder.Child ?? throw new AssertFailedException("Expected tooltip content panel."));
-				var detailBlock = (TextBlock)contentPanel.Children[0];
-
-				Assert.AreEqual("resolved detail", detailBlock.Text);
-			}
-			finally
-			{
-				CloseCompletionWindow(editor);
-				hostWindow.Close();
-			}
-		});
-	}
-
-	[Ignore("Obsolete reflection-based coverage for pre-shared completion tooltip internals. Replace with shared controller tests.")]
-	public void UpdateCompletionTooltipAsync_HidesTooltipWhenSelectionIsCleared()
-	{
-		RunInSta(() =>
-		{
-			var provider = new FakeLuaCompletionProvider();
-
-			provider.EnqueueCompletionResponse(
-			[
-				new TextCompletionItem("spawn_room", detail: "local variable")
-			]);
-
-			var editor = CreateEditor(provider, "spa");
-			Window hostWindow = ShowInHostWindow(editor);
-
-			try
-			{
-				InvokePrivateTask(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null).GetAwaiter().GetResult();
-				PumpDispatcher(editor.Dispatcher, DispatcherPriority.ContextIdle);
-
-				CompletionWindow? completionWindow = editor.ActiveCompletionWindow;
-				Assert.IsNotNull(completionWindow);
-				ToolTip toolTip = GetCompletionToolTip(completionWindow);
-				toolTip.Content = new TextBlock { Text = "stale tooltip" };
-				toolTip.IsOpen = true;
-				completionWindow.CompletionList.ListBox.SelectedItem = null;
-
-				int updateToken = GetPrivateField<int>(GetCompletionController(editor), "_completionToolTipUpdateToken");
-				InvokeControllerTask(editor, "_completionController", "UpdateTooltipAsync", [typeof(ToolTip), typeof(int)], toolTip, updateToken).GetAwaiter().GetResult();
-
-				Assert.IsFalse(toolTip.IsOpen);
-			}
-			finally
-			{
-				CloseCompletionWindow(editor);
-				hostWindow.Close();
-			}
-		});
-	}
-
 	private static LuaEditor CreateEditor(ILuaIntellisenseProvider provider, string text) => new(new Version(1, 0))
 	{
 		FilePath = @"C:\Workspace\Scripts\test.lua",
@@ -289,21 +155,8 @@ public class LuaEditorCompletionWindowTests
 		=> (Task)(InvokeInstanceMethod(instance, methodName, parameterTypes, arguments)
 			?? throw new InvalidOperationException($"Private instance method '{methodName}' returned null."));
 
-	private static Task InvokeControllerTask(LuaEditor editor, string controllerFieldName, string methodName, Type[] parameterTypes, params object?[] arguments)
-		=> (Task)(InvokeInstanceMethod(GetPrivateField<object>(editor, controllerFieldName), methodName, parameterTypes, arguments)
-			?? throw new InvalidOperationException($"Controller method '{methodName}' returned null."));
-
 	private static void CloseCompletionWindow(LuaEditor editor)
 		=> InvokeInstanceMethod(editor, "CloseCompletionWindow", Type.EmptyTypes);
-
-	private static object GetCompletionController(LuaEditor editor)
-		=> GetPrivateField<object>(editor, "_completionController");
-
-	private static T GetSignatureHelpField<T>(LuaEditor editor, string fieldName)
-		=> GetPrivateField<T>(GetPrivateField<object>(editor, "_signatureHelpController"), fieldName);
-
-	private static void SetSignatureHelpField(LuaEditor editor, string fieldName, object value)
-		=> SetPrivateField(GetPrivateField<object>(editor, "_signatureHelpController"), fieldName, value);
 
 	private static ToolTip GetCompletionToolTip(CompletionWindow completionWindow)
 	{

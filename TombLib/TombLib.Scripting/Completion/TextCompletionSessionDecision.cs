@@ -1,4 +1,5 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
+using System.Collections.Generic;
 
 namespace TombLib.Scripting.Completion;
 
@@ -21,11 +22,9 @@ public readonly record struct TextCompletionSessionDecision(
 	public static TextCompletionSessionDecision None { get; } = new(false, null, null, null);
 
 	/// <summary>
-	/// Creates a decision that closes the active completion window.
+	/// Gets a decision that closes the active completion window.
 	/// </summary>
-	/// <returns>A closing completion-session decision.</returns>
-	public static TextCompletionSessionDecision Close()
-		=> new(true, null, null, null);
+	public static TextCompletionSessionDecision Close { get; } = new(true, null, null, null);
 
 	/// <summary>
 	/// Creates a decision that opens or refreshes the completion window for the supplied range.

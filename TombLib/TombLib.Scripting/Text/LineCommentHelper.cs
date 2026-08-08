@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace TombLib.Scripting.Text;
@@ -5,13 +6,14 @@ namespace TombLib.Scripting.Text;
 /// <summary>
 /// Provides line-comment utilities for languages that use a single-character or
 /// multi-character line-comment delimiter (e.g. <c>;</c> for ClassicScript, <c>//</c> for GameFlowScript).
+/// For the <c>//</c> delimiter, occurrences inside double-quoted strings are not treated as
+/// comments, matching the JSON-like string semantics of GameFlowScript and TRX.
 /// </summary>
 public static class LineCommentHelper
 {
 	/// <summary>
 	/// Finds the start of a line comment in the given text.
-	/// The returned offset includes any whitespace immediately preceding the delimiter,
-	/// matching the legacy regex <c>\s*;.*$</c> behavior.
+	/// The returned offset includes any whitespace immediately preceding the delimiter.
 	/// </summary>
 	/// <param name="text">The text to search. Typically a single line.</param>
 	/// <param name="delimiter">The comment delimiter, such as <c>";"</c> or <c>"//"</c>.</param>
@@ -21,12 +23,12 @@ public static class LineCommentHelper
 	/// </returns>
 	public static int FindCommentStart(ReadOnlySpan<char> text, ReadOnlySpan<char> delimiter)
 	{
-		int delimiterIndex = text.IndexOf(delimiter, StringComparison.Ordinal);
+		int delimiterIndex = FindCommentDelimiter(text, 0, delimiter, IsQuoteAwareDelimiter(delimiter));
 
 		if (delimiterIndex < 0)
 			return -1;
 
-		// Match the legacy regex's Unicode whitespace behavior.
+		// Include whitespace immediately before the delimiter.
 		int commentStart = delimiterIndex;
 
 		while (commentStart > 0 && char.IsWhiteSpace(text[commentStart - 1]))
@@ -55,9 +57,8 @@ public static class LineCommentHelper
 	}
 
 	/// <summary>
-	/// Removes line comments from the text, matching the legacy multiline regex
-	/// <c>\s*;.*$</c> behavior. This can remove preceding whitespace, including
-	/// a line ending before a comment-only line.
+	/// Removes line comments from the text. Whitespace immediately preceding the
+	/// delimiter is removed, including a line ending that precedes a comment-only line.
 	/// </summary>
 	/// <param name="text">The text to process. May contain multiple lines.</param>
 	/// <param name="delimiter">The comment delimiter.</param>
@@ -71,9 +72,8 @@ public static class LineCommentHelper
 	}
 
 	/// <summary>
-	/// Masks line comments by replacing the legacy regex match with spaces while
-	/// preserving the total string length. This exists as a temporary parity bridge
-	/// where old algorithms depend on character positions.
+	/// Masks line comments by replacing each comment with spaces, preserving the total
+	/// string length so character offsets remain stable for consumers that rely on them.
 	/// </summary>
 	/// <param name="text">The text to process. May contain multiple lines.</param>
 	/// <param name="delimiter">The comment delimiter.</param>
@@ -86,19 +86,67 @@ public static class LineCommentHelper
 		return TransformLineComments(text, delimiter, true);
 	}
 
+	private static bool IsQuoteAwareDelimiter(ReadOnlySpan<char> delimiter)
+		=> delimiter.SequenceEqual("//");
+
+	private static int FindCommentDelimiter(ReadOnlySpan<char> text, int startIndex, ReadOnlySpan<char> delimiter, bool quoteAware)
+	{
+		if (!quoteAware)
+		{
+			int offset = text.Slice(startIndex).IndexOf(delimiter, StringComparison.Ordinal);
+			return offset < 0 ? -1 : offset + startIndex;
+		}
+
+		bool inQuotes = false;
+
+		for (int i = startIndex; i < text.Length; i++)
+		{
+			char c = text[i];
+
+			if (c == '\n')
+			{
+				inQuotes = false;
+				continue;
+			}
+
+			if (c == '"')
+			{
+				if (!IsEscapedQuote(text, i))
+					inQuotes = !inQuotes;
+				continue;
+			}
+
+			if (!inQuotes && c == delimiter[0] && i + delimiter.Length <= text.Length
+				&& text.Slice(i, delimiter.Length).SequenceEqual(delimiter))
+				return i;
+		}
+
+		return -1;
+	}
+
+	private static bool IsEscapedQuote(ReadOnlySpan<char> text, int quoteIndex)
+	{
+		int backslashCount = 0;
+
+		for (int i = quoteIndex - 1; i >= 0 && text[i] == '\\'; i--)
+			backslashCount++;
+
+		return backslashCount % 2 == 1;
+	}
+
 	private static string TransformLineComments(string text, string delimiter, bool maskComments)
 	{
+		bool quoteAware = IsQuoteAwareDelimiter(delimiter);
 		var result = new StringBuilder(text.Length);
 		int sourceOffset = 0;
 
 		while (sourceOffset < text.Length)
 		{
-			int delimiterOffset = text.AsSpan(sourceOffset).IndexOf(delimiter, StringComparison.Ordinal);
+			int delimiterOffset = FindCommentDelimiter(text, sourceOffset, delimiter, quoteAware);
 
 			if (delimiterOffset < 0)
 				break;
 
-			delimiterOffset += sourceOffset;
 			int commentStart = delimiterOffset;
 
 			while (commentStart > sourceOffset && char.IsWhiteSpace(text[commentStart - 1]))

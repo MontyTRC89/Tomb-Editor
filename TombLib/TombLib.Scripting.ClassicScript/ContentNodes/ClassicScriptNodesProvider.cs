@@ -1,5 +1,7 @@
 using DarkUI.Controls;
+using System.Collections.Generic;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.ClassicScript.ContentNodes;
@@ -27,5 +29,5 @@ public sealed class ClassicScriptNodesProvider : ContentNodesProviderBase
 			group => group.Header,
 			group => group.Nodes,
 			node => node.Text,
-			node => node.ObjectType);
+			node => new ClassicScriptObjectDiscriminator(node.ObjectType));
 }

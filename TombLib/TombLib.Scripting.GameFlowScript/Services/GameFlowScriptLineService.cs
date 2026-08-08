@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.Text;
@@ -7,13 +8,13 @@ namespace TombLib.Scripting.GameFlowScript.Services;
 /// <summary>
 /// Default implementation of <see cref="IGameFlowScriptLineService"/>.
 /// Provides line-level text operations using Core helpers and, where needed,
-/// regex patterns that match legacy behavior.
+/// regex patterns for the GameFlow section-header syntax.
 /// </summary>
 public sealed class GameFlowScriptLineService : IGameFlowScriptLineService
 {
 	private const string CommentDelimiter = "//";
 
-	// Regex pattern retained for parity with the legacy editor behavior.
+	// Regex pattern for the GameFlow section-header syntax.
 	private static readonly Regex SectionHeaderRegex = new(Patterns.Sections, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 	/// <inheritdoc />

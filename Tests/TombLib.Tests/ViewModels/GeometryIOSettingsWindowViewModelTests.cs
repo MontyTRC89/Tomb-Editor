@@ -210,18 +210,26 @@ public class GeometryIOSettingsWindowViewModelTests
 	}
 
 	[TestMethod]
-	public void CanInvertFaces_WhenProcessAnimationsIsTrue_ReturnsFalse()
+	public void CanInvertFaces_FollowsProcessGeometry()
 	{
 		// Arrange
-		var animationSettings = new IOGeometryInternalSettings
+		var disabledSettings = new IOGeometryInternalSettings
 		{
-			ProcessAnimations = true
+			ProcessGeometry = false
 		};
 
-		var viewModel = CreateViewModel(internalSettings: animationSettings);
+		var enabledSettings = new IOGeometryInternalSettings
+		{
+			ProcessGeometry = true
+		};
+
+		// Act
+		var disabledViewModel = CreateViewModel(internalSettings: disabledSettings);
+		var enabledViewModel = CreateViewModel(internalSettings: enabledSettings);
 
 		// Assert
-		Assert.IsFalse(viewModel.CanInvertFaces);
+		Assert.IsFalse(disabledViewModel.CanInvertFaces);
+		Assert.IsTrue(enabledViewModel.CanInvertFaces);
 	}
 
 	[TestMethod]

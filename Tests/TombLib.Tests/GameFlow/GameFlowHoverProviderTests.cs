@@ -50,6 +50,6 @@ public class GameFlowHoverProviderTests
 		TextHoverInfo? hoverInfo = hoverProvider.GetHoverInfo(new TextHoverRequest(text, offset));
 
 		Assert.IsNotNull(hoverInfo);
-		Assert.AreEqual(expectedIdentifier, hoverInfo.Identifier);
+		Assert.AreEqual(new GameFlowObjectDiscriminator(expectedIdentifier), hoverInfo.Identifier);
 	}
 }

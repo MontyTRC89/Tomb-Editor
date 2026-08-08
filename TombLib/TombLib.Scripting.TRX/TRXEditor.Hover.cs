@@ -11,5 +11,5 @@ public sealed partial class TRXEditor
 	protected override bool CanShowDiagnosticFallback => true;
 
 	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)
-		=> Task.FromResult(_hoverProvider.GetHoverInfo(new TextHoverRequest(Document.Text, hoveredOffset)));
+		=> Task.FromResult(_languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(Document.Text, hoveredOffset)));
 }

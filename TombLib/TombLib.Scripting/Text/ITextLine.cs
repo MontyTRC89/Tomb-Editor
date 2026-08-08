@@ -2,7 +2,8 @@ namespace TombLib.Scripting.Text;
 
 /// <summary>
 /// Represents a single line within an <see cref="ITextSnapshot"/>.
-/// Offsets are zero-based. Line numbers are one-based, matching the AvalonEdit model.
+/// Offsets are zero-based. Line numbers are one-based; both conventions are defined by
+/// this library rather than by any host editor.
 /// <see cref="Length"/> and <see cref="EndOffset"/> exclude line terminators.
 /// </summary>
 public interface ITextLine

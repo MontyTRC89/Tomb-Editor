@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TombLib.Scripting.UI.Bases;
 
@@ -7,6 +8,8 @@ namespace TombLib.Scripting.UI.Bases;
 /// </summary>
 public abstract class ColorSchemeBase
 {
+	private IReadOnlyList<string> _aliases = [];
+
 	/// <summary>
 	/// Gets or sets the display name of the color scheme.
 	/// </summary>
@@ -14,8 +17,13 @@ public abstract class ColorSchemeBase
 
 	/// <summary>
 	/// Gets or sets additional names that can be used to resolve this color scheme.
+	/// The assigned collection is copied into owned read-only storage; later caller mutations cannot leak in.
 	/// </summary>
-	public IReadOnlyList<string> Aliases { get; set; } = [];
+	public IReadOnlyList<string> Aliases
+	{
+		get => _aliases;
+		set => _aliases = value is null ? [] : Array.AsReadOnly([.. value]);
+	}
 
 	/// <summary>
 	/// Gets or sets the editor background color.
@@ -36,8 +44,6 @@ public abstract class ColorSchemeBase
 	{
 		if (string.IsNullOrWhiteSpace(Name))
 			Name = fallbackName;
-
-		Aliases ??= [];
 
 		return this;
 	}

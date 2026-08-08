@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Types;
 using TombLib.Scripting.Text;
@@ -7,14 +8,14 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// <summary>
 /// Default implementation of <see cref="IClassicScriptLineService"/>.
 /// Provides line-level text operations using Core helpers and, where needed,
-/// regex patterns that match legacy behavior.
+/// regex patterns for the ClassicScript section, include, and NG-string syntax.
 /// </summary>
 public sealed class ClassicScriptLineService : IClassicScriptLineService
 {
 	private const string CommentDelimiter = ";";
 	private const char ContinuationMarker = '>';
 
-	// Regex patterns retained for parity with the legacy editor behavior.
+	// Regex patterns for the ClassicScript section-header, include, and NG-string syntax.
 	private static readonly Regex SectionHeaderRegex = new(@"^\s*\[(\b.*\b)\]\s*(;.*)?$", RegexOptions.Compiled);
 	private static readonly Regex IncludeLineRegex = new("\".*\"", RegexOptions.Compiled);
 	private static readonly Regex NGStringIndexRegex = new(@"^\d+:\s*", RegexOptions.Compiled | RegexOptions.Multiline);

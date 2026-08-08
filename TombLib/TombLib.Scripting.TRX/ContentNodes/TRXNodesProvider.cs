@@ -55,13 +55,15 @@ public sealed class TRXNodesProvider : ContentNodesProviderBase
 	{
 		if (TRXLevelNameParser.LevelPropertyRegex.IsMatch(lineText))
 		{
-			lineText = _lineService.RemoveComments(lineText);
-			string levelName = TRXLevelNameParser.ExtractTitleName(lineText);
+			string strippedLineText = _lineService.RemoveComments(lineText);
+			string levelName = TRXLevelNameParser.ExtractTitleName(strippedLineText);
 
 			if (!string.IsNullOrWhiteSpace(levelName) && levelName.Contains(filter, StringComparison.OrdinalIgnoreCase))
 				return levelName;
 		}
 
+		// The fallback runs against the raw line text so that a level-name comment is still
+		// discoverable when the line also matches the title property (malformed mixed input).
 		Match regexMatch = LevelCommentRegex.Match(lineText);
 
 		if (regexMatch.Success)

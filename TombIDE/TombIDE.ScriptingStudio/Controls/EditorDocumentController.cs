@@ -467,7 +467,7 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 			if (fileEditor.Content != excludedEditor.Content)
 				fileEditor.ApplyPersistedContent(excludedEditor.Content);
 
-			fileEditor.TryRunContentChangedWorker();
+			fileEditor.RunContentChangedWorker();
 			RaiseEditorTitleChanged(fileEditor);
 		}
 	}

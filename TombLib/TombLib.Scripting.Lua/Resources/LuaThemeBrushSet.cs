@@ -88,7 +88,7 @@ internal sealed class LuaThemeBrushSet
 	public SolidColorBrush FileBrush => _brushes[LuaThemeBrushRole.File];
 
 	/// <summary>
-	/// Gets the brush used for signature-help parameter documentation.
+	/// Gets the brush used for signature help parameter documentation.
 	/// </summary>
 	public SolidColorBrush SignatureParamDocForeground => _brushes[LuaThemeBrushRole.SignatureParamDoc];
 

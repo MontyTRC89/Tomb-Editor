@@ -114,6 +114,58 @@ public class TextHoverControllerTests
 	}
 
 	[TestMethod]
+	public void CancelPendingRequest_WhileRequestInFlight_DoesNotShowTooltip()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var owner = new Border();
+			Window hostWindow = WPFTestHelper.ShowInHostWindow(owner);
+
+			try
+			{
+				bool tooltipShown = false;
+				var completion = new TaskCompletionSource<TextHoverInfo?>(TaskCreationOptions.RunContinuationsAsynchronously);
+				TextHoverController? controller = null;
+
+				controller = new TextHoverController(
+					owner,
+					_ => 5,
+					_ => new TextHoverRequestState(
+						ShouldRequestHover: true,
+						RequestOffset: 5,
+						CanShowToolTip: true,
+						CanShowDiagnosticFallback: false,
+						HasDiagnostic: false,
+						DiagnosticMessage: null,
+						DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+					(offset, cancellationToken) => completion.Task,
+					_ => 5,
+					(message, severity) => { },
+					_ => tooltipShown = true,
+					(info, message, severity) => { });
+
+				var eventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0)
+				{
+					RoutedEvent = Mouse.MouseMoveEvent
+				};
+
+				Task hoverTask = controller.HandleMouseHoverAsync(eventArgs);
+				controller.CancelPendingRequest();
+				completion.TrySetResult(new TextHoverInfo("hover", TextHoverContentKind.PlainText, "symbol"));
+
+				hoverTask.GetAwaiter().GetResult();
+
+				// A cancelled in-flight request must not publish its result or show a tooltip.
+				Assert.IsFalse(tooltipShown);
+			}
+			finally
+			{
+				hostWindow.Close();
+			}
+		});
+	}
+
+	[TestMethod]
 	public void CancelPendingRequest_And_InvalidateRequests_AfterDisposal_DoNotThrow()
 	{
 		WPFTestHelper.RunInSta(() =>
