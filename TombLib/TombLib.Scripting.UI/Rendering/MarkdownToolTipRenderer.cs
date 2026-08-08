@@ -20,6 +20,9 @@ using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.UI.Rendering;
 
+/// <summary>
+/// Renders markdown content into a WPF framework element for tooltips.
+/// </summary>
 public static class MarkdownToolTipRenderer
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -47,6 +50,14 @@ public static class MarkdownToolTipRenderer
 		Uri.UriSchemeHttps
 	};
 
+	/// <summary>
+	/// Creates a WPF element that renders the given markdown content.
+	/// </summary>
+	/// <param name="content">The markdown content to render.</param>
+	/// <param name="foreground">The foreground brush of the rendered content.</param>
+	/// <param name="background">The background brush of the rendered content.</param>
+	/// <param name="allowScrolling">Whether the rendered content may scroll.</param>
+	/// <returns>The rendered framework element.</returns>
 	public static FrameworkElement CreateContent(string content, Brush foreground, Brush background, bool allowScrolling = true)
 	{
 		string normalizedContent = NormalizeLineEndings(content);
@@ -102,6 +113,13 @@ public static class MarkdownToolTipRenderer
 		}
 	}
 
+	/// <summary>
+	/// Creates a plain-text element that renders the given content.
+	/// </summary>
+	/// <param name="content">The text content to render.</param>
+	/// <param name="foreground">The foreground brush of the rendered content.</param>
+	/// <param name="allowScrolling">Whether the rendered content may scroll.</param>
+	/// <returns>The rendered framework element.</returns>
 	public static FrameworkElement CreatePlainTextContent(string content, Brush foreground, bool allowScrolling = true)
 		=> CreateFallbackContent(content, foreground, allowScrolling);
 

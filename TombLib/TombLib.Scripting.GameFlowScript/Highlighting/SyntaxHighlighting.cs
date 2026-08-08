@@ -7,12 +7,19 @@ using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Scripting.GameFlowScript.Highlighting;
 
+/// <summary>
+/// Provides the highlighting definition for the GameFlow editor.
+/// </summary>
 public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
 	private readonly ColorScheme _scheme;
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SyntaxHighlighting"/> class.
+	/// </summary>
+	/// <param name="scheme">The color scheme used for the highlighting rules.</param>
 	public SyntaxHighlighting(ColorScheme scheme)
 		=> _scheme = scheme;
 
@@ -20,6 +27,9 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 
 	private HighlightingRuleSet? _cachedRuleSet;
 
+	/// <summary>
+	/// Gets the main rule set, built lazily from the color scheme.
+	/// </summary>
 	public HighlightingRuleSet MainRuleSet
 	{
 		get
@@ -93,6 +103,9 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 
 	// Other
 
+	/// <summary>
+	/// Gets the name of the highlighting definition.
+	/// </summary>
 	public string Name => "GameFlowScript Rules";
 
 	/// <summary>

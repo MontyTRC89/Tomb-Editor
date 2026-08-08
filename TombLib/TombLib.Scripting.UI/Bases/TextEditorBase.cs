@@ -1,6 +1,7 @@
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -9,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using TombLib.Scripting.Cleaning;
 using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Diagnostics;
@@ -54,6 +56,8 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	public static readonly SolidColorBrush ToolTipForeground = TextEditorColorPalette.ToolTipForeground;
 
 	private static readonly TextEditorFormattingService FormattingService = new();
+
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
 	/// <summary>
 	/// Gets the editor type of this control.
@@ -191,14 +195,14 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	public double DefaultFontSize { get; set; } = TextEditorBaseDefaults.FontSize;
 
 	/// <summary>
-	/// Gets or sets whether intellisense features are enabled for this editor.
+	/// Gets or sets whether IntelliSense features are enabled for this editor.
 	/// </summary>
-	public bool IntellisenseEnabled { get; set; } = TextEditorBaseDefaults.IntellisenseEnabled;
+	public bool IntelliSenseEnabled { get; set; } = TextEditorBaseDefaults.IntelliSenseEnabled;
 
 	/// <summary>
-	/// Gets or sets whether autocomplete suggestions are shown while typing.
+	/// Gets or sets whether completion suggestions are shown while typing.
 	/// </summary>
-	public bool AutocompleteEnabled { get; set; } = TextEditorBaseDefaults.AutocompleteEnabled;
+	public bool CompletionEnabled { get; set; } = TextEditorBaseDefaults.CompletionEnabled;
 
 	/// <summary>
 	/// Gets or sets whether errors are underlined as they are detected.
@@ -272,6 +276,7 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	private TextDefinitionTriggerController? _definitionTriggerController;
 	private TextHoverController? _hoverController;
 	private TextDiagnosticsCoordinator? _diagnosticsCoordinator;
+	private bool _isDisposed;
 
 	internal IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnosticToolTipService.Diagnostics;
 
@@ -367,6 +372,8 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	/// <param name="configuration">The configuration to apply.</param>
 	public virtual void UpdateSettings(ConfigurationBase configuration)
 	{
+		EnsureNotDisposed();
+
 		if (configuration is not TextEditorConfigBase config)
 			return;
 
@@ -376,10 +383,10 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 
 		Document.UndoStack.SizeLimit = config.UndoStackSize;
 
-		IntellisenseEnabled = config.IntellisenseEnabled;
-		AutocompleteEnabled = config.IntellisenseEnabled && config.AutocompleteEnabled;
-		LiveErrorUnderlining = config.IntellisenseEnabled && config.LiveErrorUnderlining;
-		SignatureHelpPopupsEnabled = config.IntellisenseEnabled && config.SignatureHelpPopupsEnabled;
+		IntelliSenseEnabled = config.IntelliSenseEnabled;
+		CompletionEnabled = config.IntelliSenseEnabled && config.CompletionEnabled;
+		LiveErrorUnderlining = config.IntelliSenseEnabled && config.LiveErrorUnderlining;
+		SignatureHelpPopupsEnabled = config.IntelliSenseEnabled && config.SignatureHelpPopupsEnabled;
 
 		AutoCloseParentheses = config.AutoCloseParentheses;
 		AutoCloseBraces = config.AutoCloseBraces;
@@ -414,11 +421,60 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	{ }
 
 	/// <summary>
-	/// Releases the resources used by this editor.
+	/// Releases the resources used by this editor. Disposal is idempotent; a disposed editor must not be reused.
 	/// </summary>
 	public void Dispose()
 	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+
+		DisposeEditorResources();
+
+		_diagnosticsCoordinator?.Dispose();
+		_hoverController?.Dispose();
+		CompletionController.Dispose();
+
+		_toolTipPresenter.Dispose();
+		_completionWindowCoordinator.Dispose();
+		_diagnosticToolTipService.ClearDiagnostics();
+
+		UnbindEventMethods();
+
+		TextArea.TextView.BackgroundRenderers.Remove(_bookmarkRenderer);
+		TextArea.TextView.BackgroundRenderers.Remove(_errorRenderer);
+
 		_statusCoordinator.Dispose();
 		_contentPersistenceCoordinator.Dispose();
+	}
+
+	/// <summary>
+	/// Disposes resources owned by the concrete editor type before the shared base resources are released.
+	/// </summary>
+	protected virtual void DisposeEditorResources()
+	{
+	}
+
+	private void EnsureNotDisposed()
+	{
+		if (_isDisposed)
+			throw new ObjectDisposedException(nameof(TextEditorBase));
+	}
+
+	private void UnbindEventMethods()
+	{
+		TextArea.TextEntering -= TextArea_TextEntering;
+		TextArea.TextEntered -= TextEditor_TextEntered;
+		TextChanged -= TextEditor_TextChanged;
+
+		RemoveHandler(PreviewKeyDownEvent, new KeyEventHandler(TextEditor_KeyDown));
+		RemoveHandler(PreviewMouseLeftButtonDownEvent, new MouseButtonEventHandler(TextEditor_PreviewMouseLeftButtonDown));
+
+		MouseHover -= TextEditor_MouseHover;
+		MouseHoverStopped -= TextEditor_MouseHoverStopped;
+
+		PreviewMouseWheel -= TextEditor_PreviewMouseWheel;
+		MouseRightButtonDown -= TextEditor_MouseRightButtonDown;
 	}
 }

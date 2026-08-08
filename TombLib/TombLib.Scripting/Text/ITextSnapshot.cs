@@ -1,8 +1,9 @@
 namespace TombLib.Scripting.Text;
 
 /// <summary>
-/// Represents an immutable snapshot of text for use during a single service call.
-/// Implementations must not be retained or mutated after the call returns.
+/// Represents an immutable snapshot of text used by provider services.
+/// Implementations never observe later document edits and may be retained freely;
+/// they capture their content at construction time.
 /// Offsets are zero-based. Line numbers are one-based, matching the AvalonEdit model.
 /// </summary>
 public interface ITextSnapshot

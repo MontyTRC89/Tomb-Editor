@@ -8,16 +8,14 @@ using TombLib.Scripting.ClassicScript.Signatures;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
-using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.TRX;
-using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
-using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -52,15 +50,14 @@ internal static class ScriptingLanguageServicesTestFactory
             new GameFlowHoverProvider(),
             new GameFlowCompletionProvider(),
             lineService,
-            documentService,
-            new GameFlowDocumentLookupService(documentService));
+            documentService);
     }
 
     public static TRXLanguageServices CreateTRX()
     {
         var lineService = new TRXLineService();
         var documentService = new TRXDocumentService(lineService);
-        var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
+        var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
         return new TRXLanguageServices(
             schemaService,
@@ -68,7 +65,6 @@ internal static class ScriptingLanguageServicesTestFactory
             documentService,
             new TRXDefinitionProvider(documentService),
             new TRXGameFlowCompletionService(schemaService),
-            new GameFlowHoverService(schemaService),
-            new TRXDocumentLookupService(documentService));
+            new TRXGameFlowHoverService(schemaService));
     }
 }

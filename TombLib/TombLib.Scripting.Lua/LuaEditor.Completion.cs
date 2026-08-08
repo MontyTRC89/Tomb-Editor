@@ -32,7 +32,7 @@ public sealed partial class LuaEditor
 
 	private bool CanApplyCompletionItem(TextCompletionItem item)
 		=> IsCompletionItemCurrent(item.RequestDocumentVersion, _editorDocumentVersion,
-			item.RequestGeneration, _editorRequestGeneration, IsLoaded, IsIntellisenseAvailable());
+			item.RequestGeneration, _editorRequestGeneration, IsLoaded, IsIntelliSenseAvailable());
 
 	private void RebaseOpenCompletionItems()
 		=> CompletionController.RebaseOpenCompletionItems(_editorDocumentVersion, _editorRequestGeneration);
@@ -42,9 +42,9 @@ public sealed partial class LuaEditor
 		int? requestGeneration,
 		int currentGeneration,
 		bool isEditorLoaded,
-		bool isIntellisenseAvailable)
+		bool isIntelliSenseAvailable)
 	{
-		if (!isEditorLoaded || !isIntellisenseAvailable)
+		if (!isEditorLoaded || !isIntelliSenseAvailable)
 			return false;
 
 		if (!requestDocumentVersion.HasValue && !requestGeneration.HasValue)
@@ -62,10 +62,10 @@ public sealed partial class LuaEditor
 
 	private async Task RequestScheduledCompletionAsync()
 	{
-		if (!AutocompleteEnabled || !IsIntellisenseAvailable())
+		if (!CompletionEnabled || !IsIntelliSenseAvailable())
 			return;
 
-		if (!LuaEditorInteractionRules.IsValidAutocompleteContext(Document, CaretOffset, triggerCharacter: null))
+		if (!LuaEditorInteractionRules.IsValidCompletionContext(Document, CaretOffset, triggerCharacter: null))
 			return;
 
 		await RequestCompletionAsyncCore(CaretOffset, null).ConfigureAwait(true);
@@ -80,12 +80,12 @@ public sealed partial class LuaEditor
 
 		try
 		{
-			if (!IsIntellisenseAvailable())
+			if (!IsIntelliSenseAvailable())
 				return;
 
-			var intellisenseProvider = IntellisenseProvider;
+			var intelliSenseProvider = IntelliSenseProvider;
 
-			if (intellisenseProvider is null)
+			if (intelliSenseProvider is null)
 				return;
 
 			DismissSignatureHelp();
@@ -93,7 +93,7 @@ public sealed partial class LuaEditor
 
 			(int line, int column) = GetPositionFromOffset(offset);
 
-			IReadOnlyList<TextCompletionItem> items = await intellisenseProvider
+			IReadOnlyList<TextCompletionItem> items = await intelliSenseProvider
 				.GetCompletionItemsAsync(FilePath, Text, line, column, triggerCharacter, cancellationToken)
 				.ConfigureAwait(true);
 

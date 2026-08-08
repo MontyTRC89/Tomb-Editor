@@ -11,6 +11,9 @@ public sealed class ClassicScriptSyntaxCatalogService
 	private readonly ClassicScriptCommandsLoader _loader;
 	private readonly Lazy<ClassicScriptSyntaxCatalogSnapshot> _snapshot;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptSyntaxCatalogService"/> class.
+	/// </summary>
 	public ClassicScriptSyntaxCatalogService()
 		: this(new ClassicScriptCommandsLoader())
 	{ }

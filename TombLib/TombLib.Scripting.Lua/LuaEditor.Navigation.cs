@@ -6,7 +6,8 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
-	protected override void OnLanguageKeyDown(KeyEventArgs e)
+	/// <inheritdoc/>
+	protected override async Task OnLanguageKeyDown(KeyEventArgs e)
 	{
 		if (e.Key == Key.Escape && (IsCompletionWindowOpen || _signatureHelpController.IsVisible || _specialToolTip.IsOpen))
 		{
@@ -19,7 +20,7 @@ public sealed partial class LuaEditor
 		if (_signatureHelpController.IsVisible && (e.Key == Key.Back || e.Key == Key.Delete))
 			ScheduleSignatureHelpRefresh();
 
-		base.OnLanguageKeyDown(e);
+		await base.OnLanguageKeyDown(e).ConfigureAwait(true);
 	}
 
 	private void TextEditor_PreviewMouseDown(object? sender, MouseButtonEventArgs e)

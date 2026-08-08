@@ -3,14 +3,15 @@ using NLog;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using TombLib.Scripting.UI.Presentation;
+using TombLib.Scripting.Presentation;
+using TombLib.Scripting.Threading;
 
 namespace TombLib.Scripting.UI.Signatures;
 
 /// <summary>
 /// Coordinates shared signature-help request state, refresh scheduling, and optional presentation updates.
 /// </summary>
-public sealed class TextSignatureHelpController
+public sealed class TextSignatureHelpController : IDisposable
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -26,6 +27,7 @@ public sealed class TextSignatureHelpController
 	private bool _signatureRefreshPending;
 	private bool _signatureRequestInFlight;
 	private bool _isVisible;
+	private bool _isDisposed;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextSignatureHelpController"/> class.
@@ -80,8 +82,16 @@ public sealed class TextSignatureHelpController
 	/// </summary>
 	public void Dismiss()
 	{
-		CancelPendingRefresh();
-		InvalidateRequests();
+		if (_isDisposed)
+			return;
+
+		DismissCore();
+	}
+
+	private void DismissCore()
+	{
+		CancelPendingRefreshCore();
+		InvalidateRequestsCore();
 		DismissPresentation();
 	}
 
@@ -89,13 +99,21 @@ public sealed class TextSignatureHelpController
 	/// Requests signature help at the specified offset.
 	/// </summary>
 	public Task RequestAsync(int offset)
-		=> RequestAsyncCore(offset);
+	{
+		if (_isDisposed)
+			return Task.CompletedTask;
+
+		return RequestAsyncCore(offset);
+	}
 
 	/// <summary>
 	/// Schedules a debounced refresh at the current caret offset.
 	/// </summary>
 	public void ScheduleRefresh()
 	{
+		if (_isDisposed)
+			return;
+
 		_pendingSignatureHelpOffset = _getCurrentCaretOffset();
 		_signatureRefreshPending = true;
 		_refreshTimer.Stop();
@@ -108,6 +126,14 @@ public sealed class TextSignatureHelpController
 	/// </summary>
 	public void CancelPendingRefresh()
 	{
+		if (_isDisposed)
+			return;
+
+		CancelPendingRefreshCore();
+	}
+
+	private void CancelPendingRefreshCore()
+	{
 		_refreshTimer.Stop();
 		_signatureRefreshPending = false;
 		_pendingSignatureHelpOffset = -1;
@@ -119,9 +145,31 @@ public sealed class TextSignatureHelpController
 	/// </summary>
 	public void InvalidateRequests()
 	{
+		if (_isDisposed)
+			return;
+
+		InvalidateRequestsCore();
+	}
+
+	private void InvalidateRequestsCore()
+	{
 		_signatureRequestTokens.Invalidate();
 		_signatureRequestInFlight = false;
 		ApplyPresentationState();
+	}
+
+	/// <summary>
+	/// Dismisses signature help and cancels any pending refresh or in-flight request.
+	/// </summary>
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		_refreshTimer.Stop();
+		_refreshTimer.Tick -= RefreshTimer_Tick;
+		DismissCore();
 	}
 
 	private void ShowSignatureHelp(TextSignatureHelpInfo signatureInfo)
@@ -168,7 +216,7 @@ public sealed class TextSignatureHelpController
 		{
 			TextSignatureHelpInfo? signatureInfo = await _requestSignatureHelpAsync(offset, requestToken).ConfigureAwait(true);
 
-			if (!_signatureRequestTokens.IsCurrent(requestToken))
+			if (_isDisposed || !_signatureRequestTokens.IsCurrent(requestToken))
 				return;
 
 			if (signatureInfo is null)
@@ -186,6 +234,9 @@ public sealed class TextSignatureHelpController
 		}
 		catch (Exception exception)
 		{
+			if (_isDisposed)
+				return;
+
 			if (_handleRequestFailure is null)
 				Log.Warn(exception, "Signature help request failed.");
 			else
@@ -194,12 +245,16 @@ public sealed class TextSignatureHelpController
 		finally
 		{
 			_signatureRequestInFlight = false;
-			ApplyPresentationState();
 
-			if (_signatureRefreshPending && _pendingSignatureHelpOffset >= 0)
+			if (!_isDisposed)
 			{
-				_refreshTimer.Stop();
-				_refreshTimer.Start();
+				ApplyPresentationState();
+
+				if (_signatureRefreshPending && _pendingSignatureHelpOffset >= 0)
+				{
+					_refreshTimer.Stop();
+					_refreshTimer.Start();
+				}
 			}
 		}
 	}
@@ -208,7 +263,7 @@ public sealed class TextSignatureHelpController
 	{
 		_refreshTimer.Stop();
 
-		if (!_signatureRefreshPending || _pendingSignatureHelpOffset < 0)
+		if (_isDisposed || !_signatureRefreshPending || _pendingSignatureHelpOffset < 0)
 			return;
 
 		if (_signatureRequestInFlight)

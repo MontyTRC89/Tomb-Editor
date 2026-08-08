@@ -20,6 +20,7 @@ public static class TextCompletionFilter
 	public static IReadOnlyList<TextCompletionItem> FilterByCurrentWord(IReadOnlyList<TextCompletionItem> items, TextCompletionContext context)
 	{
 		ArgumentNullException.ThrowIfNull(items);
+		ArgumentNullException.ThrowIfNull(context);
 
 		string word = GetCurrentWord(context.DocumentText, context.CaretOffset);
 

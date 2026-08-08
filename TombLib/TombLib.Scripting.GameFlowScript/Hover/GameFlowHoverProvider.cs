@@ -4,8 +4,16 @@ using TombLib.Scripting.Hover;
 
 namespace TombLib.Scripting.GameFlowScript.Hover;
 
+/// <summary>
+/// Resolves hover information for GameFlow definitions.
+/// </summary>
 public sealed class GameFlowHoverProvider : ITextHoverProvider
 {
+	/// <summary>
+	/// Gets the hover information for the given request.
+	/// </summary>
+	/// <param name="request">The hover request.</param>
+	/// <returns>The hover information, or <c>null</c> when the hovered word is not a known definition.</returns>
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)
 	{
 		string? hoveredWord = GetWordFromOffset(request.DocumentText, request.HoveredOffset);

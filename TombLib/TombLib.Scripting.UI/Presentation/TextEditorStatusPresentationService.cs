@@ -1,12 +1,23 @@
 using System;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
 using TombLib.Scripting.UI.Signatures;
 
 namespace TombLib.Scripting.UI.Presentation;
 
+/// <summary>
+/// Builds the editor status presentation from an editor control.
+/// </summary>
 public sealed class TextEditorStatusPresentationService
 {
+	/// <summary>
+	/// Creates the status presentation for the given editor control.
+	/// </summary>
+	/// <param name="editorControl">The editor control, or <c>null</c> when no editor is active.</param>
+	/// <param name="showSyntaxPreviewWhenEmpty">Whether the syntax preview is shown when no editor is active.</param>
+	/// <param name="text">The localized status text.</param>
+	/// <returns>The status presentation.</returns>
 	public TextEditorStatusPresentation Create(
 		IEditorControl? editorControl,
 		bool showSyntaxPreviewWhenEmpty,

@@ -74,8 +74,8 @@ public sealed class TextDefinitionTriggerController
 		return true;
 	}
 
-	// Definition navigation is user-triggered; a failure must not escape the async void editor
-	// event handler that raised it, so the provider call is bounded here and logged.
+	// Definition navigation is user-triggered; a failure must not escape the private event
+	// adapter that raised it, so the provider call is bounded here and logged.
 	private async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
 	{
 		try

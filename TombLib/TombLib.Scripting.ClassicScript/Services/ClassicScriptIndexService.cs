@@ -11,7 +11,7 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// Default implementation of <see cref="IClassicScriptIndexService"/>.
 /// Uses a per-call <see cref="EvaluationContext"/> and CoreCLR-NCalc for expression evaluation.
 /// </summary>
-public class ClassicScriptIndexService : IClassicScriptIndexService
+public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -162,7 +162,7 @@ public class ClassicScriptIndexService : IClassicScriptIndexService
 		}
 		catch (Exception exception)
 		{
-			// Legacy behavior: a malformed define expression yields the default result instead of failing the scan.
+			// A malformed define expression yields the default result instead of failing the scan.
 			Log.Warn(exception, "Failed to evaluate a define expression; using the default result.");
 		}
 
@@ -215,7 +215,6 @@ public class ClassicScriptIndexService : IClassicScriptIndexService
 
 	/// <summary>
 	/// Holds per-call state for #DEFINE variable resolution to detect cycles.
-	/// Replaces the legacy static <c>_alreadyVisitedVariables</c> stack.
 	/// Each call to <see cref="GetNextFreeIndex(ITextSnapshot, int, string?)"/>
 	/// creates a fresh instance, eliminating mutable singleton state.
 	/// </summary>

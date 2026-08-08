@@ -195,12 +195,12 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 	private bool _autoCloseDoubleQuotes;
 	private bool _autoCloseParentheses;
 	private bool _autoCloseSingleQuotes;
-	private bool _autocompleteEnabled;
+	private bool _completionEnabled;
 	private bool _diagnosticsUnderliningEnabled;
 	private string _fontFamily = string.Empty;
 	private double _fontSize;
 	private bool _highlightCurrentLine;
-	private bool _intellisenseEnabled;
+	private bool _intelliSenseEnabled;
 	private bool _collapseMultipleSpaces;
 	private string _selectedThemeName = string.Empty;
 	private bool _showLineNumbers;
@@ -240,7 +240,7 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 			ScriptingSettingsPageKind.ClassicScript => "Tune readability, theme presets, and the simplified Classic Script formatting rules without opening a separate tool-specific dialog.",
 			ScriptingSettingsPageKind.GameFlowScript => "Keep the TR2/TR3 script profile focused on editor clarity, typography, and preset-based theme selection.",
 			ScriptingSettingsPageKind.TRX => "Configure the JSON5-oriented TRX editor while keeping its format-specific conveniences grouped in one place.",
-			ScriptingSettingsPageKind.Lua => "Manage Lua intellisense, closing rules, editor presentation, and theme presets from one WPF surface.",
+			ScriptingSettingsPageKind.Lua => "Manage Lua IntelliSense, closing rules, editor presentation, and theme presets from one WPF surface.",
 			_ => string.Empty
 		};
 
@@ -333,10 +333,10 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		set => SetAndRefresh(ref _autoCloseSingleQuotes, value);
 	}
 
-	public bool AutocompleteEnabled
+	public bool CompletionEnabled
 	{
-		get => _autocompleteEnabled;
-		set => SetAndRefresh(ref _autocompleteEnabled, value);
+		get => _completionEnabled;
+		set => SetAndRefresh(ref _completionEnabled, value);
 	}
 
 	public bool DiagnosticsUnderliningEnabled
@@ -351,19 +351,19 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		set => SetAndRefresh(ref _highlightCurrentLine, value);
 	}
 
-	public bool IntellisenseEnabled
+	public bool IntelliSenseEnabled
 	{
-		get => _intellisenseEnabled;
+		get => _intelliSenseEnabled;
 		set
 		{
-			if (!SetAndRefresh(ref _intellisenseEnabled, value))
+			if (!SetAndRefresh(ref _intelliSenseEnabled, value))
 				return;
 
-			OnPropertyChanged(nameof(IsIntellisenseDetailsEnabled));
+			OnPropertyChanged(nameof(IsIntelliSenseDetailsEnabled));
 		}
 	}
 
-	public bool IsIntellisenseDetailsEnabled => IntellisenseEnabled;
+	public bool IsIntelliSenseDetailsEnabled => IntelliSenseEnabled;
 
 	public bool ShowLineNumbers
 	{
@@ -466,8 +466,8 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		config.FontSize = FontSize;
 		config.FontFamily = string.IsNullOrWhiteSpace(FontFamily) ? TextEditorBaseDefaults.FontFamily : FontFamily;
 		config.UndoStackSize = _undoStackSize;
-		config.IntellisenseEnabled = IntellisenseEnabled;
-		config.AutocompleteEnabled = AutocompleteEnabled;
+		config.IntelliSenseEnabled = IntelliSenseEnabled;
+		config.CompletionEnabled = CompletionEnabled;
 		config.LiveErrorUnderlining = DiagnosticsUnderliningEnabled;
 		config.SignatureHelpPopupsEnabled = SignatureHelpPopupsEnabled;
 		config.AutoCloseParentheses = AutoCloseParentheses;
@@ -600,8 +600,8 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		_fontFamily = FontFamilies.Contains(config.FontFamily, StringComparer.OrdinalIgnoreCase)
 			? FontFamilies.First(font => string.Equals(font, config.FontFamily, StringComparison.OrdinalIgnoreCase))
 			: TextEditorBaseDefaults.FontFamily;
-		_intellisenseEnabled = config.IntellisenseEnabled;
-		_autocompleteEnabled = config.AutocompleteEnabled;
+		_intelliSenseEnabled = config.IntelliSenseEnabled;
+		_completionEnabled = config.CompletionEnabled;
 		_diagnosticsUnderliningEnabled = config.LiveErrorUnderlining;
 		_signatureHelpPopupsEnabled = config.SignatureHelpPopupsEnabled;
 		_autoCloseParentheses = config.AutoCloseParentheses;

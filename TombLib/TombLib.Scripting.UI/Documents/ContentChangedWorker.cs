@@ -12,7 +12,7 @@ namespace TombLib.Scripting.UI.Documents;
 /// work on a background task. Requests are latest-request-wins: concurrent calls coalesce into a
 /// single pass over the most recent content, discarding intermediate states.
 /// </summary>
-public class ContentChangedWorker : IDisposable
+public sealed class ContentChangedWorker : IDisposable
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -20,11 +20,17 @@ public class ContentChangedWorker : IDisposable
 
 	private volatile string _filePath = string.Empty;
 
+	/// <summary>
+	/// Gets or sets the path of the file the content is persisted to.
+	/// </summary>
 	public string FilePath
 	{
 		get => _filePath;
 		set
 		{
+			if (_isDisposed)
+				return;
+
 			if (string.IsNullOrEmpty(value) || !value.Equals(_filePath, StringComparison.OrdinalIgnoreCase))
 			{
 				DeleteBackupFile();
@@ -43,11 +49,17 @@ public class ContentChangedWorker : IDisposable
 
 	private volatile bool _createBackupFiles;
 
+	/// <summary>
+	/// Gets or sets whether backup files are created when the content changes.
+	/// </summary>
 	public bool CreateBackupFiles
 	{
 		get => _createBackupFiles;
 		set
 		{
+			if (_isDisposed)
+				return;
+
 			if (value == false)
 				DeleteBackupFile();
 
@@ -55,10 +67,16 @@ public class ContentChangedWorker : IDisposable
 		}
 	}
 
-	public bool IsBusy => _isBusy;
+	/// <summary>
+	/// Gets whether a persistence run is currently in progress.
+	/// </summary>
+	public bool IsBusy => _isDisposed ? false : _isBusy;
 
 	// Events
 
+	/// <summary>
+	/// Raised when a persistence run completes.
+	/// </summary>
 	public event RunWorkerCompletedEventHandler? RunWorkerCompleted;
 
 	// Fields
@@ -68,6 +86,7 @@ public class ContentChangedWorker : IDisposable
 
 	private Task? _processingTask;
 	private volatile bool _isBusy;
+	private volatile bool _isDisposed;
 	private bool _hasPendingRequest;
 	private int _latestRequestId;
 	private int _stateVersion;
@@ -76,6 +95,9 @@ public class ContentChangedWorker : IDisposable
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ContentChangedWorker"/> class on the current dispatcher thread.
+	/// </summary>
 	public ContentChangedWorker()
 	{
 		_dispatcher = Dispatcher.CurrentDispatcher;
@@ -85,18 +107,46 @@ public class ContentChangedWorker : IDisposable
 
 	// Disposal
 
+	/// <summary>
+	/// Invalidates any pending or in-flight persistence work and deletes the backup file, if one exists.
+	/// An in-flight pass that already started writing is invalidated by the request version bump and
+	/// removes its own backup once the write completes. Disposal is idempotent; a disposed worker must
+	/// not be reused.
+	/// </summary>
 	public void Dispose()
-		=> DeleteBackupFile();
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+
+		lock (_syncRoot)
+		{
+			_hasPendingRequest = false;
+			_isBusy = false;
+			_latestRequestId++;
+			_stateVersion++;
+		}
+
+		DeleteBackupFileByOriginalPath(FilePath);
+	}
 
 	// Public methods
 
-	public void RunAsync(string editorContent)
+	/// <summary>
+	/// Schedules the given editor content to be persisted, coalescing concurrent requests into one run.
+	/// </summary>
+	/// <param name="editorContent">The editor content to persist.</param>
+	public void Run(string editorContent)
 	{
-		if (string.IsNullOrEmpty(FilePath))
+		if (_isDisposed || string.IsNullOrEmpty(FilePath))
 			return;
 
 		lock (_syncRoot)
 		{
+			if (_isDisposed)
+				return;
+
 			_pendingEditorContent = editorContent ?? string.Empty;
 			_hasPendingRequest = true;
 			_latestRequestId++;
@@ -107,14 +157,24 @@ public class ContentChangedWorker : IDisposable
 		}
 	}
 
+	/// <summary>
+	/// Records the given content as the persisted baseline and cancels any pending persistence run.
+	/// </summary>
+	/// <param name="persistedContent">The persisted content.</param>
 	public void SetPersistedContent(string persistedContent)
 	{
+		if (_isDisposed)
+			return;
+
 		int stateVersion;
 		int requestId;
 		string filePath = FilePath;
 
 		lock (_syncRoot)
 		{
+			if (_isDisposed)
+				return;
+
 			_persistedContent = persistedContent ?? string.Empty;
 			_pendingEditorContent = _persistedContent;
 			_hasPendingRequest = false;
@@ -126,17 +186,42 @@ public class ContentChangedWorker : IDisposable
 		_ = SynchronizeBackupStateAsync(filePath, _persistedContent, false, stateVersion, requestId);
 	}
 
+	/// <summary>
+	/// Reports whether the given content differs from the persisted baseline.
+	/// </summary>
+	/// <param name="editorContent">The content to compare.</param>
+	/// <returns><c>true</c> when the content changed; otherwise, <c>false</c>.</returns>
 	public bool HasChanges(string editorContent)
 	{
+		if (_isDisposed)
+			return false;
+
 		lock (_syncRoot)
 			return !string.Equals(editorContent ?? string.Empty, _persistedContent, StringComparison.Ordinal);
 	}
 
+	/// <summary>
+	/// Creates a backup file for the given editor content.
+	/// </summary>
+	/// <param name="editorContent">The editor content to back up.</param>
 	public void CreateBackupFile(string editorContent)
-		=> _ = SynchronizeBackupStateAsync(FilePath, editorContent ?? string.Empty, true, CaptureStateVersion(), CaptureRequestId());
+	{
+		if (_isDisposed)
+			return;
 
+		_ = SynchronizeBackupStateAsync(FilePath, editorContent ?? string.Empty, true, CaptureStateVersion(), CaptureRequestId());
+	}
+
+	/// <summary>
+	/// Deletes the backup file for the current file path, if one exists.
+	/// </summary>
 	public void DeleteBackupFile()
-		=> DeleteBackupFileByOriginalPath(FilePath);
+	{
+		if (_isDisposed)
+			return;
+
+		DeleteBackupFileByOriginalPath(FilePath);
+	}
 
 	// Private methods
 
@@ -200,7 +285,7 @@ public class ContentChangedWorker : IDisposable
 
 	private async Task SynchronizeBackupStateAsync(string originalFilePath, string editorContent, bool isChanged, int stateVersion, int requestId)
 	{
-		if (string.IsNullOrWhiteSpace(originalFilePath))
+		if (_isDisposed || string.IsNullOrWhiteSpace(originalFilePath))
 			return;
 
 		string backupFilePath = GetBackupFilePath(originalFilePath);
@@ -230,8 +315,15 @@ public class ContentChangedWorker : IDisposable
 
 	private void DeleteBackupFileByBackupPath(string backupFilePath)
 	{
-		if (File.Exists(backupFilePath))
-			File.Delete(backupFilePath);
+		try
+		{
+			if (File.Exists(backupFilePath))
+				File.Delete(backupFilePath);
+		}
+		catch (Exception ex)
+		{
+			Log.Warn(ex, "Failed to delete the backup file '{Path}' during cleanup.", backupFilePath);
+		}
 	}
 
 	private bool IsLatestRequest(int requestId, int stateVersion)

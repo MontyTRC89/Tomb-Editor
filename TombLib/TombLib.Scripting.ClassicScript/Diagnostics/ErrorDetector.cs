@@ -5,17 +5,25 @@ using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Text;
-using TombLib.Scripting.UI.Diagnostics;
 
 namespace TombLib.Scripting.ClassicScript.Diagnostics;
 
-public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
+/// <summary>
+/// Detects errors in ClassicScript document content.
+/// </summary>
+public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 {
 	private readonly IClassicScriptLineService _lineService;
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ClassicScriptSyntaxCatalogService _syntaxCatalogService;
 	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ErrorDetector"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to analyze document lines.</param>
+	/// <param name="commandService">The command service used to validate command syntax.</param>
+	/// <param name="syntaxCatalogService">The syntax catalog service used to validate arguments.</param>
 	public ErrorDetector(
 		IClassicScriptLineService lineService,
 		IClassicScriptCommandService commandService,
@@ -31,9 +39,20 @@ public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 
 	// Public methods
 
+	/// <summary>
+	/// Finds the errors present in the given editor content.
+	/// </summary>
+	/// <param name="editorContent">The content of the editor.</param>
+	/// <param name="engineVersion">The engine version used to detect the errors.</param>
+	/// <returns>The diagnostics describing the detected errors.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
 		=> DetectErrorLines(new StringTextSnapshot(editorContent));
 
+	/// <summary>
+	/// Gets the diagnostics for the given request.
+	/// </summary>
+	/// <param name="request">The diagnostics request.</param>
+	/// <returns>The diagnostics describing the detected errors.</returns>
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 		=> DetectErrorLines(new StringTextSnapshot(request.DocumentText));
 

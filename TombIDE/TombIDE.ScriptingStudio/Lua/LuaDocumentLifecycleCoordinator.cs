@@ -87,7 +87,7 @@ internal sealed class LuaDocumentLifecycleCoordinator : ILuaEditorLifecycleServi
 
 	private void AttachEditor(LuaEditor editor)
 	{
-		editor.IntellisenseProvider = _intellisenseProvider;
+		editor.IntelliSenseProvider = _intellisenseProvider;
 		editor.DefinitionNavigationRequested -= Editor_DefinitionNavigationRequested;
 		editor.DefinitionNavigationRequested += Editor_DefinitionNavigationRequested;
 		editor.StatusChanged -= Editor_StatusChanged;

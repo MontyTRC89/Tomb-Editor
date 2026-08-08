@@ -7,11 +7,11 @@ using System.Windows.Input;
 using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Diagnostics;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Navigation;
-using TombLib.Scripting.UI.Presentation;
 
 namespace TombLib.Scripting.UI.Bases;
 
@@ -75,19 +75,19 @@ public abstract partial class TextEditorBase
 		=> _diagnosticsCoordinator = new TextDiagnosticsCoordinator(this, engineVersion, errorDetector, diagnosticsProvider);
 
 	/// <summary>
-	/// Called when text is being entered into the editor.
+	/// Called synchronously when text is being entered into the editor.
 	/// </summary>
 	protected virtual void OnLanguageTextEntering(TextCompositionEventArgs e) { }
 
 	/// <summary>
-	/// Called after text has been entered into the editor.
+	/// Called synchronously after text has been entered into the editor.
 	/// </summary>
 	protected virtual void OnLanguageTextEntered(TextCompositionEventArgs e) { }
 
 	/// <summary>
 	/// Handles language-specific key input, including definition navigation when initialized.
 	/// </summary>
-	protected virtual async void OnLanguageKeyDown(KeyEventArgs e)
+	protected virtual async Task OnLanguageKeyDown(KeyEventArgs e)
 	{
 		if (_definitionTriggerController is null)
 			return;
@@ -98,7 +98,7 @@ public abstract partial class TextEditorBase
 	/// <summary>
 	/// Handles language-specific mouse input for definition navigation when initialized.
 	/// </summary>
-	protected virtual async void OnLanguagePreviewMouseLeftButtonDown(MouseButtonEventArgs e)
+	protected virtual async Task OnLanguagePreviewMouseLeftButtonDown(MouseButtonEventArgs e)
 	{
 		if (_definitionTriggerController is null)
 			return;
@@ -109,9 +109,9 @@ public abstract partial class TextEditorBase
 	/// <summary>
 	/// Handles hover tooltips and error tooltips for the language.
 	/// </summary>
-	protected virtual async void OnLanguageMouseHover(MouseEventArgs e)
+	protected virtual async Task OnLanguageMouseHover(MouseEventArgs e)
 	{
-		HandleMouseHover(e);
+		await HandleMouseHover(e).ConfigureAwait(true);
 
 		if (_hoverController is null)
 			return;

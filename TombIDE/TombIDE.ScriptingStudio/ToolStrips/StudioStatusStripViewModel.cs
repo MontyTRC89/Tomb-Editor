@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Editors;
 using TombLib.Scripting.UI.Presentation;
 

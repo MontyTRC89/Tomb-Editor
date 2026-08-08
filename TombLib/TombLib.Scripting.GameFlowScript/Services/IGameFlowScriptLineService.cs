@@ -8,27 +8,24 @@ public interface IGameFlowScriptLineService
 {
 	/// <summary>
 	/// Removes line comments from the text. Delegates to <c>LineCommentHelper.RemoveLineComment</c>
-	/// with the <c>"//"</c> delimiter, matching legacy <c>LineParser.RemoveComments</c> behavior.
+	/// with the <c>"//"</c> delimiter.
 	/// </summary>
 	string RemoveComments(string lineText);
 
 	/// <summary>
 	/// Replaces comments with spaces to maintain the original string length.
-	/// Delegates to <c>LineCommentHelper.MaskLineComment</c> with the <c>"//"</c> delimiter,
-	/// matching legacy <c>LineParser.EscapeComments</c> behavior.
+	/// Delegates to <c>LineCommentHelper.MaskLineComment</c> with the <c>"//"</c> delimiter.
 	/// </summary>
 	string EscapeComments(string lineText);
 
 	/// <summary>
 	/// Returns <c>true</c> when the line is null, empty, whitespace-only, or starts with <c>//</c>.
-	/// Matches legacy <c>LineParser.IsEmptyOrComments</c> behavior.
 	/// </summary>
 	bool IsEmptyOrComments(string? lineText);
 
 	/// <summary>
 	/// Returns <c>true</c> when the line matches a GameFlowScript section header keyword
-	/// followed by a colon (<c>Keyword:</c>). Uses the legacy <c>Patterns.Sections</c>
-	/// regex for parity.
+	/// followed by a colon (<c>Keyword:</c>). Uses the <c>Patterns.Sections</c> regex.
 	/// </summary>
 	bool IsSectionHeaderLine(string lineText);
 

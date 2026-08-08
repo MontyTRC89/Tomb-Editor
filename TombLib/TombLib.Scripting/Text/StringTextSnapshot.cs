@@ -34,8 +34,8 @@ public sealed class StringTextSnapshot : ITextSnapshot
 
 	/// <summary>
 	/// Gets the underlying string for use by Core lexer code.
-	/// This member is not part of <see cref="ITextSnapshot"/> because
-	/// an AvalonEdit-backed implementation cannot safely offer the same lifetime guarantee.
+	/// This member is not part of <see cref="ITextSnapshot"/> because only
+	/// string-backed implementations can expose their raw text directly.
 	/// </summary>
 	internal string Text => _text;
 
@@ -51,7 +51,9 @@ public sealed class StringTextSnapshot : ITextSnapshot
 	/// <inheritdoc />
 	public string GetText(int offset, int length)
 	{
-		if (offset < 0 || length < 0 || offset + length > _text.Length)
+		// Overflow-safe bounds check: the subtraction cannot overflow because
+		// offset is verified to be within the text length first.
+		if (offset < 0 || offset > _text.Length || length < 0 || length > _text.Length - offset)
 			throw new ArgumentOutOfRangeException();
 
 		return _text.Substring(offset, length);

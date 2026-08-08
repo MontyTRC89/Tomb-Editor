@@ -5,5 +5,8 @@ namespace TombLib.Scripting.UI.Bases;
 /// </summary>
 public interface IColorSchemeConfig
 {
+	/// <summary>
+	/// Gets or sets the name of the currently selected color scheme.
+	/// </summary>
 	string SelectedColorSchemeName { get; set; }
 }

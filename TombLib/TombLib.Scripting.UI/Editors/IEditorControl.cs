@@ -2,12 +2,21 @@ using System;
 
 namespace TombLib.Scripting.UI.Editors;
 
+/// <summary>
+/// Defines the common surface of an editor control hosted in the scripting studio.
+/// </summary>
 public interface IEditorControl : IDisposable
 {
 	// Properties
 
+	/// <summary>
+	/// Gets the editor type of the control.
+	/// </summary>
 	EditorType EditorType { get; }
 
+	/// <summary>
+	/// Gets or sets the path of the file loaded in the editor.
+	/// </summary>
 	string FilePath { get; set; }
 
 	/// <summary>
@@ -16,6 +25,9 @@ public interface IEditorControl : IDisposable
 	/// </summary>
 	bool IsSilentSession { get; set; }
 
+	/// <summary>
+	/// Gets or sets whether backup files are created when the content changes.
+	/// </summary>
 	bool CreateBackupFiles { get; set; }
 
 	/// <summary>
@@ -24,64 +36,166 @@ public interface IEditorControl : IDisposable
 	/// </summary>
 	string Content { get; set; }
 
+	/// <summary>
+	/// Gets or sets whether the editor content differs from the persisted content.
+	/// </summary>
 	bool IsContentChanged { get; set; }
 
+	/// <summary>
+	/// Replaces the editor content without marking the editor as changed.
+	/// </summary>
+	/// <param name="content">The persisted content to apply.</param>
 	void ApplyPersistedContent(string content);
 
+	/// <summary>
+	/// Gets or sets the time the content was last modified.
+	/// </summary>
 	DateTime LastModified { get; set; }
 
+	/// <summary>
+	/// Gets whether an undo operation is currently available.
+	/// </summary>
 	bool CanUndo { get; }
+
+	/// <summary>
+	/// Gets whether a redo operation is currently available.
+	/// </summary>
 	bool CanRedo { get; }
 
 	/* Status data */
 
+	/// <summary>
+	/// Gets the one-based row of the caret.
+	/// </summary>
 	int CurrentRow { get; }
+
+	/// <summary>
+	/// Gets the one-based column of the caret.
+	/// </summary>
 	int CurrentColumn { get; }
 
+	/// <summary>
+	/// Gets the selected content, or <c>null</c> when there is no selection.
+	/// </summary>
 	object SelectedContent { get; }
+
+	/// <summary>
+	/// Gets the length of the current selection.
+	/// </summary>
 	int SelectionLength { get; }
 
+	/// <summary>
+	/// Gets or sets the zoom level of the editor.
+	/// </summary>
 	int Zoom { get; set; }
 
+	/// <summary>
+	/// Gets or sets the minimum zoom level.
+	/// </summary>
 	int MinZoom { get; set; }
+
+	/// <summary>
+	/// Gets or sets the maximum zoom level.
+	/// </summary>
 	int MaxZoom { get; set; }
+
+	/// <summary>
+	/// Gets or sets the step size used when changing the zoom level.
+	/// </summary>
 	int ZoomStepSize { get; set; }
 
+	/// <summary>
+	/// Gets the default file extension used when saving the editor content.
+	/// </summary>
 	string DefaultFileExtension { get; }
 
+	/// <summary>
+	/// Gets or sets the engine version the editor targets.
+	/// </summary>
 	Version EngineVersion { get; set; }
 
 	// Methods
 
+	/// <summary>
+	/// Loads the file at the given path into the editor.
+	/// </summary>
+	/// <param name="fileName">The path of the file to load.</param>
+	/// <param name="silentSession">Whether the load runs as a silent session.</param>
 	void Load(string fileName, bool silentSession);
 
+	/// <summary>
+	/// Saves the editor content to the current file path.
+	/// </summary>
 	void Save();
 
+	/// <summary>
+	/// Saves the editor content to the given file path.
+	/// </summary>
+	/// <param name="fileName">The path of the file to save to.</param>
 	void Save(string fileName);
 
+	/// <summary>
+	/// Reverts the most recent document edit.
+	/// </summary>
 	void Undo();
 
+	/// <summary>
+	/// Reapplies the most recently reverted document edit.
+	/// </summary>
 	void Redo();
 
+	/// <summary>
+	/// Cuts the current selection to the clipboard.
+	/// </summary>
 	void Cut();
 
+	/// <summary>
+	/// Copies the current selection to the clipboard.
+	/// </summary>
 	void Copy();
 
+	/// <summary>
+	/// Pastes the clipboard content at the caret.
+	/// </summary>
 	void Paste();
 
+	/// <summary>
+	/// Selects the entire editor content.
+	/// </summary>
 	void SelectAll();
 
+	/// <summary>
+	/// Navigates to the definition of the given object.
+	/// </summary>
+	/// <param name="objectName">The name of the object to navigate to.</param>
+	/// <param name="identifyingObject">An optional object that identifies the target definition.</param>
 	void GoToObject(string objectName, object? identifyingObject = null);
 
+	/// <summary>
+	/// Applies the given configuration to the editor.
+	/// </summary>
+	/// <param name="configuration">The configuration to apply.</param>
 	void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration);
 
+	/// <summary>
+	/// Runs the content-changed worker if the editor has pending content changes.
+	/// </summary>
 	void TryRunContentChangedWorker();
 
 	// Events
 
+	/// <summary>
+	/// Raised when a content-changed worker run completes.
+	/// </summary>
 	event EventHandler ContentChangedWorkerRunCompleted;
 
+	/// <summary>
+	/// Raised when the editor status (caret, selection or zoom) changes.
+	/// </summary>
 	event EventHandler StatusChanged;
 
+	/// <summary>
+	/// Raised when the zoom level changes.
+	/// </summary>
 	event EventHandler ZoomChanged;
 }

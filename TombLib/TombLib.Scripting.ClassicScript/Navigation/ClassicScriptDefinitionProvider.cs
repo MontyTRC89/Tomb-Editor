@@ -6,16 +6,28 @@ using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Navigation;
 
+/// <summary>
+/// Resolves definition locations for ClassicScript objects.
+/// </summary>
 public sealed class ClassicScriptDefinitionProvider : ITextDefinitionProvider
 {
 	private readonly IClassicScriptCommandService _commandService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptDefinitionProvider"/> class.
+	/// </summary>
+	/// <param name="commandService">The command service used to locate objects.</param>
 	public ClassicScriptDefinitionProvider(IClassicScriptCommandService commandService)
 	{
 		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
 	}
 
+	/// <summary>
+	/// Gets the definition location for the given request.
+	/// </summary>
+	/// <param name="request">The definition request.</param>
+	/// <returns>The definition location, or <c>null</c> when the object cannot be located.</returns>
 	public TextDefinitionLocation? GetDefinition(TextDefinitionRequest request)
 	{
 		if (request.Identifier is not ObjectType objectType || string.IsNullOrWhiteSpace(request.SymbolName))

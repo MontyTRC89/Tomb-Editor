@@ -19,6 +19,11 @@ public sealed class TextSignatureHelpPopupPresenter
 	private readonly Border _popupBorder = new();
 	private readonly ContentPresenter _popupPresenter = new();
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TextSignatureHelpPopupPresenter"/> class.
+	/// </summary>
+	/// <param name="editor">The editor the popup is anchored to.</param>
+	/// <param name="prepareForShow">An optional callback invoked before the popup is shown.</param>
 	public TextSignatureHelpPopupPresenter(TextEditorBase editor, Action? prepareForShow = null)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
@@ -31,8 +36,14 @@ public sealed class TextSignatureHelpPopupPresenter
 		_popupBorder.Background = TextEditorColorPalette.ToolTipBackground;
 	}
 
+	/// <summary>
+	/// Gets whether the popup is currently open.
+	/// </summary>
 	public bool IsOpen => _popup.IsOpen;
 
+	/// <summary>
+	/// Closes the popup and clears its content.
+	/// </summary>
 	public void Close()
 	{
 		if (_popup.IsOpen)
@@ -41,6 +52,17 @@ public sealed class TextSignatureHelpPopupPresenter
 		_popupPresenter.Content = null;
 	}
 
+	/// <summary>
+	/// Releases the resources used by the presenter by closing the popup and clearing its content.
+	/// </summary>
+	public void Dispose()
+		=> Close();
+
+	/// <summary>
+	/// Shows the popup with content built for the available width.
+	/// </summary>
+	/// <param name="createContent">The callback that builds the popup content for a given width.</param>
+	/// <param name="maxPopupWidth">The maximum popup width.</param>
 	public void Show(Func<double, FrameworkElement> createContent, double maxPopupWidth = ToolTipDefaults.PopupMaxWidth)
 	{
 		ArgumentNullException.ThrowIfNull(createContent);

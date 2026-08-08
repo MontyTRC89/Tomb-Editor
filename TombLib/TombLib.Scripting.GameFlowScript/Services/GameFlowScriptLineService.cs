@@ -9,7 +9,7 @@ namespace TombLib.Scripting.GameFlowScript.Services;
 /// Provides line-level text operations using Core helpers and, where needed,
 /// regex patterns that match legacy behavior.
 /// </summary>
-public class GameFlowScriptLineService : IGameFlowScriptLineService
+public sealed class GameFlowScriptLineService : IGameFlowScriptLineService
 {
 	private const string CommentDelimiter = "//";
 

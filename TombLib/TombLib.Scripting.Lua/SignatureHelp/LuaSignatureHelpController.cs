@@ -106,6 +106,7 @@ public sealed partial class LuaEditor
 		private readonly LuaEditor _editor;
 		private readonly TextSignatureHelpController _controller;
 		private readonly TextSignatureHelpPopupPresenter _popupPresenter;
+		private bool _disposed;
 
 		internal LuaSignatureHelpController(LuaEditor editor)
 		{
@@ -139,6 +140,16 @@ public sealed partial class LuaEditor
 		internal void InvalidateRequests()
 			=> _controller.InvalidateRequests();
 
+		internal void Dispose()
+		{
+			if (_disposed)
+				return;
+
+			_disposed = true;
+			_controller.Dispose();
+			_popupPresenter.Dispose();
+		}
+
 		private void DismissPopup()
 			=> _popupPresenter.Close();
 
@@ -167,12 +178,12 @@ public sealed partial class LuaEditor
 
 		private async Task<TextSignatureHelpInfo?> RequestSignatureHelpAsync(int offset, int requestToken)
 		{
-			if (!_editor.IsIntellisenseAvailable())
+			if (!_editor.IsIntelliSenseAvailable())
 				return null;
 
-			var intellisenseProvider = _editor.IntellisenseProvider;
+			var intelliSenseProvider = _editor.IntelliSenseProvider;
 
-			if (intellisenseProvider is null)
+			if (intelliSenseProvider is null)
 				return null;
 
 			CancellationToken cancellationToken = CancellationToken.None;
@@ -183,7 +194,7 @@ public sealed partial class LuaEditor
 			{
 				(int line, int column) = _editor.GetPositionFromOffset(offset);
 
-				TextSignatureHelpInfo? signatureInfo = await intellisenseProvider
+				TextSignatureHelpInfo? signatureInfo = await intelliSenseProvider
 					.GetSignatureHelpAsync(_editor.FilePath, _editor.Text, line, column, cancellationToken)
 					.ConfigureAwait(true);
 

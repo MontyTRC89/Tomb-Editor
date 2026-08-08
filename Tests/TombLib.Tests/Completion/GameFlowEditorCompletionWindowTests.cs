@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Threading;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
-using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
@@ -24,8 +23,7 @@ public class GameFlowEditorCompletionWindowTests
 			new GameFlowHoverProvider(),
 			new GameFlowCompletionProvider(),
 			lineService,
-			documentService,
-			new GameFlowDocumentLookupService(documentService));
+			documentService);
 	}
 
 	[TestMethod]

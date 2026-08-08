@@ -568,4 +568,78 @@ public class TextSourceTests
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => source.GetText(0, 5));
         }
     }
+
+    // ---------------------------------------------------------------------------
+    // Offset at end of document
+    // ---------------------------------------------------------------------------
+
+    [TestMethod]
+    public void OffsetAtEnd_EmptyDocument_GetText_ReturnsEmpty()
+    {
+        foreach (ITextSnapshot source in CreateSources(string.Empty))
+        {
+            Assert.AreEqual(string.Empty, source.GetText(0, 0));
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_TrailingNewline_GetLineByOffset_ReturnsTrailingEmptyLine()
+    {
+        foreach (ITextSnapshot source in CreateSources("hello\n"))
+        {
+            ITextLine line = source.GetLineByOffset(source.TextLength);
+
+            Assert.AreEqual(2, line.LineNumber);
+            Assert.AreEqual(source.TextLength, line.Offset);
+            Assert.AreEqual(0, line.Length);
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_TrailingNewline_GetText_ReturnsEmpty()
+    {
+        foreach (ITextSnapshot source in CreateSources("hello\n"))
+        {
+            Assert.AreEqual(string.Empty, source.GetText(source.TextLength, 0));
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_MultiLine_GetLineByOffset_ReturnsLastLine()
+    {
+        foreach (ITextSnapshot source in CreateSources("a\nbb\nccc"))
+        {
+            ITextLine line = source.GetLineByOffset(source.TextLength);
+
+            Assert.AreEqual(3, line.LineNumber);
+            Assert.AreEqual("ccc", source.GetText(line.Offset, line.Length));
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_GetCharAt_Throws()
+    {
+        foreach (ITextSnapshot source in CreateSources("text"))
+        {
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => source.GetCharAt(source.TextLength));
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_GetText_PastEnd_Throws()
+    {
+        foreach (ITextSnapshot source in CreateSources("text"))
+        {
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => source.GetText(source.TextLength, 1));
+        }
+    }
+
+    [TestMethod]
+    public void OffsetAtEnd_GetLineByOffset_BeyondTextLength_Throws()
+    {
+        foreach (ITextSnapshot source in CreateSources("text"))
+        {
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => source.GetLineByOffset(source.TextLength + 1));
+        }
+    }
 }

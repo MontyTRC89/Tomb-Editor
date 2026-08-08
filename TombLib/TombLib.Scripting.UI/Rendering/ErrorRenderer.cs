@@ -10,6 +10,9 @@ using static TombLib.WPF.BrushHelpers;
 
 namespace TombLib.Scripting.UI.Rendering;
 
+/// <summary>
+/// Renders diagnostic underlines in the editor text view.
+/// </summary>
 public sealed class ErrorRenderer : IBackgroundRenderer
 {
 	private static readonly Brush ErrorBrush = CreateFrozenBrush(Color.FromArgb(224, 220, 76, 60));
@@ -25,13 +28,25 @@ public sealed class ErrorRenderer : IBackgroundRenderer
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ErrorRenderer"/> class.
+	/// </summary>
+	/// <param name="e">The editor whose diagnostics are rendered.</param>
 	public ErrorRenderer(TextEditorBase e)
 		=> _editor = e;
 
+	/// <summary>
+	/// Gets the layer in which the underlines are drawn.
+	/// </summary>
 	public KnownLayer Layer => KnownLayer.Caret;
 
 	// Drawing
 
+	/// <summary>
+	/// Draws the current editor diagnostics as underlines.
+	/// </summary>
+	/// <param name="textView">The text view to draw in.</param>
+	/// <param name="drawingContext">The drawing context.</param>
 	public void Draw(TextView textView, DrawingContext drawingContext)
 	{
 		if (!_editor.LiveErrorUnderlining || _editor.Diagnostics.Count == 0)

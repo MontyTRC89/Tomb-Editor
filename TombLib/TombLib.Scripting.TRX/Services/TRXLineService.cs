@@ -6,9 +6,9 @@ namespace TombLib.Scripting.TRX.Services;
 /// <summary>
 /// Default implementation of <see cref="ITRXLineService"/>.
 /// Delegates comment removal and masking to <see cref="LineCommentHelper"/>
-/// with the <c>"//"</c> delimiter, matching legacy <c>LineParser</c> behavior.
+/// with the <c>"//"</c> delimiter.
 /// </summary>
-public class TRXLineService : ITRXLineService
+public sealed class TRXLineService : ITRXLineService
 {
 	private const string CommentDelimiter = "//";
 

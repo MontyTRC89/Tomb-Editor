@@ -29,12 +29,12 @@ public sealed partial class LuaEditor
 
 		internal async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
 		{
-			if (!_editor.IsIntellisenseAvailable())
+			if (!_editor.IsIntelliSenseAvailable())
 				return false;
 
-			var intellisenseProvider = _editor.IntellisenseProvider;
+			var intelliSenseProvider = _editor.IntelliSenseProvider;
 
-			if (intellisenseProvider is null)
+			if (intelliSenseProvider is null)
 				return false;
 
 			try
@@ -54,7 +54,7 @@ public sealed partial class LuaEditor
 
 				(int line, int column) = _editor.GetPositionFromOffset(definitionOffset);
 
-				TextDefinitionLocation? definitionLocation = await intellisenseProvider
+				TextDefinitionLocation? definitionLocation = await intelliSenseProvider
 					.GetDefinitionAsync(_editor.FilePath, _editor.Text, line, column, effectiveCancellationToken)
 					.ConfigureAwait(true);
 

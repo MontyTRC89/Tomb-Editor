@@ -282,7 +282,7 @@ public class LuaEditorCompletionWindowTests
 	{
 		FilePath = @"C:\Workspace\Scripts\test.lua",
 		Text = text,
-		IntellisenseProvider = provider
+		IntelliSenseProvider = provider
 	};
 
 	private static Task InvokePrivateTask(object instance, string methodName, Type[] parameterTypes, params object?[] arguments)

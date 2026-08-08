@@ -21,6 +21,7 @@ public abstract partial class TextEditorBase
 	/// <param name="silentSession">Whether to start a silent session that skips background processing.</param>
 	public void Load(string filePath, bool silentSession)
 	{
+		EnsureNotDisposed();
 		base.Load(filePath);
 		FilePath = filePath;
 		_contentPersistenceCoordinator.SetPersistedContent(Content);
@@ -43,6 +44,7 @@ public abstract partial class TextEditorBase
 	/// <param name="filePath">The path to save the document to.</param>
 	public new void Save(string filePath)
 	{
+		EnsureNotDisposed();
 		base.Save(filePath);
 		_contentPersistenceCoordinator.SetPersistedContent(Content);
 		IsContentChanged = _contentPersistenceCoordinator.HasChanges(Content);
@@ -59,6 +61,7 @@ public abstract partial class TextEditorBase
 	/// </summary>
 	public void TryRunContentChangedWorker()
 	{
+		EnsureNotDisposed();
 		IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
 	}
 
@@ -68,6 +71,7 @@ public abstract partial class TextEditorBase
 	/// <param name="content">The content to apply.</param>
 	public void ApplyPersistedContent(string content)
 	{
+		EnsureNotDisposed();
 		SetContent(content);
 		_contentPersistenceCoordinator.SetPersistedContent(Content);
 		IsContentChanged = _contentPersistenceCoordinator.HasChanges(Content);
@@ -76,6 +80,8 @@ public abstract partial class TextEditorBase
 
 	private void SetContent(string content)
 	{
+		EnsureNotDisposed();
+
 		DocumentLine cachedLine = Document.GetLineByOffset(CaretOffset);
 
 		Document.UndoStack.StartUndoGroup();

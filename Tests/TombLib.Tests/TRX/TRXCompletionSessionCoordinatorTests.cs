@@ -1,0 +1,51 @@
+using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Completion;
+using TombLib.Scripting.Completion;
+using TombLib.Scripting.TRX.Completion;
+using TombLib.Scripting.TRX.Services;
+
+namespace TombLib.Tests;
+
+[TestClass]
+public class TRXCompletionSessionCoordinatorTests
+{
+	private sealed class StubCompletionProvider(IReadOnlyList<TextCompletionItem> items) : ITextCompletionProvider
+	{
+		private readonly IReadOnlyList<TextCompletionItem> _items = items;
+
+		public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
+			=> _items;
+	}
+
+	private static TRXCompletionSessionCoordinator CreateCoordinator(params TextCompletionItem[] items)
+		=> new(
+			new StubCompletionProvider(items),
+			new TextAnalysisService(),
+			new CompletionManager(new TRXLineService()));
+
+	[TestMethod]
+	public void GetCtrlSpaceDecision_FiltersThroughCompletionManager()
+	{
+		TRXCompletionSessionCoordinator coordinator = CreateCoordinator(
+			new TextCompletionItem("\"title\": "),
+			new TextCompletionItem("\"level\": "));
+
+		TextCompletionSessionDecision decision = coordinator.GetCtrlSpaceDecision(new TextDocument("\"ti"), 3, false);
+
+		Assert.IsNotNull(decision.Items);
+		Assert.AreEqual(1, decision.Items.Count);
+		Assert.AreEqual("\"title\": ", decision.Items[0].InsertText);
+		Assert.AreEqual(0, decision.StartOffset);
+		Assert.AreEqual(3, decision.EndOffset);
+	}
+
+	[TestMethod]
+	public void GetCtrlSpaceDecision_NoMatchingItems_ReturnsNone()
+	{
+		TRXCompletionSessionCoordinator coordinator = CreateCoordinator(new TextCompletionItem("\"title\": "));
+
+		TextCompletionSessionDecision decision = coordinator.GetCtrlSpaceDecision(new TextDocument("\"zz"), 3, false);
+
+		Assert.AreEqual(TextCompletionSessionDecision.None, decision);
+	}
+}

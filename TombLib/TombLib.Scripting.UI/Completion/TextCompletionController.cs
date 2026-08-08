@@ -14,14 +14,28 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using TombLib.Scripting.Completion;
+using TombLib.Scripting.Presentation;
+using TombLib.Scripting.Threading;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Documents;
-using TombLib.Scripting.UI.Presentation;
 using TombLib.Scripting.UI.Resources;
 using TombLib.WPF;
 
 namespace TombLib.Scripting.UI.Completion;
 
+/// <summary>
+/// Carries the sizing and timing options used by the <see cref="TextCompletionController"/>.
+/// </summary>
+/// <param name="RequestDebounceDelay">The debounce delay before a scheduled completion request runs.</param>
+/// <param name="ToolTipResolveDelay">The delay before a completion tooltip update is resolved.</param>
+/// <param name="WindowMinWidth">The minimum width of the completion window.</param>
+/// <param name="WindowMaxWidth">The maximum width of the completion window.</param>
+/// <param name="WindowHeight">The height of the completion window.</param>
+/// <param name="WidthMeasurementSampleCount">The number of samples used to measure the completion item width.</param>
+/// <param name="ToolTipHorizontalOffset">The horizontal offset of the completion tooltip.</param>
+/// <param name="WindowHorizontalChrome">The horizontal chrome width of the completion window.</param>
+/// <param name="ItemIconWidth">The width reserved for the completion item icon.</param>
+/// <param name="ItemDetailSpacing">The spacing between completion item details.</param>
 public sealed record TextCompletionControllerOptions(
 	TimeSpan RequestDebounceDelay,
 	TimeSpan ToolTipResolveDelay,
@@ -34,6 +48,9 @@ public sealed record TextCompletionControllerOptions(
 	double ItemIconWidth,
 	double ItemDetailSpacing)
 {
+	/// <summary>
+	/// Gets the default completion controller options.
+	/// </summary>
 	public static TextCompletionControllerOptions Default { get; } = new(
 		TimeSpan.FromMilliseconds(120.0),
 		TimeSpan.FromMilliseconds(120.0),
@@ -52,7 +69,7 @@ public sealed record TextCompletionControllerOptions(
 /// The popup is owned through <see cref="CompletionWindowHost"/>, which tracks at most one window:
 /// opening a new completion window force-closes the previous one.
 /// </summary>
-public sealed class TextCompletionController
+public sealed class TextCompletionController : IDisposable
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -67,7 +84,16 @@ public sealed class TextCompletionController
 	private ToolTip? _pendingCompletionToolTip;
 	private readonly RequestTokenSource _requestTokens = new();
 	private int _toolTipUpdateToken;
+	private bool _isDisposed;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TextCompletionController"/> class.
+	/// </summary>
+	/// <param name="editor">The editor the controller serves.</param>
+	/// <param name="options">The controller options, or <c>null</c> to use the defaults.</param>
+	/// <param name="applyPresentationState">An optional callback that applies the completion presentation state.</param>
+	/// <param name="configureWindow">An optional callback that configures a completion window before it is shown.</param>
+	/// <param name="handleRequestFailure">An optional callback that handles completion request failures.</param>
 	public TextCompletionController(
 		TextEditorBase editor,
 		TextCompletionControllerOptions? options = null,
@@ -89,9 +115,16 @@ public sealed class TextCompletionController
 	/// </summary>
 	public TextCompletionPresentationState CurrentPresentation { get; private set; } = TextCompletionPresentationState.Empty;
 
+	/// <summary>
+	/// Initializes the request scheduling with the callback used to run a scheduled request.
+	/// </summary>
+	/// <param name="scheduledRequestAsync">The callback that runs a scheduled completion request.</param>
 	public void InitializeScheduling(Func<Task> scheduledRequestAsync)
 	{
 		ArgumentNullException.ThrowIfNull(scheduledRequestAsync);
+
+		if (_isDisposed)
+			return;
 
 		_scheduledRequestAsync = scheduledRequestAsync;
 		_requestTimer.Interval = _options.RequestDebounceDelay;
@@ -103,20 +136,48 @@ public sealed class TextCompletionController
 		_toolTipUpdateTimer.Tick += ToolTipUpdateTimer_Tick;
 	}
 
-	public CompletionWindow? ActiveWindow => _editor.ActiveCompletionWindow;
+	/// <summary>
+	/// Gets the currently active completion window, or <c>null</c> when none is open.
+	/// </summary>
+	public CompletionWindow? ActiveWindow => _isDisposed ? null : _editor.ActiveCompletionWindow;
 
+	/// <summary>
+	/// Begins a new request and returns its token.
+	/// </summary>
+	/// <returns>The token of the new request.</returns>
 	public int BeginRequest()
-		=> _requestTokens.Begin();
+	{
+		if (_isDisposed)
+			return -1;
 
+		return _requestTokens.Begin();
+	}
+
+	/// <summary>
+	/// Determines whether the given request token is still the current request.
+	/// </summary>
+	/// <param name="requestToken">The request token to check.</param>
+	/// <returns><c>true</c> when the token is current; otherwise, <c>false</c>.</returns>
 	public bool IsRequestCurrent(int requestToken)
-		=> _requestTokens.IsCurrent(requestToken);
+		=> !_isDisposed && _requestTokens.IsCurrent(requestToken);
 
+	/// <summary>
+	/// Invalidates all in-flight completion requests.
+	/// </summary>
 	public void InvalidateRequests()
-		=> _requestTokens.Invalidate();
+	{
+		if (_isDisposed)
+			return;
 
+		_requestTokens.Invalidate();
+	}
+
+	/// <summary>
+	/// Schedules a completion request to run after the debounce delay.
+	/// </summary>
 	public void ScheduleRequest()
 	{
-		if (_scheduledRequestAsync is null)
+		if (_isDisposed || _scheduledRequestAsync is null)
 			return;
 
 		_requestTimer.Stop();
@@ -124,18 +185,40 @@ public sealed class TextCompletionController
 		SetRequestScheduled(true);
 	}
 
+	/// <summary>
+	/// Cancels any pending scheduled completion request.
+	/// </summary>
 	public void CancelPendingRequest()
+	{
+		if (_isDisposed)
+			return;
+
+		CancelPendingRequestCore();
+	}
+
+	private void CancelPendingRequestCore()
 	{
 		_requestTimer.Stop();
 		SetRequestScheduled(false);
 	}
 
+	/// <summary>
+	/// Closes the active completion window and any completion tooltip.
+	/// </summary>
 	public void CloseWindow()
 	{
-		CancelPendingRequest();
-		CancelTooltipUpdate();
+		if (_isDisposed)
+			return;
 
-		if (ActiveWindow is CompletionWindow completionWindow
+		CloseWindowCore();
+	}
+
+	private void CloseWindowCore()
+	{
+		CancelPendingRequestCore();
+		CancelTooltipUpdateCore();
+
+		if (_editor.ActiveCompletionWindow is CompletionWindow completionWindow
 			&& CompletionWindowToolTipAccess.TryGetToolTip(completionWindow, out ToolTip? tooltip))
 		{
 			tooltip.IsOpen = false;
@@ -146,9 +229,19 @@ public sealed class TextCompletionController
 		SetTooltipState(null, false);
 	}
 
+	/// <summary>
+	/// Opens a completion window with the given items, or refreshes the current window.
+	/// </summary>
+	/// <param name="items">The completion items to show.</param>
+	/// <param name="startOffset">The optional start offset of the replaced word.</param>
+	/// <param name="endOffset">The optional end offset of the replaced word.</param>
+	/// <returns><c>true</c> when the window was opened; otherwise, <c>false</c>.</returns>
 	public bool OpenOrRefresh(IEnumerable<CompletionData> items, int? startOffset = null, int? endOffset = null)
 	{
 		ArgumentNullException.ThrowIfNull(items);
+
+		if (_isDisposed)
+			return false;
 
 		CompletionData[] completionItems = items.ToArray();
 
@@ -182,8 +275,17 @@ public sealed class TextCompletionController
 		return true;
 	}
 
+	/// <summary>
+	/// Applies a completion session decision to the completion window.
+	/// </summary>
+	/// <param name="decision">The decision to apply.</param>
+	/// <param name="mapItem">An optional mapper from provider items to completion data.</param>
+	/// <returns><c>true</c> when a completion window was opened; otherwise, <c>false</c>.</returns>
 	public bool ApplyDecision(TextCompletionSessionDecision decision, Func<TextCompletionItem, CompletionData>? mapItem = null)
 	{
+		if (_isDisposed)
+			return false;
+
 		if (decision.CloseWindow)
 			CloseWindow();
 
@@ -195,9 +297,14 @@ public sealed class TextCompletionController
 		return OpenOrRefresh(items, decision.StartOffset.Value, decision.EndOffset.Value);
 	}
 
+	/// <summary>
+	/// Rebaselines the open completion items for the current document version and generation.
+	/// </summary>
+	/// <param name="requestDocumentVersion">The document version of the request.</param>
+	/// <param name="requestGeneration">The generation of the request.</param>
 	public void RebaseOpenCompletionItems(int requestDocumentVersion, int requestGeneration)
 	{
-		if (ActiveWindow?.CompletionList?.CompletionData is null)
+		if (_isDisposed || ActiveWindow?.CompletionList?.CompletionData is null)
 			return;
 
 		for (int i = 0; i < ActiveWindow.CompletionList.CompletionData.Count; i++)
@@ -207,14 +314,50 @@ public sealed class TextCompletionController
 		}
 	}
 
+	/// <summary>
+	/// Schedules the completion window to close if it is empty.
+	/// </summary>
 	public void ScheduleCloseIfEmpty()
-		=> _editor.Dispatcher.BeginInvoke(new Action(() => CloseWindowIfEmpty()), DispatcherPriority.Background);
+	{
+		if (_isDisposed)
+			return;
 
+		_editor.Dispatcher.BeginInvoke(new Action(() => CloseWindowIfEmpty()), DispatcherPriority.Background);
+	}
+
+	/// <summary>
+	/// Cancels any pending completion tooltip update.
+	/// </summary>
 	public void CancelTooltipUpdate()
+	{
+		if (_isDisposed)
+			return;
+
+		CancelTooltipUpdateCore();
+	}
+
+	private void CancelTooltipUpdateCore()
 	{
 		_toolTipUpdateToken++;
 		_pendingCompletionToolTip = null;
 		_toolTipUpdateTimer.Stop();
+	}
+
+	/// <summary>
+	/// Stops completion scheduling and closes any open completion window or tooltip.
+	/// </summary>
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		_requestTimer.Stop();
+		_requestTimer.Tick -= RequestTimer_Tick;
+		_toolTipUpdateTimer.Stop();
+		_toolTipUpdateTimer.Tick -= ToolTipUpdateTimer_Tick;
+		_requestTokens.Invalidate();
+		CloseWindowCore();
 	}
 
 	private async void RequestTimer_Tick(object? sender, EventArgs e)
@@ -231,6 +374,9 @@ public sealed class TextCompletionController
 		}
 		catch (Exception exception)
 		{
+			if (_isDisposed)
+				return;
+
 			if (_handleRequestFailure is null)
 				Log.Warn(exception, "Completion request failed.");
 			else
@@ -293,7 +439,7 @@ public sealed class TextCompletionController
 
 	private async Task UpdateTooltipAsync(ToolTip tooltip, int updateToken)
 	{
-		if (ActiveWindow?.CompletionList.ListBox is not ListBox listBox)
+		if (_isDisposed || ActiveWindow?.CompletionList.ListBox is not ListBox listBox)
 			return;
 
 		if (listBox.SelectedItem is not ICompletionData item)
@@ -322,7 +468,7 @@ public sealed class TextCompletionController
 
 				object? resolvedDescription = await completionData.GetDescriptionAsync().ConfigureAwait(true);
 
-				if (updateToken != _toolTipUpdateToken)
+				if (_isDisposed || updateToken != _toolTipUpdateToken)
 					return;
 
 				if (ActiveWindow?.CompletionList.ListBox is not ListBox currentListBox
@@ -343,6 +489,9 @@ public sealed class TextCompletionController
 		}
 		catch (Exception exception)
 		{
+			if (_isDisposed)
+				return;
+
 			tooltip.IsOpen = false;
 			SetTooltipState(null, false);
 

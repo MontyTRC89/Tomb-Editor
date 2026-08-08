@@ -74,16 +74,16 @@
 							</controls:SpacedGrid>
 						</GroupBox>
 
-						<GroupBox Header="Intellisense">
+						<GroupBox Header="IntelliSense">
 							<controls:SpacedStack Margin="{x:Static darkUI:Defaults.MediumThickness}" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
-								<CheckBox Content="Enable intellisense" IsChecked="{Binding IntellisenseEnabled}" />
+								<CheckBox Content="Enable IntelliSense" IsChecked="{Binding IntelliSenseEnabled}" />
 
-								<controls:SpacedStack IsEnabled="{Binding IntellisenseEnabled}" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+								<controls:SpacedStack IsEnabled="{Binding IntelliSenseEnabled}" Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
 									<StackPanel.Margin>
 										<Thickness Left="{x:Static darkUI:Defaults.LargeThicknessWidth}" />
 									</StackPanel.Margin>
 
-									<CheckBox Content="Enable autocomplete" IsChecked="{Binding AutocompleteEnabled}" />
+									<CheckBox Content="Enable completion" IsChecked="{Binding CompletionEnabled}" />
 									<CheckBox
 										Content="Enable diagnostics underlining"
 										IsChecked="{Binding DiagnosticsUnderliningEnabled}"

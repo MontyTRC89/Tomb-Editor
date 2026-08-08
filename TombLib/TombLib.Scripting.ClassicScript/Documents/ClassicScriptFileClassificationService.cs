@@ -3,10 +3,17 @@ using TombLib.Scripting.ClassicScript.Services;
 
 namespace TombLib.Scripting.ClassicScript.Documents;
 
+/// <summary>
+/// Classifies ClassicScript files by inspecting their section headers.
+/// </summary>
 public sealed class ClassicScriptFileClassificationService
 {
 	private readonly IClassicScriptLineService _lineService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptFileClassificationService"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to identify section headers.</param>
 	public ClassicScriptFileClassificationService(IClassicScriptLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
@@ -23,6 +30,11 @@ public sealed class ClassicScriptFileClassificationService
 		"Level"
 	};
 
+	/// <summary>
+	/// Gets the kind of the file at the given path.
+	/// </summary>
+	/// <param name="filePath">The path of the file to classify.</param>
+	/// <returns>The classified file kind.</returns>
 	public ClassicScriptFileKind GetFileKind(string filePath)
 	{
 		ArgumentNullException.ThrowIfNull(filePath);

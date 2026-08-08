@@ -1,4 +1,6 @@
+using NLog;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TombLib.Scripting.UI.Rendering;
 
@@ -88,10 +90,10 @@ public abstract partial class TextEditorBase
 	}
 
 	private void TextEditor_KeyDown(object? sender, KeyEventArgs e)
-		=> OnLanguageKeyDown(e);
+		=> RunLanguageEventHook(() => OnLanguageKeyDown(e));
 
 	private void TextEditor_PreviewMouseLeftButtonDown(object? sender, MouseButtonEventArgs e)
-		=> OnLanguagePreviewMouseLeftButtonDown(e);
+		=> RunLanguageEventHook(() => OnLanguagePreviewMouseLeftButtonDown(e));
 
 	private void ContentPersistenceCoordinator_TextChangedDelayed(object? sender, EventArgs e)
 	{
@@ -99,13 +101,35 @@ public abstract partial class TextEditorBase
 	}
 
 	private void TextEditor_MouseHover(object? sender, MouseEventArgs e)
-		=> OnLanguageMouseHover(e);
+		=> RunLanguageEventHook(() => OnLanguageMouseHover(e));
+
+	/// <summary>
+	/// Runs an asynchronous language event hook, keeping this adapter the single <c>async void</c>
+	/// boundary. Cancellation is expected when a request is superseded; unexpected exceptions are logged.
+	/// </summary>
+	private async void RunLanguageEventHook(Func<Task> hook)
+	{
+		try
+		{
+			await hook().ConfigureAwait(true);
+		}
+		catch (OperationCanceledException)
+		{
+		}
+		catch (Exception exception)
+		{
+			Log.Error(exception, "Language event hook failed.");
+		}
+	}
 
 	/// <summary>
 	/// Handles mouse hover for error tooltips. Override to customize hover behavior.
 	/// </summary>
-	protected virtual void HandleMouseHover(MouseEventArgs e)
-		=> HandleErrorToolTips(e);
+	protected virtual Task HandleMouseHover(MouseEventArgs e)
+	{
+		HandleErrorToolTips(e);
+		return Task.CompletedTask;
+	}
 
 	private void TextEditor_MouseHoverStopped(object? sender, MouseEventArgs e)
 		=> ScheduleDefinitionToolTipClose();

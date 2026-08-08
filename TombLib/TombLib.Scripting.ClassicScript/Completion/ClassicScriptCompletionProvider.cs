@@ -9,6 +9,9 @@ using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Completion;
 
+/// <summary>
+/// Builds completion items for ClassicScript documents.
+/// </summary>
 public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 {
 	private static readonly Regex FlagSyntaxRegex = new(@"\(.*_\.*\)");
@@ -17,6 +20,11 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
 	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptCompletionProvider"/> class.
+	/// </summary>
+	/// <param name="commandService">The command service used to resolve command context.</param>
+	/// <param name="mnemonicCatalogService">The mnemonic catalog service used to source mnemonic items.</param>
 	public ClassicScriptCompletionProvider(
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
@@ -27,8 +35,15 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
+	/// <summary>
+	/// Gets the completion items for the given context.
+	/// </summary>
+	/// <param name="context">The completion context.</param>
+	/// <returns>The completion items, or an empty list when no completion applies.</returns>
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
 	{
+		ArgumentNullException.ThrowIfNull(context);
+
 		var source = new StringTextSnapshot(context.DocumentText);
 
 		return context.Trigger switch

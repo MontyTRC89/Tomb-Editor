@@ -1,9 +1,13 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX.Resources;
 
 /// <summary>
-/// Defines the regex patterns used for TRX syntax highlighting.
+/// Defines the regex patterns used for TRX syntax highlighting. Schema-derived keywords are
+/// regex-escaped before being embedded so schema text can never produce an invalid pattern.
 /// </summary>
 public sealed class Patterns
 {
@@ -11,28 +15,22 @@ public sealed class Patterns
 	/// Initializes a new instance of the <see cref="Patterns"/> class.
 	/// </summary>
 	/// <param name="schemaService">The schema service used to derive keyword patterns.</param>
-	public Patterns(IGameFlowSchemaService schemaService)
+	public Patterns(ITRXGameFlowSchemaService schemaService)
 	{
 		Comments = "//.*$";
 
-		var schemaKeywords = schemaService.GetSchemaKeywords();
+		var schemaKeywords = schemaService.Keywords;
 
-		if (schemaKeywords is not null)
-		{
-			Constants = $"\"\\b({string.Join("|", schemaKeywords.Constants)})\\b\"";
-			Collections = $"\"\\b({string.Join("|", schemaKeywords.Collections)})\\b\"";
-			Properties = $"\"\\b({string.Join("|", schemaKeywords.Properties)})\\b\"";
-		}
-		else
-		{
-			Constants = string.Empty;
-			Collections = string.Empty;
-			Properties = string.Empty;
-		}
+		Constants = BuildKeywordPattern(schemaKeywords.Constants);
+		Collections = BuildKeywordPattern(schemaKeywords.Collections);
+		Properties = BuildKeywordPattern(schemaKeywords.Properties);
 
 		Values = $@"\b({string.Join("|", Keywords.Values)})\b";
 		Strings = "\"(.+?)\"";
 	}
+
+	private static string BuildKeywordPattern(IReadOnlyList<string> keywords)
+		=> keywords.Count == 0 ? string.Empty : $"\"\\b({string.Join("|", keywords.Select(Regex.Escape))})\\b\"";
 
 	/// <summary>
 	/// Gets the pattern matching line comments.

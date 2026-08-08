@@ -4,6 +4,9 @@ using System.Windows.Threading;
 
 namespace TombLib.Scripting.UI.Documents;
 
+/// <summary>
+/// Coordinates content-change detection and persistence for an editor.
+/// </summary>
 public sealed class ContentPersistenceCoordinator : IDisposable
 {
 	private readonly Func<string> _contentProvider;
@@ -11,7 +14,14 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 	private readonly ContentChangedWorker _contentChangedWorker;
 	private readonly DispatcherTimer? _textChangedDelayedTimer;
 	private TimeSpan _delayedInterval = TimeSpan.FromMilliseconds(300.0);
+	private bool _isDisposed;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ContentPersistenceCoordinator"/> class.
+	/// </summary>
+	/// <param name="contentProvider">The callback that returns the current editor content.</param>
+	/// <param name="silentSessionProvider">The callback that reports whether the editor is in a silent session.</param>
+	/// <param name="useDelayedScheduling">Whether content-change runs are scheduled through a delayed dispatcher timer.</param>
 	public ContentPersistenceCoordinator(
 		Func<string> contentProvider,
 		Func<bool> silentSessionProvider,
@@ -33,27 +43,57 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 		_contentChangedWorker.RunWorkerCompleted += ContentChangedWorker_RunWorkerCompleted;
 	}
 
+	/// <summary>
+	/// Raised when a content-changed worker run completes.
+	/// </summary>
 	public event EventHandler? ContentChangedWorkerRunCompleted;
 
+	/// <summary>
+	/// Raised when a content change is scheduled through the delayed timer.
+	/// </summary>
 	public event EventHandler? TextChangedDelayed;
 
+	/// <summary>
+	/// Gets or sets the path of the file the content is persisted to.
+	/// </summary>
 	public string FilePath
 	{
 		get => _contentChangedWorker.FilePath;
-		set => _contentChangedWorker.FilePath = value;
+		set
+		{
+			if (_isDisposed)
+				return;
+
+			_contentChangedWorker.FilePath = value;
+		}
 	}
 
+	/// <summary>
+	/// Gets or sets whether backup files are created when the content changes.
+	/// </summary>
 	public bool CreateBackupFiles
 	{
-		get => _contentChangedWorker.CreateBackupFiles;
-		set => _contentChangedWorker.CreateBackupFiles = value;
+		get => _isDisposed ? false : _contentChangedWorker.CreateBackupFiles;
+		set
+		{
+			if (_isDisposed)
+				return;
+
+			_contentChangedWorker.CreateBackupFiles = value;
+		}
 	}
 
+	/// <summary>
+	/// Gets or sets the interval of the delayed content-change scheduling.
+	/// </summary>
 	public TimeSpan DelayedInterval
 	{
 		get => _textChangedDelayedTimer?.Interval ?? _delayedInterval;
 		set
 		{
+			if (_isDisposed)
+				return;
+
 			_delayedInterval = value;
 
 			if (_textChangedDelayedTimer is not null)
@@ -61,8 +101,15 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 		}
 	}
 
+	/// <summary>
+	/// Reports whether the content changed and schedules the delayed persistence run when enabled.
+	/// </summary>
+	/// <returns><c>true</c> when the content differs from the persisted content; otherwise, <c>false</c>.</returns>
 	public bool HandleContentChanged()
 	{
+		if (_isDisposed)
+			return false;
+
 		bool isChanged = _contentChangedWorker.HasChanges(_contentProvider());
 
 		if (_textChangedDelayedTimer is not null)
@@ -74,25 +121,54 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 		return isChanged;
 	}
 
+	/// <summary>
+	/// Reports whether the content changed and runs the persistence worker unless the editor is in a silent session.
+	/// </summary>
+	/// <returns><c>true</c> when the content differs from the persisted content; otherwise, <c>false</c>.</returns>
 	public bool RunContentChangedCheck()
 	{
+		if (_isDisposed)
+			return false;
+
 		string content = _contentProvider();
 		bool isChanged = _contentChangedWorker.HasChanges(content);
 
 		if (!_silentSessionProvider())
-			_contentChangedWorker.RunAsync(content);
+			_contentChangedWorker.Run(content);
 
 		return isChanged;
 	}
 
+	/// <summary>
+	/// Records the given content as the persisted baseline.
+	/// </summary>
+	/// <param name="content">The persisted content.</param>
 	public void SetPersistedContent(string content)
-		=> _contentChangedWorker.SetPersistedContent(content);
+	{
+		if (_isDisposed)
+			return;
 
+		_contentChangedWorker.SetPersistedContent(content);
+	}
+
+	/// <summary>
+	/// Reports whether the given content differs from the persisted baseline.
+	/// </summary>
+	/// <param name="content">The content to compare.</param>
+	/// <returns><c>true</c> when the content changed; otherwise, <c>false</c>.</returns>
 	public bool HasChanges(string content)
-		=> _contentChangedWorker.HasChanges(content);
+		=> _isDisposed ? false : _contentChangedWorker.HasChanges(content);
 
+	/// <summary>
+	/// Stops the delayed timer and disposes the underlying persistence worker.
+	/// </summary>
 	public void Dispose()
 	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+
 		if (_textChangedDelayedTimer is not null)
 		{
 			_textChangedDelayedTimer.Stop();
@@ -108,6 +184,9 @@ public sealed class ContentPersistenceCoordinator : IDisposable
 
 	private void TextChangedDelayedTimer_Tick(object? sender, EventArgs e)
 	{
+		if (_isDisposed)
+			return;
+
 		RunContentChangedCheck();
 		TextChangedDelayed?.Invoke(this, EventArgs.Empty);
 

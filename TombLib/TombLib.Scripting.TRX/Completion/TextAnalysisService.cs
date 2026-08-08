@@ -117,7 +117,7 @@ public sealed class TextAnalysisService
 			: string.Empty;
 
 		// If the word starts with a quote but the caret is right after a quote we just typed,
-		// we want to return just the quote to trigger autocomplete
+		// we want to return just the quote to trigger completion
 		if (caretPosInLine > 0 && lineText[caretPosInLine - 1] == '"')
 		{
 			// Check if this is a fresh quote (not part of an existing word)

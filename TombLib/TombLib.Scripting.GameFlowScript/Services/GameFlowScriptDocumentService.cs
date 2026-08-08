@@ -8,9 +8,9 @@ namespace TombLib.Scripting.GameFlowScript.Services;
 /// <summary>
 /// Default implementation of <see cref="IGameFlowScriptDocumentService"/>.
 /// Provides document-level operations using <see cref="ITextSnapshot"/> and
-/// the line service, matching legacy <c>DocumentParser</c> behavior.
+/// the line service.
 /// </summary>
-public class GameFlowScriptDocumentService : IGameFlowScriptDocumentService
+public sealed class GameFlowScriptDocumentService : IGameFlowScriptDocumentService
 {
 	private readonly IGameFlowScriptLineService _lineService;
 	private readonly Regex _levelPropertyRegex = new(Patterns.LevelProperty, RegexOptions.IgnoreCase);

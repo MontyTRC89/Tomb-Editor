@@ -4,8 +4,17 @@ using TombLib.Scripting.IO;
 
 namespace TombLib.Scripting.ClassicScript.Compilers;
 
+/// <summary>
+/// Compiles ClassicScript using the external TR4 compiler.
+/// </summary>
 public static class TR4Compiler
 {
+	/// <summary>
+	/// Compiles the script at the given path with the TR4 compiler.
+	/// </summary>
+	/// <param name="projectScriptPath">The path of the project script directory.</param>
+	/// <param name="projectEnginePath">The path of the project engine directory.</param>
+	/// <returns>The compiler log content.</returns>
 	public static string Compile(string projectScriptPath, string projectEnginePath)
 	{
 		if (DefaultPaths.TR4ScriptCompilerDirectory.Contains('\''))

@@ -51,14 +51,14 @@ public abstract partial class TextEditorBase
 		=> _completionWindowCoordinator.TryOpen(items, startOffset, endOffset, width, height);
 
 	/// <summary>
-	/// Handles Ctrl+Space to trigger completion when autocomplete is enabled.
+	/// Handles Ctrl+Space to trigger completion when completion is enabled.
 	/// </summary>
 	/// <param name="e">The text composition event to inspect.</param>
 	/// <param name="onTriggered">The action invoked when completion should be triggered.</param>
 	/// <returns>True if the input was handled as a completion trigger; otherwise false.</returns>
 	protected bool TryHandleCtrlSpaceCompletion(TextCompositionEventArgs e, Action onTriggered)
 	{
-		if (!AutocompleteEnabled || !EditorCompletionTriggerHelper.IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))
+		if (!CompletionEnabled || !EditorCompletionTriggerHelper.IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))
 			return false;
 
 		if (!IsCompletionWindowOpen)

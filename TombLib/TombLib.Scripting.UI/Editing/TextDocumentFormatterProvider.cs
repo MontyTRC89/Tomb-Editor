@@ -2,7 +2,7 @@ using Nickelony.LanguageServer.Abstractions.Editing;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TombLib.Scripting.UI.Cleaning;
+using TombLib.Scripting.Cleaning;
 
 namespace TombLib.Scripting.UI.Editing;
 
@@ -13,14 +13,27 @@ public sealed class TextDocumentFormatterProvider : ITextFormattingProvider
 {
 	private readonly ITextDocumentFormatter _documentFormatter;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TextDocumentFormatterProvider"/> class.
+	/// </summary>
+	/// <param name="documentFormatter">The document formatter this provider adapts.</param>
 	public TextDocumentFormatterProvider(ITextDocumentFormatter documentFormatter)
 	{
 		ArgumentNullException.ThrowIfNull(documentFormatter);
 		_documentFormatter = documentFormatter;
 	}
 
+	/// <summary>
+	/// Gets a value indicating whether formatting is supported.
+	/// </summary>
 	public bool SupportsFormatting => true;
 
+	/// <summary>
+	/// Formats the document text in the request and returns the workspace edit, or <c>null</c> when nothing changed.
+	/// </summary>
+	/// <param name="request">The formatting request.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The workspace edit that applies the formatting, or <c>null</c> when the text is unchanged.</returns>
 	public Task<TextWorkspaceEdit?> FormatDocumentAsync(TextFormatRequest request, CancellationToken cancellationToken = default)
 	{
 		ArgumentNullException.ThrowIfNull(request);

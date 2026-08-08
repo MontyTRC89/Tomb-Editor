@@ -4,15 +4,33 @@ using System.Text.Json;
 
 namespace TombLib.Scripting.GameFlowScript;
 
+/// <summary>
+/// Provides the GameFlow definitions loaded from the bundled definitions resource.
+/// </summary>
 public static class GameFlowDefinitionCatalog
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
 	private static readonly Lazy<GameFlowDefinitionSet> _definitions = new(LoadDefinitions);
 
+	/// <summary>
+	/// Gets the special property names.
+	/// </summary>
 	public static IReadOnlyList<string> SpecialProperties => _definitions.Value.SpecialProperties;
+
+	/// <summary>
+	/// Gets the section names.
+	/// </summary>
 	public static IReadOnlyList<string> Sections => _definitions.Value.Sections;
+
+	/// <summary>
+	/// Gets the constant names.
+	/// </summary>
 	public static IReadOnlyList<string> Constants => _definitions.Value.Constants;
+
+	/// <summary>
+	/// Gets the property names.
+	/// </summary>
 	public static IReadOnlyList<string> Properties => _definitions.Value.Properties;
 
 	private static GameFlowDefinitionSet LoadDefinitions()

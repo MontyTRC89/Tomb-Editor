@@ -3,8 +3,9 @@
   <!-- ImplicitUsings intentionally NOT enabled: this project relies on explicit usings (per-project policy). -->
   <PropertyGroup>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsAsErrors>CS1591</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +18,8 @@
     </Compile>
   </ItemGroup>
 
-  <!-- Checked-in preview binaries (0.1.0-preview) under Libs/; not NuGet packages. Compatibility owned by the language-server integration. -->
+  <!-- Checked-in preview binaries (0.1.0-preview) under Libs/; not NuGet packages. Version and
+       build provenance are documented in Libs/README.md. -->
   <ItemGroup>
     <Reference Include="Nickelony.LanguageServer.Abstractions">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>

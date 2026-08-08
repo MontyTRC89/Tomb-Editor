@@ -6,10 +6,19 @@ using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Scripting.GameFlowScript.Writers;
 
+/// <summary>
+/// Performs script-wide renames inside an open GameFlow editor.
+/// </summary>
 public static class ScriptReplacer
 {
 	private static readonly Regex LevelPropertyRegex = new Regex(Patterns.LevelProperty, RegexOptions.IgnoreCase);
 
+	/// <summary>
+	/// Renames a level script reference in the editor.
+	/// </summary>
+	/// <param name="textEditor">The editor to update.</param>
+	/// <param name="oldName">The current level script name.</param>
+	/// <param name="newName">The new level script name.</param>
 	public static void RenameLevelScript(TextEditorBase textEditor, string oldName, string newName)
 		=> TextEditorLineOperations.TryReplaceFirstMatchingLine(
 			textEditor,
@@ -18,6 +27,12 @@ public static class ScriptReplacer
 			oldName,
 			newName);
 
+	/// <summary>
+	/// Renames a language string in the editor.
+	/// </summary>
+	/// <param name="textEditor">The editor to update.</param>
+	/// <param name="oldName">The current language string name.</param>
+	/// <param name="newName">The new language string name.</param>
 	public static void RenameLanguageString(TextEditorBase textEditor, string oldName, string newName)
 		=> TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
 		{

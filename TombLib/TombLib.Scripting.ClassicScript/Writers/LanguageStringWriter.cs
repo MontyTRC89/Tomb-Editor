@@ -8,22 +8,40 @@ using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.ClassicScript.Writers;
 
-public class LanguageStringWriter
+/// <summary>
+/// Writes ClassicScript language string entries into an open editor.
+/// </summary>
+public sealed class LanguageStringWriter
 {
 	private readonly IClassicScriptCommandService _commandService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="LanguageStringWriter"/> class.
+	/// </summary>
+	/// <param name="commandService">The command service used to locate document sections.</param>
 	public LanguageStringWriter(IClassicScriptCommandService commandService)
 	{
 		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
 	}
 
+	/// <summary>
+	/// Writes a new level name string for the given level name.
+	/// </summary>
+	/// <param name="textEditor">The editor to write into.</param>
+	/// <param name="levelName">The level name to write.</param>
 	public void WriteNewLevelNameString(TextEditorBase textEditor, string levelName)
 	{
 		if (!TextEditorLineOperations.TryAssignStockLevelNameStringSlot(textEditor, levelName))
 			WriteNewNGString(textEditor, levelName);
 	}
 
+	/// <summary>
+	/// Writes a new NG string at the end of the ExtraNG section.
+	/// </summary>
+	/// <param name="textEditor">The editor to write into.</param>
+	/// <param name="ngString">The NG string value to write.</param>
+	/// <returns><c>true</c> when the NG string was written; otherwise, <c>false</c>.</returns>
 	public bool WriteNewNGString(TextEditorBase textEditor, string ngString)
 	{
 		ITextSnapshot source = new TextDocumentSnapshot(textEditor.Document);
@@ -44,18 +62,16 @@ public class LanguageStringWriter
 
 				if (Regex.IsMatch(lineText, @"^\d+:"))
 				{
-					textEditor.CaretOffset = line.EndOffset;
 					int prevNumber = int.Parse(Regex.Replace(lineText, @"^(\d+):.*$", "$1"));
 
-					textEditor.TextArea.PerformTextInput($"{Environment.NewLine}{prevNumber + 1}: {ngString}");
+					TextEditorEditHelper.InsertText(textEditor, line.EndOffset, $"{Environment.NewLine}{prevNumber + 1}: {ngString}");
 
 					textEditor.ScrollToLine(i + 1);
 					return true;
 				}
 				else if (i == extrangSectionStartLine.LineNumber)
 				{
-					textEditor.CaretOffset = line.EndOffset;
-					textEditor.TextArea.PerformTextInput($"{Environment.NewLine}0: {ngString}");
+					TextEditorEditHelper.InsertText(textEditor, line.EndOffset, $"{Environment.NewLine}0: {ngString}");
 
 					textEditor.ScrollToLine(i + 1);
 					return true;

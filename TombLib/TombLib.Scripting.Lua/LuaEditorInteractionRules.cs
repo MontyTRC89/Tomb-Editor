@@ -47,8 +47,8 @@ internal static class LuaEditorInteractionRules
 	/// <param name="document">The document being inspected.</param>
 	/// <param name="offset">The zero-based caret offset after text entry.</param>
 	/// <param name="triggerCharacter">The character that triggered completion, if any.</param>
-	/// <returns><see langword="true"/> if autocomplete should be requested; otherwise, <see langword="false"/>.</returns>
-	public static bool IsValidAutocompleteContext(TextDocument? document, int offset, char? triggerCharacter)
+	/// <returns><see langword="true"/> if completion should be requested; otherwise, <see langword="false"/>.</returns>
+	public static bool IsValidCompletionContext(TextDocument? document, int offset, char? triggerCharacter)
 	{
 		if (offset <= 0 || document is null || document.TextLength == 0)
 			return false;

@@ -34,18 +34,16 @@ using TombLib.Scripting.ClassicScript.Signatures;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
-using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.TRX;
-using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
-using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombIDE.ScriptingStudio.Composition;
 
@@ -104,18 +102,17 @@ public static class ScriptingStudioServiceCollectionExtensions
 				new GameFlowHoverProvider(),
 				new GameFlowCompletionProvider(),
 				lineService,
-				documentService,
-				new GameFlowDocumentLookupService(documentService));
+				documentService);
 		});
 
 		// TRX services.
-		services.AddSingleton<IGameFlowSchemaService>(_ =>
-			new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath()));
+		services.AddSingleton<ITRXGameFlowSchemaService>(_ =>
+			new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath()));
 		services.AddSingleton<ITRXLineService, TRXLineService>();
 		services.AddSingleton<ITRXDocumentService, TRXDocumentService>();
 		services.AddSingleton<TRXLanguageServices>(sp =>
 		{
-			var schemaService = sp.GetRequiredService<IGameFlowSchemaService>();
+			var schemaService = sp.GetRequiredService<ITRXGameFlowSchemaService>();
 			var lineService = sp.GetRequiredService<ITRXLineService>();
 			var documentService = sp.GetRequiredService<ITRXDocumentService>();
 
@@ -125,8 +122,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 				documentService,
 				new TRXDefinitionProvider(documentService),
 				new TRXGameFlowCompletionService(schemaService),
-				new GameFlowHoverService(schemaService),
-				new TRXDocumentLookupService(documentService));
+				new TRXGameFlowHoverService(schemaService));
 		});
 
 		AddScriptingStudioShellServices(services);

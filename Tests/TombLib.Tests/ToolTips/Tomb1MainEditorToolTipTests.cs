@@ -4,7 +4,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Completion;
-using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
@@ -20,7 +19,7 @@ public class Tomb1MainEditorToolTipTests
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
+			var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 			var lineService = new TRXLineService();
 			var documentService = new TRXDocumentService(lineService);
 
@@ -29,9 +28,8 @@ public class Tomb1MainEditorToolTipTests
 				lineService,
 				documentService,
 				new TRXDefinitionProvider(documentService),
-				new GameFlowCompletionService(schemaService),
-				new GameFlowHoverService(schemaService),
-				new TRXDocumentLookupService(documentService));
+				new TRXGameFlowCompletionService(schemaService),
+				new TRXGameFlowHoverService(schemaService));
 			var editor = new TRXEditor(new Version(1, 0), languageServices);
 			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
 

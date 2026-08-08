@@ -5,14 +5,16 @@ namespace TombLib.Scripting.TRX;
 
 /// <summary>
 /// Enumerates all schemas reachable from a root <see cref="JSchema"/>, guarding against cycles.
+/// Internal to TRX: schema traversal is an implementation detail and is not part of the
+/// public provider contract.
 /// </summary>
-public static class SchemaTraversal
+internal static class SchemaTraversal
 {
 	/// <summary>
 	/// Returns the root schema and every nested schema reachable through properties,
-	/// array items and oneOf/anyOf/allOf combinators.
+	/// array items, oneOf/anyOf/allOf combinators and resolved $ref targets.
 	/// </summary>
-	public static IReadOnlyList<JSchema> FlattenSchemas(JSchema schema)
+	internal static IReadOnlyList<JSchema> FlattenSchemas(JSchema schema)
 	{
 		var visited = new HashSet<JSchema>();
 		var result = new List<JSchema>();
@@ -44,6 +46,11 @@ public static class SchemaTraversal
 
 			foreach (var nestedSchema in current.AllOf ?? [])
 				Visit(nestedSchema);
+
+			// In-file $ref targets are inlined by the schema reader, but follow an unresolved
+			// reference when present so traversal stays complete for any schema shape.
+			if (current.Ref is not null)
+				Visit(current.Ref);
 		}
 	}
 }

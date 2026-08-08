@@ -88,7 +88,7 @@ internal static class LuaLineParser
 		=> char.IsLetterOrDigit(character) || character == '_';
 
 	/// <summary>
-	/// Determines whether a character can start an identifier-triggered autocomplete request.
+	/// Determines whether a character can start an identifier-triggered completion request.
 	/// </summary>
 	/// <param name="character">The character to test.</param>
 	/// <returns><see langword="true"/> if the character is a valid identifier trigger; otherwise, <see langword="false"/>.</returns>

@@ -6,14 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using TombLib.Scripting.UI.Presentation;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Presentation;
+using TombLib.Scripting.Threading;
 
 namespace TombLib.Scripting.UI.Hover;
 
 /// <summary>
 /// Coordinates hover requests, request invalidation, and hover-versus-diagnostic tooltip display.
 /// </summary>
-public sealed class TextHoverController
+public sealed class TextHoverController : IDisposable
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
@@ -30,6 +32,7 @@ public sealed class TextHoverController
 
 	private CancellationTokenSource? _hoverCancellationTokenSource;
 	private readonly RequestTokenSource _hoverRequestTokens = new();
+	private bool _isDisposed;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TextHoverController"/> class.
@@ -79,6 +82,9 @@ public sealed class TextHoverController
 	{
 		ArgumentNullException.ThrowIfNull(e);
 
+		if (_isDisposed)
+			return;
+
 		int hoveredOffset = -1;
 		TextHoverRequestState requestState = default;
 
@@ -106,7 +112,7 @@ public sealed class TextHoverController
 
 			TextHoverInfo? hoverInfo = await _requestHoverAsync(requestState.RequestOffset, cancellationToken).ConfigureAwait(true);
 
-			if (cancellationToken.IsCancellationRequested || !_hoverRequestTokens.IsCurrent(hoverRequestToken))
+			if (_isDisposed || cancellationToken.IsCancellationRequested || !_hoverRequestTokens.IsCurrent(hoverRequestToken))
 				return;
 
 			int currentHoveredOffset = _getOffsetFromPoint(Mouse.GetPosition(_owner));
@@ -128,6 +134,9 @@ public sealed class TextHoverController
 		}
 		catch (Exception exception)
 		{
+			if (_isDisposed)
+				return;
+
 			if (_handleRequestFailure is null)
 				Log.Warn(exception, "Hover request failed.");
 			else
@@ -146,6 +155,14 @@ public sealed class TextHoverController
 	/// </summary>
 	public void CancelPendingRequest()
 	{
+		if (_isDisposed)
+			return;
+
+		CancelPendingRequestCore();
+	}
+
+	private void CancelPendingRequestCore()
+	{
 		_hoverCancellationTokenSource?.Cancel();
 		_hoverCancellationTokenSource?.Dispose();
 		_hoverCancellationTokenSource = null;
@@ -155,7 +172,25 @@ public sealed class TextHoverController
 	/// Marks outstanding hover requests as stale so completed results are ignored.
 	/// </summary>
 	public void InvalidateRequests()
-		=> _hoverRequestTokens.Invalidate();
+	{
+		if (_isDisposed)
+			return;
+
+		_hoverRequestTokens.Invalidate();
+	}
+
+	/// <summary>
+	/// Cancels the in-flight hover request and marks outstanding work as stale.
+	/// </summary>
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		CancelPendingRequestCore();
+		_hoverRequestTokens.Invalidate();
+	}
 
 	private void ApplyHoverState(TextHoverPresentationState state)
 	{

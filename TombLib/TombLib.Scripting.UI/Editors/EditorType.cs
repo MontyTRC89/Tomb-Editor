@@ -1,5 +1,8 @@
 namespace TombLib.Scripting.UI.Editors;
 
+/// <summary>
+/// Identifies the type of an editor control.
+/// </summary>
 public enum EditorType
 {
 	/// <summary>
@@ -7,6 +10,13 @@ public enum EditorType
 	/// </summary>
 	Default,
 
+	/// <summary>
+	/// A plain text editor.
+	/// </summary>
 	Text,
+
+	/// <summary>
+	/// A strings file editor.
+	/// </summary>
 	Strings
 }

@@ -31,7 +31,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// <summary>
 	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
 	/// </summary>
-	public ILanguageServerIntellisenseProvider? IntellisenseProvider { get; set; }
+	public ILanguageServerIntellisenseProvider? IntelliSenseProvider { get; set; }
 
 	/// <summary>
 	/// Occurs when the editor resolves a definition location that should be opened by the host application.
@@ -51,7 +51,7 @@ public sealed partial class LuaEditor : TextEditorBase
 		InitializeDefinitionNavigation(TryNavigateDefinitionAsync);
 		_hoverController = new LuaHoverController(this);
 		_signatureHelpController = new LuaSignatureHelpController(this);
-		BindLuaIntellisenseEvents();
+		BindLuaIntelliSenseEvents();
 	}
 
 	/// <summary>

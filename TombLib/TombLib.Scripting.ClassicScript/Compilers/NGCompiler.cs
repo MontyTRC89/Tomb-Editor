@@ -6,10 +6,17 @@ using TombLib.Scripting.IO;
 
 namespace TombLib.Scripting.ClassicScript.Compilers;
 
+/// <summary>
+/// Compiles ClassicScript using the external NG compiler.
+/// </summary>
 public static class NGCompiler
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+	/// <summary>
+	/// Ensures the libraries required by the NG compiler are registered.
+	/// </summary>
+	/// <returns><c>true</c> when the required libraries are available; otherwise, <c>false</c>.</returns>
 	public static bool AreLibrariesRegistered()
 	{
 		bool requiredFilesExist = File.Exists(DefaultPaths.MscomctlSystemFile)
@@ -39,6 +46,13 @@ public static class NGCompiler
 		return true;
 	}
 
+	/// <summary>
+	/// Compiles the script at the given path with the NG compiler.
+	/// </summary>
+	/// <param name="projectScriptPath">The path of the project script directory.</param>
+	/// <param name="projectEnginePath">The path of the project engine directory.</param>
+	/// <param name="newIncludeMethod">Whether the new include merging method is used.</param>
+	/// <returns><c>true</c> when the compilation produced a data file.</returns>
 	public static bool Compile(string projectScriptPath, string projectEnginePath, bool newIncludeMethod = false)
 	{
 		if (!AreLibrariesRegistered())

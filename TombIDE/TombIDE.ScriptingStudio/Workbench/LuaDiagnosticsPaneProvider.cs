@@ -8,8 +8,8 @@ using TombIDE.ScriptingStudio.Navigation;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.ScriptingStudio.WorkspaceProfile;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Bases;
-using TombLib.Scripting.UI.Presentation;
 
 namespace TombIDE.ScriptingStudio.Workbench;
 

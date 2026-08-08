@@ -1,4 +1,3 @@
-using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ using TombLib.Scripting.TRX.Highlighting;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
+using TombLib.Scripting.UI.Editing;
 
 namespace TombLib.Scripting.TRX;
 
@@ -24,21 +24,17 @@ public sealed partial class TRXEditor : TextEditorBase
 	/// <inheritdoc />
 	public override string DefaultFileExtension => ".json5";
 
-	// These fields are re-entrancy temporaries that span a single keystroke cycle: entering sets
-	// _suppressBracketAutospacing, and HandleBracketAutospacing performs nested
-	// TextArea.PerformTextInput calls that re-enter OnLanguageTextEntered, so the in-progress
-	// marker and the captured line must survive across those nested calls.
-	private DocumentLine? _bracketAutospacingLine;
-
-	private bool _suppressBracketAutospacing;
+	// One-shot pending marker set while the user's Enter is being entered inside a bracket pair.
+	// Direct document edits no longer re-enter the language handlers, so only this intent flag is needed.
+	private bool _pendingBracketAutospacing;
 
 	private readonly ITextDefinitionProvider _definitionProvider;
-	private readonly IGameFlowSchemaService _schemaService;
-	private readonly ITextCompletionProvider _completionService;
-	private readonly ITextHoverProvider _hoverService;
+	private readonly ITRXGameFlowSchemaService _schemaService;
+	private readonly ITextCompletionProvider _completionProvider;
+	private readonly ITextHoverProvider _hoverProvider;
 	private readonly TextAnalysisService _textAnalysisService;
 	private readonly CompletionManager _completionManager;
-	private readonly CompletionSessionCoordinator _completionCoordinator;
+	private readonly TRXCompletionSessionCoordinator _completionCoordinator;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TRXEditor"/> class.
@@ -51,11 +47,11 @@ public sealed partial class TRXEditor : TextEditorBase
 
 		_definitionProvider = languageServices.DefinitionProvider;
 		_schemaService = languageServices.SchemaService;
-		_completionService = languageServices.CompletionService;
-		_hoverService = languageServices.HoverService;
+		_completionProvider = languageServices.CompletionProvider;
+		_hoverProvider = languageServices.HoverProvider;
 		_textAnalysisService = new TextAnalysisService();
 		_completionManager = new CompletionManager(languageServices.LineService);
-		_completionCoordinator = new CompletionSessionCoordinator(_completionService, _textAnalysisService, _completionManager);
+		_completionCoordinator = new TRXCompletionSessionCoordinator(_completionProvider, _textAnalysisService, _completionManager);
 
 		InitializeDefinitionNavigation(TryNavigateDefinition);
 		InitializeHover(BuildStandardHoverRequestState, RequestHover);
@@ -68,6 +64,7 @@ public sealed partial class TRXEditor : TextEditorBase
 
 	// Event handlers
 
+	/// <inheritdoc/>
 	protected override void OnLanguageTextEntering(TextCompositionEventArgs e)
 	{
 		if (TryHandleCtrlSpaceCompletion(
@@ -90,14 +87,15 @@ public sealed partial class TRXEditor : TextEditorBase
 				char next = nextChar.Value;
 
 				if ((prev == '{' && next == '}') || (prev == '[' && next == ']'))
-					_suppressBracketAutospacing = true;
+					_pendingBracketAutospacing = true;
 			}
 		}
 	}
 
+	/// <inheritdoc/>
 	protected override void OnLanguageTextEntered(TextCompositionEventArgs e)
 	{
-		if (AutocompleteEnabled)
+		if (CompletionEnabled)
 			CompletionController.ApplyDecision(
 				_completionCoordinator.GetTextEnteredDecision(Document, CaretOffset, e.Text, CompletionController.ActiveWindow is not null),
 				item => new CompletionData(item, TRXCompletionIconProvider.GetImage));
@@ -115,24 +113,11 @@ public sealed partial class TRXEditor : TextEditorBase
 
 	private void HandleBracketAutospacing()
 	{
-		if (!_suppressBracketAutospacing || _bracketAutospacingLine is not null)
+		if (!_pendingBracketAutospacing)
 			return;
 
-		// Capture the line before inserting the newline: splitting the line shrinks the captured
-		// line's end, so its end offset is only meaningful when read after the insert.
-		_bracketAutospacingLine = Document.GetLineByOffset(CaretOffset);
-
-		try
-		{
-			TextArea.PerformTextInput("\n");
-			CaretOffset = _bracketAutospacingLine.EndOffset;
-			TextArea.PerformTextInput("\t");
-		}
-		finally
-		{
-			_bracketAutospacingLine = null;
-			_suppressBracketAutospacing = false;
-		}
+		_pendingBracketAutospacing = false;
+		TextEditorEditHelper.InsertText(this, CaretOffset, Environment.NewLine + "\t");
 	}
 
 	// Public methods
@@ -155,7 +140,7 @@ public sealed partial class TRXEditor : TextEditorBase
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverService, offset));
+		=> Task.FromResult(TryGoToDefinition(_definitionProvider, _hoverProvider, offset));
 
 	/// <inheritdoc />
 	public override void GoToObject(string objectName, object? identifyingObject = null)

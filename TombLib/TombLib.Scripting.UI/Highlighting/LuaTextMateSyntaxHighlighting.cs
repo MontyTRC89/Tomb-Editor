@@ -10,14 +10,30 @@ using TextMateSharp.Registry;
 
 namespace TombLib.Scripting.UI.Highlighting;
 
+/// <summary>
+/// Installs TextMate-based syntax highlighting on a Lua <see cref="TextEditor"/>.
+/// </summary>
 public static class LuaTextMateSyntaxHighlighting
 {
 	private static readonly Lazy<IGrammar?> GrammarState = new Lazy<IGrammar?>(LoadGrammarState);
 	private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
 
+	/// <summary>
+	/// Tries to install the default TextMate highlighting on the given editor.
+	/// </summary>
+	/// <param name="editor">The editor to install highlighting on.</param>
+	/// <param name="installation">The installation created when the install succeeds.</param>
+	/// <returns><c>true</c> when the installation succeeded; otherwise, <c>false</c>.</returns>
 	public static bool TryInstall(TextEditor editor, [NotNullWhen(true)] out LuaTextMateInstallation? installation)
 		=> TryInstall(editor, DefaultTheme, out installation);
 
+	/// <summary>
+	/// Tries to install the given TextMate theme highlighting on the given editor.
+	/// </summary>
+	/// <param name="editor">The editor to install highlighting on.</param>
+	/// <param name="theme">The token theme to apply.</param>
+	/// <param name="installation">The installation created when the install succeeds.</param>
+	/// <returns><c>true</c> when the installation succeeded; otherwise, <c>false</c>.</returns>
 	public static bool TryInstall(TextEditor editor, TextMateTokenTheme theme, [NotNullWhen(true)] out LuaTextMateInstallation? installation)
 	{
 		installation = null;
@@ -41,6 +57,10 @@ public static class LuaTextMateSyntaxHighlighting
 		return true;
 	}
 
+	/// <summary>
+	/// Loads the fallback highlighting definition used when the grammar is unavailable.
+	/// </summary>
+	/// <returns>The fallback highlighting definition, or <c>null</c> when it cannot be loaded.</returns>
 	public static IHighlightingDefinition? LoadFallbackHighlighting()
 		=> LuaFallbackHighlightingLoader.Load();
 
@@ -56,6 +76,9 @@ public static class LuaTextMateSyntaxHighlighting
 	}
 }
 
+/// <summary>
+/// Owns the resources of an installed TextMate highlighting session.
+/// </summary>
 public sealed class LuaTextMateInstallation : IDisposable
 {
 	private readonly TextEditor _editor;
@@ -72,8 +95,14 @@ public sealed class LuaTextMateInstallation : IDisposable
 		Model = model;
 	}
 
+	/// <summary>
+	/// Gets the TextMate model backing the highlighting.
+	/// </summary>
 	public TMModel Model { get; }
 
+	/// <summary>
+	/// Disposes the highlighting transformer, model and document lines, and removes the transformer from the editor.
+	/// </summary>
 	public void Dispose()
 	{
 		if (_isDisposed)

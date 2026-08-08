@@ -5,16 +5,24 @@ using TombLib.Scripting.UI.ContentNodes;
 
 namespace TombLib.Scripting.ClassicScript.ContentNodes;
 
+/// <summary>
+/// Provides the content nodes for a ClassicScript strings file.
+/// </summary>
 public sealed class StringFileNodesProvider : ContentNodesProviderBase
 {
 	private readonly IClassicScriptLineService _lineService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="StringFileNodesProvider"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to identify section headers.</param>
 	public StringFileNodesProvider(IClassicScriptLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
 	}
 
+	/// <inheritdoc/>
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
 	{
 		var nodes = new List<DarkTreeNode>();

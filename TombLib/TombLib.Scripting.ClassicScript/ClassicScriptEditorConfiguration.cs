@@ -8,39 +8,66 @@ using TombLib.Utils;
 
 namespace TombLib.Scripting.ClassicScript;
 
+/// <summary>
+/// Configuration for the ClassicScript editor, including its color scheme.
+/// </summary>
 public sealed class ClassicScriptEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 {
+	/// <inheritdoc/>
 	public override string DefaultPath { get; }
 
 	// Properties
 
+	/// <summary>
+	/// Gets or sets whether section separator lines are rendered.
+	/// </summary>
 	public bool ShowSectionSeparators { get; set; } = ConfigurationDefaults.ShowSectionSeparators;
 
+	/// <summary>
+	/// Gets or sets whether a space is inserted before the equals sign when tidying.
+	/// </summary>
 	[XmlElement("Tidy_PreEqualSpace")]
 	public bool SpaceBeforeEquals { get; set; } = ConfigurationDefaults.SpaceBeforeEquals;
 
+	/// <summary>
+	/// Gets or sets whether a space is inserted after the equals sign when tidying.
+	/// </summary>
 	[XmlElement("Tidy_PostEqualSpace")]
 	public bool SpaceAfterEquals { get; set; } = ConfigurationDefaults.SpaceAfterEquals;
 
+	/// <summary>
+	/// Gets or sets whether a space is inserted before the comma when tidying.
+	/// </summary>
 	[XmlElement("Tidy_PreCommaSpace")]
 	public bool SpaceBeforeComma { get; set; } = ConfigurationDefaults.SpaceBeforeComma;
 
+	/// <summary>
+	/// Gets or sets whether a space is inserted after the comma when tidying.
+	/// </summary>
 	[XmlElement("Tidy_PostCommaSpace")]
 	public bool SpaceAfterComma { get; set; } = ConfigurationDefaults.SpaceAfterComma;
 
+	/// <summary>
+	/// Gets or sets whether multiple spaces are collapsed when tidying.
+	/// </summary>
 	[XmlElement("Tidy_ReduceSpaces")]
 	public bool CollapseMultipleSpaces { get; set; } = ConfigurationDefaults.CollapseMultipleSpaces;
 
 	// Color scheme
 
+	/// <inheritdoc/>
 	protected override string GetSchemeFilePath(string schemeName)
 		=> Path.Combine(DefaultPaths.ClassicScriptColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
+	/// <inheritdoc/>
 	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
 		=> JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath);
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptEditorConfiguration"/> class.
+	/// </summary>
 	public ClassicScriptEditorConfiguration()
 	{
 		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);

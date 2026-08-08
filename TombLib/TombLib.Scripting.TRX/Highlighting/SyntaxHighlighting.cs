@@ -15,7 +15,7 @@ namespace TombLib.Scripting.TRX.Highlighting;
 public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
 	private readonly ColorScheme _scheme;
-	private readonly IGameFlowSchemaService _schemaService;
+	private readonly ITRXGameFlowSchemaService _schemaService;
 
 	// Construction
 
@@ -24,7 +24,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	/// </summary>
 	/// <param name="scheme">The color scheme used for the highlighting rules.</param>
 	/// <param name="schemaService">The schema service used to source the highlighting keywords.</param>
-	public SyntaxHighlighting(ColorScheme scheme, IGameFlowSchemaService schemaService)
+	public SyntaxHighlighting(ColorScheme scheme, ITRXGameFlowSchemaService schemaService)
 	{
 		_scheme = scheme;
 		_schemaService = schemaService;

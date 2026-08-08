@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using TombIDE.ScriptingStudio.Shell;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Presentation;
 
 namespace TombIDE.ScriptingStudio.Diagnostics;

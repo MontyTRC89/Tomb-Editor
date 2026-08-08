@@ -8,7 +8,7 @@ namespace TombLib.Scripting.TRX.Writers;
 /// <summary>
 /// Applies script-wide renames to TRX documents.
 /// </summary>
-public class ScriptReplacer
+public sealed class ScriptReplacer
 {
 	private static readonly Regex LevelPropertyRegex = TRXLevelNameParser.LevelPropertyRegex;
 

@@ -13,57 +13,93 @@ namespace TombLib.Scripting.UI.Diagnostics;
 /// <summary>
 /// Runs error detection in the background, debounced by an idle timer, and publishes the result
 /// through <see cref="RunWorkerCompleted"/>. Requests are latest-request-wins: when a newer request
-/// is issued before an older one completes, the older result is discarded.
+/// is issued before an older one completes, the older result is discarded. When a silent-session
+/// provider is supplied, checks are not started while the session is silent.
 /// </summary>
-public class ErrorDetectionWorker
+public sealed class ErrorDetectionWorker : IDisposable
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
 	// Properties
 
+	/// <summary>
+	/// Gets or sets the diagnostics provider used to detect errors.
+	/// </summary>
 	public ITextDiagnosticsProvider? DiagnosticsProvider { get; set; }
 
+	/// <summary>
+	/// Gets or sets the error detector used to detect errors.
+	/// </summary>
 	public IErrorDetector? ErrorDetector { get; set; }
 
+	/// <summary>
+	/// Gets whether a detection run is currently in progress.
+	/// </summary>
 	public bool IsBusy => _isBusy;
 
+	/// <summary>
+	/// Gets or sets the idle debounce interval before a queued check runs.
+	/// </summary>
 	public TimeSpan IdleDelayInterval
 	{
 		get => _errorUpdateTimer.Interval;
 		set => _errorUpdateTimer.Interval = value;
 	}
 
+	/// <summary>
+	/// Gets or sets the engine version used for error detection.
+	/// </summary>
 	public Version EngineVersion { get; set; }
 
 	// Fields
 
 	private readonly Dispatcher _dispatcher;
 	private readonly DispatcherTimer _errorUpdateTimer = new();
+	private readonly Func<bool>? _silentSessionProvider;
 
 	private volatile bool _isBusy;
 	private int _latestRequestId;
 	private string _editorContent = string.Empty;
+	private bool _isDisposed;
 
 	// Construction
 
-	public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion, TimeSpan idleDelayInterval)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ErrorDetectionWorker"/> class on the current dispatcher thread.
+	/// </summary>
+	/// <param name="errorDetector">The optional error detector.</param>
+	/// <param name="engineVersion">The engine version used for error detection.</param>
+	/// <param name="idleDelayInterval">The idle debounce interval.</param>
+	/// <param name="silentSessionProvider">The callback that reports whether the editor is in a silent session (optional).</param>
+	public ErrorDetectionWorker(IErrorDetector? errorDetector, Version engineVersion, TimeSpan idleDelayInterval, Func<bool>? silentSessionProvider = null)
 	{
 		_dispatcher = Dispatcher.CurrentDispatcher;
 		ErrorDetector = errorDetector;
 		IdleDelayInterval = idleDelayInterval;
 		EngineVersion = engineVersion;
+		_silentSessionProvider = silentSessionProvider;
 
 		_errorUpdateTimer.Tick += ErrorUpdateTimer_Tick;
 	}
 
 	// Events
 
+	/// <summary>
+	/// Raised when a detection run completes with the resulting diagnostics.
+	/// </summary>
 	public event RunWorkerCompletedEventHandler? RunWorkerCompleted;
 
 	// Public methods
 
+	/// <summary>
+	/// Schedules a detection run after the idle debounce interval. No-op while a silent session is active.
+	/// </summary>
+	/// <param name="editorContent">The editor content to check.</param>
 	public void RunErrorCheckOnIdle(string? editorContent)
 	{
+		if (_isDisposed || IsSilentSession())
+			return;
+
 		if (_errorUpdateTimer.IsEnabled)
 			_errorUpdateTimer.Stop();
 
@@ -71,8 +107,15 @@ public class ErrorDetectionWorker
 		_errorUpdateTimer.Start();
 	}
 
-	public void CheckForErrorsAsync(string? editorContent)
+	/// <summary>
+	/// Runs a detection check now with the given content. No-op while a silent session is active.
+	/// </summary>
+	/// <param name="editorContent">The editor content to check.</param>
+	public void RunErrorCheck(string? editorContent)
 	{
+		if (_isDisposed || IsSilentSession())
+			return;
+
 		if (ErrorDetector is null && DiagnosticsProvider is null)
 			return;
 
@@ -86,8 +129,16 @@ public class ErrorDetectionWorker
 	private void ErrorUpdateTimer_Tick(object? sender, EventArgs e)
 	{
 		_errorUpdateTimer.Stop();
-		CheckForErrorsAsync(_editorContent);
+
+		// Do not start a check when the editor entered a silent session while the timer was pending.
+		if (IsSilentSession())
+			return;
+
+		RunErrorCheck(_editorContent);
 	}
+
+	private bool IsSilentSession()
+		=> _silentSessionProvider?.Invoke() ?? false;
 
 	// Private methods
 
@@ -130,5 +181,19 @@ public class ErrorDetectionWorker
 
 		_isBusy = false;
 		RunWorkerCompleted?.Invoke(this, new RunWorkerCompletedEventArgs(result, error, false));
+	}
+
+	// IDisposable
+
+	/// <summary>
+	/// Stops error detection and invalidates any in-flight request so no completion callback fires afterwards.
+	/// </summary>
+	public void Dispose()
+	{
+		_isDisposed = true;
+		_errorUpdateTimer.Stop();
+		_errorUpdateTimer.Tick -= ErrorUpdateTimer_Tick;
+		_isBusy = false;
+		Interlocked.Increment(ref _latestRequestId);
 	}
 }

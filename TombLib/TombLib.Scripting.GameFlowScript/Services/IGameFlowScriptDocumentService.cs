@@ -11,7 +11,7 @@ public interface IGameFlowScriptDocumentService
 {
 	/// <summary>
 	/// Returns <c>true</c> when a level property line with the given <paramref name="levelName"/>
-	/// exists in the document. Matches legacy <c>DocumentParser.IsLevelScriptDefined</c> behavior.
+	/// exists in the document.
 	/// </summary>
 	bool IsLevelScriptDefined(ITextSnapshot source, string levelName);
 

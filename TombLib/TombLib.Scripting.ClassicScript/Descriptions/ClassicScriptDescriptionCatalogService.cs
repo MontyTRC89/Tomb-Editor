@@ -3,12 +3,9 @@ using System.Text;
 
 namespace TombLib.Scripting.ClassicScript.Descriptions;
 
-// Reads command and constant descriptions from the Markdown description files
-// (Resources/ClassicScript/Descriptions/*.md) into case-insensitive dictionaries.
-// Each description lives under a "## <key>" section; the section body is the text
-// between the header line and the next header (or end of file), minus exactly one
-// trailing newline, so consecutive headers represent an intentionally empty description.
-// The file is parsed once and lookups are O(1) afterwards.
+/// <summary>
+/// Reads command and constant descriptions from the bundled Markdown description files into case-insensitive dictionaries.
+/// </summary>
 public sealed class ClassicScriptDescriptionCatalogService
 {
 	private readonly Lazy<IReadOnlyDictionary<string, string>> _mnemonicConstants = new(() => Load("MnemonicConstants.md"));
@@ -16,15 +13,35 @@ public sealed class ClassicScriptDescriptionCatalogService
 	private readonly Lazy<IReadOnlyDictionary<string, string>> _newCommands = new(() => Load("NewCommands.md"));
 	private readonly Lazy<IReadOnlyDictionary<string, string>> _ocbs = new(() => Load("OCBs.md"));
 
+	/// <summary>
+	/// Gets the description of a mnemonic constant.
+	/// </summary>
+	/// <param name="keyword">The keyword to look up.</param>
+	/// <returns>The description, or an empty string when the keyword is unknown.</returns>
 	public string GetMnemonicConstantDescription(string keyword)
 		=> GetDescription(_mnemonicConstants.Value, keyword);
 
+	/// <summary>
+	/// Gets the description of an old command.
+	/// </summary>
+	/// <param name="keyword">The keyword to look up.</param>
+	/// <returns>The description, or an empty string when the keyword is unknown.</returns>
 	public string GetOldCommandDescription(string keyword)
 		=> GetDescription(_oldCommands.Value, keyword);
 
+	/// <summary>
+	/// Gets the description of a new command.
+	/// </summary>
+	/// <param name="keyword">The keyword to look up.</param>
+	/// <returns>The description, or an empty string when the keyword is unknown.</returns>
 	public string GetNewCommandDescription(string keyword)
 		=> GetDescription(_newCommands.Value, keyword);
 
+	/// <summary>
+	/// Gets the description of an OCB.
+	/// </summary>
+	/// <param name="keyword">The keyword to look up.</param>
+	/// <returns>The description, or an empty string when the keyword is unknown.</returns>
 	public string GetOcbDescription(string keyword)
 		=> GetDescription(_ocbs.Value, keyword);
 

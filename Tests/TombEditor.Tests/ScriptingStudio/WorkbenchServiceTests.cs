@@ -18,11 +18,10 @@ using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Syntaxes;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
-using TombLib.Scripting.GameFlowScript.Documents;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.TRX;
-using TombLib.Scripting.TRX.Documents;
+using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
@@ -31,7 +30,6 @@ using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
-using TRXGameFlowCompletionService = TombLib.Scripting.TRX.Completion.GameFlowCompletionService;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -185,15 +183,14 @@ public class WorkbenchServiceTests
             new Mock<ITextHoverProvider>().Object,
             new GameFlowCompletionProvider(),
             lineService,
-            documentService,
-            new GameFlowDocumentLookupService(documentService));
+            documentService);
     }
 
     private static TRXLanguageServices CreateTRXLanguageServices()
     {
         var lineService = new TRXLineService();
         var documentService = new TRXDocumentService(lineService);
-        var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
+        var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
         return new TRXLanguageServices(
             schemaService,
@@ -201,8 +198,7 @@ public class WorkbenchServiceTests
             documentService,
             new TRXDefinitionProvider(documentService),
             new TRXGameFlowCompletionService(schemaService),
-            new GameFlowHoverService(schemaService),
-            new TRXDocumentLookupService(documentService));
+            new TRXGameFlowHoverService(schemaService));
     }
 
     [TestMethod]

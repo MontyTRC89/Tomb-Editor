@@ -7,12 +7,21 @@ using TombLib.Scripting.Text;
 
 namespace TombLib.Scripting.ClassicScript.Hover;
 
+/// <summary>
+/// Resolves hover information for ClassicScript words.
+/// </summary>
 public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 {
 	private readonly IClassicScriptLineService _lineService;
 	private readonly IClassicScriptCommandService _commandService;
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptHoverProvider"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to identify hovered words.</param>
+	/// <param name="commandService">The command service used to resolve command hover content.</param>
+	/// <param name="mnemonicCatalogService">The mnemonic catalog service used to resolve mnemonic hover content.</param>
 	public ClassicScriptHoverProvider(
 		IClassicScriptLineService lineService,
 		IClassicScriptCommandService commandService,
@@ -26,6 +35,11 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
+	/// <summary>
+	/// Gets the hover information for the given request.
+	/// </summary>
+	/// <param name="request">The hover request.</param>
+	/// <returns>The hover information, or <c>null</c> when the hovered word is not a known symbol.</returns>
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)
 	{
 		var source = new StringTextSnapshot(request.DocumentText);

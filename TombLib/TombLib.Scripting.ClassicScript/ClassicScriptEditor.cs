@@ -7,30 +7,43 @@ using TombLib.Scripting.ClassicScript.Cleaning;
 using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Highlighting;
 using TombLib.Scripting.ClassicScript.Mnemonics;
+using TombLib.Scripting.Cleaning;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
-using TombLib.Scripting.UI.Cleaning;
 using TombLib.Scripting.UI.Completion;
+using TombLib.Scripting.UI.Editing;
 using TombLib.Scripting.UI.Signatures;
 using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.ClassicScript;
 
+/// <summary>
+/// The ClassicScript editor.
+/// </summary>
 public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreviewSource
 {
 	private readonly ClassicScriptLanguageServices _languageServices;
 
+	/// <inheritdoc/>
 	public override string DefaultFileExtension => ".txt";
 
 	// Properties
 
+	/// <summary>
+	/// Gets the document formatter used by the editor.
+	/// </summary>
 	public ClassicScriptDocumentFormatter Formatter { get; } = new ClassicScriptDocumentFormatter();
 
+	/// <inheritdoc/>
 	protected override ITextDocumentFormatter DocumentFormatter => Formatter;
 
 	private bool _showSectionSeparators;
+
+	/// <summary>
+	/// Gets or sets whether section separator lines are rendered.
+	/// </summary>
 	public bool ShowSectionSeparators
 	{
 		get => _showSectionSeparators;
@@ -53,6 +66,9 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		}
 	}
 
+	/// <summary>
+	/// Gets or sets whether completion is suppressed in the editor.
+	/// </summary>
 	public bool SuppressCompletion { get; set; }
 
 	// Fields
@@ -63,6 +79,11 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptEditor"/> class.
+	/// </summary>
+	/// <param name="engineVersion">The engine version the editor targets.</param>
+	/// <param name="languageServices">The language services used by the editor.</param>
 	public ClassicScriptEditor(Version engineVersion, ClassicScriptLanguageServices languageServices) : base(engineVersion)
 	{
 		ArgumentNullException.ThrowIfNull(languageServices);
@@ -93,19 +114,21 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 
 	// Events
 
+	/// <inheritdoc/>
 	protected override void OnLanguageTextEntering(TextCompositionEventArgs e)
 	{
 		if (!SuppressCompletion)
 			TryHandleCtrlSpaceCompletion(e, QueueCtrlSpaceCompletionDecision);
 	}
 
+	/// <inheritdoc/>
 	protected override void OnLanguageTextEntered(TextCompositionEventArgs e)
 	{
-		if (AutocompleteEnabled && !SuppressCompletion)
+		if (CompletionEnabled && !SuppressCompletion)
 			QueueTextEnteredCompletionDecision(e.Text);
 	}
 
-	// Autocomplete
+	// Completion
 
 	private void QueueCtrlSpaceCompletionDecision()
 		=> QueueCompletionDecision(_completionCoordinator.GetCtrlSpaceDecisionAsync(Text, FilePath, CaretOffset, CompletionController.ActiveWindow is not null));
@@ -148,8 +171,9 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
 		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
 
-	// TODO: Refactor
-
+	/// <summary>
+	/// Inserts the next free trigger index at the caret.
+	/// </summary>
 	public void InputFreeIndex()
 	{
 		ITextSnapshot source = new TextDocumentSnapshot(Document);
@@ -158,9 +182,10 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		if (nextFreeIndex == -1)
 			return;
 
-		TextArea.PerformTextInput(nextFreeIndex.ToString());
+		TextEditorEditHelper.InsertText(this, CaretOffset, nextFreeIndex.ToString());
 	}
 
+	/// <inheritdoc/>
 	public override void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration)
 	{
 		if (configuration is not ClassicScriptEditorConfiguration config)
@@ -184,12 +209,22 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		base.UpdateSettings(configuration);
 	}
 
+	/// <inheritdoc/>
 	public override void GoToObject(string objectName, object? identifyingObject = null)
 		=> GoToDefinition(_languageServices.DefinitionProvider, objectName, identifyingObject);
 
+	/// <summary>
+	/// Gets the syntax preview at the caret.
+	/// </summary>
+	/// <returns>The signature help info for the current syntax, or <c>null</c> when none is available.</returns>
 	public TextSignatureHelpInfo? GetSyntaxPreview()
 		=> _languageServices.SignatureHelpProvider.GetSignatureHelp(new TextSignatureHelpRequest(Document.Text, CaretOffset));
 
+	/// <summary>
+	/// Appends a new plugin entry to the Options section.
+	/// </summary>
+	/// <param name="pluginString">The plugin definition string to add.</param>
+	/// <returns><c>true</c> when the plugin entry was added; otherwise, <c>false</c>.</returns>
 	public bool TryAddNewPluginEntry(string pluginString)
 	{
 		ITextSnapshot source = new TextDocumentSnapshot(Document);
@@ -209,9 +244,9 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 			return false;
 
 		ITextLine lastSectionLine = source.GetLineByNumber(lastSectionLineNumber.Value);
-		CaretOffset = lastSectionLine.Offset + lastSectionLine.Length;
+		int insertOffset = lastSectionLine.Offset + lastSectionLine.Length;
 
-		TextArea.PerformTextInput($"{Environment.NewLine}Plugin= {nextFreePluginIndex}, {pluginString}, IGNORE");
+		TextEditorEditHelper.InsertText(this, insertOffset, $"{Environment.NewLine}Plugin= {nextFreePluginIndex}, {pluginString}, IGNORE");
 
 		return true;
 	}

@@ -8,13 +8,14 @@ using System.Windows.Threading;
 
 namespace TombLib.Scripting.UI.Presentation;
 
-internal sealed class EditorToolTipPresenter
+internal sealed class EditorToolTipPresenter : IDisposable
 {
 	private static readonly TimeSpan CloseDelay = TimeSpan.FromMilliseconds(900.0);
 
 	private readonly FrameworkElement _owner;
 	private readonly DispatcherTimer _closeTimer = new();
 	private bool _contentHovered;
+	private bool _isDisposed;
 
 	public EditorToolTipPresenter(FrameworkElement owner)
 	{
@@ -72,6 +73,22 @@ internal sealed class EditorToolTipPresenter
 
 		_closeTimer.Stop();
 		_closeTimer.Start();
+	}
+
+	/// <summary>
+	/// Stops the close timer, detaches popup handlers and force-closes the popup.
+	/// </summary>
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+		_closeTimer.Stop();
+		_closeTimer.Tick -= CloseTimer_Tick;
+		Border.MouseEnter -= Border_MouseEnter;
+		Border.MouseLeave -= Border_MouseLeave;
+		Close(force: true);
 	}
 
 	private void CloseTimer_Tick(object? sender, EventArgs e)

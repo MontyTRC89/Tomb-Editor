@@ -2,7 +2,6 @@ using System;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
-using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Scripting.TRX;
@@ -19,39 +18,35 @@ public sealed class TRXLanguageServices
 	/// <param name="lineService">The TRX line service.</param>
 	/// <param name="documentService">The TRX document service.</param>
 	/// <param name="definitionProvider">The definition provider.</param>
-	/// <param name="completionService">The completion provider.</param>
-	/// <param name="hoverService">The hover provider.</param>
-	/// <param name="documentLookupService">The document lookup service.</param>
+	/// <param name="completionProvider">The completion provider.</param>
+	/// <param name="hoverProvider">The hover provider.</param>
 	public TRXLanguageServices(
-		IGameFlowSchemaService schemaService,
+		ITRXGameFlowSchemaService schemaService,
 		ITRXLineService lineService,
 		ITRXDocumentService documentService,
 		ITextDefinitionProvider definitionProvider,
-		ITextCompletionProvider completionService,
-		ITextHoverProvider hoverService,
-		TRXDocumentLookupService documentLookupService)
+		ITextCompletionProvider completionProvider,
+		ITextHoverProvider hoverProvider)
 	{
 		ArgumentNullException.ThrowIfNull(schemaService);
 		ArgumentNullException.ThrowIfNull(lineService);
 		ArgumentNullException.ThrowIfNull(documentService);
 		ArgumentNullException.ThrowIfNull(definitionProvider);
-		ArgumentNullException.ThrowIfNull(completionService);
-		ArgumentNullException.ThrowIfNull(hoverService);
-		ArgumentNullException.ThrowIfNull(documentLookupService);
+		ArgumentNullException.ThrowIfNull(completionProvider);
+		ArgumentNullException.ThrowIfNull(hoverProvider);
 
 		SchemaService = schemaService;
 		LineService = lineService;
 		DocumentService = documentService;
 		DefinitionProvider = definitionProvider;
-		CompletionService = completionService;
-		HoverService = hoverService;
-		DocumentLookupService = documentLookupService;
+		CompletionProvider = completionProvider;
+		HoverProvider = hoverProvider;
 	}
 
 	/// <summary>
 	/// Gets the GameFlow schema service.
 	/// </summary>
-	public IGameFlowSchemaService SchemaService { get; }
+	public ITRXGameFlowSchemaService SchemaService { get; }
 
 	/// <summary>
 	/// Gets the TRX line service.
@@ -71,15 +66,10 @@ public sealed class TRXLanguageServices
 	/// <summary>
 	/// Gets the completion provider.
 	/// </summary>
-	public ITextCompletionProvider CompletionService { get; }
+	public ITextCompletionProvider CompletionProvider { get; }
 
 	/// <summary>
 	/// Gets the hover provider.
 	/// </summary>
-	public ITextHoverProvider HoverService { get; }
-
-	/// <summary>
-	/// Gets the document lookup service.
-	/// </summary>
-	public TRXDocumentLookupService DocumentLookupService { get; }
+	public ITextHoverProvider HoverProvider { get; }
 }

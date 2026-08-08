@@ -13,6 +13,9 @@ using TombLib.Scripting.UI.Text;
 
 namespace TombLib.Scripting.ClassicScript.Completion;
 
+/// <summary>
+/// Coordinates completion session decisions for the ClassicScript editor.
+/// </summary>
 public sealed class ClassicScriptCompletionSessionCoordinator
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
@@ -23,6 +26,12 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 
 	private int _latestRequestId;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="ClassicScriptCompletionSessionCoordinator"/> class.
+	/// </summary>
+	/// <param name="lineService">The line service used to analyze document lines.</param>
+	/// <param name="commandService">The command service used to resolve command context.</param>
+	/// <param name="mnemonicCatalogService">The mnemonic catalog service used by the completion provider.</param>
 	public ClassicScriptCompletionSessionCoordinator(
 		IClassicScriptLineService lineService,
 		IClassicScriptCommandService commandService,
@@ -35,6 +44,14 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		_completionProvider = new ClassicScriptCompletionProvider(commandService, mnemonicCatalogService);
 	}
 
+	/// <summary>
+	/// Gets the decision for a manual Ctrl+Space completion request.
+	/// </summary>
+	/// <param name="documentText">The current document text.</param>
+	/// <param name="filePath">The path of the document, or <c>null</c> when unsaved.</param>
+	/// <param name="caretOffset">The caret offset.</param>
+	/// <param name="completionWindowIsOpen">Whether a completion window is already open.</param>
+	/// <returns>The completion session decision.</returns>
 	public Task<TextCompletionSessionDecision> GetCtrlSpaceDecisionAsync(
 		string documentText,
 		string? filePath,
@@ -53,6 +70,15 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 			: ResolveCtrlSpaceFromContextAsync(document, source, filePath, caretOffset);
 	}
 
+	/// <summary>
+	/// Gets the decision for a completion triggered by entered text.
+	/// </summary>
+	/// <param name="documentText">The current document text.</param>
+	/// <param name="filePath">The path of the document, or <c>null</c> when unsaved.</param>
+	/// <param name="caretOffset">The caret offset.</param>
+	/// <param name="inputText">The entered text.</param>
+	/// <param name="completionWindowIsOpen">Whether a completion window is already open.</param>
+	/// <returns>The completion session decision.</returns>
 	public async Task<TextCompletionSessionDecision> GetTextEnteredDecisionAsync(
 		string documentText,
 		string? filePath,

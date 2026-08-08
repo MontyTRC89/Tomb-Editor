@@ -4,8 +4,16 @@ using System.Text.Json;
 
 namespace TombLib.Scripting.ClassicScript.ReferenceTables;
 
+/// <summary>
+/// Loads a reference table from its JSON resource.
+/// </summary>
 public sealed class ClassicScriptReferenceTableLoader
 {
+	/// <summary>
+	/// Loads the reference table at the given path.
+	/// </summary>
+	/// <param name="jsonPath">The path of the reference table JSON file.</param>
+	/// <returns>The loaded table.</returns>
 	public DataTable Load(string jsonPath)
 	{
 		using JsonDocument document = JsonDocument.Parse(File.ReadAllText(jsonPath));

@@ -28,48 +28,45 @@ public sealed class CompletionManager
 	/// <summary>
 	/// Filters the given completion items against the current word being typed.
 	/// </summary>
-	/// <param name="autocompleteData">The completion items to filter.</param>
+	/// <param name="completionData">The completion items to filter.</param>
 	/// <param name="currentWord">The word currently being typed.</param>
 	/// <returns>The completion items that match the current word.</returns>
-	public IReadOnlyList<TextCompletionItem> FilterCompletions(IReadOnlyList<TextCompletionItem> autocompleteData, string currentWord)
+	public IReadOnlyList<TextCompletionItem> FilterCompletions(IReadOnlyList<TextCompletionItem> completionData, string currentWord)
 	{
+		ArgumentNullException.ThrowIfNull(completionData);
+		ArgumentNullException.ThrowIfNull(currentWord);
+
 		if (string.IsNullOrEmpty(currentWord))
-			return autocompleteData;
+			return completionData;
 
-		// Extract the actual word content for matching (remove quotes if present)
+		// Extract the actual word content for matching (remove quotes if present).
 		string wordForMatching = currentWord.Trim('"');
-		string lowerCurrentWord = wordForMatching.ToLower();
 
-		return autocompleteData.Where(item =>
+		// No actual word content (only quotes): keep every candidate.
+		if (string.IsNullOrEmpty(wordForMatching))
+			return completionData;
+
+		var matches = new List<TextCompletionItem>(completionData.Count);
+
+		foreach (TextCompletionItem item in completionData)
 		{
-			string lowerItemText = item.InsertText.ToLower();
+			string insertText = item.InsertText;
 
-			// If we have no actual word content (just quotes), show all
-			if (string.IsNullOrEmpty(lowerCurrentWord))
-				return true;
+			if (insertText.StartsWith('"' + wordForMatching, StringComparison.OrdinalIgnoreCase)
+				|| insertText.StartsWith(wordForMatching, StringComparison.OrdinalIgnoreCase)
+				|| insertText.Contains(wordForMatching, StringComparison.OrdinalIgnoreCase))
+			{
+				matches.Add(item);
+			}
+		}
 
-			// Exact prefix match (highest priority)
-			if (lowerItemText.StartsWith('"' + lowerCurrentWord))
-				return true;
-
-			// Prefix match without quotes
-			if (lowerItemText.StartsWith(lowerCurrentWord))
-				return true;
-
-			// Contains match (lower priority)
-			if (lowerItemText.Contains(lowerCurrentWord))
-				return true;
-
-			return false;
-		})
-		.OrderBy(item =>
-		{
-			string lowerItemText = item.InsertText.ToLower();
-
-			// Prioritize exact prefix matches
-			return lowerItemText.StartsWith('"' + lowerCurrentWord) || lowerItemText.StartsWith(lowerCurrentWord) ? 0 : 1;
-		})
-		.ToList();
+		// Prioritize exact prefix matches over contains-only matches.
+		return matches
+			.OrderBy(item => item.InsertText.StartsWith('"' + wordForMatching, StringComparison.OrdinalIgnoreCase)
+				|| item.InsertText.StartsWith(wordForMatching, StringComparison.OrdinalIgnoreCase)
+					? 0
+					: 1)
+			.ToList();
 	}
 
 	/// <summary>

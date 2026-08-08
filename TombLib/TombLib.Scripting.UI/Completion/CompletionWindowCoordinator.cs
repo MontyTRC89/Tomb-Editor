@@ -52,6 +52,9 @@ internal sealed class CompletionWindowCoordinator
 	public void Close()
 		=> _host.Close(_window, () => _window = null);
 
+	public void Dispose()
+		=> Close();
+
 	public bool TryOpen(
 		IEnumerable<ICompletionData> items,
 		int? startOffset = null,

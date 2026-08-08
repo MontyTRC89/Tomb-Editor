@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
+using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Hover;
 using TombLib.Scripting.UI.Rendering;
@@ -12,7 +13,8 @@ namespace TombLib.Scripting.Lua;
 
 public sealed partial class LuaEditor
 {
-	protected override async void HandleMouseHover(MouseEventArgs e)
+	/// <inheritdoc/>
+	protected override async Task HandleMouseHover(MouseEventArgs e)
 		=> await _hoverController.HandleMouseHoverAsync(e).ConfigureAwait(true);
 
 	/// <summary>
@@ -48,6 +50,9 @@ public sealed partial class LuaEditor
 		internal void InvalidateRequests()
 			=> _controller.InvalidateRequests();
 
+		internal void Dispose()
+			=> _controller.Dispose();
+
 		private TextHoverRequestState BuildRequestState(int hoveredOffset)
 		{
 			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
@@ -55,7 +60,7 @@ public sealed partial class LuaEditor
 			int hoverOffset = 0;
 			bool shouldRequestHover = false;
 
-			if (_editor.IsIntellisenseAvailable()
+			if (_editor.IsIntelliSenseAvailable()
 				&& canShowToolTip
 				&& LuaEditorInteractionRules.TryGetHoverOffset(_editor.Document, hoveredOffset, out hoverOffset))
 			{
@@ -115,17 +120,17 @@ public sealed partial class LuaEditor
 
 		private async Task<TextHoverInfo?> RequestAsync(int offset, CancellationToken cancellationToken)
 		{
-			if (!_editor.IsIntellisenseAvailable())
+			if (!_editor.IsIntelliSenseAvailable())
 				return null;
 
-			var intellisenseProvider = _editor.IntellisenseProvider;
+			var intelliSenseProvider = _editor.IntelliSenseProvider;
 
-			if (intellisenseProvider is null)
+			if (intelliSenseProvider is null)
 				return null;
 
 			(int line, int column) = _editor.GetPositionFromOffset(offset);
 
-			return await intellisenseProvider
+			return await intelliSenseProvider
 				.GetHoverAsync(_editor.FilePath, _editor.Text, line, column, cancellationToken)
 				.ConfigureAwait(true);
 		}

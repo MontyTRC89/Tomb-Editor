@@ -8,9 +8,9 @@ namespace TombLib.Scripting.TRX.Services;
 /// <summary>
 /// Default implementation of <see cref="ITRXDocumentService"/>.
 /// Provides document-level operations using <see cref="ITextSnapshot"/> and
-/// the line service, matching legacy <c>DocumentParser</c> behavior exactly.
+/// the line service.
 /// </summary>
-public class TRXDocumentService : ITRXDocumentService
+public sealed class TRXDocumentService : ITRXDocumentService
 {
 	private readonly ITRXLineService _lineService;
 

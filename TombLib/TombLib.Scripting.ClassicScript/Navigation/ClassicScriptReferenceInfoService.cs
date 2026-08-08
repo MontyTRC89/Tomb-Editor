@@ -3,11 +3,20 @@ using TombLib.Scripting.ClassicScript.Mnemonics;
 
 namespace TombLib.Scripting.ClassicScript.Navigation;
 
+/// <summary>
+/// Resolves the description and metadata for a ClassicScript reference.
+/// </summary>
 public sealed class ClassicScriptReferenceInfoService
 {
 	private readonly ClassicScriptDescriptionCatalogService _descriptionCatalogService = new();
 	private readonly ClassicScriptMnemonicCatalogService _mnemonicCatalogService = new();
 
+	/// <summary>
+	/// Gets the reference information for the given keyword and reference type.
+	/// </summary>
+	/// <param name="keyword">The keyword to look up.</param>
+	/// <param name="type">The reference type of the keyword.</param>
+	/// <returns>The reference information.</returns>
 	public ClassicScriptReferenceInfo GetReferenceInfo(string keyword, ReferenceType type)
 	{
 		ArgumentNullException.ThrowIfNull(keyword);
@@ -56,4 +65,10 @@ public sealed class ClassicScriptReferenceInfoService
 	}
 }
 
+/// <summary>
+/// Describes the resolved information for a ClassicScript reference.
+/// </summary>
+/// <param name="Keyword">The referenced keyword.</param>
+/// <param name="Description">The resolved description of the keyword.</param>
+/// <param name="MissingDescriptionMessage">The message explaining a missing description, when applicable.</param>
 public sealed record ClassicScriptReferenceInfo(string Keyword, string Description, string? MissingDescriptionMessage);

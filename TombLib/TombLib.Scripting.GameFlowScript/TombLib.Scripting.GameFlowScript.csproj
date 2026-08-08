@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsAsErrors>CS1591</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,13 +19,13 @@
     </Compile>
   </ItemGroup>
 
-  <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Compatibility owned by the language-server integration. -->
+  <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Version and
+       build provenance are documented in Libs/README.md. -->
   <ItemGroup>
     <Reference Include="Nickelony.LanguageServer.Abstractions">
       <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
   </ItemGroup>

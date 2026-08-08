@@ -9,7 +9,7 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// Provides line-level text operations using Core helpers and, where needed,
 /// regex patterns that match legacy behavior.
 /// </summary>
-public class ClassicScriptLineService : IClassicScriptLineService
+public sealed class ClassicScriptLineService : IClassicScriptLineService
 {
 	private const string CommentDelimiter = ";";
 	private const char ContinuationMarker = '>';

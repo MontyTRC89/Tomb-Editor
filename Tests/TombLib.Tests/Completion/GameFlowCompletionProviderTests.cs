@@ -29,20 +29,20 @@ public class GameFlowCompletionProviderTests
 	}
 
 	[TestMethod]
-	public void GetCompletionItems_FiltersByWordTypedAtCaret()
+	public void GetCompletionItems_ReturnsAllCatalogItemsRegardlessOfTypedWord()
 	{
 		IReadOnlyList<TextCompletionItem> items = CreateProvider().GetCompletionItems(new TextCompletionContext("TITLE", 5));
 
-		Assert.IsTrue(items.Count > 0);
-		Assert.IsTrue(items.All(item => item.InsertText.Contains("TITLE", StringComparison.OrdinalIgnoreCase)));
 		Assert.IsTrue(items.Any(item => item.InsertText == "TITLE: "));
+		Assert.IsTrue(items.Any(item => item.InsertText == "LEVEL: "));
 	}
 
 	[TestMethod]
-	public void GetCompletionItems_NonMatchingWord_ReturnsEmpty()
+	public void GetCompletionItems_NonMatchingWord_StillReturnsAllItems()
 	{
 		IReadOnlyList<TextCompletionItem> items = CreateProvider().GetCompletionItems(new TextCompletionContext("QwErTyZz", 8));
 
-		Assert.AreEqual(0, items.Count);
+		Assert.IsTrue(items.Count > 0);
+		Assert.IsTrue(items.Any(item => item.InsertText == "LEVEL: "));
 	}
 }

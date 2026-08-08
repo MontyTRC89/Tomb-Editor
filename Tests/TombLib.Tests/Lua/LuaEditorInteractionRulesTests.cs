@@ -8,33 +8,33 @@ namespace TombLib.Tests;
 public class LuaEditorInteractionRulesTests
 {
 	[TestMethod]
-	public void IsValidAutocompleteContext_AllowsMemberTriggerInCode()
+	public void IsValidCompletionContext_AllowsMemberTriggerInCode()
 	{
 		var document = CreateDocument("player.");
 
-		bool result = LuaEditorInteractionRules.IsValidAutocompleteContext(document, document.TextLength, '.');
+		bool result = LuaEditorInteractionRules.IsValidCompletionContext(document, document.TextLength, '.');
 
 		Assert.IsTrue(result);
 	}
 
 	[TestMethod]
-	public void IsValidAutocompleteContext_BlocksIdentifierImmediatelyAfterDot()
+	public void IsValidCompletionContext_BlocksIdentifierImmediatelyAfterDot()
 	{
 		var document = CreateDocument("player.a");
 
-		bool result = LuaEditorInteractionRules.IsValidAutocompleteContext(document, document.TextLength, null);
+		bool result = LuaEditorInteractionRules.IsValidCompletionContext(document, document.TextLength, null);
 
 		Assert.IsFalse(result);
 	}
 
 	[TestMethod]
-	public void IsValidAutocompleteContext_BlocksLongStringContinuationOnFollowingLine()
+	public void IsValidCompletionContext_BlocksLongStringContinuationOnFollowingLine()
 	{
 		var document = CreateDocument(
 			"value = [[long string",
 			"player");
 
-		bool result = LuaEditorInteractionRules.IsValidAutocompleteContext(document, document.TextLength, null);
+		bool result = LuaEditorInteractionRules.IsValidCompletionContext(document, document.TextLength, null);
 
 		Assert.IsFalse(result);
 	}

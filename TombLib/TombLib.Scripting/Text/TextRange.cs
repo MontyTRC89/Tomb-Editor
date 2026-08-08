@@ -58,7 +58,10 @@ public readonly struct TextRange : IEquatable<TextRange>
 	{
 		if (source is null)
 			throw new ArgumentNullException(nameof(source));
-		if (Offset + Length > source.Length)
+
+		// Overflow-safe bounds check: the subtraction cannot overflow because
+		// Offset is verified to be within the source length first.
+		if (Offset > source.Length || Length > source.Length - Offset)
 			throw new ArgumentOutOfRangeException(nameof(source));
 
 		return source.Substring(Offset, Length);

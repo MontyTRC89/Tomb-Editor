@@ -22,7 +22,6 @@ using TombIDE.Shared.Messaging.Scripting;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Scripting.ClassicScript;
-using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.ClassicScript.Writers;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Lua.Documents;
@@ -165,7 +164,6 @@ internal sealed class ScriptingMessageService : IDisposable
 		ClassicScriptLanguageServices languageServices)
 	{
 		var textEditorHost = new DocumentControllerTextEditorHost(documentController);
-		var documentLookupService = new ClassicScriptDocumentLookupService(languageServices.CommandService);
 		var scriptReplacer = new ScriptReplacer(languageServices.LineService);
 		var languageStringWriter = new LanguageStringWriter(languageServices.CommandService);
 		var silentActionService = new StudioSilentActionService(documentController, hostOperations);
@@ -200,14 +198,14 @@ internal sealed class ScriptingMessageService : IDisposable
 				levelName =>
 				{
 					TextEditorBase editor = textEditorHost.OpenTextEditor(PathHelper.GetScriptFilePath(documentController.ScriptRootDirectoryPath, TRVersion.Game.TR4));
-					return documentLookupService.IsLevelScriptDefined(new TextDocumentSnapshot(editor.Document), levelName);
+					return languageServices.CommandService.IsLevelScriptDefined(new TextDocumentSnapshot(editor.Document), levelName);
 				},
 				levelName =>
 				{
 					TextEditorBase editor = textEditorHost.OpenTextEditor(
 						PathHelper.GetLanguageFilePath(documentController.ScriptRootDirectoryPath, TRVersion.Game.TR4),
 						openSourceView: true);
-					return documentLookupService.IsLevelLanguageStringDefined(new TextDocumentSnapshot(editor.Document), levelName);
+					return languageServices.CommandService.IsLevelLanguageStringDefined(new TextDocumentSnapshot(editor.Document), levelName);
 				},
 				(oldName, newName) =>
 				{
@@ -241,7 +239,6 @@ internal sealed class ScriptingMessageService : IDisposable
 		GameFlowLanguageServices languageServices)
 	{
 		var textEditorHost = new DocumentControllerTextEditorHost(documentController);
-		var documentLookupService = languageServices.DocumentLookupService;
 		var silentActionService = new StudioSilentActionService(documentController, hostOperations);
 
 		return new GameFlowWorkspaceAutomationProvider(
@@ -261,7 +258,7 @@ internal sealed class ScriptingMessageService : IDisposable
 				levelName =>
 				{
 					TextEditorBase editor = textEditorHost.OpenTextEditor(PathHelper.GetScriptFilePath(documentController.ScriptRootDirectoryPath, TRVersion.Game.TR2));
-					return documentLookupService.IsLevelScriptDefined(new TextDocumentSnapshot(editor.Document), levelName);
+					return languageServices.DocumentService.IsLevelScriptDefined(new TextDocumentSnapshot(editor.Document), levelName);
 				},
 				(oldName, newName) =>
 				{
@@ -358,7 +355,6 @@ internal sealed class ScriptingMessageService : IDisposable
 		TRXLanguageServices trxLanguageServices)
 	{
 		var textEditorHost = new DocumentControllerTextEditorHost(documentController);
-		var documentLookupService = trxLanguageServices.DocumentLookupService;
 		var scriptReplacer = new TRXScriptReplacer();
 		var silentActionService = new StudioSilentActionService(documentController, hostOperations);
 
@@ -371,7 +367,7 @@ internal sealed class ScriptingMessageService : IDisposable
 				{
 					TextEditorBase editor = textEditorHost.OpenTextEditor(PathHelper.GetScriptFilePath(documentController.ScriptRootDirectoryPath, workspaceProfile.GameVersion));
 					var source = new TextDocumentSnapshot(editor.Document);
-					return documentLookupService.IsLevelScriptDefined(source, levelName);
+					return trxLanguageServices.DocumentService.IsLevelScriptDefined(source, levelName);
 				},
 				(oldName, newName) =>
 				{

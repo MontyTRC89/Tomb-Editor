@@ -71,7 +71,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.WPF", "TombLib\Tomb
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6F5F6BB9-64D2-4F82-B6AE-162361DF4965}"
 EndProject
-
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor.Tests", "Tests\TombEditor.Tests\TombEditor.Tests.csproj", "{952375C0-1A8D-403A-B21F-18910D950987}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Tests", "Tests\TombLib.Tests\TombLib.Tests.csproj", "{627E39C2-4445-4232-B522-EDF76689B808}"

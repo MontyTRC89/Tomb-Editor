@@ -5,14 +5,13 @@ using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.TRX.Services;
-using TombLib.Scripting.UI.Diagnostics;
 
 namespace TombLib.Scripting.TRX.Diagnostics;
 
 /// <summary>
 /// Detects errors in TRX documents, such as removed keywords for the target engine version.
 /// </summary>
-public class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
+public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 {
 	private readonly ITRXLineService _lineService;
 

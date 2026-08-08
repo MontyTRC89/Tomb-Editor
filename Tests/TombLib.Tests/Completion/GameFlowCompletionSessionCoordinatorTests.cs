@@ -30,4 +30,17 @@ public class GameFlowCompletionSessionCoordinatorTests
 
 		Assert.AreEqual(TextCompletionSessionDecision.None, decision);
 	}
+
+	[TestMethod]
+	public void GetOpenDecision_FiltersItemsByTypedWord()
+	{
+		GameFlowCompletionSessionCoordinator coordinator = CreateCoordinator();
+
+		TextCompletionSessionDecision decision = coordinator.GetOpenDecision(new TextDocument("T"), 1, false);
+
+		Assert.IsNotNull(decision.Items);
+		Assert.IsTrue(decision.Items.All(item => item.InsertText.Contains("T", StringComparison.OrdinalIgnoreCase)));
+		Assert.IsTrue(decision.Items.Any(item => item.InsertText == "TITLE: "));
+		Assert.IsFalse(decision.Items.Any(item => item.InsertText == "LEVEL: "));
+	}
 }

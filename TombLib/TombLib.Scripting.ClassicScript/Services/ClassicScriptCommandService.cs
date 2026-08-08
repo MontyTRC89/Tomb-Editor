@@ -13,7 +13,7 @@ namespace TombLib.Scripting.ClassicScript.Services;
 /// Default implementation of <see cref="IClassicScriptCommandService"/>.
 /// Provides command-level text operations for ClassicScript using the <see cref="ITextSnapshot"/> abstraction.
 /// </summary>
-public class ClassicScriptCommandService : IClassicScriptCommandService
+public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 

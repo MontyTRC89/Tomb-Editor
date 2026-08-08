@@ -122,4 +122,20 @@ public class TextRangeTests
         Assert.IsTrue(result.Contains("3"));
         Assert.IsTrue(result.Contains("10"));
     }
+
+    [TestMethod]
+    public void GetText_OffsetBeyondLength_NoOverflow_Throws()
+    {
+        var range = new TextRange(int.MaxValue, 0);
+
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => range.GetText("x"));
+    }
+
+    [TestMethod]
+    public void GetText_OffsetPlusLengthWouldOverflow_Throws()
+    {
+        var range = new TextRange(int.MaxValue - 1, int.MaxValue);
+
+        Assert.ThrowsException<ArgumentOutOfRangeException>(() => range.GetText("x"));
+    }
 }

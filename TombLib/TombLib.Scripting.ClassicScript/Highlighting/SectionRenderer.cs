@@ -6,6 +6,9 @@ using TombLib.Scripting.ClassicScript.Services;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
+/// <summary>
+/// Renders section separator lines in the ClassicScript editor text view.
+/// </summary>
 public sealed class SectionRenderer : IBackgroundRenderer
 {
 	private static readonly Pen DefaultSectionBorderPen = CreateFrozenPen(Colors.Silver);
@@ -16,6 +19,11 @@ public sealed class SectionRenderer : IBackgroundRenderer
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SectionRenderer"/> class.
+	/// </summary>
+	/// <param name="editor">The editor the renderer belongs to.</param>
+	/// <param name="lineService">The line service used to identify section header lines.</param>
 	public SectionRenderer(ClassicScriptEditor editor, IClassicScriptLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
@@ -25,6 +33,9 @@ public sealed class SectionRenderer : IBackgroundRenderer
 		_lineService = lineService;
 	}
 
+	/// <summary>
+	/// Gets the layer in which the section lines are drawn.
+	/// </summary>
 	public KnownLayer Layer => KnownLayer.Caret;
 
 	// Scheme
@@ -52,6 +63,11 @@ public sealed class SectionRenderer : IBackgroundRenderer
 
 	// Drawing
 
+	/// <summary>
+	/// Draws section separator lines under visible section headers.
+	/// </summary>
+	/// <param name="textView">The text view to draw in.</param>
+	/// <param name="drawingContext">The drawing context.</param>
 	public void Draw(TextView textView, DrawingContext drawingContext)
 	{
 		// Only visible lines can be on screen, so scanning them keeps the per-frame cost bounded.

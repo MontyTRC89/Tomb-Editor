@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Documents;
 
 namespace TombLib.Scripting.UI.Presentation;
@@ -31,6 +32,10 @@ public sealed partial class TextDiagnosticsViewModel : ObservableObject
 	[NotifyPropertyChangedFor(nameof(HasStatusText))]
 	private string _statusText = string.Empty;
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="TextDiagnosticsViewModel"/> class.
+	/// </summary>
+	/// <param name="presentation">The localized text used by the diagnostics presentation.</param>
 	public TextDiagnosticsViewModel(TextDiagnosticsPresentation presentation)
 	{
 		ArgumentNullException.ThrowIfNull(presentation);
@@ -41,30 +46,69 @@ public sealed partial class TextDiagnosticsViewModel : ObservableObject
 		ShowNoActiveDocument();
 	}
 
+	/// <summary>
+	/// Gets the filtered view of the current diagnostics.
+	/// </summary>
 	public ICollectionView Diagnostics { get; }
 
+	/// <summary>
+	/// Gets whether a non-empty status text is currently shown.
+	/// </summary>
 	public bool HasStatusText => !string.IsNullOrWhiteSpace(StatusText);
 
+	/// <summary>
+	/// Gets the localized errors label.
+	/// </summary>
 	public string ErrorsLabel => _presentation.ErrorsLabel;
 
+	/// <summary>
+	/// Gets the localized warnings label.
+	/// </summary>
 	public string WarningsLabel => _presentation.WarningsLabel;
 
+	/// <summary>
+	/// Gets the localized messages label.
+	/// </summary>
 	public string MessagesLabel => _presentation.MessagesLabel;
 
+	/// <summary>
+	/// Gets the localized severity column header.
+	/// </summary>
 	public string SeverityHeader => _presentation.SeverityHeader;
 
+	/// <summary>
+	/// Gets the localized line column header.
+	/// </summary>
 	public string LineHeader => _presentation.LineHeader;
 
+	/// <summary>
+	/// Gets the localized column column header.
+	/// </summary>
 	public string ColumnHeader => _presentation.ColumnHeader;
 
+	/// <summary>
+	/// Gets the localized message column header.
+	/// </summary>
 	public string MessageHeader => _presentation.MessageHeader;
 
+	/// <summary>
+	/// Shows the empty state for when no document is active.
+	/// </summary>
 	public void ShowNoActiveDocument()
 		=> ReplaceDiagnostics([], _presentation.NoActiveDocumentText);
 
+	/// <summary>
+	/// Shows the empty state for when diagnostics are pending.
+	/// </summary>
 	public void ShowPending()
 		=> ReplaceDiagnostics([], _presentation.PendingText);
 
+	/// <summary>
+	/// Shows the diagnostics of the given document.
+	/// </summary>
+	/// <param name="filePath">The path of the document.</param>
+	/// <param name="document">The document the diagnostics belong to.</param>
+	/// <param name="diagnostics">The diagnostics to show.</param>
 	public void ShowDiagnostics(string filePath, TextDocument document, IReadOnlyList<TextEditorDiagnostic> diagnostics)
 	{
 		ArgumentNullException.ThrowIfNull(document);

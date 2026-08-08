@@ -8,6 +8,9 @@ using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
+/// <summary>
+/// Provides the highlighting definition for the ClassicScript editor.
+/// </summary>
 public sealed class SyntaxHighlighting : IHighlightingDefinition
 {
 	private readonly ColorScheme _scheme;
@@ -16,6 +19,10 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 
 	// Construction
 
+	/// <summary>
+	/// Initializes a new instance of the <see cref="SyntaxHighlighting"/> class.
+	/// </summary>
+	/// <param name="scheme">The color scheme used for the highlighting rules.</param>
 	public SyntaxHighlighting(ColorScheme scheme)
 		=> _scheme = scheme;
 
@@ -24,6 +31,9 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	private HighlightingRuleSet? _cachedRuleSet;
 	private int _cachedMnemonicVersion = -1;
 
+	/// <summary>
+	/// Gets the main rule set, rebuilt when the mnemonic catalog snapshot changes.
+	/// </summary>
 	public HighlightingRuleSet MainRuleSet
 	{
 		get
@@ -133,6 +143,9 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 
 	// Other
 
+	/// <summary>
+	/// Gets the name of the highlighting definition.
+	/// </summary>
 	public string Name => "ClassicScript Rules";
 
 	/// <summary>

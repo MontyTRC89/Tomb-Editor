@@ -1,7 +1,6 @@
 using System.Windows;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Completion;
-using TombLib.Scripting.TRX.Documents;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
@@ -16,16 +15,15 @@ public class TRXScriptReplacerTests
 	{
 		var lineService = new TRXLineService();
 		var documentService = new TRXDocumentService(lineService);
-		var schemaService = new GameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
+		var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
 
 		return new TRXLanguageServices(
 			schemaService,
 			lineService,
 			documentService,
 			new TRXDefinitionProvider(documentService),
-			new GameFlowCompletionService(schemaService),
-			new GameFlowHoverService(schemaService),
-			new TRXDocumentLookupService(documentService));
+			new TRXGameFlowCompletionService(schemaService),
+			new TRXGameFlowHoverService(schemaService));
 	}
 
 	[TestMethod]
