@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Commands;
+using TombLib.Scripting.UI.Bases;
 
 namespace TombIDE.ScriptingStudio.Controls;
 
@@ -54,7 +55,7 @@ public partial class SyntaxPreviewView : UserControl
 
 	public void ReloadSettings()
 	{
-		_config = new ClassicScriptEditorConfiguration().Load<ClassicScriptEditorConfiguration>();
+		_config = ConfigurationBase.Load<ClassicScriptEditorConfiguration>();
 		Background = CreateBrush(_config.ColorScheme.Background);
 		PreviewTextBlock.Foreground = CreateBrush(_config.ColorScheme.Values.HtmlColor);
 		UpdatePresentation();

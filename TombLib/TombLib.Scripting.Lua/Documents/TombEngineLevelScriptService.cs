@@ -44,8 +44,7 @@ public sealed partial class TombEngineLevelScriptService
 	{
 		string? matchedKey = null;
 
-		bool found = ScanForMatch(languageDocument, lineText =>
-		{
+		bool found = ScanForMatch(languageDocument, lineText => {
 			Match match = LanguageEntryRegex.Match(LuaLineParser.StripLineComment(lineText));
 
 			if (match.Success && string.Equals(match.Groups["name"].Value, levelName, StringComparison.Ordinal))
@@ -61,8 +60,7 @@ public sealed partial class TombEngineLevelScriptService
 	}
 
 	private static bool ContainsAddLevelRegistration(TextDocument scriptDocument, string levelKey)
-		=> ScanForMatch(scriptDocument, lineText =>
-		{
+		=> ScanForMatch(scriptDocument, lineText => {
 			Match match = AddLevelRegex.Match(LuaLineParser.StripLineComment(lineText));
 
 			return match.Success && string.Equals(match.Groups["key"].Value, levelKey, StringComparison.Ordinal);

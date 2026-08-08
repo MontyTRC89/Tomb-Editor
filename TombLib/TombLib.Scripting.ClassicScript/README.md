@@ -8,7 +8,7 @@ Implements the shared neutral provider contracts for ClassicScript:
 - hover - `ClassicScriptHoverProvider`
 - definition - `ClassicScriptDefinitionProvider`
 - diagnostics - `ErrorDetector`
-- formatting - `CodeCleaner`
+- formatting - `ClassicScriptDocumentFormatter`
 
 Provides the editor (`ClassicScriptEditor`), configuration
 (`ClassicScriptEditorConfiguration`), the language-services composition root

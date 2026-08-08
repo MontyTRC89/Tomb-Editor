@@ -22,12 +22,6 @@
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\GlobalPaths.cs">
-      <Link>GlobalPaths.cs</Link>
-    </Compile>
-  </ItemGroup>
-
   <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Version and
        build provenance are documented in Libs/README.md. -->
   <ItemGroup>

@@ -81,7 +81,7 @@ public static class WhiteSpaceConverter
 		var builder = new StringBuilder(line.Length);
 		int column = 0;
 
-		for (int i = 0; i < indentLength; )
+		for (int i = 0; i < indentLength;)
 		{
 			if (line[i] == '\t')
 			{

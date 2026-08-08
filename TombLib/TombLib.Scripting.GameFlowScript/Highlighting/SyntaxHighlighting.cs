@@ -2,9 +2,9 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Media;
 using TombLib.Scripting.GameFlowScript.Resources;
 using TombLib.Scripting.UI.Highlighting;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.GameFlowScript.Highlighting;
 
@@ -97,7 +97,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	private static HighlightingColor CreateColor(HighlightingObject scheme)
 		=> new()
 		{
-			Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(scheme.HtmlColor)),
+			Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
 			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
 			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
 		};

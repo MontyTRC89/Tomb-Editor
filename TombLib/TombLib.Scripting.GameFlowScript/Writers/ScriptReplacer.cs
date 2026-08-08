@@ -34,8 +34,7 @@ public sealed class ScriptReplacer
 	/// <param name="oldName">The current language string name.</param>
 	/// <param name="newName">The new language string name.</param>
 	public void RenameLanguageString(TextEditorBase textEditor, string oldName, string newName)
-		=> TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
-		{
+		=> TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText => {
 			string trimmedLineText = lineText.Trim();
 			return trimmedLineText == oldName
 				? lineText.Replace(oldName, newName)

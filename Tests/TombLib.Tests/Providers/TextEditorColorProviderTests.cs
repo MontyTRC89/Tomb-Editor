@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Resources;
@@ -64,6 +65,27 @@ public class TextEditorColorProviderTests
 		var luaProvider = new LuaThemeProvider();
 		luaProvider.SetSelectedName(luaConfig, "VS15");
 
-		Assert.AreEqual("VSCode Dark+", luaProvider.GetSelectedName(luaConfig));
+		Assert.AreEqual("VS15", luaProvider.GetSelectedName(luaConfig));
+		Assert.AreEqual("VSCode Dark+", luaConfig.Theme.Name);
+	}
+
+	[TestMethod]
+	public void Providers_MismatchedConfig_GetSelectedName_ThrowsArgumentException()
+	{
+		var classicProvider = new ClassicScriptColorSchemeProvider();
+		var luaProvider = new LuaThemeProvider();
+
+		Assert.ThrowsException<ArgumentException>(() => classicProvider.GetSelectedName(new LuaEditorConfiguration()));
+		Assert.ThrowsException<ArgumentException>(() => luaProvider.GetSelectedName(new ClassicScriptEditorConfiguration()));
+	}
+
+	[TestMethod]
+	public void Providers_MismatchedConfig_SetSelectedName_ThrowsArgumentException()
+	{
+		var classicProvider = new ClassicScriptColorSchemeProvider();
+		var luaProvider = new LuaThemeProvider();
+
+		Assert.ThrowsException<ArgumentException>(() => classicProvider.SetSelectedName(new GameFlowEditorConfiguration(), "VS15"));
+		Assert.ThrowsException<ArgumentException>(() => luaProvider.SetSelectedName(new ClassicScriptEditorConfiguration(), "VS15"));
 	}
 }

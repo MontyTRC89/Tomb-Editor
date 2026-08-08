@@ -1,4 +1,5 @@
 using TombLib.Scripting.UI.Providers;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.ClassicScript.Resources;
 
@@ -11,7 +12,7 @@ public sealed class ClassicScriptColorSchemeProvider : FileSystemColorSchemeProv
 	/// Initializes a new instance of the <see cref="ClassicScriptColorSchemeProvider"/> class.
 	/// </summary>
 	public ClassicScriptColorSchemeProvider()
-		: base(DefaultPaths.ClassicScriptColorConfigsDirectory)
+		: base(ScriptingPaths.Default.ClassicScriptColorConfigsDirectory)
 	{
 	}
 }

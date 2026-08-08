@@ -57,7 +57,7 @@ public sealed class ClassicScriptEditorConfiguration : ColorSchemeConfigBase<Col
 
 	/// <inheritdoc/>
 	protected override string GetSchemeFilePath(string schemeName)
-		=> Path.Combine(DefaultPaths.ClassicScriptColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
+		=> Path.Combine(ScriptingPaths.Default.ClassicScriptColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
 	/// <inheritdoc/>
 	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
@@ -70,7 +70,7 @@ public sealed class ClassicScriptEditorConfiguration : ColorSchemeConfigBase<Col
 	/// </summary>
 	public ClassicScriptEditorConfiguration()
 	{
-		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+		DefaultPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 
 		// These type of brackets aren't being used while writing in Classic Script, therefore auto closing should be disabled for them
 		AutoCloseParentheses = false;

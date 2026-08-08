@@ -19,7 +19,7 @@ public sealed class GameFlowEditorConfiguration : ColorSchemeConfigBase<ColorSch
 
 	/// <inheritdoc/>
 	protected override string GetSchemeFilePath(string schemeName)
-		=> Path.Combine(DefaultPaths.GameFlowColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
+		=> Path.Combine(ScriptingPaths.Default.GameFlowColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
 	/// <inheritdoc/>
 	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
@@ -32,7 +32,7 @@ public sealed class GameFlowEditorConfiguration : ColorSchemeConfigBase<ColorSch
 	/// </summary>
 	public GameFlowEditorConfiguration()
 	{
-		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+		DefaultPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 
 		AutoCloseParentheses = false;
 		AutoCloseBraces = false;

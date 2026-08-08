@@ -27,12 +27,12 @@ public static class ScriptDirectoryCopier
 		Directory.CreateDirectory(targetPath);
 
 		foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-			Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+			Directory.CreateDirectory(GetMappedPath(sourcePath, targetPath, dirPath));
 
 		foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories)
 			.Where(x => !Path.GetExtension(x).Equals(".backup", StringComparison.OrdinalIgnoreCase)))
 		{
-			string newPath = file.Replace(sourcePath, targetPath);
+			string newPath = GetMappedPath(sourcePath, targetPath, file);
 
 			if (copyFile is not null)
 				copyFile(file, newPath);
@@ -40,6 +40,9 @@ public static class ScriptDirectoryCopier
 				File.Copy(file, newPath, true);
 		}
 	}
+
+	private static string GetMappedPath(string sourcePath, string targetPath, string path)
+		=> Path.Combine(targetPath, Path.GetRelativePath(sourcePath, path));
 
 	/// <summary>
 	/// Deletes all entries in the directory whose names do not satisfy <paramref name="keep"/>.

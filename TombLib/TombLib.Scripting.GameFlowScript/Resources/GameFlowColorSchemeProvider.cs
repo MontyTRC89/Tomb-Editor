@@ -1,4 +1,5 @@
 using TombLib.Scripting.UI.Providers;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.GameFlowScript.Resources;
 
@@ -11,7 +12,7 @@ public sealed class GameFlowColorSchemeProvider : FileSystemColorSchemeProvider<
 	/// Initializes a new instance of the <see cref="GameFlowColorSchemeProvider"/> class.
 	/// </summary>
 	public GameFlowColorSchemeProvider()
-		: base(DefaultPaths.GameFlowColorConfigsDirectory)
+		: base(ScriptingPaths.Default.GameFlowColorConfigsDirectory)
 	{
 	}
 }

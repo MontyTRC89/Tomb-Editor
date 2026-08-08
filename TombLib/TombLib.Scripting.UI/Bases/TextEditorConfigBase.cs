@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Serialization;
 using TombLib.Scripting.UI.Resources;
 
@@ -13,20 +14,42 @@ public abstract class TextEditorConfigBase : ConfigurationBase
 
 	// Properties
 
+	private double _fontSize = TextEditorBaseDefaults.FontSize;
+
 	/// <summary>
 	/// Gets or sets the font size of the editor.
 	/// </summary>
-	public double FontSize { get; set; } = TextEditorBaseDefaults.FontSize;
+	/// <exception cref="ArgumentOutOfRangeException">The value is less than or equal to zero.</exception>
+	public double FontSize
+	{
+		get => _fontSize;
+		set
+		{
+			ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+			_fontSize = value;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets the font family of the editor.
 	/// </summary>
 	public string FontFamily { get; set; } = TextEditorBaseDefaults.FontFamily;
 
+	private int _undoStackSize = TextEditorBaseDefaults.UndoStackSize;
+
 	/// <summary>
 	/// Gets or sets the undo stack size of the editor.
 	/// </summary>
-	public int UndoStackSize { get; set; } = TextEditorBaseDefaults.UndoStackSize;
+	/// <exception cref="ArgumentOutOfRangeException">The value is less than zero.</exception>
+	public int UndoStackSize
+	{
+		get => _undoStackSize;
+		set
+		{
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
+			_undoStackSize = value;
+		}
+	}
 
 	/// <summary>
 	/// Gets or sets whether IntelliSense is enabled in the editor.

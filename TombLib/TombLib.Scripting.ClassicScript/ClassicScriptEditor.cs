@@ -1,11 +1,11 @@
 using ICSharpCode.AvalonEdit.Rendering;
 using Nickelony.LanguageServer.Abstractions.Signatures;
+using NLog;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Cleaning;
 using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Highlighting;
@@ -18,8 +18,10 @@ using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Editing;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Resources;
 using TombLib.Scripting.UI.Signatures;
 using TombLib.Scripting.UI.Text;
+using TombLib.Scripting.UI.Threading;
 
 namespace TombLib.Scripting.ClassicScript;
 
@@ -28,6 +30,8 @@ namespace TombLib.Scripting.ClassicScript;
 /// </summary>
 public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreviewSource, INameBasedObjectNavigator
 {
+	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
 	private readonly ClassicScriptLanguageServices _languageServices;
 
 	/// <inheritdoc/>
@@ -95,9 +99,9 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		_languageServices = languageServices;
 		_completionCoordinator = languageServices.CreateCompletionCoordinator();
 
-		InitializeDefinitionNavigation((offset, cancellationToken) => TryNavigateDefinition(offset, cancellationToken));
+		InitializeDefinitionNavigation(TryNavigateDefinition);
 		InitializeHover(BuildHoverRequestState, RequestHover);
-		InitializeDiagnostics(engineVersion, _languageServices.ErrorDetector, _languageServices.ErrorDetector);
+		InitializeDiagnostics(engineVersion, _languageServices.ErrorDetector);
 
 		InitializeRenderers();
 
@@ -151,7 +155,21 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		int requestCaretOffset,
 		int requestToken)
 	{
-		TextCompletionSessionDecision decision = await decisionTask;
+		TextCompletionSessionDecision decision;
+
+		try
+		{
+			decision = await decisionTask;
+		}
+		catch (OperationCanceledException)
+		{
+			return;
+		}
+		catch (Exception exception)
+		{
+			Log.Warn(exception, "Failed to resolve the ClassicScript completion decision.");
+			return;
+		}
 
 		if (!CompletionController.IsRequestCurrent(requestToken)
 			|| CompletionController.ActiveWindow is not null
@@ -170,7 +188,9 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	// Navigation
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
+		=> SynchronousRequestAdapter.Adapt(
+			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
+			cancellationToken);
 
 	/// <summary>
 	/// Inserts the next free trigger index at the caret.
@@ -194,8 +214,8 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 
 		SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 
-		Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
-		Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
+		Background = ScriptingColorParser.CreateBrush(config.ColorScheme.Background, ScriptingColorParser.DefaultBackgroundColor);
+		Foreground = ScriptingColorParser.CreateBrush(config.ColorScheme.Foreground, ScriptingColorParser.DefaultForegroundColor);
 
 		_sectionRenderer.UpdateSectionColor(config.ColorScheme.Sections.HtmlColor);
 

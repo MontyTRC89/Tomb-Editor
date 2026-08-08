@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Commands;
 using TombLib.Scripting.ClassicScript.Mnemonics;
 using TombLib.Scripting.UI.Highlighting;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.ClassicScript.Highlighting;
 
@@ -97,7 +97,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 			Regex = new Regex(">"),
 			Color = new HighlightingColor
 			{
-				Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),
+				Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(_scheme.NewCommands.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
 				FontWeight = FontWeights.Bold // Always bold
 			}
 		});
@@ -138,7 +138,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	private static HighlightingColor CreateColor(HighlightingObject scheme)
 		=> new()
 		{
-			Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(scheme.HtmlColor)),
+			Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
 			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
 			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
 		};
@@ -148,6 +148,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	/// </summary>
 	private static Regex BuildWordBoundaryAlternation(string template, IEnumerable<string> names, RegexOptions options)
 		=> new Regex(string.Format(template, string.Join("|", names.Select(Regex.Escape))), options);
+
 	// Other
 
 	/// <summary>

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using TombLib.Scripting.ClassicScript.Compilers;
 using TombLib.Scripting.ClassicScript.Mnemonics.Models;
 using TombLib.Scripting.ClassicScript.Mnemonics.Services;
 
@@ -21,7 +22,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 {
 	private static readonly object SyncRoot = new();
 	private static readonly MnemonicDefinitionsLoader Loader = new();
-	private static volatile ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(DefaultPaths.InternalNGCDirectory);
+	private static volatile ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(ClassicScriptCompilerPaths.Default.InternalNGCDirectory);
 	private static int _snapshotVersion;
 	private Regex? _cachedMnemonicRegex;
 	private int _cachedSnapshotVersion = -1;
@@ -152,7 +153,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	/// Reloads the catalog from the default NG-C directory.
 	/// </summary>
 	public void Reload()
-		=> Reload(DefaultPaths.InternalNGCDirectory);
+		=> Reload(ClassicScriptCompilerPaths.Default.InternalNGCDirectory);
 
 	/// <summary>
 	/// Reloads the catalog from the given plugin scripts directory, publishing the new snapshot.

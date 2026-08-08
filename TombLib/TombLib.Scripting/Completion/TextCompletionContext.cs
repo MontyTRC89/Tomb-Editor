@@ -8,7 +8,7 @@ namespace TombLib.Scripting.Completion;
 /// <remarks>
 /// The shared completion contract uses an editor offset for the request point and leaves
 /// protocol-specific line and column conversion at the provider boundary.
-/// A default (<c>null</c>) context is not valid and is rejected by providers.
+/// A default (<see langword="null"/>) context is not valid and is rejected by providers.
 /// </remarks>
 public sealed record TextCompletionContext
 {
@@ -23,7 +23,7 @@ public sealed record TextCompletionContext
 	/// it from the caret position. A default context must not be used because it would treat
 	/// <c>0</c> as the active argument instead of resolving it from the caret.
 	/// </param>
-	/// <exception cref="ArgumentNullException"><paramref name="documentText"/> is null.</exception>
+	/// <exception cref="ArgumentNullException"><paramref name="documentText"/> is <see langword="null"/>.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">
 	/// <paramref name="caretOffset"/> is negative or greater than the length of <paramref name="documentText"/>,
 	/// or <paramref name="argumentIndex"/> is less than <c>-1</c>.

@@ -8,9 +8,10 @@ using System.Windows.Threading;
 namespace TombLib.Scripting.UI.Documents;
 
 /// <summary>
-/// Persists editor content to the backing file and keeps an optional backup in sync, running the
-/// work on a background task. Requests are latest-request-wins: concurrent calls coalesce into a
-/// single pass over the most recent content, discarding intermediate states.
+/// Keeps the backup sidecar file for the edited document in sync on a background task. The editor's
+/// own save path writes the backing file; this worker only manages the optional <c>.backup</c> file.
+/// Requests are latest-request-wins: concurrent calls coalesce into a single pass over the most
+/// recent content, discarding intermediate states.
 /// </summary>
 public sealed class ContentChangedWorker : IDisposable
 {
@@ -78,14 +79,14 @@ public sealed class ContentChangedWorker : IDisposable
 	}
 
 	/// <summary>
-	/// Gets whether a persistence run is currently in progress.
+	/// Gets whether a backup-synchronization run is currently in progress.
 	/// </summary>
 	public bool IsBusy => _isDisposed ? false : _isBusy;
 
 	// Events
 
 	/// <summary>
-	/// Raised when a persistence run completes.
+	/// Raised when a backup-synchronization run completes.
 	/// </summary>
 	public event RunWorkerCompletedEventHandler? RunWorkerCompleted;
 
@@ -144,9 +145,9 @@ public sealed class ContentChangedWorker : IDisposable
 	// Public methods
 
 	/// <summary>
-	/// Schedules the given editor content to be persisted, coalescing concurrent requests into one run.
+	/// Schedules the given editor content to be backed up, coalescing concurrent requests into one run.
 	/// </summary>
-	/// <param name="editorContent">The editor content to persist.</param>
+	/// <param name="editorContent">The editor content to back up.</param>
 	public void Run(string editorContent)
 	{
 		if (_isDisposed || string.IsNullOrEmpty(FilePath))
@@ -195,8 +196,7 @@ public sealed class ContentChangedWorker : IDisposable
 
 		_ = SynchronizeBackupStateAsync(filePath, _persistedContent, false, stateVersion, requestId)
 			.ContinueWith(
-				task =>
-				{
+				task => {
 					if (task.Exception is not null)
 						Log.Warn(task.Exception, "Failed to synchronize the backup state for '{Path}'.", filePath);
 				},
@@ -287,8 +287,7 @@ public sealed class ContentChangedWorker : IDisposable
 			if (!IsLatestRequest(requestId, stateVersion))
 				continue;
 
-			await _dispatcher.InvokeAsync(() =>
-			{
+			await _dispatcher.InvokeAsync(() => {
 				if (!IsLatestRequest(requestId, stateVersion))
 					return;
 

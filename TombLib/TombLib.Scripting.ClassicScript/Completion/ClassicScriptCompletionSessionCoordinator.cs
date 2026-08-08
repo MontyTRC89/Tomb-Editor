@@ -251,8 +251,7 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		CancellationToken cancellationToken = cancellationSource.Token;
 
 		return Task.Run(
-			() =>
-			{
+			() => {
 				List<TextCompletionItem> items = EnumerateIncludeCompletionItems(directoryPath, filePath, cancellationToken);
 
 				lock (_includeDiscoverySyncRoot)

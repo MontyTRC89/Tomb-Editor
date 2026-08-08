@@ -12,8 +12,8 @@ namespace TombLib.Scripting.Presentation;
 /// <param name="HasDiagnostic">Whether a diagnostic is available at the hovered offset.</param>
 /// <param name="DiagnosticMessage">The diagnostic message, when a diagnostic is available.</param>
 /// <param name="DiagnosticSeverity">The severity of the diagnostic at the hovered offset.</param>
-	/// <param name="CanShowToolTip">Whether the hover tooltip can be shown.</param>
-	/// <param name="CanShowDiagnosticFallback">Whether the diagnostic tooltip can be shown as a fallback.</param>
+/// <param name="CanShowToolTip">Whether the hover tooltip can be shown.</param>
+/// <param name="CanShowDiagnosticFallback">Whether the diagnostic tooltip can be shown as a fallback.</param>
 public readonly record struct TextHoverPresentationState(
 	int HoveredOffset,
 	int RequestOffset,

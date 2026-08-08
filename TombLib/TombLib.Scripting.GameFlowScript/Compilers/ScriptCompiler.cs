@@ -28,11 +28,12 @@ public static class ScriptCompiler
 		=> RunCompileWorkflow(
 			inputDirectory,
 			outputDirectory,
-			DefaultPaths.GameFlow2Directory,
+			GameFlowCompilerPaths.Default.GameFlow2Directory,
 			BuildClassicBatchContent(isTR3, pause),
 			"tombpc.dat",
 			"gameFlow.exe",
-			pause);
+			pause,
+			ProcessCompilerProcessFactory.Instance);
 
 	/// <summary>
 	/// Compiles a TR3 version 2+ GameFlow script and copies the resulting data file to the output directory.
@@ -45,11 +46,12 @@ public static class ScriptCompiler
 		=> RunCompileWorkflow(
 			inputDirectory,
 			outputDirectory,
-			DefaultPaths.GameFlow3Directory,
+			GameFlowCompilerPaths.Default.GameFlow3Directory,
 			BuildTR3Version2PlusBatchContent(pause),
 			"Script.dat",
 			"TRGameFlow.exe",
-			pause);
+			pause,
+			ProcessCompilerProcessFactory.Instance);
 
 	/// <summary>
 	/// Builds the compiler batch content for a classic GameFlow compile.
@@ -86,14 +88,29 @@ public static class ScriptCompiler
 		return true;
 	}
 
-	private static bool RunCompileWorkflow(
+	/// <summary>
+	/// Runs the full compile workflow: copies the script directory, writes and starts the compiler
+	/// batch, waits for the compiler (bounding non-paused runs by a timeout), and finalizes the
+	/// compiled data file.
+	/// </summary>
+	/// <param name="inputDirectory">The directory that contains the script files.</param>
+	/// <param name="outputDirectory">The directory that receives the compiled data file.</param>
+	/// <param name="gameflowDirectory">The staging directory that hosts the compiler batch.</param>
+	/// <param name="batchFileContent">The compiler batch content to write.</param>
+	/// <param name="compiledScriptFileName">The name of the compiled data file.</param>
+	/// <param name="keptExecutableName">The executable name preserved when the staging directory is cleaned.</param>
+	/// <param name="pause">Whether the compiler batch should pause when it finishes.</param>
+	/// <param name="processFactory">The process factory used to start the compiler batch.</param>
+	/// <returns><c>true</c> when the compiled data file was produced and copied; otherwise, <c>false</c>.</returns>
+	internal static bool RunCompileWorkflow(
 		string inputDirectory,
 		string outputDirectory,
 		string gameflowDirectory,
 		string batchFileContent,
 		string compiledScriptFileName,
 		string keptExecutableName,
-		bool pause)
+		bool pause,
+		ICompilerProcessFactory processFactory)
 	{
 		ScriptDirectoryCopier.CopyScriptDirectory(inputDirectory, gameflowDirectory, clearTarget: false);
 
@@ -107,11 +124,11 @@ public static class ScriptCompiler
 			UseShellExecute = true
 		};
 
-		Process? process = null;
+		ICompilerProcess? process = null;
 
 		try
 		{
-			process = Process.Start(startInfo);
+			process = processFactory.Start(startInfo);
 
 			if (process is null)
 				return false;
@@ -136,11 +153,11 @@ public static class ScriptCompiler
 		}
 	}
 
-	private static void TerminateProcessTree(Process process)
+	private static void TerminateProcessTree(ICompilerProcess process)
 	{
 		try
 		{
-			process.Kill(entireProcessTree: true);
+			process.KillEntireProcessTree();
 		}
 		catch (Exception exception) when (exception is InvalidOperationException or NotSupportedException or Win32Exception)
 		{

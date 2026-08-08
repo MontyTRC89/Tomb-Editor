@@ -18,9 +18,9 @@ public sealed class LuaThemeProvider : ITextEditorColorProvider
 
 	/// <inheritdoc />
 	public string GetSelectedName(TextEditorConfigBase config)
-		=> ((LuaEditorConfiguration)config).SelectedThemeName;
+		=> TextEditorColorProviderGuard.GetConfig<LuaEditorConfiguration>(config, GetType().Name).SelectedThemeName;
 
 	/// <inheritdoc />
 	public void SetSelectedName(TextEditorConfigBase config, string name)
-		=> ((LuaEditorConfiguration)config).SelectedThemeName = name;
+		=> TextEditorColorProviderGuard.GetConfig<LuaEditorConfiguration>(config, GetType().Name).SelectedThemeName = name;
 }

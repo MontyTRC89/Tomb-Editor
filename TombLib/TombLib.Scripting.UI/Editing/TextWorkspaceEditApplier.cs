@@ -40,8 +40,7 @@ public sealed class TextWorkspaceEditApplier
 		if (!workspaceEdit.HasEdits)
 			return new TextWorkspaceEditTransaction([]);
 
-		return _textEditorHost.ExecutePreservingSelection(() =>
-		{
+		return _textEditorHost.ExecutePreservingSelection(() => {
 			var documentChanges = new List<TextWorkspaceDocumentChange>();
 
 			foreach (IGrouping<string, TextDocumentEdit> fileGroup in workspaceEdit.DocumentEdits
@@ -121,8 +120,7 @@ public sealed class TextWorkspaceEditApplier
 		if (!transaction.HasChanges)
 			return [];
 
-		return _textEditorHost.ExecutePreservingSelection(() =>
-		{
+		return _textEditorHost.ExecutePreservingSelection(() => {
 			var updatedFiles = new List<string>(transaction.DocumentChanges.Count);
 
 			foreach (TextWorkspaceDocumentChange documentChange in transaction.DocumentChanges)
@@ -141,8 +139,7 @@ public sealed class TextWorkspaceEditApplier
 	{
 		PreparedTextEdit[] editsAscending = [.. preparedTextEdits];
 
-		Array.Sort(editsAscending, static (left, right) =>
-		{
+		Array.Sort(editsAscending, static (left, right) => {
 			int startComparison = left.StartOffset.CompareTo(right.StartOffset);
 			return startComparison != 0
 				? startComparison

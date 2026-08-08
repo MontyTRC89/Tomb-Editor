@@ -8,9 +8,9 @@ namespace TombIDE.ScriptingStudio;
 
 public class ConfigurationCollection
 {
-	public ClassicScriptEditorConfiguration ClassicScript = new ClassicScriptEditorConfiguration().Load<ClassicScriptEditorConfiguration>();
-	public LuaEditorConfiguration Lua = new LuaEditorConfiguration().Load<LuaEditorConfiguration>();
-	public GameFlowEditorConfiguration GameFlowScript = new GameFlowEditorConfiguration().Load<GameFlowEditorConfiguration>();
+	public ClassicScriptEditorConfiguration ClassicScript = ConfigurationBase.Load<ClassicScriptEditorConfiguration>();
+	public LuaEditorConfiguration Lua = ConfigurationBase.Load<LuaEditorConfiguration>();
+	public GameFlowEditorConfiguration GameFlowScript = ConfigurationBase.Load<GameFlowEditorConfiguration>();
 	public TRXEditorConfiguration TRX = TRXEditorConfiguration.LoadWithLegacyFallback();
 
 	public void SaveAllConfigs()

@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Highlighting;
@@ -10,6 +9,8 @@ using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Editing;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Resources;
+using TombLib.Scripting.UI.Threading;
 
 namespace TombLib.Scripting.TRX;
 
@@ -43,7 +44,7 @@ public sealed partial class TRXEditor : TextEditorBase, INameBasedObjectNavigato
 		InitializeDefinitionNavigation(TryNavigateDefinition);
 		InitializeHover(BuildStandardHoverRequestState, RequestHover);
 
-		InitializeDiagnostics(EngineVersion, _languageServices.ErrorDetector, _languageServices.ErrorDetector);
+		InitializeDiagnostics(EngineVersion, _languageServices.ErrorDetector);
 
 		CommentPrefix = "//";
 	}
@@ -125,8 +126,8 @@ public sealed partial class TRXEditor : TextEditorBase, INameBasedObjectNavigato
 
 		SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme, _languageServices.SchemaService);
 
-		Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
-		Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
+		Background = ScriptingColorParser.CreateBrush(config.ColorScheme.Background, ScriptingColorParser.DefaultBackgroundColor);
+		Foreground = ScriptingColorParser.CreateBrush(config.ColorScheme.Foreground, ScriptingColorParser.DefaultForegroundColor);
 
 		BracesClosingString = config.AutoAddCommas ? "}," : "}";
 		BracketsClosingString = config.AutoAddCommas ? "]," : "]";
@@ -135,7 +136,9 @@ public sealed partial class TRXEditor : TextEditorBase, INameBasedObjectNavigato
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
+		=> SynchronousRequestAdapter.Adapt(
+			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
+			cancellationToken);
 
 	/// <inheritdoc />
 	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)

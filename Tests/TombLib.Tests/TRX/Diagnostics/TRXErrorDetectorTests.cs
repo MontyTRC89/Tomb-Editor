@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using TombLib.Scripting.TRX.Diagnostics;
 using TombLib.Scripting.TRX.Services;
+using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Tests.TRX.Diagnostics;
 
@@ -16,17 +17,17 @@ public class TRXErrorDetectorTests
 	private readonly ErrorDetector _errorDetector = new(new TRXLineService());
 
 	[TestMethod]
-	public void FindErrors_VersionBelow48_ReturnsNoDiagnostics()
+	public void GetDiagnostics_VersionBelow48_ReturnsNoDiagnostics()
 	{
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.FindErrors("\"file\": \"level1\"", new Version(4, 7));
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("\"file\": \"level1\"", new Version(4, 7)));
 
 		Assert.AreEqual(0, diagnostics.Count);
 	}
 
 	[TestMethod]
-	public void FindErrors_RemovedProperty_AtRemovalVersion_ReportsDiagnostic()
+	public void GetDiagnostics_RemovedProperty_AtRemovalVersion_ReportsDiagnostic()
 	{
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.FindErrors("\"file\": \"level1\"", new Version(4, 8));
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("\"file\": \"level1\"", new Version(4, 8)));
 
 		Assert.AreEqual(1, diagnostics.Count);
 		StringAssert.Contains(diagnostics[0].Message, "property has been removed");
@@ -34,38 +35,38 @@ public class TRXErrorDetectorTests
 	}
 
 	[TestMethod]
-	public void FindErrors_RemovedConstant_AtRemovalVersion_ReportsDiagnostic()
+	public void GetDiagnostics_RemovedConstant_AtRemovalVersion_ReportsDiagnostic()
 	{
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.FindErrors("level: \"exit_to_cine\"", new Version(4, 8));
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("level: \"exit_to_cine\"", new Version(4, 8)));
 
 		Assert.AreEqual(1, diagnostics.Count);
 		StringAssert.Contains(diagnostics[0].Message, "constant has been removed");
 	}
 
 	[TestMethod]
-	public void FindErrors_RemovedKeyword_BeforeRemovalVersion_NoDiagnostic()
+	public void GetDiagnostics_RemovedKeyword_BeforeRemovalVersion_NoDiagnostic()
 	{
 		// draw_distance_fade is removed from 4.10 onward.
-		IReadOnlyList<TextEditorDiagnostic> beforeRemoval = _errorDetector.FindErrors("\"draw_distance_fade\": 10", new Version(4, 9));
-		IReadOnlyList<TextEditorDiagnostic> atRemoval = _errorDetector.FindErrors("\"draw_distance_fade\": 10", new Version(4, 10));
+		IReadOnlyList<TextEditorDiagnostic> beforeRemoval = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("\"draw_distance_fade\": 10", new Version(4, 9)));
+		IReadOnlyList<TextEditorDiagnostic> atRemoval = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("\"draw_distance_fade\": 10", new Version(4, 10)));
 
 		Assert.AreEqual(0, beforeRemoval.Count);
 		Assert.AreEqual(1, atRemoval.Count);
 	}
 
 	[TestMethod]
-	public void FindErrors_CommentLine_ReturnsNoDiagnostics()
+	public void GetDiagnostics_CommentLine_ReturnsNoDiagnostics()
 	{
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.FindErrors("// \"file\": \"level1\"", new Version(4, 8));
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest("// \"file\": \"level1\"", new Version(4, 8)));
 
 		Assert.AreEqual(0, diagnostics.Count);
 	}
 
 	[TestMethod]
-	public void FindErrors_MultipleRemovedKeywordsOnSeparateLines_ReportsMultipleDiagnostics()
+	public void GetDiagnostics_MultipleRemovedKeywordsOnSeparateLines_ReportsMultipleDiagnostics()
 	{
 		const string content = "\"file\": \"level1\"\n\"music\": \"track1\"";
-		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.FindErrors(content, new Version(4, 8));
+		IReadOnlyList<TextEditorDiagnostic> diagnostics = _errorDetector.GetDiagnostics(new TextDiagnosticsRequest(content, new Version(4, 8)));
 
 		Assert.AreEqual(2, diagnostics.Count);
 	}

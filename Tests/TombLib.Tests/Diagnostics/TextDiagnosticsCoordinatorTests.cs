@@ -22,33 +22,11 @@ namespace TombLib.Tests;
 public class TextDiagnosticsCoordinatorTests
 {
 	[TestMethod]
-	public void ErrorDetectionWorker_SurfacesDetectorFailureThroughCompletedEvent()
-	{
-		WPFTestHelper.RunInSta(() =>
-		{
-			var worker = new ErrorDetectionWorker(new ThrowingErrorDetector(), new Version(1, 0), TimeSpan.FromMilliseconds(50.0));
-			RunWorkerCompletedEventArgs? completedArgs = null;
-			worker.RunWorkerCompleted += (_, e) => completedArgs = e;
-
-			worker.RunErrorCheck("content");
-
-			PumpUntil(() => completedArgs is not null);
-
-			Assert.IsNotNull(completedArgs);
-			Assert.IsNotNull(completedArgs.Error);
-			Assert.IsFalse(worker.IsBusy);
-		});
-	}
-
-	[TestMethod]
 	public void ErrorDetectionWorker_SurfacesProviderFailureThroughCompletedEvent()
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
-			var worker = new ErrorDetectionWorker(null, new Version(1, 0), TimeSpan.FromMilliseconds(50.0))
-			{
-				DiagnosticsProvider = new ThrowingDiagnosticsProvider()
-			};
+			var worker = new ErrorDetectionWorker(new ThrowingDiagnosticsProvider(), new Version(1, 0), TimeSpan.FromMilliseconds(50.0));
 			RunWorkerCompletedEventArgs? completedArgs = null;
 			worker.RunWorkerCompleted += (_, e) => completedArgs = e;
 
@@ -63,7 +41,59 @@ public class TextDiagnosticsCoordinatorTests
 	}
 
 	[TestMethod]
-	public void Coordinator_KeepsLastKnownDiagnostics_WhenDetectorThrows()
+	public void ErrorDetectionWorker_NewerRequestWhileBusy_CoalescesToLatestContent()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var detector = new SlowDetector(blockFirstCalls: 1);
+			var worker = new ErrorDetectionWorker(detector, new Version(1, 0), TimeSpan.FromMilliseconds(50.0));
+			var published = new List<RunWorkerCompletedEventArgs>();
+
+			worker.RunWorkerCompleted += (_, e) => published.Add(e);
+
+			worker.RunErrorCheck("first");
+			PumpUntil(() => detector.CallCount >= 1);
+			Assert.IsTrue(worker.IsBusy);
+
+			// Requests issued while a run is active must not overlap; they coalesce to the latest content.
+			worker.RunErrorCheck("second");
+			worker.RunErrorCheck("third");
+			detector.Release();
+
+			PumpUntil(() => !worker.IsBusy && detector.CallCount >= 2);
+
+			Assert.AreEqual(2, detector.CallCount);
+			Assert.AreEqual("third", detector.Contents[detector.Contents.Count - 1]);
+			Assert.AreEqual(2, published.Count);
+		});
+	}
+
+	[TestMethod]
+	public void ErrorDetectionWorker_DisposeWhileBusy_CancelsInFlightAndRaisesNoCompletion()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var detector = new SlowDetector(blockFirstCalls: 1);
+			var worker = new ErrorDetectionWorker(detector, new Version(1, 0), TimeSpan.FromMilliseconds(50.0));
+			int completedCount = 0;
+
+			worker.RunWorkerCompleted += (_, _) => completedCount++;
+
+			worker.RunErrorCheck("content");
+			PumpUntil(() => detector.CallCount >= 1);
+			Assert.IsTrue(worker.IsBusy);
+
+			worker.Dispose();
+			detector.Release();
+			PumpUntil(() => !worker.IsBusy);
+
+			Assert.AreEqual(0, completedCount);
+			Assert.IsFalse(worker.IsBusy);
+		});
+	}
+
+	[TestMethod]
+	public void Coordinator_KeepsLastKnownDiagnostics_WhenProviderThrows()
 	{
 		WPFTestHelper.RunInSta(() =>
 		{
@@ -75,7 +105,7 @@ public class TextDiagnosticsCoordinatorTests
 				var initialDiagnostics = new[] { new TextEditorDiagnostic(TextEditorDiagnosticSeverity.Warning, "existing", 0, 4) };
 				editor.SetDiagnostics(initialDiagnostics);
 
-				var coordinator = new TextDiagnosticsCoordinator(editor, new Version(1, 0), new ThrowingErrorDetector());
+				var coordinator = new TextDiagnosticsCoordinator(editor, new Version(1, 0), new ThrowingDiagnosticsProvider());
 				coordinator.RunErrorCheck("Name=Level1");
 
 				PumpUntil(() => !coordinator.IsBusy);
@@ -381,19 +411,13 @@ public class TextDiagnosticsCoordinatorTests
 			dispatcher.Invoke(DispatcherPriority.Background, new Action(() => { }));
 	}
 
-	private sealed class ThrowingErrorDetector : IErrorDetector
-	{
-		public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
-			=> throw new InvalidOperationException("Detector failed.");
-	}
-
 	private sealed class ThrowingDiagnosticsProvider : ITextDiagnosticsProvider
 	{
 		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 			=> throw new InvalidOperationException("Provider failed.");
 	}
 
-	private sealed class SlowDetector : IErrorDetector
+	private sealed class SlowDetector : ITextDiagnosticsProvider
 	{
 		private readonly int _blockFirstCalls;
 		private readonly ManualResetEventSlim _release = new(false);
@@ -406,8 +430,9 @@ public class TextDiagnosticsCoordinatorTests
 
 		public int CallCount => _callCount;
 
-		public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
+		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 		{
+			string editorContent = request.DocumentText;
 			int call = Interlocked.Increment(ref _callCount);
 			Contents.Add(editorContent);
 
@@ -421,20 +446,21 @@ public class TextDiagnosticsCoordinatorTests
 			=> _release.Set();
 	}
 
-	private sealed class FailOnceBlockingDetector : IErrorDetector
+	private sealed class FailOnceBlockingDetector : ITextDiagnosticsProvider
 	{
 		private readonly ManualResetEventSlim _release = new(false);
 		private int _callCount;
 
 		public int CallCount => _callCount;
 
-		public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
+		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 		{
+			string editorContent = request.DocumentText;
 			int call = Interlocked.Increment(ref _callCount);
 			_release.Wait();
 
 			if (call == 1)
-				throw new InvalidOperationException("Detector failed.");
+				throw new InvalidOperationException("Provider failed.");
 
 			return [new TextEditorDiagnostic(TextEditorDiagnosticSeverity.Error, "result:" + editorContent, 0, Math.Max(1, editorContent.Length))];
 		}

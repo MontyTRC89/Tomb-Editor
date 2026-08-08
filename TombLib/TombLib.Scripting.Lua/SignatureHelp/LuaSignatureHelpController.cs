@@ -101,8 +101,6 @@ public sealed partial class LuaEditor
 	/// </summary>
 	private sealed class LuaSignatureHelpController
 	{
-		private const double SignatureHelpRefreshDebounceDelayInMilliseconds = 50.0;
-
 		private readonly LuaEditor _editor;
 		private readonly TextSignatureHelpController _controller;
 		private readonly TextSignatureHelpPopupPresenter _popupPresenter;
@@ -120,7 +118,7 @@ public sealed partial class LuaEditor
 				dismissSignatureHelp: DismissPopup,
 				handleRequestFailure: exception => LogEditorFailure("Signature help", exception),
 				cancelInFlightRequest: CancelInFlightRequest,
-				refreshDebounceDelayInMilliseconds: SignatureHelpRefreshDebounceDelayInMilliseconds);
+				refreshDebounceDelay: TimeSpan.FromMilliseconds(50.0));
 		}
 
 		internal bool IsVisible => _controller.CurrentPresentation.IsVisible;

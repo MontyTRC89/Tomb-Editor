@@ -20,7 +20,7 @@ tab_width = 4
 
 # The six TombLib.Scripting* provider libraries are tab-indented (user rule 2026-08-08).
 # This overrides the 4-space default for those projects; do not convert their tabs to spaces.
-[TombLib.Scripting*/**/*.cs]
+[TombLib.Scripting*/*.cs]
 indent_style = tab
 tab_width = 4
 

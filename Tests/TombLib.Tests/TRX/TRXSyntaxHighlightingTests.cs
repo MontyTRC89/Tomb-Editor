@@ -5,6 +5,7 @@ using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Highlighting;
 using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.TRX.Services;
+using TombLib.Scripting.UI.Highlighting;
 
 namespace TombLib.Tests;
 
@@ -66,6 +67,26 @@ public class TRXSyntaxHighlightingTests
 		{
 			File.Delete(path);
 		}
+	}
+
+	[TestMethod]
+	public void MainRuleSet_MalformedHighlightingColors_DoesNotThrow()
+	{
+		var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
+		var scheme = new ColorScheme
+		{
+			Background = "not-a-color",
+			Foreground = "not-a-color",
+			Comments = new HighlightingObject { HtmlColor = "not-a-color" },
+			Properties = new HighlightingObject { HtmlColor = "not-a-color" },
+			Values = new HighlightingObject { HtmlColor = "not-a-color" }
+		};
+
+		var highlighting = new SyntaxHighlighting(scheme, schemaService);
+
+		// Malformed user-edited color data must not prevent the rule set from being built.
+		Assert.IsNotNull(highlighting.MainRuleSet);
+		Assert.IsTrue(highlighting.MainRuleSet.Rules.Count > 0);
 	}
 
 	private static string WriteFixture(string fileName, string content)

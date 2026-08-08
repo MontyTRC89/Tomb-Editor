@@ -1,8 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Xml.Serialization;
 using TombLib.Scripting.Lua.Resources;
 using TombLib.Scripting.Lua.Themes;
 using TombLib.Scripting.UI.Bases;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.Lua;
 
@@ -16,44 +17,23 @@ public sealed class LuaEditorConfiguration : TextEditorConfigBase
 	/// </summary>
 	public override string DefaultPath { get; }
 
-	private string _selectedThemeName = ConfigurationDefaults.SelectedThemeName;
-
 	/// <summary>
-	/// Gets or sets the selected Lua theme name.
+	/// Gets or sets the selected Lua theme name. The name is stored as given and resolved to a theme
+	/// (including legacy aliases) through <see cref="Theme"/>.
 	/// </summary>
-	public string SelectedThemeName
-	{
-		get => _selectedThemeName;
-		set
-		{
-			_selectedThemeName = LuaThemeRepository.ResolveThemeName(value);
-
-			Theme = LuaThemeRepository.GetTheme(_selectedThemeName);
-		}
-	}
+	public string SelectedThemeName { get; set; } = ConfigurationDefaults.SelectedThemeName;
 
 	/// <summary>
 	/// Gets the resolved theme object for the current selection.
 	/// </summary>
 	[XmlIgnore]
-	public LuaTheme Theme { get; private set; } = LuaThemeRepository.GetTheme(ConfigurationDefaults.SelectedThemeName);
-
-	/// <summary>
-	/// Gets or sets the serialized name of the selected color scheme. This maps to
-	/// <see cref="SelectedThemeName"/> so existing serialized configuration data round-trips.
-	/// </summary>
-	public string SelectedColorSchemeName
-	{
-		get => SelectedThemeName;
-		set => SelectedThemeName = value;
-	}
+	public LuaTheme Theme => LuaThemeRepository.GetTheme(SelectedThemeName);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="LuaEditorConfiguration"/> class.
 	/// </summary>
 	public LuaEditorConfiguration()
 	{
-		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
-		SelectedThemeName = ConfigurationDefaults.SelectedThemeName;
+		DefaultPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 	}
 }

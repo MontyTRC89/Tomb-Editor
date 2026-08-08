@@ -2,12 +2,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Media;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Highlighting;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Resources;
+using TombLib.Scripting.UI.Threading;
 
 namespace TombLib.Scripting.GameFlowScript;
 
@@ -65,14 +66,16 @@ public sealed partial class GameFlowEditor : TextEditorBase, INameBasedObjectNav
 
 		SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 
-		Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
-		Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
+		Background = ScriptingColorParser.CreateBrush(config.ColorScheme.Background, ScriptingColorParser.DefaultBackgroundColor);
+		Foreground = ScriptingColorParser.CreateBrush(config.ColorScheme.Foreground, ScriptingColorParser.DefaultForegroundColor);
 
 		base.UpdateSettings(configuration);
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> Task.FromResult(TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset));
+		=> SynchronousRequestAdapter.Adapt(
+			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
+			cancellationToken);
 
 	/// <inheritdoc/>
 	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)

@@ -69,10 +69,9 @@ public abstract partial class TextEditorBase
 	/// Initializes background error detection for the language.
 	/// </summary>
 	/// <param name="engineVersion">The engine version diagnostics should target.</param>
-	/// <param name="errorDetector">The error detector used to validate the document (optional).</param>
 	/// <param name="diagnosticsProvider">The provider used to source diagnostics (optional).</param>
-	protected void InitializeDiagnostics(Version engineVersion, IErrorDetector? errorDetector = null, ITextDiagnosticsProvider? diagnosticsProvider = null)
-		=> _diagnosticsCoordinator = new TextDiagnosticsCoordinator(this, engineVersion, errorDetector, diagnosticsProvider);
+	protected void InitializeDiagnostics(Version engineVersion, ITextDiagnosticsProvider? diagnosticsProvider = null)
+		=> _diagnosticsCoordinator = new TextDiagnosticsCoordinator(this, engineVersion, diagnosticsProvider);
 
 	/// <summary>
 	/// Called synchronously when text is being entered into the editor.

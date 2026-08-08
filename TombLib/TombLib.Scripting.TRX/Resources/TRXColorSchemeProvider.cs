@@ -16,7 +16,7 @@ public sealed class TRXColorSchemeProvider : FileSystemColorSchemeProvider<TRXEd
 	/// Initializes a new instance of the <see cref="TRXColorSchemeProvider"/> class.
 	/// </summary>
 	public TRXColorSchemeProvider()
-		: base(DefaultPaths.TRXColorConfigsDirectory)
+		: base(ScriptingPaths.Default.TRXColorConfigsDirectory)
 	{
 	}
 
@@ -26,18 +26,18 @@ public sealed class TRXColorSchemeProvider : FileSystemColorSchemeProvider<TRXEd
 
 	private static IReadOnlyList<string> GetAvailableColorSchemeFiles()
 	{
-		if (!Directory.Exists(DefaultPaths.TRXColorConfigsDirectory))
+		if (!Directory.Exists(ScriptingPaths.Default.TRXColorConfigsDirectory))
 			return [];
 
 		var filePathsByName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.OldLegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+		foreach (string filePath in Directory.GetFiles(ScriptingPaths.Default.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.OldLegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
 			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
 
-		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.LegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+		foreach (string filePath in Directory.GetFiles(ScriptingPaths.Default.TRXColorConfigsDirectory, "*" + ConfigurationDefaults.LegacyColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
 			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
 
-		foreach (string filePath in Directory.GetFiles(DefaultPaths.TRXColorConfigsDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
+		foreach (string filePath in Directory.GetFiles(ScriptingPaths.Default.TRXColorConfigsDirectory, "*" + ScriptingDefaults.ColorSchemeFileExtension, SearchOption.TopDirectoryOnly))
 			filePathsByName[Path.GetFileNameWithoutExtension(filePath)] = filePath;
 
 		return [..

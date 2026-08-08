@@ -20,9 +20,9 @@ public class FileSystemColorSchemeProvider<TConfig> : FileSystemColorSchemeProvi
 
 	/// <inheritdoc />
 	public override string GetSelectedName(TextEditorConfigBase config)
-		=> ((TConfig)config).SelectedColorSchemeName;
+		=> TextEditorColorProviderGuard.GetConfig<TConfig>(config, GetType().Name).SelectedColorSchemeName;
 
 	/// <inheritdoc />
 	public override void SetSelectedName(TextEditorConfigBase config, string name)
-		=> ((TConfig)config).SelectedColorSchemeName = name;
+		=> TextEditorColorProviderGuard.GetConfig<TConfig>(config, GetType().Name).SelectedColorSchemeName = name;
 }

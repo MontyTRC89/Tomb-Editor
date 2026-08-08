@@ -22,7 +22,7 @@ public abstract class ConfigurationBase
 	// Loading
 
 	/// <summary>
-	/// Loads the configuration from a stream.
+	/// Loads a configuration of the given type from a stream.
 	/// </summary>
 	/// <typeparam name="T">The configuration type to load.</typeparam>
 	/// <param name="stream">The stream to read the configuration from.</param>
@@ -30,7 +30,7 @@ public abstract class ConfigurationBase
 	/// The loaded configuration, or a new default instance when the stream is missing, empty or corrupt.
 	/// The fallback instance is not saved automatically; callers save it to persist the defaults.
 	/// </returns>
-	public T Load<T>(Stream stream) where T : ConfigurationBase, new()
+	public static T Load<T>(Stream stream) where T : ConfigurationBase, new()
 	{
 		try
 		{
@@ -44,7 +44,7 @@ public abstract class ConfigurationBase
 	}
 
 	/// <summary>
-	/// Loads the configuration from a file.
+	/// Loads a configuration of the given type from a file.
 	/// </summary>
 	/// <typeparam name="T">The configuration type to load.</typeparam>
 	/// <param name="filePath">The path of the configuration file to read.</param>
@@ -52,7 +52,7 @@ public abstract class ConfigurationBase
 	/// The loaded configuration, or a new default instance when the file is missing or corrupt.
 	/// The fallback instance is not saved automatically; callers save it to persist the defaults.
 	/// </returns>
-	public T Load<T>(string filePath) where T : ConfigurationBase, new()
+	public static T Load<T>(string filePath) where T : ConfigurationBase, new()
 	{
 		try
 		{
@@ -82,12 +82,12 @@ public abstract class ConfigurationBase
 	}
 
 	/// <summary>
-	/// Loads the configuration from the default path.
+	/// Loads a configuration of the given type from its default path.
 	/// </summary>
 	/// <typeparam name="T">The configuration type to load.</typeparam>
 	/// <returns>The loaded configuration, or a new default instance when the file is missing or corrupt.</returns>
-	public T Load<T>() where T : ConfigurationBase, new()
-		=> Load<T>(DefaultPath);
+	public static T Load<T>() where T : ConfigurationBase, new()
+		=> Load<T>(new T().DefaultPath);
 
 	// Saving
 

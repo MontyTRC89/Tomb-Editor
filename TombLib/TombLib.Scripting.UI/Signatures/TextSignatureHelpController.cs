@@ -41,7 +41,7 @@ public sealed class TextSignatureHelpController : IDisposable
 		Action<TextSignatureHelpPresentationState>? applySignatureState = null,
 		Action<Exception>? handleRequestFailure = null,
 		Action? cancelInFlightRequest = null,
-		double refreshDebounceDelayInMilliseconds = 50.0)
+		TimeSpan? refreshDebounceDelay = null)
 	{
 		ArgumentNullException.ThrowIfNull(getCurrentCaretOffset);
 		ArgumentNullException.ThrowIfNull(requestSignatureHelpAsync);
@@ -56,7 +56,7 @@ public sealed class TextSignatureHelpController : IDisposable
 		_handleRequestFailure = handleRequestFailure;
 		_cancelInFlightRequest = cancelInFlightRequest;
 
-		_refreshTimer.Interval = TimeSpan.FromMilliseconds(refreshDebounceDelayInMilliseconds);
+		_refreshTimer.Interval = refreshDebounceDelay ?? TimeSpan.FromMilliseconds(50.0);
 		_refreshTimer.Tick += RefreshTimer_Tick;
 	}
 

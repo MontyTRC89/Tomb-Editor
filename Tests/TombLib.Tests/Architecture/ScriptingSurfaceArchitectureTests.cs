@@ -27,7 +27,6 @@ public class ScriptingSurfaceArchitectureTests
 		"ITextHoverProvider",
 		"ITextDefinitionProvider",
 		"ITextSignatureHelpProvider",
-		"IErrorDetector",
 		"ITextDiagnosticsProvider",
 		"ITextDocumentFormatter"
 	];

@@ -44,7 +44,7 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 	/// </summary>
 	public TRXEditorConfiguration()
 	{
-		DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
+		DefaultPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 
 		AutoCloseParentheses = false;
 
@@ -58,13 +58,13 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 	public static TRXEditorConfiguration LoadWithLegacyFallback()
 	{
 		var configuration = new TRXEditorConfiguration();
-		string legacyPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.LegacyConfigurationFileName);
+		string legacyPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.LegacyConfigurationFileName);
 
 		if (File.Exists(configuration.DefaultPath))
-			return configuration.Load<TRXEditorConfiguration>();
+			return TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TRXEditorConfiguration>();
 
 		if (File.Exists(legacyPath))
-			return configuration.Load<TRXEditorConfiguration>(legacyPath);
+			return TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TRXEditorConfiguration>(legacyPath);
 
 		return configuration;
 	}
@@ -78,7 +78,7 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 	{
 		ArgumentNullException.ThrowIfNull(schemeName);
 
-		return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
+		return Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
 	}
 
 	/// <summary>
@@ -95,11 +95,11 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 		if (File.Exists(preferredPath))
 			return preferredPath;
 
-		string legacyPath = Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
+		string legacyPath = Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
 
 		if (File.Exists(legacyPath))
 			return legacyPath;
 
-		return Path.Combine(DefaultPaths.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
+		return Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
 	}
 }

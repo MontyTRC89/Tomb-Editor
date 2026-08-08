@@ -11,6 +11,21 @@ namespace TombLib.Scripting.ClassicScript.Compilers;
 public static class TR4Compiler
 {
 	/// <summary>
+	/// Throws when the TR4 script compiler directory contains a character that is invalid for
+	/// the DOSBox mount command.
+	/// </summary>
+	/// <param name="compilerDirectory">The path to the TR4 script compiler directory.</param>
+	/// <exception cref="ArgumentException">The path contains an invalid path character.</exception>
+	internal static void ThrowIfInvalidCompilerPath(string compilerDirectory)
+	{
+		if (compilerDirectory.Contains('\''))
+			throw new ArgumentException(
+				"The path to the TR4 script compiler contains an invalid path character. " +
+				$"' is not a valid path character for this operation: '{compilerDirectory}'.",
+				nameof(compilerDirectory));
+	}
+
+	/// <summary>
 	/// Compiles the script at the given path with the TR4 compiler.
 	/// </summary>
 	/// <param name="projectScriptPath">The path of the project script directory.</param>
@@ -18,17 +33,16 @@ public static class TR4Compiler
 	/// <returns>The compiler log content.</returns>
 	public static string Compile(string projectScriptPath, string projectEnginePath)
 	{
-		if (DefaultPaths.TR4ScriptCompilerDirectory.Contains('\''))
-			throw new Exception("The path to the TR4 script compiler contains an invalid character.\n' is not a valid path character for this operation.");
+		ThrowIfInvalidCompilerPath(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory);
 
-		ScriptDirectoryCopier.CopyScriptDirectory(projectScriptPath, DefaultPaths.TR4ScriptCompilerDirectory, clearTarget: false, CompilerFileCopy.CopyTextFormatted);
+		ScriptDirectoryCopier.CopyScriptDirectory(projectScriptPath, ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, clearTarget: false, CompilerFileCopy.CopyTextFormatted);
 
 		var startInfo = new ProcessStartInfo
 		{
-			FileName = DefaultPaths.DOSBoxExecutable,
-			WorkingDirectory = DefaultPaths.DOSDirectory,
+			FileName = ClassicScriptCompilerPaths.Default.DOSBoxExecutable,
+			WorkingDirectory = ClassicScriptCompilerPaths.Default.DOSDirectory,
 			Arguments =
-				$"-c \"mount C '{DefaultPaths.TR4ScriptCompilerDirectory}'\" " +
+				$"-c \"mount C '{ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory}'\" " +
 				"-c \"C:\" " +
 				"-c \"script script.txt >> logs.txt\" " +
 				"-c \"exit\" " +
@@ -38,11 +52,11 @@ public static class TR4Compiler
 
 		Process.Start(startInfo)?.WaitForExit();
 
-		string logFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "logs.txt");
+		string logFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "logs.txt");
 		string logFileContent = File.ReadAllText(logFilePath);
 
-		string compiledScriptFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "Script.dat");
-		string compiledEnglishFilePath = Path.Combine(DefaultPaths.TR4ScriptCompilerDirectory, "English.dat");
+		string compiledScriptFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "Script.dat");
+		string compiledEnglishFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "English.dat");
 
 		if (File.Exists(compiledScriptFilePath))
 			File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
@@ -51,7 +65,7 @@ public static class TR4Compiler
 			File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
 
 		ScriptDirectoryCopier.ClearDirectoryExcept(
-			DefaultPaths.TR4ScriptCompilerDirectory,
+			ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory,
 			name => name.Equals("SCRIPT.EXE", StringComparison.OrdinalIgnoreCase)
 				|| name.Equals("DOS4GW.EXE", StringComparison.OrdinalIgnoreCase));
 

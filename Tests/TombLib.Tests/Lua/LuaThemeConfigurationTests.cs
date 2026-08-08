@@ -27,7 +27,7 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "VS15"
 		};
 
-		Assert.AreEqual("VSCode Dark+", config.SelectedThemeName);
+		Assert.AreEqual("VS15", config.SelectedThemeName);
 		Assert.AreEqual("VSCode Dark+", config.Theme.Name);
 	}
 
@@ -39,7 +39,7 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "Visual Studio 15"
 		};
 
-		Assert.AreEqual("Visual Studio 2015", config.SelectedThemeName);
+		Assert.AreEqual("Visual Studio 15", config.SelectedThemeName);
 		Assert.AreEqual("Visual Studio 2015", config.Theme.Name);
 		Assert.AreEqual("#1E1E1E", config.Theme.Background);
 		Assert.AreEqual("#DCDCDC", config.Theme.Foreground);
@@ -69,7 +69,7 @@ public class LuaThemeConfigurationTests
 		TextMateTokenThemeRule? attributeRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.other.attribute, support.type.property-name", System.StringComparison.Ordinal));
 		TextMateTokenThemeRule? parameterRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "variable.parameter, variable.other.object", System.StringComparison.Ordinal));
 
-		Assert.AreEqual("SharpLua Classic", config.SelectedThemeName);
+		Assert.AreEqual("SharpLua", config.SelectedThemeName);
 		Assert.AreEqual("#2D2D2D", config.Theme.Background);
 		Assert.AreEqual("#CCCCCC", config.Theme.Foreground);
 		Assert.AreEqual("#66CCCC", config.Theme.SemanticColors.Type);
@@ -128,7 +128,7 @@ public class LuaThemeConfigurationTests
 		TextMateTokenThemeRule? functionRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.function, support.function, support.function.library, support.function.any-method", System.StringComparison.Ordinal));
 		TextMateTokenThemeRule? keywordRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "keyword, storage", System.StringComparison.Ordinal));
 
-		Assert.AreEqual("Tomorrow Night", config.SelectedThemeName);
+		Assert.AreEqual("TomorrowNight", config.SelectedThemeName);
 		Assert.AreEqual("#1D1F21", config.Theme.Background);
 		Assert.AreEqual("#C5C8C6", config.Theme.Foreground);
 		Assert.AreEqual("#81A2BE", config.Theme.SemanticColors.Method);
@@ -155,7 +155,7 @@ public class LuaThemeConfigurationTests
 		TextMateTokenThemeRule? functionRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.function, support.function, support.function.library, support.function.any-method", System.StringComparison.Ordinal));
 		TextMateTokenThemeRule? keywordRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "keyword, storage", System.StringComparison.Ordinal));
 
-		Assert.AreEqual("Tomorrow", config.SelectedThemeName);
+		Assert.AreEqual("Tomorrow Light", config.SelectedThemeName);
 		Assert.AreEqual("#FFFFFF", config.Theme.Background);
 		Assert.AreEqual("#4D4D4C", config.Theme.Foreground);
 		Assert.AreEqual("#4271AE", config.Theme.SemanticColors.Method);

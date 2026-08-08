@@ -14,7 +14,7 @@ namespace TombLib.Scripting.ClassicScript.Diagnostics;
 /// <summary>
 /// Detects errors in ClassicScript document content.
 /// </summary>
-public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
+public sealed class ErrorDetector : ITextDiagnosticsProvider
 {
 	private readonly IClassicScriptLineService _lineService;
 	private readonly IClassicScriptCommandService _commandService;
@@ -41,17 +41,6 @@ public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 	}
 
 	// Public methods
-
-	/// <summary>
-	/// Finds the errors present in the given editor content.
-	/// </summary>
-	/// <param name="editorContent">The content of the editor.</param>
-	/// <param name="engineVersion">The engine version used to detect the errors.
-	/// ClassicScript error detection does not currently branch on the engine version; the
-	/// parameter is retained for interface parity with <see cref="IErrorDetector"/> and is unused.</param>
-	/// <returns>The diagnostics describing the detected errors.</returns>
-	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
-		=> DetectErrorLines(new StringTextSnapshot(editorContent));
 
 	/// <summary>
 	/// Gets the diagnostics for the given request.

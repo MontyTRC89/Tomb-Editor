@@ -244,8 +244,7 @@ public static class MarkdownToolTipRenderer
 		var codeBlocks = new List<CodeBlockInfo>();
 		int index = 0;
 
-		content = FencedCodeBlockPattern.Replace(content, match =>
-		{
+		content = FencedCodeBlockPattern.Replace(content, match => {
 			string placeholder = $"__TOMBIDE_MD_CODE_BLOCK_{index++}__";
 			codeBlocks.Add(new CodeBlockInfo(placeholder, match.Groups["lang"].Value.Trim(), match.Groups["code"].Value));
 			return match.Groups[1].Value + placeholder;

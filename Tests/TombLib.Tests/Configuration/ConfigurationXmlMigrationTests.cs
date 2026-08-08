@@ -48,11 +48,10 @@ public class ConfigurationXmlMigrationTests
 	[TestMethod]
 	public void Load_MigratesLegacyAutoCloseQuotesElement()
 	{
-		var config = new TestConfig();
 		string xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><TestConfig><AutoCloseQuotes>true</AutoCloseQuotes></TestConfig>";
 		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
 
-		TestConfig loaded = config.Load<TestConfig>(stream);
+		TestConfig loaded = TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TestConfig>(stream);
 
 		Assert.IsTrue(loaded.AutoCloseDoubleQuotes);
 		Assert.IsTrue(loaded.AutoCloseSingleQuotes);
@@ -61,11 +60,10 @@ public class ConfigurationXmlMigrationTests
 	[TestMethod]
 	public void Load_DoesNotCloseCallerStream()
 	{
-		var config = new TestConfig();
 		string xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?><TestConfig><AutoCloseQuotes>true</AutoCloseQuotes></TestConfig>";
 		var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
 
-		TestConfig loaded = config.Load<TestConfig>(stream);
+		TestConfig loaded = TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TestConfig>(stream);
 
 		// Load must not take ownership of the caller-supplied stream.
 		Assert.IsTrue(loaded.AutoCloseDoubleQuotes);

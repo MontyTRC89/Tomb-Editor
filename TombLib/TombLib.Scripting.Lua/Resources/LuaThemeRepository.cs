@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using TombLib.Scripting.Lua.Themes;
+using TombLib.Scripting.UI.Resources;
 
 namespace TombLib.Scripting.Lua.Resources;
 
@@ -23,17 +24,6 @@ public static class LuaThemeRepository
 	/// <returns>The ordered list of available themes.</returns>
 	public static IReadOnlyList<LuaTheme> GetAvailableThemes()
 		=> Catalog.Value.Themes;
-
-	/// <summary>
-	/// Resolves a theme name or alias to the repository's canonical theme name.
-	/// </summary>
-	/// <param name="themeName">The theme name or alias to resolve.</param>
-	/// <returns>The canonical theme name.</returns>
-	public static string ResolveThemeName(string themeName)
-	{
-		LuaTheme theme = GetTheme(themeName);
-		return theme.Name;
-	}
 
 	/// <summary>
 	/// Gets the theme matching the supplied name or alias, or the default theme when no match exists.
@@ -57,7 +47,7 @@ public static class LuaThemeRepository
 	private static LuaThemeCatalog LoadCatalog()
 	{
 		var themes = new List<LuaTheme>();
-		string themesDirectory = DefaultPaths.LuaThemeConfigsDirectory;
+		string themesDirectory = ScriptingPaths.Default.LuaThemeConfigsDirectory;
 
 		var serializerOptions = new JsonSerializerOptions
 		{

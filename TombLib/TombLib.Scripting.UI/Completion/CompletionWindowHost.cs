@@ -65,8 +65,7 @@ internal sealed class CompletionWindowHost
 
 		_trackedWindow = completionWindow;
 		_trackedClosedAction = onClosed;
-		_closedHandler = (sender, e) =>
-		{
+		_closedHandler = (sender, e) => {
 			UntrackWindow(completionWindow);
 			onClosed();
 		};

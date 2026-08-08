@@ -11,7 +11,7 @@ namespace TombLib.Scripting.TRX.Diagnostics;
 /// <summary>
 /// Detects errors in TRX documents, such as removed keywords for the target engine version.
 /// </summary>
-public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
+public sealed class ErrorDetector : ITextDiagnosticsProvider
 {
 	private readonly ITRXLineService _lineService;
 
@@ -25,27 +25,21 @@ public sealed class ErrorDetector : IErrorDetector, ITextDiagnosticsProvider
 		_lineService = lineService;
 	}
 
-	/// <summary>
-	/// Finds the errors present in the given editor content for the target engine version.
-	/// </summary>
-	/// <param name="editorContent">The editor content to inspect.</param>
-	/// <param name="engineVersion">The engine version errors are checked against.</param>
-	/// <returns>The diagnostics found in the content.</returns>
-	public IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
-	{
-		// Anything before 4.8 should not have errors checked
-		if (engineVersion < new Version(4, 8))
-			return [];
-
-		return DetectErrorLines(new StringTextSnapshot(editorContent), engineVersion);
-	}
-
 	/// <inheritdoc />
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(TextDiagnosticsRequest request)
 	{
 		ArgumentNullException.ThrowIfNull(request);
 
 		return FindErrors(request.DocumentText, request.EngineVersion);
+	}
+
+	private IReadOnlyList<TextEditorDiagnostic> FindErrors(string editorContent, Version engineVersion)
+	{
+		// Anything before 4.8 should not have errors checked
+		if (engineVersion < new Version(4, 8))
+			return [];
+
+		return DetectErrorLines(new StringTextSnapshot(editorContent), engineVersion);
 	}
 
 	private List<TextEditorDiagnostic> DetectErrorLines(ITextSnapshot source, Version engineVersion)
