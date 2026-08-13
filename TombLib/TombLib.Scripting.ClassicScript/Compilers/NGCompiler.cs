@@ -121,6 +121,7 @@ public static class NGCompiler
 		foreach (string line in lines)
 		{
 			if (line.TrimStart().StartsWith("#include", StringComparison.OrdinalIgnoreCase))
+			{
 				try
 				{
 					string partialIncludePath = line.Split('"')[1].Trim();
@@ -146,6 +147,7 @@ public static class NGCompiler
 				{
 					Log.Warn(exception, "Failed to merge include line '{Line}'.", line);
 				}
+			}
 
 			newLines.Add(line);
 		}

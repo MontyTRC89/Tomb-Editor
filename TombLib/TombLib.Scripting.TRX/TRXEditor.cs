@@ -136,9 +136,11 @@ public sealed partial class TRXEditor : TextEditorBase, INameBasedObjectNavigato
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> SynchronousRequestAdapter.Adapt(
+	{
+		return SynchronousRequestAdapter.Adapt(
 			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
 			cancellationToken);
+	}
 
 	/// <inheritdoc />
 	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)

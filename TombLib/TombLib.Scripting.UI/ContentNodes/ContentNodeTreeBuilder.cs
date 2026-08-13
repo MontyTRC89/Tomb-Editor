@@ -72,6 +72,5 @@ public static class ContentNodeTreeBuilder
 		return result;
 	}
 
-	private static DarkTreeNode CreateNode(string text, object? tag)
-		=> new(text) { Tag = tag };
+	private static DarkTreeNode CreateNode(string text, object? tag) => new(text) { Tag = tag };
 }

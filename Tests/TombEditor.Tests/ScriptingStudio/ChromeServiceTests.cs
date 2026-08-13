@@ -373,4 +373,3 @@ public class ChromeServiceTests
         return mock;
     }
 }
-

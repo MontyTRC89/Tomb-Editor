@@ -53,6 +53,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		get
 		{
 			DataGrid? grid = GetCurrentDataGrid();
+
 			if (grid is null || grid.CurrentCell.Item is not StringTableRow row)
 				return 0;
 
@@ -74,6 +75,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		get
 		{
 			DataGrid? grid = GetCurrentDataGrid();
+
 			if (grid is null)
 				return null;
 
@@ -126,6 +128,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	public void ClearSelectedString()
 	{
 		DataGrid? grid = GetCurrentDataGrid();
+
 		if (grid?.CurrentCell.Item is StringTableRow row)
 		{
 			string? cachedValue = row.StringValue;
@@ -142,6 +145,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	public void RemoveLastString()
 	{
 		StringTableSection? section = _viewModel.SelectedSection;
+
 		if (section is null || !section.IsExtraNG)
 			return;
 
@@ -197,7 +201,9 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	{
 		if (e.PropertyName == nameof(StringEditorViewModel.CanUndo) ||
 			e.PropertyName == nameof(StringEditorViewModel.CanRedo))
+		{
 			OnStatusChanged(EventArgs.Empty);
+		}
 	}
 
 	#endregion Dispose
@@ -257,9 +263,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	#region Content
 
 	public void RunContentChangedWorker()
-	{
-		IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
-	}
+		=> IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
 
 	public void ApplyPersistedContent(string content)
 	{
@@ -377,6 +381,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	public void Cut()
 	{
 		DataGrid? grid = GetCurrentDataGrid();
+
 		if (grid is null)
 			return;
 
@@ -404,6 +409,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	public void Copy()
 	{
 		DataGrid? grid = GetCurrentDataGrid();
+
 		if (grid is null)
 			return;
 
@@ -419,6 +425,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 	public void Paste()
 	{
 		DataGrid? grid = GetCurrentDataGrid();
+
 		if (grid is null)
 			return;
 
@@ -689,7 +696,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 		if (_viewModel.SelectedSection is null)
 			return null;
 
-		TabItem? selectedTab = SectionTabs.ItemContainerGenerator
+		var selectedTab = SectionTabs.ItemContainerGenerator
 			.ContainerFromIndex(_viewModel.SelectedSectionIndex) as TabItem;
 
 		if (selectedTab is null)
@@ -705,6 +712,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 			if (SectionTabs.ItemContainerGenerator.ContainerFromIndex(i) is TabItem tabItem)
 			{
 				DataGrid? grid = FindVisualChild<DataGrid>(tabItem);
+
 				if (grid is not null)
 					yield return grid;
 			}
@@ -721,6 +729,7 @@ public partial class StringEditorView : UserControl, IEditorControl, IStringSect
 				return found as DataGrid;
 
 			DataGrid? result = FindVisualChild<T>(child);
+
 			if (result is not null)
 				return result;
 		}

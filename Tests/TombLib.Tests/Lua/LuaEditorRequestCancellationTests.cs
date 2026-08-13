@@ -2,6 +2,7 @@ using Nickelony.LanguageServer.Abstractions.Completion;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Editing;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using Nickelony.LanguageServer.Abstractions.Infrastructure.Provider;
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using Nickelony.LanguageServer.Abstractions.Signatures;
 using System;
@@ -104,7 +105,7 @@ public class LuaEditorRequestCancellationTests
 		});
 	}
 
-	private static LuaEditor CreateEditor(ILuaIntellisenseProvider provider, string text) => new(new Version(1, 0))
+	private static LuaEditor CreateEditor(ILuaIntelliSenseProvider provider, string text) => new(new Version(1, 0))
 	{
 		FilePath = @"C:\Workspace\Scripts\test.lua",
 		Text = text,
@@ -112,19 +113,26 @@ public class LuaEditorRequestCancellationTests
 	};
 
 	private static Task InvokeCompletionRequest(LuaEditor editor)
-		=> (Task)(InvokeInstanceMethod(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null)
+	{
+		return (Task)(InvokeInstanceMethod(editor, "RequestCompletionAsync", [typeof(int), typeof(char?)], 3, null)
 			?? throw new InvalidOperationException("RequestCompletionAsync returned null."));
+	}
 
 	private static Task InvokeSignatureHelpRequest(LuaEditor editor)
-		=> (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
+	{
+		return (Task)(InvokeInstanceMethod(editor, "RequestSignatureHelpAsync", [typeof(int)], 6)
 			?? throw new InvalidOperationException("RequestSignatureHelpAsync returned null."));
+	}
 
-	private sealed class TrackingIntelliSenseProvider : ILuaIntellisenseProvider
+	private sealed class TrackingIntelliSenseProvider : ILuaIntelliSenseProvider
 	{
 		private readonly TaskCompletionSource<IReadOnlyList<TextCompletionItem>> _completionResponse = new();
 		private readonly TaskCompletionSource<TextSignatureHelpInfo?> _signatureHelpResponse = new();
 
 		public bool IsAvailable { get; set; } = true;
+
+		public LanguageServerProviderState State => LanguageServerProviderState.Ready;
+
 		public bool SupportsReferences => false;
 		public bool SupportsRename => false;
 		public bool SupportsFormatting => false;
@@ -134,6 +142,12 @@ public class LuaEditorRequestCancellationTests
 		public CancellationToken LastSignatureHelpToken { get; private set; }
 
 		public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated
+		{
+			add { }
+			remove { }
+		}
+
+		public event Action? CapabilitiesChanged
 		{
 			add { }
 			remove { }
@@ -157,11 +171,9 @@ public class LuaEditorRequestCancellationTests
 			remove { }
 		}
 
-		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
-			=> [];
+		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath) => [];
 
-		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
-			=> [];
+		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath) => [];
 
 		public void OpenDocument(string filePath, string content)
 		{ }

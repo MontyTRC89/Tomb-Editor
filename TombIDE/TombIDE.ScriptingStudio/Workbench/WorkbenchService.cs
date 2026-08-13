@@ -407,38 +407,37 @@ internal sealed class WorkbenchService : IWorkbenchService
 		return false;
 	}
 
-	private bool CanExecuteCommand(UICommand command)
-		=> command switch
-		{
-			// Commands that are always available.
-			UICommand.NewFile => true,
-			UICommand.Find => true,
-			UICommand.About => true,
-			UICommand.Settings => true,
-			UICommand.RestoreDefaultLayout => true,
+	private bool CanExecuteCommand(UICommand command) => command switch
+	{
+		// Commands that are always available.
+		UICommand.NewFile => true,
+		UICommand.Find => true,
+		UICommand.About => true,
+		UICommand.Settings => true,
+		UICommand.RestoreDefaultLayout => true,
 
-			// Build and documentation availability depends on workspace.
-			UICommand.Build => _workspaceProfile.SupportsBuild,
-			UICommand.ScriptingDocumentation => _workspaceProfile.SupportsDocumentation,
+		// Build and documentation availability depends on workspace.
+		UICommand.Build => _workspaceProfile.SupportsBuild,
+		UICommand.ScriptingDocumentation => _workspaceProfile.SupportsDocumentation,
 
-			// Pane visibility commands are always available when visible.
-			UICommand.ContentExplorer or UICommand.FileExplorer or UICommand.ReferenceBrowser
-				or UICommand.CompilerLogs or UICommand.SearchResults or UICommand.LuaDiagnostics
-				or UICommand.LuaReferencesResults => true,
+		// Pane visibility commands are always available when visible.
+		UICommand.ContentExplorer or UICommand.FileExplorer or UICommand.ReferenceBrowser
+			or UICommand.CompilerLogs or UICommand.SearchResults or UICommand.LuaDiagnostics
+			or UICommand.LuaReferencesResults => true,
 
-			// Navigation commands need an active editor.
-			UICommand.GoToDefinition or UICommand.FindReferences or UICommand.RenameSymbol
-				=> _documentController.CurrentEditor is not null,
+		// Navigation commands need an active editor.
+		UICommand.GoToDefinition or UICommand.FindReferences or UICommand.RenameSymbol
+			=> _documentController.CurrentEditor is not null,
 
-			// Editor state-dependent document commands.
-			UICommand.Save => _documentController.CurrentEditor?.IsContentChanged == true,
-			UICommand.SaveAs => _documentController.CurrentEditor is not null,
-			UICommand.SaveAll => !_documentController.IsEveryDocumentSaved(),
-			UICommand.Undo => _documentController.CurrentEditor?.CanUndo == true,
-			UICommand.Redo => _documentController.CurrentEditor?.CanRedo == true,
-			UICommand.Cut or UICommand.Copy or UICommand.Paste or UICommand.SelectAll => _documentController.CurrentEditor is not null,
-			_ => CanExecuteBuiltInDocumentCommand(command)
-		};
+		// Editor state-dependent document commands.
+		UICommand.Save => _documentController.CurrentEditor?.IsContentChanged == true,
+		UICommand.SaveAs => _documentController.CurrentEditor is not null,
+		UICommand.SaveAll => !_documentController.IsEveryDocumentSaved(),
+		UICommand.Undo => _documentController.CurrentEditor?.CanUndo == true,
+		UICommand.Redo => _documentController.CurrentEditor?.CanRedo == true,
+		UICommand.Cut or UICommand.Copy or UICommand.Paste or UICommand.SelectAll => _documentController.CurrentEditor is not null,
+		_ => CanExecuteBuiltInDocumentCommand(command)
+	};
 
 	private void DocumentController_CurrentEditorChanged(object? sender, EventArgs e)
 		=> UpdateUi();
@@ -519,9 +518,11 @@ internal sealed class WorkbenchService : IWorkbenchService
 	}
 
 	private static IReadOnlyList<StudioStatusStripSegment> GetDocumentStatusStripSegments(IEditorControl editor, DocumentMode documentMode)
-		=> documentMode == DocumentMode.ClassicScript
+	{
+		return documentMode == DocumentMode.ClassicScript
 			? ClassicScriptStatusStripProvider.GetSegments(editor, documentMode)
 			: [];
+	}
 
 	private void UpdateUi()
 	{

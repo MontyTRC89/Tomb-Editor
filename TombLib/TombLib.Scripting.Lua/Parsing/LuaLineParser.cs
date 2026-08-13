@@ -340,7 +340,9 @@ internal static class LuaLineParser
 		=> lineText[index] == '-' && index + 1 < lineText.Length && lineText[index + 1] == '-';
 
 	private static LuaLineParserState CreateContinuationState(LuaLineParserStateKind state, int longBracketEqualsCount)
-		=> state is LuaLineParserStateKind.LongString or LuaLineParserStateKind.LongComment
+	{
+		return state is LuaLineParserStateKind.LongString or LuaLineParserStateKind.LongComment
 			? new LuaLineParserState(state, longBracketEqualsCount)
 			: default;
+	}
 }

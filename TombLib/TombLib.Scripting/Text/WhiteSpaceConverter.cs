@@ -22,7 +22,6 @@ public static class WhiteSpaceConverter
 	public static string ConvertSpacesToTabs(string input, int tabSize)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tabSize);
-
 		return TransformLines(input, line => ConvertLineIndentationToTabs(line, tabSize));
 	}
 
@@ -36,7 +35,6 @@ public static class WhiteSpaceConverter
 	public static string ConvertTabsToSpaces(string input, int tabSize)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tabSize);
-
 		return TransformLines(input, line => ExpandTabs(line, tabSize));
 	}
 
@@ -88,6 +86,7 @@ public static class WhiteSpaceConverter
 				builder.Append('\t');
 				column = ((column / tabSize) + 1) * tabSize;
 				i++;
+
 				continue;
 			}
 

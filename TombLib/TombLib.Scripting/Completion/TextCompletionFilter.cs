@@ -22,17 +22,12 @@ public static class TextCompletionFilter
 	/// <returns>The filtered completion items.</returns>
 	public static IReadOnlyList<TextCompletionItem> FilterByCurrentWord(IReadOnlyList<TextCompletionItem> items, TextCompletionContext context)
 	{
-		ArgumentNullException.ThrowIfNull(items);
-		ArgumentNullException.ThrowIfNull(context);
-
 		string word = GetCurrentWord(context.DocumentText, context.CaretOffset);
 
 		if (string.IsNullOrEmpty(word))
 			return [.. items];
 
-		return items
-			.Where(item => MatchesWord(item, word))
-			.ToArray();
+		return [.. items.Where(item => MatchesWord(item, word))];
 	}
 
 	private static bool MatchesWord(TextCompletionItem item, string word)

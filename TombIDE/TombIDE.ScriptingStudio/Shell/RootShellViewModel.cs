@@ -172,20 +172,19 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		_paneHostService.Dispose();
 	}
 
-	private ScriptingStudioShellWorkspaceSettings BuildSettingsSnapshot()
-		=> new()
-		{
-			AvalonDockLayoutXml = _workbenchService.CaptureLayout(),
-			DockPanelState = _settings.DockPanelState,
-			InfoBoxAlwaysOnTop = _settings.InfoBoxAlwaysOnTop,
-			InfoBoxCloseTabsOnClose = _settings.InfoBoxCloseTabsOnClose,
-			IsLegacyImported = _settings.IsLegacyImported,
-			IsStatusStripVisible = IsStatusStripVisible,
-			IsToolStripVisible = IsToolStripVisible,
-			ReindentOnSave = ReindentOnSave,
-			ShowCompilerLogsAfterBuild = ShowCompilerLogsAfterBuild,
-			UseNewIncludeMethod = UseNewIncludeMethod
-		};
+	private ScriptingStudioShellWorkspaceSettings BuildSettingsSnapshot() => new()
+	{
+		AvalonDockLayoutXml = _workbenchService.CaptureLayout(),
+		DockPanelState = _settings.DockPanelState,
+		InfoBoxAlwaysOnTop = _settings.InfoBoxAlwaysOnTop,
+		InfoBoxCloseTabsOnClose = _settings.InfoBoxCloseTabsOnClose,
+		IsLegacyImported = _settings.IsLegacyImported,
+		IsStatusStripVisible = IsStatusStripVisible,
+		IsToolStripVisible = IsToolStripVisible,
+		ReindentOnSave = ReindentOnSave,
+		ShowCompilerLogsAfterBuild = ShowCompilerLogsAfterBuild,
+		UseNewIncludeMethod = UseNewIncludeMethod
+	};
 
 	private void LoadSettings()
 	{

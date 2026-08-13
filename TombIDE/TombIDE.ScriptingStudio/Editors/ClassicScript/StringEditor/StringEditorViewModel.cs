@@ -31,13 +31,13 @@ public sealed partial class StringEditorViewModel : ObservableObject
 	public bool CanUndo => _undoStack.Count > 0;
 	public bool CanRedo => _redoStack.Count > 0;
 
-	public StringTableMode CurrentMode =>
-		SelectedSectionIndex >= 0 && SelectedSectionIndex < Sections.Count
+	public StringTableMode CurrentMode
+		=> SelectedSectionIndex >= 0 && SelectedSectionIndex < Sections.Count
 			? Sections[SelectedSectionIndex].Mode
 			: StringTableMode.Normal;
 
-	public StringTableSection? SelectedSection =>
-		SelectedSectionIndex >= 0 && SelectedSectionIndex < Sections.Count
+	public StringTableSection? SelectedSection
+		=> SelectedSectionIndex >= 0 && SelectedSectionIndex < Sections.Count
 			? Sections[SelectedSectionIndex]
 			: null;
 

@@ -88,11 +88,16 @@
             Deserializes completion responses from either LSP array or completion-list form.
             </summary>
         </member>
-        <member name="M:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter.InitializeLogger(Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter.#ctor">
             <summary>
-            Sets the logger used for malformed-payload diagnostics.
+            Initializes a new instance of the <see cref="T:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter"/> class.
             </summary>
-            <param name="logger">The logger instance, or <see langword="null"/> for a no-op logger.</param>
+        </member>
+        <member name="M:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter.#ctor(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter"/> class.
+            </summary>
+            <param name="logger">The logger used for malformed-payload diagnostics.</param>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.CompletionResponseJsonConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
             <inheritdoc/>
@@ -926,6 +931,10 @@
             <param name="filePath">The local file path of the document.</param>
             <param name="document">When this method returns, contains the closing snapshot if the server copy is still open.</param>
             <returns><see langword="true"/> when the document was removed locally; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            A call made after the state has already been removed is a no-op. An existing idle record is treated as explicit
+            cleanup even when it has no open reference.
+            </remarks>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.TrackedDocumentStore`1.GetDocumentSnapshot(System.String)">
             <summary>
@@ -986,6 +995,10 @@
             <param name="acquireOpenReference">Whether an additional open-editor reference should be recorded.</param>
             <param name="acquireRequestReference">Whether a temporary request-driven reference should be recorded.</param>
             <returns>A synchronization request when the server copy must be updated; otherwise, <see langword="null"/>.</returns>
+            <remarks>
+            Synchronization can create an idle server-open record when neither reference option is selected. The record is
+            retained until explicitly closed or removed by request-only trimming.
+            </remarks>
         </member>
         <member name="T:Nickelony.LanguageServer.Client.HoverResponse">
             <summary>
@@ -1072,7 +1085,8 @@
             Occurs when the server publishes diagnostics for a tracked document.
             Each subscribed handler is queued independently on the thread pool. Reentrant notifications for the same handler
             are serialized, and repeated pending diagnostics for the same document may coalesce to the latest payload while a handler is still busy.
-            Different handlers may run concurrently and must marshal to a UI thread when required.
+            Different handlers may run concurrently, handler failures are isolated, and each handler receives an owned detached
+            diagnostics snapshot. The event may be raised on a background thread; consumers must marshal to a UI thread when required.
             </summary>
         </member>
         <member name="E:Nickelony.LanguageServer.Client.ILanguageServerClient.SemanticTokensRefreshRequested">
@@ -1080,7 +1094,15 @@
             Occurs when the server requests a semantic token refresh for open documents.
             Each subscribed handler is queued independently on the thread pool. Reentrant notifications for the same handler
             are serialized, and repeated pending refresh requests may coalesce while a handler is still busy.
-            Different handlers may run concurrently and must marshal to a UI thread when required.
+            Different handlers may run concurrently, and handler failures are isolated. The event may be raised on a background
+            thread; consumers must marshal to a UI thread when required.
+            </summary>
+        </member>
+        <member name="E:Nickelony.LanguageServer.Client.ILanguageServerClient.TransportUnavailable">
+            <summary>
+            Occurs when the active ready transport becomes unavailable.
+            The argument identifies the transport generation that was active immediately before the loss.
+            Stale transport generations do not raise this event.
             </summary>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.ILanguageServerClient.StartAsync(System.Threading.CancellationToken)">
@@ -1309,6 +1331,11 @@
             Gets a value indicating whether the server supports semantic token delta responses.
             </summary>
         </member>
+        <member name="E:Nickelony.LanguageServer.Client.LanguageServerClient.TransportUnavailable">
+            <summary>
+            Occurs when the active ready transport becomes unavailable.
+            </summary>
+        </member>
         <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.#ctor(System.String,System.String,Nickelony.LanguageServer.Client.LanguageServerClientOptions,Microsoft.Extensions.Logging.ILogger{Nickelony.LanguageServer.Client.LanguageServerClient})">
             <summary>
             Initializes a new instance of the <see cref="T:Nickelony.LanguageServer.Client.LanguageServerClient"/> class.
@@ -1375,7 +1402,8 @@
             Occurs when the server publishes diagnostics for a tracked document.
             Each subscribed handler is queued independently on the thread pool. Reentrant notifications for the same handler
             are serialized, and repeated pending diagnostics for the same document may coalesce to the latest payload while a handler is still busy.
-            Different handlers may run concurrently and must marshal to a UI thread when required.
+            Different handlers may run concurrently, handler failures are isolated, and each handler receives an owned detached
+            diagnostics snapshot. The event may be raised on a background thread; consumers must marshal to a UI thread when required.
             </summary>
         </member>
         <member name="E:Nickelony.LanguageServer.Client.LanguageServerClient.SemanticTokensRefreshRequested">
@@ -1383,7 +1411,8 @@
             Occurs when the server requests that semantic tokens be refreshed.
             Each subscribed handler is queued independently on the thread pool. Reentrant notifications for the same handler
             are serialized, and repeated pending refresh requests may coalesce while a handler is still busy.
-            Different handlers may run concurrently and must marshal to a UI thread when required.
+            Different handlers may run concurrently, and handler failures are isolated. The event may be raised on a background
+            thread; consumers must marshal to a UI thread when required.
             </summary>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.RaiseDiagnosticsPublished(System.Int64,Nickelony.LanguageServer.Client.PublishDiagnosticsParams)">
@@ -1783,11 +1812,12 @@
             </summary>
             <returns>The detached session, if one existed.</returns>
         </member>
-        <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.TryDetachSpecificActiveSession(Nickelony.LanguageServer.Client.LanguageServerClient.LanguageServerTransportSession)">
+        <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.TryDetachSpecificActiveSession(Nickelony.LanguageServer.Client.LanguageServerClient.LanguageServerTransportSession,System.Boolean@)">
             <summary>
             Detaches the supplied session only when it is still the current active transport session.
             </summary>
             <param name="session">The session to detach.</param>
+            <param name="wasReady">Receives whether the detached session was ready.</param>
             <returns><see langword="true"/> when the session was detached; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.DisposeActiveSessionAsync">
@@ -1828,6 +1858,12 @@
             </summary>
             <param name="session">The disconnected session.</param>
             <param name="eventArgs">The disconnect event arguments.</param>
+        </member>
+        <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.RaiseTransportUnavailable(System.Int64)">
+            <summary>
+            Notifies subscribers that one active ready transport was lost.
+            </summary>
+            <param name="transportGeneration">The generation that was lost.</param>
         </member>
         <member name="M:Nickelony.LanguageServer.Client.LanguageServerClient.DisposeFailedSessionInBackground(Nickelony.LanguageServer.Client.LanguageServerClient.LanguageServerTransportSession,System.String)">
             <summary>
@@ -3275,7 +3311,7 @@
         </member>
         <member name="T:Nickelony.LanguageServer.Client.ProcessJobObject">
             <summary>
-            Wraps a Windows job object configured with <c>JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE</c> so that any
+            Wraps a Windows job object configured with <c>JobObjectLimitKillOnJobClose</c> so that any
             child processes assigned to it are forcibly terminated when the host application crashes or the
             last handle to the job is released. This prevents stranded server processes if the host never
             gets a chance to run its disposal path.
@@ -3998,7 +4034,7 @@
             Deserializes definition responses from LSP location and location-link payloads.
             </summary>
         </member>
-        <member name="F:Nickelony.LanguageServer.Client.DefinitionResponseJsonConverter.RangeProperties">
+        <member name="F:Nickelony.LanguageServer.Client.DefinitionResponseJsonConverter.s_rangeProperties">
             <summary>
             Lists the candidate property names that may carry the target range in LSP definition payloads.
             </summary>

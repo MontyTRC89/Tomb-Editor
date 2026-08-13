@@ -19,8 +19,7 @@ public abstract class FileSystemColorSchemeProviderBase : ITextEditorColorProvid
 	/// Initializes a new instance of the <see cref="FileSystemColorSchemeProviderBase"/> class.
 	/// </summary>
 	/// <param name="colorSchemesDirectory">The directory that contains the color scheme files.</param>
-	protected FileSystemColorSchemeProviderBase(string colorSchemesDirectory)
-		=> _colorSchemesDirectory = colorSchemesDirectory;
+	protected FileSystemColorSchemeProviderBase(string colorSchemesDirectory) => _colorSchemesDirectory = colorSchemesDirectory;
 
 	/// <inheritdoc />
 	public virtual IReadOnlyList<string> GetAvailableNames()
@@ -41,9 +40,11 @@ public abstract class FileSystemColorSchemeProviderBase : ITextEditorColorProvid
 	/// Reduces a set of color scheme file paths to their sorted, de-duplicated display names.
 	/// </summary>
 	protected static IReadOnlyList<string> FilterNames(IEnumerable<string> filePaths)
-		=> filePaths
+	{
+		return filePaths
 			.Select(static path => Path.GetFileNameWithoutExtension(path) ?? string.Empty)
 			.Where(static name => !string.IsNullOrWhiteSpace(name))
 			.OrderBy(static name => name, StringComparer.OrdinalIgnoreCase)
 			.ToArray();
+	}
 }

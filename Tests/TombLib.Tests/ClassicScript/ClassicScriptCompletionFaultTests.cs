@@ -52,7 +52,7 @@ public class ClassicScriptCompletionFaultTests
 			{
 				var faultedTask = Task.FromException<TextCompletionSessionDecision>(new InvalidOperationException("completion provider failed"));
 
-				Task? decisionTask = WPFTestHelper.InvokeInstanceMethod(
+				var decisionTask = WPFTestHelper.InvokeInstanceMethod(
 					editor,
 					"ApplyCompletionDecisionAsync",
 					[typeof(Task<TextCompletionSessionDecision>), typeof(string), typeof(int), typeof(int)],

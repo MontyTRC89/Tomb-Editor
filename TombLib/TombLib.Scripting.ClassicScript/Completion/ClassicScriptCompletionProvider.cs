@@ -32,9 +32,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
-		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
 		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
@@ -45,8 +43,6 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 	/// <returns>The completion items, or an empty list when no completion applies.</returns>
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
 	{
-		ArgumentNullException.ThrowIfNull(context);
-
 		var source = new StringTextSnapshot(context.DocumentText);
 
 		return context.Trigger switch
@@ -67,8 +63,8 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 		var items = new List<TextCompletionItem>();
 
-		AddItems(items, _commandCatalogService.OldCommands, "=", TextCompletionItemKind.OldCommand);
-		AddItems(items, _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#')), "=", TextCompletionItemKind.NewCommand);
+		AddItems(items, _commandCatalogService.OldCommands, "=", ClassicScriptCompletionKinds.OldCommand);
+		AddItems(items, _commandCatalogService.NewCommands.Where(name => !name.StartsWith('#')), "=", ClassicScriptCompletionKinds.NewCommand);
 		AddItems(items, _commandCatalogService.Sections.Select(section => $"[{section}]"), string.Empty, TextCompletionItemKind.Section);
 
 		items.Add(CreateItem("#INCLUDE ", "#INCLUDE ", TextCompletionItemKind.Directive));
@@ -162,14 +158,13 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 	private static TextCompletionItem CreateItem(string label, string insertText, TextCompletionItemKind kind)
 		=> new(label, insertText, kind: kind, detail: GetDetail(kind));
 
-	private static string GetDetail(TextCompletionItemKind kind)
-		=> kind switch
-		{
-			TextCompletionItemKind.OldCommand => "Old Command",
-			TextCompletionItemKind.NewCommand => "New Command",
-			TextCompletionItemKind.Constant => "Constant",
-			TextCompletionItemKind.Section => "Section",
-			TextCompletionItemKind.Directive => "Directive",
-			_ => kind.ToString()
-		};
+	private static string GetDetail(TextCompletionItemKind kind) => kind.Identifier switch
+	{
+		"OldCommand" => "Old Command",
+		"NewCommand" => "New Command",
+		"Constant" => "Constant",
+		"Section" => "Section",
+		"Directive" => "Directive",
+		_ => kind.ToString()
+	};
 }

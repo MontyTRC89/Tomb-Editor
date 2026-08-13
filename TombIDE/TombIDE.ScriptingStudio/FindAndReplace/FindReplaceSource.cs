@@ -9,6 +9,5 @@ public class FindReplaceSource : List<FindReplaceItem>
 	public FindReplaceSource()
 	{ }
 
-	public FindReplaceSource(string name)
-		=> Name = name;
+	public FindReplaceSource(string name) => Name = name;
 }

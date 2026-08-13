@@ -1,6 +1,6 @@
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using System.Windows;
 using System.Windows.Input;
-using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;

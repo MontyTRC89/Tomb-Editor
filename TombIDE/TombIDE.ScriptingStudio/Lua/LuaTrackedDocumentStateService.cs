@@ -8,10 +8,10 @@ using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Lua;
 
-internal sealed class LuaTrackedDocumentStateService(ITextEditorHost textEditorHost, ILuaIntellisenseProvider intellisenseProvider)
+internal sealed class LuaTrackedDocumentStateService(ITextEditorHost textEditorHost, ILuaIntelliSenseProvider intellisenseProvider)
 {
 	private readonly ITextEditorHost _textEditorHost = textEditorHost ?? throw new ArgumentNullException(nameof(textEditorHost));
-	private readonly ILuaIntellisenseProvider _intellisenseProvider = intellisenseProvider ?? throw new ArgumentNullException(nameof(intellisenseProvider));
+	private readonly ILuaIntelliSenseProvider _intellisenseProvider = intellisenseProvider ?? throw new ArgumentNullException(nameof(intellisenseProvider));
 
 	public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
 		=> _intellisenseProvider.GetDiagnostics(filePath);

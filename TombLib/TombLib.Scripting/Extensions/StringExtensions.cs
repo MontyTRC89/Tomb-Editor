@@ -99,14 +99,16 @@ public static class StringExtensions
 	/// </summary>
 	/// <param name="value">The string to check.</param>
 	/// <returns><see langword="true"/> if the string is not null or empty; otherwise, <see langword="false"/>.</returns>
-	public static bool HasValue([NotNullWhen(true)] this string? value) => !string.IsNullOrEmpty(value);
+	public static bool HasValue([NotNullWhen(true)] this string? value)
+		=> !string.IsNullOrEmpty(value);
 
 	/// <summary>
 	/// Determines whether the specified string is not null, empty, or consists only of white-space characters.
 	/// </summary>
 	/// <param name="value">The string to check.</param>
 	/// <returns><see langword="true"/> if the string is not null, empty, or white-space; otherwise, <see langword="false"/>.</returns>
-	public static bool HasText([NotNullWhen(true)] this string? value) => !string.IsNullOrWhiteSpace(value);
+	public static bool HasText([NotNullWhen(true)] this string? value)
+		=> !string.IsNullOrWhiteSpace(value);
 
 	/// <summary>
 	/// Returns the original string if it has text; otherwise, returns the specified fallback string.
@@ -115,7 +117,8 @@ public static class StringExtensions
 	/// <param name="fallback">The fallback string to return if the original string is null, empty, or white-space.</param>
 	/// <returns>The original string if it has text; otherwise, the fallback string.</returns>
 	[return: NotNullIfNotNull(nameof(fallback))]
-	public static string? Or(this string? value, string? fallback) => value.HasText() ? value : fallback;
+	public static string? Or(this string? value, string? fallback)
+		=> value.HasText() ? value : fallback;
 
 	/// <summary>
 	/// Returns a new string with trailing whitespace removed from every line.

@@ -1,6 +1,5 @@
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
-using System;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.ClassicScript.Services;
@@ -27,9 +26,6 @@ public sealed class SectionRenderer : IBackgroundRenderer
 	/// <param name="lineService">The line service used to identify section header lines.</param>
 	public SectionRenderer(ClassicScriptEditor editor, IClassicScriptLineService lineService)
 	{
-		ArgumentNullException.ThrowIfNull(editor);
-		ArgumentNullException.ThrowIfNull(lineService);
-
 		_editor = editor;
 		_lineService = lineService;
 	}
@@ -46,8 +42,6 @@ public sealed class SectionRenderer : IBackgroundRenderer
 	/// </summary>
 	public void UpdateSectionColor(string htmlColor)
 	{
-		ArgumentNullException.ThrowIfNull(htmlColor);
-
 		if (ColorConverter.ConvertFromString(htmlColor) is Color color)
 			_sectionBorderPen = CreateFrozenPen(color);
 	}

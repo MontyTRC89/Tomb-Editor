@@ -41,7 +41,9 @@ internal sealed class ClassicScriptReferenceBrowserDataProvider
 	}
 
 	private static string FormatCommandName(string commandName)
-		=> commandName.StartsWith('#') || commandName.Equals("Unknown", StringComparison.OrdinalIgnoreCase)
+	{
+		return commandName.StartsWith('#') || commandName.Equals("Unknown", StringComparison.OrdinalIgnoreCase)
 			? commandName
 			: commandName + "=";
+	}
 }

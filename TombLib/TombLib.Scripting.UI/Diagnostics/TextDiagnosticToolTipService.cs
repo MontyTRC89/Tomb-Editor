@@ -11,8 +11,7 @@ internal sealed class TextDiagnosticToolTipService
 	private readonly Action? _onDiagnosticsChanged;
 	private IReadOnlyList<TextEditorDiagnostic> _diagnostics = [];
 
-	public TextDiagnosticToolTipService(Action? onDiagnosticsChanged = null)
-		=> _onDiagnosticsChanged = onDiagnosticsChanged;
+	public TextDiagnosticToolTipService(Action? onDiagnosticsChanged = null) => _onDiagnosticsChanged = onDiagnosticsChanged;
 
 	public IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnostics;
 
@@ -71,9 +70,11 @@ internal sealed class TextDiagnosticToolTipService
 	}
 
 	private List<TextEditorDiagnostic> GetDiagnosticsAtOffset(int offset)
-		=> _diagnostics
+	{
+		return _diagnostics
 			.Where(diagnostic => diagnostic.ContainsOffset(offset))
 			.ToList();
+	}
 
 	private List<TextEditorDiagnostic> GetDiagnosticsForLine(TextDocument document, DocumentLine? line)
 	{
@@ -99,12 +100,14 @@ internal sealed class TextDiagnosticToolTipService
 	}
 
 	private static bool IsSeverityPrefixed(string message)
-		=> !string.IsNullOrWhiteSpace(message)
+	{
+		return !string.IsNullOrWhiteSpace(message)
 			&& (message.StartsWith("Error:", StringComparison.OrdinalIgnoreCase)
 				|| message.StartsWith("Warning:", StringComparison.OrdinalIgnoreCase)
 				|| message.StartsWith("Information:", StringComparison.OrdinalIgnoreCase)
 				|| message.StartsWith("Hint:", StringComparison.OrdinalIgnoreCase)
 				|| message.StartsWith("Diagnostic:", StringComparison.OrdinalIgnoreCase));
+	}
 }
 
 internal readonly record struct TextDiagnosticToolTipInfo(

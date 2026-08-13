@@ -17,8 +17,7 @@ public static class LuaFallbackHighlightingLoader
 	/// <summary>
 	/// Gets the cached Lua highlighting definition, or <see langword="null"/> if the definition file is missing.
 	/// </summary>
-	public static IHighlightingDefinition? Load()
-		=> FallbackHighlightingState.Value;
+	public static IHighlightingDefinition? Load() => FallbackHighlightingState.Value;
 
 	private static IHighlightingDefinition? LoadFallbackHighlightingCore()
 	{

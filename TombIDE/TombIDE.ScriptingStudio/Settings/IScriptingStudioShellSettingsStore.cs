@@ -65,21 +65,20 @@ public sealed class ScriptingStudioShellWorkspaceSettings
 
 	public ShortcutOverrideCollection ShortcutOverrides { get; set; } = new();
 
-	public ScriptingStudioShellWorkspaceSettings Clone()
-		=> new()
-		{
-			AvalonDockLayoutXml = AvalonDockLayoutXml ?? string.Empty,
-			DockPanelState = DockPanelStateCloneHelper.Clone(DockPanelState),
-			InfoBoxAlwaysOnTop = InfoBoxAlwaysOnTop,
-			InfoBoxCloseTabsOnClose = InfoBoxCloseTabsOnClose,
-			IsLegacyImported = IsLegacyImported,
-			IsStatusStripVisible = IsStatusStripVisible,
-			IsToolStripVisible = IsToolStripVisible,
-			ReindentOnSave = ReindentOnSave,
-			ShowCompilerLogsAfterBuild = ShowCompilerLogsAfterBuild,
-			UseNewIncludeMethod = UseNewIncludeMethod,
-			ShortcutOverrides = CloneShortcutOverrides(ShortcutOverrides)
-		};
+	public ScriptingStudioShellWorkspaceSettings Clone() => new()
+	{
+		AvalonDockLayoutXml = AvalonDockLayoutXml ?? string.Empty,
+		DockPanelState = DockPanelStateCloneHelper.Clone(DockPanelState),
+		InfoBoxAlwaysOnTop = InfoBoxAlwaysOnTop,
+		InfoBoxCloseTabsOnClose = InfoBoxCloseTabsOnClose,
+		IsLegacyImported = IsLegacyImported,
+		IsStatusStripVisible = IsStatusStripVisible,
+		IsToolStripVisible = IsToolStripVisible,
+		ReindentOnSave = ReindentOnSave,
+		ShowCompilerLogsAfterBuild = ShowCompilerLogsAfterBuild,
+		UseNewIncludeMethod = UseNewIncludeMethod,
+		ShortcutOverrides = CloneShortcutOverrides(ShortcutOverrides)
+	};
 
 	private static ShortcutOverrideCollection CloneShortcutOverrides(ShortcutOverrideCollection source)
 	{
@@ -110,15 +109,14 @@ public sealed class ScriptingStudioShellSettingsDocument
 
 	public ScriptingStudioShellWorkspaceSettings TRX { get; set; } = new();
 
-	public ScriptingStudioShellWorkspaceSettings GetWorkspace(ScriptingWorkspaceKind workspaceKind)
-		=> workspaceKind switch
-		{
-			ScriptingWorkspaceKind.ClassicScript => ClassicScript,
-			ScriptingWorkspaceKind.GameFlowScript => GameFlowScript,
-			ScriptingWorkspaceKind.TRX => TRX,
-			ScriptingWorkspaceKind.Lua => Lua,
-			_ => throw new NotSupportedException($"Unsupported scripting workspace kind: {workspaceKind}.")
-		};
+	public ScriptingStudioShellWorkspaceSettings GetWorkspace(ScriptingWorkspaceKind workspaceKind) => workspaceKind switch
+	{
+		ScriptingWorkspaceKind.ClassicScript => ClassicScript,
+		ScriptingWorkspaceKind.GameFlowScript => GameFlowScript,
+		ScriptingWorkspaceKind.TRX => TRX,
+		ScriptingWorkspaceKind.Lua => Lua,
+		_ => throw new NotSupportedException($"Unsupported scripting workspace kind: {workspaceKind}.")
+	};
 
 	public void SetWorkspace(ScriptingWorkspaceKind workspaceKind, ScriptingStudioShellWorkspaceSettings settings)
 	{
@@ -293,14 +291,13 @@ internal static class DockPanelStateCloneHelper
 		return clone;
 	}
 
-	private static DockGroupState Clone(DockGroupState state)
-		=> new()
-		{
-			Contents = new List<string>(state.Contents ?? []),
-			Order = state.Order,
-			Size = state.Size,
-			VisibleContent = state.VisibleContent ?? string.Empty
-		};
+	private static DockGroupState Clone(DockGroupState state) => new()
+	{
+		Contents = new List<string>(state.Contents ?? []),
+		Order = state.Order,
+		Size = state.Size,
+		VisibleContent = state.VisibleContent ?? string.Empty
+	};
 
 	private static DockRegionState Clone(DockRegionState state)
 	{

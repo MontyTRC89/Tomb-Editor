@@ -1,11 +1,12 @@
-using System.Reflection;
-using System.Windows;
 using Nickelony.LanguageServer.Abstractions.Completion;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Editing;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using Nickelony.LanguageServer.Abstractions.Infrastructure.Provider;
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using Nickelony.LanguageServer.Abstractions.Signatures;
+using System.Reflection;
+using System.Windows;
 using static TombLib.Tests.WPFTestHelper;
 
 namespace TombLib.Tests;
@@ -456,9 +457,12 @@ public class LuaEditorIntelliSenseStateTests
 
 	private readonly record struct ProviderRequest(string FilePath, string Content, int Line, int Column);
 
-	private sealed class FakeLuaIntellisenseProvider : ILuaIntellisenseProvider
+	private sealed class FakeLuaIntellisenseProvider : ILuaIntelliSenseProvider
 	{
 		public bool IsAvailable { get; set; } = true;
+
+		public LanguageServerProviderState State => LanguageServerProviderState.Ready;
+
 		public bool SupportsReferences => false;
 		public bool SupportsRename => false;
 		public bool SupportsFormatting => false;
@@ -483,6 +487,12 @@ public class LuaEditorIntelliSenseStateTests
 			remove { }
 		}
 
+		public event Action? CapabilitiesChanged
+		{
+			add { }
+			remove { }
+		}
+
 		public event Action<LanguageServerStartupFailure>? StartupFailed
 		{
 			add { }
@@ -501,11 +511,9 @@ public class LuaEditorIntelliSenseStateTests
 			remove { }
 		}
 
-		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
-			=> [];
+		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath) => [];
 
-		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
-			=> [];
+		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath) => [];
 
 		public void OpenDocument(string filePath, string content)
 		{ }

@@ -23,7 +23,6 @@ public sealed record TextCompletionContext
 	/// it from the caret position. A default context must not be used because it would treat
 	/// <c>0</c> as the active argument instead of resolving it from the caret.
 	/// </param>
-	/// <exception cref="ArgumentNullException"><paramref name="documentText"/> is <see langword="null"/>.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">
 	/// <paramref name="caretOffset"/> is negative or greater than the length of <paramref name="documentText"/>,
 	/// or <paramref name="argumentIndex"/> is less than <c>-1</c>.
@@ -34,13 +33,10 @@ public sealed record TextCompletionContext
 		TextCompletionTrigger trigger = TextCompletionTrigger.Automatic,
 		int argumentIndex = -1)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-
 		if (caretOffset < 0 || caretOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(caretOffset));
 
-		if (argumentIndex < -1)
-			throw new ArgumentOutOfRangeException(nameof(argumentIndex));
+		ArgumentOutOfRangeException.ThrowIfLessThan(argumentIndex, -1);
 
 		DocumentText = documentText;
 		CaretOffset = caretOffset;

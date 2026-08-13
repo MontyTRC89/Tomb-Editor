@@ -31,12 +31,16 @@ internal static class SchemaTraversal
 			result.Add(current);
 
 			if (current.Properties is not null)
+			{
 				foreach (var property in current.Properties.Values)
 					Visit(property);
+			}
 
 			if (current.Items is not null)
+			{
 				foreach (var item in current.Items)
 					Visit(item);
+			}
 
 			foreach (var nestedSchema in current.OneOf ?? [])
 				Visit(nestedSchema);

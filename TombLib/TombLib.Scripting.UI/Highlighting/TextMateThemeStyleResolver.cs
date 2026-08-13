@@ -77,7 +77,9 @@ internal sealed class TextMateThemeStyleResolver
 				&& isItalic.HasValue
 				&& isUnderline.HasValue
 				&& isStrikethrough.HasValue)
+			{
 				break;
+			}
 		}
 
 		TextDecorationCollection? textDecorations = CreateTextDecorations(isUnderline ?? false, isStrikethrough ?? false);

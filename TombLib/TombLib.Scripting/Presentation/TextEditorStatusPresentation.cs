@@ -30,15 +30,14 @@ public readonly record struct TextEditorStatusPresentation(
 	/// </summary>
 	/// <param name="showSyntaxPreview">Whether the syntax preview should be shown.</param>
 	/// <returns>The empty status presentation.</returns>
-	public static TextEditorStatusPresentation Empty(bool showSyntaxPreview)
-		=> new(
-			HasEditor: false,
-			RowLabelText: string.Empty,
-			ColumnLabelText: string.Empty,
-			SelectionLabelText: string.Empty,
-			ZoomLabelText: string.Empty,
-			CanResetZoom: false,
-			ResetZoomToolTipText: string.Empty,
-			ShowSyntaxPreview: showSyntaxPreview,
-			SyntaxPreview: null);
+	public static TextEditorStatusPresentation Empty(bool showSyntaxPreview) => new(
+		HasEditor: false,
+		RowLabelText: string.Empty,
+		ColumnLabelText: string.Empty,
+		SelectionLabelText: string.Empty,
+		ZoomLabelText: string.Empty,
+		CanResetZoom: false,
+		ResetZoomToolTipText: string.Empty,
+		ShowSyntaxPreview: showSyntaxPreview,
+		SyntaxPreview: null);
 }

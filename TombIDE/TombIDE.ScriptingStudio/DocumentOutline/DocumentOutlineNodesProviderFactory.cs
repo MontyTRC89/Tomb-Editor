@@ -26,6 +26,7 @@ internal sealed class DocumentOutlineNodesProviderFactory
 		ArgumentNullException.ThrowIfNull(languageServices);
 		ArgumentNullException.ThrowIfNull(gameFlowLanguageServices);
 		ArgumentNullException.ThrowIfNull(trxLanguageServices);
+
 		_languageServices = languageServices;
 		_gameFlowLanguageServices = gameFlowLanguageServices;
 		_trxLanguageServices = trxLanguageServices;

@@ -1,9 +1,9 @@
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.TRX.Diagnostics;
 using TombLib.Scripting.TRX.Services;
-using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Tests.TRX.Diagnostics;
 

@@ -28,7 +28,7 @@ public sealed partial class LuaEditor
 	private void EnsureSemanticTokensColorizerAttached()
 	{
 		if (_semanticTokensColorizer is null)
-			_semanticTokensColorizer = new LuaSemanticTokensColorizer(TextArea.TextView, GetThemeBrushSet());
+			_semanticTokensColorizer = new(TextArea.TextView, GetThemeBrushSet());
 		else
 			_semanticTokensColorizer.UpdateTheme(GetThemeBrushSet());
 

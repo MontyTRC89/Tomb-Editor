@@ -258,7 +258,7 @@ public sealed partial class LuaEditor
 	private static CancellationToken ResetCancellationTokenSource(ref CancellationTokenSource? cancellationTokenSource)
 	{
 		CancelAndDispose(ref cancellationTokenSource);
-		cancellationTokenSource = new CancellationTokenSource();
+		cancellationTokenSource = new();
 		return cancellationTokenSource.Token;
 	}
 

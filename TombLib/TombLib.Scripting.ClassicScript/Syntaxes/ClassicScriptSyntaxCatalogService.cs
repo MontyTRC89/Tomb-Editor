@@ -23,7 +23,6 @@ public sealed class ClassicScriptSyntaxCatalogService
 
 	internal ClassicScriptSyntaxCatalogService(ClassicScriptCommandsLoader loader)
 	{
-		ArgumentNullException.ThrowIfNull(loader);
 		_loader = loader;
 		_snapshot = new Lazy<ClassicScriptSyntaxCatalogSnapshot>(LoadSnapshot);
 	}
@@ -31,8 +30,7 @@ public sealed class ClassicScriptSyntaxCatalogService
 	/// <summary>
 	/// Gets all command syntax definitions, old commands first, then new commands.
 	/// </summary>
-	public IReadOnlyList<ClassicScriptSyntaxDefinition> GetCommandSyntaxDefinitions()
-		=> _snapshot.Value.CommandDefinitions;
+	public IReadOnlyList<ClassicScriptSyntaxDefinition> GetCommandSyntaxDefinitions() => _snapshot.Value.CommandDefinitions;
 
 	/// <summary>
 	/// Gets the syntax definition for the given command key, or null when the key is unknown.
@@ -105,12 +103,15 @@ public sealed class ClassicScriptSyntaxCatalogService
 		return definitions;
 	}
 
-	private static ClassicScriptSyntaxDefinition CreateDefinition(string key, string syntaxText) => new(
-		key,
-		syntaxText,
-		GetApplicableSection(syntaxText),
-		GetArgumentCount(syntaxText),
-		ContainsArrayArgument(syntaxText));
+	private static ClassicScriptSyntaxDefinition CreateDefinition(string key, string syntaxText)
+	{
+		return new(
+			key,
+			syntaxText,
+			GetApplicableSection(syntaxText),
+			GetArgumentCount(syntaxText),
+			ContainsArrayArgument(syntaxText));
+	}
 
 	private static bool ContainsArrayArgument(string syntaxText)
 		=> syntaxText.Contains("ARRAY", StringComparison.OrdinalIgnoreCase);

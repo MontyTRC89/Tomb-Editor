@@ -29,11 +29,8 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
-		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
-		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
 		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
@@ -62,7 +59,7 @@ public sealed class ClassicScriptHoverProvider : ITextHoverProvider
 		if (type == WordType.Unknown && int.TryParse(word, out _))
 			type = WordType.Decimal;
 
-		if (word is not null && word.StartsWith("#", StringComparison.Ordinal))
+		if (word is not null && word.StartsWith('#'))
 		{
 			type = WordType.Directive;
 			word = word.Split(' ')[0];

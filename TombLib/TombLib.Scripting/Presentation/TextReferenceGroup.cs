@@ -18,7 +18,7 @@ public sealed class TextReferenceGroup
 	{
 		FilePath = filePath;
 		DisplayPath = displayPath;
-		Items = Array.AsReadOnly([.. (items ?? [])]);
+		Items = Array.AsReadOnly([.. items ?? []]);
 	}
 
 	/// <summary>

@@ -21,8 +21,7 @@ public sealed class ScriptingPaths
 	/// Initializes a new instance rooted at the supplied program directory.
 	/// </summary>
 	/// <param name="programDirectory">The application root directory.</param>
-	public ScriptingPaths(string programDirectory)
-		=> _programDirectory = programDirectory;
+	public ScriptingPaths(string programDirectory) => _programDirectory = programDirectory;
 
 	/// <summary>
 	/// Gets the application root directory.

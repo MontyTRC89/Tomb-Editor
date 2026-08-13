@@ -3,6 +3,7 @@ using Nickelony.LanguageServer.Abstractions.Completion;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Editing;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using Nickelony.LanguageServer.Abstractions.Infrastructure.Provider;
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using Nickelony.LanguageServer.Abstractions.Signatures;
 using System.Reflection;
@@ -144,7 +145,7 @@ public class LuaEditorCompletionWindowTests
 		});
 	}
 
-	private static LuaEditor CreateEditor(ILuaIntellisenseProvider provider, string text) => new(new Version(1, 0))
+	private static LuaEditor CreateEditor(ILuaIntelliSenseProvider provider, string text) => new(new Version(1, 0))
 	{
 		FilePath = @"C:\Workspace\Scripts\test.lua",
 		Text = text,
@@ -152,8 +153,10 @@ public class LuaEditorCompletionWindowTests
 	};
 
 	private static Task InvokePrivateTask(object instance, string methodName, Type[] parameterTypes, params object?[] arguments)
-		=> (Task)(InvokeInstanceMethod(instance, methodName, parameterTypes, arguments)
+	{
+		return (Task)(InvokeInstanceMethod(instance, methodName, parameterTypes, arguments)
 			?? throw new InvalidOperationException($"Private instance method '{methodName}' returned null."));
+	}
 
 	private static void CloseCompletionWindow(LuaEditor editor)
 		=> InvokeInstanceMethod(editor, "CloseCompletionWindow", Type.EmptyTypes);
@@ -169,11 +172,14 @@ public class LuaEditorCompletionWindowTests
 
 	private readonly record struct CompletionRequest(string FilePath, string Content, int Line, int Column, char? TriggerCharacter);
 
-	private sealed class FakeLuaCompletionProvider : ILuaIntellisenseProvider
+	private sealed class FakeLuaCompletionProvider : ILuaIntelliSenseProvider
 	{
 		private readonly Queue<IReadOnlyList<TextCompletionItem>> _completionResponses = [];
 
 		public bool IsAvailable { get; set; } = true;
+
+		public LanguageServerProviderState State => LanguageServerProviderState.Ready;
+
 		public bool SupportsReferences => false;
 		public bool SupportsRename => false;
 		public bool SupportsFormatting => false;
@@ -181,6 +187,12 @@ public class LuaEditorCompletionWindowTests
 		public List<CompletionRequest> CompletionRequests { get; } = [];
 
 		public event Action<string, IReadOnlyList<TextEditorDiagnostic>>? DiagnosticsUpdated
+		{
+			add { }
+			remove { }
+		}
+
+		public event Action? CapabilitiesChanged
 		{
 			add { }
 			remove { }
@@ -207,11 +219,9 @@ public class LuaEditorCompletionWindowTests
 		public void EnqueueCompletionResponse(IReadOnlyList<TextCompletionItem> items)
 			=> _completionResponses.Enqueue(items);
 
-		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath)
-			=> [];
+		public IReadOnlyList<TextEditorDiagnostic> GetDiagnostics(string filePath) => [];
 
-		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath)
-			=> [];
+		public IReadOnlyList<LuaSemanticToken> GetSemanticTokens(string filePath) => [];
 
 		public void OpenDocument(string filePath, string content)
 		{ }

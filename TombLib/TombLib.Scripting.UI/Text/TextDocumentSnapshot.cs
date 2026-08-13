@@ -37,16 +37,20 @@ public sealed class TextDocumentSnapshot : ITextSnapshot
 	public int LineCount => _snapshot.LineCount;
 
 	/// <inheritdoc />
-	public char GetCharAt(int offset) => _snapshot.GetCharAt(offset);
+	public char GetCharAt(int offset)
+		=> _snapshot.GetCharAt(offset);
 
 	/// <inheritdoc />
-	public string GetText(int offset, int length) => _snapshot.GetText(offset, length);
+	public string GetText(int offset, int length)
+		=> _snapshot.GetText(offset, length);
 
 	/// <inheritdoc />
-	public ITextLine GetLineByOffset(int offset) => _snapshot.GetLineByOffset(offset);
+	public ITextLine GetLineByOffset(int offset)
+		=> _snapshot.GetLineByOffset(offset);
 
 	/// <inheritdoc />
-	public ITextLine GetLineByNumber(int lineNumber) => _snapshot.GetLineByNumber(lineNumber);
+	public ITextLine GetLineByNumber(int lineNumber)
+		=> _snapshot.GetLineByNumber(lineNumber);
 
 	/// <inheritdoc />
 	public IEnumerable<ITextLine> Lines => _snapshot.Lines;

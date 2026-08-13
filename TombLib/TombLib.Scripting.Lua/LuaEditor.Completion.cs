@@ -31,8 +31,10 @@ public sealed partial class LuaEditor
 		=> RequestCompletionAsyncCore(offset, triggerCharacter);
 
 	private bool CanApplyCompletionItem(TextCompletionItem item)
-		=> IsCompletionItemCurrent(item.RequestDocumentVersion, _editorDocumentVersion,
+	{
+		return IsCompletionItemCurrent(item.RequestDocumentVersion, _editorDocumentVersion,
 			item.RequestGeneration, _editorRequestGeneration, IsLoaded, IsIntelliSenseAvailable());
+	}
 
 	private void RebaseOpenCompletionItems()
 		=> CompletionController.RebaseOpenCompletionItems(_editorDocumentVersion, _editorRequestGeneration);
@@ -125,8 +127,10 @@ public sealed partial class LuaEditor
 	}
 
 	private bool IsCompletionRequestCurrent(CancellationToken cancellationToken, int requestToken, int requestDocumentVersion, int requestGeneration)
-		=> CompletionController.IsRequestCurrent(requestToken)
+	{
+		return CompletionController.IsRequestCurrent(requestToken)
 			&& IsAsyncEditorResultCurrent(cancellationToken, requestToken, requestToken, requestDocumentVersion, requestGeneration);
+	}
 
 	private CompletionData[] CreateCompletionDataItems(IReadOnlyList<TextCompletionItem> items, int requestDocumentVersion, int requestGeneration)
 	{
@@ -136,7 +140,7 @@ public sealed partial class LuaEditor
 		for (int i = 0; i < items.Count; i++)
 		{
 			TextCompletionItem completionItem = items[i].WithRequestContext(requestDocumentVersion, requestGeneration);
-			completionDataItems[i] = new CompletionData(
+			completionDataItems[i] = new(
 				completionItem,
 				item => LuaCompletionIconFactory.GetIcon(item.Kind, brushSet),
 				CanApplyCompletionItem,

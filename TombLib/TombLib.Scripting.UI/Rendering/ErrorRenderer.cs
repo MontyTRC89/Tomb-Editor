@@ -32,8 +32,7 @@ public sealed class ErrorRenderer : IBackgroundRenderer
 	/// Initializes a new instance of the <see cref="ErrorRenderer"/> class.
 	/// </summary>
 	/// <param name="e">The editor whose diagnostics are rendered.</param>
-	public ErrorRenderer(TextEditorBase e)
-		=> _editor = e;
+	public ErrorRenderer(TextEditorBase e) => _editor = e;
 
 	/// <summary>
 	/// Gets the layer in which the underlines are drawn.

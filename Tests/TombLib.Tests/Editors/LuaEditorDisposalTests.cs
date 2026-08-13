@@ -13,7 +13,7 @@ public class LuaEditorDisposalTests
 	{
 		RunInSta(() =>
 		{
-			var provider = new Mock<ILuaIntellisenseProvider>();
+			var provider = new Mock<ILuaIntelliSenseProvider>();
 			var editor = new LuaEditor(new Version(1, 0))
 			{
 				FilePath = @"C:\Workspace\Scripts\test.lua",
@@ -32,7 +32,7 @@ public class LuaEditorDisposalTests
 	{
 		RunInSta(() =>
 		{
-			var provider = new Mock<ILuaIntellisenseProvider>();
+			var provider = new Mock<ILuaIntelliSenseProvider>();
 			var editor = new LuaEditor(new Version(1, 0))
 			{
 				FilePath = @"C:\Workspace\Scripts\test.lua",

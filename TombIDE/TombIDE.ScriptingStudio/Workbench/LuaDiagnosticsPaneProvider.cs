@@ -54,7 +54,8 @@ internal sealed class LuaDiagnosticsPaneProvider : IStudioPaneContributionProvid
 	}
 
 	private void NavigateToDiagnostic(TextDiagnosticListItem diagnostic)
-		=> NavigateToLocation(
+	{
+		NavigateToLocation(
 			diagnostic.FilePath,
 			_ => new EditorNavigationLocation(
 				diagnostic.FilePath,
@@ -62,6 +63,7 @@ internal sealed class LuaDiagnosticsPaneProvider : IStudioPaneContributionProvid
 				diagnostic.StartOffset,
 				Math.Max(0, diagnostic.EndOffset - diagnostic.StartOffset),
 				diagnostic.LineNumber));
+	}
 
 	private void NavigateToLocation(string filePath, Func<TextEditorBase, EditorNavigationLocation?> locationFactory)
 	{

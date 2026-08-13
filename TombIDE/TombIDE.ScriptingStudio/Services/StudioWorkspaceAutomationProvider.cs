@@ -41,14 +41,12 @@ public interface IStudioWorkspaceAutomationProvider
 	/// <summary>
 	/// Determines whether a script is already defined for the specified level name.
 	/// </summary>
-	bool IsScriptDefined(string levelName)
-		=> false;
+	bool IsScriptDefined(string levelName) => false;
 
 	/// <summary>
 	/// Determines whether a string value is already defined.
 	/// </summary>
-	bool IsStringDefined(string value)
-		=> false;
+	bool IsStringDefined(string value) => false;
 
 	/// <summary>
 	/// Renames a level from the old name to the new name across the workspace.

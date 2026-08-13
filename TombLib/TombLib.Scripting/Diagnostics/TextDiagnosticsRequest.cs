@@ -12,14 +12,8 @@ public sealed record TextDiagnosticsRequest
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="engineVersion">The engine version that should be used when evaluating diagnostics.</param>
-	/// <exception cref="ArgumentNullException">
-	/// <paramref name="documentText"/> or <paramref name="engineVersion"/> is null.
-	/// </exception>
 	public TextDiagnosticsRequest(string documentText, Version engineVersion)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-		ArgumentNullException.ThrowIfNull(engineVersion);
-
 		DocumentText = documentText;
 		EngineVersion = engineVersion;
 	}

@@ -88,9 +88,11 @@ public class MnemonicDefinitionsLoaderTests
 	}
 
 	private static MnemonicDefinitions LoadReal()
-		=> new MnemonicDefinitionsLoader().Load(
+	{
+		return new MnemonicDefinitionsLoader().Load(
 			ClassicScriptResourcePaths.GetMnemonicConstantsPath(),
 			Path.GetTempPath());
+	}
 
 	private static string CreateTemporaryJson(params string[][] rows)
 	{

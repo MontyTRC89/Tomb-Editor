@@ -229,9 +229,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
 		private void ContentPersistenceCoordinator_ContentChangedWorkerRunCompleted(object sender, EventArgs e)
-		{
-			OnContentChangedWorkerRunCompleted(EventArgs.Empty);
-		}
+			=> OnContentChangedWorkerRunCompleted(EventArgs.Empty);
 
 		private void DataGrid_SelectionChanged(object sender, EventArgs e)
 			=> OnStatusChanged(EventArgs.Empty);
@@ -300,9 +298,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		#region Content
 
 		public void RunContentChangedWorker()
-		{
-			IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
-		}
+			=> IsContentChanged = _contentPersistenceCoordinator.RunContentChangedCheck();
 
 		public void ApplyPersistedContent(string content)
 		{
@@ -339,7 +335,9 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				bool isExtraNG = Regex.IsMatch(currentSectionName, @"^\[ExtraNG\]", RegexOptions.IgnoreCase);
 
 				if (isExtraNG)
+				{
 					HandleExtraNGDataGrid(dataGrid, strings);
+				}
 				else
 				{
 					HandleStringDataGrid(dataGrid, strings, totalStringCount);
@@ -375,6 +373,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		private void HandleExtraNGDataGrid(StringDataGridView dataGrid, List<string> strings)
 		{
 			for (int i = 0; i < strings.Count; i++)
+			{
 				if (Regex.IsMatch(strings[i], @"^\d+:.*"))
 				{
 					short id = short.Parse(strings[i].Split(':').First());
@@ -387,6 +386,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 					if (stringCell.Value?.ToString() == "NULL")
 						stringCell.Style.ForeColor = Color.Gray;
 				}
+			}
 
 			dataGrid.AllowUserToAddRows = true;
 			dataGrid.AllowUserToDeleteRows = true;
@@ -500,7 +500,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 
 		public int Zoom
 		{
-			get { return _zoom; }
+			get => _zoom;
 			set
 			{
 				_zoom = value;
@@ -556,8 +556,10 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		public TabPage FindTabPage(ExtendedDarkDataGridView dataGrid)
 		{
 			foreach (TabPage tab in TabPages)
+			{
 				if (GetDataGridOfTab(tab).Name == dataGrid.Name)
 					return tab;
+			}
 
 			return null;
 		}

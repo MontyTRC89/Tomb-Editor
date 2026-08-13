@@ -19,7 +19,6 @@ internal sealed class LuaDocumentLineParserStateCache
 	/// <param name="document">The document whose line-start parser state should be cached.</param>
 	public LuaDocumentLineParserStateCache(TextDocument document)
 	{
-		ArgumentNullException.ThrowIfNull(document);
 		_document = document;
 		_document.Changed += Document_Changed;
 	}

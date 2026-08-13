@@ -183,7 +183,8 @@ public static class MarkdownToolTipRenderer
 	}
 
 	private static Inline CreateInlineCodeContainer(string text, Brush foreground, Brush background, Brush borderBrush)
-		=> new InlineUIContainer(
+	{
+		return new InlineUIContainer(
 			new Border
 			{
 				Background = background,
@@ -203,6 +204,7 @@ public static class MarkdownToolTipRenderer
 		{
 			BaselineAlignment = BaselineAlignment.Center
 		};
+	}
 
 	private static void ReplaceInline(Inline source, Inline replacement)
 	{
@@ -557,7 +559,7 @@ public static class MarkdownToolTipRenderer
 
 	private static void HyperlinkHost_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 	{
-		Hyperlink? hyperlink = (e.OriginalSource as DependencyObject)?.FindAncestorOrSelf<Hyperlink>();
+		var hyperlink = (e.OriginalSource as DependencyObject)?.FindAncestorOrSelf<Hyperlink>();
 
 		if (hyperlink is not null && TryOpenHyperlink(hyperlink.NavigateUri))
 			e.Handled = true;
@@ -585,7 +587,7 @@ public static class MarkdownToolTipRenderer
 
 	private static void ScrollHost_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
 	{
-		ScrollViewer? scrollViewer = sender as ScrollViewer ?? (sender as DependencyObject)?.FindVisualDescendant<ScrollViewer>();
+		var scrollViewer = sender as ScrollViewer ?? (sender as DependencyObject)?.FindVisualDescendant<ScrollViewer>();
 
 		if (scrollViewer is null || scrollViewer.ScrollableHeight <= 0.0)
 			return;
@@ -599,9 +601,11 @@ public static class MarkdownToolTipRenderer
 	}
 
 	internal static string NormalizeLineEndings(string text)
-		=> (text ?? string.Empty)
+	{
+		return (text ?? string.Empty)
 			.Replace("\r\n", "\n", StringComparison.Ordinal)
 			.Replace('\r', '\n');
+	}
 
 	private static IHighlightingDefinition? ResolveHighlighting(string? language)
 	{

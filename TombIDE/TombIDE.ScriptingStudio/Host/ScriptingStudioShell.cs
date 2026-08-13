@@ -52,9 +52,7 @@ internal sealed class ScriptingStudioShell : IScriptingStudioShell
 	}
 
 	public void NotifyHostTabActivated()
-	{
-		_viewModel.NotifyHostTabActivated();
-	}
+		=> _viewModel.NotifyHostTabActivated();
 
 	public void NotifyMainWindowFocusChanged(bool isFocused)
 		=> _viewModel.NotifyMainWindowFocusChanged(isFocused);

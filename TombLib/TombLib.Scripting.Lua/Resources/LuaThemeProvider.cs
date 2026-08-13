@@ -12,9 +12,11 @@ public sealed class LuaThemeProvider : ITextEditorColorProvider
 {
 	/// <inheritdoc />
 	public IReadOnlyList<string> GetAvailableNames()
-		=> LuaThemeRepository.GetAvailableThemes()
+	{
+		return LuaThemeRepository.GetAvailableThemes()
 			.Select(static theme => theme.Name)
 			.ToArray();
+	}
 
 	/// <inheritdoc />
 	public string GetSelectedName(TextEditorConfigBase config)

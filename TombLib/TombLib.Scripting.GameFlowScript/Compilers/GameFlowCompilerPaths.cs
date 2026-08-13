@@ -12,7 +12,7 @@ internal sealed class GameFlowCompilerPaths
 	/// <summary>
 	/// Gets the default compiler path layout rooted at the application base directory.
 	/// </summary>
-	public static GameFlowCompilerPaths Default { get; } = new GameFlowCompilerPaths(AppContext.BaseDirectory);
+	public static GameFlowCompilerPaths Default { get; } = new(AppContext.BaseDirectory);
 
 	private readonly string _programDirectory;
 
@@ -20,8 +20,7 @@ internal sealed class GameFlowCompilerPaths
 	/// Initializes a new instance rooted at the supplied program directory.
 	/// </summary>
 	/// <param name="programDirectory">The application root directory.</param>
-	public GameFlowCompilerPaths(string programDirectory)
-		=> _programDirectory = programDirectory;
+	public GameFlowCompilerPaths(string programDirectory) => _programDirectory = programDirectory;
 
 	/// <summary>
 	/// Gets the application root directory.

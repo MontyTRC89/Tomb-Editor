@@ -39,11 +39,8 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService,
 		ClassicScriptSyntaxCatalogService syntaxCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
-		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
 		_mnemonicCatalogService = mnemonicCatalogService;
-		ArgumentNullException.ThrowIfNull(syntaxCatalogService);
 		_syntaxCatalogService = syntaxCatalogService;
 	}
 
@@ -58,7 +55,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 		string offsetLineText = source.GetText(offsetLine.Offset, offsetLine.Length);
 		string escapedText = _lineService.EscapeComments(offsetLineText);
 
-		if (escapedText.Contains('=') || escapedText.TrimStart().StartsWith("#", StringComparison.Ordinal))
+		if (escapedText.Contains('=') || escapedText.TrimStart().StartsWith('#'))
 			return offsetLine.LineNumber;
 
 		if (_lineService.IsSectionHeaderLine(offsetLineText))
@@ -101,7 +98,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 		string commandStartLineText = source.GetText(commandStartLine.Offset, commandStartLine.Length);
 		commandStartLineText = _lineService.EscapeComments(commandStartLineText);
 
-		if (commandStartLineText.TrimStart().StartsWith("#", StringComparison.Ordinal))
+		if (commandStartLineText.TrimStart().StartsWith('#'))
 			return commandStartLineText.Split(' ')[0].Trim();
 
 		if (commandStartLineText.Contains('='))
@@ -209,7 +206,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 			string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
 
 			if ((!currentSyntaxArgument.Contains('(') && !currentSyntaxArgument.Contains('.'))
-				|| currentSyntaxArgument.IndexOf("(*Array*)", StringComparison.OrdinalIgnoreCase) >= 0)
+				|| currentSyntaxArgument.Contains("(*Array*)", StringComparison.OrdinalIgnoreCase))
 				return null;
 
 			return currentSyntaxArgument.Split('.')[0].Split('(')[1];
@@ -305,7 +302,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 			ITextLine currentLine = source.GetLineByNumber(i);
 			string currentLineText = source.GetText(currentLine.Offset, currentLine.Length);
 
-			if (currentLineText.StartsWith("[", StringComparison.Ordinal))
+			if (currentLineText.StartsWith('['))
 				return currentLine.LineNumber;
 		}
 
@@ -326,7 +323,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 			ITextLine iLine = source.GetLineByNumber(i);
 			string iLineText = source.GetText(iLine.Offset, iLine.Length);
 
-			if (i != sectionStartLineNumber.Value && (iLineText.StartsWith("[", StringComparison.Ordinal) || i == source.LineCount))
+			if (i != sectionStartLineNumber.Value && (iLineText.StartsWith('[') || i == source.LineCount))
 			{
 				for (int j = i == source.LineCount ? i : i - 1; j >= 1; j--)
 				{
@@ -353,7 +350,7 @@ public sealed class ClassicScriptCommandService : IClassicScriptCommandService
 		{
 			string lineText = source.GetText(line.Offset, line.Length);
 
-			if (lineText.StartsWith("[", StringComparison.Ordinal))
+			if (lineText.StartsWith('['))
 			{
 				string? headerText = _lineService.GetSectionHeaderText(lineText);
 

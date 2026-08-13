@@ -199,7 +199,8 @@ public sealed class TextHoverController : IDisposable
 	}
 
 	private static TextHoverPresentationState CreatePresentationState(int hoveredOffset, TextHoverRequestState requestState, TextHoverInfo? hoverInfo)
-		=> new(
+	{
+		return new(
 			HoveredOffset: hoveredOffset,
 			RequestOffset: requestState.ShouldRequestHover ? requestState.RequestOffset : -1,
 			HoverInfo: hoverInfo,
@@ -208,11 +209,14 @@ public sealed class TextHoverController : IDisposable
 			DiagnosticSeverity: requestState.DiagnosticSeverity,
 			CanShowToolTip: requestState.CanShowToolTip,
 			CanShowDiagnosticFallback: requestState.CanShowDiagnosticFallback);
+	}
 
 	private static TextHoverInfo? GetDisplayableHoverInfo(TextHoverInfo? hoverInfo)
-		=> hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content)
+	{
+		return hoverInfo is not null && !string.IsNullOrWhiteSpace(hoverInfo.Content)
 			? hoverInfo
 			: null;
+	}
 
 	private CancellationToken ResetCancellationTokenSource()
 	{

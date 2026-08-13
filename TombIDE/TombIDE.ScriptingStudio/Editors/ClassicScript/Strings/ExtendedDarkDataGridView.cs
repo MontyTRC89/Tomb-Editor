@@ -75,10 +75,14 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			int maxLineCount = 0;
 
 			if (useEditingControl)
+			{
 				maxLineCount = _editingControl.Text.Split('\n').Length;
+			}
 			else
+			{
 				foreach (DataGridViewCell cell in row.Cells)
 					maxLineCount = Math.Max(maxLineCount, cell.Value?.ToString().Split('\n').Length ?? 1);
+			}
 
 			int fontHeight = row.DefaultCellStyle.Font.Height;
 			int additionalPadding = row.DefaultCellStyle.Font.Height / 2;
@@ -157,9 +161,11 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			DataGridViewCell tableCell = this[e.ColumnIndex, e.RowIndex];
 
 			if (tableCell.Value != CachedUndoItem.Value)
+			{
 				OnCellContentChanged(new CellContentChangedEventArgs(
 					CachedUndoItem.ColumnIndex, CachedUndoItem.RowIndex,
 					CachedUndoItem.Value, tableCell.Value));
+			}
 		}
 
 		private void OnCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)

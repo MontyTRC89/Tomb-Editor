@@ -116,15 +116,14 @@ internal sealed class ToolBarService : IToolBarService
 	private bool IsShellOwnedCommand(UICommand command)
 		=> Array.IndexOf(ShellOwnedCommands, command) >= 0;
 
-	private bool IsCommandEnabled(UICommand command)
-		=> command switch
-		{
-			UICommand.Settings => true,
-			UICommand.UseNewInclude => _workspaceProfile.Kind == ScriptingWorkspaceKind.ClassicScript,
-			UICommand.ShowLogsAfterBuild => _workspaceProfile.SupportsBuild,
-			UICommand.RestoreDefaultLayout => true,
-			UICommand.ToolStrip => _workspaceProfile.SupportsView(UICommand.ToolStrip),
-			UICommand.StatusStrip => _workspaceProfile.SupportsView(UICommand.StatusStrip),
-			_ => false
-		};
+	private bool IsCommandEnabled(UICommand command) => command switch
+	{
+		UICommand.Settings => true,
+		UICommand.UseNewInclude => _workspaceProfile.Kind == ScriptingWorkspaceKind.ClassicScript,
+		UICommand.ShowLogsAfterBuild => _workspaceProfile.SupportsBuild,
+		UICommand.RestoreDefaultLayout => true,
+		UICommand.ToolStrip => _workspaceProfile.SupportsView(UICommand.ToolStrip),
+		UICommand.StatusStrip => _workspaceProfile.SupportsView(UICommand.StatusStrip),
+		_ => false
+	};
 }

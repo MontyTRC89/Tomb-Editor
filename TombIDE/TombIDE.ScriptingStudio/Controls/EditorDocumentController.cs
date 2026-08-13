@@ -349,10 +349,12 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 	}
 
 	public bool IsEveryDocumentSaved()
-		=> _documentController.GetFilePaths()
+	{
+		return _documentController.GetFilePaths()
 			.Select(_documentController.GetMostRecentlyModifiedEditorOfFile)
 			.Where(static editor => editor is not null)
 			.All(static editor => !editor!.IsContentChanged);
+	}
 
 	public void EnsureTabFileSynchronization()
 	{
@@ -371,12 +373,14 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 	public event EventHandler<DocumentRenamedEventArgs>? DocumentRenamed;
 
 	private DialogResult ShowFileReloadPrompt(string filePath)
-		=> _messageService.ShowConfirmation(
+	{
+		return _messageService.ShowConfirmation(
 			string.Format(Strings.Default.AskFileReload, filePath),
 			Strings.Default.FileReloadMBT,
 			DialogResult.Yes,
 			DialogResult.No,
 			defaultValue: DialogResult.Yes);
+	}
 
 	private void RestoreSession(IEnumerable<string> files)
 	{

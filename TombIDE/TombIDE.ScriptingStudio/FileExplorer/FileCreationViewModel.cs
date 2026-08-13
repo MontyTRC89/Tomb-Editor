@@ -215,6 +215,7 @@ public partial class FileCreationViewModel : ObservableObject
 		foreach (FileCreationDirectoryNode child in parent.Children)
 		{
 			FileCreationDirectoryNode? result = FindNodeByPath(child, path);
+
 			if (result is not null)
 				return result;
 		}
@@ -228,14 +229,13 @@ public partial class FileCreationViewModel : ObservableObject
 			NewFileName = initialFileName;
 	}
 
-	private string GetSelectedExtension()
-		=> SelectedFormatIndex switch
-		{
-			0 => ".txt",
-			1 => ".json5",
-			2 => ".lua",
-			_ => ".txt"
-		};
+	private string GetSelectedExtension() => SelectedFormatIndex switch
+	{
+		0 => ".txt",
+		1 => ".json5",
+		2 => ".lua",
+		_ => ".txt"
+	};
 
 	// -- Commands --
 

@@ -2,8 +2,8 @@ using System.Reflection;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.Lua;
-using TombLib.Scripting.Text;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 
 namespace TombLib.Tests;
@@ -56,10 +56,12 @@ public class ScriptingDependencyArchitectureTests
 	}
 
 	private static string[] GetReferencedAssemblyNames(Assembly assembly)
-		=> assembly.GetReferencedAssemblies()
+	{
+		return assembly.GetReferencedAssemblies()
 			.Select(static reference => reference.Name)
 			.OfType<string>()
 			.ToArray();
+	}
 
 	private static bool ReferencesAssembly(Assembly assembly, string assemblyName)
 		=> GetReferencedAssemblyNames(assembly).Contains(assemblyName, StringComparer.Ordinal);

@@ -79,7 +79,9 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				return string.IsNullOrEmpty(id) ? string.Empty : $"{id}: {@string}";
 			}
 			else
+			{
 				return @string;
+			}
 		}
 
 		private static string GetParsedString(string? @string)

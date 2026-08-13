@@ -471,12 +471,14 @@ public partial class FindAndReplaceViewModel : ObservableObject
 			matchCount = GetAllTabsMatchCount(pattern, options);
 
 			if (matchCount > 0)
+			{
 				foreach (TextEditorBase editor in GetOpenTextEditors())
 				{
 					editor.SelectAll();
 					editor.SelectedText = _service.ReplaceAll(editor.Text, pattern, ReplaceText, options);
 					MoveCaretToDocumentStart(editor);
 				}
+			}
 		}
 		else
 		{
@@ -498,14 +500,18 @@ public partial class FindAndReplaceViewModel : ObservableObject
 		int currentDocumentMatchCount = _service.CountMatches(documentText, pattern, options);
 
 		if (SearchCurrentDocument)
+		{
 			ShowStatus(
 				currentDocumentMatchCount + " matches found in the current document.",
 				FindReplaceStatusType.Info);
+		}
 		else if (SearchAllTabs)
+		{
 			ShowStatus(
 				currentDocumentMatchCount + " matches found in the current document. "
 				+ GetAllTabsMatchCount(pattern, options) + " in all tabs combined.",
 				FindReplaceStatusType.Info);
+		}
 	}
 
 	private int GetAllTabsMatchCount(string pattern, RegexOptions options)

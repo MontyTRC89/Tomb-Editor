@@ -36,8 +36,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	/// <summary>
 	/// Gets all known mnemonic flags.
 	/// </summary>
-	public IReadOnlyList<string> GetAllFlags()
-		=> _snapshot.AllFlags;
+	public IReadOnlyList<string> GetAllFlags() => _snapshot.AllFlags;
 
 	/// <summary>
 	/// Builds a word-boundary regex that matches any known mnemonic flag, with every flag name

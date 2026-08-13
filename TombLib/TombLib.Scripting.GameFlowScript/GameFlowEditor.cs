@@ -54,8 +54,10 @@ public sealed partial class GameFlowEditor : TextEditorBase, INameBasedObjectNav
 	protected override void OnLanguageTextEntered(TextCompositionEventArgs e)
 	{
 		if (CompletionEnabled)
+		{
 			CompletionController.ApplyDecision(
 				_completionCoordinator.GetOpenDecision(Document, CaretOffset, CompletionController.ActiveWindow is not null));
+		}
 	}
 
 	/// <inheritdoc/>
@@ -73,9 +75,11 @@ public sealed partial class GameFlowEditor : TextEditorBase, INameBasedObjectNav
 	}
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> SynchronousRequestAdapter.Adapt(
+	{
+		return SynchronousRequestAdapter.Adapt(
 			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
 			cancellationToken);
+	}
 
 	/// <inheritdoc/>
 	public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)

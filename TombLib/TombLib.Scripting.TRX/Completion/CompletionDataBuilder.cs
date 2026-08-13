@@ -18,12 +18,12 @@ public sealed class CompletionDataBuilder
 	/// <param name="kind">The completion item kind.</param>
 	/// <param name="description">The optional completion item description.</param>
 	/// <returns>True if the item was added; otherwise false if a duplicate was rejected.</returns>
-	public bool TryAdd(string text, TextCompletionItemKind kind = TextCompletionItemKind.Generic, string? description = null)
+	public bool TryAdd(string text, TextCompletionItemKind? kind = null, string? description = null)
 	{
 		if (!_addedTexts.Add(text))
 			return false;
 
-		_data.Add(new TextCompletionItem(text, text, description, kind: kind));
+		_data.Add(new TextCompletionItem(text, text, description, kind: kind ?? TextCompletionItemKind.Generic));
 		return true;
 	}
 

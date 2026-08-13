@@ -24,7 +24,9 @@ public sealed partial class ClassicScriptEditor
 	}
 
 	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)
-		=> SynchronousRequestAdapter.Adapt(
+	{
+		return SynchronousRequestAdapter.Adapt(
 			() => _languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(Document.Text, hoveredOffset)),
 			cancellationToken);
+	}
 }

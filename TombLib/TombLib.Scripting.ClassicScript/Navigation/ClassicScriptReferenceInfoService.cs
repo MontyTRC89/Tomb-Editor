@@ -20,8 +20,6 @@ public sealed class ClassicScriptReferenceInfoService
 	/// <returns>The reference information.</returns>
 	public ClassicScriptReferenceInfo GetReferenceInfo(string keyword, ReferenceType type)
 	{
-		ArgumentNullException.ThrowIfNull(keyword);
-
 		string description = GetReferenceDescription(keyword.TrimEnd('='), type);
 		string? missingDescriptionMessage = string.IsNullOrEmpty(description)
 			? CreateMissingDescriptionMessage(keyword)
@@ -32,7 +30,7 @@ public sealed class ClassicScriptReferenceInfoService
 
 	private static string CreateMissingDescriptionMessage(string keyword)
 	{
-		if (keyword.StartsWith("$", StringComparison.Ordinal))
+		if (keyword.StartsWith('$'))
 			return "Couldn't identify the hexadecimal value for the given context.";
 
 		if (int.TryParse(keyword, out _))

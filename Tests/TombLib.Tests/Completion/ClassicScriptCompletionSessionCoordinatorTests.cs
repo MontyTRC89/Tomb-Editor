@@ -16,6 +16,7 @@ public class ClassicScriptCompletionSessionCoordinatorTests
 		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
 		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
 		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+
 		return new ClassicScriptCompletionSessionCoordinator(lineService, commandService, mnemonicCatalogService);
 	}
 

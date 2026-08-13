@@ -34,9 +34,11 @@ internal static class LuaIndentationStrategy
 	/// Gets the leading whitespace prefix for the supplied line.
 	/// </summary>
 	public static string GetLeadingWhitespace(string lineText)
-		=> string.IsNullOrEmpty(lineText)
+	{
+		return string.IsNullOrEmpty(lineText)
 			? string.Empty
 			: lineText[..GetLeadingWhitespaceLength(lineText)];
+	}
 
 	/// <summary>
 	/// Computes the indentation that should be applied to the current line based on the previous Lua line.
@@ -48,11 +50,6 @@ internal static class LuaIndentationStrategy
 		string indentationUnit,
 		bool useSmartIndent)
 	{
-		previousLineText ??= string.Empty;
-		currentLineText ??= string.Empty;
-		previousLineIndentation ??= string.Empty;
-		indentationUnit ??= string.Empty;
-
 		string indentation = previousLineIndentation;
 
 		if (!useSmartIndent)
@@ -78,10 +75,6 @@ internal static class LuaIndentationStrategy
 		string newLineText,
 		bool useSmartIndent)
 	{
-		lineTextBeforeCaret ??= string.Empty;
-		lineTextAfterCaret ??= string.Empty;
-		currentLineIndentation ??= string.Empty;
-		indentationUnit ??= string.Empty;
 		newLineText = string.IsNullOrEmpty(newLineText) ? Environment.NewLine : newLineText;
 
 		string nextLineIndentation = currentLineIndentation;
@@ -264,8 +257,10 @@ internal static class LuaIndentationStrategy
 		=> character is ')' or '}' or ']';
 
 	private static bool StartsWithWord(string text, string word)
-		=> text.StartsWith(word, StringComparison.Ordinal)
+	{
+		return text.StartsWith(word, StringComparison.Ordinal)
 			&& (text.Length == word.Length || !LuaLineParser.IsIdentifierCharacter(text[word.Length]));
+	}
 
 	private static bool EndsWithWord(string text, string word)
 	{

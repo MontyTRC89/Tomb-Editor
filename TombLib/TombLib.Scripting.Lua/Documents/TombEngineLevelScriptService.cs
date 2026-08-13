@@ -28,10 +28,6 @@ public sealed partial class TombEngineLevelScriptService
 	/// <returns><see langword="true"/> when the level is registered in both documents; otherwise, <see langword="false"/>.</returns>
 	public bool IsLevelScriptDefined(TextDocument scriptDocument, TextDocument languageDocument, string levelName)
 	{
-		ArgumentNullException.ThrowIfNull(scriptDocument);
-		ArgumentNullException.ThrowIfNull(languageDocument);
-		ArgumentNullException.ThrowIfNull(levelName);
-
 		string? levelKey = TryResolveLevelKey(languageDocument, levelName);
 
 		if (levelKey is null)
@@ -44,27 +40,35 @@ public sealed partial class TombEngineLevelScriptService
 	{
 		string? matchedKey = null;
 
-		bool found = ScanForMatch(languageDocument, lineText => {
-			Match match = LanguageEntryRegex.Match(LuaLineParser.StripLineComment(lineText));
-
-			if (match.Success && string.Equals(match.Groups["name"].Value, levelName, StringComparison.Ordinal))
+		bool found = ScanForMatch(
+			languageDocument,
+			lineText =>
 			{
-				matchedKey = match.Groups["key"].Value;
-				return true;
-			}
+				Match match = LanguageEntryRegex.Match(LuaLineParser.StripLineComment(lineText));
 
-			return false;
-		});
+				if (match.Success && string.Equals(match.Groups["name"].Value, levelName, StringComparison.Ordinal))
+				{
+					matchedKey = match.Groups["key"].Value;
+					return true;
+				}
+
+				return false;
+			});
 
 		return found ? matchedKey : null;
 	}
 
 	private static bool ContainsAddLevelRegistration(TextDocument scriptDocument, string levelKey)
-		=> ScanForMatch(scriptDocument, lineText => {
-			Match match = AddLevelRegex.Match(LuaLineParser.StripLineComment(lineText));
+	{
+		return ScanForMatch(
+			scriptDocument,
+			lineText =>
+			{
+				Match match = AddLevelRegex.Match(LuaLineParser.StripLineComment(lineText));
 
-			return match.Success && string.Equals(match.Groups["key"].Value, levelKey, StringComparison.Ordinal);
-		});
+				return match.Success && string.Equals(match.Groups["key"].Value, levelKey, StringComparison.Ordinal);
+			});
+	}
 
 	private static bool ScanForMatch(TextDocument document, Func<string, bool> lineMatcher)
 	{

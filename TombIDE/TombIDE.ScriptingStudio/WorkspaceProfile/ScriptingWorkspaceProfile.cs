@@ -149,9 +149,11 @@ public sealed class ScriptingWorkspaceProfile
 		_registerEditors(documentController);
 	}
 
-	public DockPanelState LoadDockPanelState() => _loadDockPanelState();
+	public DockPanelState LoadDockPanelState()
+		=> _loadDockPanelState();
 
-	public string LoadAvalonDockLayoutXml() => _loadAvalonDockLayoutXml();
+	public string LoadAvalonDockLayoutXml()
+		=> _loadAvalonDockLayoutXml();
 
 	public void SaveAvalonDockLayoutXml(string layoutXml)
 		=> _saveAvalonDockLayoutXml(layoutXml);

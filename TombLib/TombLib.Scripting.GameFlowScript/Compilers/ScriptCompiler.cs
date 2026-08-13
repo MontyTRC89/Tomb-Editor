@@ -25,7 +25,8 @@ public static class ScriptCompiler
 	/// <param name="pause">Whether the compiler batch should pause when it finishes.</param>
 	/// <returns><c>true</c> if the compiled data file was produced and copied; otherwise, <c>false</c>.</returns>
 	public static bool ClassicCompile(string inputDirectory, string outputDirectory, bool isTR3, bool pause = true)
-		=> RunCompileWorkflow(
+	{
+		return RunCompileWorkflow(
 			inputDirectory,
 			outputDirectory,
 			GameFlowCompilerPaths.Default.GameFlow2Directory,
@@ -34,6 +35,7 @@ public static class ScriptCompiler
 			"gameFlow.exe",
 			pause,
 			ProcessCompilerProcessFactory.Instance);
+	}
 
 	/// <summary>
 	/// Compiles a TR3 version 2+ GameFlow script and copies the resulting data file to the output directory.
@@ -43,7 +45,8 @@ public static class ScriptCompiler
 	/// <param name="pause">Whether the compiler batch should pause when it finishes.</param>
 	/// <returns><c>true</c> if the compiled data file was produced and copied; otherwise, <c>false</c>.</returns>
 	public static bool CompileTR3Version2Plus(string inputDirectory, string outputDirectory, bool pause = true)
-		=> RunCompileWorkflow(
+	{
+		return RunCompileWorkflow(
 			inputDirectory,
 			outputDirectory,
 			GameFlowCompilerPaths.Default.GameFlow3Directory,
@@ -52,6 +55,7 @@ public static class ScriptCompiler
 			"TRGameFlow.exe",
 			pause,
 			ProcessCompilerProcessFactory.Instance);
+	}
 
 	/// <summary>
 	/// Builds the compiler batch content for a classic GameFlow compile.
@@ -137,7 +141,9 @@ public static class ScriptCompiler
 			// window, so it runs to completion; otherwise a runaway compiler is bounded by a
 			// timeout and the whole process tree is killed so no child compiler keeps running.
 			if (pause)
+			{
 				process.WaitForExit();
+			}
 			else if (!process.WaitForExit(ProcessTimeoutMilliseconds))
 			{
 				TerminateProcessTree(process);

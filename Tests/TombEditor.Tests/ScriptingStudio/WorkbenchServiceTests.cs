@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Moq;
+using Nickelony.LanguageServer.Lua;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.FindAndReplace;
 using TombIDE.ScriptingStudio.Lua;
@@ -20,14 +21,13 @@ using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
+using TombLib.Scripting.Signatures;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
-using Nickelony.LanguageServer.Lua;
-using TombLib.Scripting.Navigation;
-using TombLib.Scripting.Signatures;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services.Abstract;
 
@@ -155,7 +155,7 @@ public class WorkbenchServiceTests
     {
         return new LuaTrackedDocumentStateService(
             new Mock<ITextEditorHost>().Object,
-            new Mock<ILuaIntellisenseProvider>().Object);
+            new Mock<ILuaIntelliSenseProvider>().Object);
     }
 
     private static ClassicScriptLanguageServices CreateClassicScriptLanguageServices()

@@ -28,8 +28,10 @@ public sealed class GameFlowDocumentCommandHandler : IStudioDocumentCommandHandl
 	}
 
 	public bool TryHandle(UICommand command)
-		=> StudioDocumentCommandDispatcher.TryHandle(command, _globalHandlers)
+	{
+		return StudioDocumentCommandDispatcher.TryHandle(command, _globalHandlers)
 			|| StudioDocumentCommandDispatcher.TryHandle(command, _callbacks.GetCurrentEditor, _editorHandlers);
+	}
 }
 
 public sealed record GameFlowDocumentCommandCallbacks(

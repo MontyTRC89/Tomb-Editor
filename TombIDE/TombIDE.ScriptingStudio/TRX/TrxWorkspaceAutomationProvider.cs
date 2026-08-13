@@ -53,6 +53,7 @@ internal sealed class TrxWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, _engine);
 		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
 		bool isDefined = _callbacks.IsLevelScriptDefined(levelName);
+
 		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
 		return isDefined;
 	}
@@ -62,11 +63,14 @@ internal sealed class TrxWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, _engine);
 		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+
 		_callbacks.RenameRequestedLevelScript(oldName, newName);
 		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(scriptFileState));
 	}
 
-	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
-		is IDE.ScriptEditor_ScriptPresenceCheckEvent
-		or IDE.ScriptEditor_RenameLevelEvent;
+	private static bool IsSilentAction(IIDEEvent ideEvent)
+	{
+		return ideEvent is IDE.ScriptEditor_ScriptPresenceCheckEvent
+			or IDE.ScriptEditor_RenameLevelEvent;
+	}
 }

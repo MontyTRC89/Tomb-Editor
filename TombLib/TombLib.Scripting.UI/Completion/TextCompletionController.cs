@@ -441,7 +441,7 @@ public sealed class TextCompletionController : IDisposable
 
 	private void HandleCompletionListClick(ListBox listBox, ToolTip tooltip, MouseButtonEventArgs e)
 	{
-		ListBoxItem? listBoxItem = (e.OriginalSource as DependencyObject)?.FindVisualAncestorOrSelf<ListBoxItem>();
+		var listBoxItem = (e.OriginalSource as DependencyObject)?.FindVisualAncestorOrSelf<ListBoxItem>();
 
 		if (listBoxItem is null)
 			return;

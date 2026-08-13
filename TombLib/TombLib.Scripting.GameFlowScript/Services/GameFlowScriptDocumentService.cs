@@ -63,6 +63,7 @@ public sealed class GameFlowScriptDocumentService : IGameFlowScriptDocumentServi
 				case ObjectType.Section:
 					if (lineText.StartsWith(objectName, StringComparison.Ordinal))
 						return line.LineNumber;
+
 					break;
 
 				case ObjectType.Level:
@@ -70,6 +71,7 @@ public sealed class GameFlowScriptDocumentService : IGameFlowScriptDocumentServi
 
 					if (levelText.StartsWith(objectName, StringComparison.Ordinal))
 						return line.LineNumber;
+
 					break;
 			}
 		}

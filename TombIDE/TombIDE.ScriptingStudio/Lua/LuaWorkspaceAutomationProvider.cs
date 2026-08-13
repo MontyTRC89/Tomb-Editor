@@ -99,6 +99,7 @@ internal sealed class LuaWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 		string languageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TombEngine);
 		SilentActionFileState languageFileState = _silentActionService.CaptureFileState(languageFilePath);
 		bool isDefined = _callbacks.IsLevelLanguageStringDefined(value);
+
 		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(languageFileState, saveAffectedFile: false));
 		return isDefined;
 	}
@@ -108,13 +109,16 @@ internal sealed class LuaWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string languageFilePath = PathHelper.GetLanguageFilePath(_scriptRootDirectoryPath, TRVersion.Game.TombEngine);
 		SilentActionFileState languageFileState = _silentActionService.CaptureFileState(languageFilePath);
+
 		_callbacks.RenameRequestedLanguageString(oldName, newName);
 		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(languageFileState));
 	}
 
-	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
-		is IDE.ScriptEditor_AppendScriptEvent
-		or IDE.ScriptEditor_ScriptPresenceCheckEvent
-		or IDE.ScriptEditor_StringPresenceCheckEvent
-		or IDE.ScriptEditor_RenameLevelEvent;
+	private static bool IsSilentAction(IIDEEvent ideEvent)
+	{
+		return ideEvent is IDE.ScriptEditor_AppendScriptEvent
+			or IDE.ScriptEditor_ScriptPresenceCheckEvent
+			or IDE.ScriptEditor_StringPresenceCheckEvent
+			or IDE.ScriptEditor_RenameLevelEvent;
+	}
 }

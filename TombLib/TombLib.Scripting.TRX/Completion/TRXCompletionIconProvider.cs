@@ -14,12 +14,11 @@ internal static class TRXCompletionIconProvider
 	private static readonly ImageSource? PropertyImage = new ImageSourceConverter()
 		.ConvertFromString("pack://application:,,,/TombLib.Scripting.TRX;component/Resources/Icons/Property.png") as ImageSource;
 
-	public static ImageSource? GetImage(TextCompletionItem item)
-		=> item.Kind switch
-		{
-			TextCompletionItemKind.Array => ArrayImage,
-			TextCompletionItemKind.Property => PropertyImage,
-			TextCompletionItemKind.Constant => ConstantImage,
-			_ => null,
-		};
+	public static ImageSource? GetImage(TextCompletionItem item) => item.Kind.Identifier switch
+	{
+		"Array" => ArrayImage,
+		"Property" => PropertyImage,
+		"Constant" => ConstantImage,
+		_ => null,
+	};
 }

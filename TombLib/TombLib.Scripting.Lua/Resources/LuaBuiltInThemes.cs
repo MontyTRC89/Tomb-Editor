@@ -8,12 +8,15 @@ namespace TombLib.Scripting.Lua.Resources;
 /// </summary>
 internal static class LuaBuiltInThemes
 {
+	// Theme identity
 	public const string DefaultThemeName = "SharpLua Classic";
 	public const string DefaultThemeAlias = "SharpLua";
 
+	// Base colors
 	public const string DefaultBackground = LuaBuiltInTextMateThemeDefaults.DefaultBackground;
 	public const string DefaultForeground = LuaBuiltInTextMateThemeDefaults.DefaultForeground;
 
+	// Semantic colors
 	public const string DefaultMutedText = LuaBuiltInTextMateThemeDefaults.DefaultMutedText;
 	public const string DefaultMisc = LuaBuiltInTextMateThemeDefaults.DefaultMisc;
 	public const string DefaultMethod = LuaBuiltInTextMateThemeDefaults.DefaultMethod;
@@ -32,33 +35,30 @@ internal static class LuaBuiltInThemes
 	/// Creates the built-in fallback Lua theme.
 	/// </summary>
 	/// <returns>A fully populated default Lua theme instance.</returns>
-	public static LuaTheme CreateDefaultTheme()
+	public static LuaTheme CreateDefaultTheme() => new LuaTheme
 	{
-		return new LuaTheme
+		Name = DefaultThemeName,
+		Aliases = [DefaultThemeAlias],
+		Background = DefaultBackground,
+		Foreground = DefaultForeground,
+
+		SemanticColors = new()
 		{
-			Name = DefaultThemeName,
-			Aliases = [DefaultThemeAlias],
-			Background = DefaultBackground,
-			Foreground = DefaultForeground,
+			MutedText = DefaultMutedText,
+			Misc = DefaultMisc,
+			Method = DefaultMethod,
+			Variable = DefaultVariable,
+			Property = DefaultProperty,
+			Type = DefaultType,
+			Keyword = DefaultKeyword,
+			LanguageConstant = DefaultLanguageConstant,
+			Constant = DefaultConstant,
+			File = DefaultFile,
+			SignatureParameterDocumentation = DefaultSignatureParameterDocumentation,
+			SignatureActiveParameter = DefaultSignatureActiveParameter,
+			SignatureText = DefaultSignatureText
+		},
 
-			SemanticColors = new LuaThemeSemanticColors
-			{
-				MutedText = DefaultMutedText,
-				Misc = DefaultMisc,
-				Method = DefaultMethod,
-				Variable = DefaultVariable,
-				Property = DefaultProperty,
-				Type = DefaultType,
-				Keyword = DefaultKeyword,
-				LanguageConstant = DefaultLanguageConstant,
-				Constant = DefaultConstant,
-				File = DefaultFile,
-				SignatureParameterDocumentation = DefaultSignatureParameterDocumentation,
-				SignatureActiveParameter = DefaultSignatureActiveParameter,
-				SignatureText = DefaultSignatureText
-			},
-
-			TextMateTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme()
-		};
-	}
+		TextMateTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme()
+	};
 }

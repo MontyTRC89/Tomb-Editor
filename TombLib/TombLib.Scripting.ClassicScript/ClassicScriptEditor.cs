@@ -42,7 +42,7 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	/// <summary>
 	/// Gets the document formatter used by the editor.
 	/// </summary>
-	public ClassicScriptDocumentFormatter Formatter { get; } = new ClassicScriptDocumentFormatter();
+	public ClassicScriptDocumentFormatter Formatter { get; } = new();
 
 	/// <inheritdoc/>
 	protected override ITextDocumentFormatter DocumentFormatter => Formatter;
@@ -94,8 +94,6 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	/// <param name="languageServices">The language services used by the editor.</param>
 	public ClassicScriptEditor(Version engineVersion, ClassicScriptLanguageServices languageServices) : base(engineVersion)
 	{
-		ArgumentNullException.ThrowIfNull(languageServices);
-
 		_languageServices = languageServices;
 		_completionCoordinator = languageServices.CreateCompletionCoordinator();
 
@@ -188,9 +186,11 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 	// Navigation
 
 	private Task<bool> TryNavigateDefinition(int offset, CancellationToken cancellationToken)
-		=> SynchronousRequestAdapter.Adapt(
+	{
+		return SynchronousRequestAdapter.Adapt(
 			() => TryGoToDefinition(_languageServices.DefinitionProvider, _languageServices.HoverProvider, offset),
 			cancellationToken);
+	}
 
 	/// <summary>
 	/// Inserts the next free trigger index at the caret.

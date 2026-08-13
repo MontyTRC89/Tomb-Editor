@@ -72,6 +72,7 @@ public partial class StudioAvalonDockHostView : UserControl
 			return true;
 
 		LayoutAnchorable? anchorable = CreateAnchorable(pane.SerializationKey, isSelected: false);
+
 		if (anchorable is null)
 			return false;
 
@@ -106,7 +107,6 @@ public partial class StudioAvalonDockHostView : UserControl
 
 			var serializer = new XmlLayoutSerializer(DockingManager);
 			serializer.LayoutSerializationCallback += Serializer_LayoutSerializationCallback;
-
 			using var stringReader = new StringReader(layoutXml);
 			serializer.Deserialize(stringReader);
 
@@ -125,7 +125,6 @@ public partial class StudioAvalonDockHostView : UserControl
 			return string.Empty;
 
 		var serializer = new XmlLayoutSerializer(DockingManager);
-
 		using var stringWriter = new StringWriter();
 		serializer.Serialize(stringWriter);
 		return stringWriter.ToString();
@@ -147,7 +146,9 @@ public partial class StudioAvalonDockHostView : UserControl
 			return false;
 
 		if (anchorable.IsVisible)
+		{
 			anchorable.Hide();
+		}
 		else
 		{
 			anchorable.Show();
@@ -246,6 +247,7 @@ public partial class StudioAvalonDockHostView : UserControl
 		};
 
 		LayoutAnchorablePaneGroup? leftPaneGroup = CreateAnchorablePaneGroup(legacyLayout, DarkDockArea.Left);
+
 		if (leftPaneGroup is not null)
 			rootPanel.Children.Add(leftPaneGroup);
 
@@ -258,12 +260,14 @@ public partial class StudioAvalonDockHostView : UserControl
 		centerPanel.Children.Add(documentPane);
 
 		LayoutAnchorablePaneGroup? bottomPaneGroup = CreateAnchorablePaneGroup(legacyLayout, DarkDockArea.Bottom);
+
 		if (bottomPaneGroup is not null)
 			centerPanel.Children.Add(bottomPaneGroup);
 
 		rootPanel.Children.Add(centerPanel);
 
 		LayoutAnchorablePaneGroup? rightPaneGroup = CreateAnchorablePaneGroup(legacyLayout, DarkDockArea.Right);
+
 		if (rightPaneGroup is not null)
 			rootPanel.Children.Add(rightPaneGroup);
 
@@ -380,9 +384,11 @@ public partial class StudioAvalonDockHostView : UserControl
 	}
 
 	private static string CreateDocumentContentId(IEditorControl editor)
-		=> string.IsNullOrWhiteSpace(editor.FilePath)
+	{
+		return string.IsNullOrWhiteSpace(editor.FilePath)
 			? $"Document:{editor.GetHashCode():X8}"
 			: $"Document:{editor.EditorType}:{editor.FilePath}";
+	}
 
 	private UIElement GetContentElement(StudioDockPane pane)
 	{

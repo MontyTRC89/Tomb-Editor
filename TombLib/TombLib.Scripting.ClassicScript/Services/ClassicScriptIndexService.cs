@@ -38,11 +38,8 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 		IClassicScriptLineService lineService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
-		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
-		ArgumentNullException.ThrowIfNull(mnemonicCatalogService);
 		_mnemonicCatalogService = mnemonicCatalogService;
 	}
 
@@ -118,11 +115,15 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 				continue;
 
 			if (_mnemonicCatalogService.TryGetDecimalValue(variable, out int rowValue))
+			{
 				expressionString = expressionString.Replace(variable, rowValue.ToString());
+			}
 			else
+			{
 				expressionString = expressionString.Replace(
 					variable,
 					GetVariableValue(source, variable, context).ToString());
+			}
 		}
 
 		return expressionString;
@@ -209,8 +210,10 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 				continue;
 
 			if (command.Equals(commandKey, StringComparison.OrdinalIgnoreCase))
+			{
 				if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out int takenIndex))
 					yield return takenIndex;
+			}
 		}
 	}
 
@@ -221,7 +224,7 @@ public sealed class ClassicScriptIndexService : IClassicScriptIndexService
 			ITextLine line = source.GetLineByNumber(i);
 			string lineText = source.GetText(line.Offset, line.Length);
 
-			if (lineText.StartsWith("[", StringComparison.Ordinal))
+			if (lineText.StartsWith('['))
 				return i - 1;
 		}
 

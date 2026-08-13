@@ -106,7 +106,6 @@ public class TextEditorFormattingServiceTests
 
 	private sealed class IdentityFormatter : ITextDocumentFormatter
 	{
-		public string FormatDocument(string content, bool trimOnly = false)
-			=> content;
+		public string FormatDocument(string content, bool trimOnly = false) => content;
 	}
 }

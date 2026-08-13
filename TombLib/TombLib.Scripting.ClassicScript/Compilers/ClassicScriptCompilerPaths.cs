@@ -17,7 +17,7 @@ internal sealed class ClassicScriptCompilerPaths
 	/// <summary>
 	/// Gets the default compiler path layout rooted at the application base directory.
 	/// </summary>
-	public static ClassicScriptCompilerPaths Default { get; } = new ClassicScriptCompilerPaths(AppContext.BaseDirectory);
+	public static ClassicScriptCompilerPaths Default { get; } = new(AppContext.BaseDirectory);
 
 	private readonly string _programDirectory;
 
@@ -110,5 +110,5 @@ internal sealed class ClassicScriptCompilerPaths
 	}
 
 	[DllImport("shell32.dll")]
-	private static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out] StringBuilder lpszPath, int nFolder, bool fCreate);
+	private static extern bool SHGetSpecialFolderPath(IntPtr hwndOwner, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder lpszPath, int nFolder, bool fCreate);
 }

@@ -10,16 +10,10 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 	private readonly TextEditorOptions _options;
 
 	public LuaAutoIndentationStrategy(TextEditorOptions options)
-	{
-		ArgumentNullException.ThrowIfNull(options);
-		_options = options;
-	}
+		=> _options = options;
 
 	public void IndentLine(TextDocument document, DocumentLine line)
 	{
-		ArgumentNullException.ThrowIfNull(document);
-		ArgumentNullException.ThrowIfNull(line);
-
 		string lineText = document.GetText(line);
 		string desiredIndentation = GetDesiredIndentation(document, line, lineText);
 		ReplaceLeadingWhitespace(document, line, lineText, desiredIndentation);
@@ -27,8 +21,6 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 
 	public void IndentLines(TextDocument document, int beginLine, int endLine)
 	{
-		ArgumentNullException.ThrowIfNull(document);
-
 		if (document.LineCount == 0)
 			return;
 
@@ -50,9 +42,6 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 
 	private string GetDesiredIndentation(TextDocument document, DocumentLine line, string lineText)
 	{
-		ArgumentNullException.ThrowIfNull(document);
-		ArgumentNullException.ThrowIfNull(line);
-
 		if (line.PreviousLine is null)
 			return LuaIndentationStrategy.GetLeadingWhitespace(lineText);
 
@@ -70,9 +59,6 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 
 	private static bool ShouldUseSmartIndent(TextDocument document, DocumentLine previousLine)
 	{
-		ArgumentNullException.ThrowIfNull(document);
-		ArgumentNullException.ThrowIfNull(previousLine);
-
 		if (previousLine.Length == 0)
 			return true;
 
@@ -81,9 +67,6 @@ internal sealed class LuaAutoIndentationStrategy : IIndentationStrategy
 
 	private static void ReplaceLeadingWhitespace(TextDocument document, DocumentLine line, string lineText, string desiredIndentation)
 	{
-		ArgumentNullException.ThrowIfNull(document);
-		ArgumentNullException.ThrowIfNull(line);
-
 		int leadingWhitespaceLength = 0;
 
 		while (leadingWhitespaceLength < lineText.Length

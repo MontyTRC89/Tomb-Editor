@@ -102,9 +102,11 @@ internal sealed class TextAutoClosingService
 	}
 
 	private static bool IsExistingClosingTokenAtCaret(TextDocument document, int caretOffset, string closingToken)
-		=> caretOffset < document.TextLength
+	{
+		return caretOffset < document.TextLength
 			&& !string.IsNullOrEmpty(closingToken)
 			&& document.GetCharAt(caretOffset) == closingToken[0];
+	}
 }
 
 internal sealed record TextAutoClosingOptions(

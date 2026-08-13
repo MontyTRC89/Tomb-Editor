@@ -26,9 +26,11 @@ internal sealed class ScriptingStudioShellContext
 		get
 		{
 			if (!_isInitialized || _projectContext is null)
+			{
 				throw new InvalidOperationException(
 					"ScriptingStudioShellContext has not been initialized. " +
 					"The shell factory must initialize the context before any scoped service resolves it.");
+			}
 
 			return _projectContext;
 		}
@@ -43,9 +45,11 @@ internal sealed class ScriptingStudioShellContext
 		get
 		{
 			if (!_isInitialized || _legacySettingsSnapshot is null)
+			{
 				throw new InvalidOperationException(
 					"ScriptingStudioShellContext has not been initialized. " +
 					"The shell factory must initialize the context before any scoped service resolves it.");
+			}
 
 			return _legacySettingsSnapshot;
 		}
@@ -63,9 +67,11 @@ internal sealed class ScriptingStudioShellContext
 		ArgumentNullException.ThrowIfNull(legacySettingsSnapshot);
 
 		if (_isInitialized)
+		{
 			throw new InvalidOperationException(
 				"ScriptingStudioShellContext has already been initialized. " +
 				"Each shell scope must have its own context and must not be re-initialized.");
+		}
 
 		_projectContext = projectContext;
 		_legacySettingsSnapshot = legacySettingsSnapshot;

@@ -20,12 +20,12 @@ internal static class ClassicScriptCompletionIconProvider
 	private static readonly ImageSource? DirectiveImage = new ImageSourceConverter()
 		.ConvertFromString("pack://application:,,,/TombLib.Scripting.ClassicScript;component/Resources/Icons/Directive.png") as ImageSource;
 
-	public static ImageSource? GetImage(TextCompletionItem item) => item.Kind switch
+	public static ImageSource? GetImage(TextCompletionItem item) => item.Kind.Identifier switch
 	{
-		TextCompletionItemKind.Section => SectionImage,
-		TextCompletionItemKind.OldCommand => OldCommandImage,
-		TextCompletionItemKind.NewCommand => NewCommandImage,
-		TextCompletionItemKind.Directive => DirectiveImage,
+		"Section" => SectionImage,
+		"OldCommand" => OldCommandImage,
+		"NewCommand" => NewCommandImage,
+		"Directive" => DirectiveImage,
 		_ => ConstantImage,
 	};
 }

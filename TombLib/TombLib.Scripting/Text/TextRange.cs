@@ -39,10 +39,8 @@ public readonly struct TextRange : IEquatable<TextRange>
 	/// </exception>
 	public TextRange(int offset, int length)
 	{
-		if (offset < 0)
-			throw new ArgumentOutOfRangeException(nameof(offset));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(offset);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 
 		Offset = offset;
 		Length = length;
@@ -58,9 +56,6 @@ public readonly struct TextRange : IEquatable<TextRange>
 	/// </exception>
 	public string GetText(string source)
 	{
-		if (source is null)
-			throw new ArgumentNullException(nameof(source));
-
 		// Overflow-safe bounds check: the subtraction cannot overflow because
 		// Offset is verified to be within the source length first.
 		if (Offset > source.Length || Length > source.Length - Offset)
@@ -70,13 +65,16 @@ public readonly struct TextRange : IEquatable<TextRange>
 	}
 
 	/// <inheritdoc />
-	public bool Equals(TextRange other) => Offset == other.Offset && Length == other.Length;
+	public bool Equals(TextRange other)
+		=> Offset == other.Offset && Length == other.Length;
 
 	/// <inheritdoc />
-	public override bool Equals(object? obj) => obj is TextRange other && Equals(other);
+	public override bool Equals(object? obj)
+		=> obj is TextRange other && Equals(other);
 
 	/// <inheritdoc />
-	public override int GetHashCode() => HashCode.Combine(Offset, Length);
+	public override int GetHashCode()
+		=> HashCode.Combine(Offset, Length);
 
 	/// <inheritdoc />
 	public override string ToString() => $"[{Offset}..{EndOffset})";

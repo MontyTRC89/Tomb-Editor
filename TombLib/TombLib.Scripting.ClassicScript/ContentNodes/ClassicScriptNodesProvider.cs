@@ -24,10 +24,12 @@ public sealed class ClassicScriptNodesProvider : ContentNodesProviderBase
 
 	/// <inheritdoc/>
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
-		=> ContentNodeTreeBuilder.BuildGroupedNodes(
+	{
+		return ContentNodeTreeBuilder.BuildGroupedNodes(
 			_nodeService.GetNodeGroups(content, filter),
 			group => group.Header,
 			group => group.Nodes,
 			node => node.Text,
 			node => new ClassicScriptObjectDiscriminator(node.ObjectType));
+	}
 }

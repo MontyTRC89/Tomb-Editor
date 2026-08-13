@@ -14,12 +14,12 @@ internal sealed class LuaIntellisenseEventBridge : ILuaIntellisenseBridge
 {
 	private readonly IAvalonDockHost _dockHost;
 	private readonly IMessenger _messenger;
-	private readonly ILuaIntellisenseProvider _intellisenseProvider;
+	private readonly ILuaIntelliSenseProvider _intellisenseProvider;
 
 	public LuaIntellisenseEventBridge(
 		IAvalonDockHost dockHost,
 		IMessenger messenger,
-		ILuaIntellisenseProvider intellisenseProvider)
+		ILuaIntelliSenseProvider intellisenseProvider)
 	{
 		_dockHost = dockHost ?? throw new ArgumentNullException(nameof(dockHost));
 		_messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
@@ -33,7 +33,7 @@ internal sealed class LuaIntellisenseEventBridge : ILuaIntellisenseBridge
 		_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
 
-		if (_intellisenseProvider is LuaLanguageServerIntellisenseProvider languageServerProvider)
+		if (_intellisenseProvider is LuaLanguageServerIntelliSenseProvider languageServerProvider)
 		{
 			languageServerProvider.StartupFailed += IntellisenseProvider_StartupFailed;
 			languageServerProvider.WorkspaceWatcherFailed += IntellisenseProvider_WorkspaceWatcherFailed;
@@ -45,7 +45,7 @@ internal sealed class LuaIntellisenseEventBridge : ILuaIntellisenseBridge
 		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
 
-		if (_intellisenseProvider is LuaLanguageServerIntellisenseProvider languageServerProvider)
+		if (_intellisenseProvider is LuaLanguageServerIntelliSenseProvider languageServerProvider)
 		{
 			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
 			languageServerProvider.WorkspaceWatcherFailed -= IntellisenseProvider_WorkspaceWatcherFailed;

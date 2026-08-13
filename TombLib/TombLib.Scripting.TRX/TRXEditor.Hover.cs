@@ -12,7 +12,9 @@ public sealed partial class TRXEditor
 	protected override bool CanShowDiagnosticFallback => true;
 
 	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)
-		=> SynchronousRequestAdapter.Adapt(
+	{
+		return SynchronousRequestAdapter.Adapt(
 			() => _languageServices.HoverProvider.GetHoverInfo(new TextHoverRequest(Document.Text, hoveredOffset)),
 			cancellationToken);
+	}
 }

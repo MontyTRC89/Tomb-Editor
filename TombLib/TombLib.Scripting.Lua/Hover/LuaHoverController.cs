@@ -26,7 +26,7 @@ public sealed partial class LuaEditor
 		internal LuaHoverController(LuaEditor editor)
 		{
 			_editor = editor;
-			_controller = new TextHoverController(
+			_controller = new(
 				owner: editor,
 				getOffsetFromPoint: editor.GetOffsetFromPoint,
 				buildRequestState: BuildRequestState,
@@ -40,17 +40,13 @@ public sealed partial class LuaEditor
 				handleRequestFailure: exception => LogEditorFailure("Hover request", exception));
 		}
 
-		internal Task HandleMouseHoverAsync(MouseEventArgs e)
-			=> _controller.HandleMouseHoverAsync(e);
+		internal Task HandleMouseHoverAsync(MouseEventArgs e) => _controller.HandleMouseHoverAsync(e);
 
-		internal void CancelPendingRequest()
-			=> _controller.CancelPendingRequest();
+		internal void CancelPendingRequest() => _controller.CancelPendingRequest();
 
-		internal void InvalidateRequests()
-			=> _controller.InvalidateRequests();
+		internal void InvalidateRequests() => _controller.InvalidateRequests();
 
-		internal void Dispose()
-			=> _controller.Dispose();
+		internal void Dispose() => _controller.Dispose();
 
 		private TextHoverRequestState BuildRequestState(int hoveredOffset)
 		{

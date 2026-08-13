@@ -21,8 +21,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	/// Initializes a new instance of the <see cref="SyntaxHighlighting"/> class.
 	/// </summary>
 	/// <param name="scheme">The color scheme used for the highlighting rules.</param>
-	public SyntaxHighlighting(ColorScheme scheme)
-		=> _scheme = scheme;
+	public SyntaxHighlighting(ColorScheme scheme) => _scheme = scheme;
 
 	// Rules
 
@@ -46,47 +45,55 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 
 		ruleSet.Rules.Add(new HighlightingRule
 		{
-			Regex = new Regex(Patterns.Comments),
+			Regex = new(Patterns.Comments),
 			Color = CreateColor(_scheme.Comments)
 		});
 
 		ruleSet.Rules.Add(new HighlightingRule
 		{
-			Regex = new Regex(Patterns.BlockComments),
+			Regex = new(Patterns.BlockComments),
 			Color = CreateColor(_scheme.Comments)
 		});
 
 		if (GameFlowDefinitionCatalog.Sections.Count > 0)
+		{
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Sections, RegexOptions.IgnoreCase),
+				Regex = new(Patterns.Sections, RegexOptions.IgnoreCase),
 				Color = CreateColor(_scheme.Sections)
 			});
+		}
 
 		if (GameFlowDefinitionCatalog.SpecialProperties.Count > 0)
+		{
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.SpecialProperties, RegexOptions.IgnoreCase),
+				Regex = new(Patterns.SpecialProperties, RegexOptions.IgnoreCase),
 				Color = CreateColor(_scheme.SpecialProperties)
 			});
+		}
 
 		if (GameFlowDefinitionCatalog.Properties.Count > 0)
+		{
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Properties, RegexOptions.IgnoreCase),
+				Regex = new(Patterns.Properties, RegexOptions.IgnoreCase),
 				Color = CreateColor(_scheme.Properties)
 			});
+		}
 
 		if (GameFlowDefinitionCatalog.Constants.Count > 0)
+		{
 			ruleSet.Rules.Add(new HighlightingRule
 			{
-				Regex = new Regex(Patterns.Constants, RegexOptions.IgnoreCase),
+				Regex = new(Patterns.Constants, RegexOptions.IgnoreCase),
 				Color = CreateColor(_scheme.Constants)
 			});
+		}
 
 		ruleSet.Rules.Add(new HighlightingRule
 		{
-			Regex = new Regex(Patterns.Values),
+			Regex = new(Patterns.Values),
 			Color = CreateColor(_scheme.Values)
 		});
 
@@ -94,13 +101,12 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		return ruleSet;
 	}
 
-	private static HighlightingColor CreateColor(HighlightingObject scheme)
-		=> new()
-		{
-			Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
-			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
-			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
-		};
+	private static HighlightingColor CreateColor(HighlightingObject scheme) => new()
+	{
+		Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
+		FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
+		FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
+	};
 
 	// Other
 
@@ -122,8 +128,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	/// <summary>
 	/// Resolves a named highlighting color. GameFlow highlighting defines no named colors.
 	/// </summary>
-	public HighlightingColor? GetNamedColor(string name)
-		=> null;
+	public HighlightingColor? GetNamedColor(string name) => null;
 
 	/// <summary>
 	/// Resolves a named rule set. Only the main rule set is defined by GameFlow highlighting.

@@ -559,8 +559,10 @@ public sealed partial class FileExplorerViewModel : ObservableObject, IDisposabl
 	}
 
 	private IEnumerable<string> GetFilterPatterns()
-		=> (string.IsNullOrWhiteSpace(Filter) ? "*.*" : Filter)
+	{
+		return (string.IsNullOrWhiteSpace(Filter) ? "*.*" : Filter)
 			.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+	}
 
 	private string? GetTargetDirectoryPath()
 	{
@@ -574,12 +576,16 @@ public sealed partial class FileExplorerViewModel : ObservableObject, IDisposabl
 	}
 
 	private bool IsExcludedDirectory(string fullPath)
-		=> !string.IsNullOrWhiteSpace(ExcludedDirectoryFilter)
+	{
+		return !string.IsNullOrWhiteSpace(ExcludedDirectoryFilter)
 			&& fullPath.EndsWith(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase);
+	}
 
 	private bool IsExcludedPath(string fullPath)
-		=> !string.IsNullOrWhiteSpace(ExcludedDirectoryFilter)
+	{
+		return !string.IsNullOrWhiteSpace(ExcludedDirectoryFilter)
 			&& fullPath.Contains(ExcludedDirectoryFilter, StringComparison.OrdinalIgnoreCase);
+	}
 
 	private bool IsModifiableItem(FileExplorerItemViewModel item)
 	{

@@ -21,10 +21,7 @@ public sealed class LanguageStringWriter
 	/// </summary>
 	/// <param name="commandService">The command service used to locate document sections.</param>
 	public LanguageStringWriter(IClassicScriptCommandService commandService)
-	{
-		ArgumentNullException.ThrowIfNull(commandService);
-		_commandService = commandService;
-	}
+		=> _commandService = commandService;
 
 	/// <summary>
 	/// Writes a new level name string for the given level name.

@@ -24,8 +24,7 @@ public sealed partial class LuaEditor
 		internal void CancelPendingRequest()
 			=> CancelAndDispose(ref _definitionCancellationTokenSource);
 
-		internal void InvalidateRequests()
-			=> _definitionRequestToken++;
+		internal void InvalidateRequests() => _definitionRequestToken++;
 
 		internal async Task<bool> TryNavigateAsync(int offset, CancellationToken cancellationToken)
 		{

@@ -22,8 +22,7 @@ public static class LuaThemeRepository
 	/// Gets all available Lua themes known to the repository.
 	/// </summary>
 	/// <returns>The ordered list of available themes.</returns>
-	public static IReadOnlyList<LuaTheme> GetAvailableThemes()
-		=> Catalog.Value.Themes;
+	public static IReadOnlyList<LuaTheme> GetAvailableThemes() => Catalog.Value.Themes;
 
 	/// <summary>
 	/// Gets the theme matching the supplied name or alias, or the default theme when no match exists.

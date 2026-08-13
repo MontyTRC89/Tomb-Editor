@@ -84,6 +84,7 @@ internal sealed class GameFlowWorkspaceAutomationProvider : IStudioWorkspaceAuto
 		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR2);
 		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+
 		_callbacks.AppendScript(result.GameFlowScript);
 		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(scriptFileState));
 	}
@@ -135,6 +136,7 @@ internal sealed class GameFlowWorkspaceAutomationProvider : IStudioWorkspaceAuto
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR2);
 		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
 		bool isDefined = _callbacks.IsLevelScriptDefined(levelName);
+
 		_silentActionService.Complete(cachedEditor, false, _silentActionService.CreateCompletion(scriptFileState, saveAffectedFile: false));
 		return isDefined;
 	}
@@ -144,14 +146,17 @@ internal sealed class GameFlowWorkspaceAutomationProvider : IStudioWorkspaceAuto
 		var cachedEditor = _silentActionService.RememberSelectedEditor();
 		string scriptFilePath = PathHelper.GetScriptFilePath(_scriptRootDirectoryPath, TRVersion.Game.TR2);
 		SilentActionFileState scriptFileState = _silentActionService.CaptureFileState(scriptFilePath);
+
 		_callbacks.RenameRequestedLevelScript(oldName, newName);
 		_silentActionService.Complete(cachedEditor, true, _silentActionService.CreateCompletion(scriptFileState));
 	}
 
-	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
-		is IDE.ScriptEditor_AppendScriptEvent
-		or IDE.ScriptEditor_ScriptPresenceCheckEvent
-		or IDE.ScriptEditor_RenameLevelEvent;
+	private static bool IsSilentAction(IIDEEvent ideEvent)
+	{
+		return ideEvent is IDE.ScriptEditor_AppendScriptEvent
+			or IDE.ScriptEditor_ScriptPresenceCheckEvent
+			or IDE.ScriptEditor_RenameLevelEvent;
+	}
 
 	private static void OpenPathIfExists(string filePath)
 	{

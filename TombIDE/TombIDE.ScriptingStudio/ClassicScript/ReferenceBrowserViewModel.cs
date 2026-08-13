@@ -94,20 +94,19 @@ public sealed partial class ReferenceBrowserViewModel : ObservableObject
 		Clipboard.SetText(rowText);
 	}
 
-	public string GetColumnHeader(string columnName)
-		=> columnName switch
-		{
-			"decimal" => _localizationService["DecimalValue"],
-			"hex" => _localizationService["HexadecimalValue"],
-			"flag" => _localizationService["Macro"],
-			"argument1" => _localizationService.Format("ArgumentRange", 1),
-			"argument2" => _localizationService.Format("ArgumentRange", 2),
-			"argument3" => _localizationService.Format("ArgumentRange", 3),
-			"variable" => _localizationService["Variable"],
-			"description" => _localizationService["Description"],
-			"sounds" => _localizationService["Sounds"],
-			_ => columnName
-		};
+	public string GetColumnHeader(string columnName) => columnName switch
+	{
+		"decimal" => _localizationService["DecimalValue"],
+		"hex" => _localizationService["HexadecimalValue"],
+		"flag" => _localizationService["Macro"],
+		"argument1" => _localizationService.Format("ArgumentRange", 1),
+		"argument2" => _localizationService.Format("ArgumentRange", 2),
+		"argument3" => _localizationService.Format("ArgumentRange", 3),
+		"variable" => _localizationService["Variable"],
+		"description" => _localizationService["Description"],
+		"sounds" => _localizationService["Sounds"],
+		_ => columnName
+	};
 
 	public ReferenceDefinitionEventArgs? TryCreateReferenceDefinition(DataRowView? row)
 	{

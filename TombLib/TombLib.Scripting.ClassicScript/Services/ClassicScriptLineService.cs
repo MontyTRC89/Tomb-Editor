@@ -49,7 +49,9 @@ public sealed class ClassicScriptLineService : IClassicScriptLineService
 		}
 
 		if (offset == line.Offset)
+		{
 			wordStart = offset;
+		}
 		else
 		{
 			for (int i = offset - 1; i >= line.Offset; i--)
@@ -108,15 +110,23 @@ public sealed class ClassicScriptLineService : IClassicScriptLineService
 			if (c == ']')
 			{
 				for (int j = i - 1; j >= line.Offset; j--)
+				{
 					if (source.GetCharAt(j) == '[')
 						return WordType.Header;
+				}
 			}
 			else if (c == '=')
+			{
 				return WordType.Command;
+			}
 			else if (c == '_')
+			{
 				return WordType.MnemonicConstant;
+			}
 			else if (c == '$')
+			{
 				return WordType.Hexadecimal;
+			}
 			else if (c == ',' || c == ';' || c == '+' || c == '-' || c == '*' || c == '/' || c == ')')
 			{
 				for (int j = i - 1; j >= line.Offset; j--)
@@ -157,8 +167,10 @@ public sealed class ClassicScriptLineService : IClassicScriptLineService
 
 	/// <inheritdoc />
 	public bool IsValidIncludeLine(string lineText)
-		=> lineText.TrimStart().StartsWith("#include ", StringComparison.OrdinalIgnoreCase)
+	{
+		return lineText.TrimStart().StartsWith("#include ", StringComparison.OrdinalIgnoreCase)
 			&& IncludeLineRegex.IsMatch(lineText);
+	}
 
 	/// <inheritdoc />
 	public bool IsStandardStringSectionName(string? sectionName)

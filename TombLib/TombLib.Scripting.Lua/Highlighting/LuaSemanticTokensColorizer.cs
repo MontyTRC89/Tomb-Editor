@@ -129,10 +129,12 @@ internal sealed class LuaSemanticTokensColorizer : DocumentColorizingTransformer
 
 		foreach (KeyValuePair<int, List<StyledSemanticToken>> pair in grouped)
 		{
-			pair.Value.Sort(static (left, right) => {
-				int characterComparison = left.Character.CompareTo(right.Character);
-				return characterComparison != 0 ? characterComparison : left.Length.CompareTo(right.Length);
-			});
+			pair.Value.Sort(
+				static (left, right) =>
+				{
+					int characterComparison = left.Character.CompareTo(right.Character);
+					return characterComparison != 0 ? characterComparison : left.Length.CompareTo(right.Length);
+				});
 
 			frozen[pair.Key] = pair.Value;
 		}

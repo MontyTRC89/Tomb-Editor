@@ -19,6 +19,5 @@ internal sealed class Win32DialogOwnerProvider : IWin32DialogOwnerProvider
 		_owner = owner;
 	}
 
-	public IWin32Window? GetOwner()
-		=> _owner;
+	public IWin32Window? GetOwner() => _owner;
 }

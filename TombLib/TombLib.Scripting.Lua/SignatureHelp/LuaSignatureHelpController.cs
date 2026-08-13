@@ -15,14 +15,11 @@ public sealed partial class LuaEditor
 {
 	private const double SignaturePopupFontSize = 14.0;
 
-	private void DismissSignatureHelp()
-		=> _signatureHelpController.Dismiss();
+	private void DismissSignatureHelp() => _signatureHelpController.Dismiss();
 
-	private Task RequestSignatureHelpAsync(int offset)
-		=> _signatureHelpController.RequestAsync(offset);
+	private Task RequestSignatureHelpAsync(int offset) => _signatureHelpController.RequestAsync(offset);
 
-	private void ScheduleSignatureHelpRefresh()
-		=> _signatureHelpController.ScheduleRefresh();
+	private void ScheduleSignatureHelpRefresh() => _signatureHelpController.ScheduleRefresh();
 
 	private static TextBlock CreateSignatureDocumentationBlock(string text, LuaThemeBrushSet brushSet) => new()
 	{
@@ -31,14 +28,14 @@ public sealed partial class LuaEditor
 		FontFamily = SystemFonts.MessageFontFamily,
 		FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, SignaturePopupFontSize),
 		TextWrapping = TextWrapping.Wrap,
-		Margin = new Thickness(0.0, 4.0, 0.0, 0.0)
+		Margin = new(0.0, 4.0, 0.0, 0.0)
 	};
 
 	private static TextBlock BuildSignatureBlock(TextSignatureHelpInfo signatureInfo, LuaThemeBrushSet brushSet)
 	{
 		var textBlock = new TextBlock
 		{
-			FontFamily = new FontFamily("Consolas"),
+			FontFamily = new("Consolas"),
 			FontSize = Math.Max(SystemFonts.MessageFontSize + 1.0, SignaturePopupFontSize),
 			TextWrapping = TextWrapping.Wrap,
 			Foreground = brushSet.SignatureForeground
@@ -110,8 +107,8 @@ public sealed partial class LuaEditor
 		internal LuaSignatureHelpController(LuaEditor editor)
 		{
 			_editor = editor;
-			_popupPresenter = new TextSignatureHelpPopupPresenter(editor, editor.AttachHostWindowHandlers);
-			_controller = new TextSignatureHelpController(
+			_popupPresenter = new(editor, editor.AttachHostWindowHandlers);
+			_controller = new(
 				getCurrentCaretOffset: () => _editor.CaretOffset,
 				requestSignatureHelpAsync: RequestSignatureHelpAsync,
 				showSignatureHelp: ShowToolTip,
@@ -125,17 +122,13 @@ public sealed partial class LuaEditor
 
 		internal bool IsActiveOrPending => _controller.CurrentPresentation.IsActiveOrPending;
 
-		internal void Dismiss()
-			=> _controller.Dismiss();
+		internal void Dismiss() => _controller.Dismiss();
 
-		internal Task RequestAsync(int offset)
-			=> _controller.RequestAsync(offset);
+		internal Task RequestAsync(int offset) => _controller.RequestAsync(offset);
 
-		internal void ScheduleRefresh()
-			=> _controller.ScheduleRefresh();
+		internal void ScheduleRefresh() => _controller.ScheduleRefresh();
 
-		internal void CancelPendingRefresh()
-			=> _controller.CancelPendingRefresh();
+		internal void CancelPendingRefresh() => _controller.CancelPendingRefresh();
 
 		internal void InvalidateRequests()
 		{
@@ -164,8 +157,7 @@ public sealed partial class LuaEditor
 			_requestCancellation = null;
 		}
 
-		private void DismissPopup()
-			=> _popupPresenter.Close();
+		private void DismissPopup() => _popupPresenter.Close();
 
 		private void ShowToolTip(TextSignatureHelpInfo signatureInfo)
 			=> _popupPresenter.Show(contentMaxWidth => CreatePanel(signatureInfo, contentMaxWidth));
@@ -206,7 +198,7 @@ public sealed partial class LuaEditor
 			// A newer request supersedes the previous one, so its in-flight provider call is
 			// cancelled rather than being allowed to complete and then be discarded.
 			CancelInFlightRequest();
-			_requestCancellation = new CancellationTokenSource();
+			_requestCancellation = new();
 			CancellationToken cancellationToken = _requestCancellation.Token;
 			int requestDocumentVersion = _editor._editorDocumentVersion;
 			int requestGeneration = _editor._editorRequestGeneration;

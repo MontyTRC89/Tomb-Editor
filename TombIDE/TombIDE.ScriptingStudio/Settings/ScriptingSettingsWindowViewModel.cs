@@ -136,19 +136,19 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 		yield return ScriptingSettingsPageKind.Lua;
 	}
 
-	private static ScriptingSettingsPageKind GetSettingsPageKind(DocumentMode documentMode)
-		=> documentMode switch
-		{
-			DocumentMode.ClassicScript => ScriptingSettingsPageKind.ClassicScript,
-			DocumentMode.Strings => ScriptingSettingsPageKind.ClassicScript,
-			DocumentMode.GameFlowScript => ScriptingSettingsPageKind.GameFlowScript,
-			DocumentMode.TRX => ScriptingSettingsPageKind.TRX,
-			DocumentMode.Lua => ScriptingSettingsPageKind.Lua,
-			_ => ScriptingSettingsPageKind.ClassicScript
-		};
+	private static ScriptingSettingsPageKind GetSettingsPageKind(DocumentMode documentMode) => documentMode switch
+	{
+		DocumentMode.ClassicScript => ScriptingSettingsPageKind.ClassicScript,
+		DocumentMode.Strings => ScriptingSettingsPageKind.ClassicScript,
+		DocumentMode.GameFlowScript => ScriptingSettingsPageKind.GameFlowScript,
+		DocumentMode.TRX => ScriptingSettingsPageKind.TRX,
+		DocumentMode.Lua => ScriptingSettingsPageKind.Lua,
+		_ => ScriptingSettingsPageKind.ClassicScript
+	};
 
 	private static string GetTitle(ScriptingWorkspaceProfile workspaceProfile, ScriptingSettingsPageKind kind)
-		=> workspaceProfile.SettingsPages.FirstOrDefault(page => page.Kind == kind)?.Title
+	{
+		return workspaceProfile.SettingsPages.FirstOrDefault(page => page.Kind == kind)?.Title
 			?? kind switch
 			{
 				ScriptingSettingsPageKind.ClassicScript => "TR4 / TRNG Script",
@@ -157,16 +157,16 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 				ScriptingSettingsPageKind.Lua => "Lua",
 				_ => kind.ToString()
 			};
+	}
 
-	private TextEditorConfigBase GetConfiguration(ScriptingSettingsPageKind kind)
-		=> kind switch
-		{
-			ScriptingSettingsPageKind.ClassicScript => _configs.ClassicScript,
-			ScriptingSettingsPageKind.GameFlowScript => _configs.GameFlowScript,
-			ScriptingSettingsPageKind.TRX => _configs.TRX,
-			ScriptingSettingsPageKind.Lua => _configs.Lua,
-			_ => throw new NotSupportedException($"Unsupported settings page kind: {kind}.")
-		};
+	private TextEditorConfigBase GetConfiguration(ScriptingSettingsPageKind kind) => kind switch
+	{
+		ScriptingSettingsPageKind.ClassicScript => _configs.ClassicScript,
+		ScriptingSettingsPageKind.GameFlowScript => _configs.GameFlowScript,
+		ScriptingSettingsPageKind.TRX => _configs.TRX,
+		ScriptingSettingsPageKind.Lua => _configs.Lua,
+		_ => throw new NotSupportedException($"Unsupported settings page kind: {kind}.")
+	};
 }
 
 public sealed class ScriptingSettingsPageViewModel : ObservableObject
@@ -189,6 +189,7 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 	private readonly TextEditorConfigBase _config;
 	private readonly int _undoStackSize;
 
+	// Editor option toggles.
 	private bool _autoAddCommas;
 	private bool _autoCloseBraces;
 	private bool _autoCloseBrackets;
@@ -592,7 +593,8 @@ public sealed class ScriptingSettingsPageViewModel : ObservableObject
 		_ => throw new NotSupportedException($"Unsupported scripting settings page kind: {kind}.")
 	};
 
-	private ITextEditorColorProvider GetColorProvider() => GetColorProvider(Kind);
+	private ITextEditorColorProvider GetColorProvider()
+		=> GetColorProvider(Kind);
 
 	private void LoadFromConfig(TextEditorConfigBase config)
 	{

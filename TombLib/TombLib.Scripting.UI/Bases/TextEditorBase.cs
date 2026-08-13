@@ -494,9 +494,11 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 
 	// IEditorControl methods
 
-	void IEditorControl.Undo() => Undo();
+	void IEditorControl.Undo()
+		=> Undo();
 
-	void IEditorControl.Redo() => Redo();
+	void IEditorControl.Redo()
+		=> Redo();
 
 	/// <summary>
 	/// Releases the resources used by this editor. Disposal is idempotent; a disposed editor must not be reused.

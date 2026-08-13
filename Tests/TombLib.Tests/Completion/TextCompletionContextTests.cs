@@ -47,8 +47,10 @@ public class TextCompletionContextTests
 
     [TestMethod]
     public void Constructor_ArgumentIndexLessThanMinusOne_Throws()
-        => Assert.ThrowsException<ArgumentOutOfRangeException>(
+    {
+        Assert.ThrowsException<ArgumentOutOfRangeException>(
             () => new TextCompletionContext("text", 0, TextCompletionTrigger.Contextual, -2));
+    }
 
     [TestMethod]
     public void Constructor_MinusOneArgumentIndex_IsValidSentinel()

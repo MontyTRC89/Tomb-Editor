@@ -91,7 +91,9 @@ internal static class WPFTestHelper
 	}
 
 	public static void PumpDispatcher(Dispatcher dispatcher, DispatcherPriority priority)
-		=> dispatcher.Invoke(priority, new Action(() => { }));
+	{
+		dispatcher.Invoke(priority, new Action(() => { }));
+	}
 
 	public static void RunInSta(Action action)
 	{

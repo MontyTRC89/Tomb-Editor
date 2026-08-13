@@ -56,23 +56,17 @@ internal sealed class ProcessCompilerProcess : ICompilerProcess
 	/// Initializes a new instance of the <see cref="ProcessCompilerProcess"/> class.
 	/// </summary>
 	/// <param name="process">The wrapped process.</param>
-	public ProcessCompilerProcess(Process process)
-		=> _process = process;
+	public ProcessCompilerProcess(Process process) => _process = process;
 
-	public void WaitForExit()
-		=> _process.WaitForExit();
+	public void WaitForExit() => _process.WaitForExit();
 
-	public bool WaitForExit(int timeoutMilliseconds)
-		=> _process.WaitForExit(timeoutMilliseconds);
+	public bool WaitForExit(int timeoutMilliseconds) => _process.WaitForExit(timeoutMilliseconds);
 
-	public void KillEntireProcessTree()
-		=> _process.Kill(entireProcessTree: true);
+	public void KillEntireProcessTree() => _process.Kill(entireProcessTree: true);
 
-	public void Kill()
-		=> _process.Kill();
+	public void Kill() => _process.Kill();
 
-	public void Dispose()
-		=> _process.Dispose();
+	public void Dispose() => _process.Dispose();
 }
 
 /// <summary>

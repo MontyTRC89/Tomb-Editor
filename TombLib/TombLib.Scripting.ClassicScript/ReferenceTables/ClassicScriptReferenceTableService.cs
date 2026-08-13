@@ -1,4 +1,3 @@
-using System;
 using System.Data;
 
 namespace TombLib.Scripting.ClassicScript.ReferenceTables;
@@ -17,9 +16,5 @@ public sealed class ClassicScriptReferenceTableService
 	/// </summary>
 	/// <param name="tableName">The reference table resource name (without extension).</param>
 	public DataTable GetTable(string tableName)
-	{
-		ArgumentNullException.ThrowIfNull(tableName);
-
-		return _loader.Load(ClassicScriptResourcePaths.GetResourcePath(tableName + ".json"));
-	}
+		=> _loader.Load(ClassicScriptResourcePaths.GetResourcePath(tableName + ".json"));
 }

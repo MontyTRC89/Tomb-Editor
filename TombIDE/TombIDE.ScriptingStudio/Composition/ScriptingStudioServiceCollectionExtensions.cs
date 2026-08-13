@@ -150,7 +150,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 		services.AddScoped<ShellWorkbenchSettings>();
 
 		// Lua IntelliSense provider (shell-scoped, one per workspace).
-		services.AddScoped<ILuaIntellisenseProvider>(sp =>
+		services.AddScoped<ILuaIntelliSenseProvider>(sp =>
 		{
 			var projectContext = sp.GetRequiredService<IScriptingProjectContext>();
 			var messageService = sp.GetRequiredService<IMessageService>();
@@ -167,10 +167,10 @@ public static class ScriptingStudioServiceCollectionExtensions
 					"Lua IntelliSense");
 			}
 
-			ILogger<LuaLanguageServerIntellisenseProvider> logger =
-				sp.GetRequiredService<ILogger<LuaLanguageServerIntellisenseProvider>>();
+			ILogger<LuaLanguageServerIntelliSenseProvider> logger =
+				sp.GetRequiredService<ILogger<LuaLanguageServerIntelliSenseProvider>>();
 
-			return new LuaLanguageServerIntellisenseProvider(
+			return new LuaLanguageServerIntelliSenseProvider(
 				projectContext.ScriptRootDirectoryPath, executablePath, logger);
 		});
 
@@ -185,7 +185,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 		services.AddScoped<LuaTrackedDocumentStateService>(sp =>
 		{
 			var textEditorHost = sp.GetRequiredService<ITextEditorHost>();
-			var intellisenseProvider = sp.GetRequiredService<ILuaIntellisenseProvider>();
+			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
 			return new LuaTrackedDocumentStateService(textEditorHost, intellisenseProvider);
 		});
 
@@ -194,7 +194,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 		{
 			var dockHost = sp.GetRequiredService<IAvalonDockHost>();
 			var messenger = sp.GetRequiredService<IMessenger>();
-			var intellisenseProvider = sp.GetRequiredService<ILuaIntellisenseProvider>();
+			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
 			return new LuaIntellisenseEventBridge(dockHost, messenger, intellisenseProvider);
 		});
 
@@ -203,7 +203,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 		{
 			var documentController = sp.GetRequiredService<IEditorDocumentController>();
 			var messenger = sp.GetRequiredService<IMessenger>();
-			var intellisenseProvider = sp.GetRequiredService<ILuaIntellisenseProvider>();
+			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
 			var trackedDocumentStateService = sp.GetRequiredService<LuaTrackedDocumentStateService>();
 			return new LuaDocumentLifecycleCoordinator(
 				documentController,

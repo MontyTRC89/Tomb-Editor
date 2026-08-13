@@ -12,6 +12,7 @@ internal enum ScrollDirection
 
 internal static class NativeMethods
 {
+	// Scroll messages.
 	private const int WM_SCROLL = 276;
 	private const int WM_VSCROLL = 0x115;
 	private const int SB_LINELEFT = 0;
@@ -20,6 +21,7 @@ internal static class NativeMethods
 	private const int SB_RIGHT = 7;
 	private const int SB_BOTTOM = 7;
 
+	// Redraw control message.
 	private const int WM_SETREDRAW = 11;
 
 	[DllImport("user32.dll", CharSet = CharSet.Auto)]

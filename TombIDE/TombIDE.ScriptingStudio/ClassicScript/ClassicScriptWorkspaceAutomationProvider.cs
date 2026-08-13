@@ -200,14 +200,16 @@ internal sealed class ClassicScriptWorkspaceAutomationProvider : IStudioWorkspac
 			_silentActionService.CreateCompletion(languageFileState));
 	}
 
-	private static bool IsSilentAction(IIDEEvent ideEvent) => ideEvent
-		is IDE.ScriptEditor_AppendScriptEvent
-		or IDE.ScriptEditor_AddNewLevelStringEvent
-		or IDE.ScriptEditor_AddNewPluginEntryEvent
-		or IDE.ScriptEditor_AddNewNGStringEvent
-		or IDE.ScriptEditor_ScriptPresenceCheckEvent
-		or IDE.ScriptEditor_StringPresenceCheckEvent
-		or IDE.ScriptEditor_RenameLevelEvent;
+	private static bool IsSilentAction(IIDEEvent ideEvent)
+	{
+		return ideEvent is IDE.ScriptEditor_AppendScriptEvent
+			or IDE.ScriptEditor_AddNewLevelStringEvent
+			or IDE.ScriptEditor_AddNewPluginEntryEvent
+			or IDE.ScriptEditor_AddNewNGStringEvent
+			or IDE.ScriptEditor_ScriptPresenceCheckEvent
+			or IDE.ScriptEditor_StringPresenceCheckEvent
+			or IDE.ScriptEditor_RenameLevelEvent;
+	}
 
 	private void CompileTR4Script()
 	{

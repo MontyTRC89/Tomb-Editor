@@ -47,6 +47,7 @@ public class ClassicScriptEditorCompletionWindowTests
 		var mnemonicCatalogService = new ClassicScriptMnemonicCatalogService();
 		var syntaxCatalogService = new ClassicScriptSyntaxCatalogService();
 		var commandService = new ClassicScriptCommandService(lineService, mnemonicCatalogService, syntaxCatalogService);
+
 		return new ClassicScriptCompletionProvider(commandService, mnemonicCatalogService);
 	}
 
@@ -56,8 +57,8 @@ public class ClassicScriptEditorCompletionWindowTests
 		IReadOnlyList<TextCompletionItem> completionItems = CompletionProvider.GetCompletionItems(
 			new TextCompletionContext(string.Empty, 0, TextCompletionTrigger.EmptyLine));
 
-		Assert.AreEqual("Old Command", completionItems.First(item => item.Kind == TextCompletionItemKind.OldCommand).Detail);
-		Assert.AreEqual("New Command", completionItems.First(item => item.Kind == TextCompletionItemKind.NewCommand).Detail);
+		Assert.AreEqual("Old Command", completionItems.First(item => item.Kind.Identifier == "OldCommand").Detail);
+		Assert.AreEqual("New Command", completionItems.First(item => item.Kind.Identifier == "NewCommand").Detail);
 		Assert.AreEqual("Section", completionItems.First(item => item.Kind == TextCompletionItemKind.Section).Detail);
 		Assert.AreEqual("Directive", completionItems.First(item => item.Kind == TextCompletionItemKind.Directive).Detail);
 	}
@@ -70,11 +71,11 @@ public class ClassicScriptEditorCompletionWindowTests
 
 		// FMV (one of the four entries absent from the legacy new-command array) is a new command.
 		Assert.IsTrue(completionItems.Any(item => item.Label.Equals("FMV", StringComparison.Ordinal)
-			&& item.Kind == TextCompletionItemKind.NewCommand));
+			&& item.Kind.Identifier == "NewCommand"));
 
 		// Legacy array-only old-command names are kept.
 		Assert.IsTrue(completionItems.Any(item => item.Label.Equals("Cut", StringComparison.Ordinal)
-			&& item.Kind == TextCompletionItemKind.OldCommand));
+			&& item.Kind.Identifier == "OldCommand"));
 
 		// Directives are offered with a trailing space and are not duplicated with '='.
 		Assert.IsFalse(completionItems.Any(item => item.Label.StartsWith("#DEFINE=", StringComparison.Ordinal)));

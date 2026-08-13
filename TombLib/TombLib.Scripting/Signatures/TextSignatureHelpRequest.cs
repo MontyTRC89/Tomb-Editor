@@ -16,14 +16,11 @@ public sealed record TextSignatureHelpRequest
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="caretOffset">The zero-based caret offset within that snapshot.</param>
-	/// <exception cref="ArgumentNullException"><paramref name="documentText"/> is null.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">
 	/// <paramref name="caretOffset"/> is negative or greater than the length of <paramref name="documentText"/>.
 	/// </exception>
 	public TextSignatureHelpRequest(string documentText, int caretOffset)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-
 		if (caretOffset < 0 || caretOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(caretOffset));
 

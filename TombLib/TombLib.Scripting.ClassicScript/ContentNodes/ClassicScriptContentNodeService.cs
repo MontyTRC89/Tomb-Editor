@@ -15,10 +15,7 @@ internal sealed class ClassicScriptContentNodeService
 	private readonly ClassicScriptCommandCatalogService _commandCatalogService = new();
 
 	public ClassicScriptContentNodeService(IClassicScriptLineService lineService)
-	{
-		ArgumentNullException.ThrowIfNull(lineService);
-		_lineService = lineService;
-	}
+		=> _lineService = lineService;
 
 	private static readonly Regex DefineCommandRegex = new(@"^\s*#define\s+(\w*)\s+(\w*)", RegexOptions.IgnoreCase);
 	private static readonly Regex IncludeCommandRegex = new(@"^\s*#include\s+("".*"")", RegexOptions.IgnoreCase);

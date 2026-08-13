@@ -33,9 +33,11 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 
 	/// <inheritdoc />
 	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
-		=> Path.GetExtension(schemeFilePath).Equals(ScriptingDefaults.ColorSchemeFileExtension, StringComparison.OrdinalIgnoreCase)
+	{
+		return Path.GetExtension(schemeFilePath).Equals(ScriptingDefaults.ColorSchemeFileExtension, StringComparison.OrdinalIgnoreCase)
 			? JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath)
 			: XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
+	}
 
 	// Construction
 

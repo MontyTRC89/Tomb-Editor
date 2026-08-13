@@ -56,8 +56,7 @@ internal sealed class EditorNavigationHistoryService
 		_forwardStack.Clear();
 	}
 
-	public void SetCurrentLocation(EditorNavigationLocation location)
-		=> _currentLocation = location;
+	public void SetCurrentLocation(EditorNavigationLocation location) => _currentLocation = location;
 
 	public bool TryNavigateBack(EditorNavigationLocation currentLocation, out EditorNavigationLocation? targetLocation)
 	{
@@ -115,8 +114,7 @@ internal sealed class EditorNavigationHistoryService
 	{
 		private EditorNavigationHistoryService? _owner;
 
-		public RecordingScope(EditorNavigationHistoryService owner)
-			=> _owner = owner;
+		public RecordingScope(EditorNavigationHistoryService owner) => _owner = owner;
 
 		public void Dispose()
 		{

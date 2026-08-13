@@ -113,12 +113,15 @@ public static class LineCommentHelper
 			{
 				if (!IsEscapedQuote(text, i))
 					inQuotes = !inQuotes;
+
 				continue;
 			}
 
 			if (!inQuotes && c == delimiter[0] && i + delimiter.Length <= text.Length
 				&& text.Slice(i, delimiter.Length).SequenceEqual(delimiter))
+			{
 				return i;
+			}
 		}
 
 		return -1;

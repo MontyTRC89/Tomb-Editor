@@ -42,8 +42,7 @@ public sealed class StudioCommandCatalog
 	/// <summary>
 	/// All catalog entries.
 	/// </summary>
-	public IReadOnlyCollection<StudioCommandDescriptor> Descriptors
-		=> _descriptorsByCommand.Values;
+	public IReadOnlyCollection<StudioCommandDescriptor> Descriptors => _descriptorsByCommand.Values;
 
 	/// <summary>
 	/// Gets a descriptor by <see cref="UICommand"/>. Returns <see langword="null"/> when

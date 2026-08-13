@@ -107,19 +107,19 @@ internal sealed class LuaThemeBrushSet
 	/// </summary>
 	/// <param name="kind">The completion item icon kind.</param>
 	/// <returns>The brush associated with that kind.</returns>
-	public Brush GetCompletionItemBrush(TextCompletionItemKind kind) => kind switch
+	public Brush GetCompletionItemBrush(TextCompletionItemKind kind) => kind.Identifier switch
 	{
-		TextCompletionItemKind.Variable => VariableBrush,
-		TextCompletionItemKind.Field => PropertyBrush,
-		TextCompletionItemKind.Method => MethodBrush,
-		TextCompletionItemKind.Property => PropertyBrush,
-		TextCompletionItemKind.Class => TypeBrush,
-		TextCompletionItemKind.Keyword => KeywordBrush,
-		TextCompletionItemKind.Constant => ConstantBrush,
-		TextCompletionItemKind.Parameter => VariableBrush,
-		TextCompletionItemKind.Namespace => TypeBrush,
-		TextCompletionItemKind.File => FileBrush,
-		TextCompletionItemKind.Folder => FileBrush,
+		"Variable" => VariableBrush,
+		"Field" => PropertyBrush,
+		"Method" => MethodBrush,
+		"Property" => PropertyBrush,
+		"Class" => TypeBrush,
+		"Keyword" => KeywordBrush,
+		"Constant" => ConstantBrush,
+		"Parameter" => VariableBrush,
+		"Namespace" => TypeBrush,
+		"File" => FileBrush,
+		"Folder" => FileBrush,
 		_ => MiscBrush
 	};
 }

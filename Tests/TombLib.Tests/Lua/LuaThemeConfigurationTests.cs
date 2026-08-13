@@ -1,3 +1,4 @@
+using System;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.Lua.Resources;
 using TombLib.Scripting.UI.Highlighting;
@@ -65,9 +66,9 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "SharpLua"
 		};
 
-		TextMateTokenThemeRule? classRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.class, support.class, support.type, support.variable, variable.language.self", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? attributeRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.other.attribute, support.type.property-name", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? parameterRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "variable.parameter, variable.other.object", System.StringComparison.Ordinal));
+		TextMateTokenThemeRule? classRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.class, support.class, support.type, support.variable, variable.language.self", StringComparison.Ordinal));
+		TextMateTokenThemeRule? attributeRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.other.attribute, support.type.property-name", StringComparison.Ordinal));
+		TextMateTokenThemeRule? parameterRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "variable.parameter, variable.other.object", StringComparison.Ordinal));
 
 		Assert.AreEqual("SharpLua", config.SelectedThemeName);
 		Assert.AreEqual("#2D2D2D", config.Theme.Background);
@@ -89,8 +90,8 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "VSCode Dark+"
 		};
 
-		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? languageRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.language", System.StringComparison.Ordinal));
+		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", StringComparison.Ordinal));
+		TextMateTokenThemeRule? languageRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.language", StringComparison.Ordinal));
 
 		Assert.IsNotNull(numericRule);
 		Assert.IsNotNull(languageRule);
@@ -105,7 +106,7 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "VSCode Dark+"
 		};
 
-		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", System.StringComparison.Ordinal));
+		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", StringComparison.Ordinal));
 		TextMateTokenThemeRule? escapeRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.character.escape", System.StringComparison.Ordinal));
 
 		Assert.IsNotNull(numericRule);
@@ -122,11 +123,11 @@ public class LuaThemeConfigurationTests
 			SelectedThemeName = "TomorrowNight"
 		};
 
-		TextMateTokenThemeRule? stringRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "string", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? languageRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.language", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? functionRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.function, support.function, support.function.library, support.function.any-method", System.StringComparison.Ordinal));
-		TextMateTokenThemeRule? keywordRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "keyword, storage", System.StringComparison.Ordinal));
+		TextMateTokenThemeRule? stringRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "string", StringComparison.Ordinal));
+		TextMateTokenThemeRule? numericRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.numeric", StringComparison.Ordinal));
+		TextMateTokenThemeRule? languageRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "constant.language", StringComparison.Ordinal));
+		TextMateTokenThemeRule? functionRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "entity.name.function, support.function, support.function.library, support.function.any-method", StringComparison.Ordinal));
+		TextMateTokenThemeRule? keywordRule = config.Theme.TextMateTheme.Rules.FirstOrDefault(rule => string.Equals(rule.Scope, "keyword, storage", StringComparison.Ordinal));
 
 		Assert.AreEqual("TomorrowNight", config.SelectedThemeName);
 		Assert.AreEqual("#1D1F21", config.Theme.Background);

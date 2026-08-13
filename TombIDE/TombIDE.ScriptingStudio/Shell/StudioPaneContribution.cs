@@ -38,6 +38,5 @@ internal sealed class StaticStudioPaneContributionProvider : IStudioPaneContribu
 	public StaticStudioPaneContributionProvider(IReadOnlyList<StudioPaneContribution> contributions)
 		=> _contributions = contributions ?? [];
 
-	public IReadOnlyList<StudioPaneContribution> GetPaneContributions()
-		=> _contributions;
+	public IReadOnlyList<StudioPaneContribution> GetPaneContributions() => _contributions;
 }

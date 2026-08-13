@@ -104,11 +104,11 @@ internal sealed class TypedDocumentCommandSurfaceProvider : IStudioDocumentComma
 			CreateCommandItem("Reindent", UICommand.Reindent),
 			CreateTrimWhitespaceItem(),
 			CreateSeparator(),
-		CreateCommandItem("GoToDefinition", UICommand.GoToDefinition),
-		CreateCommandItem("FindReferences", UICommand.FindReferences),
-		CreateCommandItem("RenameSymbol", UICommand.RenameSymbol),
-		CreateCommandItem("NavigateBack", UICommand.NavigateBack, icon: "Left_16"),
-		CreateCommandItem("NavigateForward", UICommand.NavigateForward, icon: "Right_16"),
+			CreateCommandItem("GoToDefinition", UICommand.GoToDefinition),
+			CreateCommandItem("FindReferences", UICommand.FindReferences),
+			CreateCommandItem("RenameSymbol", UICommand.RenameSymbol),
+			CreateCommandItem("NavigateBack", UICommand.NavigateBack, icon: "Left_16"),
+			CreateCommandItem("NavigateForward", UICommand.NavigateForward, icon: "Right_16"),
 			CreateSeparator(),
 			CreateToggleCommentItem(),
 			CreateCommandItem("CommentOut", UICommand.CommentOut, icon: "Comment_16"),
@@ -138,7 +138,8 @@ internal sealed class TypedDocumentCommandSurfaceProvider : IStudioDocumentComma
 			CreateCommandItem("RemoveLastString", UICommand.RemoveLastString, icon: "Trash_16"))
 	];
 
-	private static IReadOnlyList<StudioToolStripItem> CreateTrxMenuStripItems() => CreateGameFlowMenuStripItems();
+	private static IReadOnlyList<StudioToolStripItem> CreateTrxMenuStripItems()
+		=> CreateGameFlowMenuStripItems();
 
 	private static IReadOnlyList<StudioToolStripItem> CreateScriptToolStripItems() =>
 	[
@@ -226,7 +227,8 @@ internal sealed class TypedDocumentCommandSurfaceProvider : IStudioDocumentComma
 		.. CreateCutCopyPasteItems()
 	];
 
-	private static IReadOnlyList<StudioToolStripItem> CreateTrxContextMenuItems() => CreateGameFlowContextMenuItems();
+	private static IReadOnlyList<StudioToolStripItem> CreateTrxContextMenuItems()
+		=> CreateGameFlowContextMenuItems();
 
 	private static StudioToolStripItem CreateCommandItem(
 		string langKey,
@@ -238,22 +240,25 @@ internal sealed class TypedDocumentCommandSurfaceProvider : IStudioDocumentComma
 		=> StudioCommandSurfaceItemFactory.CreateCommandItem(langKey, command, icon, shortcutDisplayText, checkOnClick, position);
 
 	private static StudioToolStripItem CreateConvertRoot()
-		=> StudioCommandSurfaceItemFactory.CreateGroupItem(
+	{
+		return StudioCommandSurfaceItemFactory.CreateGroupItem(
 			"Convert",
 			CreateCommandItem("TabsToSpaces", UICommand.TabsToSpaces),
 			CreateCommandItem("SpacesToTabs", UICommand.SpacesToTabs));
+	}
 
 	private static StudioToolStripItem[] CreateCutCopyPasteItems() =>
 	[
-			CreateCommandItem("Cut", UICommand.Cut, icon: "Cut_16"),
-			CreateCommandItem("Copy", UICommand.Copy, icon: "Copy_16"),
-			CreateCommandItem("Paste", UICommand.Paste, icon: "Clipboard_16")
+		CreateCommandItem("Cut", UICommand.Cut, icon: "Cut_16"),
+		CreateCommandItem("Copy", UICommand.Copy, icon: "Copy_16"),
+		CreateCommandItem("Paste", UICommand.Paste, icon: "Clipboard_16")
 	];
 
 	private static StudioToolStripItem CreateDocumentRoot(params StudioToolStripItem[] items)
 		=> StudioCommandSurfaceItemFactory.CreateRootItem("Document", 2, items);
 
-	private static StudioSeparator CreateSeparator() => StudioCommandSurfaceItemFactory.CreateSeparator();
+	private static StudioSeparator CreateSeparator()
+		=> StudioCommandSurfaceItemFactory.CreateSeparator();
 
 	private static StudioToolStripItem CreateToggleCommentItem()
 		=> CreateCommandItem("ToggleComment", UICommand.ToggleComment, icon: "Comment_16", shortcutDisplayText: "Ctrl+/");

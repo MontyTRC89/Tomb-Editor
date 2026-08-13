@@ -12,32 +12,32 @@ public sealed class ColorScheme : ColorSchemeBase
 	/// <summary>
 	/// Gets or sets the highlighting object for comments.
 	/// </summary>
-	public HighlightingObject Comments { get; set; } = new HighlightingObject();
+	public HighlightingObject Comments { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the highlighting object for sections.
 	/// </summary>
-	public HighlightingObject Sections { get; set; } = new HighlightingObject();
+	public HighlightingObject Sections { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the highlighting object for special properties.
 	/// </summary>
-	public HighlightingObject SpecialProperties { get; set; } = new HighlightingObject();
+	public HighlightingObject SpecialProperties { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the highlighting object for properties.
 	/// </summary>
-	public HighlightingObject Properties { get; set; } = new HighlightingObject();
+	public HighlightingObject Properties { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the highlighting object for constants.
 	/// </summary>
-	public HighlightingObject Constants { get; set; } = new HighlightingObject();
+	public HighlightingObject Constants { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the highlighting object for values.
 	/// </summary>
-	public HighlightingObject Values { get; set; } = new HighlightingObject();
+	public HighlightingObject Values { get; set; } = new();
 
 	// Operators
 

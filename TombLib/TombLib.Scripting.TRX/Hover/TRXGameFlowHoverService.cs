@@ -24,8 +24,7 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 	/// Initializes a new instance of the <see cref="TRXGameFlowHoverService"/> class.
 	/// </summary>
 	/// <param name="schemaService">The schema service used to resolve hover information.</param>
-	public TRXGameFlowHoverService(ITRXGameFlowSchemaService schemaService)
-		=> _schemaService = schemaService;
+	public TRXGameFlowHoverService(ITRXGameFlowSchemaService schemaService) => _schemaService = schemaService;
 
 	/// <inheritdoc />
 	public TextHoverInfo? GetHoverInfo(TextHoverRequest request)

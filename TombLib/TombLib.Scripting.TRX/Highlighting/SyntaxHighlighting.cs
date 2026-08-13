@@ -79,13 +79,12 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		return ruleSet;
 	}
 
-	private static HighlightingColor CreateColor(HighlightingObject scheme)
-		=> new()
-		{
-			Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
-			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
-			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
-		};
+	private static HighlightingColor CreateColor(HighlightingObject scheme) => new()
+	{
+		Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
+		FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
+		FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
+	};
 
 	// Other
 
@@ -101,8 +100,7 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 	public IDictionary<string, string> Properties => new Dictionary<string, string>();
 
 	/// <inheritdoc />
-	public HighlightingColor? GetNamedColor(string name)
-		=> null;
+	public HighlightingColor? GetNamedColor(string name) => null;
 
 	/// <inheritdoc />
 	public HighlightingRuleSet? GetNamedRuleSet(string name)

@@ -114,8 +114,7 @@ public class RootShellViewModelTests
         return mock;
     }
 
-    private static Mock<IPaneHostService> CreatePaneHostServiceMock()
-        => new();
+    private static Mock<IPaneHostService> CreatePaneHostServiceMock() => new();
 
     private static Mock<IWorkbenchService> CreateWorkbenchServiceMock()
     {

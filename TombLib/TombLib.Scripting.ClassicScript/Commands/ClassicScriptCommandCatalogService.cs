@@ -27,7 +27,6 @@ public sealed class ClassicScriptCommandCatalogService
 
 	internal ClassicScriptCommandCatalogService(ClassicScriptCommandsLoader loader)
 	{
-		ArgumentNullException.ThrowIfNull(loader);
 		_loader = loader;
 		_catalog = new Lazy<ClassicScriptCommandCatalogSnapshot>(LoadCatalog);
 	}
@@ -52,8 +51,10 @@ public sealed class ClassicScriptCommandCatalogService
 	/// as old and not also as new.
 	/// </summary>
 	public bool IsOldCommand(string command)
-		=> _catalog.Value.OldCommands.Contains(command, StringComparer.OrdinalIgnoreCase)
+	{
+		return _catalog.Value.OldCommands.Contains(command, StringComparer.OrdinalIgnoreCase)
 			&& !_catalog.Value.NewCommands.Contains(command, StringComparer.OrdinalIgnoreCase);
+	}
 
 	/// <summary>
 	/// Returns whether the given command is classified as new.
@@ -72,10 +73,7 @@ public sealed class ClassicScriptCommandCatalogService
 	}
 
 	private static IReadOnlyList<string> GetCommandNames(ClassicScriptCommandsCatalog catalog, ClassicScriptCommandKind kind)
-		=> catalog.Commands
-			.Where(entry => entry.Kind == kind)
-			.Select(entry => entry.Name)
-			.ToArray();
+		=> catalog.Commands.Where(entry => entry.Kind == kind).Select(entry => entry.Name).ToArray();
 }
 
 internal sealed record class ClassicScriptCommandCatalogSnapshot(

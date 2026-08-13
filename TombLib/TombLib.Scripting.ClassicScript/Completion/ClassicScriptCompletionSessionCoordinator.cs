@@ -46,9 +46,7 @@ public sealed class ClassicScriptCompletionSessionCoordinator
 		IClassicScriptCommandService commandService,
 		ClassicScriptMnemonicCatalogService mnemonicCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
-		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
 		_completionProvider = new ClassicScriptCompletionProvider(commandService, mnemonicCatalogService);
 	}

@@ -31,7 +31,7 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// <summary>
 	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
 	/// </summary>
-	public ILanguageServerIntellisenseProvider? IntelliSenseProvider { get; set; }
+	public ILanguageServerIntelliSenseProvider? IntelliSenseProvider { get; set; }
 
 	/// <summary>
 	/// Occurs when the editor resolves a definition location that should be opened by the host application.
@@ -47,10 +47,10 @@ public sealed partial class LuaEditor : TextEditorBase
 		CommentPrefix = "--";
 		TextArea.IndentationStrategy = new LuaAutoIndentationStrategy(Options);
 		CompletionController.InitializeScheduling(RequestScheduledCompletionAsync);
-		_definitionNavigationController = new LuaDefinitionNavigationController(this);
+		_definitionNavigationController = new(this);
 		InitializeDefinitionNavigation(TryNavigateDefinitionAsync);
-		_hoverController = new LuaHoverController(this);
-		_signatureHelpController = new LuaSignatureHelpController(this);
+		_hoverController = new(this);
+		_signatureHelpController = new(this);
 		BindLuaIntelliSenseEvents();
 	}
 

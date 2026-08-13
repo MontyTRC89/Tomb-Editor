@@ -19,8 +19,10 @@ public static class TextEditorColorProviderGuard
 	/// <exception cref="ArgumentException">The configuration type does not match <typeparamref name="TConfig"/>.</exception>
 	public static TConfig GetConfig<TConfig>(TextEditorConfigBase config, string providerName)
 		where TConfig : TextEditorConfigBase
-		=> config as TConfig
+	{
+		return config as TConfig
 			?? throw new ArgumentException(
 				$"The color provider '{providerName}' requires a configuration of type '{typeof(TConfig).Name}', but received '{config.GetType().Name}'.",
 				nameof(config));
+	}
 }

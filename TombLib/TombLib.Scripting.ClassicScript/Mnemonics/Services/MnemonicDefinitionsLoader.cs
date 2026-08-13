@@ -24,10 +24,9 @@ public sealed class MnemonicDefinitionsLoader
 	/// <param name="mnemonicConstantsJsonPath">The path of the mnemonic constants resource.</param>
 	/// <param name="pluginScriptsDirectoryPath">The directory that contains the plugin scripts.</param>
 	/// <returns>The loaded mnemonic definitions.</returns>
-	public MnemonicDefinitions Load(string mnemonicConstantsJsonPath, string pluginScriptsDirectoryPath)
-		=> new MnemonicDefinitions(
-			LoadStandardConstants(mnemonicConstantsJsonPath),
-			LoadPluginMnemonics(pluginScriptsDirectoryPath));
+	public MnemonicDefinitions Load(string mnemonicConstantsJsonPath, string pluginScriptsDirectoryPath) => new(
+		LoadStandardConstants(mnemonicConstantsJsonPath),
+		LoadPluginMnemonics(pluginScriptsDirectoryPath));
 
 	private IReadOnlyList<MnemonicConstantDefinition> LoadStandardConstants(string mnemonicConstantsJsonPath)
 	{

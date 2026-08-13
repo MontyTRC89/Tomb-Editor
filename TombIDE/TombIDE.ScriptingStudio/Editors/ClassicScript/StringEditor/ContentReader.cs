@@ -13,11 +13,13 @@ public class ContentReader
 	public static bool NextSectionExists(string[] lines, int lineNumber, out int nextSectionLineNumber)
 	{
 		for (int i = lineNumber; i < lines.Length; i++)
+		{
 			if (IsSectionHeaderLine(lines[i]))
 			{
 				nextSectionLineNumber = i;
 				return true;
 			}
+		}
 
 		nextSectionLineNumber = -1;
 		return false;

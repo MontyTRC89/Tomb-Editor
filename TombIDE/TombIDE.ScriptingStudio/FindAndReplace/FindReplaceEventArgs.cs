@@ -7,6 +7,5 @@ public class FindReplaceEventArgs : EventArgs
 {
 	public IReadOnlyList<FindReplaceSource> SourceCollection { get; }
 
-	public FindReplaceEventArgs(IReadOnlyList<FindReplaceSource> collection)
-		=> SourceCollection = collection;
+	public FindReplaceEventArgs(IReadOnlyList<FindReplaceSource> collection) => SourceCollection = collection;
 }

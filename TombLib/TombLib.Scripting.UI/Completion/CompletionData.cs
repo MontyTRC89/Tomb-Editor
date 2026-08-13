@@ -284,8 +284,7 @@ public sealed class CompletionData : ICompletionData, INotifyPropertyChanged
 		return true;
 	}
 
-	private static bool ShouldUseReplaceRange(TextArea textArea)
-		=> textArea.OverstrikeMode;
+	private static bool ShouldUseReplaceRange(TextArea textArea) => textArea.OverstrikeMode;
 
 	private Border? BuildDescriptionContent()
 	{

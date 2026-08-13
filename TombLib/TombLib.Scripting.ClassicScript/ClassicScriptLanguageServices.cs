@@ -1,4 +1,3 @@
-using System;
 using TombLib.Scripting.ClassicScript.Completion;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Mnemonics;
@@ -33,14 +32,6 @@ public sealed class ClassicScriptLanguageServices
 		IClassicScriptCommandService commandService,
 		IClassicScriptIndexService indexService)
 	{
-		ArgumentNullException.ThrowIfNull(definitionProvider);
-		ArgumentNullException.ThrowIfNull(hoverProvider);
-		ArgumentNullException.ThrowIfNull(signatureHelpProvider);
-		ArgumentNullException.ThrowIfNull(errorDetector);
-		ArgumentNullException.ThrowIfNull(lineService);
-		ArgumentNullException.ThrowIfNull(commandService);
-		ArgumentNullException.ThrowIfNull(indexService);
-
 		DefinitionProvider = definitionProvider;
 		HoverProvider = hoverProvider;
 		SignatureHelpProvider = signatureHelpProvider;

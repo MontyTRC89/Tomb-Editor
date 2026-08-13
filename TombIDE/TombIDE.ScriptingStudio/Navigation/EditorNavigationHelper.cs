@@ -12,12 +12,14 @@ namespace TombIDE.ScriptingStudio.Navigation;
 internal static class EditorNavigationHelper
 {
 	public static EditorNavigationLocation CreateLocation(TextEditorBase textEditor)
-		=> new(
+	{
+		return new(
 			textEditor.FilePath,
 			textEditor.CaretOffset,
 			textEditor.SelectionStart,
 			textEditor.SelectionLength,
 			textEditor.CurrentRow);
+	}
 
 	public static EditorNavigationLocation CreateDefinitionLocation(
 		TextEditorBase textEditor,

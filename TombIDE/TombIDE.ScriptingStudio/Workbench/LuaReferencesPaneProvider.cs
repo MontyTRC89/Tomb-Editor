@@ -47,9 +47,11 @@ internal sealed class LuaReferencesPaneProvider : IStudioPaneContributionProvide
 	}
 
 	private void NavigateToReference(TextReferenceListItem reference)
-		=> NavigateToLocation(
+	{
+		NavigateToLocation(
 			reference.FilePath,
 			textEditor => EditorNavigationHelper.CreateRangeLocation(textEditor, reference.FilePath, reference.Range));
+	}
 
 	private void NavigateToLocation(string filePath, Func<TextEditorBase, EditorNavigationLocation?> locationFactory)
 	{

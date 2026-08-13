@@ -19,10 +19,7 @@ public sealed class StringFileNodesProvider : ContentNodesProviderBase
 	/// </summary>
 	/// <param name="lineService">The line service used to identify section headers.</param>
 	public StringFileNodesProvider(IClassicScriptLineService lineService)
-	{
-		ArgumentNullException.ThrowIfNull(lineService);
-		_lineService = lineService;
-	}
+		=> _lineService = lineService;
 
 	/// <inheritdoc/>
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)

@@ -21,15 +21,17 @@ public sealed class GameFlowNodesProvider : ContentNodesProviderBase
 	public GameFlowNodesProvider(IGameFlowScriptLineService lineService)
 	{
 		ArgumentNullException.ThrowIfNull(lineService);
-		_nodeService = new GameFlowContentNodeService(lineService);
+		_nodeService = new(lineService);
 	}
 
 	/// <inheritdoc/>
 	protected override IReadOnlyList<DarkTreeNode> GetNodesCore(string content, string filter)
-		=> ContentNodeTreeBuilder.BuildGroupedNodes(
+	{
+		return ContentNodeTreeBuilder.BuildGroupedNodes(
 			_nodeService.GetNodeGroups(content, filter),
 			group => group.Header,
 			group => group.Nodes,
 			node => node.Text,
 			node => new GameFlowObjectDiscriminator(node.ObjectType));
+	}
 }

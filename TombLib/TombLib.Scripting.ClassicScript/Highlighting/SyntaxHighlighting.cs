@@ -135,19 +135,18 @@ public sealed class SyntaxHighlighting : IHighlightingDefinition
 		return ruleSet;
 	}
 
-	private static HighlightingColor CreateColor(HighlightingObject scheme)
-		=> new()
-		{
-			Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
-			FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
-			FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
-		};
+	private static HighlightingColor CreateColor(HighlightingObject scheme) => new()
+	{
+		Foreground = new SimpleHighlightingBrush(ScriptingColorParser.ParseColorOrDefault(scheme.HtmlColor, ScriptingColorParser.DefaultHighlightingColor)),
+		FontWeight = scheme.IsBold ? FontWeights.Bold : FontWeights.Normal,
+		FontStyle = scheme.IsItalic ? FontStyles.Italic : FontStyles.Normal
+	};
 
 	/// <summary>
 	/// Builds a compiled regex from a word-boundary template with every alternative regex-escaped.
 	/// </summary>
 	private static Regex BuildWordBoundaryAlternation(string template, IEnumerable<string> names, RegexOptions options)
-		=> new Regex(string.Format(template, string.Join("|", names.Select(Regex.Escape))), options);
+		=> new(string.Format(template, string.Join("|", names.Select(Regex.Escape))), options);
 
 	// Other
 

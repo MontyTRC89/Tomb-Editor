@@ -1,5 +1,3 @@
-using System;
-
 namespace TombLib.Scripting.Navigation;
 
 /// <summary>
@@ -13,14 +11,8 @@ public sealed record TextDefinitionRequest
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="symbolName">The target symbol or object name.</param>
 	/// <param name="identifier">An optional language-specific discriminator that disambiguates the target.</param>
-	/// <exception cref="ArgumentNullException">
-	/// <paramref name="documentText"/> or <paramref name="symbolName"/> is null.
-	/// </exception>
 	public TextDefinitionRequest(string documentText, string symbolName, TextDefinitionDiscriminator? identifier = null)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-		ArgumentNullException.ThrowIfNull(symbolName);
-
 		DocumentText = documentText;
 		SymbolName = symbolName;
 		Identifier = identifier;

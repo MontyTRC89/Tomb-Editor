@@ -17,10 +17,7 @@ public sealed class ClassicScriptFileClassificationService
 	/// </summary>
 	/// <param name="lineService">The line service used to identify section headers.</param>
 	public ClassicScriptFileClassificationService(IClassicScriptLineService lineService)
-	{
-		ArgumentNullException.ThrowIfNull(lineService);
-		_lineService = lineService;
-	}
+		=> _lineService = lineService;
 
 	private static readonly HashSet<string> ScriptSections = new(StringComparer.OrdinalIgnoreCase)
 	{
@@ -39,8 +36,6 @@ public sealed class ClassicScriptFileClassificationService
 	/// <returns>The classified file kind.</returns>
 	public ClassicScriptFileKind GetFileKind(string filePath)
 	{
-		ArgumentNullException.ThrowIfNull(filePath);
-
 		foreach (string line in File.ReadLines(filePath))
 		{
 			if (!_lineService.IsSectionHeaderLine(line))

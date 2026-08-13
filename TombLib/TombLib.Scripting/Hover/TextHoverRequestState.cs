@@ -10,7 +10,7 @@ namespace TombLib.Scripting.Hover;
 /// <param name="CanShowToolTip">Whether the hover tooltip may be shown.</param>
 /// <param name="CanShowDiagnosticFallback">Whether the diagnostic tooltip may be shown as a fallback when no hover content is available.</param>
 /// <param name="HasDiagnostic">Whether a diagnostic is available at the hovered offset.</param>
-/// <param name="DiagnosticMessage">The diagnostic message, or <c>null</c> when no diagnostic is available.</param>
+/// <param name="DiagnosticMessage">The diagnostic message, or <see langword="null"/> when no diagnostic is available.</param>
 /// <param name="DiagnosticSeverity">The severity of the diagnostic at the hovered offset.</param>
 public readonly record struct TextHoverRequestState(
 	bool ShouldRequestHover,

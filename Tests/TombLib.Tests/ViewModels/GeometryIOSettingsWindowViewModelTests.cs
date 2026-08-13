@@ -15,11 +15,13 @@ public class GeometryIOSettingsWindowViewModelTests
 {
 	private const string TestCustomPresetPath = @"C:\TestPresets.xml";
 
+	// Mocked services
 	private Mock<ICustomGeometrySettingsPresetIOService> _mockPresetIOService = null!;
 	private Mock<IDialogService> _mockDialogService = null!;
 	private Mock<IMessageService> _mockMessageService = null!;
 	private Mock<ILocalizationService> _mockLocalizationService = null!;
 
+	// Test data
 	private List<IOGeometrySettingsPreset> _builtInPresets = null!;
 	private IOGeometryInternalSettings _exportSettings = null!;
 	private IOGeometryInternalSettings _importSettings = null!;

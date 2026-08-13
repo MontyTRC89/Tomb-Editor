@@ -51,7 +51,9 @@ public readonly record struct ShortcutKey
 			key == Key.LeftAlt || key == Key.RightAlt ||
 			key == Key.LeftShift || key == Key.RightShift ||
 			key == Key.LWin || key == Key.RWin)
+		{
 			return null;
+		}
 
 		ModifierKeys modifiers = ModifierKeys.None;
 

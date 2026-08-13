@@ -13,15 +13,16 @@ public class TRXCompletionSessionCoordinatorTests
 	{
 		private readonly IReadOnlyList<TextCompletionItem> _items = items;
 
-		public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
-			=> _items;
+		public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context) => _items;
 	}
 
 	private static TRXCompletionSessionCoordinator CreateCoordinator(params TextCompletionItem[] items)
-		=> new(
+	{
+		return new(
 			new StubCompletionProvider(items),
 			new TextAnalysisService(),
 			new CompletionManager(new TRXLineService()));
+	}
 
 	[TestMethod]
 	public void GetCtrlSpaceDecision_FiltersThroughCompletionManager()

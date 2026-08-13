@@ -54,7 +54,6 @@ internal static class StaTestHelper
         public string Format(string key, params object[] args)
             => string.Format(this[key], args);
 
-        public ILocalizationService WithKeysFor(System.ComponentModel.INotifyPropertyChanged viewModel)
-            => this;
+        public ILocalizationService WithKeysFor(System.ComponentModel.INotifyPropertyChanged viewModel) => this;
     }
 }

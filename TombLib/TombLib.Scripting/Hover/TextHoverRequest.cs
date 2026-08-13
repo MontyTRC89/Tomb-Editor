@@ -16,14 +16,11 @@ public sealed record TextHoverRequest
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="hoveredOffset">The zero-based hovered offset within that snapshot.</param>
-	/// <exception cref="ArgumentNullException"><paramref name="documentText"/> is null.</exception>
 	/// <exception cref="ArgumentOutOfRangeException">
 	/// <paramref name="hoveredOffset"/> is negative or greater than the length of <paramref name="documentText"/>.
 	/// </exception>
 	public TextHoverRequest(string documentText, int hoveredOffset)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-
 		if (hoveredOffset < 0 || hoveredOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(hoveredOffset));
 

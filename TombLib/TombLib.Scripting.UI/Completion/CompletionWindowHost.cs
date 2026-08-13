@@ -18,8 +18,7 @@ internal sealed class CompletionWindowHost
 	private Action? _trackedClosedAction;
 	private CompletionWindow? _trackedWindow;
 
-	public CompletionWindowHost(TextArea textArea)
-		=> _textArea = textArea;
+	public CompletionWindowHost(TextArea textArea) => _textArea = textArea;
 
 	/// <summary>
 	/// Creates a new completion window. Any previously tracked window is closed first, so only the

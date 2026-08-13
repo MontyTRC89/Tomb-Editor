@@ -16,9 +16,11 @@ public static class TextHoverToolTipContentFactory
 	/// Creates the visual content for a hover tooltip.
 	/// </summary>
 	public static FrameworkElement CreateHoverContent(TextHoverInfo hoverInfo, Brush foreground, Brush background)
-		=> hoverInfo.ContentKind == TextHoverContentKind.Markdown
+	{
+		return hoverInfo.ContentKind == TextHoverContentKind.Markdown
 			? MarkdownToolTipRenderer.CreateContent(hoverInfo.Content, foreground, background)
 			: MarkdownToolTipRenderer.CreatePlainTextContent(hoverInfo.Content, foreground);
+	}
 
 	/// <summary>
 	/// Creates the visual content for a combined hover and diagnostic tooltip.

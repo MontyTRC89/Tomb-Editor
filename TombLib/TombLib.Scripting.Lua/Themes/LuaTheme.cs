@@ -21,12 +21,12 @@ public sealed class LuaTheme : ColorSchemeBase
 	/// <summary>
 	/// Gets or sets the TextMate token theme used for syntax highlighting.
 	/// </summary>
-	public TextMateTokenTheme TextMateTheme { get; set; } = new TextMateTokenTheme();
+	public TextMateTokenTheme TextMateTheme { get; set; } = new();
 
 	/// <summary>
 	/// Gets or sets the semantic color palette used for Lua editor features.
 	/// </summary>
-	public LuaThemeSemanticColors SemanticColors { get; set; } = new LuaThemeSemanticColors();
+	public LuaThemeSemanticColors SemanticColors { get; set; } = new();
 
 	/// <summary>
 	/// Normalizes missing values so the theme can be used safely at runtime.
@@ -43,8 +43,8 @@ public sealed class LuaTheme : ColorSchemeBase
 		if (string.IsNullOrWhiteSpace(Foreground))
 			Foreground = LuaBuiltInThemes.DefaultForeground;
 
-		TextMateTheme ??= new TextMateTokenTheme();
-		SemanticColors ??= new LuaThemeSemanticColors();
+		TextMateTheme ??= new();
+		SemanticColors ??= new();
 		SemanticColors.Normalize();
 
 		return this;

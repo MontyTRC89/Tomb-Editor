@@ -29,16 +29,15 @@ public readonly record struct TextHoverPresentationState(
 	/// </summary>
 	/// <param name="hoveredOffset">The initial hovered offset, or <c>-1</c> for none.</param>
 	/// <returns>The empty hover presentation state.</returns>
-	public static TextHoverPresentationState Empty(int hoveredOffset = -1)
-		=> new(
-			HoveredOffset: hoveredOffset,
-			RequestOffset: -1,
-			HoverInfo: null,
-			HasDiagnostic: false,
-			DiagnosticMessage: null,
-			DiagnosticSeverity: default,
-			CanShowToolTip: false,
-			CanShowDiagnosticFallback: false);
+	public static TextHoverPresentationState Empty(int hoveredOffset = -1) => new(
+		HoveredOffset: hoveredOffset,
+		RequestOffset: -1,
+		HoverInfo: null,
+		HasDiagnostic: false,
+		DiagnosticMessage: null,
+		DiagnosticSeverity: default,
+		CanShowToolTip: false,
+		CanShowDiagnosticFallback: false);
 
 	/// <summary>
 	/// Gets a value indicating whether a non-empty hover tooltip can be shown.

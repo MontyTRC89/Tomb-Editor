@@ -22,7 +22,9 @@ public sealed class StringTextSnapshot : ITextSnapshot
 	public StringTextSnapshot(string? text, string? fileName = null)
 	{
 		_text = text ?? string.Empty;
+
 		FileName = fileName;
+
 		(_lines, _lineStartOffsets) = BuildLines(_text);
 	}
 
@@ -57,7 +59,7 @@ public sealed class StringTextSnapshot : ITextSnapshot
 		// Overflow-safe bounds check: the subtraction cannot overflow because
 		// offset is verified to be within the text length first.
 		if (offset < 0 || offset > _text.Length || length < 0 || length > _text.Length - offset)
-			throw new ArgumentOutOfRangeException();
+			throw new ArgumentOutOfRangeException(nameof(offset));
 
 		return _text.Substring(offset, length);
 	}
@@ -85,17 +87,11 @@ public sealed class StringTextSnapshot : ITextSnapshot
 			int nextLineStart = (mid + 1 < _lineStartOffsets.Length) ? _lineStartOffsets[mid + 1] : _text.Length;
 
 			if (offset < lineStart)
-			{
 				hi = mid - 1;
-			}
 			else if (offset >= nextLineStart)
-			{
 				lo = mid + 1;
-			}
 			else
-			{
 				return _lines[mid];
-			}
 		}
 
 		// This should not be reachable with valid input.
@@ -141,8 +137,10 @@ public sealed class StringTextSnapshot : ITextSnapshot
 				// CRLF or standalone CR.
 				int delimiterLength = (i + 1 < text.Length && text[i + 1] == '\n') ? 2 : 1;
 				int lineLength = i - lineStart;
+
 				lines.Add(new StringTextLine(lineStart, lineLength, lineNumber));
 				lineStartOffsets.Add(lineStart);
+
 				lineNumber++;
 				i += delimiterLength;
 				lineStart = i;
@@ -151,8 +149,10 @@ public sealed class StringTextSnapshot : ITextSnapshot
 			{
 				// Standalone LF.
 				int lineLength = i - lineStart;
+
 				lines.Add(new StringTextLine(lineStart, lineLength, lineNumber));
 				lineStartOffsets.Add(lineStart);
+
 				lineNumber++;
 				i++;
 				lineStart = i;

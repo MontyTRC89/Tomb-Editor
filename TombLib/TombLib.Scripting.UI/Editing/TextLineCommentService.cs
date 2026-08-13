@@ -92,9 +92,11 @@ internal sealed class TextLineCommentService
 	}
 
 	private static string TransformLine(string currentLineText, string commentPrefix, TextLineCommentAction action)
-		=> action == TextLineCommentAction.Uncomment
+	{
+		return action == TextLineCommentAction.Uncomment
 			? UncommentLine(currentLineText, commentPrefix)
 			: CommentLine(currentLineText, commentPrefix);
+	}
 
 	private static string CommentLine(string currentLineText, string commentPrefix)
 	{

@@ -72,6 +72,5 @@ public sealed class GameFlowLanguageServices
 	/// Each editor owns its own coordinator created through this composition root.
 	/// </summary>
 	/// <returns>A completion session coordinator bound to this service set.</returns>
-	public GameFlowCompletionSessionCoordinator CreateCompletionCoordinator()
-		=> new(_completionProvider, LineService);
+	public GameFlowCompletionSessionCoordinator CreateCompletionCoordinator() => new(_completionProvider, LineService);
 }

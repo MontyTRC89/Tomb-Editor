@@ -30,8 +30,7 @@ internal sealed class StudioSilentActionService
 		_hostOperations = hostOperations ?? throw new ArgumentNullException(nameof(hostOperations));
 	}
 
-	public IEditorControl? RememberSelectedEditor()
-		=> _documentController.CurrentEditor;
+	public IEditorControl? RememberSelectedEditor() => _documentController.CurrentEditor;
 
 	public SilentActionFileState CaptureFileState(string filePath, EditorType editorType = EditorType.Default)
 	{

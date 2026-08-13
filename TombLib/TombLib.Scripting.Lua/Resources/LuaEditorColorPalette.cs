@@ -22,7 +22,7 @@ internal static class LuaEditorColorPalette
 	/// <returns>A frozen brush set ready for use by the editor UI.</returns>
 	public static LuaThemeBrushSet Create(LuaTheme theme)
 	{
-		LuaTheme effectiveTheme = (theme ?? new LuaTheme()).Normalize(ConfigurationDefaults.SelectedThemeName);
+		LuaTheme effectiveTheme = theme.Normalize(ConfigurationDefaults.SelectedThemeName);
 		LuaThemeSemanticColors semanticColors = effectiveTheme.SemanticColors;
 
 		var brushes = new Dictionary<LuaThemeBrushRole, SolidColorBrush>

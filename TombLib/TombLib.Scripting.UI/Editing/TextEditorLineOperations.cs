@@ -89,8 +89,10 @@ public static class TextEditorLineOperations
 	/// <param name="levelName">The level name to write into the slot.</param>
 	/// <returns><see langword="true" /> when a slot line was replaced; otherwise, <see langword="false" />.</returns>
 	public static bool TryAssignStockLevelNameStringSlot(TextEditorBase textEditor, string levelName)
-		=> TryReplaceFirstMatchingLine(
+	{
+		return TryReplaceFirstMatchingLine(
 			textEditor,
 			lineText => Regex.IsMatch(lineText, @"EMPTY\sSTRING\sSLOT\s\d+") ? levelName : null,
 			scrollToLine: false);
+	}
 }

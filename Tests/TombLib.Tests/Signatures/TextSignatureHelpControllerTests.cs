@@ -1,5 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Signatures;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using TombLib.Scripting.UI.Signatures;
@@ -269,12 +270,12 @@ public class TextSignatureHelpControllerTests
 
 	private static int GetTickHandlerCount(DispatcherTimer timer)
 	{
-		System.Reflection.FieldInfo field = typeof(DispatcherTimer).GetField(
+		FieldInfo field = typeof(DispatcherTimer).GetField(
 			"Tick",
-			System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+			BindingFlags.Instance | BindingFlags.NonPublic)
 			?? throw new InvalidOperationException("DispatcherTimer.Tick field was not found.");
 
-		var handler = (System.EventHandler?)field.GetValue(timer);
+		var handler = (EventHandler?)field.GetValue(timer);
 		return handler?.GetInvocationList().Length ?? 0;
 	}
 }

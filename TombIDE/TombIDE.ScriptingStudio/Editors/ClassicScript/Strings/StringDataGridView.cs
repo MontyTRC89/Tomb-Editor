@@ -53,9 +53,11 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			DataGridViewCell tableCell = this[e.ColumnIndex, e.RowIndex];
 
 			if (tableCell.Value == null && CachedUndoItem.Value == null)
+			{
 				OnCellContentChanged(new CellContentChangedEventArgs(
 					CachedUndoItem.ColumnIndex, CachedUndoItem.RowIndex,
 					"NULL", "NULL"));
+			}
 
 			if (tableCell.Value == CachedUndoItem.Value)
 				tableCell.Style.ForeColor = tableCell.Value?.ToString() == "NULL" ? Color.Gray : Color.LightSalmon;
@@ -161,9 +163,11 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				}
 			}
 			else
+			{
 				DarkMessageBox.Show(this,
 					"Removing strings in this section is not allowed.", "Not allowed",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 		}
 
 		#endregion Public methods

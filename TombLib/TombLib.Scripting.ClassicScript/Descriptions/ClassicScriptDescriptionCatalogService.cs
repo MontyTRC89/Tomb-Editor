@@ -49,8 +49,6 @@ public sealed class ClassicScriptDescriptionCatalogService
 
 	private static string GetDescription(IReadOnlyDictionary<string, string> catalog, string keyword)
 	{
-		ArgumentNullException.ThrowIfNull(keyword);
-
 		if (catalog.TryGetValue(NormalizeKeyword(keyword), out string? description))
 			return description;
 
@@ -82,6 +80,7 @@ public sealed class ClassicScriptDescriptionCatalogService
 		while (true)
 		{
 			int headerLineEnd = markdown.IndexOf('\n', searchFrom);
+
 			if (headerLineEnd < 0)
 				break;
 
@@ -123,14 +122,17 @@ public sealed class ClassicScriptDescriptionCatalogService
 		var normalized = new StringBuilder(text.Length);
 
 		for (int i = 0; i < text.Length; i++)
+		{
 			if (text[i] == '\r')
 			{
 				normalized.Append('\n');
+
 				if (i + 1 < text.Length && text[i + 1] == '\n')
 					i++;
 			}
 			else
 				normalized.Append(text[i]);
+		}
 
 		return normalized.ToString();
 	}

@@ -18,7 +18,8 @@ public abstract partial class TextEditorBase
 		=> _autoClosingService.HandleTextEntering(this, e, CreateAutoClosingOptions(), OnAutoClosingElementSkipped);
 
 	private TextAutoClosingOptions CreateAutoClosingOptions()
-		=> new(
+	{
+		return new(
 			AutoCloseParentheses,
 			AutoCloseBraces,
 			AutoCloseBrackets,
@@ -29,6 +30,7 @@ public abstract partial class TextEditorBase
 			BracketsClosingString,
 			QuotesClosingString,
 			"'");
+	}
 
 	/// <summary>
 	/// Called when an auto-closed element is skipped by the user.
@@ -140,13 +142,15 @@ public abstract partial class TextEditorBase
 	/// Selects the line with the given line number.
 	/// </summary>
 	/// <param name="lineNumber">The one-based line number to select.</param>
-	public void SelectLine(int lineNumber) => SelectLine(Document.GetLineByNumber(lineNumber));
+	public void SelectLine(int lineNumber)
+		=> SelectLine(Document.GetLineByNumber(lineNumber));
 
 	/// <summary>
 	/// Selects the given document line.
 	/// </summary>
 	/// <param name="line">The line to select.</param>
-	public void SelectLine(DocumentLine line) => _viewService.SelectLine(line);
+	public void SelectLine(DocumentLine line)
+		=> _viewService.SelectLine(line);
 
 	/// <summary>
 	/// Replaces the content of the line with the given line number.
@@ -176,19 +180,22 @@ public abstract partial class TextEditorBase
 	/// <summary>
 	/// Resets the current selection to the default state.
 	/// </summary>
-	public void ResetSelection() => _viewService.ResetSelection();
+	public void ResetSelection()
+		=> _viewService.ResetSelection();
 
 	/// <summary>
 	/// Resets the selection and places the caret at the line with the given line number.
 	/// </summary>
 	/// <param name="lineNumber">The one-based line number to reset the selection at.</param>
-	public void ResetSelectionAt(int lineNumber) => ResetSelectionAt(Document.GetLineByNumber(lineNumber));
+	public void ResetSelectionAt(int lineNumber)
+		=> ResetSelectionAt(Document.GetLineByNumber(lineNumber));
 
 	/// <summary>
 	/// Resets the selection and places the caret at the given line.
 	/// </summary>
 	/// <param name="line">The line to reset the selection at.</param>
-	public void ResetSelectionAt(DocumentLine line) => _viewService.ResetSelectionAt(line);
+	public void ResetSelectionAt(DocumentLine line)
+		=> _viewService.ResetSelectionAt(line);
 
 	/// <summary>
 	/// Gets the document offset corresponding to the given point in the view.
@@ -213,20 +220,24 @@ public abstract partial class TextEditorBase
 	/// </summary>
 	/// <param name="content">The text to display.</param>
 	public void ShowToolTip(string content)
-		=> ShowToolTip(content,
+	{
+		ShowToolTip(content,
 			DefaultToolTipBorder,
 			DefaultToolTipBackground,
 			ToolTipForeground);
+	}
 
 	/// <summary>
 	/// Shows a markdown-formatted tooltip with the default colors.
 	/// </summary>
 	/// <param name="content">The markdown content to display.</param>
 	public void ShowMarkdownToolTip(string content)
-		=> ShowMarkdownToolTip(content,
+	{
+		ShowMarkdownToolTip(content,
 			DefaultToolTipBorder,
 			DefaultToolTipBackground,
 			ToolTipForeground);
+	}
 
 	/// <summary>
 	/// Shows a plain-text tooltip with the given colors.

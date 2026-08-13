@@ -19,10 +19,12 @@ public sealed class ScriptReplacer
 	/// <param name="oldName">The current level name.</param>
 	/// <param name="newName">The new level name.</param>
 	public void RenameLevelScript(TextEditorBase textEditor, string oldName, string newName)
-		=> TextEditorLineOperations.TryReplaceFirstMatchingLine(
+	{
+		TextEditorLineOperations.TryReplaceFirstMatchingLine(
 			textEditor,
 			LevelPropertyRegex,
 			(lineText, _) => TRXLevelNameParser.ExtractTitleName(LineCommentHelper.RemoveLineComment(lineText, "//")),
 			oldName,
 			newName);
+	}
 }

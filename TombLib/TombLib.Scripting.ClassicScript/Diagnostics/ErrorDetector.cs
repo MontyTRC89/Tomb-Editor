@@ -32,11 +32,8 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 		IClassicScriptCommandService commandService,
 		ClassicScriptSyntaxCatalogService syntaxCatalogService)
 	{
-		ArgumentNullException.ThrowIfNull(lineService);
 		_lineService = lineService;
-		ArgumentNullException.ThrowIfNull(commandService);
 		_commandService = commandService;
-		ArgumentNullException.ThrowIfNull(syntaxCatalogService);
 		_syntaxCatalogService = syntaxCatalogService;
 	}
 
@@ -77,7 +74,9 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 	private TextEditorDiagnostic? FindErrorsInLine(ITextSnapshot source, ITextLine line, string lineText, bool commandSectionCheckRequired)
 	{
 		if (_lineService.IsSectionHeaderLine(lineText))
+		{
 			return FindErrorsInSectionHeaderLine(source, line, lineText);
+		}
 		else
 		{
 			if (commandSectionCheckRequired && IsLineInStandardStringSection(source, line))
@@ -92,8 +91,10 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 	private TextEditorDiagnostic? FindErrorsInSectionHeaderLine(ITextSnapshot source, ITextLine line, string lineText)
 	{
 		if (!IsValidSectionName(lineText))
+		{
 			return CreateDiagnostic(source, line,
 				"Invalid section name. Please check its spelling.", _lineService.RemoveComments(lineText));
+		}
 
 		return null;
 	}
@@ -101,9 +102,11 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 	private TextEditorDiagnostic? FindErrorsInNGStringLine(ITextSnapshot source, ITextLine line, string lineText)
 	{
 		if (!IsNGStringLineWellFormatted(lineText))
+		{
 			return CreateDiagnostic(source, line,
 				"NG string must start with an index.\n\nExample:\n0: First String\n1: Second String",
 				_lineService.RemoveComments(lineText));
+		}
 
 		return null;
 	}
@@ -127,13 +130,17 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 		}
 
 		if (commandSectionCheckRequired && commandKey is not null && !IsCommandLineInCorrectSection(source, line.LineNumber, commandKey))
+		{
 			return CreateDiagnostic(source, line,
 				"Command is placed in the wrong section. Please check the command syntax.",
 				_lineService.RemoveComments(lineText));
+		}
 
 		if (ContainsBrokenNextLines(source, line.Offset))
+		{
 			return CreateArgumentDiagnostic(source, line, lineText,
 				"Misplaced \">\" symbols were found.\nYou can only use these symbols at the end of the line and there can only be one on each line.");
+		}
 
 		if (!IsArgumentCountValid(source, line.Offset))
 			return CreateArgumentDiagnostic(source, line, lineText, "Invalid argument count. Please check the command syntax.");
@@ -188,8 +195,10 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 			return false;
 
 		foreach (string entry in _commandCatalogService.Sections)
+		{
 			if (section.Equals(entry, StringComparison.OrdinalIgnoreCase))
 				return true;
+		}
 
 		return false;
 	}
@@ -273,7 +282,7 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 		if (lineText is null)
 			return false;
 
-		if (lineText.TrimStart().StartsWith("#"))
+		if (lineText.TrimStart().StartsWith('#'))
 			return true;
 
 		lineText = _lineService.EscapeComments(lineText);
@@ -316,8 +325,10 @@ public sealed class ErrorDetector : ITextDiagnosticsProvider
 		string[] arguments = _lineService.EscapeComments(lineText).Split(',');
 
 		foreach (string argument in arguments)
+		{
 			if (string.IsNullOrWhiteSpace(argument.Replace('>', ' ')))
 				return true;
+		}
 
 		return false;
 	}

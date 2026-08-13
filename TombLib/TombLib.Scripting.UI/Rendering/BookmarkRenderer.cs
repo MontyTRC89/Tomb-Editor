@@ -15,8 +15,7 @@ internal sealed class BookmarkRenderer : IBackgroundRenderer
 
 	// Construction
 
-	public BookmarkRenderer(BookmarkCoordinator bookmarkCoordinator)
-		=> _bookmarkCoordinator = bookmarkCoordinator;
+	public BookmarkRenderer(BookmarkCoordinator bookmarkCoordinator) => _bookmarkCoordinator = bookmarkCoordinator;
 
 	public KnownLayer Layer => KnownLayer.Background;
 

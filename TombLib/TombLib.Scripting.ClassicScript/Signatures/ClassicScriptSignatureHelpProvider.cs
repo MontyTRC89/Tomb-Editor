@@ -1,5 +1,4 @@
 using Nickelony.LanguageServer.Abstractions.Signatures;
-using System;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.Signatures;
 using TombLib.Scripting.Text;
@@ -18,10 +17,7 @@ public sealed class ClassicScriptSignatureHelpProvider : ITextSignatureHelpProvi
 	/// </summary>
 	/// <param name="commandService">The command service used to resolve command syntax.</param>
 	public ClassicScriptSignatureHelpProvider(IClassicScriptCommandService commandService)
-	{
-		ArgumentNullException.ThrowIfNull(commandService);
-		_commandService = commandService;
-	}
+		=> _commandService = commandService;
 
 	/// <summary>
 	/// Gets the signature help for the given request.

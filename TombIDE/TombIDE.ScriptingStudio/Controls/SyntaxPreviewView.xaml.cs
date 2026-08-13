@@ -90,6 +90,7 @@ public partial class SyntaxPreviewView : UserControl
 		ApplyColorPattern(colors, text, ";.*$", _config.ColorScheme.Comments.HtmlColor);
 
 		bool[] underlines = new bool[text.Length];
+
 		if (TryGetCurrentArgumentRange(text, out int selectionStart, out int selectionLength))
 		{
 			for (int i = selectionStart; i < selectionStart + selectionLength && i < underlines.Length; i++)

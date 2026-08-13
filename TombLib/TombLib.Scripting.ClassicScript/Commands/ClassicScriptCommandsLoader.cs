@@ -56,8 +56,10 @@ public sealed class ClassicScriptCommandsLoader
 		var result = new List<string>();
 
 		foreach (JsonElement section in sections.EnumerateArray())
+		{
 			if (section.ValueKind == JsonValueKind.String)
 				result.Add(section.GetString() ?? string.Empty);
+		}
 
 		return result;
 	}

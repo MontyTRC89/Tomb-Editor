@@ -17,6 +17,5 @@ internal readonly record struct TextWorkspaceCommandResult(TextWorkspaceCommandS
 
 	public static TextWorkspaceCommandResult Cancelled { get; } = new(TextWorkspaceCommandStatus.Cancelled, null);
 
-	public static TextWorkspaceCommandResult Applied(TextWorkspaceEditTransaction transaction)
-		=> new(TextWorkspaceCommandStatus.Applied, transaction);
+	public static TextWorkspaceCommandResult Applied(TextWorkspaceEditTransaction transaction) => new(TextWorkspaceCommandStatus.Applied, transaction);
 }

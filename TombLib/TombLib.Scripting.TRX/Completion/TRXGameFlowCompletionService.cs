@@ -22,8 +22,7 @@ public sealed class TRXGameFlowCompletionService : ITextCompletionProvider
 	/// Initializes a new instance of the <see cref="TRXGameFlowCompletionService"/> class.
 	/// </summary>
 	/// <param name="schemaService">The schema service used to source the GameFlow schema.</param>
-	public TRXGameFlowCompletionService(ITRXGameFlowSchemaService schemaService)
-		=> _schemaService = schemaService;
+	public TRXGameFlowCompletionService(ITRXGameFlowSchemaService schemaService) => _schemaService = schemaService;
 
 	/// <inheritdoc />
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)

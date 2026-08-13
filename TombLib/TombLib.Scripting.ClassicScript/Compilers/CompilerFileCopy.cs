@@ -20,6 +20,8 @@ internal static class CompilerFileCopy
 			File.WriteAllText(targetFilePath, fileContent, Encoding.GetEncoding(1252));
 		}
 		else
+		{
 			File.Copy(sourceFilePath, targetFilePath);
+		}
 	}
 }

@@ -16,6 +16,5 @@ public class FileOpenedEventArgs : EventArgs
 		OpenSourceView = openSourceView;
 	}
 
-	public static FileOpenedEventArgs CreateSourceView(string filePath)
-		=> new(filePath, EditorType.Default, true);
+	public static FileOpenedEventArgs CreateSourceView(string filePath) => new(filePath, EditorType.Default, true);
 }

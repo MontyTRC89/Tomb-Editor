@@ -16,7 +16,7 @@ namespace TombIDE.ScriptingStudio.Controls
 	internal sealed class EditorDocumentControllerCore
 	{
 		private readonly EditorFactoryService _editorFactory = new EditorFactoryService();
-		private readonly List<IEditorControl> _openEditors = new List<IEditorControl>();
+		private readonly List<IEditorControl> _openEditors = new();
 		private readonly Version _currentEngineVersion;
 		private readonly IClassicScriptLineService? _lineService;
 
@@ -32,15 +32,16 @@ namespace TombIDE.ScriptingStudio.Controls
 		public string GetDocumentTitle(IEditorControl editor)
 			=> _editorFactory.BuildTabTitle(editor?.FilePath, editor?.EditorType ?? EditorType.Default);
 
-		public IEnumerable<IEditorControl> GetOpenEditors()
-			=> _openEditors;
+		public IEnumerable<IEditorControl> GetOpenEditors() => _openEditors;
 
 		public List<string> GetFilePaths()
-			=> _openEditors
+		{
+			return _openEditors
 				.Where(editor => editor != null && !string.IsNullOrWhiteSpace(editor.FilePath))
 				.Select(editor => editor.FilePath)
 				.Distinct(StringComparer.OrdinalIgnoreCase)
 				.ToList();
+		}
 
 		public IEnumerable<IEditorControl> FindEditorsOfFile(string filePath)
 			=> _openEditors.Where(editor => editor.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
