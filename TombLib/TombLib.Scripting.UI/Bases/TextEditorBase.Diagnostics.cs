@@ -68,14 +68,13 @@ public abstract partial class TextEditorBase
 		=> _diagnosticToolTipService.TryGetDiagnosticInfo(Document, hoveredOffset, LiveErrorUnderlining, allowLineFallback, out diagnosticInfo);
 
 	/// <summary>
-	/// Shows a diagnostic tooltip with the given message and severity.
+	/// Shows a diagnostic tooltip with the given diagnostic information.
 	/// </summary>
-	/// <param name="message">The message to display.</param>
-	/// <param name="severity">The severity that determines the tooltip colors.</param>
-	public void ShowDiagnosticToolTip(string message, TextEditorDiagnosticSeverity severity)
+	/// <param name="diagnosticInfo">The diagnostic information to display.</param>
+	public void ShowDiagnosticToolTip(TextEditorDiagnosticInfo diagnosticInfo)
 	{
-		TextEditorToolTipHelper.GetDiagnosticToolTipColors(severity, out SolidColorBrush border, out SolidColorBrush background);
-		ShowToolTip(message, border, background, ToolTipForeground);
+		TextEditorToolTipHelper.GetDiagnosticToolTipColors(diagnosticInfo.Severity, out SolidColorBrush border, out SolidColorBrush background);
+		ShowToolTip(diagnosticInfo.Message, border, background, ToolTipForeground);
 	}
 
 	/// <summary>
@@ -88,7 +87,7 @@ public abstract partial class TextEditorBase
 		if (!TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo))
 			return false;
 
-		ShowDiagnosticToolTip(diagnosticInfo.Message, diagnosticInfo.Severity);
+		ShowDiagnosticToolTip(diagnosticInfo);
 		return true;
 	}
 }

@@ -35,8 +35,8 @@ public sealed partial class LuaEditor
 				getCurrentRequestOffset: TryGetCurrentRequestOffset,
 				showDiagnosticToolTip: editor.ShowDiagnosticToolTip,
 				showHoverToolTip: hoverInfo => HoverControllerFactory.ShowStandardHoverToolTip(_editor, hoverInfo),
-				showCombinedToolTip: (hoverInfo, diagnosticMessage, diagnosticSeverity) =>
-					HoverControllerFactory.ShowStandardCombinedToolTip(_editor, hoverInfo, diagnosticMessage, diagnosticSeverity),
+				showCombinedToolTip: (hoverInfo, diagnosticInfo) =>
+					HoverControllerFactory.ShowStandardCombinedToolTip(_editor, hoverInfo, diagnosticInfo),
 				applyHoverState: _ => { },
 				handleRequestFailure: exception => LogEditorFailure("Hover request", exception));
 		}
@@ -68,8 +68,7 @@ public sealed partial class LuaEditor
 				RequestOffset: shouldRequestHover ? hoverOffset : 0,
 				CanShowToolTip: canShowToolTip,
 				CanShowDiagnosticFallback: canShowToolTip,
-				DiagnosticMessage: diagnosticInfo?.Message,
-				DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
+				DiagnosticInfo: diagnosticInfo);
 		}
 
 		private int? TryGetCurrentRequestOffset(int hoveredOffset)

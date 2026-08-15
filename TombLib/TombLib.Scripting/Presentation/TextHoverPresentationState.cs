@@ -1,5 +1,5 @@
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
+using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Scripting.Presentation;
 
@@ -9,16 +9,14 @@ namespace TombLib.Scripting.Presentation;
 /// <param name="HoveredOffset">The document offset under the mouse, or <c>-1</c> when none.</param>
 /// <param name="RequestOffset">The document offset of the hover request, or <c>-1</c> when none.</param>
 /// <param name="HoverInfo">The resolved hover information, when available.</param>
-/// <param name="DiagnosticMessage">The diagnostic message, when a diagnostic is available.</param>
-/// <param name="DiagnosticSeverity">The severity of the diagnostic at the hovered offset.</param>
+/// <param name="DiagnosticInfo">The diagnostic information at the hovered offset, when available.</param>
 /// <param name="CanShowToolTip">Whether the hover tooltip can be shown.</param>
 /// <param name="CanShowDiagnosticFallback">Whether the diagnostic tooltip can be shown as a fallback.</param>
 public readonly record struct TextHoverPresentationState(
 	int HoveredOffset,
 	int RequestOffset,
 	TextHoverInfo? HoverInfo,
-	string? DiagnosticMessage,
-	TextEditorDiagnosticSeverity DiagnosticSeverity,
+	TextEditorDiagnosticInfo? DiagnosticInfo,
 	bool CanShowToolTip,
 	bool CanShowDiagnosticFallback)
 {
@@ -31,8 +29,7 @@ public readonly record struct TextHoverPresentationState(
 		HoveredOffset: hoveredOffset,
 		RequestOffset: -1,
 		HoverInfo: null,
-		DiagnosticMessage: null,
-		DiagnosticSeverity: default,
+		DiagnosticInfo: null,
 		CanShowToolTip: false,
 		CanShowDiagnosticFallback: false);
 
@@ -44,5 +41,6 @@ public readonly record struct TextHoverPresentationState(
 	/// <summary>
 	/// Gets a value indicating whether a non-empty diagnostic tooltip can be shown.
 	/// </summary>
-	public bool HasDisplayableDiagnostic => !string.IsNullOrWhiteSpace(DiagnosticMessage);
+	public bool HasDisplayableDiagnostic
+		=> DiagnosticInfo is not null && !string.IsNullOrWhiteSpace(DiagnosticInfo.Message);
 }

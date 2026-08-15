@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Scripting.UI.Rendering;
 
@@ -27,15 +28,14 @@ public static class TextHoverToolTipContentFactory
 	/// </summary>
 	public static FrameworkElement CreateCombinedContent(
 		TextHoverInfo hoverInfo,
-		string diagnosticMessage,
-		TextEditorDiagnosticSeverity severity,
+		TextEditorDiagnosticInfo diagnosticInfo,
 		Brush foreground,
 		Brush background,
 		double maxWidth,
 		double fontSize,
 		Func<TextEditorDiagnosticSeverity, (SolidColorBrush Border, SolidColorBrush Background)> getDiagnosticColors)
 	{
-		(SolidColorBrush diagnosticBorder, SolidColorBrush diagnosticBackground) = getDiagnosticColors(severity);
+		(SolidColorBrush diagnosticBorder, SolidColorBrush diagnosticBackground) = getDiagnosticColors(diagnosticInfo.Severity);
 
 		var panel = new StackPanel { MaxWidth = maxWidth };
 		panel.Children.Add(CreateHoverContent(hoverInfo, foreground, background));
@@ -50,7 +50,7 @@ public static class TextHoverToolTipContentFactory
 			Margin = new Thickness(0.0, 6.0, 0.0, 0.0),
 			Child = new TextBlock
 			{
-				Text = diagnosticMessage,
+				Text = diagnosticInfo.Message,
 				Foreground = foreground,
 				FontFamily = SystemFonts.MessageFontFamily,
 				FontSize = fontSize,

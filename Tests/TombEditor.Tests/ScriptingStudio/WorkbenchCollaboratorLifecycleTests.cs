@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using TombIDE.ScriptingStudio.ClassicScript;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.FindAndReplace;
@@ -23,11 +24,13 @@ using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.ScriptingStudio.Workbench;
+using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared.Messaging.Scripting;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Lua;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editors;
+using TombLib.LevelData;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombEditor.Tests.ScriptingStudio;
@@ -59,6 +62,66 @@ public sealed class WorkbenchCollaboratorLifecycleTests
 				BindingFlags.Instance | BindingFlags.NonPublic)
 				?? throw new AssertFailedException("The dialog close state field was not found.");
 			Assert.IsTrue((bool)closingField.GetValue(view)!);
+		});
+	}
+
+	[TestMethod]
+	public void ReferenceBrowserProvider_DisposeClosesReferenceInfoAndDetachesViewModel()
+	{
+		StaTestHelper.RunInSta(() =>
+		{
+			ResourceDictionary[] addedResources = EnsureDarkUiResources(out System.Windows.Application application);
+			string scriptDirectoryPath = System.IO.Directory.CreateTempSubdirectory("TombEditor-ReferenceInfo-").FullName;
+			try
+			{
+				System.IO.File.WriteAllText(System.IO.Path.Combine(scriptDirectoryPath, "Script.txt"), string.Empty);
+				ScriptingWorkspaceProfile profile = ScriptingWorkspaceProfileTestFactory.CreateSelectorProfile(
+					TRVersion.Game.TR4,
+					false,
+					scriptDirectoryPath);
+				var localizationService = new Mock<ILocalizationService>();
+				localizationService
+					.Setup(service => service[It.IsAny<string>()])
+					.Returns((string key) => key);
+				localizationService
+					.Setup(service => service.WithKeysFor(It.IsAny<System.ComponentModel.INotifyPropertyChanged>()))
+					.Returns(localizationService.Object);
+				var referenceInfoViewModel = new ReferenceInfoViewModel(
+					() => false,
+					_ => { },
+					() => false,
+					_ => { });
+				var provider = new ReferenceBrowserPaneProvider(
+					profile,
+					new ReferenceBrowserViewModel(new Mock<IMessageService>().Object, localizationService.Object),
+					referenceInfoViewModel);
+
+				FieldInfo viewField = typeof(ReferenceBrowserPaneProvider).GetField(
+					"_referenceInfoView",
+					BindingFlags.Instance | BindingFlags.NonPublic)
+					?? throw new AssertFailedException("The reference-info view field was not found.");
+				var view = (ReferenceInfoView)viewField.GetValue(provider)!;
+				view.Show("TEST", "Description");
+				Assert.AreEqual(1, referenceInfoViewModel.Tabs.Count);
+
+				provider.Dispose();
+				provider.Dispose();
+
+				Assert.IsFalse(view.IsVisible);
+				FieldInfo requestHideField = typeof(ReferenceInfoViewModel).GetField(
+					"RequestHide",
+					BindingFlags.Instance | BindingFlags.NonPublic)
+					?? throw new AssertFailedException("The reference-info event field was not found.");
+				Assert.IsNull(requestHideField.GetValue(referenceInfoViewModel));
+			}
+			finally
+			{
+				foreach (ResourceDictionary resource in addedResources)
+					application.Resources.MergedDictionaries.Remove(resource);
+
+				if (System.IO.Directory.Exists(scriptDirectoryPath))
+					System.IO.Directory.Delete(scriptDirectoryPath, recursive: true);
+			}
 		});
 	}
 
@@ -196,6 +259,33 @@ public sealed class WorkbenchCollaboratorLifecycleTests
 
 	private static FindAndReplaceViewModel CreateFindAndReplaceViewModel(IEditorDocumentController documentController)
 		=> new(documentController, new WeakReferenceMessenger(), new FindReplaceService());
+
+	private static ResourceDictionary[] EnsureDarkUiResources(out System.Windows.Application application)
+	{
+		application = System.Windows.Application.Current ?? new System.Windows.Application();
+		var addedResources = new List<ResourceDictionary>();
+		string[] resourceUris =
+		[
+			"/DarkUI.WPF;component/Generic.xaml",
+			"/DarkUI.WPF;component/Dictionaries/DarkColors.xaml"
+		];
+
+		foreach (string resourceUri in resourceUris)
+		{
+			if (application.Resources.MergedDictionaries.Any(dictionary =>
+				dictionary.Source?.OriginalString == resourceUri))
+				continue;
+
+			var resource = new ResourceDictionary
+			{
+				Source = new Uri(resourceUri, UriKind.RelativeOrAbsolute)
+			};
+			application.Resources.MergedDictionaries.Add(resource);
+			addedResources.Add(resource);
+		}
+
+		return [.. addedResources];
+	}
 
 	private static WorkbenchPaneCoordinator CreatePaneCoordinator()
 	{

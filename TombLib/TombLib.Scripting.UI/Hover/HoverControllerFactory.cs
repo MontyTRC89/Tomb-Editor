@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Presentation;
 using TombLib.Scripting.UI.Bases;
@@ -42,8 +43,8 @@ public static class HoverControllerFactory
 			getCurrentRequestOffset: hoveredOffset => hoveredOffset,
 			showDiagnosticToolTip: editor.ShowDiagnosticToolTip,
 			showHoverToolTip: hoverInfo => ShowStandardHoverToolTip(editor, hoverInfo),
-			showCombinedToolTip: (hoverInfo, diagnosticMessage, diagnosticSeverity) =>
-				ShowStandardCombinedToolTip(editor, hoverInfo, diagnosticMessage, diagnosticSeverity),
+			showCombinedToolTip: (hoverInfo, diagnosticInfo) =>
+				ShowStandardCombinedToolTip(editor, hoverInfo, diagnosticInfo),
 			applyHoverState: applyHoverState);
 	}
 
@@ -67,18 +68,16 @@ public static class HoverControllerFactory
 	public static void ShowStandardCombinedToolTip(
 		TextEditorBase editor,
 		TextHoverInfo hoverInfo,
-		string diagnosticMessage,
-		TextEditorDiagnosticSeverity diagnosticSeverity)
+		TextEditorDiagnosticInfo diagnosticInfo)
 	{
 		ArgumentNullException.ThrowIfNull(editor);
 		ArgumentNullException.ThrowIfNull(hoverInfo);
-		ArgumentNullException.ThrowIfNull(diagnosticMessage);
+		ArgumentNullException.ThrowIfNull(diagnosticInfo);
 
 		editor.ShowToolTip(
 			TextHoverToolTipContentFactory.CreateCombinedContent(
 				hoverInfo,
-				diagnosticMessage,
-				diagnosticSeverity,
+				diagnosticInfo,
 				TextEditorBase.ToolTipForeground,
 				TextEditorBase.DefaultToolTipBackground,
 				TextEditorBase.ToolTipTextMaxWidth,

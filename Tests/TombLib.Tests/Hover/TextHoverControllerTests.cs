@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Hover;
 
@@ -33,13 +34,12 @@ public class TextHoverControllerTests
 						RequestOffset: 5,
 						CanShowToolTip: true,
 						CanShowDiagnosticFallback: true,
-						DiagnosticMessage: "diagnostic",
-						DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+						DiagnosticInfo: new TextEditorDiagnosticInfo("diagnostic", TextEditorDiagnosticSeverity.Error)),
 					(offset, cancellationToken) => throw new InvalidOperationException("Hover failed."),
 					_ => 5,
-					(message, severity) => diagnosticShown = true,
+					_ => diagnosticShown = true,
 					_ => { },
-					(info, message, severity) => { });
+					(info, diagnosticInfo) => { });
 
 				var eventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0)
 				{
@@ -81,14 +81,13 @@ public class TextHoverControllerTests
 						RequestOffset: 5,
 						CanShowToolTip: true,
 						CanShowDiagnosticFallback: true,
-						DiagnosticMessage: "diagnostic",
-						DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+						DiagnosticInfo: new TextEditorDiagnosticInfo("diagnostic", TextEditorDiagnosticSeverity.Error)),
 					(offset, cancellationToken) => Task.FromResult<TextHoverInfo?>(
 						new TextHoverInfo("hover", TextHoverContentKind.PlainText, "symbol")),
 					_ => 5,
-					(message, severity) => diagnosticShown = true,
+					_ => diagnosticShown = true,
 					_ => tooltipShown = true,
-					(info, message, severity) => { },
+					(info, diagnosticInfo) => { },
 					_ => stateApplied = true);
 
 				var eventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0)
@@ -133,13 +132,12 @@ public class TextHoverControllerTests
 						RequestOffset: 5,
 						CanShowToolTip: true,
 						CanShowDiagnosticFallback: false,
-						DiagnosticMessage: null,
-						DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+						DiagnosticInfo: null),
 					(offset, cancellationToken) => completion.Task,
 					_ => 5,
-					(message, severity) => { },
+					_ => { },
 					_ => tooltipShown = true,
-					(info, message, severity) => { });
+					(info, diagnosticInfo) => { });
 
 				var eventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0)
 				{
@@ -177,13 +175,12 @@ public class TextHoverControllerTests
 					RequestOffset: -1,
 					CanShowToolTip: false,
 					CanShowDiagnosticFallback: false,
-					DiagnosticMessage: null,
-					DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+					DiagnosticInfo: null),
 				(offset, cancellationToken) => Task.FromResult<TextHoverInfo?>(null),
 				_ => 5,
-				(message, severity) => { },
 				_ => { },
-				(info, message, severity) => { });
+				_ => { },
+				(info, diagnosticInfo) => { });
 
 			controller.Dispose();
 			controller.CancelPendingRequest();
@@ -213,13 +210,12 @@ public class TextHoverControllerTests
 						RequestOffset: 5,
 						CanShowToolTip: true,
 						CanShowDiagnosticFallback: true,
-						DiagnosticMessage: null,
-						DiagnosticSeverity: TextEditorDiagnosticSeverity.Error),
+						DiagnosticInfo: null),
 					(offset, cancellationToken) => completion.Task,
 					_ => 5,
-					(message, severity) => { },
+					_ => { },
 					_ => tooltipShown = true,
-					(info, message, severity) => { });
+					(info, diagnosticInfo) => { });
 
 				var eventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0)
 				{

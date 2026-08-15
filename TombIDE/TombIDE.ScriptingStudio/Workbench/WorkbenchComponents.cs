@@ -67,8 +67,8 @@ internal sealed class WorkbenchComponents : IDisposable
 				composition.LanguageServices);
 			if (composition.WorkspaceProfile.SupportsLua)
 			{
-				LuaHostServices luaHostServices = composition.LuaHostServices
-					?? throw new InvalidOperationException("Lua host services are required for Lua-capable workspaces.");
+				LuaHostServices? luaHostServices = composition.LuaHostServices;
+				ArgumentNullException.ThrowIfNull(luaHostServices);
 				luaWorkbenchEventCoordinator = new LuaWorkbenchEventCoordinator(
 					composition.Messenger,
 					composition.WorkspaceProfile,

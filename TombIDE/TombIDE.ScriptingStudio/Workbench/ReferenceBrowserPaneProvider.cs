@@ -11,13 +11,14 @@ using TombLib.Scripting.ClassicScript.Navigation;
 
 namespace TombIDE.ScriptingStudio.Workbench;
 
-internal sealed class ReferenceBrowserPaneProvider : IStudioPaneContributionProvider
+internal sealed class ReferenceBrowserPaneProvider : IStudioPaneContributionProvider, IDisposable
 {
 	private readonly ScriptingWorkspaceProfile _profile;
 	private readonly ReferenceBrowserViewModel _viewModel;
 	private readonly ReferenceInfoViewModel _referenceInfoViewModel;
 	private readonly ReferenceInfoView _referenceInfoView;
 	private readonly ClassicScriptReferenceInfoService _referenceInfoService;
+	private bool _disposed;
 
 	public ReferenceBrowserPaneProvider(
 		ScriptingWorkspaceProfile profile,
@@ -46,7 +47,14 @@ internal sealed class ReferenceBrowserPaneProvider : IStudioPaneContributionProv
 	}
 
 	public void DisposeReferenceInfo()
+		=> Dispose();
+
+	public void Dispose()
 	{
+		if (_disposed)
+			return;
+
+		_disposed = true;
 		_referenceInfoView.ClosePermanently();
 	}
 

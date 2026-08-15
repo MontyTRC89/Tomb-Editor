@@ -60,8 +60,7 @@ public abstract partial class TextEditorBase
 			RequestOffset: hoveredOffset,
 			CanShowToolTip: true,
 			CanShowDiagnosticFallback: CanShowDiagnosticFallback,
-			DiagnosticMessage: diagnosticInfo?.Message,
-			DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
+			DiagnosticInfo: diagnosticInfo);
 	}
 
 	/// <summary>

@@ -12,7 +12,7 @@ namespace TombLib.Scripting.Signatures;
 public sealed record TextSignatureHelpRequest
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextSignatureHelpRequest"/> class.
+	/// Initializes a new instance of the <see cref="TextSignatureHelpRequest"/> record.
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="caretOffset">The zero-based caret offset within that snapshot.</param>

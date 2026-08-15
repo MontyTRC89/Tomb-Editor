@@ -19,8 +19,7 @@ public sealed partial class ClassicScriptEditor
 			RequestOffset: hoveredOffset,
 			CanShowToolTip: true,
 			CanShowDiagnosticFallback: false,
-			DiagnosticMessage: diagnosticInfo?.Message,
-			DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
+			DiagnosticInfo: diagnosticInfo);
 	}
 
 	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)

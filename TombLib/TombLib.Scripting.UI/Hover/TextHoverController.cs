@@ -1,4 +1,3 @@
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using NLog;
 using System;
@@ -6,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Presentation;
 using TombLib.Scripting.Threading;
@@ -24,9 +24,9 @@ public sealed class TextHoverController : IDisposable
 	private readonly Func<int, TextHoverRequestState> _buildRequestState;
 	private readonly Func<int, CancellationToken, Task<TextHoverInfo?>> _requestHoverAsync;
 	private readonly Func<int, int?> _getCurrentRequestOffset;
-	private readonly Action<string, TextEditorDiagnosticSeverity> _showDiagnosticToolTip;
+	private readonly Action<TextEditorDiagnosticInfo> _showDiagnosticToolTip;
 	private readonly Action<TextHoverInfo> _showHoverToolTip;
-	private readonly Action<TextHoverInfo, string, TextEditorDiagnosticSeverity> _showCombinedToolTip;
+	private readonly Action<TextHoverInfo, TextEditorDiagnosticInfo> _showCombinedToolTip;
 	private readonly Action<TextHoverPresentationState>? _applyHoverState;
 	private readonly Action<Exception>? _handleRequestFailure;
 
@@ -43,9 +43,9 @@ public sealed class TextHoverController : IDisposable
 		Func<int, TextHoverRequestState> buildRequestState,
 		Func<int, CancellationToken, Task<TextHoverInfo?>> requestHoverAsync,
 		Func<int, int?> getCurrentRequestOffset,
-		Action<string, TextEditorDiagnosticSeverity> showDiagnosticToolTip,
+		Action<TextEditorDiagnosticInfo> showDiagnosticToolTip,
 		Action<TextHoverInfo> showHoverToolTip,
-		Action<TextHoverInfo, string, TextEditorDiagnosticSeverity> showCombinedToolTip,
+		Action<TextHoverInfo, TextEditorDiagnosticInfo> showCombinedToolTip,
 		Action<TextHoverPresentationState>? applyHoverState = null,
 		Action<Exception>? handleRequestFailure = null)
 	{
@@ -204,8 +204,7 @@ public sealed class TextHoverController : IDisposable
 			HoveredOffset: hoveredOffset,
 			RequestOffset: requestState.ShouldRequestHover ? requestState.RequestOffset : -1,
 			HoverInfo: hoverInfo,
-			DiagnosticMessage: requestState.DiagnosticMessage,
-			DiagnosticSeverity: requestState.DiagnosticSeverity,
+			DiagnosticInfo: requestState.DiagnosticInfo,
 			CanShowToolTip: requestState.CanShowToolTip,
 			CanShowDiagnosticFallback: requestState.CanShowDiagnosticFallback);
 	}
@@ -227,11 +226,13 @@ public sealed class TextHoverController : IDisposable
 
 	private void ShowDiagnosticToolTipIfAvailable(TextHoverRequestState requestState)
 	{
-		if (requestState.CanShowDiagnosticFallback
-			&& !string.IsNullOrWhiteSpace(requestState.DiagnosticMessage))
-		{
-			_showDiagnosticToolTip(requestState.DiagnosticMessage, requestState.DiagnosticSeverity);
-		}
+		if (!requestState.CanShowDiagnosticFallback)
+			return;
+
+		TextEditorDiagnosticInfo? diagnosticInfo = GetDisplayableDiagnosticInfo(requestState.DiagnosticInfo);
+
+		if (diagnosticInfo is not null)
+			_showDiagnosticToolTip(diagnosticInfo);
 	}
 
 	private void ShowBestToolTip(TextHoverInfo? hoverInfo, TextHoverRequestState requestState)
@@ -240,14 +241,18 @@ public sealed class TextHoverController : IDisposable
 			return;
 
 		TextHoverInfo? displayableHoverInfo = GetDisplayableHoverInfo(hoverInfo);
-		bool hasDisplayableDiagnostic = !string.IsNullOrWhiteSpace(requestState.DiagnosticMessage);
-		string diagnosticText = requestState.DiagnosticMessage ?? string.Empty;
+		TextEditorDiagnosticInfo? displayableDiagnosticInfo = GetDisplayableDiagnosticInfo(requestState.DiagnosticInfo);
 
-		if (displayableHoverInfo is not null && hasDisplayableDiagnostic)
-			_showCombinedToolTip(displayableHoverInfo, diagnosticText, requestState.DiagnosticSeverity);
+		if (displayableHoverInfo is not null && displayableDiagnosticInfo is not null)
+			_showCombinedToolTip(displayableHoverInfo, displayableDiagnosticInfo);
 		else if (displayableHoverInfo is not null)
 			_showHoverToolTip(displayableHoverInfo);
-		else if (hasDisplayableDiagnostic)
-			_showDiagnosticToolTip(diagnosticText, requestState.DiagnosticSeverity);
+		else if (displayableDiagnosticInfo is not null)
+			_showDiagnosticToolTip(displayableDiagnosticInfo);
 	}
+
+	private static TextEditorDiagnosticInfo? GetDisplayableDiagnosticInfo(TextEditorDiagnosticInfo? diagnosticInfo)
+		=> diagnosticInfo is not null && !string.IsNullOrWhiteSpace(diagnosticInfo.Message)
+			? diagnosticInfo
+			: null;
 }
