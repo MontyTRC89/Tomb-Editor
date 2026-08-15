@@ -4,6 +4,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using TombIDE.ScriptingStudio.CommandSurface;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.ToolStrips;
 using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.UI.Bases;
@@ -115,9 +116,11 @@ public class StudioContributionSurfaceTests
 	[TestMethod]
 	public void TypedDocumentCommandSurfaceProvider_ReturnsExpectedRepresentativeContributions()
 	{
-		IStudioDocumentCommandSurfaceProvider typedProvider = TypedDocumentCommandSurfaceProvider.Instance;
+		IStudioDocumentCommandSurfaceProvider luaProvider = TypedDocumentCommandSurfaceProvider.CreateLua();
+		IStudioDocumentCommandSurfaceProvider classicScriptProvider = TypedDocumentCommandSurfaceProvider.CreateClassicScript();
+		IStudioDocumentCommandSurfaceProvider stringsProvider = TypedDocumentCommandSurfaceProvider.CreateStrings();
 
-		StudioToolStripItem luaMenuRoot = AssertSingleRoot(typedProvider.GetMenuStripItems(null!, DocumentMode.Lua));
+		StudioToolStripItem luaMenuRoot = AssertSingleRoot(luaProvider.GetMenuStripItems(null!));
 		Assert.AreEqual("Document", luaMenuRoot.LangKey);
 		Assert.AreEqual(2, luaMenuRoot.Position);
 		CollectionAssert.AreEqual(
@@ -157,7 +160,7 @@ public class StudioContributionSurfaceTests
 				"NextBookmark",
 				"ClearBookmarks"
 			},
-			typedProvider.GetToolStripItems(null!, DocumentMode.ClassicScript).Select(static item => item.LangKey).ToArray());
+			classicScriptProvider.GetToolStripItems(null!).Select(static item => item.LangKey).ToArray());
 
 		CollectionAssert.AreEqual(
 			new[]
@@ -166,9 +169,9 @@ public class StudioContributionSurfaceTests
 				"Copy",
 				"Paste"
 			},
-			typedProvider.GetContextMenuItems(null!, DocumentMode.Strings).Select(static item => item.LangKey).ToArray());
+			stringsProvider.GetContextMenuItems(null!).Select(static item => item.LangKey).ToArray());
 
-		Assert.AreEqual(0, typedProvider.GetMenuStripItems(null!, DocumentMode.None).Count);
+		Assert.IsNull(ScriptingDocumentContributions.None.CommandSurfaceProvider);
 	}
 
 	[TestMethod]
@@ -176,10 +179,32 @@ public class StudioContributionSurfaceTests
 	{
 		// EditorContextMenu is removed (replaced by native WPF context menus).
 		// Context menu items are still provided by the typed provider.
-		IStudioDocumentCommandSurfaceProvider typedProvider = TypedDocumentCommandSurfaceProvider.Instance;
+		IStudioDocumentCommandSurfaceProvider? typedProvider = ScriptingDocumentContributions.None.CommandSurfaceProvider;
 
-		var items = typedProvider.GetContextMenuItems(null!, DocumentMode.None);
-		Assert.AreEqual(0, items.Count);
+		Assert.IsNull(typedProvider);
+	}
+
+	[TestMethod]
+	public void DocumentContributions_SelectCommandSurfaceByRegistrationIdentity()
+	{
+		IStudioDocumentCommandSurfaceProvider luaProvider = TypedDocumentCommandSurfaceProvider.CreateLua();
+		IStudioDocumentCommandSurfaceProvider trxProvider = TypedDocumentCommandSurfaceProvider.CreateTrx();
+
+		Assert.AreNotSame(luaProvider, trxProvider);
+		Assert.AreEqual("GoToDefinition", luaProvider.GetMenuStripItems(null!)[0].DropDownItems[5].LangKey);
+		Assert.AreEqual("TrimWhitespace", trxProvider.GetMenuStripItems(null!)[0].DropDownItems[2].LangKey);
+	}
+
+	[TestMethod]
+	public void DocumentCommandSurfaceProvider_ClonesItemsForEachRequest()
+	{
+		IStudioDocumentCommandSurfaceProvider provider = TypedDocumentCommandSurfaceProvider.CreateLua();
+
+		StudioToolStripItem firstRoot = provider.GetMenuStripItems(null!)[0];
+		StudioToolStripItem secondRoot = provider.GetMenuStripItems(null!)[0];
+
+		Assert.AreNotSame(firstRoot, secondRoot);
+		Assert.AreNotSame(firstRoot.DropDownItems[0], secondRoot.DropDownItems[0]);
 	}
 
 	private static void RunInSta(Action action)

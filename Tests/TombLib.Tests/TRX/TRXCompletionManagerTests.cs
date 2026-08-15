@@ -1,8 +1,12 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
+using ICSharpCode.AvalonEdit.Document;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using TombLib.Scripting.TRX.Models;
 using TombLib.Scripting.Completion;
 using TombLib.Scripting.TRX.Completion;
+using TombLib.Scripting.TRX.Resources;
 using TombLib.Scripting.TRX.Services;
 
 namespace TombLib.Tests;
@@ -124,6 +128,49 @@ public class TRXCompletionManagerTests
 		Assert.IsTrue(afterElapsed <= beforeElapsed * 2.0, $"Single stage took {afterElapsed:F1} ms vs {beforeElapsed:F1} ms.");
 	}
 
+	[TestMethod]
+	public void LargeIncompleteDocumentCompletion_RemainsCorrectAndScalesWithinGenerousBounds()
+	{
+		var schemaService = new StubSchemaService(CreateSchemaModel());
+		var coordinator = new TRXCompletionSessionCoordinator(
+			new TRXGameFlowCompletionService(schemaService),
+			new TextAnalysisService(),
+			new CompletionManager(new TRXLineService()));
+		var smallDocument = new TextDocument(CreateIncompleteDocument(64));
+		var largeDocument = new TextDocument(CreateIncompleteDocument(1024));
+		int smallCaretOffset = smallDocument.TextLength;
+		int largeCaretOffset = largeDocument.TextLength;
+
+		TextCompletionSessionDecision decision = coordinator.GetCtrlSpaceDecision(largeDocument, largeCaretOffset, false);
+
+		Assert.IsNotNull(decision.Items);
+		Assert.IsTrue(decision.Items.Any(item => item.InsertText == "\"title\": "));
+		Assert.IsTrue(decision.StartOffset >= 0);
+		Assert.AreEqual(largeCaretOffset, decision.EndOffset);
+
+		const int iterations = 100;
+		coordinator.GetCtrlSpaceDecision(smallDocument, smallCaretOffset, false);
+		coordinator.GetCtrlSpaceDecision(largeDocument, largeCaretOffset, false);
+
+		long smallAllocated = MeasureAllocations(
+			() => coordinator.GetCtrlSpaceDecision(smallDocument, smallCaretOffset, false),
+			iterations);
+		long largeAllocated = MeasureAllocations(
+			() => coordinator.GetCtrlSpaceDecision(largeDocument, largeCaretOffset, false),
+			iterations);
+		double smallElapsed = MeasureElapsed(
+			() => coordinator.GetCtrlSpaceDecision(smallDocument, smallCaretOffset, false),
+			iterations);
+		double largeElapsed = MeasureElapsed(
+			() => coordinator.GetCtrlSpaceDecision(largeDocument, largeCaretOffset, false),
+			iterations);
+
+		Assert.IsTrue(largeAllocated <= smallAllocated * 20 + 1_000_000,
+			$"Large document allocated {largeAllocated} B vs {smallAllocated} B for the small document.");
+		Assert.IsTrue(largeElapsed <= smallElapsed * 20.0 + 100.0,
+			$"Large document took {largeElapsed:F1} ms vs {smallElapsed:F1} ms for the small document.");
+	}
+
 	private static IReadOnlyList<TextCompletionItem> RunSingleStageFilter(CompletionManager manager)
 		=> manager.FilterCompletions(Items, "\"ti");
 
@@ -152,5 +199,27 @@ public class TRXCompletionManagerTests
 
 		stopwatch.Stop();
 		return stopwatch.Elapsed.TotalMilliseconds;
+	}
+
+	private static TRXGameFlowSchemaModel CreateSchemaModel()
+	{
+		var properties = Enumerable.Range(0, 64)
+			.Select(index => new TRXGameFlowProperty($"property{index}", [TRXGameFlowPropertyType.String], null))
+			.Append(new TRXGameFlowProperty("title", [TRXGameFlowPropertyType.String], "Display title."))
+			.ToArray();
+
+		return new TRXGameFlowSchemaModel(properties, TRXSchemaKeywords.Empty);
+	}
+
+	private static string CreateIncompleteDocument(int fillerLineCount)
+		=> string.Concat(Enumerable.Repeat("{ filler: true }\n", fillerLineCount)) + "{\"tit";
+
+	private sealed class StubSchemaService(TRXGameFlowSchemaModel model) : ITRXGameFlowSchemaService
+	{
+		public TRXSchemaLoadState LoadState => TRXSchemaLoadState.Loaded;
+
+		public TRXGameFlowSchemaModel? Model => model;
+
+		public TRXSchemaKeywords Keywords => model.Keywords;
 	}
 }

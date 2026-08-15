@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,31 +8,28 @@ using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.ClassicScript.Documents;
-using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.Controls
 {
-	internal readonly record struct EditorOpenResult(IEditorControl Editor, bool IsNewDocument);
+	internal readonly record struct EditorOpenResult(IEditorControl? Editor, bool IsNewDocument);
 
 	internal sealed class EditorDocumentControllerCore
 	{
 		private readonly EditorFactoryService _editorFactory = new EditorFactoryService();
 		private readonly List<IEditorControl> _openEditors = new();
 		private readonly Version _currentEngineVersion;
-		private readonly IClassicScriptLineService? _lineService;
 
-		public EditorDocumentControllerCore(Version currentEngineVersion, IClassicScriptLineService? lineService = null)
+		public EditorDocumentControllerCore(Version currentEngineVersion)
 		{
 			_currentEngineVersion = currentEngineVersion ?? throw new ArgumentNullException(nameof(currentEngineVersion));
-			_lineService = lineService;
 		}
 
-		public DocumentMode GetDocumentMode(IEditorControl editor)
-			=> editor is null ? DocumentMode.None : _editorFactory.GetDocumentMode(editor);
+		public ScriptingDocumentRegistration? GetDocumentRegistration(IEditorControl? editor)
+			=> _editorFactory.GetDocumentRegistration(editor);
 
 		public string GetDocumentTitle(IEditorControl editor)
-			=> _editorFactory.BuildTabTitle(editor?.FilePath, editor?.EditorType ?? EditorType.Default);
+			=> _editorFactory.BuildTabTitle(editor.FilePath, editor.EditorType);
 
 		public IEnumerable<IEditorControl> GetOpenEditors() => _openEditors;
 
@@ -46,7 +45,7 @@ namespace TombIDE.ScriptingStudio.Controls
 		public IEnumerable<IEditorControl> FindEditorsOfFile(string filePath)
 			=> _openEditors.Where(editor => editor.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
 
-		public IEditorControl FindEditor(string filePath, EditorType editorType = EditorType.Default)
+		public IEditorControl? FindEditor(string filePath, EditorType editorType = EditorType.Default)
 		{
 			if (editorType == EditorType.Default)
 				editorType = _editorFactory.GetDefaultEditorType(filePath);
@@ -56,12 +55,12 @@ namespace TombIDE.ScriptingStudio.Controls
 				&& editor.EditorType == editorType);
 		}
 
-		public IEditorControl FindSourceEditor(string filePath)
+		public IEditorControl? FindSourceEditor(string filePath)
 			=> FindEditor(filePath, _editorFactory.GetSourceViewEditorType(filePath));
 
-		public IEditorControl GetMostRecentlyModifiedEditorOfFile(string filePath)
+		public IEditorControl? GetMostRecentlyModifiedEditorOfFile(string filePath)
 		{
-			IEditorControl mostRecentEditor = null;
+			IEditorControl? mostRecentEditor = null;
 
 			foreach (IEditorControl editor in FindEditorsOfFile(filePath))
 			{
@@ -77,7 +76,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			if (editor is null)
 				return false;
 
-			IEditorControl mostRecentEditor = GetMostRecentlyModifiedEditorOfFile(editor.FilePath);
+			IEditorControl? mostRecentEditor = GetMostRecentlyModifiedEditorOfFile(editor.FilePath);
 			return mostRecentEditor is not null && editor.LastModified == mostRecentEditor.LastModified;
 		}
 
@@ -89,12 +88,12 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public EditorOpenResult OpenFile(string filePath, EditorType editorType = EditorType.Default, bool silentSession = false)
 		{
-			IEditorControl existingEditor = FindEditor(filePath, editorType);
+			IEditorControl? existingEditor = FindEditor(filePath, editorType);
 
 			if (existingEditor != null)
 				return new EditorOpenResult(existingEditor, false);
 
-			IEditorControl newEditor = InitializeEditor(filePath, editorType, silentSession);
+			IEditorControl? newEditor = InitializeEditor(filePath, editorType, silentSession);
 
 			if (newEditor is null)
 				return default;
@@ -104,36 +103,18 @@ namespace TombIDE.ScriptingStudio.Controls
 			return new EditorOpenResult(newEditor, true);
 		}
 
-		public void RegisterJson5Editor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsJson5File, static _ => true, factory);
-
-		public void RegisterLuaEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsLuaFile, static _ => true, factory);
-
-		public void RegisterPlainTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-			=> _editorFactory.SetPlainTextEditorFactory(factory, documentMode);
-
-		public void RegisterStringsEditor(Func<Version, IEditorControl> factory)
+		public void RegisterDocument(ScriptingDocumentRegistration registration)
 		{
-			if (_lineService is null)
+			ArgumentNullException.ThrowIfNull(registration);
+
+			if (registration.IsFallback)
+			{
+				_editorFactory.SetPlainTextEditorFactory(registration.Factory, registration.DocumentMode, registration.Contributions);
 				return;
+			}
 
-			RegisterEditor(
-				EditorType.Strings,
-				DocumentMode.Strings,
-				FileHelper.IsTextFile,
-				filePath => FileHelper.GetClassicScriptFileKind(filePath, _lineService) == ClassicScriptFileKind.Strings,
-				factory);
+			_editorFactory.Register(registration);
 		}
-
-		public void RegisterTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-			=> RegisterTextEditor(factory, documentMode, _ => true);
-
-		public void RegisterTextEditor(
-			Func<Version, IEditorControl> factory,
-			DocumentMode documentMode,
-			Func<string, bool> isDefaultForFile)
-			=> RegisterEditor(EditorType.Text, documentMode, FileHelper.IsTextFile, isDefaultForFile, factory);
 
 		public void RemoveEditor(IEditorControl editor)
 		{
@@ -143,7 +124,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			_openEditors.Remove(editor);
 		}
 
-		private IEditorControl InitializeEditor(string filePath, EditorType editorType, bool silentSession)
+		private IEditorControl? InitializeEditor(string filePath, EditorType editorType, bool silentSession)
 		{
 			IEditorControl newEditor = _editorFactory.CreateEditor(filePath, editorType, _currentEngineVersion);
 
@@ -158,12 +139,5 @@ namespace TombIDE.ScriptingStudio.Controls
 			return newEditor;
 		}
 
-		private void RegisterEditor(
-			EditorType editorType,
-			DocumentMode documentMode,
-			Func<string, bool> supportsFile,
-			Func<string, bool> isDefaultForFile,
-			Func<Version, IEditorControl> factory)
-			=> _editorFactory.Register(new EditorRegistration(editorType, documentMode, supportsFile, isDefaultForFile, factory));
 	}
 }

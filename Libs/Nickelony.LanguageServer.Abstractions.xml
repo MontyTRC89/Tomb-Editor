@@ -421,6 +421,11 @@
             Describes the severity of a text-editor diagnostic.
             </summary>
         </member>
+        <member name="F:Nickelony.LanguageServer.Abstractions.Diagnostics.TextEditorDiagnosticSeverity.None">
+            <summary>
+            The diagnostic has no severity and is not intended to be displayed to the user.
+            </summary>
+        </member>
         <member name="F:Nickelony.LanguageServer.Abstractions.Diagnostics.TextEditorDiagnosticSeverity.Error">
             <summary>
             The diagnostic is an error.

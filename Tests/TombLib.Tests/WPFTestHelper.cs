@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -123,5 +124,21 @@ internal static class WPFTestHelper
 
 		if (capturedException is not null)
 			ExceptionDispatchInfo.Capture(capturedException).Throw();
+	}
+
+	public static void AssertCollected(WeakReference reference, string description, int maxAttempts = 8)
+	{
+		ArgumentNullException.ThrowIfNull(reference);
+		ArgumentException.ThrowIfNullOrWhiteSpace(description);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxAttempts);
+
+		for (int attempt = 0; attempt < maxAttempts && reference.IsAlive; attempt++)
+		{
+			GC.Collect(2, GCCollectionMode.Forced, blocking: true, compacting: true);
+			GC.WaitForPendingFinalizers();
+			Thread.Yield();
+		}
+
+		Assert.IsFalse(reference.IsAlive, $"The {description} remained reachable after {maxAttempts} forced collection attempts.");
 	}
 }

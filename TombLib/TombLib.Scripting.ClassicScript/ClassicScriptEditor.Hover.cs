@@ -2,6 +2,7 @@ using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using System.Threading;
 using System.Threading.Tasks;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Threading;
 
@@ -11,16 +12,15 @@ public sealed partial class ClassicScriptEditor
 {
 	private TextHoverRequestState BuildHoverRequestState(int hoveredOffset)
 	{
-		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
+		TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo, allowLineFallback: false);
 
 		return new TextHoverRequestState(
 			ShouldRequestHover: true,
 			RequestOffset: hoveredOffset,
 			CanShowToolTip: true,
 			CanShowDiagnosticFallback: false,
-			HasDiagnostic: hasDiagnostic,
-			DiagnosticMessage: diagnosticMessage,
-			DiagnosticSeverity: diagnosticSeverity);
+			DiagnosticMessage: diagnosticInfo?.Message,
+			DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
 	}
 
 	private Task<TextHoverInfo?> RequestHover(int hoveredOffset, CancellationToken cancellationToken)

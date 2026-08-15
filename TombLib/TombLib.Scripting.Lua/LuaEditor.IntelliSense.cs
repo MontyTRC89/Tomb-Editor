@@ -35,7 +35,7 @@ public sealed partial class LuaEditor
 	/// <inheritdoc/>
 	protected override void OnLanguageTextChanged(EventArgs e)
 	{
-		_editorDocumentVersion++;
+		Interlocked.Increment(ref _editorDocumentVersion);
 		RebaseOpenCompletionItems();
 	}
 

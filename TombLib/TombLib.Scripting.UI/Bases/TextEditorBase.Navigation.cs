@@ -53,16 +53,15 @@ public abstract partial class TextEditorBase
 	/// </summary>
 	protected TextHoverRequestState BuildStandardHoverRequestState(int hoveredOffset)
 	{
-		bool hasDiagnostic = TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity);
+		TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo);
 
 		return new TextHoverRequestState(
 			ShouldRequestHover: true,
 			RequestOffset: hoveredOffset,
 			CanShowToolTip: true,
 			CanShowDiagnosticFallback: CanShowDiagnosticFallback,
-			HasDiagnostic: hasDiagnostic,
-			DiagnosticMessage: diagnosticMessage,
-			DiagnosticSeverity: diagnosticSeverity);
+			DiagnosticMessage: diagnosticInfo?.Message,
+			DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
 	}
 
 	/// <summary>

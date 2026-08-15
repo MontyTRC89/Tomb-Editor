@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using TombIDE.ScriptingStudio.Composition;
+using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.Settings;
 using TombIDE.ScriptingStudio.ToolStrips;
 using TombIDE.ScriptingStudio.UI;
@@ -33,6 +35,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 	private readonly ILocalizationService _localizationService;
 	private readonly IScriptingStudioShellSettingsStore _settingsStore;
 	private readonly IWorkbenchService _workbenchService;
+	private readonly IEditorDocumentController _documentController;
 	private readonly ScriptingWorkspaceProfile _workspaceProfile;
 	private readonly ClassicScriptLanguageServices _languageServices;
 	private readonly GameFlowLanguageServices _gameFlowLanguageServices;
@@ -40,6 +43,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 
 	private string _avalonDockLayoutXml = string.Empty;
 	private ScriptingStudioShellWorkspaceSettings _settings = new();
+	private bool _disposed;
 
 	internal RootShellViewModel(
 		ScriptingWorkspaceProfile workspaceProfile,
@@ -53,6 +57,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		IStatusBarService statusBarService,
 		IPaneHostService paneHostService,
 		IWorkbenchService workbenchService,
+		IEditorDocumentController documentController,
 		ShellWorkbenchSettings workbenchSettings,
 		ClassicScriptLanguageServices languageServices,
 		GameFlowLanguageServices gameFlowLanguageServices,
@@ -69,6 +74,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		ArgumentNullException.ThrowIfNull(statusBarService);
 		ArgumentNullException.ThrowIfNull(paneHostService);
 		ArgumentNullException.ThrowIfNull(workbenchService);
+		ArgumentNullException.ThrowIfNull(documentController);
 		ArgumentNullException.ThrowIfNull(workbenchSettings);
 		ArgumentNullException.ThrowIfNull(languageServices);
 		ArgumentNullException.ThrowIfNull(gameFlowLanguageServices);
@@ -84,6 +90,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		_statusBarService = statusBarService;
 		_paneHostService = paneHostService;
 		_workbenchService = workbenchService;
+		_documentController = documentController;
 		_messenger = messenger;
 		_messageService = messageService;
 		_localizationService = localizationService.WithKeysFor(this);
@@ -163,13 +170,12 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 
 	public void Dispose()
 	{
-		_workbenchService.Dispose();
+		if (_disposed)
+			return;
+
+		_disposed = true;
 		_menuService.CommandInvoked -= HandleChromeCommandInvoked;
 		_toolBarService.CommandInvoked -= HandleChromeCommandInvoked;
-		_menuService.Dispose();
-		_toolBarService.Dispose();
-		_statusBarService.Dispose();
-		_paneHostService.Dispose();
 	}
 
 	private ScriptingStudioShellWorkspaceSettings BuildSettingsSnapshot() => new()
@@ -179,6 +185,7 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		InfoBoxAlwaysOnTop = _settings.InfoBoxAlwaysOnTop,
 		InfoBoxCloseTabsOnClose = _settings.InfoBoxCloseTabsOnClose,
 		IsLegacyImported = _settings.IsLegacyImported,
+		LuaEnabled = _settings.LuaEnabled,
 		IsStatusStripVisible = IsStatusStripVisible,
 		IsToolStripVisible = IsToolStripVisible,
 		ReindentOnSave = ReindentOnSave,
@@ -308,7 +315,13 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 
 	private bool ShowSettingsDialog()
 	{
-		var viewModel = new ScriptingSettingsWindowViewModel(_workspaceProfile, DocumentMode.None, _languageServices, _gameFlowLanguageServices, _trxLanguageServices);
+		var viewModel = new ScriptingSettingsWindowViewModel(
+			_workspaceProfile,
+			_documentController.CurrentDocumentContext.Registration,
+			_settings.LuaEnabled,
+			_languageServices,
+			_gameFlowLanguageServices,
+			_trxLanguageServices);
 		var window = new ScriptingSettingsWindow
 		{
 			DataContext = viewModel
@@ -317,6 +330,10 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		if (Form.ActiveForm is Form ownerForm)
 			new WindowInteropHelper(window).Owner = ownerForm.Handle;
 
-		return window.ShowDialog() == true;
+		if (window.ShowDialog() != true)
+			return false;
+
+		_settings.LuaEnabled = viewModel.LuaEnabled;
+		return TrySaveSettings();
 	}
 }

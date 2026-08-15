@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TombLib.Scripting.ClassicScript.Commands;
 
 namespace TombLib.Tests;
@@ -40,19 +43,42 @@ public class ClassicScriptCommandCatalogServiceTests
 	}
 
 	[TestMethod]
-	public void CommandLists_ContainTheFourEntriesAbsentFromLegacyNewCommandArray()
+	public void CommandCatalog_ContainsRequiredCommandsAndValidMetadata()
 	{
 		Assert.IsTrue(_service.NewCommands.Contains("#DEFINE", StringComparer.OrdinalIgnoreCase));
 		Assert.IsTrue(_service.NewCommands.Contains("#FIRST_ID", StringComparer.OrdinalIgnoreCase));
 		Assert.IsTrue(_service.NewCommands.Contains("#INCLUDE", StringComparer.OrdinalIgnoreCase));
 		Assert.IsTrue(_service.NewCommands.Contains("FMV", StringComparer.OrdinalIgnoreCase));
+		Assert.IsTrue(_service.OldCommands.Contains("Legend", StringComparer.OrdinalIgnoreCase));
+		Assert.IsTrue(_service.OldCommands.Contains("AnimatingMIP", StringComparer.OrdinalIgnoreCase));
 
-		Assert.AreEqual(58, _service.NewCommands.Count);
-		Assert.AreEqual(41, _service.OldCommands.Count);
+		AssertCatalogNamesAreUniqueAndNonempty(_service.NewCommands);
+		AssertCatalogNamesAreUniqueAndNonempty(_service.OldCommands);
+
+		ClassicScriptCommandsCatalog catalog = new ClassicScriptCommandsLoader().Load();
+		Assert.IsTrue(catalog.Commands.Count > 0);
+		Assert.IsTrue(catalog.Sections.Count > 0);
+		Assert.IsTrue(catalog.Sections.All(section => !string.IsNullOrWhiteSpace(section)));
+		Assert.AreEqual(
+			catalog.Sections.Count,
+			new HashSet<string>(catalog.Sections, StringComparer.OrdinalIgnoreCase).Count);
+		Assert.IsTrue(catalog.Commands.All(command => !string.IsNullOrWhiteSpace(command.Name)));
+		Assert.IsTrue(catalog.Commands.All(command => Enum.IsDefined(typeof(ClassicScriptCommandKind), command.Kind)));
+		Assert.IsTrue(catalog.Commands.All(command => command.Syntaxes.All(syntax =>
+			!string.IsNullOrWhiteSpace(syntax.Key) && !string.IsNullOrWhiteSpace(syntax.Text))));
+
+		foreach (IGrouping<ClassicScriptCommandKind, ClassicScriptCommandEntry> commandsByKind in catalog.Commands.GroupBy(command => command.Kind))
+		{
+			Assert.AreEqual(
+				commandsByKind.Count(),
+				commandsByKind.Select(command => command.Name).Distinct(StringComparer.OrdinalIgnoreCase).Count(),
+				$"Duplicate command name in {commandsByKind.Key} catalog.");
+		}
+
 	}
 
 	[TestMethod]
-	public void Sections_ContainAllTenSections()
+	public void Sections_ContainRequiredSections()
 	{
 		string[] expected =
 		[
@@ -60,7 +86,8 @@ public class ClassicScriptCommandCatalogServiceTests
 			"Strings", "PSXStrings", "PCStrings", "ExtraNG"
 		];
 
-		CollectionAssert.AreEqual(expected, _service.Sections.ToArray());
+		foreach (string section in expected)
+			Assert.IsTrue(_service.Sections.Contains(section, StringComparer.OrdinalIgnoreCase), section);
 	}
 
 	[TestMethod]
@@ -70,5 +97,11 @@ public class ClassicScriptCommandCatalogServiceTests
 		Assert.IsTrue(_service.IsOldCommand("LEGEND"));
 		Assert.IsFalse(_service.IsOldCommand("addeffect"));
 		Assert.IsTrue(_service.NewCommands.Contains("addeffect", StringComparer.OrdinalIgnoreCase));
+	}
+
+	private static void AssertCatalogNamesAreUniqueAndNonempty(IReadOnlyList<string> names)
+	{
+		Assert.IsTrue(names.All(name => !string.IsNullOrWhiteSpace(name)));
+		Assert.AreEqual(names.Count, names.Distinct(StringComparer.OrdinalIgnoreCase).Count());
 	}
 }

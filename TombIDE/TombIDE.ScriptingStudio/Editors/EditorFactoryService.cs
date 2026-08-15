@@ -13,11 +13,11 @@ namespace TombIDE.ScriptingStudio.Editors;
 
 internal sealed class EditorFactoryService
 {
-	private readonly ConditionalWeakTable<IEditorControl, EditorRegistration> _editorRegistrations = [];
-	private readonly List<EditorRegistration> _registrations = [];
+	private readonly ConditionalWeakTable<IEditorControl, ScriptingDocumentRegistration> _editorRegistrations = [];
+	// Registration order is the explicit priority policy: earlier registrations win ties.
+	private readonly List<ScriptingDocumentRegistration> _registrations = [];
 
-	private DocumentMode _plainTextDocumentMode = DocumentMode.PlainText;
-	private Func<Version, IEditorControl>? _plainTextEditorFactoryOverride;
+	private ScriptingDocumentRegistration _plainTextRegistration = CreatePlainTextRegistration(null, DocumentMode.PlainText, ScriptingDocumentContributions.None);
 
 	public string BuildTabTitle(string filePath, EditorType editorType)
 	{
@@ -27,22 +27,25 @@ internal sealed class EditorFactoryService
 
 	public IEditorControl CreateEditor(string filePath, EditorType editorType, Version engineVersion)
 	{
-		EditorRegistration? registration = ResolveRegistration(filePath, editorType);
-		IEditorControl editor = (registration?.Factory ?? ResolvePlainTextFactory()).Invoke(engineVersion);
+		ScriptingDocumentRegistration registration = ResolveRegistration(filePath, editorType) ?? _plainTextRegistration;
+		IEditorControl editor = registration.Factory(engineVersion);
 
-		if (registration is not null)
-			_editorRegistrations.Add(editor, registration);
+		_editorRegistrations.Add(editor, registration);
 
 		return editor;
 	}
 
-	public DocumentMode GetDocumentMode(IEditorControl editor)
-	{
-		if (_editorRegistrations.TryGetValue(editor, out EditorRegistration? registration))
-			return registration.DocumentMode;
+	internal ScriptingDocumentRegistration? GetDocumentRegistration(IEditorControl? editor)
+		=> editor is not null && _editorRegistrations.TryGetValue(editor, out ScriptingDocumentRegistration? registration)
+			? registration
+			: null;
 
-		return _registrations.FirstOrDefault(candidate => candidate.EditorType == editor.EditorType)?.DocumentMode
-			?? _plainTextDocumentMode;
+	internal ScriptingDocumentContributions GetDocumentContributions(IEditorControl editor)
+	{
+		ArgumentNullException.ThrowIfNull(editor);
+
+		return GetDocumentRegistration(editor)?.Contributions
+			?? ScriptingDocumentContributions.None;
 	}
 
 	public EditorType GetDefaultEditorType(string filePath)
@@ -54,36 +57,48 @@ internal sealed class EditorFactoryService
 			?? GetDefaultEditorType(filePath);
 	}
 
-	public void Register(EditorRegistration registration)
+	/// <summary>
+	/// Adds a registration using insertion order as its priority.
+	/// Default registrations are preferred over non-default registrations before this
+	/// ordering is used as the fallback for a supported file.
+	/// </summary>
+	public void Register(ScriptingDocumentRegistration registration)
 	{
 		ArgumentNullException.ThrowIfNull(registration);
 
 		_registrations.Add(registration);
 	}
 
-	public void SetPlainTextEditorFactory(Func<Version, IEditorControl>? factory, DocumentMode documentMode)
+	public void SetPlainTextEditorFactory(Func<Version, IEditorControl>? factory, DocumentMode documentMode, ScriptingDocumentContributions contributions)
 	{
-		_plainTextEditorFactoryOverride = factory;
-		_plainTextDocumentMode = documentMode;
+		_plainTextRegistration = CreatePlainTextRegistration(factory, documentMode, contributions);
 	}
 
-	private EditorRegistration? ResolveDefaultRegistration(string filePath)
+	private ScriptingDocumentRegistration? ResolveDefaultRegistration(string filePath)
 	{
 		return _registrations.FirstOrDefault(registration => registration.SupportsFile(filePath) && registration.IsDefaultForFile(filePath))
 			?? _registrations.FirstOrDefault(registration => registration.SupportsFile(filePath));
 	}
 
-	private Func<Version, IEditorControl> ResolvePlainTextFactory()
-	{
-		if (_plainTextEditorFactoryOverride is not null)
-			return _plainTextEditorFactoryOverride;
+	private static IEditorControl CreateDefaultPlainTextEditor(Version engineVersion)
+		=> new PlainTextEditor(engineVersion);
 
-		return static engineVersion => new PlainTextEditor(engineVersion);
-	}
+	private static ScriptingDocumentRegistration CreatePlainTextRegistration(
+		Func<Version, IEditorControl>? factory,
+		DocumentMode documentMode,
+		ScriptingDocumentContributions contributions)
+		=> new(
+			EditorType.Text,
+			documentMode,
+			static _ => false,
+			static _ => false,
+			factory ?? CreateDefaultPlainTextEditor,
+			contributions,
+			isFallback: true);
 
-	private EditorRegistration? ResolveRegistration(string filePath, EditorType editorType)
+	private ScriptingDocumentRegistration? ResolveRegistration(string filePath, EditorType editorType)
 	{
-		EditorRegistration? defaultRegistration = ResolveDefaultRegistration(filePath);
+		ScriptingDocumentRegistration? defaultRegistration = ResolveDefaultRegistration(filePath);
 
 		if (editorType == EditorType.Default)
 			return defaultRegistration;

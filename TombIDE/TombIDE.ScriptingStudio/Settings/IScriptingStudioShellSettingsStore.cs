@@ -29,6 +29,16 @@ public interface IScriptingStudioShellSettingsStore
 	ScriptingStudioShellWorkspaceSettings Load(ScriptingWorkspaceProfile workspaceProfile);
 
 	/// <summary>
+	/// Loads persisted settings for a workspace kind and imports legacy settings using the supplied default layout.
+	/// </summary>
+	ScriptingStudioShellWorkspaceSettings Load(ScriptingWorkspaceKind workspaceKind, DockPanelState defaultLayout);
+
+	/// <summary>
+	/// Gets whether Lua is enabled for the specified primary workspace kind.
+	/// </summary>
+	bool IsLuaEnabled(ScriptingWorkspaceKind workspaceKind);
+
+	/// <summary>
 	/// Saves the specified settings for the given workspace kind.
 	/// </summary>
 	void Save(ScriptingWorkspaceKind workspaceKind, ScriptingStudioShellWorkspaceSettings settings);
@@ -53,6 +63,12 @@ public sealed class ScriptingStudioShellWorkspaceSettings
 
 	public bool IsLegacyImported { get; set; }
 
+	/// <summary>
+	/// Gets or sets whether the primary workspace also hosts Lua documents.
+	/// The capability is evaluated when the shell is created and takes effect on the next shell session.
+	/// </summary>
+	public bool LuaEnabled { get; set; }
+
 	public bool IsStatusStripVisible { get; set; } = true;
 
 	public bool IsToolStripVisible { get; set; } = true;
@@ -72,6 +88,7 @@ public sealed class ScriptingStudioShellWorkspaceSettings
 		InfoBoxAlwaysOnTop = InfoBoxAlwaysOnTop,
 		InfoBoxCloseTabsOnClose = InfoBoxCloseTabsOnClose,
 		IsLegacyImported = IsLegacyImported,
+		LuaEnabled = LuaEnabled,
 		IsStatusStripVisible = IsStatusStripVisible,
 		IsToolStripVisible = IsToolStripVisible,
 		ReindentOnSave = ReindentOnSave,
@@ -105,7 +122,7 @@ public sealed class ScriptingStudioShellSettingsDocument
 
 	public ScriptingStudioShellWorkspaceSettings GameFlowScript { get; set; } = new();
 
-	public ScriptingStudioShellWorkspaceSettings Lua { get; set; } = new();
+	public ScriptingStudioShellWorkspaceSettings Lua { get; set; } = new() { LuaEnabled = true };
 
 	public ScriptingStudioShellWorkspaceSettings TRX { get; set; } = new();
 
@@ -149,10 +166,14 @@ public sealed class ScriptingStudioShellSettingsDocument
 internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShellSettingsStore
 {
 	private readonly ScriptingStudioLegacySettingsSnapshot _legacySettingsSnapshot;
+	private readonly string _settingsPath;
 
-	public XmlScriptingStudioShellSettingsStore(ScriptingStudioLegacySettingsSnapshot legacySettingsSnapshot)
+	public XmlScriptingStudioShellSettingsStore(
+		ScriptingStudioLegacySettingsSnapshot legacySettingsSnapshot,
+		string? settingsPath = null)
 	{
 		_legacySettingsSnapshot = legacySettingsSnapshot ?? throw new ArgumentNullException(nameof(legacySettingsSnapshot));
+		_settingsPath = settingsPath ?? DefaultSettingsPath;
 	}
 
 	public ScriptingStudioShellWorkspaceSettings CreateDefault(ScriptingWorkspaceProfile workspaceProfile)
@@ -182,6 +203,22 @@ internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShe
 		return importedSettings;
 	}
 
+	public ScriptingStudioShellWorkspaceSettings Load(ScriptingWorkspaceKind workspaceKind, DockPanelState defaultLayout)
+	{
+		ArgumentNullException.ThrowIfNull(defaultLayout);
+
+		ScriptingStudioShellSettingsDocument document = LoadDocument();
+		ScriptingStudioShellWorkspaceSettings workspaceSettings = document.GetWorkspace(workspaceKind).Clone();
+
+		if (workspaceSettings.IsLegacyImported)
+			return workspaceSettings;
+
+		ScriptingStudioShellWorkspaceSettings importedSettings = ImportLegacySettings(workspaceKind, defaultLayout);
+		document.SetWorkspace(workspaceKind, importedSettings.Clone());
+		SaveDocument(document);
+		return importedSettings;
+	}
+
 	public void Save(ScriptingWorkspaceKind workspaceKind, ScriptingStudioShellWorkspaceSettings settings)
 	{
 		ArgumentNullException.ThrowIfNull(settings);
@@ -190,6 +227,9 @@ internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShe
 		document.SetWorkspace(workspaceKind, settings.Clone());
 		SaveDocument(document);
 	}
+
+	public bool IsLuaEnabled(ScriptingWorkspaceKind workspaceKind)
+		=> LoadDocument().GetWorkspace(workspaceKind).LuaEnabled;
 
 	private static DockPanelState GetLegacyDockPanelState(ScriptingStudioLegacySettingsSnapshot legacySettingsSnapshot, ScriptingWorkspaceKind workspaceKind)
 		=> workspaceKind switch
@@ -212,40 +252,48 @@ internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShe
 		};
 
 	private ScriptingStudioShellWorkspaceSettings ImportLegacySettings(ScriptingWorkspaceProfile workspaceProfile)
+		=> ImportLegacySettings(workspaceProfile.Kind, workspaceProfile.DefaultLayout);
+
+	private ScriptingStudioShellWorkspaceSettings ImportLegacySettings(ScriptingWorkspaceKind workspaceKind, DockPanelState defaultLayout)
 	{
-		ScriptingStudioShellWorkspaceSettings settings = CreateDefault(workspaceProfile);
+		ScriptingStudioShellWorkspaceSettings settings = new()
+		{
+			DockPanelState = DockPanelStateCloneHelper.Clone(defaultLayout),
+			IsLegacyImported = true
+		};
 		settings.UseNewIncludeMethod = _legacySettingsSnapshot.UseNewIncludeMethod;
 		settings.ShowCompilerLogsAfterBuild = _legacySettingsSnapshot.ShowCompilerLogsAfterBuild;
 		settings.ReindentOnSave = _legacySettingsSnapshot.ReindentOnSave;
 		settings.InfoBoxAlwaysOnTop = _legacySettingsSnapshot.InfoBoxAlwaysOnTop;
 		settings.InfoBoxCloseTabsOnClose = _legacySettingsSnapshot.InfoBoxCloseTabsOnClose;
-		settings.DockPanelState = GetLegacyDockPanelState(_legacySettingsSnapshot, workspaceProfile.Kind);
-		settings.AvalonDockLayoutXml = GetLegacyLayoutXml(_legacySettingsSnapshot, workspaceProfile.Kind) ?? string.Empty;
+		settings.DockPanelState = GetLegacyDockPanelState(_legacySettingsSnapshot, workspaceKind);
+		settings.AvalonDockLayoutXml = GetLegacyLayoutXml(_legacySettingsSnapshot, workspaceKind) ?? string.Empty;
 		settings.IsLegacyImported = true;
 		return settings;
 	}
 
-	private static ScriptingStudioShellSettingsDocument LoadDocument()
+	private ScriptingStudioShellSettingsDocument LoadDocument()
 	{
 		try
 		{
-			if (!File.Exists(SettingsPath))
+			if (!File.Exists(_settingsPath))
 				return new ScriptingStudioShellSettingsDocument();
 
-			return XmlUtils.ReadXmlFile<ScriptingStudioShellSettingsDocument>(SettingsPath);
+			return XmlUtils.ReadXmlFile<ScriptingStudioShellSettingsDocument>(_settingsPath);
 		}
-		catch (Exception) when (File.Exists(SettingsPath))
+		catch (Exception) when (File.Exists(_settingsPath))
 		{
 			return new ScriptingStudioShellSettingsDocument();
 		}
 	}
 
-	private static void SaveDocument(ScriptingStudioShellSettingsDocument document)
+	private void SaveDocument(ScriptingStudioShellSettingsDocument document)
 	{
-		if (!Directory.Exists(DefaultPaths.ConfigsDirectory))
-			Directory.CreateDirectory(DefaultPaths.ConfigsDirectory);
+		string? directoryPath = Path.GetDirectoryName(_settingsPath);
+		if (!string.IsNullOrWhiteSpace(directoryPath) && !Directory.Exists(directoryPath))
+			Directory.CreateDirectory(directoryPath);
 
-		XmlUtils.WriteXmlFile(SettingsPath, document);
+		XmlUtils.WriteXmlFile(_settingsPath, document);
 	}
 
 	public bool SaveShortcutOverrides(ScriptingWorkspaceKind workspaceKind, ShortcutOverrideCollection overrides)
@@ -260,9 +308,9 @@ internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShe
 			document.SetWorkspace(workspaceKind, workspaceSettings);
 
 			// Write to a temporary file first, then atomically replace.
-			string tempPath = SettingsPath + ".tmp";
+			string tempPath = _settingsPath + ".tmp";
 			XmlUtils.WriteXmlFile(tempPath, document);
-			File.Move(tempPath, SettingsPath, overwrite: true);
+			File.Move(tempPath, _settingsPath, overwrite: true);
 
 			return true;
 		}
@@ -273,7 +321,7 @@ internal sealed class XmlScriptingStudioShellSettingsStore : IScriptingStudioShe
 		}
 	}
 
-	private static string SettingsPath => Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEScriptingStudioAddonSettings.xml");
+	private static string DefaultSettingsPath => Path.Combine(DefaultPaths.ConfigsDirectory, "TombIDEScriptingStudioAddonSettings.xml");
 }
 
 internal static class DockPanelStateCloneHelper

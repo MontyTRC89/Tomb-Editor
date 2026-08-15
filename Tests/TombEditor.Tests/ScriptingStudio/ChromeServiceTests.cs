@@ -16,62 +16,6 @@ namespace TombEditor.Tests.ScriptingStudio;
 [TestClass]
 public class ChromeServiceTests
 {
-    private static ScriptingWorkspaceProfile CreateLuaProfile()
-    {
-        return new ScriptingWorkspaceProfile(
-            ScriptingWorkspaceKind.Lua,
-            TRVersion.Game.TombEngine,
-            [],
-            string.Empty,
-            [],
-            [],
-            [],
-            [],
-            [],
-            "*.lua",
-            string.Empty,
-            "--",
-            supportsBuild: false,
-            supportsDocumentation: false,
-            new DockPanelState(),
-            _ => { },
-            () => new DockPanelState(),
-            () => string.Empty,
-            _ => { });
-    }
-
-    private static ScriptingWorkspaceProfile CreateProfileWithPaneSupport()
-    {
-        return new ScriptingWorkspaceProfile(
-            ScriptingWorkspaceKind.Lua,
-            TRVersion.Game.TombEngine,
-            [],
-            string.Empty,
-            [
-                new ScriptingWorkspaceViewContribution(UICommand.FileExplorer),
-                new ScriptingWorkspaceViewContribution(UICommand.ContentExplorer),
-                new ScriptingWorkspaceViewContribution(UICommand.ReferenceBrowser),
-                new ScriptingWorkspaceViewContribution(UICommand.CompilerLogs),
-                new ScriptingWorkspaceViewContribution(UICommand.SearchResults),
-                new ScriptingWorkspaceViewContribution(UICommand.LuaDiagnostics),
-                new ScriptingWorkspaceViewContribution(UICommand.LuaReferencesResults)
-            ],
-            [],
-            [],
-            [],
-            [],
-            "*.lua",
-            string.Empty,
-            "--",
-            supportsBuild: false,
-            supportsDocumentation: false,
-            new DockPanelState(),
-            _ => { },
-            () => new DockPanelState(),
-            () => string.Empty,
-            _ => { });
-    }
-
     // ---------- MenuService ----------
 
     private static IShortcutBindingService CreateShortcutBindingService()
@@ -90,7 +34,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var shortcutBindingService = CreateShortcutBindingService();
             using var menuService = new MenuService(profile, shortcutBindingService);
 
@@ -110,7 +54,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var shortcutBindingService = CreateShortcutBindingService();
             using var menuService = new MenuService(profile, shortcutBindingService);
 
@@ -125,7 +69,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var shortcutBindingService = CreateShortcutBindingService();
             using var menuService = new MenuService(profile, shortcutBindingService);
 
@@ -139,7 +83,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var shortcutBindingService = CreateShortcutBindingService();
             using var menuService = new MenuService(profile, shortcutBindingService);
 
@@ -171,7 +115,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             using var toolBarService = new ToolBarService(profile, CreateShortcutBindingService());
 
             Assert.IsNotNull(toolBarService.ToolBarView);
@@ -184,7 +128,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             using var toolBarService = new ToolBarService(profile, CreateShortcutBindingService());
 
             toolBarService.SetCommandToolTip(UICommand.Undo, "Test tooltip");
@@ -196,7 +140,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             using var toolBarService = new ToolBarService(profile, CreateShortcutBindingService());
 
             bool wasCalled = false;
@@ -217,7 +161,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var contributionService = new StudioStatusStripContributionService();
             using var statusBarService = new StatusBarService(profile, contributionService);
 
@@ -231,7 +175,7 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
             var contributionService = new StudioStatusStripContributionService();
             using var statusBarService = new StatusBarService(profile, contributionService);
 
@@ -247,7 +191,15 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateProfileWithPaneSupport();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile(
+                viewCommands: [
+                    UICommand.FileExplorer,
+                    UICommand.ContentExplorer,
+                    UICommand.ReferenceBrowser,
+                    UICommand.CompilerLogs,
+                    UICommand.SearchResults,
+                    UICommand.LuaDiagnostics,
+                    UICommand.LuaReferencesResults]);
             var menuMock = new Mock<IMenuService>();
             menuMock.Setup(m => m.MenuView).Returns(Mock.Of<FrameworkElement>());
             var toolBarMock = new Mock<IToolBarService>();
@@ -268,9 +220,17 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateProfileWithPaneSupport();
-            var menuMock = CreateMenuServiceMock();
-            var toolBarMock = CreateToolBarServiceMock();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile(
+                viewCommands: [
+                    UICommand.FileExplorer,
+                    UICommand.ContentExplorer,
+                    UICommand.ReferenceBrowser,
+                    UICommand.CompilerLogs,
+                    UICommand.SearchResults,
+                    UICommand.LuaDiagnostics,
+                    UICommand.LuaReferencesResults]);
+            var menuMock = ScriptingStudioChromeTestFixture.CreateMenuServiceMock();
+            var toolBarMock = ScriptingStudioChromeTestFixture.CreateToolBarServiceMock();
             using var paneService = new PaneVisibilityStateService(
                 profile,
                 menuMock.Object,
@@ -292,9 +252,17 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateProfileWithPaneSupport();
-            var menuMock = CreateMenuServiceMock();
-            var toolBarMock = CreateToolBarServiceMock();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile(
+                viewCommands: [
+                    UICommand.FileExplorer,
+                    UICommand.ContentExplorer,
+                    UICommand.ReferenceBrowser,
+                    UICommand.CompilerLogs,
+                    UICommand.SearchResults,
+                    UICommand.LuaDiagnostics,
+                    UICommand.LuaReferencesResults]);
+            var menuMock = ScriptingStudioChromeTestFixture.CreateMenuServiceMock();
+            var toolBarMock = ScriptingStudioChromeTestFixture.CreateToolBarServiceMock();
             using var paneService = new PaneVisibilityStateService(
                 profile,
                 menuMock.Object,
@@ -317,9 +285,9 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateLuaProfile();
-            var menuMock = CreateMenuServiceMock();
-            var toolBarMock = CreateToolBarServiceMock();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile();
+            var menuMock = ScriptingStudioChromeTestFixture.CreateMenuServiceMock();
+            var toolBarMock = ScriptingStudioChromeTestFixture.CreateToolBarServiceMock();
             using var paneService = new PaneVisibilityStateService(
                 profile,
                 menuMock.Object,
@@ -336,9 +304,17 @@ public class ChromeServiceTests
     {
         StaTestHelper.RunInSta(() =>
         {
-            var profile = CreateProfileWithPaneSupport();
-            var menuMock = CreateMenuServiceMock();
-            var toolBarMock = CreateToolBarServiceMock();
+            var profile = ScriptingWorkspaceProfileTestFactory.CreateLuaProfile(
+                viewCommands: [
+                    UICommand.FileExplorer,
+                    UICommand.ContentExplorer,
+                    UICommand.ReferenceBrowser,
+                    UICommand.CompilerLogs,
+                    UICommand.SearchResults,
+                    UICommand.LuaDiagnostics,
+                    UICommand.LuaReferencesResults]);
+            var menuMock = ScriptingStudioChromeTestFixture.CreateMenuServiceMock();
+            var toolBarMock = ScriptingStudioChromeTestFixture.CreateToolBarServiceMock();
             using var paneService = new PaneVisibilityStateService(
                 profile,
                 menuMock.Object,
@@ -357,19 +333,4 @@ public class ChromeServiceTests
         });
     }
 
-    // ---------- Helpers ----------
-
-    private static Mock<IMenuService> CreateMenuServiceMock()
-    {
-        var mock = new Mock<IMenuService>();
-        mock.Setup(m => m.MenuView).Returns(Mock.Of<FrameworkElement>());
-        return mock;
-    }
-
-    private static Mock<IToolBarService> CreateToolBarServiceMock()
-    {
-        var mock = new Mock<IToolBarService>();
-        mock.Setup(m => m.ToolBarView).Returns(Mock.Of<FrameworkElement>());
-        return mock;
-    }
 }

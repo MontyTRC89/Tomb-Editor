@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.5.0" />
-    <PackageReference Include="StreamJsonRpc" Version="2.24.84" />
+    <PackageReference Include="StreamJsonRpc" Version="2.25.29" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\GlobalPaths.cs">

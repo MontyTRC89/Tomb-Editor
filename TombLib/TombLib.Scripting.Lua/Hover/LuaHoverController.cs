@@ -3,6 +3,7 @@ using Nickelony.LanguageServer.Abstractions.Hover;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.UI.Completion;
 using TombLib.Scripting.UI.Hover;
@@ -50,7 +51,7 @@ public sealed partial class LuaEditor
 
 		private TextHoverRequestState BuildRequestState(int hoveredOffset)
 		{
-			bool hasDiagnostic = _editor.TryGetDiagnosticInfo(hoveredOffset, out string? diagnosticMessage, out TextEditorDiagnosticSeverity diagnosticSeverity, allowLineFallback: false);
+			_editor.TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo, allowLineFallback: false);
 			bool canShowToolTip = TextPopupInteractionRules.CanShowHover(_editor.IsCompletionWindowOpen, _editor._signatureHelpController.IsVisible);
 			int hoverOffset = 0;
 			bool shouldRequestHover = false;
@@ -67,9 +68,8 @@ public sealed partial class LuaEditor
 				RequestOffset: shouldRequestHover ? hoverOffset : 0,
 				CanShowToolTip: canShowToolTip,
 				CanShowDiagnosticFallback: canShowToolTip,
-				HasDiagnostic: hasDiagnostic,
-				DiagnosticMessage: diagnosticMessage,
-				DiagnosticSeverity: diagnosticSeverity);
+				DiagnosticMessage: diagnosticInfo?.Message,
+				DiagnosticSeverity: diagnosticInfo?.Severity ?? TextEditorDiagnosticSeverity.None);
 		}
 
 		private int? TryGetCurrentRequestOffset(int hoveredOffset)

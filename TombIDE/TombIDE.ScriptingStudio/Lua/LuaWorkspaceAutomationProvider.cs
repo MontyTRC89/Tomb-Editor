@@ -12,8 +12,7 @@ internal sealed record LuaWorkspaceAutomationCallbacks(
 	Func<ScriptGenerationResult, (bool ScriptUpdated, bool LanguageUpdated)> AppendScript,
 	Func<string, bool> IsLevelScriptDefined,
 	Func<string, bool> IsLevelLanguageStringDefined,
-	Action<string, string> RenameRequestedLanguageString,
-	Action DisposeIntellisense);
+	Action<string, string> RenameRequestedLanguageString);
 
 internal sealed class LuaWorkspaceAutomationProvider : IStudioWorkspaceAutomationProvider
 {
@@ -35,12 +34,6 @@ internal sealed class LuaWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 	{
 		if (ideEvent is null)
 			return;
-
-		if (ideEvent is IDE.ProgramClosingEvent)
-		{
-			HandleProgramClosing();
-			return;
-		}
 
 		if (!IsSilentAction(ideEvent))
 			return;
@@ -86,9 +79,6 @@ internal sealed class LuaWorkspaceAutomationProvider : IStudioWorkspaceAutomatio
 
 		_silentActionService.Complete(cachedEditor, scriptUpdated || languageUpdated, completions.ToArray());
 	}
-
-	public void HandleProgramClosing()
-		=> _callbacks.DisposeIntellisense();
 
 	public bool IsScriptDefined(string levelName)
 		=> _callbacks.IsLevelScriptDefined(levelName);

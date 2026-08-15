@@ -120,6 +120,7 @@ public static class ScriptCompiler
 
 		string batchFilePath = Path.Combine(gameflowDirectory, "compile.bat");
 		File.WriteAllText(batchFilePath, batchFileContent);
+		File.Delete(Path.Combine(gameflowDirectory, compiledScriptFileName));
 
 		var startInfo = new ProcessStartInfo
 		{

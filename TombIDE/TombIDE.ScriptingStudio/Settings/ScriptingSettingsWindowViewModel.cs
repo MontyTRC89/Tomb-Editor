@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombLib.Scripting.ClassicScript;
@@ -33,7 +34,13 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 	private readonly GameFlowLanguageServices _gameFlowLanguageServices;
 	private readonly TRXLanguageServices _trxLanguageServices;
 
-	public ScriptingSettingsWindowViewModel(ScriptingWorkspaceProfile workspaceProfile, DocumentMode documentMode, ClassicScriptLanguageServices languageServices, GameFlowLanguageServices gameFlowLanguageServices, TRXLanguageServices trxLanguageServices)
+	public ScriptingSettingsWindowViewModel(
+		ScriptingWorkspaceProfile workspaceProfile,
+		ScriptingDocumentRegistration? documentRegistration,
+		bool luaEnabled,
+		ClassicScriptLanguageServices languageServices,
+		GameFlowLanguageServices gameFlowLanguageServices,
+		TRXLanguageServices trxLanguageServices)
 	{
 		ArgumentNullException.ThrowIfNull(workspaceProfile);
 		ArgumentNullException.ThrowIfNull(languageServices);
@@ -43,6 +50,8 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 		_languageServices = languageServices;
 		_gameFlowLanguageServices = gameFlowLanguageServices;
 		_trxLanguageServices = trxLanguageServices;
+		SupportsLuaActivation = workspaceProfile.SupportsLuaActivation;
+		LuaEnabled = luaEnabled;
 
 		string[] fontFamilies = Fonts.SystemFontFamilies
 			.Select(static family => family.Source)
@@ -50,18 +59,25 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 			.ToArray();
 
 		Pages = new ObservableCollection<ScriptingSettingsPageViewModel>(CreatePages(workspaceProfile, fontFamilies, languageServices, gameFlowLanguageServices, trxLanguageServices));
-		SelectedPage = SelectInitialPage(workspaceProfile, documentMode) ?? Pages.FirstOrDefault();
+		SelectedPage = SelectInitialPage(workspaceProfile, documentRegistration) ?? Pages.FirstOrDefault();
 	}
 
 	public ObservableCollection<ScriptingSettingsPageViewModel> Pages { get; }
 
 	public string WindowTitle => "Script Editor Settings";
 
+	public bool SupportsLuaActivation { get; }
+
+	public string LuaActivationDescription => "Lua documents are enabled when the scripting workspace is reopened.";
+
 	[ObservableProperty]
 	private bool? _dialogResult;
 
 	[ObservableProperty]
 	private ScriptingSettingsPageViewModel? _selectedPage;
+
+	[ObservableProperty]
+	private bool _luaEnabled;
 
 	[RelayCommand]
 	private void Cancel()
@@ -97,12 +113,6 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 				orderedKinds.Add(page.Kind);
 		}
 
-		foreach (ScriptingSettingsPageKind kind in GetAllSettingsPageKinds())
-		{
-			if (!orderedKinds.Contains(kind))
-				orderedKinds.Add(kind);
-		}
-
 		foreach (ScriptingSettingsPageKind kind in orderedKinds)
 		{
 			yield return new ScriptingSettingsPageViewModel(
@@ -116,35 +126,15 @@ public sealed partial class ScriptingSettingsWindowViewModel : ObservableObject
 		}
 	}
 
-	private ScriptingSettingsPageViewModel? SelectInitialPage(ScriptingWorkspaceProfile workspaceProfile, DocumentMode documentMode)
+	private ScriptingSettingsPageViewModel? SelectInitialPage(
+		ScriptingWorkspaceProfile workspaceProfile,
+		ScriptingDocumentRegistration? documentRegistration)
 	{
-		ScriptingSettingsPageKind? preferredKind = workspaceProfile.SettingsPages
-			.FirstOrDefault(page => page.Matches(documentMode))?.Kind;
-
-		if (!preferredKind.HasValue)
-			preferredKind = GetSettingsPageKind(documentMode);
+		ScriptingSettingsPageKind? preferredKind = documentRegistration?.Contributions.SettingsPageKind;
 
 		return Pages.FirstOrDefault(page => page.Kind == preferredKind)
 			?? Pages.FirstOrDefault();
 	}
-
-	private static IEnumerable<ScriptingSettingsPageKind> GetAllSettingsPageKinds()
-	{
-		yield return ScriptingSettingsPageKind.ClassicScript;
-		yield return ScriptingSettingsPageKind.GameFlowScript;
-		yield return ScriptingSettingsPageKind.TRX;
-		yield return ScriptingSettingsPageKind.Lua;
-	}
-
-	private static ScriptingSettingsPageKind GetSettingsPageKind(DocumentMode documentMode) => documentMode switch
-	{
-		DocumentMode.ClassicScript => ScriptingSettingsPageKind.ClassicScript,
-		DocumentMode.Strings => ScriptingSettingsPageKind.ClassicScript,
-		DocumentMode.GameFlowScript => ScriptingSettingsPageKind.GameFlowScript,
-		DocumentMode.TRX => ScriptingSettingsPageKind.TRX,
-		DocumentMode.Lua => ScriptingSettingsPageKind.Lua,
-		_ => ScriptingSettingsPageKind.ClassicScript
-	};
 
 	private static string GetTitle(ScriptingWorkspaceProfile workspaceProfile, ScriptingSettingsPageKind kind)
 	{

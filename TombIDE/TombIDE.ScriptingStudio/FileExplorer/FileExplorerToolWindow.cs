@@ -85,6 +85,11 @@ public sealed class FileExplorerToolWindow : StudioDockPane
 		_viewModel.FileCreated -= ViewModel_FileCreated;
 		_viewModel.FileDeleted -= ViewModel_FileDeleted;
 		_viewModel.FileRenamed -= ViewModel_FileRenamed;
+		FileChanged = null;
+		FileCreated = null;
+		FileDeleted = null;
+		FileOpened = null;
+		FileRenamed = null;
 		_viewModel.Dispose();
 	}
 

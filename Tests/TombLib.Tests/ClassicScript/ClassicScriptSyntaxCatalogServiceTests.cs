@@ -1,4 +1,8 @@
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TombLib.Scripting.ClassicScript.Commands;
 
 namespace TombLib.Tests;
 
@@ -50,5 +54,35 @@ public class ClassicScriptSyntaxCatalogServiceTests
 		Assert.IsFalse(string.IsNullOrWhiteSpace(syntax));
 		StringAssert.Contains(syntax, "AddEffect=");
 		StringAssert.Contains(syntax, "(*Array*)");
+	}
+
+	[TestMethod]
+	public void CommandAndSyntaxCatalogs_AreConsistent()
+	{
+		var commandCatalog = new ClassicScriptCommandsLoader().Load();
+		var syntaxCatalog = new ClassicScriptSyntaxCatalogService();
+		IReadOnlyList<ClassicScriptSyntaxDefinition> definitions = syntaxCatalog.GetCommandSyntaxDefinitions();
+		HashSet<string> commandSyntaxKeys = commandCatalog.Commands
+			.Where(command => command.Kind is ClassicScriptCommandKind.Old or ClassicScriptCommandKind.New)
+			.SelectMany(command => command.Syntaxes)
+			.Select(syntax => syntax.Key)
+			.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+		Assert.IsTrue(definitions.Count > 0);
+		Assert.AreEqual(
+			definitions.Count,
+			definitions.Select(definition => definition.Key).Distinct(StringComparer.OrdinalIgnoreCase).Count());
+
+		foreach (ClassicScriptSyntaxDefinition definition in definitions)
+		{
+			Assert.IsFalse(string.IsNullOrWhiteSpace(definition.Key));
+			Assert.IsFalse(string.IsNullOrWhiteSpace(definition.SyntaxText));
+			Assert.IsTrue(
+				definition.ApplicableSection.Equals("Any", StringComparison.OrdinalIgnoreCase)
+				|| commandCatalog.Sections.Contains(definition.ApplicableSection, StringComparer.OrdinalIgnoreCase),
+				$"Unknown section '{definition.ApplicableSection}' for '{definition.Key}'.");
+			Assert.IsTrue(commandSyntaxKeys.Contains(definition.Key), definition.Key);
+			Assert.IsNotNull(syntaxCatalog.GetCommandDefinition(definition.Key));
+		}
 	}
 }

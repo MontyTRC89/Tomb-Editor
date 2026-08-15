@@ -13,7 +13,7 @@ namespace TombLib.Scripting.Completion;
 public sealed record TextCompletionContext
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextCompletionContext"/> class.
+	/// Initializes a new instance of the <see cref="TextCompletionContext"/> record.
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="caretOffset">The zero-based caret offset within <paramref name="documentText"/>.</param>
@@ -33,6 +33,8 @@ public sealed record TextCompletionContext
 		TextCompletionTrigger trigger = TextCompletionTrigger.Automatic,
 		int argumentIndex = -1)
 	{
+		ArgumentNullException.ThrowIfNull(documentText);
+
 		if (caretOffset < 0 || caretOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(caretOffset));
 

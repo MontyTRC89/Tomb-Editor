@@ -11,7 +11,6 @@ using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
-using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.UI.Editors;
 using TombLib.WPF.Services;
 using TombLib.WPF.Services.Abstract;
@@ -24,13 +23,15 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 	private readonly FileReloadCoordinator _fileReloadCoordinator = new();
 	private readonly IMessageService _messageService;
 	private IEditorControl? _currentEditor;
+	private ScriptingDocumentContext _currentDocumentContext = ScriptingDocumentContext.Empty;
+	private long _documentContextGeneration;
 	private string _scriptRootDirectoryPath;
 
-	public EditorDocumentController(Version currentEngineVersion, string scriptRootDirectoryPath, IMessageService? messageService = null, IClassicScriptLineService? lineService = null)
+	public EditorDocumentController(Version currentEngineVersion, string scriptRootDirectoryPath, IMessageService? messageService = null)
 	{
 		ArgumentNullException.ThrowIfNull(currentEngineVersion);
 
-		_documentController = new EditorDocumentControllerCore(currentEngineVersion, lineService);
+		_documentController = new EditorDocumentControllerCore(currentEngineVersion);
 		_messageService = messageService
 			?? ServiceLocator.GetService<IMessageService>()
 			?? new MessageBoxService();
@@ -53,8 +54,10 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 
 	public IEditorControl? CurrentEditor => _currentEditor;
 
-	public DocumentMode GetDocumentMode(IEditorControl? editor)
-		=> _documentController.GetDocumentMode(editor);
+	public ScriptingDocumentContext CurrentDocumentContext => _currentDocumentContext;
+
+	public ScriptingDocumentRegistration? GetDocumentRegistration(IEditorControl? editor)
+		=> _documentController.GetDocumentRegistration(editor);
 
 	public IEditorControl? FindEditor(string filePath, EditorType editorType = EditorType.Default)
 		=> _documentController.FindEditor(filePath, editorType);
@@ -71,26 +74,8 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 	public bool ContainsEditor(IEditorControl editor)
 		=> _documentController.ContainsEditor(editor);
 
-	public void RegisterJson5Editor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-		=> _documentController.RegisterJson5Editor(factory, documentMode);
-
-	public void RegisterLuaEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-		=> _documentController.RegisterLuaEditor(factory, documentMode);
-
-	public void RegisterPlainTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-		=> _documentController.RegisterPlainTextEditor(factory, documentMode);
-
-	public void RegisterStringsEditor(Func<Version, IEditorControl> factory)
-		=> _documentController.RegisterStringsEditor(factory);
-
-	public void RegisterTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode)
-		=> _documentController.RegisterTextEditor(factory, documentMode);
-
-	public void RegisterTextEditor(
-		Func<Version, IEditorControl> factory,
-		DocumentMode documentMode,
-		Func<string, bool> isDefaultForFile)
-		=> _documentController.RegisterTextEditor(factory, documentMode, isDefaultForFile);
+	public void RegisterDocument(ScriptingDocumentRegistration registration)
+		=> _documentController.RegisterDocument(registration);
 
 	public void CheckPreviousSession()
 	{
@@ -364,7 +349,7 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 
 	public event EventHandler? FileOpened;
 
-	public event EventHandler? CurrentEditorChanged;
+	public event EventHandler<ScriptingDocumentContextChangedEventArgs>? CurrentEditorChanged;
 
 	public event EventHandler<EditorControlEventArgs>? EditorClosed;
 
@@ -525,7 +510,13 @@ internal sealed class EditorDocumentController : IEditorDocumentController
 			return;
 
 		_currentEditor = editor;
-		CurrentEditorChanged?.Invoke(this, EventArgs.Empty);
+		_documentContextGeneration++;
+		_currentDocumentContext = new ScriptingDocumentContext(
+			_documentContextGeneration,
+			editor,
+			editor?.FilePath,
+			_documentController.GetDocumentRegistration(editor));
+		CurrentEditorChanged?.Invoke(this, new ScriptingDocumentContextChangedEventArgs(_currentDocumentContext));
 	}
 
 	private void AttachEditor(IEditorControl editor)

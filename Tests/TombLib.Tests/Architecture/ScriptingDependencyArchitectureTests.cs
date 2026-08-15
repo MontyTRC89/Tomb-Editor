@@ -38,11 +38,18 @@ public class ScriptingDependencyArchitectureTests
 	public void NeutralCore_DoesNotReferenceSiblingScriptingProjects()
 	{
 		string[] siblingReferences = GetReferencedAssemblyNames(typeof(TextRange).Assembly)
-			.Where(static name => name.StartsWith("TombLib.Scripting", StringComparison.Ordinal)
-				&& !string.Equals(name, "TombLib.Scripting.LanguageServer", StringComparison.Ordinal))
+			.Where(static name => name.StartsWith("TombLib.Scripting", StringComparison.Ordinal))
 			.ToArray();
 
 		Assert.AreEqual(0, siblingReferences.Length, "TombLib.Scripting must not reference sibling scripting projects: " + string.Join(", ", siblingReferences));
+	}
+
+	[TestMethod]
+	public void NeutralCore_ReferencesTheIntentionalNickelonyContract()
+	{
+		Assert.IsTrue(
+			ReferencesAssembly(typeof(TextRange).Assembly, "Nickelony.LanguageServer.Abstractions"),
+			"TombLib.Scripting intentionally depends on the Nickelony language-server abstraction contract.");
 	}
 
 	[TestMethod]

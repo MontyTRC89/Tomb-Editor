@@ -36,15 +36,12 @@ public sealed class StudioMenuStrip
 
 			_documentMode = value;
 			RebuildAllItems();
-			DocumentModeChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
 	public event EventHandler<StudioCommandInvokedEventArgs>? ItemClicked;
 
 	public event EventHandler? WorkspaceContributionsChanged;
-
-	public event EventHandler? DocumentModeChanged;
 
 	public bool GetCommandChecked(UICommand command)
 	{
@@ -61,10 +58,7 @@ public sealed class StudioMenuStrip
 	}
 
 	public void RebuildDocumentModeItems()
-	{
-		RebuildAllItems();
-		DocumentModeChanged?.Invoke(this, EventArgs.Empty);
-	}
+		=> RebuildAllItems();
 
 	public void SetCommandChecked(UICommand command, bool isChecked)
 		=> Apply(command, item => item.IsChecked = isChecked);

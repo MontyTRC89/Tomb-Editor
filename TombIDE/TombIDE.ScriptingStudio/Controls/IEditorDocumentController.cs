@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using TombIDE.ScriptingStudio.UI;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.Shared;
 using TombLib.Scripting.UI.Editors;
 
@@ -25,9 +26,14 @@ public interface IEditorDocumentController
 	IEditorControl? CurrentEditor { get; }
 
 	/// <summary>
-	/// Gets the document mode for the specified editor.
+	/// Gets the immutable context for the last activated document, or the explicit empty context.
 	/// </summary>
-	DocumentMode GetDocumentMode(IEditorControl? editor);
+	ScriptingDocumentContext CurrentDocumentContext { get; }
+
+	/// <summary>
+	/// Gets the exact document registration associated with the specified editor.
+	/// </summary>
+	ScriptingDocumentRegistration? GetDocumentRegistration(IEditorControl? editor);
 
 	/// <summary>
 	/// Finds an editor for the specified file path, optionally filtering by editor type.
@@ -57,36 +63,7 @@ public interface IEditorDocumentController
 	/// </summary>
 	bool ContainsEditor(IEditorControl editor);
 
-	/// <summary>
-	/// Registers a factory for creating JSON5 editors with the specified document mode.
-	/// </summary>
-	void RegisterJson5Editor(Func<Version, IEditorControl> factory, DocumentMode documentMode);
-
-	/// <summary>
-	/// Registers a factory for creating Lua editors with the specified document mode.
-	/// </summary>
-	void RegisterLuaEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode);
-
-	/// <summary>
-	/// Registers a factory for creating plain text editors with the specified document mode.
-	/// </summary>
-	void RegisterPlainTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode);
-
-	/// <summary>
-	/// Registers a factory for creating string editors.
-	/// </summary>
-	void RegisterStringsEditor(Func<Version, IEditorControl> factory);
-
-	/// <summary>
-	/// Registers a factory for creating text editors with the specified document mode.
-	/// </summary>
-	void RegisterTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode);
-
-	/// <summary>
-	/// Registers a factory for creating text editors with the specified document mode
-	/// and a predicate that determines whether this editor is the default for a file.
-	/// </summary>
-	void RegisterTextEditor(Func<Version, IEditorControl> factory, DocumentMode documentMode, Func<string, bool> isDefaultForFile);
+	void RegisterDocument(ScriptingDocumentRegistration registration);
 
 	/// <summary>
 	/// Checks for a previous session and restores its state if applicable.
@@ -205,7 +182,7 @@ public interface IEditorDocumentController
 
 	event EventHandler? FileOpened;
 
-	event EventHandler? CurrentEditorChanged;
+	event EventHandler<ScriptingDocumentContextChangedEventArgs>? CurrentEditorChanged;
 
 	event EventHandler<EditorControlEventArgs>? EditorClosed;
 

@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.ClassicScript;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.Editors.ClassicScript.StringEditor;
 using TombIDE.ScriptingStudio.GameFlowScript;
 using TombIDE.ScriptingStudio.Lua;
@@ -72,6 +73,7 @@ internal sealed class ScriptingMessageService : IDisposable
 		_workspaceAutomationProvider = CreateWorkspaceAutomationProvider(
 			workspaceProfile,
 			documentController,
+			ApplyEditorSettings,
 			engineDirectoryPath,
 			engineExecutableFilePath,
 			options.HostOperations,
@@ -116,7 +118,46 @@ internal sealed class ScriptingMessageService : IDisposable
 		=> _messenger.UnregisterAll(this);
 
 	public void ApplyEditorSettings()
-		=> ApplyEditorSettings(_documentController, _workspaceProfile.Kind);
+	{
+		var configs = new ConfigurationCollection();
+
+		foreach (IEditorControl editor in _documentController.GetOpenEditors())
+			ApplySettingsToEditor(editor, configs);
+	}
+
+	internal void ApplySettingsToEditor(IEditorControl editor)
+		=> ApplySettingsToEditor(editor, new ConfigurationCollection());
+
+	private void ApplySettingsToEditor(IEditorControl editor, ConfigurationCollection configs)
+	{
+		ScriptingDocumentConfigurationKind configurationKind = _documentController.GetDocumentRegistration(editor)?.Contributions.ConfigurationKind
+			?? ScriptingDocumentConfigurationKind.None;
+
+		switch (configurationKind)
+		{
+			case ScriptingDocumentConfigurationKind.ClassicScript:
+				if (editor is ClassicScriptEditor classicScriptEditor)
+					classicScriptEditor.UpdateSettings(configs.ClassicScript);
+				else if (editor is IStringSectionNavigator)
+					editor.UpdateSettings(configs.ClassicScript);
+				break;
+
+			case ScriptingDocumentConfigurationKind.GameFlowScript:
+				if (editor is GameFlowEditor gameFlowEditor)
+					gameFlowEditor.UpdateSettings(configs.GameFlowScript);
+				break;
+
+			case ScriptingDocumentConfigurationKind.TRX:
+				if (editor is TRXEditor trxEditor)
+					trxEditor.UpdateSettings(configs.TRX);
+				break;
+
+			case ScriptingDocumentConfigurationKind.Lua:
+				if (editor is LuaEditor luaEditor)
+					luaEditor.UpdateSettings(configs.Lua);
+				break;
+		}
+	}
 
 	public void Build()
 		=> _workspaceAutomationProvider.Build();
@@ -127,6 +168,7 @@ internal sealed class ScriptingMessageService : IDisposable
 	private static IStudioWorkspaceAutomationProvider CreateWorkspaceAutomationProvider(
 		ScriptingWorkspaceProfile workspaceProfile,
 		IEditorDocumentController documentController,
+		Action applyEditorSettings,
 		string engineDirectoryPath,
 		string engineExecutableFilePath,
 		IScriptingHostOperations hostOperations,
@@ -144,7 +186,7 @@ internal sealed class ScriptingMessageService : IDisposable
 
 		return workspaceProfile.Kind switch
 		{
-			ScriptingWorkspaceKind.ClassicScript => CreateClassicScriptProvider(workspaceProfile, documentController, engineDirectoryPath, hostOperations, showCompilerLogsPane, updateCompilerLogs, showCompilerLogsAfterBuild, useNewIncludeMethod, languageServices),
+			ScriptingWorkspaceKind.ClassicScript => CreateClassicScriptProvider(workspaceProfile, documentController, applyEditorSettings, engineDirectoryPath, hostOperations, showCompilerLogsPane, updateCompilerLogs, showCompilerLogsAfterBuild, useNewIncludeMethod, languageServices),
 			ScriptingWorkspaceKind.GameFlowScript => CreateGameFlowProvider(workspaceProfile, documentController, engineDirectoryPath, engineExecutableFilePath, hostOperations, showCompilerLogsPane, updateCompilerLogs, showCompilerLogsAfterBuild, gameFlowLanguageServices),
 			ScriptingWorkspaceKind.TRX => CreateTrxProvider(workspaceProfile, documentController, hostOperations, trxLanguageServices),
 			ScriptingWorkspaceKind.Lua => CreateLuaProvider(workspaceProfile, documentController, hostOperations),
@@ -155,6 +197,7 @@ internal sealed class ScriptingMessageService : IDisposable
 	private static IStudioWorkspaceAutomationProvider CreateClassicScriptProvider(
 		ScriptingWorkspaceProfile workspaceProfile,
 		IEditorDocumentController documentController,
+		Action applyEditorSettings,
 		string engineDirectoryPath,
 		IScriptingHostOperations hostOperations,
 		Action showCompilerLogsPane,
@@ -219,7 +262,7 @@ internal sealed class ScriptingMessageService : IDisposable
 						openSourceView: true);
 					scriptReplacer.RenameLanguageString(editor, oldName, newName);
 				},
-				() => ApplyEditorSettings(documentController, workspaceProfile.Kind),
+				applyEditorSettings,
 				documentController.SaveAll,
 				showCompilerLogsPane,
 				updateCompilerLogs),
@@ -345,8 +388,7 @@ internal sealed class ScriptingMessageService : IDisposable
 					string lineText = editor.Document.GetText(stringLine);
 					editor.ReplaceLine(stringLine, regex.Replace(lineText, $"\"{newName}\""));
 					editor.ScrollToLine(stringLine.LineNumber);
-				},
-				static () => { }));
+				}));
 	}
 
 	private static IStudioWorkspaceAutomationProvider CreateTrxProvider(
@@ -383,39 +425,6 @@ internal sealed class ScriptingMessageService : IDisposable
 		bool canClose = _documentController.AskSaveAll();
 		_dockLayoutPersistenceService.SaveState(_workspaceProfile, _getDockLayoutXml());
 		message.Reply(canClose);
-	}
-
-	private static void ApplyEditorSettings(IEditorDocumentController documentController, ScriptingWorkspaceKind workspaceKind)
-	{
-		var configs = new ConfigurationCollection();
-
-		foreach (IEditorControl editor in documentController.GetOpenEditors())
-		{
-			switch (workspaceKind)
-			{
-				case ScriptingWorkspaceKind.ClassicScript:
-					if (editor is ClassicScriptEditor classicScriptEditor)
-						classicScriptEditor.UpdateSettings(configs.ClassicScript);
-					else if (editor is IStringSectionNavigator)
-						editor.UpdateSettings(configs.ClassicScript);
-					break;
-
-				case ScriptingWorkspaceKind.GameFlowScript:
-					if (editor is GameFlowEditor gameFlowEditor)
-						gameFlowEditor.UpdateSettings(configs.GameFlowScript);
-					break;
-
-				case ScriptingWorkspaceKind.TRX:
-					if (editor is TRXEditor trxEditor)
-						trxEditor.UpdateSettings(configs.TRX);
-					break;
-
-				case ScriptingWorkspaceKind.Lua:
-					if (editor is LuaEditor luaEditor)
-						luaEditor.UpdateSettings(configs.Lua);
-					break;
-			}
-		}
 	}
 
 	private static void CreateGeneratedFiles(string scriptRootDirectoryPath, IReadOnlyList<GeneratedScriptFile> files)

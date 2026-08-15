@@ -3,7 +3,6 @@
 using System;
 using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared.Messaging.Scripting;
-using TombLib.Scripting.ClassicScript.Services;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombIDE.ScriptingStudio.Controls;
@@ -18,19 +17,16 @@ internal sealed class EditorDocumentControllerFactory : IEditorDocumentControlle
 	public IEditorDocumentController Create(
 		ScriptingWorkspaceProfile profile,
 		IScriptingProjectContext projectContext,
-		IMessageService messageService,
-		IClassicScriptLineService lineService)
+		IMessageService messageService)
 	{
 		ArgumentNullException.ThrowIfNull(profile);
 		ArgumentNullException.ThrowIfNull(projectContext);
 		ArgumentNullException.ThrowIfNull(messageService);
-		ArgumentNullException.ThrowIfNull(lineService);
 
 		var controller = new EditorDocumentController(
 			projectContext.Project.GetCurrentEngineVersion(),
 			projectContext.ScriptRootDirectoryPath,
-			messageService,
-			lineService);
+			messageService);
 
 		profile.RegisterEditors(controller);
 

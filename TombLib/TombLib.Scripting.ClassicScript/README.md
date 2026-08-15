@@ -16,6 +16,6 @@ Provides the editor (`ClassicScriptEditor`), configuration
 tables, index and reference services, compilers (`NGCompiler`, `TR4Compiler`), content
 nodes, and color scheme resources.
 
-Depends on `TombLib.Scripting.UI` and `TombLib.Scripting`. See
-[ScriptingLibraries_Architecture.md](../ScriptingLibraries_Architecture.md) for the provider
-standards and the extension-point guide.
+Depends on `TombLib.Scripting.UI` and `TombLib.Scripting`. See the
+[provider-library stabilization plan](../../TombLib.Scripting_Provider_Libraries_Stabilization_Plan.md)
+for the current provider standards and extension-point guidance.

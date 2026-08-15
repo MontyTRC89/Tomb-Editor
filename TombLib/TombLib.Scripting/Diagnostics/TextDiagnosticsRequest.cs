@@ -8,12 +8,15 @@ namespace TombLib.Scripting.Diagnostics;
 public sealed record TextDiagnosticsRequest
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextDiagnosticsRequest"/> class.
+	/// Initializes a new instance of the <see cref="TextDiagnosticsRequest"/> record.
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="engineVersion">The engine version that should be used when evaluating diagnostics.</param>
 	public TextDiagnosticsRequest(string documentText, Version engineVersion)
 	{
+		ArgumentNullException.ThrowIfNull(documentText);
+		ArgumentNullException.ThrowIfNull(engineVersion);
+
 		DocumentText = documentText;
 		EngineVersion = engineVersion;
 	}

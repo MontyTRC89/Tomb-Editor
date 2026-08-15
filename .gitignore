@@ -11,8 +11,16 @@ bin/
 packages/
 *.vspx
 
-# JetBrains IDEs
+# Editor and agent workspaces
 .idea/
+.vs/
+.vscode/
+.zed/
+.cursor/
+.claude/
+.codebase-memory/
+.fleet/
+.windsurf/
 
 build_output.txt
 

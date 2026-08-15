@@ -13,12 +13,12 @@ using TombLib.Scripting.UI.Bases;
 
 namespace TombIDE.ScriptingStudio.Workbench;
 
-internal sealed class LuaDiagnosticsPaneProvider : IStudioPaneContributionProvider
+internal sealed class DocumentDiagnosticsPaneProvider : IStudioPaneContributionProvider
 {
 	private readonly ScriptingWorkspaceProfile _profile;
 	private readonly IEditorDocumentController _documentController;
 
-	public LuaDiagnosticsPaneProvider(
+	public DocumentDiagnosticsPaneProvider(
 		ScriptingWorkspaceProfile profile,
 		IEditorDocumentController documentController)
 	{
@@ -31,7 +31,7 @@ internal sealed class LuaDiagnosticsPaneProvider : IStudioPaneContributionProvid
 
 	public IReadOnlyList<StudioPaneContribution> GetPaneContributions()
 	{
-		if (_profile.Kind != ScriptingWorkspaceKind.Lua || !_profile.SupportsView(UICommand.LuaDiagnostics))
+		if (!_profile.SupportsView(UICommand.LuaDiagnostics))
 			return [];
 
 		var pane = new TextDiagnosticsToolWindow(

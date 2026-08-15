@@ -366,7 +366,10 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	private TextDiagnosticsCoordinator? _diagnosticsCoordinator;
 	private bool _isDisposed;
 
-	internal IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnosticToolTipService.Diagnostics;
+	/// <summary>
+	/// Gets the diagnostics currently owned by this editor instance.
+	/// </summary>
+	public IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnosticToolTipService.Diagnostics;
 
 	// Construction
 

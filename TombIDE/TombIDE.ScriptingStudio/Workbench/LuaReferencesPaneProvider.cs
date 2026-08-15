@@ -30,7 +30,7 @@ internal sealed class LuaReferencesPaneProvider : IStudioPaneContributionProvide
 
 	public IReadOnlyList<StudioPaneContribution> GetPaneContributions()
 	{
-		if (_profile.Kind != ScriptingWorkspaceKind.Lua || !_profile.SupportsView(UICommand.LuaReferencesResults))
+		if (!_profile.SupportsLua || !_profile.SupportsView(UICommand.LuaReferencesResults))
 			return [];
 
 		var pane = new TextReferencesResultsToolWindow(

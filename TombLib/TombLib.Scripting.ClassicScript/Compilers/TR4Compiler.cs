@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using TombLib.Scripting.IO;
 
 namespace TombLib.Scripting.ClassicScript.Compilers;
@@ -33,42 +34,63 @@ public static class TR4Compiler
 	/// <returns>The compiler log content.</returns>
 	public static string Compile(string projectScriptPath, string projectEnginePath)
 	{
-		ThrowIfInvalidCompilerPath(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory);
+		return CompileCore(projectScriptPath, projectEnginePath, ClassicScriptCompilerPaths.Default, ProcessCompilerProcessFactory.Instance);
+	}
 
-		ScriptDirectoryCopier.CopyScriptDirectory(projectScriptPath, ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, clearTarget: false, CompilerFileCopy.CopyTextFormatted);
+	internal static string CompileCore(
+		string projectScriptPath,
+		string projectEnginePath,
+		ClassicScriptCompilerPaths compilerPaths,
+		ICompilerProcessFactory processFactory)
+	{
+		ArgumentNullException.ThrowIfNull(compilerPaths);
+		ArgumentNullException.ThrowIfNull(processFactory);
 
-		var startInfo = new ProcessStartInfo
+		ThrowIfInvalidCompilerPath(compilerPaths.TR4ScriptCompilerDirectory);
+
+		ScriptDirectoryCopier.CopyScriptDirectory(projectScriptPath, compilerPaths.TR4ScriptCompilerDirectory, clearTarget: false, CompilerFileCopy.CopyTextFormatted);
+		File.Delete(Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "logs.txt"));
+		File.Delete(Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "Script.dat"));
+		File.Delete(Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "English.dat"));
+
+		try
 		{
-			FileName = ClassicScriptCompilerPaths.Default.DOSBoxExecutable,
-			WorkingDirectory = ClassicScriptCompilerPaths.Default.DOSDirectory,
-			Arguments =
-				$"-c \"mount C '{ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory}'\" " +
-				"-c \"C:\" " +
-				"-c \"script script.txt >> logs.txt\" " +
-				"-c \"exit\" " +
-				"-noconsole",
-			UseShellExecute = true
-		};
+			var startInfo = new ProcessStartInfo
+			{
+				FileName = compilerPaths.DOSBoxExecutable,
+				WorkingDirectory = compilerPaths.DOSDirectory,
+				Arguments =
+					$"-c \"mount C '{compilerPaths.TR4ScriptCompilerDirectory}'\" " +
+					"-c \"C:\" " +
+					"-c \"script script.txt >> logs.txt\" " +
+					"-c \"exit\" " +
+					"-noconsole",
+				UseShellExecute = true
+			};
 
-		Process.Start(startInfo)?.WaitForExit();
+			using (ICompilerProcess? compilerProcess = processFactory.Start(startInfo))
+				compilerProcess?.WaitForExit();
 
-		string logFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "logs.txt");
-		string logFileContent = File.ReadAllText(logFilePath);
+			string logFilePath = Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "logs.txt");
+			string logFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252));
 
-		string compiledScriptFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "Script.dat");
-		string compiledEnglishFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory, "English.dat");
+			string compiledScriptFilePath = Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "Script.dat");
+			string compiledEnglishFilePath = Path.Combine(compilerPaths.TR4ScriptCompilerDirectory, "English.dat");
 
-		if (File.Exists(compiledScriptFilePath))
-			File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
+			if (File.Exists(compiledScriptFilePath))
+				File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
 
-		if (File.Exists(compiledEnglishFilePath))
-			File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
+			if (File.Exists(compiledEnglishFilePath))
+				File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
 
-		ScriptDirectoryCopier.ClearDirectoryExcept(
-			ClassicScriptCompilerPaths.Default.TR4ScriptCompilerDirectory,
-			name => name.Equals("SCRIPT.EXE", StringComparison.OrdinalIgnoreCase)
-				|| name.Equals("DOS4GW.EXE", StringComparison.OrdinalIgnoreCase));
-
-		return logFileContent;
+			return logFileContent;
+		}
+		finally
+		{
+			ScriptDirectoryCopier.ClearDirectoryExcept(
+				compilerPaths.TR4ScriptCompilerDirectory,
+				name => name.Equals("SCRIPT.EXE", StringComparison.OrdinalIgnoreCase)
+					|| name.Equals("DOS4GW.EXE", StringComparison.OrdinalIgnoreCase));
+		}
 	}
 }

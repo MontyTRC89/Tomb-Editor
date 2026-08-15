@@ -14,6 +14,6 @@ language-services composition root (`TRXLanguageServices`), the schema service
 (`TRXGameFlowSchemaService` / `ITRXGameFlowSchemaService`), content nodes
 (`TRXNodesProvider`), the `ScriptReplacer` writer, and resource catalogs such as `Keywords`.
 
-Depends on `TombLib.Scripting.UI` and `TombLib.Scripting`. See
-[ScriptingLibraries_Architecture.md](../ScriptingLibraries_Architecture.md) for the provider
-standards and the extension-point guide.
+Depends on `TombLib.Scripting.UI` and `TombLib.Scripting`. See the
+[provider-library stabilization plan](../../TombLib.Scripting_Provider_Libraries_Stabilization_Plan.md)
+for the current provider standards and extension-point guidance.

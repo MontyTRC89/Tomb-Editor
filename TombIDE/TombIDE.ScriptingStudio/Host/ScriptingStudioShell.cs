@@ -12,6 +12,7 @@ internal sealed class ScriptingStudioShell : IScriptingStudioShell
 	private readonly IServiceScope _shellScope;
 	private readonly RootShellHost _host;
 	private readonly RootShellViewModel _viewModel;
+	private bool _disposed;
 
 	public ScriptingStudioShell(IServiceScope shellScope, RootShellViewModel viewModel)
 	{
@@ -31,7 +32,10 @@ internal sealed class ScriptingStudioShell : IScriptingStudioShell
 
 	public void Dispose()
 	{
-		_viewModel.Dispose();
+		if (_disposed)
+			return;
+
+		_disposed = true;
 		_host.Dispose();
 		_shellScope.Dispose();
 	}

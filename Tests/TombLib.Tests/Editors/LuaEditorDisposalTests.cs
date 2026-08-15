@@ -1,6 +1,7 @@
 using Moq;
 using System;
 using System.Windows;
+using System.Windows.Threading;
 using static TombLib.Tests.WPFTestHelper;
 
 namespace TombLib.Tests;
@@ -68,5 +69,36 @@ public class LuaEditorDisposalTests
 			editor.Dispose();
 			editor.Dispose();
 		});
+	}
+
+	[TestMethod]
+	public void ExercisedEditor_IsCollectibleAfterHostAndProviderDisposal()
+	{
+		WeakReference? editorReference = null;
+		RunInSta(() => editorReference = CreateAndDisposeExercisedEditor());
+
+		Assert.IsNotNull(editorReference);
+		AssertCollected(editorReference, nameof(LuaEditor));
+	}
+
+	private static WeakReference CreateAndDisposeExercisedEditor()
+	{
+		var provider = new Mock<ILuaIntelliSenseProvider>();
+		var editor = new LuaEditor(new Version(1, 0))
+		{
+			FilePath = @"C:\Workspace\Scripts\exercised.lua",
+			Text = "local value = 1",
+			IntelliSenseProvider = provider.Object
+		};
+		Window hostWindow = ShowInHostWindow(editor);
+
+		editor.SetSemanticTokens([new LuaSemanticToken(0, 6, 5, "variable", [])]);
+		editor.RunContentChangedWorker();
+		editor.Dispose();
+		hostWindow.Content = null;
+		hostWindow.Close();
+		PumpDispatcher(hostWindow.Dispatcher, DispatcherPriority.ContextIdle);
+
+		return new WeakReference(editor);
 	}
 }

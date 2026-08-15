@@ -1,12 +1,16 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using TombIDE.ScriptingStudio.CommandSurface;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared.Docking;
 using TombLib.LevelData;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.WorkspaceProfile;
 
@@ -29,28 +33,14 @@ public enum ScriptingSettingsPageKind
 public sealed class ScriptingWorkspaceSettingsPage
 {
 	public ScriptingWorkspaceSettingsPage(ScriptingSettingsPageKind kind, string title)
-		: this(kind, title, [])
-	{ }
-
-	public ScriptingWorkspaceSettingsPage(ScriptingSettingsPageKind kind, string title, IReadOnlyList<DocumentMode> documentModes)
 	{
 		Kind = kind;
 		Title = title ?? throw new ArgumentNullException(nameof(title));
-		DocumentModes = documentModes ?? [];
 	}
 
 	public ScriptingSettingsPageKind Kind { get; }
 
 	public string Title { get; }
-
-	public IReadOnlyList<DocumentMode> DocumentModes { get; }
-
-	public bool Matches(DocumentMode documentMode)
-	{
-		return documentMode == DocumentMode.None
-			|| DocumentModes.Count == 0
-			|| DocumentModes.Contains(documentMode);
-	}
 }
 
 public sealed class ScriptingWorkspaceViewContribution
@@ -65,15 +55,12 @@ public sealed class ScriptingWorkspaceViewContribution
 
 public sealed class ScriptingWorkspaceProfile
 {
-	private readonly Func<string> _loadAvalonDockLayoutXml;
-	private readonly Func<DockPanelState> _loadDockPanelState;
-	private readonly Action<IEditorDocumentController> _registerEditors;
-	private readonly Action<string> _saveAvalonDockLayoutXml;
+	private readonly ScriptingWorkspaceLayoutPersistence _layoutPersistence;
 
 	public ScriptingWorkspaceProfile(
 		ScriptingWorkspaceKind kind,
 		TRVersion.Game gameVersion,
-		IReadOnlyList<DocumentMode> allowedDocumentModes,
+		IReadOnlyList<ScriptingDocumentRegistration> documentRegistrations,
 		string initialFilePath,
 		IReadOnlyList<ScriptingWorkspaceViewContribution> viewContributions,
 		IReadOnlyList<StudioStatusStripSegment> statusStripSegments,
@@ -85,15 +72,16 @@ public sealed class ScriptingWorkspaceProfile
 		string commentPrefix,
 		bool supportsBuild,
 		bool supportsDocumentation,
-		DockPanelState defaultLayout,
-		Action<IEditorDocumentController> registerEditors,
-		Func<DockPanelState> loadDockPanelState,
-		Func<string> loadAvalonDockLayoutXml,
-		Action<string> saveAvalonDockLayoutXml)
+		ScriptingWorkspaceLayoutPersistence layoutPersistence,
+		bool supportsLuaActivation = false)
 	{
 		Kind = kind;
 		GameVersion = gameVersion;
-		AllowedDocumentModes = allowedDocumentModes ?? Array.Empty<DocumentMode>();
+		DocumentRegistrations = documentRegistrations?.ToArray() ?? Array.Empty<ScriptingDocumentRegistration>();
+		AllowedDocumentModes = DocumentRegistrations
+			.SelectMany(registration => registration.SupportedDocumentModes)
+			.Distinct()
+			.ToArray();
 		InitialFilePath = initialFilePath ?? string.Empty;
 		ViewContributions = viewContributions ?? Array.Empty<ScriptingWorkspaceViewContribution>();
 		StatusStripSegments = statusStripSegments ?? Array.Empty<StudioStatusStripSegment>();
@@ -105,11 +93,10 @@ public sealed class ScriptingWorkspaceProfile
 		CommentPrefix = commentPrefix ?? string.Empty;
 		SupportsBuild = supportsBuild;
 		SupportsDocumentation = supportsDocumentation;
-		DefaultLayout = defaultLayout;
-		_registerEditors = registerEditors ?? throw new ArgumentNullException(nameof(registerEditors));
-		_loadDockPanelState = loadDockPanelState ?? throw new ArgumentNullException(nameof(loadDockPanelState));
-		_loadAvalonDockLayoutXml = loadAvalonDockLayoutXml ?? throw new ArgumentNullException(nameof(loadAvalonDockLayoutXml));
-		_saveAvalonDockLayoutXml = saveAvalonDockLayoutXml ?? throw new ArgumentNullException(nameof(saveAvalonDockLayoutXml));
+		SupportsLuaActivation = supportsLuaActivation;
+		SupportsLua = AllowedDocumentModes.Contains(DocumentMode.Lua) || kind == ScriptingWorkspaceKind.Lua;
+		_layoutPersistence = layoutPersistence;
+		DefaultLayout = layoutPersistence.DefaultLayout;
 	}
 
 	public ScriptingWorkspaceKind Kind { get; }
@@ -117,6 +104,8 @@ public sealed class ScriptingWorkspaceProfile
 	public TRVersion.Game GameVersion { get; }
 
 	public IReadOnlyList<DocumentMode> AllowedDocumentModes { get; }
+
+	public IReadOnlyList<ScriptingDocumentRegistration> DocumentRegistrations { get; }
 
 	public string InitialFilePath { get; }
 
@@ -140,24 +129,30 @@ public sealed class ScriptingWorkspaceProfile
 
 	public bool SupportsDocumentation { get; }
 
+	public bool SupportsLuaActivation { get; }
+
+	public bool SupportsLua { get; }
+
 	public DockPanelState DefaultLayout { get; }
 
 	public void RegisterEditors(IEditorDocumentController documentController)
 	{
 		ArgumentNullException.ThrowIfNull(documentController);
 
-		_registerEditors(documentController);
+		foreach (ScriptingDocumentRegistration registration in DocumentRegistrations)
+			documentController.RegisterDocument(registration);
 	}
 
 	public DockPanelState LoadDockPanelState()
-		=> _loadDockPanelState();
+		=> _layoutPersistence.LoadDockPanelState();
 
 	public string LoadAvalonDockLayoutXml()
-		=> _loadAvalonDockLayoutXml();
+		=> _layoutPersistence.LoadAvalonDockLayoutXml();
 
 	public void SaveAvalonDockLayoutXml(string layoutXml)
-		=> _saveAvalonDockLayoutXml(layoutXml);
+		=> _layoutPersistence.SaveAvalonDockLayoutXml(layoutXml);
 
 	public bool SupportsView(UICommand command)
 		=> ViewContributions.Any(contribution => contribution.Command == command);
+
 }

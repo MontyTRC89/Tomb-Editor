@@ -14,58 +14,45 @@ internal sealed class TypedDocumentCommandSurfaceProvider : IStudioDocumentComma
 		IReadOnlyList<StudioToolStripItem> MenuStripItems,
 		IReadOnlyList<StudioToolStripItem> ToolStripItems);
 
-	private static readonly IReadOnlyDictionary<DocumentMode, StudioDocumentCommandSurfaceDefinition> Definitions =
-		new Dictionary<DocumentMode, StudioDocumentCommandSurfaceDefinition>
-		{
-			[DocumentMode.ClassicScript] = new(
-				CreateClassicScriptContextMenuItems(),
-				CreateClassicScriptMenuStripItems(),
-				CreateScriptToolStripItems()),
-			[DocumentMode.GameFlowScript] = new(
-				CreateGameFlowContextMenuItems(),
-				CreateGameFlowMenuStripItems(),
-				CreateScriptToolStripItems()),
-			[DocumentMode.Lua] = new(
-				CreateLuaContextMenuItems(),
-				CreateLuaMenuStripItems(),
-				CreateScriptToolStripItems()),
-			[DocumentMode.PlainText] = new(
-				CreatePlainTextContextMenuItems(),
-				CreatePlainTextMenuStripItems(),
-				CreatePlainTextToolStripItems()),
-			[DocumentMode.Strings] = new(
-				CreateStringsContextMenuItems(),
-				CreateStringsMenuStripItems(),
-				CreateStringsToolStripItems()),
-			[DocumentMode.TRX] = new(
-				CreateTrxContextMenuItems(),
-				CreateTrxMenuStripItems(),
-				CreateScriptToolStripItems())
-		};
+	private readonly StudioDocumentCommandSurfaceDefinition _definition;
 
-	public static TypedDocumentCommandSurfaceProvider Instance { get; } = new();
-
-	private TypedDocumentCommandSurfaceProvider()
-	{ }
-
-	public IReadOnlyList<StudioToolStripItem> GetContextMenuItems(IEditorControl editor, DocumentMode documentMode)
-		=> GetClonedItems(documentMode, static definition => definition.ContextMenuItems);
-
-	public IReadOnlyList<StudioToolStripItem> GetMenuStripItems(IEditorControl editor, DocumentMode documentMode)
-		=> GetClonedItems(documentMode, static definition => definition.MenuStripItems);
-
-	public IReadOnlyList<StudioToolStripItem> GetToolStripItems(IEditorControl editor, DocumentMode documentMode)
-		=> GetClonedItems(documentMode, static definition => definition.ToolStripItems);
-
-	private static IReadOnlyList<StudioToolStripItem> GetClonedItems(
-		DocumentMode documentMode,
-		Func<StudioDocumentCommandSurfaceDefinition, IReadOnlyList<StudioToolStripItem>> selectItems)
+	private TypedDocumentCommandSurfaceProvider(StudioDocumentCommandSurfaceDefinition definition)
 	{
-		if (!Definitions.TryGetValue(documentMode, out StudioDocumentCommandSurfaceDefinition? definition) || definition is null)
-			return [];
-
-		return StudioCommandSurfaceItemFactory.CloneItems(selectItems(definition));
+		_definition = definition;
 	}
+
+	public static TypedDocumentCommandSurfaceProvider CreateClassicScript()
+		=> Create(CreateClassicScriptContextMenuItems(), CreateClassicScriptMenuStripItems(), CreateScriptToolStripItems());
+
+	public static TypedDocumentCommandSurfaceProvider CreateGameFlowScript()
+		=> Create(CreateGameFlowContextMenuItems(), CreateGameFlowMenuStripItems(), CreateScriptToolStripItems());
+
+	public static TypedDocumentCommandSurfaceProvider CreateLua()
+		=> Create(CreateLuaContextMenuItems(), CreateLuaMenuStripItems(), CreateScriptToolStripItems());
+
+	public static TypedDocumentCommandSurfaceProvider CreatePlainText()
+		=> Create(CreatePlainTextContextMenuItems(), CreatePlainTextMenuStripItems(), CreatePlainTextToolStripItems());
+
+	public static TypedDocumentCommandSurfaceProvider CreateStrings()
+		=> Create(CreateStringsContextMenuItems(), CreateStringsMenuStripItems(), CreateStringsToolStripItems());
+
+	public static TypedDocumentCommandSurfaceProvider CreateTrx()
+		=> Create(CreateTrxContextMenuItems(), CreateTrxMenuStripItems(), CreateScriptToolStripItems());
+
+	private static TypedDocumentCommandSurfaceProvider Create(
+		IReadOnlyList<StudioToolStripItem> contextMenuItems,
+		IReadOnlyList<StudioToolStripItem> menuStripItems,
+		IReadOnlyList<StudioToolStripItem> toolStripItems)
+		=> new(new(contextMenuItems, menuStripItems, toolStripItems));
+
+	public IReadOnlyList<StudioToolStripItem> GetContextMenuItems(IEditorControl editor)
+		=> StudioCommandSurfaceItemFactory.CloneItems(_definition.ContextMenuItems);
+
+	public IReadOnlyList<StudioToolStripItem> GetMenuStripItems(IEditorControl editor)
+		=> StudioCommandSurfaceItemFactory.CloneItems(_definition.MenuStripItems);
+
+	public IReadOnlyList<StudioToolStripItem> GetToolStripItems(IEditorControl editor)
+		=> StudioCommandSurfaceItemFactory.CloneItems(_definition.ToolStripItems);
 
 	private static IReadOnlyList<StudioToolStripItem> CreateClassicScriptMenuStripItems() =>
 	[

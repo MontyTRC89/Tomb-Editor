@@ -1,11 +1,14 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Moq;
+using MvvmDialogs;
+using Nickelony.LanguageServer.Abstractions.Editing;
 using Nickelony.LanguageServer.Lua;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.FindAndReplace;
 using TombIDE.ScriptingStudio.Lua;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.Shortcuts;
+using TombIDE.ScriptingStudio.TextEditing;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.ScriptingStudio.Workbench;
 using TombIDE.ScriptingStudio.WorkspaceProfile;
@@ -23,62 +26,32 @@ using TombLib.Scripting.GameFlowScript.Services;
 using TombLib.Scripting.Hover;
 using TombLib.Scripting.Navigation;
 using TombLib.Scripting.Signatures;
+using Nickelony.LanguageServer.Abstractions.Navigation;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Editing;
 using TombLib.WPF.Services.Abstract;
+using TombIDE.ScriptingStudio.Messaging;
+using TombLib.Scripting.Lua;
+using static TombEditor.Tests.ScriptingStudio.ScriptingStudioChromeTestFixture;
+using static TombEditor.Tests.ScriptingStudio.ScriptingWorkspaceProfileTestFactory;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
 [TestClass]
 public class WorkbenchServiceTests
 {
-    private static ScriptingWorkspaceProfile CreateLuaProfile()
+    [TestMethod]
+    public void Constructor_WithNullComposition_ThrowsArgumentNullException()
     {
-        return new ScriptingWorkspaceProfile(
-            ScriptingWorkspaceKind.Lua,
-            TRVersion.Game.TombEngine,
-            [],
-            string.Empty,
-            [],
-            [],
-            [],
-            [],
-            [],
-            "*.lua",
-            string.Empty,
-            "--",
-            supportsBuild: false,
-            supportsDocumentation: false,
-            new DockPanelState(),
-            _ => { },
-            () => new DockPanelState(),
-            () => string.Empty,
-            _ => { });
-    }
-
-    private static IMenuService CreateMenuServiceMock()
-    {
-        var mock = new Mock<IMenuService>();
-        mock.Setup(m => m.MenuView).Returns(Mock.Of<System.Windows.FrameworkElement>());
-        return mock.Object;
-    }
-
-    private static IToolBarService CreateToolBarServiceMock()
-    {
-        var mock = new Mock<IToolBarService>();
-        mock.Setup(m => m.ToolBarView).Returns(Mock.Of<System.Windows.FrameworkElement>());
-        return mock.Object;
-    }
-
-    private static IStatusBarService CreateStatusBarServiceMock()
-    {
-        var mock = new Mock<IStatusBarService>();
-        mock.Setup(m => m.StatusBarView).Returns(Mock.Of<System.Windows.FrameworkElement>());
-        return mock.Object;
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() => new WorkbenchService(null!));
+        });
     }
 
     private static IScriptingProjectContext CreateProjectContext()
@@ -121,6 +94,15 @@ public class WorkbenchServiceTests
         return mock.Object;
     }
 
+    private static IMenuService CreateMenuServiceMock()
+        => ScriptingStudioChromeTestFixture.CreateMenuServiceMock().Object;
+
+    private static IToolBarService CreateToolBarServiceMock()
+        => ScriptingStudioChromeTestFixture.CreateToolBarServiceMock().Object;
+
+    private static IStatusBarService CreateStatusBarServiceMock()
+        => ScriptingStudioChromeTestFixture.CreateStatusBarServiceMock().Object;
+
     private static IAvalonDockHost CreateDockHostMock()
     {
         var mock = new Mock<IAvalonDockHost>();
@@ -158,48 +140,33 @@ public class WorkbenchServiceTests
             new Mock<ILuaIntelliSenseProvider>().Object);
     }
 
-    private static ClassicScriptLanguageServices CreateClassicScriptLanguageServices()
+    private static LuaReferenceSearchService CreateLuaReferenceSearchService()
     {
-        return new ClassicScriptLanguageServices(
-            new Mock<ITextDefinitionProvider>().Object,
-            new Mock<ITextHoverProvider>().Object,
-            new Mock<ITextSignatureHelpProvider>().Object,
-            new ErrorDetector(
-                new Mock<IClassicScriptLineService>().Object,
-                new Mock<IClassicScriptCommandService>().Object,
-                new ClassicScriptSyntaxCatalogService()),
-            new Mock<IClassicScriptLineService>().Object,
-            new Mock<IClassicScriptCommandService>().Object,
-            new Mock<IClassicScriptIndexService>().Object);
+        return new LuaReferenceSearchService(
+            new Mock<ITextEditorHost>().Object,
+            new Mock<ITextReferencesProvider>().Object,
+            "C:\\Scripts");
     }
 
-    private static GameFlowLanguageServices CreateGameFlowLanguageServices()
+    private static TextWorkspaceCommandService CreateLuaWorkspaceCommandService()
     {
-        var lineService = new Mock<IGameFlowScriptLineService>().Object;
-        var documentService = new Mock<IGameFlowScriptDocumentService>().Object;
-
-        return new GameFlowLanguageServices(
-            new Mock<ITextDefinitionProvider>().Object,
-            new Mock<ITextHoverProvider>().Object,
-            new GameFlowCompletionProvider(),
-            lineService,
-            documentService);
+        return new TextWorkspaceCommandService(
+            new TextWorkspaceEditApplier(new Mock<ITextEditorHost>().Object),
+            new Mock<ITextEditProvider>().Object);
     }
 
-    private static TRXLanguageServices CreateTRXLanguageServices()
+    private static LuaHostServices CreateLuaHostServices()
     {
-        var lineService = new TRXLineService();
-        var documentService = new TRXDocumentService(lineService);
-        var schemaService = new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath());
-
-        return new TRXLanguageServices(
-            schemaService,
-            lineService,
-            documentService,
-            new TRXDefinitionProvider(documentService),
-            new TRXGameFlowCompletionService(schemaService),
-            new TRXGameFlowHoverService(schemaService));
+        return new LuaHostServices(
+            CreateLuaEditorLifecycleServiceMock(),
+            CreateLuaIntellisenseBridgeMock(),
+            CreateLuaTrackedDocumentStateService(),
+            CreateLuaReferenceSearchService(),
+            CreateLuaWorkspaceCommandService());
     }
+
+    private static IDialogService CreateDialogService()
+        => new Mock<IDialogService>().Object;
 
     [TestMethod]
     public void Constructor_WithNullWorkspaceProfile_ThrowsArgumentNullException()
@@ -207,7 +174,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     null!,
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -222,14 +189,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -239,7 +205,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     null!,
                     new Mock<IMessenger>().Object,
@@ -254,14 +220,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -271,7 +236,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     null!,
@@ -286,14 +251,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -303,7 +267,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -318,14 +282,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -335,7 +298,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -350,14 +313,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -367,7 +329,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -382,14 +344,13 @@ public class WorkbenchServiceTests
                     null!,
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -399,7 +360,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -414,24 +375,98 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     null!,
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
     [TestMethod]
-    public void Constructor_WithNullLuaEditorLifecycleService_ThrowsArgumentNullException()
+    public void LuaHostServices_WithNullEditorLifecycleService_ThrowsArgumentNullException()
     {
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                new LuaHostServices(
+                    null!,
+                    CreateLuaIntellisenseBridgeMock(),
+                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaReferenceSearchService(),
+                    CreateLuaWorkspaceCommandService()));
+        });
+    }
+
+    [TestMethod]
+    public void LuaHostServices_WithNullIntellisenseBridge_ThrowsArgumentNullException()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                new LuaHostServices(
+                    CreateLuaEditorLifecycleServiceMock(),
+                    null!,
+                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaReferenceSearchService(),
+                    CreateLuaWorkspaceCommandService()));
+        });
+    }
+
+    [TestMethod]
+    public void LuaHostServices_WithNullTrackedDocumentStateService_ThrowsArgumentNullException()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                new LuaHostServices(
+                    CreateLuaEditorLifecycleServiceMock(),
+                    CreateLuaIntellisenseBridgeMock(),
+                    null!,
+                    CreateLuaReferenceSearchService(),
+                    CreateLuaWorkspaceCommandService()));
+        });
+    }
+
+    [TestMethod]
+    public void LuaHostServices_WithNullReferenceSearchService_ThrowsArgumentNullException()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                new LuaHostServices(
+                    CreateLuaEditorLifecycleServiceMock(),
+                    CreateLuaIntellisenseBridgeMock(),
+                    CreateLuaTrackedDocumentStateService(),
+                    null!,
+                    CreateLuaWorkspaceCommandService()));
+        });
+    }
+
+    [TestMethod]
+    public void LuaHostServices_WithNullWorkspaceCommandService_ThrowsArgumentNullException()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                new LuaHostServices(
+                    CreateLuaEditorLifecycleServiceMock(),
+                    CreateLuaIntellisenseBridgeMock(),
+                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaReferenceSearchService(),
+                    null!));
+        });
+    }
+
+    [TestMethod]
+    public void LuaCapableProfile_WithNullLuaHostServices_ThrowsArgumentNullException()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            Assert.ThrowsException<ArgumentNullException>(() =>
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -446,78 +481,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    null!,
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    null,
+                    CreateDialogService(),
                     () => false,
                     () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
-        });
-    }
-
-    [TestMethod]
-    public void Constructor_WithNullLuaIntellisenseBridge_ThrowsArgumentNullException()
-    {
-        StaTestHelper.RunInSta(() =>
-        {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
-                    CreateLuaProfile(),
-                    CreateProjectContext(),
-                    new Mock<IMessenger>().Object,
-                    new Mock<IMessageService>().Object,
-                    CreateShortcutBindingService(),
-                    CreateMenuServiceMock(),
-                    CreateToolBarServiceMock(),
-                    CreateStatusBarServiceMock(),
-                    new Mock<IPaneHostService>().Object,
-                    new Mock<IWin32DialogOwnerProvider>().Object,
-                    CreateDocumentControllerMock(),
-                    CreateDockHostMock(),
-                    CreatePaneCatalog(),
-                    CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    null!,
-                    CreateLuaTrackedDocumentStateService(),
-                    () => false,
-                    () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
-        });
-    }
-
-    [TestMethod]
-    public void Constructor_WithNullLuaTrackedDocumentStateService_ThrowsArgumentNullException()
-    {
-        StaTestHelper.RunInSta(() =>
-        {
-            Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
-                    CreateLuaProfile(),
-                    CreateProjectContext(),
-                    new Mock<IMessenger>().Object,
-                    new Mock<IMessageService>().Object,
-                    CreateShortcutBindingService(),
-                    CreateMenuServiceMock(),
-                    CreateToolBarServiceMock(),
-                    CreateStatusBarServiceMock(),
-                    new Mock<IPaneHostService>().Object,
-                    new Mock<IWin32DialogOwnerProvider>().Object,
-                    CreateDocumentControllerMock(),
-                    CreateDockHostMock(),
-                    CreatePaneCatalog(),
-                    CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    null!,
-                    () => false,
-                    () => false,
-                    CreateClassicScriptLanguageServices(),
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -527,7 +497,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -542,14 +512,13 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
-                    CreateLuaEditorLifecycleServiceMock(),
-                    CreateLuaIntellisenseBridgeMock(),
-                    CreateLuaTrackedDocumentStateService(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
                     () => false,
                     () => false,
                     null!,
-                    CreateGameFlowLanguageServices(),
-                    CreateTRXLanguageServices()));
+                    ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
         });
     }
 
@@ -559,7 +528,7 @@ public class WorkbenchServiceTests
         StaTestHelper.RunInSta(() =>
         {
             Assert.ThrowsException<ArgumentNullException>(() =>
-                new WorkbenchService(
+                WorkbenchServiceTestFactory.Create(
                     CreateLuaProfile(),
                     CreateProjectContext(),
                     new Mock<IMessenger>().Object,
@@ -574,14 +543,102 @@ public class WorkbenchServiceTests
                     CreateDockHostMock(),
                     CreatePaneCatalog(),
                     CreateFindAndReplaceViewModel(),
+                    CreateLuaHostServices(),
+                    CreateDialogService(),
+                    () => false,
+                    () => false,
+                    ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                    null!,
+                    ScriptingLanguageServicesTestFactory.CreateTRXStub()));
+        });
+    }
+
+    [TestMethod]
+    public void ShellRefreshMessage_ReevaluatesLuaCapabilityCommands()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            var editor = new LuaEditor(new Version(1, 0))
+            {
+                FilePath = @"C:\Scripts\test.lua",
+                Content = "local value = 1"
+            };
+            bool supportsReferences = false;
+            bool supportsRename = false;
+            Func<UICommand, bool>? menuCanExecute = null;
+            Func<UICommand, bool>? toolBarCanExecute = null;
+            var menuService = new Mock<IMenuService>();
+            menuService.Setup(m => m.MenuView).Returns(Mock.Of<System.Windows.FrameworkElement>());
+            menuService
+                .Setup(m => m.UpdateCommandEnabledStates(It.IsAny<Func<UICommand, bool>>()))
+                .Callback<Func<UICommand, bool>>(canExecute => menuCanExecute = canExecute);
+            var toolBarService = new Mock<IToolBarService>();
+            toolBarService.Setup(m => m.ToolBarView).Returns(Mock.Of<System.Windows.FrameworkElement>());
+            toolBarService
+                .Setup(m => m.UpdateCommandEnabledStates(It.IsAny<Func<UICommand, bool>>()))
+                .Callback<Func<UICommand, bool>>(canExecute => toolBarCanExecute = canExecute);
+            var documentController = new Mock<IEditorDocumentController>();
+            documentController.SetupGet(controller => controller.CurrentEditor).Returns(editor);
+            documentController.Setup(controller => controller.GetOpenEditors()).Returns([editor]);
+            documentController
+                .Setup(controller => controller.FindEditorsOfFile(It.IsAny<string>()))
+                .Returns([editor]);
+            var referencesProvider = new Mock<ITextReferencesProvider>();
+            referencesProvider.SetupGet(provider => provider.SupportsReferences).Returns(() => supportsReferences);
+            var editProvider = new Mock<ITextEditProvider>();
+            editProvider.SetupGet(provider => provider.SupportsRename).Returns(() => supportsRename);
+            var messenger = new WeakReferenceMessenger();
+            var workbench = WorkbenchServiceTestFactory.Create(
+                CreateLuaProfile(),
+                CreateProjectContext(),
+                messenger,
+                new Mock<IMessageService>().Object,
+                CreateShortcutBindingService(),
+                menuService.Object,
+                toolBarService.Object,
+                CreateStatusBarServiceMock(),
+                new Mock<IPaneHostService>().Object,
+                new Mock<IWin32DialogOwnerProvider>().Object,
+                documentController.Object,
+                CreateDockHostMock(),
+                CreatePaneCatalog(),
+                CreateFindAndReplaceViewModel(),
+                new LuaHostServices(
                     CreateLuaEditorLifecycleServiceMock(),
                     CreateLuaIntellisenseBridgeMock(),
                     CreateLuaTrackedDocumentStateService(),
-                    () => false,
-                    () => false,
-                    CreateClassicScriptLanguageServices(),
-                    null!,
-                    CreateTRXLanguageServices()));
+                    new LuaReferenceSearchService(new Mock<ITextEditorHost>().Object, referencesProvider.Object, "C:\\Scripts"),
+                    new TextWorkspaceCommandService(new TextWorkspaceEditApplier(new Mock<ITextEditorHost>().Object), editProvider.Object)),
+                CreateDialogService(),
+                () => false,
+                () => false,
+                ScriptingLanguageServicesTestFactory.CreateClassicScriptStub(),
+                ScriptingLanguageServicesTestFactory.CreateGameFlowScriptStub(),
+                ScriptingLanguageServicesTestFactory.CreateTRXStub());
+
+            try
+            {
+                Assert.IsNotNull(menuCanExecute);
+                Assert.IsNotNull(toolBarCanExecute);
+                Assert.IsFalse(menuCanExecute(UICommand.FindReferences));
+                Assert.IsFalse(menuCanExecute(UICommand.RenameSymbol));
+                Assert.IsFalse(toolBarCanExecute(UICommand.FindReferences));
+                Assert.IsFalse(toolBarCanExecute(UICommand.RenameSymbol));
+
+                supportsReferences = true;
+                supportsRename = true;
+                messenger.Send(new ShellUiRefreshMessage());
+
+                Assert.IsTrue(menuCanExecute(UICommand.FindReferences));
+                Assert.IsTrue(menuCanExecute(UICommand.RenameSymbol));
+                Assert.IsTrue(toolBarCanExecute(UICommand.FindReferences));
+                Assert.IsTrue(toolBarCanExecute(UICommand.RenameSymbol));
+            }
+            finally
+            {
+                workbench.Dispose();
+                editor.Dispose();
+            }
         });
     }
 }

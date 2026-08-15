@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -210,12 +212,12 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 
 		#region Events
 
-		public event EventHandler StatusChanged;
+		public event EventHandler? StatusChanged;
 
 		protected virtual void OnStatusChanged(EventArgs e)
 			=> StatusChanged?.Invoke(this, e);
 
-		public event EventHandler ZoomChanged;
+		public event EventHandler? ZoomChanged;
 
 		protected virtual void OnZoomChanged(EventArgs e)
 		{
@@ -223,20 +225,21 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			OnStatusChanged(EventArgs.Empty);
 		}
 
-		public event EventHandler ContentChangedWorkerRunCompleted;
+		public event EventHandler? ContentChangedWorkerRunCompleted;
 
 		protected virtual void OnContentChangedWorkerRunCompleted(EventArgs e)
 			=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
-		private void ContentPersistenceCoordinator_ContentChangedWorkerRunCompleted(object sender, EventArgs e)
+		private void ContentPersistenceCoordinator_ContentChangedWorkerRunCompleted(object? sender, EventArgs e)
 			=> OnContentChangedWorkerRunCompleted(EventArgs.Empty);
 
-		private void DataGrid_SelectionChanged(object sender, EventArgs e)
+		private void DataGrid_SelectionChanged(object? sender, EventArgs e)
 			=> OnStatusChanged(EventArgs.Empty);
 
-		private void DataGrid_CellContentChanged(object sender, CellContentChangedEventArgs e)
+		private void DataGrid_CellContentChanged(object? sender, CellContentChangedEventArgs e)
 		{
-			var source = sender as StringDataGridView;
+			if (sender is not StringDataGridView source)
+				return;
 
 			_undoStack.Push(new DataGridUndoItem(source, e.ColumnIndex, e.RowIndex, e.OldValue ?? "NULL"));
 			_redoStack.Clear();
@@ -245,22 +248,23 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 			RunContentChangedWorker();
 		}
 
-		private void ExtraNGDataGrid_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+		private void ExtraNGDataGrid_RowsAdded(object? sender, DataGridViewRowsAddedEventArgs e)
 		{
-			var source = sender as DataGridView;
+			if (sender is not DataGridView source)
+				return;
 
 			DataGridViewCell idCell = source[0, e.RowIndex - 1];
 			DataGridViewCell hexCell = source[1, e.RowIndex - 1];
 
 			bool isFirstRow = source.RowCount == 2;
 
-			int nextID = isFirstRow ? 0 : int.Parse(source[0, idCell.RowIndex - 1].Value.ToString()) + 1;
+			int nextID = isFirstRow ? 0 : int.Parse(source[0, idCell.RowIndex - 1].Value?.ToString() ?? "0") + 1;
 
 			idCell.Value = nextID;
 			hexCell.Value = ContentReader.GetShortHex((short)nextID, 3);
 		}
 
-		private void ExtraNGDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+		private void ExtraNGDataGrid_RowsRemoved(object? sender, DataGridViewRowsRemovedEventArgs e)
 			=> RunContentChangedWorker();
 
 		#endregion Events
@@ -427,37 +431,37 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 
 		public void Cut()
 		{
-			if (CurrentDataGrid.IsCurrentCellInEditMode)
-				(CurrentDataGrid.EditingControl as TextBox).Cut();
+			if (CurrentDataGrid.IsCurrentCellInEditMode && CurrentDataGrid.EditingControl is TextBox editingControl)
+				editingControl.Cut();
 			else
 				CurrentDataGrid.CutCellText();
 		}
 
 		public void Copy()
 		{
-			if (CurrentDataGrid.IsCurrentCellInEditMode)
-				(CurrentDataGrid.EditingControl as TextBox).Copy();
+			if (CurrentDataGrid.IsCurrentCellInEditMode && CurrentDataGrid.EditingControl is TextBox editingControl)
+				editingControl.Copy();
 			else
 				CurrentDataGrid.CopyCellText();
 		}
 
 		public void Paste()
 		{
-			if (CurrentDataGrid.IsCurrentCellInEditMode)
-				(CurrentDataGrid.EditingControl as TextBox).Paste();
+			if (CurrentDataGrid.IsCurrentCellInEditMode && CurrentDataGrid.EditingControl is TextBox editingControl)
+				editingControl.Paste();
 			else
 				CurrentDataGrid.PasteCellText();
 		}
 
 		public void SelectAll()
 		{
-			if (CurrentDataGrid.IsCurrentCellInEditMode)
-				(CurrentDataGrid.EditingControl as TextBox).SelectAll();
+			if (CurrentDataGrid.IsCurrentCellInEditMode && CurrentDataGrid.EditingControl is TextBox editingControl)
+				editingControl.SelectAll();
 		}
 
 		public void GoToObject(string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 		{
-			TabPage targetTab = TabPages.Cast<TabPage>().ToList().Find(x => x.Name.Equals($"[{objectName}]", StringComparison.OrdinalIgnoreCase));
+			TabPage? targetTab = TabPages.Cast<TabPage>().ToList().Find(x => x.Name.Equals($"[{objectName}]", StringComparison.OrdinalIgnoreCase));
 
 			if (targetTab != null)
 				SelectTab(targetTab);
@@ -476,7 +480,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				destStack.Push(new DataGridUndoItem(
 					item.Source, item.ColumnIndex, item.RowIndex, item.Source[item.ColumnIndex, item.RowIndex].Value));
 
-				TabPage sourceTab = FindTabPage(item.Source);
+				TabPage? sourceTab = FindTabPage(item.Source);
 
 				if (sourceTab != null)
 				{
@@ -553,7 +557,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 				dataGrid.ApplyFont(font);
 		}
 
-		public TabPage FindTabPage(ExtendedDarkDataGridView dataGrid)
+		public TabPage? FindTabPage(ExtendedDarkDataGridView dataGrid)
 		{
 			foreach (TabPage tab in TabPages)
 			{
@@ -567,7 +571,7 @@ namespace TombIDE.ScriptingStudio.Editors.ClassicScript.Strings
 		public StringDataGridView GetDataGridOfTab(int tabIndex)
 			=> GetDataGridOfTab(TabPages[tabIndex]);
 
-		public StringDataGridView GetDataGridOfTab(TabPage tab)
+		public StringDataGridView GetDataGridOfTab(TabPage? tab)
 		{
 			TabPage resolvedTab = tab ?? SelectedTab ?? TabPages.Cast<TabPage>().FirstOrDefault()
 				?? throw new InvalidOperationException("The string editor does not contain any section tabs.");

@@ -15,19 +15,16 @@ namespace TombIDE.ScriptingStudio.DocumentOutline;
 public sealed partial class DocumentOutlineViewModel : ObservableObject, IDisposable
 {
 	private readonly ILocalizationService _localizationService;
-	private readonly DocumentOutlineNodesProviderFactory _nodesProviderFactory;
 	private readonly ContentNodesRefreshCoordinator _refreshCoordinator;
 
-	private DocumentMode _documentMode;
+	private Func<ContentNodesProviderBase?>? _outlineProviderFactory;
 	private IEditorControl? _editorControl;
 
 	internal DocumentOutlineViewModel(
-		ILocalizationService localizationService,
-		DocumentOutlineNodesProviderFactory? nodesProviderFactory = null)
+		ILocalizationService localizationService)
 	{
 		ArgumentNullException.ThrowIfNull(localizationService);
 
-		_nodesProviderFactory = nodesProviderFactory;
 		_localizationService = localizationService.WithKeysFor(this);
 		_refreshCoordinator = new ContentNodesRefreshCoordinator();
 	}
@@ -40,15 +37,15 @@ public sealed partial class DocumentOutlineViewModel : ObservableObject, IDispos
 
 	public bool IsEmpty => Nodes.Count == 0;
 
-	public DocumentMode DocumentMode
+	public Func<ContentNodesProviderBase?>? OutlineProviderFactory
 	{
-		get => _documentMode;
+		get => _outlineProviderFactory;
 		set
 		{
-			if (_documentMode == value)
+			if (ReferenceEquals(_outlineProviderFactory, value))
 				return;
 
-			_documentMode = value;
+			_outlineProviderFactory = value;
 			UpdateNodesProvider();
 		}
 	}
@@ -184,7 +181,7 @@ public sealed partial class DocumentOutlineViewModel : ObservableObject, IDispos
 
 	private void UpdateNodesProvider()
 	{
-		NodesProvider = _nodesProviderFactory.Create(_documentMode);
+		NodesProvider = _outlineProviderFactory?.Invoke();
 		_refreshCoordinator.InvalidatePendingRequests();
 
 		RefreshNodes();

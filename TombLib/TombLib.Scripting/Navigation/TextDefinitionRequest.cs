@@ -1,3 +1,5 @@
+using System;
+
 namespace TombLib.Scripting.Navigation;
 
 /// <summary>
@@ -6,13 +8,16 @@ namespace TombLib.Scripting.Navigation;
 public sealed record TextDefinitionRequest
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextDefinitionRequest"/> class.
+	/// Initializes a new instance of the <see cref="TextDefinitionRequest"/> record.
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="symbolName">The target symbol or object name.</param>
 	/// <param name="identifier">An optional language-specific discriminator that disambiguates the target.</param>
 	public TextDefinitionRequest(string documentText, string symbolName, TextDefinitionDiscriminator? identifier = null)
 	{
+		ArgumentNullException.ThrowIfNull(documentText);
+		ArgumentNullException.ThrowIfNull(symbolName);
+
 		DocumentText = documentText;
 		SymbolName = symbolName;
 		Identifier = identifier;

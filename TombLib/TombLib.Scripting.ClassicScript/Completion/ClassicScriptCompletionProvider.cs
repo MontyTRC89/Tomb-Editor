@@ -43,6 +43,8 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 	/// <returns>The completion items, or an empty list when no completion applies.</returns>
 	public IReadOnlyList<TextCompletionItem> GetCompletionItems(TextCompletionContext context)
 	{
+		ArgumentNullException.ThrowIfNull(context);
+
 		var source = new StringTextSnapshot(context.DocumentText);
 
 		return context.Trigger switch
@@ -119,7 +121,7 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 		if (caretOffset <= 0 || caretOffset > documentText.Length)
 			return [];
 
-		string word = GetWordPrefix(documentText, caretOffset);
+		string word = documentText.GetIdentifierPrefix(caretOffset);
 
 		if (string.IsNullOrEmpty(word)
 			|| !_mnemonicCatalogService.GetAllFlags().Any(constant => constant.StartsWith(word, StringComparison.OrdinalIgnoreCase)))
@@ -135,19 +137,6 @@ public sealed class ClassicScriptCompletionProvider : ITextCompletionProvider
 
 		return items;
 	}
-
-	private static string GetWordPrefix(string documentText, int caretOffset)
-	{
-		int start = caretOffset - 1;
-
-		while (start >= 0 && IsWordCharacter(documentText[start]))
-			start--;
-
-		return documentText.Substring(start + 1, caretOffset - start - 1);
-	}
-
-	private static bool IsWordCharacter(char character)
-		=> char.IsLetterOrDigit(character) || character == '_';
 
 	private static void AddItems(List<TextCompletionItem> items, IEnumerable<string> values, string suffix, TextCompletionItemKind kind)
 	{

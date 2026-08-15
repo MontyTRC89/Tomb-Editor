@@ -10,6 +10,28 @@ namespace TombLib.Scripting.Extensions;
 public static class StringExtensions
 {
 	/// <summary>
+	/// Gets the identifier prefix immediately before the specified caret offset.
+	/// </summary>
+	/// <param name="value">The text to inspect.</param>
+	/// <param name="caretOffset">The zero-based caret offset.</param>
+	/// <returns>The contiguous sequence of letters, digits, or underscores before the caret.</returns>
+	public static string GetIdentifierPrefix(this string value, int caretOffset)
+	{
+		if (string.IsNullOrEmpty(value) || caretOffset <= 0 || caretOffset > value.Length)
+			return string.Empty;
+
+		int start = caretOffset;
+
+		while (start > 0 && IsIdentifierCharacter(value[start - 1]))
+			start--;
+
+		return value[start..caretOffset];
+	}
+
+	private static bool IsIdentifierCharacter(char character)
+		=> char.IsLetterOrDigit(character) || character == '_';
+
+	/// <summary>
 	/// Checks if the given string equals another string, ignoring case.
 	/// </summary>
 	/// <param name="value">The string to compare.</param>

@@ -32,37 +32,31 @@ internal sealed class LuaIntellisenseEventBridge : ILuaIntellisenseBridge
 
 		_intellisenseProvider.DiagnosticsUpdated += IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated += IntellisenseProvider_SemanticTokensUpdated;
-
-		if (_intellisenseProvider is LuaLanguageServerIntelliSenseProvider languageServerProvider)
-		{
-			languageServerProvider.StartupFailed += IntellisenseProvider_StartupFailed;
-			languageServerProvider.WorkspaceWatcherFailed += IntellisenseProvider_WorkspaceWatcherFailed;
-		}
+		_intellisenseProvider.CapabilitiesChanged += IntellisenseProvider_CapabilitiesChanged;
+		_intellisenseProvider.StartupFailed += IntellisenseProvider_StartupFailed;
+		_intellisenseProvider.WorkspaceWatcherFailed += IntellisenseProvider_WorkspaceWatcherFailed;
 	}
 
 	public void Detach()
 	{
 		_intellisenseProvider.DiagnosticsUpdated -= IntellisenseProvider_DiagnosticsUpdated;
 		_intellisenseProvider.SemanticTokensUpdated -= IntellisenseProvider_SemanticTokensUpdated;
-
-		if (_intellisenseProvider is LuaLanguageServerIntelliSenseProvider languageServerProvider)
-		{
-			languageServerProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
-			languageServerProvider.WorkspaceWatcherFailed -= IntellisenseProvider_WorkspaceWatcherFailed;
-		}
+		_intellisenseProvider.CapabilitiesChanged -= IntellisenseProvider_CapabilitiesChanged;
+		_intellisenseProvider.StartupFailed -= IntellisenseProvider_StartupFailed;
+		_intellisenseProvider.WorkspaceWatcherFailed -= IntellisenseProvider_WorkspaceWatcherFailed;
 	}
 
 	public void Dispose()
-	{
-		Detach();
-		_intellisenseProvider.Dispose();
-	}
+		=> Detach();
 
 	private void IntellisenseProvider_DiagnosticsUpdated(string filePath, IReadOnlyList<TextEditorDiagnostic> diagnostics)
 		=> DispatchToUi(() => _messenger.Send(new LuaDiagnosticsUpdatedMessage(new LuaDiagnosticsPayload(filePath, diagnostics))));
 
 	private void IntellisenseProvider_SemanticTokensUpdated(string filePath, IReadOnlyList<LuaSemanticToken> semanticTokens)
 		=> DispatchToUi(() => _messenger.Send(new LuaSemanticTokensUpdatedMessage(new LuaSemanticTokensPayload(filePath, semanticTokens))));
+
+	private void IntellisenseProvider_CapabilitiesChanged()
+		=> DispatchToUi(() => _messenger.Send(new ShellUiRefreshMessage()));
 
 	private void IntellisenseProvider_StartupFailed(LanguageServerStartupFailure failure)
 		=> DispatchToUi(() => _messenger.Send(new LuaStartupFailedMessage(failure)));

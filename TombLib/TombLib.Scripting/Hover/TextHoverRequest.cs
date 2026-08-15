@@ -12,7 +12,7 @@ namespace TombLib.Scripting.Hover;
 public sealed record TextHoverRequest
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="TextHoverRequest"/> class.
+	/// Initializes a new instance of the <see cref="TextHoverRequest"/> record.
 	/// </summary>
 	/// <param name="documentText">The current document snapshot text.</param>
 	/// <param name="hoveredOffset">The zero-based hovered offset within that snapshot.</param>
@@ -21,6 +21,8 @@ public sealed record TextHoverRequest
 	/// </exception>
 	public TextHoverRequest(string documentText, int hoveredOffset)
 	{
+		ArgumentNullException.ThrowIfNull(documentText);
+
 		if (hoveredOffset < 0 || hoveredOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(hoveredOffset));
 

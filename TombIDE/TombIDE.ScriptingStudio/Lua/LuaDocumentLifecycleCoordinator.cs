@@ -3,6 +3,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Messaging;
@@ -16,6 +17,7 @@ internal sealed class LuaDocumentLifecycleCoordinator : ILuaEditorLifecycleServi
 	private readonly IMessenger _messenger;
 	private readonly ILuaIntelliSenseProvider _intellisenseProvider;
 	private readonly LuaTrackedDocumentStateService _trackedDocumentStateService;
+	private readonly HashSet<LuaEditor> _trackedEditors = [];
 
 	public LuaDocumentLifecycleCoordinator(
 		IEditorDocumentController documentController,
@@ -35,6 +37,7 @@ internal sealed class LuaDocumentLifecycleCoordinator : ILuaEditorLifecycleServi
 
 		_documentController.FileOpened += DocumentController_FileOpened;
 		_documentController.CurrentEditorChanged += DocumentController_CurrentEditorChanged;
+		_documentController.EditorClosed += DocumentController_EditorClosed;
 		_documentController.DocumentRenamed += DocumentController_DocumentRenamed;
 	}
 
@@ -42,6 +45,7 @@ internal sealed class LuaDocumentLifecycleCoordinator : ILuaEditorLifecycleServi
 	{
 		_documentController.FileOpened -= DocumentController_FileOpened;
 		_documentController.CurrentEditorChanged -= DocumentController_CurrentEditorChanged;
+		_documentController.EditorClosed -= DocumentController_EditorClosed;
 		_documentController.DocumentRenamed -= DocumentController_DocumentRenamed;
 
 		foreach (LuaEditor editor in _documentController.GetOpenEditors().OfType<LuaEditor>())
@@ -57,12 +61,22 @@ internal sealed class LuaDocumentLifecycleCoordinator : ILuaEditorLifecycleServi
 			return;
 
 		AttachEditor(editor);
-		_trackedDocumentStateService.OpenDocument(editor);
+		if (_trackedEditors.Add(editor))
+			_trackedDocumentStateService.OpenDocument(editor);
 		_messenger.Send(new ShellUiRefreshMessage());
 	}
 
 	private void DocumentController_CurrentEditorChanged(object? sender, EventArgs e)
 		=> _messenger.Send(new ShellUiRefreshMessage());
+
+	private void DocumentController_EditorClosed(object? sender, EditorControlEventArgs e)
+	{
+		if (e.Editor is LuaEditor editor)
+		{
+			DetachEditor(editor);
+			_trackedEditors.Remove(editor);
+		}
+	}
 
 	private void DocumentController_DocumentRenamed(object? sender, DocumentRenamedEventArgs e)
 	{

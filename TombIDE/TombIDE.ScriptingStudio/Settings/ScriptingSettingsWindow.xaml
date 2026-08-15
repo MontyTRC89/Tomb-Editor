@@ -157,11 +157,24 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
+		<Border
+			Margin="{x:Static darkUI:Defaults.MediumThickness}"
+			Padding="{x:Static darkUI:Defaults.MediumThickness}"
+			Background="{DynamicResource Brush_Background_Alternative}"
+			Visibility="{Binding SupportsLuaActivation, Converter={StaticResource BoolToVisibilityConverter}}">
+			<controls:SpacedStack Spacing="{x:Static darkUI:Defaults.MediumThicknessWidth}">
+				<CheckBox Content="Enable Lua documents" IsChecked="{Binding LuaEnabled, Mode=TwoWay}" />
+				<TextBlock Text="Lua documents are enabled when the scripting workspace is reopened." TextWrapping="Wrap" />
+			</controls:SpacedStack>
+		</Border>
+
 		<TabControl
+			Grid.Row="1"
 			Margin="{x:Static darkUI:Defaults.MediumThickness}"
 			ItemsSource="{Binding Pages}"
 			SelectedItem="{Binding SelectedPage}"
@@ -177,7 +190,7 @@
 		</TabControl>
 
 		<Border
-			Grid.Row="1"
+			Grid.Row="2"
 			Padding="{x:Static darkUI:Defaults.LargeThickness}"
 			Background="{DynamicResource Brush_Background_Alternative}">
 			<Grid>

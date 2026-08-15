@@ -1,5 +1,6 @@
 using Nickelony.LanguageServer.Abstractions.Completion;
 using TombLib.Scripting.Completion;
+using TombLib.Scripting.Extensions;
 
 namespace TombLib.Tests;
 
@@ -45,5 +46,17 @@ public class TextCompletionFilterTests
 		IReadOnlyList<TextCompletionItem> result = TextCompletionFilter.FilterByCurrentWord(Items, new TextCompletionContext("Zzz", 3));
 
 		Assert.AreEqual(0, result.Count);
+	}
+
+	[TestMethod]
+	public void GetIdentifierPrefix_ReturnsPrefixAtCaret()
+	{
+		Assert.AreEqual("Beta_2", "Beta_2: value".GetIdentifierPrefix(6));
+	}
+
+	[TestMethod]
+	public void GetIdentifierPrefix_InvalidCaret_ReturnsEmpty()
+	{
+		Assert.AreEqual(string.Empty, "Beta".GetIdentifierPrefix(5));
 	}
 }

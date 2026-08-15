@@ -204,7 +204,6 @@ public sealed class TextHoverController : IDisposable
 			HoveredOffset: hoveredOffset,
 			RequestOffset: requestState.ShouldRequestHover ? requestState.RequestOffset : -1,
 			HoverInfo: hoverInfo,
-			HasDiagnostic: requestState.HasDiagnostic,
 			DiagnosticMessage: requestState.DiagnosticMessage,
 			DiagnosticSeverity: requestState.DiagnosticSeverity,
 			CanShowToolTip: requestState.CanShowToolTip,
@@ -229,7 +228,6 @@ public sealed class TextHoverController : IDisposable
 	private void ShowDiagnosticToolTipIfAvailable(TextHoverRequestState requestState)
 	{
 		if (requestState.CanShowDiagnosticFallback
-			&& requestState.HasDiagnostic
 			&& !string.IsNullOrWhiteSpace(requestState.DiagnosticMessage))
 		{
 			_showDiagnosticToolTip(requestState.DiagnosticMessage, requestState.DiagnosticSeverity);
@@ -242,7 +240,7 @@ public sealed class TextHoverController : IDisposable
 			return;
 
 		TextHoverInfo? displayableHoverInfo = GetDisplayableHoverInfo(hoverInfo);
-		bool hasDisplayableDiagnostic = requestState.HasDiagnostic && !string.IsNullOrWhiteSpace(requestState.DiagnosticMessage);
+		bool hasDisplayableDiagnostic = !string.IsNullOrWhiteSpace(requestState.DiagnosticMessage);
 		string diagnosticText = requestState.DiagnosticMessage ?? string.Empty;
 
 		if (displayableHoverInfo is not null && hasDisplayableDiagnostic)

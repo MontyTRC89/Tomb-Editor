@@ -1,8 +1,11 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.ComponentModel;
 using System.Windows;
 using TombIDE.ScriptingStudio.Composition;
+using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Host;
 using TombIDE.ScriptingStudio.Settings;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.Workbench;
@@ -15,6 +18,8 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.TRX;
 using TombLib.WPF.Services.Abstract;
+using static TombEditor.Tests.ScriptingStudio.ScriptingStudioChromeTestFixture;
+using static TombEditor.Tests.ScriptingStudio.ScriptingWorkspaceProfileTestFactory;
 
 namespace TombEditor.Tests.ScriptingStudio;
 
@@ -24,30 +29,6 @@ public class RootShellViewModelTests
     private static readonly ClassicScriptLanguageServices ClassicLanguageServices = ScriptingLanguageServicesTestFactory.CreateClassicScript();
     private static readonly GameFlowLanguageServices GameFlowLanguageServices = ScriptingLanguageServicesTestFactory.CreateGameFlowScript();
     private static readonly TRXLanguageServices TrxLanguageServices = ScriptingLanguageServicesTestFactory.CreateTRX();
-
-    private static ScriptingWorkspaceProfile CreateLuaProfile()
-    {
-        return new ScriptingWorkspaceProfile(
-            ScriptingWorkspaceKind.Lua,
-            TRVersion.Game.TombEngine,
-            [],
-            string.Empty,
-            [],
-            [],
-            [],
-            [],
-            [],
-            "*.lua",
-            string.Empty,
-            "--",
-            supportsBuild: false,
-            supportsDocumentation: false,
-            new DockPanelState(),
-            _ => { },
-            () => new DockPanelState(),
-            () => string.Empty,
-            _ => { });
-    }
 
     private static RootShellViewModel CreateViewModel(
         ScriptingWorkspaceProfile? profile = null,
@@ -60,6 +41,7 @@ public class RootShellViewModelTests
         IStatusBarService? statusBarService = null,
         IPaneHostService? paneHostService = null,
         IWorkbenchService? workbenchService = null,
+        IEditorDocumentController? documentController = null,
         ShellWorkbenchSettings? workbenchSettings = null)
     {
         profile ??= CreateLuaProfile();
@@ -73,6 +55,7 @@ public class RootShellViewModelTests
         statusBarService ??= CreateStatusBarServiceMock().Object;
         paneHostService ??= CreatePaneHostServiceMock().Object;
         workbenchService ??= CreateWorkbenchServiceMock().Object;
+        documentController ??= new Mock<IEditorDocumentController>().Object;
         workbenchSettings ??= new ShellWorkbenchSettings();
 
         return new RootShellViewModel(
@@ -87,31 +70,11 @@ public class RootShellViewModelTests
             statusBarService,
             paneHostService,
             workbenchService,
+            documentController,
             workbenchSettings,
             ClassicLanguageServices,
             GameFlowLanguageServices,
             TrxLanguageServices);
-    }
-
-    private static Mock<IMenuService> CreateMenuServiceMock()
-    {
-        var mock = new Mock<IMenuService>();
-        mock.Setup(m => m.MenuView).Returns(Mock.Of<FrameworkElement>());
-        return mock;
-    }
-
-    private static Mock<IToolBarService> CreateToolBarServiceMock()
-    {
-        var mock = new Mock<IToolBarService>();
-        mock.Setup(m => m.ToolBarView).Returns(Mock.Of<FrameworkElement>());
-        return mock;
-    }
-
-    private static Mock<IStatusBarService> CreateStatusBarServiceMock()
-    {
-        var mock = new Mock<IStatusBarService>();
-        mock.Setup(m => m.StatusBarView).Returns(Mock.Of<FrameworkElement>());
-        return mock;
     }
 
     private static Mock<IPaneHostService> CreatePaneHostServiceMock() => new();
@@ -202,6 +165,7 @@ public class RootShellViewModelTests
                     CreateStatusBarServiceMock().Object,
                     CreatePaneHostServiceMock().Object,
                     CreateWorkbenchServiceMock().Object,
+                    new Mock<IEditorDocumentController>().Object,
                     new ShellWorkbenchSettings(),
                     ClassicLanguageServices,
                     GameFlowLanguageServices,
@@ -227,6 +191,7 @@ public class RootShellViewModelTests
                     CreateStatusBarServiceMock().Object,
                     CreatePaneHostServiceMock().Object,
                     CreateWorkbenchServiceMock().Object,
+                    new Mock<IEditorDocumentController>().Object,
                     new ShellWorkbenchSettings(),
                     ClassicLanguageServices,
                     GameFlowLanguageServices,
@@ -252,6 +217,7 @@ public class RootShellViewModelTests
                     CreateStatusBarServiceMock().Object,
                     CreatePaneHostServiceMock().Object,
                     CreateWorkbenchServiceMock().Object,
+                    new Mock<IEditorDocumentController>().Object,
                     new ShellWorkbenchSettings(),
                     ClassicLanguageServices,
                     GameFlowLanguageServices,
@@ -277,6 +243,7 @@ public class RootShellViewModelTests
                     CreateStatusBarServiceMock().Object,
                     CreatePaneHostServiceMock().Object,
                     null!,
+                    new Mock<IEditorDocumentController>().Object,
                     new ShellWorkbenchSettings(),
                     ClassicLanguageServices,
                     GameFlowLanguageServices,
@@ -285,7 +252,7 @@ public class RootShellViewModelTests
     }
 
     [TestMethod]
-    public void Dispose_DisposesAllServices()
+    public void Dispose_DetachesEventsWithoutDisposingScopedServices()
     {
         StaTestHelper.RunInSta(() =>
         {
@@ -303,12 +270,28 @@ public class RootShellViewModelTests
                 workbenchService: workbenchServiceMock.Object);
 
             viewModel.Dispose();
+            viewModel.Dispose();
 
-            workbenchServiceMock.Verify(w => w.Dispose(), Times.Once);
-            menuServiceMock.Verify(m => m.Dispose(), Times.Once);
-            toolBarServiceMock.Verify(t => t.Dispose(), Times.Once);
-            statusBarServiceMock.Verify(s => s.Dispose(), Times.Once);
-            paneHostServiceMock.Verify(p => p.Dispose(), Times.Once);
+            workbenchServiceMock.Verify(w => w.Dispose(), Times.Never);
+            menuServiceMock.Verify(m => m.Dispose(), Times.Never);
+            toolBarServiceMock.Verify(t => t.Dispose(), Times.Never);
+            statusBarServiceMock.Verify(s => s.Dispose(), Times.Never);
+            paneHostServiceMock.Verify(p => p.Dispose(), Times.Never);
+        });
+    }
+
+    [TestMethod]
+    public void ShellDispose_DisposesChildScopeOnce()
+    {
+        StaTestHelper.RunInSta(() =>
+        {
+            var scope = new Mock<IServiceScope>();
+            var shell = new ScriptingStudioShell(scope.Object, CreateViewModel());
+
+            shell.Dispose();
+            shell.Dispose();
+
+            scope.Verify(value => value.Dispose(), Times.Once);
         });
     }
 }

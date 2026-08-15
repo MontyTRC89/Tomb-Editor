@@ -1,3 +1,4 @@
+using Moq;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;
@@ -6,11 +7,15 @@ using TombLib.Scripting.ClassicScript.Navigation;
 using TombLib.Scripting.ClassicScript.Services;
 using TombLib.Scripting.ClassicScript.Signatures;
 using TombLib.Scripting.ClassicScript.Syntaxes;
+using TombLib.Scripting.Completion;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.GameFlowScript.Completion;
 using TombLib.Scripting.GameFlowScript.Hover;
 using TombLib.Scripting.GameFlowScript.Navigation;
 using TombLib.Scripting.GameFlowScript.Services;
+using TombLib.Scripting.Hover;
+using TombLib.Scripting.Navigation;
+using TombLib.Scripting.Signatures;
 using TombLib.Scripting.TRX;
 using TombLib.Scripting.TRX.Completion;
 using TombLib.Scripting.TRX.Hover;
@@ -40,6 +45,24 @@ internal static class ScriptingLanguageServicesTestFactory
             indexService);
     }
 
+    public static ClassicScriptLanguageServices CreateClassicScriptStub()
+    {
+        var lineService = new Mock<IClassicScriptLineService>().Object;
+        var commandService = new Mock<IClassicScriptCommandService>().Object;
+
+        return new ClassicScriptLanguageServices(
+            new Mock<ITextDefinitionProvider>().Object,
+            new Mock<ITextHoverProvider>().Object,
+            new Mock<ITextSignatureHelpProvider>().Object,
+            new ErrorDetector(
+                lineService,
+                commandService,
+                new ClassicScriptSyntaxCatalogService()),
+            lineService,
+            commandService,
+            new Mock<IClassicScriptIndexService>().Object);
+    }
+
     public static GameFlowLanguageServices CreateGameFlowScript()
     {
         var lineService = new GameFlowScriptLineService();
@@ -52,6 +75,14 @@ internal static class ScriptingLanguageServicesTestFactory
             lineService,
             documentService);
     }
+
+    public static GameFlowLanguageServices CreateGameFlowScriptStub()
+        => new(
+            new Mock<ITextDefinitionProvider>().Object,
+            new Mock<ITextHoverProvider>().Object,
+            new GameFlowCompletionProvider(),
+            new Mock<IGameFlowScriptLineService>().Object,
+            new Mock<IGameFlowScriptDocumentService>().Object);
 
     public static TRXLanguageServices CreateTRX()
     {
@@ -66,5 +97,19 @@ internal static class ScriptingLanguageServicesTestFactory
             new TRXDefinitionProvider(documentService),
             new TRXGameFlowCompletionService(schemaService),
             new TRXGameFlowHoverService(schemaService));
+    }
+
+    public static TRXLanguageServices CreateTRXStub()
+    {
+        var lineService = new Mock<ITRXLineService>().Object;
+        var documentService = new Mock<ITRXDocumentService>().Object;
+
+        return new TRXLanguageServices(
+            new Mock<ITRXGameFlowSchemaService>().Object,
+            lineService,
+            documentService,
+            new Mock<ITextDefinitionProvider>().Object,
+            new Mock<ITextCompletionProvider>().Object,
+            new Mock<ITextHoverProvider>().Object);
     }
 }

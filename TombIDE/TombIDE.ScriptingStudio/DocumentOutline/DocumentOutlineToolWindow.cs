@@ -5,6 +5,7 @@ using System.Windows;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
+using TombLib.Scripting.UI.ContentNodes;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.DocumentOutline;
@@ -32,10 +33,10 @@ public sealed class DocumentOutlineToolWindow : StudioDockPane
 
 	public override UIElement Content => _view;
 
-	public DocumentMode DocumentMode
+	public Func<ContentNodesProviderBase?>? OutlineProviderFactory
 	{
-		get => _viewModel.DocumentMode;
-		set => _viewModel.DocumentMode = value;
+		get => _viewModel.OutlineProviderFactory;
+		set => _viewModel.OutlineProviderFactory = value;
 	}
 
 	public IEditorControl? EditorControl
@@ -50,6 +51,7 @@ public sealed class DocumentOutlineToolWindow : StudioDockPane
 	public override void Dispose()
 	{
 		_view.NodeInvoked -= View_NodeInvoked;
+		ObjectClicked = null;
 		_viewModel.Dispose();
 	}
 

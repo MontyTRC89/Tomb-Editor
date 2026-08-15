@@ -16,20 +16,23 @@ internal sealed class FileExplorerPaneProvider : IStudioPaneContributionProvider
 	private readonly ScriptingWorkspaceProfile _profile;
 	private readonly IEditorDocumentController _documentController;
 	private readonly FileExplorerViewModel _viewModel;
-	private readonly StudioFileExplorerDocumentSyncService _fileSyncService = new();
+	private readonly StudioFileExplorerDocumentSyncService _fileSyncService;
 
 	public FileExplorerPaneProvider(
 		ScriptingWorkspaceProfile profile,
 		IEditorDocumentController documentController,
-		FileExplorerViewModel viewModel)
+		FileExplorerViewModel viewModel,
+		StudioFileExplorerDocumentSyncService fileSyncService)
 	{
 		ArgumentNullException.ThrowIfNull(profile);
 		ArgumentNullException.ThrowIfNull(documentController);
 		ArgumentNullException.ThrowIfNull(viewModel);
+		ArgumentNullException.ThrowIfNull(fileSyncService);
 
 		_profile = profile;
 		_documentController = documentController;
 		_viewModel = viewModel;
+		_fileSyncService = fileSyncService;
 	}
 
 	public IReadOnlyList<StudioPaneContribution> GetPaneContributions()

@@ -2,7 +2,9 @@ using ICSharpCode.AvalonEdit.Document;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using TombLib.Scripting.Diagnostics;
 
 namespace TombLib.Scripting.UI.Diagnostics;
 
@@ -36,11 +38,11 @@ internal sealed class TextDiagnosticToolTipService
 		int hoveredOffset,
 		bool liveErrorUnderlining,
 		bool allowLineFallback,
-		out TextDiagnosticToolTipInfo info)
+		[NotNullWhen(true)] out TextEditorDiagnosticInfo? info)
 	{
 		ArgumentNullException.ThrowIfNull(document);
 
-		info = default;
+		info = null;
 
 		if (!liveErrorUnderlining || _diagnostics.Count == 0)
 			return false;
@@ -65,7 +67,7 @@ internal sealed class TextDiagnosticToolTipService
 		if (string.IsNullOrWhiteSpace(message))
 			return false;
 
-		info = new TextDiagnosticToolTipInfo(message, severity);
+		info = new TextEditorDiagnosticInfo(message, severity);
 		return true;
 	}
 
@@ -109,7 +111,3 @@ internal sealed class TextDiagnosticToolTipService
 				|| message.StartsWith("Diagnostic:", StringComparison.OrdinalIgnoreCase));
 	}
 }
-
-internal readonly record struct TextDiagnosticToolTipInfo(
-	string Message,
-	TextEditorDiagnosticSeverity Severity);

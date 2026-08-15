@@ -1,6 +1,9 @@
 using System;
 using System.Windows;
+using System.Windows.Threading;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.ClassicScript.Diagnostics;
 using TombLib.Scripting.ClassicScript.Hover;
 using TombLib.Scripting.ClassicScript.Mnemonics;
@@ -167,6 +170,34 @@ public class TextEditorBaseDisposalTests
 				hostWindow.Close();
 			}
 		});
+	}
+
+	[TestMethod]
+	public void ExercisedEditor_IsCollectibleAfterHostAndDisposal()
+	{
+		WeakReference? editorReference = null;
+		WPFTestHelper.RunInSta(() => editorReference = CreateAndDisposeExercisedEditor());
+
+		Assert.IsNotNull(editorReference);
+		WPFTestHelper.AssertCollected(editorReference, nameof(ClassicScriptEditor));
+	}
+
+	private static WeakReference CreateAndDisposeExercisedEditor()
+	{
+		var editor = new ClassicScriptEditor(new Version(1, 0), CreateLanguageServices())
+		{
+			Content = "Name=Level1"
+		};
+		Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
+
+		editor.RunContentChangedWorker();
+		editor.SetDiagnostics([new TextEditorDiagnostic(TextEditorDiagnosticSeverity.Warning, "warning", 0, 5)]);
+		editor.Dispose();
+		hostWindow.Content = null;
+		hostWindow.Close();
+		WPFTestHelper.PumpDispatcher(hostWindow.Dispatcher, DispatcherPriority.ContextIdle);
+
+		return new WeakReference(editor);
 	}
 
 	private static ClassicScriptLanguageServices CreateLanguageServices()

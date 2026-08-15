@@ -14,6 +14,6 @@ auto-indentation strategies), completion presentation (`LuaCompletionIconFactory
 Tomb Engine document services (`TombEngineLevelScriptService`,
 `TombEngineLanguageScriptService`).
 
-Depends on `TombLib.Scripting.UI`, `TombLib.Scripting`, and `TombLib.WPF`. See
-[ScriptingLibraries_Architecture.md](../ScriptingLibraries_Architecture.md) for the provider
-standards and the extension-point guide.
+Depends on `TombLib.Scripting.UI`, `TombLib.Scripting`, and `TombLib.WPF`. See the
+[provider-library stabilization plan](../../TombLib.Scripting_Provider_Libraries_Stabilization_Plan.md)
+for the current provider standards and extension-point guidance.

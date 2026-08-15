@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using TombLib.Scripting.ClassicScript.Services;
+using TombLib.Scripting.Text;
 using TombLib.Scripting.UI.Bases;
 using TombLib.Scripting.UI.Editing;
 
@@ -31,10 +32,15 @@ public sealed class ScriptReplacer
 	{
 		TextEditorLineOperations.TryReplaceFirstMatchingLine(
 			textEditor,
-			NameCommandRegex,
-			(lineText, regex) => regex.Replace(_lineService.RemoveComments(lineText), string.Empty).Trim(),
-			oldName,
-			newName);
+			lineText => {
+				if (!NameCommandRegex.IsMatch(lineText))
+					return null;
+
+				string cleanName = NameCommandRegex.Replace(_lineService.RemoveComments(lineText), string.Empty).Trim();
+				return cleanName == oldName
+					? ReplaceCodeValue(lineText, oldName, newName)
+					: null;
+			});
 	}
 
 	/// <summary>
@@ -48,8 +54,16 @@ public sealed class ScriptReplacer
 		TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText => {
 			string cleanString = _lineService.RemoveComments(_lineService.RemoveNGStringIndex(lineText)).Trim();
 			return cleanString == oldName
-				? lineText.Replace(oldName, newName)
+				? ReplaceCodeValue(lineText, oldName, newName)
 				: null;
 		});
 	}
+
+	private static string ReplaceCodeValue(string lineText, string oldName, string newName)
+	{
+		TextRange codeRange = LineCommentHelper.GetCodeRange(lineText, ";");
+		string codeText = lineText[..codeRange.Length];
+		return codeText.Replace(oldName, newName) + lineText[codeRange.Length..];
+	}
+
 }

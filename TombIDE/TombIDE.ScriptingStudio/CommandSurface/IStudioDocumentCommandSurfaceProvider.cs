@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.CommandSurface;
@@ -11,17 +10,17 @@ namespace TombIDE.ScriptingStudio.CommandSurface;
 public interface IStudioDocumentCommandSurfaceProvider
 {
 	/// <summary>
-	/// Gets the context menu items for the specified editor and document mode.
+	/// Gets the context menu items for the registered document.
 	/// </summary>
-	IReadOnlyList<StudioToolStripItem> GetContextMenuItems(IEditorControl editor, DocumentMode documentMode);
+	IReadOnlyList<StudioToolStripItem> GetContextMenuItems(IEditorControl editor);
 
 	/// <summary>
-	/// Gets the menu strip items for the specified editor and document mode.
+	/// Gets the menu strip items for the registered document.
 	/// </summary>
-	IReadOnlyList<StudioToolStripItem> GetMenuStripItems(IEditorControl editor, DocumentMode documentMode);
+	IReadOnlyList<StudioToolStripItem> GetMenuStripItems(IEditorControl editor);
 
 	/// <summary>
-	/// Gets the tool strip items for the specified editor and document mode.
+	/// Gets the tool strip items for the registered document.
 	/// </summary>
-	IReadOnlyList<StudioToolStripItem> GetToolStripItems(IEditorControl editor, DocumentMode documentMode);
+	IReadOnlyList<StudioToolStripItem> GetToolStripItems(IEditorControl editor);
 }

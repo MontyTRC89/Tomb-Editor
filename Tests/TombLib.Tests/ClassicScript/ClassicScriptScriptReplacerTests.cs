@@ -84,6 +84,39 @@ public class ClassicScriptScriptReplacerTests
 	}
 
 	[TestMethod]
+	public void RenameLevelScript_ChangesOnlyTargetValueAndIsStable()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new ClassicScriptEditor(new Version(1, 0), CreateLanguageServices())
+			{
+				Text = "[Level]\r\nName=Level1 ; Level1 comment\r\nAuthor=Level1\r\n"
+			};
+			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
+
+			try
+			{
+				var replacer = new ScriptReplacer(CreateLanguageServices().LineService);
+				replacer.RenameLevelScript(editor, "Level1", "Level2");
+
+				Assert.AreEqual(
+					"[Level]\r\nName=Level2 ; Level1 comment\r\nAuthor=Level1\r\n",
+					editor.Text);
+
+				replacer.RenameLevelScript(editor, "Level1", "Level2");
+
+				Assert.AreEqual(
+					"[Level]\r\nName=Level2 ; Level1 comment\r\nAuthor=Level1\r\n",
+					editor.Text);
+			}
+			finally
+			{
+				hostWindow.Close();
+			}
+		});
+	}
+
+	[TestMethod]
 	public void RenameLanguageString_WithNGStringIndex_RenamesValue()
 	{
 		WPFTestHelper.RunInSta(() =>
@@ -100,6 +133,39 @@ public class ClassicScriptScriptReplacerTests
 				replacer.RenameLanguageString(editor, "MyString", "NewString");
 
 				Assert.AreEqual("[ExtraNG]\r\n0: NewString\r\n", editor.Text);
+			}
+			finally
+			{
+				hostWindow.Close();
+			}
+		});
+	}
+
+	[TestMethod]
+	public void RenameLanguageString_ChangesOnlyTargetValueAndIsStable()
+	{
+		WPFTestHelper.RunInSta(() =>
+		{
+			var editor = new ClassicScriptEditor(new Version(1, 0), CreateLanguageServices())
+			{
+				Text = "[ExtraNG]\r\n0: MyString ; MyString comment\r\n1: OtherString\r\n"
+			};
+			Window hostWindow = WPFTestHelper.ShowInHostWindow(editor);
+
+			try
+			{
+				var replacer = new ScriptReplacer(CreateLanguageServices().LineService);
+				replacer.RenameLanguageString(editor, "MyString", "NewString");
+
+				Assert.AreEqual(
+					"[ExtraNG]\r\n0: NewString ; MyString comment\r\n1: OtherString\r\n",
+					editor.Text);
+
+				replacer.RenameLanguageString(editor, "MyString", "NewString");
+
+				Assert.AreEqual(
+					"[ExtraNG]\r\n0: NewString ; MyString comment\r\n1: OtherString\r\n",
+					editor.Text);
 			}
 			finally
 			{

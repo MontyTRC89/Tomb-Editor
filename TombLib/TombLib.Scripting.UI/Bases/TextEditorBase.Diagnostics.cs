@@ -1,9 +1,11 @@
 using ICSharpCode.AvalonEdit.Rendering;
 using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Windows.Media;
+using TombLib.Scripting.Diagnostics;
 using TombLib.Scripting.UI.Diagnostics;
 using TombLib.Scripting.UI.Rendering;
 
@@ -14,17 +16,28 @@ public abstract partial class TextEditorBase
 	// Error handling
 
 	/// <summary>
+	/// Occurs after the diagnostics owned by this editor change.
+	/// </summary>
+	public event EventHandler? DiagnosticsChanged;
+
+	/// <summary>
 	/// Sets the diagnostics displayed for the current document.
 	/// </summary>
 	/// <param name="diagnostics">The diagnostics to display.</param>
 	public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic> diagnostics)
-		=> _diagnosticToolTipService.SetDiagnostics(diagnostics);
+	{
+		_diagnosticToolTipService.SetDiagnostics(diagnostics);
+		DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+	}
 
 	/// <summary>
 	/// Clears all diagnostics currently displayed for the document.
 	/// </summary>
 	public void ClearDiagnostics()
-		=> _diagnosticToolTipService.ClearDiagnostics();
+	{
+		if (_diagnosticToolTipService.ClearDiagnostics())
+			DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+	}
 
 	internal void InvalidateDiagnosticLayer()
 	{
@@ -48,22 +61,11 @@ public abstract partial class TextEditorBase
 	/// Attempts to retrieve diagnostic information for the given offset.
 	/// </summary>
 	/// <param name="hoveredOffset">The document offset to inspect.</param>
-	/// <param name="message">The diagnostic message, when found.</param>
-	/// <param name="severity">The diagnostic severity, when found.</param>
+	/// <param name="diagnosticInfo">The diagnostic information, when found.</param>
 	/// <param name="allowLineFallback">Whether to fall back to a line-wide diagnostic.</param>
 	/// <returns>True if diagnostic information was found; otherwise false.</returns>
-	protected bool TryGetDiagnosticInfo(int hoveredOffset, [NotNullWhen(true)] out string? message, out TextEditorDiagnosticSeverity severity, bool allowLineFallback = true)
-	{
-		message = null;
-		severity = TextEditorDiagnosticSeverity.Error;
-
-		if (!_diagnosticToolTipService.TryGetDiagnosticInfo(Document, hoveredOffset, LiveErrorUnderlining, allowLineFallback, out TextDiagnosticToolTipInfo info))
-			return false;
-
-		message = info.Message;
-		severity = info.Severity;
-		return !string.IsNullOrWhiteSpace(message);
-	}
+	protected bool TryGetDiagnosticInfo(int hoveredOffset, [NotNullWhen(true)] out TextEditorDiagnosticInfo? diagnosticInfo, bool allowLineFallback = true)
+		=> _diagnosticToolTipService.TryGetDiagnosticInfo(Document, hoveredOffset, LiveErrorUnderlining, allowLineFallback, out diagnosticInfo);
 
 	/// <summary>
 	/// Shows a diagnostic tooltip with the given message and severity.
@@ -83,11 +85,10 @@ public abstract partial class TextEditorBase
 	/// <returns>True if a diagnostic tooltip was shown; otherwise false.</returns>
 	protected bool TryShowDiagnosticToolTip(int hoveredOffset)
 	{
-		if (!TryGetDiagnosticInfo(hoveredOffset, out string? message, out TextEditorDiagnosticSeverity severity)
-			|| string.IsNullOrWhiteSpace(message))
+		if (!TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo))
 			return false;
 
-		ShowDiagnosticToolTip(message, severity);
+		ShowDiagnosticToolTip(diagnosticInfo.Message, diagnosticInfo.Severity);
 		return true;
 	}
 }

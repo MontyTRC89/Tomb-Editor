@@ -108,6 +108,37 @@ public class ScriptCompilerProcessTests
 	}
 
 	[TestMethod]
+	public void RunCompileWorkflow_StaleStagingOutput_IsNotCopiedWhenCompilerProducesNothing()
+	{
+		(string baseDirectory, string inputDirectory, string gameflowDirectory, string outputDirectory) = CreateWorkflowDirectories();
+
+		try
+		{
+			File.WriteAllText(Path.Combine(gameflowDirectory, "tombpc.dat"), "stale data");
+			File.WriteAllText(Path.Combine(outputDirectory, "tombpc.dat"), "existing project data");
+			var process = new FakeCompilerProcess(onTimedWaitForExit: () => true);
+
+			bool result = ScriptCompiler.RunCompileWorkflow(
+				inputDirectory,
+				outputDirectory,
+				gameflowDirectory,
+				ScriptCompiler.BuildClassicBatchContent(isTR3: false, pause: false),
+				"tombpc.dat",
+				"gameFlow.exe",
+				pause: false,
+				new FakeCompilerProcessFactory(_ => process));
+
+			Assert.IsFalse(result);
+			Assert.AreEqual("existing project data", File.ReadAllText(Path.Combine(outputDirectory, "tombpc.dat")));
+			Assert.IsFalse(File.Exists(Path.Combine(gameflowDirectory, "tombpc.dat")));
+		}
+		finally
+		{
+			Directory.Delete(baseDirectory, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	public void RunCompileWorkflow_Timeout_TerminatesProcessTreeAndReturnsFalse()
 	{
 		(string baseDirectory, string inputDirectory, string gameflowDirectory, string outputDirectory) = CreateWorkflowDirectories();
@@ -162,6 +193,34 @@ public class ScriptCompilerProcessTests
 			Assert.AreEqual(1, process.KillEntireProcessTreeCalls);
 			Assert.AreEqual(1, process.KillCalls);
 			Assert.IsTrue(process.Disposed);
+		}
+		finally
+		{
+			Directory.Delete(baseDirectory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	public void RunCompileWorkflow_ProcessFailure_CleansStagingDirectoryAndDisposesProcess()
+	{
+		(string baseDirectory, string inputDirectory, string gameflowDirectory, string outputDirectory) = CreateWorkflowDirectories();
+
+		try
+		{
+			var process = new FakeCompilerProcess(onTimedWaitForExit: () => throw new InvalidOperationException("process wait failed"));
+
+			Assert.ThrowsException<InvalidOperationException>(() => ScriptCompiler.RunCompileWorkflow(
+				inputDirectory,
+				outputDirectory,
+				gameflowDirectory,
+				ScriptCompiler.BuildClassicBatchContent(isTR3: false, pause: false),
+				"tombpc.dat",
+				"gameFlow.exe",
+				pause: false,
+				new FakeCompilerProcessFactory(_ => process)));
+
+			Assert.IsTrue(process.Disposed);
+			Assert.IsFalse(File.Exists(Path.Combine(gameflowDirectory, "compile.bat")));
 		}
 		finally
 		{

@@ -1,6 +1,7 @@
 using Nickelony.LanguageServer.Abstractions.Navigation;
 using NLog;
 using System;
+using System.Threading;
 using TombLib.Scripting.Lua.Editing;
 using TombLib.Scripting.Lua.Resources;
 using TombLib.Scripting.UI.Bases;
@@ -32,6 +33,11 @@ public sealed partial class LuaEditor : TextEditorBase
 	/// Gets or sets the IntelliSense provider used to supply completions, hover text, diagnostics, and navigation results.
 	/// </summary>
 	public ILanguageServerIntelliSenseProvider? IntelliSenseProvider { get; set; }
+
+	/// <summary>
+	/// Gets the monotonically increasing version of the editor document.
+	/// </summary>
+	public int DocumentVersion => Volatile.Read(ref _editorDocumentVersion);
 
 	/// <summary>
 	/// Occurs when the editor resolves a definition location that should be opened by the host application.

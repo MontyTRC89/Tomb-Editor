@@ -1,20 +1,28 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.ClassicScript;
+using TombIDE.ScriptingStudio.CommandSurface;
+using TombIDE.ScriptingStudio.DocumentOutline;
+using TombIDE.ScriptingStudio.Editors;
 using TombIDE.ScriptingStudio.Editors.ClassicScript.StringEditor;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Settings;
 using TombIDE.ScriptingStudio.Shell;
 using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
+using TombIDE.Shared.Docking;
 using TombIDE.Shared.Messaging.Scripting;
 using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Documents;
 using TombLib.Scripting.GameFlowScript;
 using TombLib.Scripting.TRX;
+using TombLib.Scripting.UI.Editors;
 
 namespace TombIDE.ScriptingStudio.WorkspaceProfile;
 
@@ -30,55 +38,43 @@ public static class ScriptingWorkspaceProfileSelector
 
 		return projectContext.Project.GameVersion switch
 		{
-			TRVersion.Game.TR4 or TRVersion.Game.TRNG => CreateClassicScriptProfile(projectContext, settingsStore, classicScriptServices),
+			TRVersion.Game.TR4 or TRVersion.Game.TRNG => CreateClassicScriptProfile(projectContext, settingsStore, classicScriptServices, settingsStore.IsLuaEnabled(ScriptingWorkspaceKind.ClassicScript)),
 			TRVersion.Game.TR2 or TRVersion.Game.TR3 => CreateGameFlowProfile(projectContext, settingsStore, gameFlowServices),
-			TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X => CreateTrxProfile(projectContext, settingsStore, trxServices),
+			TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X => CreateTrxProfile(projectContext, settingsStore, trxServices, settingsStore.IsLuaEnabled(ScriptingWorkspaceKind.TRX)),
 			TRVersion.Game.TombEngine => CreateLuaProfile(projectContext, settingsStore),
 			_ => throw new NotSupportedException($"Unsupported scripting workspace game version: {projectContext.Project.GameVersion}.")
 		};
 	}
 
-	private static ScriptingWorkspaceProfile CreateClassicScriptProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore, ClassicScriptLanguageServices languageServices)
+	private static ScriptingWorkspaceProfile CreateClassicScriptProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore, ClassicScriptLanguageServices languageServices, bool supportsLua)
 	{
-		ScriptingWorkspaceProfile? workspaceProfile = null;
-		workspaceProfile = new ScriptingWorkspaceProfile(
+		return new ScriptingWorkspaceProfile(
 			ScriptingWorkspaceKind.ClassicScript,
 			projectContext.Project.GameVersion,
-			[DocumentMode.ClassicScript, DocumentMode.Strings, DocumentMode.PlainText],
+			CreateClassicScriptRegistrations(languageServices, supportsLua),
 			PathHelper.GetScriptFilePath(projectContext.ScriptRootDirectoryPath, TRVersion.Game.TR4),
-			CreateViewContributions(
-				UICommand.ContentExplorer,
-				UICommand.FileExplorer,
-				UICommand.ReferenceBrowser,
-				UICommand.CompilerLogs,
-				UICommand.SearchResults,
-				UICommand.ToolStrip,
-				UICommand.StatusStrip),
+			CreateClassicScriptViewContributions(supportsLua),
 			CreateSharedStatusStripSegments(),
-			[new(ScriptingSettingsPageKind.ClassicScript, "TR4 / TRNG Script", [DocumentMode.ClassicScript, DocumentMode.Strings, DocumentMode.PlainText])],
+			CreateSettingsPages(
+				new(ScriptingSettingsPageKind.ClassicScript, "TR4 / TRNG Script"),
+				supportsLua),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateMenuStripContributions(ScriptingWorkspaceKind.ClassicScript),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateToolStripContributions(ScriptingWorkspaceKind.ClassicScript),
-			"*.txt",
+			supportsLua ? "*.txt|*.lua" : "*.txt",
 			string.Empty,
 			";",
 			true,
 			true,
-			DefaultLayouts.ClassicScriptLayout,
-			documentController => RegisterClassicScriptEditors(documentController, languageServices),
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).DockPanelState,
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).AvalonDockLayoutXml,
-			xml => SaveLayoutXml(settingsStore, workspaceProfile, xml));
-
-		return workspaceProfile;
+			CreateLayoutPersistence(settingsStore, ScriptingWorkspaceKind.ClassicScript, DefaultLayouts.ClassicScriptLayout),
+			supportsLuaActivation: true);
 	}
 
 	private static ScriptingWorkspaceProfile CreateGameFlowProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore, GameFlowLanguageServices gameFlowServices)
 	{
-		ScriptingWorkspaceProfile? workspaceProfile = null;
-		workspaceProfile = new ScriptingWorkspaceProfile(
+		return new ScriptingWorkspaceProfile(
 			ScriptingWorkspaceKind.GameFlowScript,
 			projectContext.Project.GameVersion,
-			[DocumentMode.GameFlowScript, DocumentMode.PlainText],
+			CreateGameFlowRegistrations(gameFlowServices),
 			PathHelper.GetScriptFilePath(projectContext.ScriptRootDirectoryPath, TRVersion.Game.TR2),
 			CreateViewContributions(
 				UICommand.ContentExplorer,
@@ -88,7 +84,7 @@ public static class ScriptingWorkspaceProfileSelector
 				UICommand.ToolStrip,
 				UICommand.StatusStrip),
 			CreateSharedStatusStripSegments(),
-			[new(ScriptingSettingsPageKind.GameFlowScript, "TR2 / TR3 Script", [DocumentMode.GameFlowScript, DocumentMode.PlainText])],
+			[new(ScriptingSettingsPageKind.GameFlowScript, "TR2 / TR3 Script")],
 			ScriptingWorkspaceCommandSurfaceFactory.CreateMenuStripContributions(ScriptingWorkspaceKind.GameFlowScript),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateToolStripContributions(ScriptingWorkspaceKind.GameFlowScript),
 			"*.txt",
@@ -96,54 +92,37 @@ public static class ScriptingWorkspaceProfileSelector
 			"//",
 			true,
 			true,
-			DefaultLayouts.GameFlowScriptLayout,
-			documentController => RegisterGameFlowEditors(documentController, gameFlowServices),
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).DockPanelState,
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).AvalonDockLayoutXml,
-			xml => SaveLayoutXml(settingsStore, workspaceProfile, xml));
-
-		return workspaceProfile;
+			CreateLayoutPersistence(settingsStore, ScriptingWorkspaceKind.GameFlowScript, DefaultLayouts.GameFlowScriptLayout),
+			supportsLuaActivation: false);
 	}
 
-	private static ScriptingWorkspaceProfile CreateTrxProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore, TRXLanguageServices trxServices)
+	private static ScriptingWorkspaceProfile CreateTrxProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore, TRXLanguageServices trxServices, bool supportsLua)
 	{
-		ScriptingWorkspaceProfile? workspaceProfile = null;
-		workspaceProfile = new ScriptingWorkspaceProfile(
+		return new ScriptingWorkspaceProfile(
 			ScriptingWorkspaceKind.TRX,
 			projectContext.Project.GameVersion,
-			[DocumentMode.TRX],
+			CreateTrxRegistrations(trxServices, supportsLua),
 			PathHelper.GetScriptFilePath(projectContext.ScriptRootDirectoryPath, projectContext.Project.GameVersion),
-			CreateViewContributions(
-				UICommand.ContentExplorer,
-				UICommand.FileExplorer,
-				UICommand.SearchResults,
-				UICommand.ToolStrip,
-				UICommand.StatusStrip),
+			CreateTrxViewContributions(supportsLua),
 			CreateSharedStatusStripSegments(),
-			[new(ScriptingSettingsPageKind.TRX, "TRX Script", [DocumentMode.TRX])],
+			CreateSettingsPages(new(ScriptingSettingsPageKind.TRX, "TRX Script"), supportsLua),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateMenuStripContributions(ScriptingWorkspaceKind.TRX),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateToolStripContributions(ScriptingWorkspaceKind.TRX),
-			"*.json5",
+			supportsLua ? "*.json5|*.lua" : "*.json5",
 			string.Empty,
 			"//",
 			false,
 			false,
-			DefaultLayouts.TRXLayout,
-			dc => RegisterTrxEditors(dc, trxServices),
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).DockPanelState,
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).AvalonDockLayoutXml,
-			xml => SaveLayoutXml(settingsStore, workspaceProfile, xml));
-
-		return workspaceProfile;
+			CreateLayoutPersistence(settingsStore, ScriptingWorkspaceKind.TRX, DefaultLayouts.TRXLayout),
+			supportsLuaActivation: true);
 	}
 
 	private static ScriptingWorkspaceProfile CreateLuaProfile(IScriptingProjectContext projectContext, IScriptingStudioShellSettingsStore settingsStore)
 	{
-		ScriptingWorkspaceProfile? workspaceProfile = null;
-		workspaceProfile = new ScriptingWorkspaceProfile(
+		return new ScriptingWorkspaceProfile(
 			ScriptingWorkspaceKind.Lua,
 			projectContext.Project.GameVersion,
-			[DocumentMode.Lua],
+			CreateLuaRegistrations(),
 			PathHelper.GetScriptFilePath(projectContext.ScriptRootDirectoryPath, TRVersion.Game.TombEngine),
 			CreateViewContributions(
 				UICommand.ContentExplorer,
@@ -154,7 +133,7 @@ public static class ScriptingWorkspaceProfileSelector
 				UICommand.ToolStrip,
 				UICommand.StatusStrip),
 			CreateSharedStatusStripSegments(),
-			[new(ScriptingSettingsPageKind.Lua, "Lua", [DocumentMode.Lua])],
+			[new(ScriptingSettingsPageKind.Lua, "Lua")],
 			ScriptingWorkspaceCommandSurfaceFactory.CreateMenuStripContributions(ScriptingWorkspaceKind.Lua),
 			ScriptingWorkspaceCommandSurfaceFactory.CreateToolStripContributions(ScriptingWorkspaceKind.Lua),
 			"*.lua",
@@ -162,29 +141,35 @@ public static class ScriptingWorkspaceProfileSelector
 			"--",
 			false,
 			false,
-			DefaultLayouts.LuaLayout,
-			RegisterLuaEditors,
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).DockPanelState,
-			() => LoadLayoutSettings(settingsStore, workspaceProfile).AvalonDockLayoutXml,
-			xml => SaveLayoutXml(settingsStore, workspaceProfile, xml));
-
-		return workspaceProfile;
+			CreateLayoutPersistence(settingsStore, ScriptingWorkspaceKind.Lua, DefaultLayouts.LuaLayout),
+			supportsLuaActivation: false);
 	}
+
+	private static ScriptingWorkspaceLayoutPersistence CreateLayoutPersistence(
+		IScriptingStudioShellSettingsStore settingsStore,
+		ScriptingWorkspaceKind workspaceKind,
+		DockPanelState defaultLayout)
+		=> new(
+			defaultLayout,
+			() => LoadLayoutSettings(settingsStore, workspaceKind, defaultLayout).DockPanelState,
+			() => LoadLayoutSettings(settingsStore, workspaceKind, defaultLayout).AvalonDockLayoutXml,
+			xml => SaveLayoutXml(settingsStore, workspaceKind, defaultLayout, xml));
 
 	private static ScriptingStudioShellWorkspaceSettings LoadLayoutSettings(
 		IScriptingStudioShellSettingsStore settingsStore,
-		ScriptingWorkspaceProfile? workspaceProfile)
-		=> settingsStore.Load(workspaceProfile ?? throw new InvalidOperationException("The workspace profile must be initialized before layout settings can be loaded."));
+		ScriptingWorkspaceKind workspaceKind,
+		DockPanelState defaultLayout)
+		=> settingsStore.Load(workspaceKind, defaultLayout);
 
 	private static void SaveLayoutXml(
 		IScriptingStudioShellSettingsStore settingsStore,
-		ScriptingWorkspaceProfile? workspaceProfile,
+		ScriptingWorkspaceKind workspaceKind,
+		DockPanelState defaultLayout,
 		string xml)
 	{
-		ScriptingWorkspaceProfile profile = workspaceProfile ?? throw new InvalidOperationException("The workspace profile must be initialized before layout settings can be saved.");
-		ScriptingStudioShellWorkspaceSettings settings = settingsStore.Load(profile);
+		ScriptingStudioShellWorkspaceSettings settings = settingsStore.Load(workspaceKind, defaultLayout);
 		settings.AvalonDockLayoutXml = xml ?? string.Empty;
-		settingsStore.Save(profile.Kind, settings);
+		settingsStore.Save(workspaceKind, settings);
 	}
 
 	private static ScriptingWorkspaceViewContribution[] CreateViewContributions(params UICommand[] commands)
@@ -197,25 +182,211 @@ public static class ScriptingWorkspaceProfileSelector
 		StudioStatusStripSegment.Zoom
 	];
 
-	private static void RegisterClassicScriptEditors(IEditorDocumentController documentController, ClassicScriptLanguageServices languageServices)
+	private static IReadOnlyList<ScriptingDocumentRegistration> CreateClassicScriptRegistrations(
+		ClassicScriptLanguageServices languageServices,
+		bool supportsLua)
 	{
-		documentController.RegisterTextEditor(
-			engineVersion => new ClassicScriptEditor(engineVersion, languageServices),
-			DocumentMode.ClassicScript,
-			filePath => !FileHelper.IsStringFile(filePath, languageServices.LineService));
-		documentController.RegisterStringsEditor(static engineVersion => new StringEditorView(engineVersion));
-		documentController.RegisterPlainTextEditor(engineVersion => new ClassicScriptEditor(engineVersion, languageServices), DocumentMode.ClassicScript);
+		DocumentContributionSet contributions = CreateDocumentContributions(languageServices, null, null);
+		var registrations = new List<ScriptingDocumentRegistration>
+		{
+			new(
+				EditorType.Text,
+				DocumentMode.ClassicScript,
+				FileHelper.IsTextFile,
+				filePath => !FileHelper.IsStringFile(filePath, languageServices.LineService),
+				engineVersion => new ClassicScriptEditor(engineVersion, languageServices),
+				contributions.ClassicScript),
+			new(
+				EditorType.Strings,
+				DocumentMode.Strings,
+				FileHelper.IsTextFile,
+				filePath => FileHelper.GetClassicScriptFileKind(filePath, languageServices.LineService) == ClassicScriptFileKind.Strings,
+				static engineVersion => new StringEditorView(engineVersion),
+				contributions.Strings),
+			new(
+				EditorType.Text,
+				DocumentMode.ClassicScript,
+				static _ => false,
+				static _ => false,
+				engineVersion => new ClassicScriptEditor(engineVersion, languageServices),
+				contributions.ClassicScript,
+				isFallback: true,
+				supportedDocumentModes: [DocumentMode.PlainText])
+		};
+
+		if (supportsLua)
+			registrations.Add(CreateLuaRegistration(contributions.Lua));
+
+		return registrations;
 	}
 
-	private static void RegisterGameFlowEditors(IEditorDocumentController documentController, GameFlowLanguageServices gameFlowServices)
+	private static IReadOnlyList<ScriptingDocumentRegistration> CreateGameFlowRegistrations(GameFlowLanguageServices languageServices)
 	{
-		documentController.RegisterTextEditor(engineVersion => new GameFlowEditor(engineVersion, gameFlowServices), DocumentMode.GameFlowScript);
-		documentController.RegisterPlainTextEditor(engineVersion => new GameFlowEditor(engineVersion, gameFlowServices), DocumentMode.GameFlowScript);
+		DocumentContributionSet contributions = CreateDocumentContributions(null, languageServices, null);
+		return
+		[
+			new(
+				EditorType.Text,
+				DocumentMode.GameFlowScript,
+				FileHelper.IsTextFile,
+				static _ => true,
+				engineVersion => new GameFlowEditor(engineVersion, languageServices),
+				contributions.GameFlowScript),
+			new(
+				EditorType.Text,
+				DocumentMode.GameFlowScript,
+				static _ => false,
+				static _ => false,
+				engineVersion => new GameFlowEditor(engineVersion, languageServices),
+				contributions.GameFlowScript,
+				isFallback: true,
+				supportedDocumentModes: [DocumentMode.PlainText])
+		];
 	}
 
-	private static void RegisterTrxEditors(IEditorDocumentController documentController, TRXLanguageServices trxServices)
-		=> documentController.RegisterJson5Editor(engineVersion => new TRXEditor(engineVersion, trxServices), DocumentMode.TRX);
+	private static IReadOnlyList<ScriptingDocumentRegistration> CreateTrxRegistrations(TRXLanguageServices languageServices, bool supportsLua)
+	{
+		DocumentContributionSet contributions = CreateDocumentContributions(null, null, languageServices);
+		var registrations = new List<ScriptingDocumentRegistration>
+		{
+			new(
+				EditorType.Text,
+				DocumentMode.TRX,
+				FileHelper.IsJson5File,
+				static _ => true,
+				engineVersion => new TRXEditor(engineVersion, languageServices),
+				contributions.TRX)
+		};
 
-	private static void RegisterLuaEditors(IEditorDocumentController documentController)
-		=> documentController.RegisterLuaEditor(static engineVersion => new LuaEditor(engineVersion), DocumentMode.Lua);
+		if (supportsLua)
+			registrations.Add(CreateLuaRegistration(contributions.Lua));
+
+		return registrations;
+	}
+
+	private static IReadOnlyList<ScriptingDocumentRegistration> CreateLuaRegistrations()
+		=> [CreateLuaRegistration(CreateDocumentContributions(null, null, null).Lua)];
+
+	private static ScriptingDocumentRegistration CreateLuaRegistration(ScriptingDocumentContributions contributions)
+		=> new(
+			EditorType.Text,
+			DocumentMode.Lua,
+			FileHelper.IsLuaFile,
+			static _ => true,
+			static engineVersion => new LuaEditor(engineVersion),
+			contributions);
+
+	private static DocumentContributionSet CreateDocumentContributions(
+		ClassicScriptLanguageServices? classicScriptServices,
+		GameFlowLanguageServices? gameFlowServices,
+		TRXLanguageServices? trxServices)
+	{
+		var outlineFactory = classicScriptServices is not null || gameFlowServices is not null || trxServices is not null
+			? new DocumentOutlineNodesProviderFactory(
+				classicScriptServices,
+				gameFlowServices,
+				trxServices)
+			: null;
+
+		return new DocumentContributionSet(
+			CreateContribution(
+				ScriptingSettingsPageKind.ClassicScript,
+				ScriptingDocumentConfigurationKind.ClassicScript,
+				TypedDocumentCommandSurfaceProvider.CreateClassicScript(),
+				outlineFactory is null ? null : () => outlineFactory.CreateClassicScript(),
+				new ClassicScriptDocumentStatusStripProvider()),
+			CreateContribution(
+				ScriptingSettingsPageKind.ClassicScript,
+				ScriptingDocumentConfigurationKind.ClassicScript,
+				TypedDocumentCommandSurfaceProvider.CreateStrings(),
+				outlineFactory is null ? null : () => outlineFactory.CreateStrings()),
+			CreateContribution(
+				ScriptingSettingsPageKind.GameFlowScript,
+				ScriptingDocumentConfigurationKind.GameFlowScript,
+				TypedDocumentCommandSurfaceProvider.CreateGameFlowScript(),
+				outlineFactory is null ? null : () => outlineFactory.CreateGameFlowScript()),
+			CreateContribution(
+				ScriptingSettingsPageKind.TRX,
+				ScriptingDocumentConfigurationKind.TRX,
+				TypedDocumentCommandSurfaceProvider.CreateTrx(),
+				outlineFactory is null ? null : () => outlineFactory.CreateTrx()),
+			CreateContribution(
+				ScriptingSettingsPageKind.Lua,
+				ScriptingDocumentConfigurationKind.Lua,
+				TypedDocumentCommandSurfaceProvider.CreateLua(),
+				null),
+			new(
+				null,
+				ScriptingDocumentConfigurationKind.None,
+				TypedDocumentCommandSurfaceProvider.CreatePlainText()));
+	}
+
+	private static ScriptingDocumentContributions CreateContribution(
+		ScriptingSettingsPageKind settingsPageKind,
+		ScriptingDocumentConfigurationKind configurationKind,
+		IStudioDocumentCommandSurfaceProvider commandSurfaceProvider,
+		Func<TombLib.Scripting.UI.ContentNodes.ContentNodesProviderBase?>? outlineProviderFactory,
+		IStudioDocumentStatusStripProvider? statusStripProvider = null)
+	{
+		return new ScriptingDocumentContributions(
+			settingsPageKind,
+			configurationKind,
+			commandSurfaceProvider,
+			outlineProviderFactory,
+			statusStripProvider);
+	}
+
+	private sealed record DocumentContributionSet(
+		ScriptingDocumentContributions ClassicScript,
+		ScriptingDocumentContributions Strings,
+		ScriptingDocumentContributions GameFlowScript,
+		ScriptingDocumentContributions TRX,
+		ScriptingDocumentContributions Lua,
+		ScriptingDocumentContributions PlainText);
+
+	private static IReadOnlyList<ScriptingWorkspaceSettingsPage> CreateSettingsPages(ScriptingWorkspaceSettingsPage primaryPage, bool supportsLua)
+		=> supportsLua
+			? [primaryPage, new(ScriptingSettingsPageKind.Lua, "Lua")]
+			: [primaryPage];
+
+	private static UICommand[] CreateLuaViewCommands()
+		=> [UICommand.LuaReferencesResults];
+
+	private static IReadOnlyList<ScriptingWorkspaceViewContribution> CreateTrxViewContributions(bool supportsLua)
+	{
+		var commands = new[]
+		{
+			UICommand.ContentExplorer,
+			UICommand.FileExplorer,
+			UICommand.SearchResults,
+			UICommand.LuaDiagnostics,
+			UICommand.ToolStrip,
+			UICommand.StatusStrip
+		};
+
+		return CreateViewContributions([.. commands, .. (supportsLua ? CreateLuaViewCommands() : [])]);
+	}
+
+	private static IReadOnlyList<ScriptingWorkspaceViewContribution> CreateClassicScriptViewContributions(bool supportsLua)
+	{
+		var commands = new[]
+		{
+			UICommand.ContentExplorer,
+			UICommand.FileExplorer,
+			UICommand.ReferenceBrowser,
+			UICommand.CompilerLogs,
+			UICommand.SearchResults,
+			UICommand.LuaDiagnostics,
+			UICommand.ToolStrip,
+			UICommand.StatusStrip
+		};
+
+		var viewCommands = new List<UICommand>(commands);
+		if (supportsLua)
+		{
+			viewCommands.AddRange(CreateLuaViewCommands());
+		}
+
+		return CreateViewContributions(viewCommands.ToArray());
+	}
 }

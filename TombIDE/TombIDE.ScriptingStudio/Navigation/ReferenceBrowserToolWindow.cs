@@ -34,6 +34,7 @@ public sealed class ReferenceBrowserToolWindow : StudioDockPane
 	public override void Dispose()
 	{
 		_viewModel.ReferenceDefinitionRequested -= ViewModel_ReferenceDefinitionRequested;
+		ReferenceDefinitionRequested = null;
 	}
 
 	private void ViewModel_ReferenceDefinitionRequested(object? sender, ReferenceDefinitionEventArgs e)

@@ -15,16 +15,31 @@ public static class NGCompiler
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
+	static NGCompiler()
+	{
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+	}
+
 	/// <summary>
 	/// Ensures the libraries required by the NG compiler are registered.
 	/// </summary>
 	/// <returns><c>true</c> when the required libraries are available; otherwise, <c>false</c>.</returns>
 	public static bool AreLibrariesRegistered()
 	{
-		bool requiredFilesExist = File.Exists(ClassicScriptCompilerPaths.Default.MscomctlSystemFile)
-			&& File.Exists(ClassicScriptCompilerPaths.Default.Richtx32SystemFile)
-			&& File.Exists(ClassicScriptCompilerPaths.Default.PicFormat32SystemFile)
-			&& File.Exists(ClassicScriptCompilerPaths.Default.Comdlg32SystemFile);
+		return AreLibrariesRegistered(ClassicScriptCompilerPaths.Default, ProcessCompilerProcessFactory.Instance);
+	}
+
+	internal static bool AreLibrariesRegistered(
+		ClassicScriptCompilerPaths compilerPaths,
+		ICompilerProcessFactory processFactory)
+	{
+		ArgumentNullException.ThrowIfNull(compilerPaths);
+		ArgumentNullException.ThrowIfNull(processFactory);
+
+		bool requiredFilesExist = File.Exists(compilerPaths.MscomctlSystemFile)
+			&& File.Exists(compilerPaths.Richtx32SystemFile)
+			&& File.Exists(compilerPaths.PicFormat32SystemFile)
+			&& File.Exists(compilerPaths.Comdlg32SystemFile);
 
 		if (!requiredFilesExist)
 		{
@@ -32,11 +47,12 @@ public static class NGCompiler
 			{
 				var process = new ProcessStartInfo
 				{
-					FileName = ClassicScriptCompilerPaths.Default.LibraryRegistrationExecutable,
+					FileName = compilerPaths.LibraryRegistrationExecutable,
 					UseShellExecute = true
 				};
 
-				Process.Start(process)?.WaitForExit();
+				using ICompilerProcess? compilerProcess = processFactory.Start(process);
+				compilerProcess?.WaitForExit();
 			}
 			catch (Exception exception)
 			{
@@ -59,24 +75,42 @@ public static class NGCompiler
 	{
 		ThrowIfLibrariesNotRegistered(AreLibrariesRegistered());
 
-		CopyFilesToVGEScriptDirectory(projectScriptPath, ClassicScriptCompilerPaths.Default.VGEScriptDirectory);
+		return CompileCore(projectScriptPath, projectEnginePath, newIncludeMethod, ClassicScriptCompilerPaths.Default, ProcessCompilerProcessFactory.Instance);
+	}
+
+	internal static bool CompileCore(
+		string projectScriptPath,
+		string projectEnginePath,
+		bool newIncludeMethod,
+		ClassicScriptCompilerPaths compilerPaths,
+		ICompilerProcessFactory processFactory)
+	{
+		ArgumentNullException.ThrowIfNull(compilerPaths);
+		ArgumentNullException.ThrowIfNull(processFactory);
+
+		CopyFilesToVGEScriptDirectory(projectScriptPath, compilerPaths.VGEScriptDirectory);
 
 		if (newIncludeMethod)
-			MergeIncludes();
+			MergeIncludes(compilerPaths);
+
+		File.Delete(Path.Combine(compilerPaths.VGEDirectory, "LastCompilerLog.txt"));
+		File.Delete(Path.Combine(compilerPaths.VGEDirectory, "Script.dat"));
+		File.Delete(Path.Combine(compilerPaths.VGEDirectory, "English.dat"));
 
 		var process = new ProcessStartInfo
 		{
-			FileName = ClassicScriptCompilerPaths.Default.NGCExecutable,
-			Arguments = $"\"{ClassicScriptCompilerPaths.Default.VGEScriptDirectory}\\Script.txt\" -Log -NoMsgBox -NoWait -Concise",
+			FileName = compilerPaths.NGCExecutable,
+			Arguments = $"\"{compilerPaths.VGEScriptDirectory}\\Script.txt\" -Log -NoMsgBox -NoWait -Concise",
 			UseShellExecute = true
 		};
 
-		Process.Start(process)?.WaitForExit();
+		using (ICompilerProcess? compilerProcess = processFactory.Start(process))
+			compilerProcess?.WaitForExit();
 
-		FixLogs(projectEnginePath, out bool containsError);
-		CopyCompiledFilesToProject(projectEnginePath);
+		FixLogs(projectEnginePath, compilerPaths, out bool containsError);
+		CopyCompiledFilesToProject(projectEnginePath, compilerPaths);
 
-		return !containsError;
+		return !containsError && File.Exists(Path.Combine(compilerPaths.VGEDirectory, "Script.dat"));
 	}
 
 	private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
@@ -93,16 +127,16 @@ public static class NGCompiler
 			throw new InvalidOperationException("The required libraries are not registered.");
 	}
 
-	private static void MergeIncludes()
+	private static void MergeIncludes(ClassicScriptCompilerPaths compilerPaths)
 	{
-		string vgeScriptFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.VGEScriptDirectory, "Script.txt");
+		string vgeScriptFilePath = Path.Combine(compilerPaths.VGEScriptDirectory, "Script.txt");
 
 		string[] lines = File.ReadAllLines(vgeScriptFilePath);
 
 		// The visited set tracks the include path currently being expanded so recursive
 		// includes cannot loop. It is scoped to this merge call rather than stored statically.
 		var visitedFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { vgeScriptFilePath };
-		lines = ReplaceIncludesWithFileContents(lines, visitedFiles, ClassicScriptCompilerPaths.Default.VGEScriptDirectory);
+		lines = ReplaceIncludesWithFileContents(lines, visitedFiles, compilerPaths.VGEScriptDirectory);
 
 		string newFileContent = string.Join(Environment.NewLine, lines);
 		File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
@@ -155,10 +189,10 @@ public static class NGCompiler
 		return newLines.ToArray();
 	}
 
-	private static void FixLogs(string projectEnginePath, out bool containsError)
+	private static void FixLogs(string projectEnginePath, ClassicScriptCompilerPaths compilerPaths, out bool containsError)
 	{
-		string logFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.VGEDirectory, "LastCompilerLog.txt");
-		string? newFileContent = FixLogFile(logFilePath, projectEnginePath, ClassicScriptCompilerPaths.Default.VGEDirectory);
+		string logFilePath = Path.Combine(compilerPaths.VGEDirectory, "LastCompilerLog.txt");
+		string? newFileContent = FixLogFile(logFilePath, projectEnginePath, compilerPaths.VGEDirectory);
 
 		if (newFileContent is null)
 		{
@@ -175,7 +209,7 @@ public static class NGCompiler
 			return null;
 
 		// Replace the VGE paths in the log file with the current project ones
-		string newFileContent = File.ReadAllText(logFilePath)
+		string newFileContent = File.ReadAllText(logFilePath, Encoding.GetEncoding(1252))
 			.Replace(vgeDirectory, projectEnginePath)
 			.Replace("ERROR: unknonw ", "ERROR: unknown ");
 
@@ -183,11 +217,11 @@ public static class NGCompiler
 		return newFileContent;
 	}
 
-	private static void CopyCompiledFilesToProject(string projectEnginePath)
+	private static void CopyCompiledFilesToProject(string projectEnginePath, ClassicScriptCompilerPaths compilerPaths)
 	{
 		// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-		string compiledScriptFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.VGEDirectory, "Script.dat");
-		string compiledEnglishFilePath = Path.Combine(ClassicScriptCompilerPaths.Default.VGEDirectory, "English.dat");
+		string compiledScriptFilePath = Path.Combine(compilerPaths.VGEDirectory, "Script.dat");
+		string compiledEnglishFilePath = Path.Combine(compilerPaths.VGEDirectory, "English.dat");
 
 		if (File.Exists(compiledScriptFilePath))
 			File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);

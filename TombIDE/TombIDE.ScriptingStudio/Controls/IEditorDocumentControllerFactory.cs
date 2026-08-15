@@ -2,7 +2,6 @@
 
 using TombIDE.ScriptingStudio.WorkspaceProfile;
 using TombIDE.Shared.Messaging.Scripting;
-using TombLib.Scripting.ClassicScript.Services;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombIDE.ScriptingStudio.Controls;
@@ -20,6 +19,5 @@ public interface IEditorDocumentControllerFactory
 	IEditorDocumentController Create(
 		ScriptingWorkspaceProfile profile,
 		IScriptingProjectContext projectContext,
-		IMessageService messageService,
-		IClassicScriptLineService lineService);
+		IMessageService messageService);
 }

@@ -40,11 +40,13 @@ internal sealed class StudioEditorLifecycleCoordinator : IEditorLifecycleService
 	{
 		Detach();
 		_documentController.FileOpened += DocumentController_FileOpened;
+		_documentController.EditorClosed += DocumentController_EditorClosed;
 	}
 
 	public void Detach()
 	{
 		_documentController.FileOpened -= DocumentController_FileOpened;
+		_documentController.EditorClosed -= DocumentController_EditorClosed;
 
 		foreach (IEditorControl editor in _documentController.GetOpenEditors())
 			DetachEditor(editor);
@@ -62,6 +64,9 @@ internal sealed class StudioEditorLifecycleCoordinator : IEditorLifecycleService
 		_applyUserSettings(editor);
 		_messenger.Send(new ShellUiRefreshMessage());
 	}
+
+	private void DocumentController_EditorClosed(object? sender, EditorControlEventArgs e)
+		=> DetachEditor(e.Editor);
 
 	private void AttachEditor(IEditorControl editor)
 	{

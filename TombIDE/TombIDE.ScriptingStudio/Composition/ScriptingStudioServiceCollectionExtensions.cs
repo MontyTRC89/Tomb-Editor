@@ -43,6 +43,7 @@ using TombLib.Scripting.TRX.Hover;
 using TombLib.Scripting.TRX.Navigation;
 using TombLib.Scripting.TRX.Services;
 using TombLib.Scripting.UI.Editors;
+using TombLib.Scripting.UI.Editing;
 using TombLib.WPF.Services.Abstract;
 
 namespace TombIDE.ScriptingStudio.Composition;
@@ -65,6 +66,18 @@ public static class ScriptingStudioServiceCollectionExtensions
 		services.AddSingleton<StudioStatusStripContributionService>();
 		services.AddTransient<IScriptingStudioShellFactory, ScriptingStudioShellFactory>();
 
+		AddClassicScriptServices(services);
+		AddGameFlowServices(services);
+		AddTrxServices(services);
+		AddLuaServices(services);
+
+		AddScriptingStudioShellServices(services);
+
+		return services;
+	}
+
+	private static void AddClassicScriptServices(IServiceCollection services)
+	{
 		services.AddSingleton<ClassicScriptMnemonicCatalogService>();
 		services.AddSingleton<ClassicScriptSyntaxCatalogService>();
 		services.AddSingleton<IClassicScriptLineService, ClassicScriptLineService>();
@@ -88,8 +101,10 @@ public static class ScriptingStudioServiceCollectionExtensions
 				commandService,
 				indexService);
 		});
+	}
 
-		// GameFlowScript services.
+	private static void AddGameFlowServices(IServiceCollection services)
+	{
 		services.AddSingleton<IGameFlowScriptLineService, GameFlowScriptLineService>();
 		services.AddSingleton<IGameFlowScriptDocumentService, GameFlowScriptDocumentService>();
 		services.AddSingleton<GameFlowLanguageServices>(sp =>
@@ -104,8 +119,10 @@ public static class ScriptingStudioServiceCollectionExtensions
 				lineService,
 				documentService);
 		});
+	}
 
-		// TRX services.
+	private static void AddTrxServices(IServiceCollection services)
+	{
 		services.AddSingleton<ITRXGameFlowSchemaService>(_ =>
 			new TRXGameFlowSchemaService(TRXResourcePaths.GetGameFlowSchemaPath()));
 		services.AddSingleton<ITRXLineService, TRXLineService>();
@@ -124,48 +141,28 @@ public static class ScriptingStudioServiceCollectionExtensions
 				new TRXGameFlowCompletionService(schemaService),
 				new TRXGameFlowHoverService(schemaService));
 		});
-
-		AddScriptingStudioShellServices(services);
-
-		return services;
 	}
 
-	/// <summary>
-	/// Registers shell-scoped services. These are resolved once per
-	/// <see cref="IScriptingStudioShell"/> instance via a child scope.
-	/// </summary>
-	internal static void AddScriptingStudioShellServices(IServiceCollection services)
+	private static void AddLuaServices(IServiceCollection services)
 	{
-		ArgumentNullException.ThrowIfNull(services);
-
-		// Scoped context and input bridge.
-		services.AddScoped<ScriptingStudioShellContext>();
-		services.AddScoped<IScriptingProjectContext>(sp =>
-			sp.GetRequiredService<ScriptingStudioShellContext>().ProjectContext);
-
-		// Dialog owner provider (set once by Mount).
-		services.AddScoped<IWin32DialogOwnerProvider, Win32DialogOwnerProvider>();
-
-		// Settings bridge for delegate parameters (populated by RootShellViewModel).
-		services.AddScoped<ShellWorkbenchSettings>();
-
-		// Lua IntelliSense provider (shell-scoped, one per workspace).
+		// Lua workspace ownership:
+		// - this scoped provider owns the language-server lifetime;
+		// - LuaDocumentLifecycleCoordinator owns host event attachment and open/update/rename
+		//   synchronization;
+		// - LuaEditor owns its editor-local request state and releases its provider document
+		//   reference during disposal;
+		// - the child DI scope owns provider disposal; LuaIntellisenseEventBridge owns event
+		//   subscriptions and detachment only.
+		// Keep workspace automation, references, and workspace edits as host contributions.
+		// They must not dispose the provider or duplicate editor document cleanup.
 		services.AddScoped<ILuaIntelliSenseProvider>(sp =>
 		{
 			var projectContext = sp.GetRequiredService<IScriptingProjectContext>();
-			var messageService = sp.GetRequiredService<IMessageService>();
 
 			TENApiService.InjectTENApi(
 				projectContext.Project, projectContext.Project.GetCurrentEngineVersion());
 
 			string? executablePath = LuaLanguageServerLocator.ResolveExecutablePath();
-
-			if (string.IsNullOrWhiteSpace(executablePath))
-			{
-				messageService.ShowError(
-					"The bundled Lua language server could not be found. Lua IntelliSense is unavailable.",
-					"Lua IntelliSense");
-			}
 
 			ILogger<LuaLanguageServerIntelliSenseProvider> logger =
 				sp.GetRequiredService<ILogger<LuaLanguageServerIntelliSenseProvider>>();
@@ -174,19 +171,29 @@ public static class ScriptingStudioServiceCollectionExtensions
 				projectContext.ScriptRootDirectoryPath, executablePath, logger);
 		});
 
-		// Text editor host adapter (bridges document controller to the editor host interface).
-		services.AddScoped<ITextEditorHost>(sp =>
-		{
-			var documentController = sp.GetRequiredService<IEditorDocumentController>();
-			return new DocumentControllerTextEditorHost(documentController);
-		});
-
 		// Lua tracked document state (manages per-document diagnostics and semantic tokens).
 		services.AddScoped<LuaTrackedDocumentStateService>(sp =>
 		{
 			var textEditorHost = sp.GetRequiredService<ITextEditorHost>();
 			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
 			return new LuaTrackedDocumentStateService(textEditorHost, intellisenseProvider);
+		});
+		services.AddScoped<LuaReferenceSearchService>(sp =>
+		{
+			var projectContext = sp.GetRequiredService<IScriptingProjectContext>();
+			var textEditorHost = sp.GetRequiredService<ITextEditorHost>();
+			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
+			return new LuaReferenceSearchService(
+				textEditorHost,
+				intellisenseProvider,
+				projectContext.ScriptRootDirectoryPath);
+		});
+		services.AddScoped<TextWorkspaceEditApplier>();
+		services.AddScoped<TextWorkspaceCommandService>(sp =>
+		{
+			var editApplier = sp.GetRequiredService<TextWorkspaceEditApplier>();
+			var intellisenseProvider = sp.GetRequiredService<ILuaIntelliSenseProvider>();
+			return new TextWorkspaceCommandService(editApplier, intellisenseProvider);
 		});
 
 		// Lua IntelliSense event bridge (wires provider events to the UI dispatcher).
@@ -210,6 +217,33 @@ public static class ScriptingStudioServiceCollectionExtensions
 				messenger,
 				intellisenseProvider,
 				trackedDocumentStateService);
+		});
+	}
+
+	/// <summary>
+	/// Registers shell-scoped services. These are resolved once per
+	/// <see cref="IScriptingStudioShell"/> instance via a child scope.
+	/// </summary>
+	internal static void AddScriptingStudioShellServices(IServiceCollection services)
+	{
+		ArgumentNullException.ThrowIfNull(services);
+
+		// Scoped context and input bridge.
+		services.AddScoped<ScriptingStudioShellContext>();
+		services.AddScoped<IScriptingProjectContext>(sp =>
+			sp.GetRequiredService<ScriptingStudioShellContext>().ProjectContext);
+
+		// Dialog owner provider (set once by Mount).
+		services.AddScoped<IWin32DialogOwnerProvider, Win32DialogOwnerProvider>();
+
+		// Settings bridge for delegate parameters (populated by RootShellViewModel).
+		services.AddScoped<ShellWorkbenchSettings>();
+
+		// Text editor host adapter (bridges document controller to the editor host interface).
+		services.AddScoped<ITextEditorHost>(sp =>
+		{
+			var documentController = sp.GetRequiredService<IEditorDocumentController>();
+			return new DocumentControllerTextEditorHost(documentController);
 		});
 
 		// Settings store (needs legacy snapshot from context).
@@ -280,11 +314,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 		services.AddScoped<DocumentOutlineViewModel>(sp =>
 		{
 			var localizationService = sp.GetRequiredService<ILocalizationService>();
-			var languageServices = sp.GetRequiredService<ClassicScriptLanguageServices>();
-			var gameFlowLanguageServices = sp.GetRequiredService<GameFlowLanguageServices>();
-			var trxLanguageServices = sp.GetRequiredService<TRXLanguageServices>();
-			var nodesProviderFactory = new DocumentOutlineNodesProviderFactory(languageServices, gameFlowLanguageServices, trxLanguageServices);
-			return new DocumentOutlineViewModel(localizationService, nodesProviderFactory);
+			return new DocumentOutlineViewModel(localizationService);
 		});
 		services.AddScoped<ReferenceBrowserViewModel>(sp =>
 		{
@@ -335,7 +365,8 @@ public static class ScriptingStudioServiceCollectionExtensions
 			var profile = sp.GetRequiredService<ScriptingWorkspaceProfile>();
 			var documentController = sp.GetRequiredService<IEditorDocumentController>();
 			var viewModel = sp.GetRequiredService<FileExplorerViewModel>();
-			return new FileExplorerPaneProvider(profile, documentController, viewModel);
+			var fileSyncService = sp.GetRequiredService<StudioFileExplorerDocumentSyncService>();
+			return new FileExplorerPaneProvider(profile, documentController, viewModel, fileSyncService);
 		});
 		services.AddScoped<IStudioPaneContributionProvider>(sp =>
 		{
@@ -344,8 +375,20 @@ public static class ScriptingStudioServiceCollectionExtensions
 			var referenceInfoViewModel = sp.GetRequiredService<ReferenceInfoViewModel>();
 			return new ReferenceBrowserPaneProvider(profile, viewModel, referenceInfoViewModel);
 		});
-		services.AddScoped<IStudioPaneContributionProvider, LuaDiagnosticsPaneProvider>();
-		services.AddScoped<IStudioPaneContributionProvider, LuaReferencesPaneProvider>();
+		services.AddScoped<IStudioPaneContributionProvider>(sp =>
+		{
+			return new DocumentDiagnosticsPaneProvider(
+				sp.GetRequiredService<ScriptingWorkspaceProfile>(),
+				sp.GetRequiredService<IEditorDocumentController>());
+		});
+		services.AddScoped<LuaReferencesPaneProvider>();
+		services.AddScoped<IStudioPaneContributionProvider>(sp =>
+		{
+			if (sp.GetRequiredService<ScriptingWorkspaceProfile>().SupportsLua)
+				return sp.GetRequiredService<LuaReferencesPaneProvider>();
+
+			return new StaticStudioPaneContributionProvider([]);
+		});
 		services.AddScoped<PaneCatalog>();
 
 		// Editor document controller factory.
@@ -358,8 +401,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 			var profile = sp.GetRequiredService<ScriptingWorkspaceProfile>();
 			var projectContext = sp.GetRequiredService<IScriptingProjectContext>();
 			var messageService = sp.GetRequiredService<IMessageService>();
-			var languageServices = sp.GetRequiredService<ClassicScriptLanguageServices>();
-			return factory.Create(profile, projectContext, messageService, languageServices.LineService);
+			return factory.Create(profile, projectContext, messageService);
 		});
 
 		// AvalonDock host adapter.
@@ -371,8 +413,8 @@ public static class ScriptingStudioServiceCollectionExtensions
 			return new AvalonDockHostAdapter(view);
 		});
 
-		// Workbench service (receives delegates from ShellWorkbenchSettings).
-		services.AddScoped<WorkbenchService>(sp =>
+		// Workbench composition (receives delegates from ShellWorkbenchSettings).
+		services.AddScoped<WorkbenchComposition>(sp =>
 		{
 			var profile = sp.GetRequiredService<ScriptingWorkspaceProfile>();
 			var projectContext = sp.GetRequiredService<IScriptingProjectContext>();
@@ -388,15 +430,15 @@ public static class ScriptingStudioServiceCollectionExtensions
 			var dockHost = sp.GetRequiredService<IAvalonDockHost>();
 			var paneCatalog = sp.GetRequiredService<PaneCatalog>();
 			var findAndReplaceViewModel = sp.GetRequiredService<FindAndReplaceViewModel>();
-			var luaEditorLifecycleService = sp.GetRequiredService<ILuaEditorLifecycleService>();
-			var luaIntellisenseBridge = sp.GetRequiredService<ILuaIntellisenseBridge>();
-			var luaTrackedDocumentStateService = sp.GetRequiredService<LuaTrackedDocumentStateService>();
+			LuaHostServices? luaHostServices = CreateLuaHostServices(sp, profile);
+			var dialogService = sp.GetRequiredService<IDialogService>();
 			var workbenchSettings = sp.GetRequiredService<ShellWorkbenchSettings>();
 			var languageServices = sp.GetRequiredService<ClassicScriptLanguageServices>();
 			var gameFlowLanguageServices = sp.GetRequiredService<GameFlowLanguageServices>();
 			var trxLanguageServices = sp.GetRequiredService<TRXLanguageServices>();
+			var fileSyncService = sp.GetRequiredService<StudioFileExplorerDocumentSyncService>();
 
-			return new WorkbenchService(
+			return new WorkbenchComposition(
 				profile,
 				projectContext,
 				messenger,
@@ -411,17 +453,17 @@ public static class ScriptingStudioServiceCollectionExtensions
 				dockHost,
 				paneCatalog,
 				findAndReplaceViewModel,
-				luaEditorLifecycleService,
-				luaIntellisenseBridge,
-				luaTrackedDocumentStateService,
+				luaHostServices,
+				dialogService,
 				workbenchSettings.ShowCompilerLogsAfterBuild,
 				workbenchSettings.UseNewIncludeMethod,
 				languageServices,
 				gameFlowLanguageServices,
-				trxLanguageServices);
+				trxLanguageServices,
+				fileSyncService);
 		});
-		services.AddScoped<IWorkbenchService>(sp => sp.GetRequiredService<WorkbenchService>());
-
+		services.AddScoped<IWorkbenchService>(sp =>
+			new WorkbenchService(sp.GetRequiredService<WorkbenchComposition>()));
 		// Shell ViewModel (receives all interfaces via constructor injection).
 		services.AddScoped<RootShellViewModel>(sp =>
 		{
@@ -436,6 +478,7 @@ public static class ScriptingStudioServiceCollectionExtensions
 			var statusBarService = sp.GetRequiredService<IStatusBarService>();
 			var paneHostService = sp.GetRequiredService<IPaneHostService>();
 			var workbenchService = sp.GetRequiredService<IWorkbenchService>();
+			var documentController = sp.GetRequiredService<IEditorDocumentController>();
 			var workbenchSettings = sp.GetRequiredService<ShellWorkbenchSettings>();
 			var languageServices = sp.GetRequiredService<ClassicScriptLanguageServices>();
 			var gameFlowLanguageServices = sp.GetRequiredService<GameFlowLanguageServices>();
@@ -453,11 +496,27 @@ public static class ScriptingStudioServiceCollectionExtensions
 				statusBarService,
 				paneHostService,
 				workbenchService,
+				documentController,
 				workbenchSettings,
 				languageServices,
 				gameFlowLanguageServices,
 				trxLanguageServices);
 		});
+	}
+
+	internal static LuaHostServices? CreateLuaHostServices(
+		IServiceProvider serviceProvider,
+		ScriptingWorkspaceProfile profile)
+	{
+		if (!profile.SupportsLua)
+			return null;
+
+		return new LuaHostServices(
+			serviceProvider.GetRequiredService<ILuaEditorLifecycleService>(),
+			serviceProvider.GetRequiredService<ILuaIntellisenseBridge>(),
+			serviceProvider.GetRequiredService<LuaTrackedDocumentStateService>(),
+			serviceProvider.GetRequiredService<LuaReferenceSearchService>(),
+			serviceProvider.GetRequiredService<TextWorkspaceCommandService>());
 	}
 
 	private static StudioCommandCatalog CreateDefaultCommandCatalog(IServiceProvider _)
