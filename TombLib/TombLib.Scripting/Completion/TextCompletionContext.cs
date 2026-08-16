@@ -33,8 +33,6 @@ public sealed record TextCompletionContext
 		TextCompletionTrigger trigger = TextCompletionTrigger.Automatic,
 		int argumentIndex = -1)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-
 		if (caretOffset < 0 || caretOffset > documentText.Length)
 			throw new ArgumentOutOfRangeException(nameof(caretOffset));
 

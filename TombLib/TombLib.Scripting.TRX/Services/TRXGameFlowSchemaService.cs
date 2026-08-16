@@ -17,7 +17,7 @@ namespace TombLib.Scripting.TRX.Services;
 /// </summary>
 public sealed class TRXGameFlowSchemaService : ITRXGameFlowSchemaService
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private static readonly Logger s_log = LogManager.GetCurrentClassLogger();
 
 	/// <inheritdoc />
 	public TRXSchemaLoadState LoadState { get; }
@@ -43,12 +43,12 @@ public sealed class TRXGameFlowSchemaService : ITRXGameFlowSchemaService
 		catch (IOException exception)
 		{
 			LoadState = TRXSchemaLoadState.MissingResource;
-			Log.Warn(exception, "Failed to read the GameFlow schema at '{Path}'; schema-aware features are disabled.", schemaFilePath);
+			s_log.Warn(exception, "Failed to read the GameFlow schema at '{Path}'; schema-aware features are disabled.", schemaFilePath);
 		}
 		catch (Exception exception)
 		{
 			LoadState = TRXSchemaLoadState.InvalidSchema;
-			Log.Warn(exception, "Failed to parse the GameFlow schema at '{Path}'; schema-aware features are disabled.", schemaFilePath);
+			s_log.Warn(exception, "Failed to parse the GameFlow schema at '{Path}'; schema-aware features are disabled.", schemaFilePath);
 		}
 	}
 

@@ -18,12 +18,12 @@ public sealed class GameFlowEditorConfiguration : ColorSchemeConfigBase<ColorSch
 	// Color scheme
 
 	/// <inheritdoc/>
-	protected override string GetSchemeFilePath(string schemeName)
-		=> Path.Combine(ScriptingPaths.Default.GameFlowColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
+	protected override string GetColorSchemeFilePath(string colorSchemeName)
+		=> Path.Combine(ScriptingPaths.Default.GameFlowColorConfigsDirectory, colorSchemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
 	/// <inheritdoc/>
-	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
-		=> JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath);
+	protected override ColorScheme ReadColorSchemeFile(string colorSchemeFilePath)
+		=> JsonUtils.ReadJsonFile<ColorScheme>(colorSchemeFilePath);
 
 	// Construction
 

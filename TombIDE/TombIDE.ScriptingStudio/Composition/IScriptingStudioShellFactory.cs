@@ -43,12 +43,10 @@ internal sealed class ScriptingStudioShellFactory : IScriptingStudioShellFactory
 		try
 		{
 			IScriptingProjectContext projectContext = new IdeScriptingProjectContext(ide);
-			ScriptingStudioLegacySettingsSnapshot legacySnapshot =
-				ScriptingStudioLegacySettingsImport.CreateSnapshot(ide.IDEConfiguration);
 
 			ScriptingStudioShellContext context =
 				shellScope.ServiceProvider.GetRequiredService<ScriptingStudioShellContext>();
-			context.Initialize(projectContext, legacySnapshot);
+			context.Initialize(projectContext);
 
 			RootShellViewModel viewModel =
 				shellScope.ServiceProvider.GetRequiredService<RootShellViewModel>();

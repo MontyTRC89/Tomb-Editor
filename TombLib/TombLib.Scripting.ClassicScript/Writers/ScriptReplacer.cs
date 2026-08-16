@@ -32,7 +32,8 @@ public sealed class ScriptReplacer
 	{
 		TextEditorLineOperations.TryReplaceFirstMatchingLine(
 			textEditor,
-			lineText => {
+			lineText =>
+			{
 				if (!NameCommandRegex.IsMatch(lineText))
 					return null;
 
@@ -51,7 +52,8 @@ public sealed class ScriptReplacer
 	/// <param name="newName">The new language string name.</param>
 	public void RenameLanguageString(TextEditorBase textEditor, string oldName, string newName)
 	{
-		TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText => {
+		TextEditorLineOperations.TryReplaceFirstMatchingLine(textEditor, lineText =>
+		{
 			string cleanString = _lineService.RemoveComments(_lineService.RemoveNGStringIndex(lineText)).Trim();
 			return cleanString == oldName
 				? ReplaceCodeValue(lineText, oldName, newName)
@@ -65,5 +67,4 @@ public sealed class ScriptReplacer
 		string codeText = lineText[..codeRange.Length];
 		return codeText.Replace(oldName, newName) + lineText[codeRange.Length..];
 	}
-
 }

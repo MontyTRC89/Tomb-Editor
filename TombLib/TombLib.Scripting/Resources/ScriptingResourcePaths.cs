@@ -15,7 +15,7 @@ public static class ScriptingResourcePaths
 	/// <param name="relativeSegments">The path segments relative to that subdirectory.</param>
 	public static string GetResourcePath(string subdirectory, params string[] relativeSegments)
 	{
-		var pathSegments = new string[relativeSegments.Length + 3];
+		string[] pathSegments = new string[relativeSegments.Length + 3];
 		pathSegments[0] = AppContext.BaseDirectory;
 		pathSegments[1] = "Resources";
 		pathSegments[2] = subdirectory;

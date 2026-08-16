@@ -48,16 +48,14 @@ public sealed class CompletionData : ICompletionData, INotifyPropertyChanged
 	/// </summary>
 	public CompletionData(string text)
 		: this(new TextCompletionItem(text))
-	{
-	}
+	{ }
 
 	/// <summary>
 	/// Initializes a completion item with the given display text, insert text and description.
 	/// </summary>
 	public CompletionData(string text, string insertText, string description = "")
 		: this(new TextCompletionItem(text, insertText, description))
-	{
-	}
+	{ }
 
 	/// <summary>
 	/// Initializes a completion item from a <see cref="TextCompletionItem"/>, with optional hooks for

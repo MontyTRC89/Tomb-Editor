@@ -237,8 +237,7 @@ public sealed class TextSignatureHelpController : IDisposable
 			ShowSignatureHelp(signatureInfo);
 		}
 		catch (OperationCanceledException)
-		{
-		}
+		{ }
 		catch (Exception exception)
 		{
 			if (_isDisposed)

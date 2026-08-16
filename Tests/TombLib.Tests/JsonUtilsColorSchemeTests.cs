@@ -3,8 +3,8 @@ using TombLib.Utils;
 
 namespace TombLib.Tests;
 
-// Phase 7 migration tests: prove the shared JsonUtils.ReadJsonFile<T> helper reads
-// the bundled JSON color scheme files through the real output directory layout.
+// Verify that the shared JsonUtils.ReadJsonFile<T> helper reads the bundled JSON
+// color scheme files through the real output directory layout.
 [TestClass]
 public class JsonUtilsColorSchemeTests
 {
@@ -47,11 +47,11 @@ public class JsonUtilsColorSchemeTests
 	}
 
 	[TestMethod]
-	public void NoBundledXmlSchemes_Remain()
+	public void NoBundledXmlColorSchemesRemain()
 	{
-		string[] classicScriptFiles = Directory.GetFiles(GetSchemesDirectory("ClassicScript"), "*.cssch", SearchOption.TopDirectoryOnly);
-		string[] trxFiles = Directory.GetFiles(GetSchemesDirectory("TRX"), "*.trxsch", SearchOption.TopDirectoryOnly);
-		string[] gameFlowFiles = Directory.GetFiles(GetSchemesDirectory("GameFlowScript"), "*.gflsch", SearchOption.TopDirectoryOnly);
+		string[] classicScriptFiles = Directory.GetFiles(GetSchemesDirectory("ClassicScript"), "*.xml", SearchOption.TopDirectoryOnly);
+		string[] trxFiles = Directory.GetFiles(GetSchemesDirectory("TRX"), "*.xml", SearchOption.TopDirectoryOnly);
+		string[] gameFlowFiles = Directory.GetFiles(GetSchemesDirectory("GameFlowScript"), "*.xml", SearchOption.TopDirectoryOnly);
 
 		Assert.AreEqual(0, classicScriptFiles.Length);
 		Assert.AreEqual(0, trxFiles.Length);

@@ -10,7 +10,7 @@ namespace TombLib.Scripting.TRX.Writers;
 /// </summary>
 public sealed class ScriptReplacer
 {
-	private static readonly Regex LevelPropertyRegex = TRXLevelNameParser.LevelPropertyRegex;
+	private static readonly Regex s_levelPropertyRegex = TRXLevelNameParser.LevelPropertyRegex;
 
 	/// <summary>
 	/// Renames a level script in the given editor by replacing the matching title property value.
@@ -22,7 +22,7 @@ public sealed class ScriptReplacer
 	{
 		TextEditorLineOperations.TryReplaceFirstMatchingLine(
 			textEditor,
-			LevelPropertyRegex,
+			s_levelPropertyRegex,
 			(lineText, _) => TRXLevelNameParser.ExtractTitleName(LineCommentHelper.RemoveLineComment(lineText, "//")),
 			oldName,
 			newName);

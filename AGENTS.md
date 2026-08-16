@@ -101,13 +101,17 @@ mention the fallback when it materially limits repository context.
 - Follow the nearest `.editorconfig`. Non-scripting projects use four spaces;
     do not use tabs there.
 - The `TombLib/.editorconfig` override applies tabs to the `TombLib.Scripting*`
-    provider projects. Do not convert those files to spaces. Same rule applies to all `TombIDE*` projects.
+    provider projects. The same rule applies to all `TombIDE*` projects. Do not
+    convert those files to spaces.
+- Do not mix tabs and spaces for indentation. Use spaces for alignment only
+    when the file's established format requires it.
 
 ### Braces
 
 - Use braces for every multi-statement block.
 - A single-statement body may omit braces only when it remains a simple,
-    separate indented statement:
+    separately indented statement. In an `if` / `else if` / `else` chain,
+    braces may be omitted only when every branch is a single physical line:
 
 ```csharp
 if (condition)
@@ -115,11 +119,13 @@ if (condition)
 ```
 
 - Use braces when a body contains another control-flow statement, when the
-    condition or body spans multiple lines, or when the block is otherwise easier
-    to read with braces.
+    condition or body spans multiple physical lines, or when the block is
+    otherwise easier to read with braces. A single logical expression formatted
+    across multiple physical lines counts as a multiline body.
 - If one branch of an `if` / `else if` / `else` chain uses braces, all branches
-    use braces. Put `else` and `else if` on their own line immediately after
-    the preceding closing brace, with no blank line between them.
+    use braces. If all branches are simple single-line statements, all branches
+    may omit braces. Put `else` and `else if` on their own line immediately
+    after the preceding closing brace, with no blank line between them.
 - Put opening braces for classes, methods, properties, block-scoped namespaces,
     anonymous delegates, and block-bodied lambdas on the next line.
 - An empty block must always be written on one line as `{ }`, including empty
@@ -129,6 +135,11 @@ if (condition)
 
 - Separate logically distinct member groups and statement groups with blank
     lines. Keep a declaration next to its immediate use when they form one unit.
+- Within a method, group statements by responsibility. Keep setup and local
+    declarations together, separate callback or event configuration from the
+    operation it controls, and separate independent actions, synchronization or
+    cleanup steps, and their assertions with blank lines. Do not use blank lines
+    to split statements that form one immediate operation.
 - Put a blank line before a new control-flow step and after a completed block
     when more code follows in the same scope. Do not add a blank line immediately
     before the enclosing closing brace. Keep `else`, `else if`, and the `while`
@@ -152,11 +163,16 @@ if (condition)
     enum members.
 - Use camelCase for locals. Prefix private fields with an underscore, such as
     `_editor` or `_primaryControlFocused`; locals do not use that prefix.
-- Use PascalCase for constants and `static readonly` fields, not ALL_CAPS.
+- Prefix private or internal static fields with `s_`, such as `s_cache` or
+    `s_logger`. For thread-static fields, use `t_` instead, such as `t_buffer`.
+    Keep constants and static properties in PascalCase; these are not instance
+    or static field prefixes.
 - Prefix interfaces with `I`, such as `IEditor`.
 - Use clear descriptive names and avoid Hungarian notation. Short names are
     acceptable for conventional meanings such as `x` for a coordinate or `i` for
     a local counter.
+- Do not use one-letter variable names unless the short name has a clear,
+    conventional meaning.
 - Do not repeat the containing type's name in a member when the context already
     supplies it. Prefer `ObjectBrushHelper.BeginStroke()` to
     `ObjectBrushHelper.BeginObjectBrushStroke()`.
@@ -172,20 +188,27 @@ if (condition)
     whole values such as `2.0f`.
 - Consider `record` or `record struct` for immutable value-like data when that
     matches the surrounding API.
-- Prefer an expression-bodied member for one short expression. Keep a short
-    expression on one line; use a two-line arrow when wrapping improves
-    readability. Use a block body for multiline logic.
+- Prefer an expression-bodied member for one short expression, including a
+    constructor with one assignment or method call. Keep a short expression on
+    one line when the declaration remains readable. A two-line arrow is
+    acceptable when wrapping the declaration or arrow improves readability, but
+    do not split an ordinary expression itself across physical lines. Use a block
+    body when an ordinary expression or logic spans multiple physical lines, even
+    when it is one logical expression.
 
 ```csharp
 private string GetDisplayName(Item item)
     => item.Name;
 ```
 
-- A method with a multiline signature or multiline logic uses a block body.
-- Keep switch expressions and target-typed `new(...)` attached to the method
-    signature when the result remains readable. Wrap the expression when the line
-    becomes too long. A `?:` ternary that wraps onto multiple lines is multiline
-    logic and uses a block body, not a multi-line arrow.
+- A multiline signature alone does not require a block body when a two-line arrow
+    remains readable. Keep switch expressions and target-typed `new(...)`
+    attached to the method signature when the result remains readable, including
+    a switch expression whose arms occupy multiple physical lines. Wrap the
+    expression or use a block body when it becomes too long or otherwise hard to
+    read.
+- A `?:` ternary that wraps onto multiple lines is multiline logic and uses a
+    block body rather than a multiline arrow.
 - Prefer target-typed `new(...)` when the target type is already clear from the
     assignment, field, parameter, or return type.
 - Group fields by responsibility. Add a short `//` heading only when a large
@@ -249,6 +272,8 @@ private string GetDisplayName(Item item)
 - Use partial classes only to separate responsibilities that still belong to
     one cohesive type. Extract a helper or service when the responsibility is a
     separate abstraction.
+- Keep generated code and designer-managed files under their normal ownership
+    boundaries. Avoid hand-editing them unless the task specifically requires it.
 - Avoid methods or properties that only forward to another member without
     adding behavior, validation, abstraction, or meaningful domain terminology.
     Keep forwarding members when they intentionally hide implementation details

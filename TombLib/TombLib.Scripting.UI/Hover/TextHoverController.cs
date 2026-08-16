@@ -130,8 +130,7 @@ public sealed class TextHoverController : IDisposable
 			ApplyHoverState(CreatePresentationState(currentHoveredOffset, displayState, GetDisplayableHoverInfo(hoverInfo)));
 		}
 		catch (OperationCanceledException)
-		{
-		}
+		{ }
 		catch (Exception exception)
 		{
 			if (_isDisposed)

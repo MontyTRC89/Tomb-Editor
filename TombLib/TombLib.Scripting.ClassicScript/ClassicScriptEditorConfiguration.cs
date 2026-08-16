@@ -56,12 +56,12 @@ public sealed class ClassicScriptEditorConfiguration : ColorSchemeConfigBase<Col
 	// Color scheme
 
 	/// <inheritdoc/>
-	protected override string GetSchemeFilePath(string schemeName)
-		=> Path.Combine(ScriptingPaths.Default.ClassicScriptColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
+	protected override string GetColorSchemeFilePath(string colorSchemeName)
+		=> Path.Combine(ScriptingPaths.Default.ClassicScriptColorConfigsDirectory, colorSchemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
 	/// <inheritdoc/>
-	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
-		=> JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath);
+	protected override ColorScheme ReadColorSchemeFile(string colorSchemeFilePath)
+		=> JsonUtils.ReadJsonFile<ColorScheme>(colorSchemeFilePath);
 
 	// Construction
 

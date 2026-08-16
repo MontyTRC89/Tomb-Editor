@@ -3,11 +3,10 @@ using TombLib.Scripting.TRX.Highlighting;
 
 namespace TombLib.Tests;
 
-// Phase 7 migration tests: prove that the JSON color schemes preserve the exact
-// colors and flags that used to live in the .trxsch XML files, loaded through the
-// real TRXEditorConfiguration path (including the legacy XML fallback chain).
+// Verify that the bundled TRX color schemes load from JSON through the real
+// TRXEditorConfiguration path.
 [TestClass]
-public class TRXColorSchemeMigrationTests
+public class TRXColorSchemeTests
 {
 	private static TRXEditorConfiguration CreateConfiguration(string schemeName)
 		=> new() { SelectedColorSchemeName = schemeName };
@@ -79,19 +78,4 @@ public class TRXColorSchemeMigrationTests
 		Assert.AreEqual("#E6DB74", config.ColorScheme.Strings.HtmlColor);
 	}
 
-	[TestMethod]
-	public void GetPreferredColorSchemeFilePath_PointsToJson()
-	{
-		string path = TRXEditorConfiguration.GetPreferredColorSchemeFilePath("Monokai");
-
-		StringAssert.EndsWith(path, "Monokai.json");
-	}
-
-	[TestMethod]
-	public void GetExistingColorSchemeFilePath_PrefersJsonWhenPresent()
-	{
-		string path = TRXEditorConfiguration.GetExistingColorSchemeFilePath("Monokai");
-
-		StringAssert.EndsWith(path, "Monokai.json");
-	}
 }

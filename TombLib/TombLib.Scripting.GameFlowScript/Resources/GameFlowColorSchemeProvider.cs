@@ -13,6 +13,5 @@ public sealed class GameFlowColorSchemeProvider : FileSystemColorSchemeProvider<
 	/// </summary>
 	public GameFlowColorSchemeProvider()
 		: base(ScriptingPaths.Default.GameFlowColorConfigsDirectory)
-	{
-	}
+	{ }
 }

@@ -117,8 +117,7 @@ public sealed partial class LuaEditor
 			CompletionController.OpenOrRefresh(completionDataItems, startOffset, endOffset);
 		}
 		catch (OperationCanceledException)
-		{
-		}
+		{ }
 		catch (Exception exception)
 		{
 			CloseCompletionWindow();

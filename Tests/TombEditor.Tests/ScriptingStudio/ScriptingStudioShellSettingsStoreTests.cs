@@ -12,7 +12,7 @@ public sealed class ScriptingStudioShellSettingsStoreTests
 	{
 		using var temporaryDirectory = TemporaryDirectory.Create();
 		string settingsPath = Path.Combine(temporaryDirectory.Path, "settings.xml");
-		var store = new XmlScriptingStudioShellSettingsStore(new ScriptingStudioLegacySettingsSnapshot(), settingsPath);
+		var store = new XmlScriptingStudioShellSettingsStore(settingsPath);
 
 		Assert.IsFalse(store.IsLuaEnabled(ScriptingWorkspaceKind.ClassicScript));
 		Assert.IsFalse(store.IsLuaEnabled(ScriptingWorkspaceKind.TRX));
@@ -24,7 +24,7 @@ public sealed class ScriptingStudioShellSettingsStoreTests
 		using var temporaryDirectory = TemporaryDirectory.Create();
 		string settingsPath = Path.Combine(temporaryDirectory.Path, "settings.xml");
 		File.WriteAllText(settingsPath, "<invalid");
-		var store = new XmlScriptingStudioShellSettingsStore(new ScriptingStudioLegacySettingsSnapshot(), settingsPath);
+		var store = new XmlScriptingStudioShellSettingsStore(settingsPath);
 
 		Assert.IsFalse(store.IsLuaEnabled(ScriptingWorkspaceKind.ClassicScript));
 		Assert.IsFalse(store.IsLuaEnabled(ScriptingWorkspaceKind.TRX));
@@ -35,10 +35,10 @@ public sealed class ScriptingStudioShellSettingsStoreTests
 	{
 		using var temporaryDirectory = TemporaryDirectory.Create();
 		string settingsPath = Path.Combine(temporaryDirectory.Path, "settings.xml");
-		var store = new XmlScriptingStudioShellSettingsStore(new ScriptingStudioLegacySettingsSnapshot(), settingsPath);
+		var store = new XmlScriptingStudioShellSettingsStore(settingsPath);
 		store.Save(ScriptingWorkspaceKind.ClassicScript, new ScriptingStudioShellWorkspaceSettings { LuaEnabled = true });
 
-		var reloadedStore = new XmlScriptingStudioShellSettingsStore(new ScriptingStudioLegacySettingsSnapshot(), settingsPath);
+		var reloadedStore = new XmlScriptingStudioShellSettingsStore(settingsPath);
 
 		Assert.IsTrue(reloadedStore.IsLuaEnabled(ScriptingWorkspaceKind.ClassicScript));
 		Assert.IsFalse(reloadedStore.IsLuaEnabled(ScriptingWorkspaceKind.TRX));

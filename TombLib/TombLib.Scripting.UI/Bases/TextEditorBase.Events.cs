@@ -7,8 +7,6 @@ namespace TombLib.Scripting.UI.Bases;
 
 public abstract partial class TextEditorBase
 {
-	// Events
-
 	/// <summary>
 	/// Occurs when the status of the editor changes.
 	/// </summary>
@@ -67,13 +65,12 @@ public abstract partial class TextEditorBase
 		=> ContentChangedWorkerRunCompleted?.Invoke(this, e);
 
 	private void ContentPersistenceCoordinator_ContentChangedWorkerRunCompleted(object? sender, EventArgs e)
-	{
-		OnContentChangedWorkerRunCompleted(EventArgs.Empty);
-	}
+		=> OnContentChangedWorkerRunCompleted(EventArgs.Empty);
 
 	private void TextArea_TextEntering(object? sender, TextCompositionEventArgs e)
 	{
 		CloseDefinitionToolTip(true); // Prevents the ToolTip from covering the screen while typing
+
 		HandleAutoClosing(e);
 		OnLanguageTextEntering(e);
 	}
@@ -85,6 +82,7 @@ public abstract partial class TextEditorBase
 	{
 		LastModified = DateTime.Now;
 		IsContentChanged = _contentPersistenceCoordinator.HandleContentChanged();
+
 		OnLanguageTextChanged(e);
 	}
 
@@ -95,9 +93,7 @@ public abstract partial class TextEditorBase
 		=> RunLanguageEventHook(() => OnLanguagePreviewMouseLeftButtonDown(e));
 
 	private void ContentPersistenceCoordinator_TextChangedDelayed(object? sender, EventArgs e)
-	{
-		OnTextChangedDelayed(EventArgs.Empty);
-	}
+		=> OnTextChangedDelayed(EventArgs.Empty);
 
 	private void TextEditor_MouseHover(object? sender, MouseEventArgs e)
 		=> RunLanguageEventHook(() => OnLanguageMouseHover(e));
@@ -106,15 +102,14 @@ public abstract partial class TextEditorBase
 	/// Runs an asynchronous language event hook, keeping this adapter the single <c>async void</c>
 	/// boundary. Cancellation is expected when a request is superseded; unexpected exceptions are logged.
 	/// </summary>
-	private async void RunLanguageEventHook(Func<Task> hook)
+	private static async void RunLanguageEventHook(Func<Task> hook)
 	{
 		try
 		{
 			await hook().ConfigureAwait(true);
 		}
 		catch (OperationCanceledException)
-		{
-		}
+		{ }
 		catch (Exception exception)
 		{
 			Log.Error(exception, "Language event hook failed.");
@@ -146,10 +141,9 @@ public abstract partial class TextEditorBase
 	{
 		_viewService.TryMoveCaretToMousePosition();
 
-		if (ContextMenu is null)
-			ContextMenu = TextEditorContextMenuFactory.BuildDefault();
-
+		ContextMenu ??= TextEditorContextMenuFactory.BuildDefault();
 		ContextMenu.IsOpen = true;
+
 		e.Handled = true;
 	}
 

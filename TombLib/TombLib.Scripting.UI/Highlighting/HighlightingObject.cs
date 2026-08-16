@@ -15,12 +15,12 @@ public sealed class HighlightingObject
 	/// <summary>
 	/// Gets or sets whether the highlighted text is bold.
 	/// </summary>
-	public bool IsBold { get; set; } = false;
+	public bool IsBold { get; set; }
 
 	/// <summary>
 	/// Gets or sets whether the highlighted text is italic.
 	/// </summary>
-	public bool IsItalic { get; set; } = false;
+	public bool IsItalic { get; set; }
 
 	// Operators
 

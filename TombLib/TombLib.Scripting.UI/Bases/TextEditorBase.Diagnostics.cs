@@ -6,15 +6,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Diagnostics;
-using TombLib.Scripting.UI.Diagnostics;
 using TombLib.Scripting.UI.Rendering;
 
 namespace TombLib.Scripting.UI.Bases;
 
 public abstract partial class TextEditorBase
 {
-	// Error handling
-
 	/// <summary>
 	/// Occurs after the diagnostics owned by this editor change.
 	/// </summary>
@@ -63,7 +60,7 @@ public abstract partial class TextEditorBase
 	/// <param name="hoveredOffset">The document offset to inspect.</param>
 	/// <param name="diagnosticInfo">The diagnostic information, when found.</param>
 	/// <param name="allowLineFallback">Whether to fall back to a line-wide diagnostic.</param>
-	/// <returns>True if diagnostic information was found; otherwise false.</returns>
+	/// <returns><see langword="true"/> if diagnostic information was found; otherwise <see langword="false"/>.</returns>
 	protected bool TryGetDiagnosticInfo(int hoveredOffset, [NotNullWhen(true)] out TextEditorDiagnosticInfo? diagnosticInfo, bool allowLineFallback = true)
 		=> _diagnosticToolTipService.TryGetDiagnosticInfo(Document, hoveredOffset, LiveErrorUnderlining, allowLineFallback, out diagnosticInfo);
 
@@ -81,7 +78,7 @@ public abstract partial class TextEditorBase
 	/// Attempts to show a diagnostic tooltip for the given offset.
 	/// </summary>
 	/// <param name="hoveredOffset">The document offset to inspect.</param>
-	/// <returns>True if a diagnostic tooltip was shown; otherwise false.</returns>
+	/// <returns><see langword="true"/> if a diagnostic tooltip was shown; otherwise <see langword="false"/>.</returns>
 	protected bool TryShowDiagnosticToolTip(int hoveredOffset)
 	{
 		if (!TryGetDiagnosticInfo(hoveredOffset, out TextEditorDiagnosticInfo? diagnosticInfo))

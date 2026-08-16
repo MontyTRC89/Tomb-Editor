@@ -14,7 +14,7 @@ namespace TombLib.Scripting.TRX.Completion;
 /// </summary>
 public sealed class TRXGameFlowCompletionService : ITextCompletionProvider
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private static readonly Logger s_log = LogManager.GetCurrentClassLogger();
 
 	private readonly ITRXGameFlowSchemaService _schemaService;
 
@@ -49,7 +49,7 @@ public sealed class TRXGameFlowCompletionService : ITextCompletionProvider
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Failed to build GameFlow completion items; returning an empty list.");
+			s_log.Warn(exception, "Failed to build GameFlow completion items; returning an empty list.");
 			return [];
 		}
 	}

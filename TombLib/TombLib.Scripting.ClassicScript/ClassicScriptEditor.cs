@@ -2,7 +2,6 @@ using ICSharpCode.AvalonEdit.Rendering;
 using Nickelony.LanguageServer.Abstractions.Signatures;
 using NLog;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -83,7 +82,7 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 
 	private readonly ClassicScriptCompletionSessionCoordinator _completionCoordinator;
 
-	private SectionRenderer _sectionRenderer;
+	private readonly SectionRenderer _sectionRenderer;
 
 	// Construction
 
@@ -101,18 +100,19 @@ public sealed partial class ClassicScriptEditor : TextEditorBase, ISyntaxPreview
 		InitializeHover(BuildHoverRequestState, RequestHover);
 		InitializeDiagnostics(engineVersion, _languageServices.ErrorDetector);
 
-		InitializeRenderers();
+		_sectionRenderer = InitializeRenderers();
 
 		CommentPrefix = ";";
 	}
 
-	[MemberNotNull(nameof(_sectionRenderer))]
-	private void InitializeRenderers()
+	private SectionRenderer InitializeRenderers()
 	{
-		_sectionRenderer = new SectionRenderer(this, _languageServices.LineService);
+		var sectionRenderer = new SectionRenderer(this, _languageServices.LineService);
 
 		if (ShowSectionSeparators)
-			TextArea.TextView.BackgroundRenderers.Add(_sectionRenderer);
+			TextArea.TextView.BackgroundRenderers.Add(sectionRenderer);
+
+		return sectionRenderer;
 	}
 
 	// Events

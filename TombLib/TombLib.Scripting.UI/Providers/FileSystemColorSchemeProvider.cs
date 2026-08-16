@@ -15,8 +15,7 @@ public class FileSystemColorSchemeProvider<TConfig> : FileSystemColorSchemeProvi
 	/// <param name="colorSchemesDirectory">The directory that contains the color scheme files.</param>
 	public FileSystemColorSchemeProvider(string colorSchemesDirectory)
 		: base(colorSchemesDirectory)
-	{
-	}
+	{ }
 
 	/// <inheritdoc />
 	public override string GetSelectedName(TextEditorConfigBase config)

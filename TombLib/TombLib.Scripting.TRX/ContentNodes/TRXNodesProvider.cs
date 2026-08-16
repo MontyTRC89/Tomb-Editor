@@ -14,7 +14,7 @@ namespace TombLib.Scripting.TRX.ContentNodes;
 /// </summary>
 public sealed class TRXNodesProvider : ContentNodesProviderBase
 {
-	private static readonly Regex LevelCommentRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
+	private static readonly Regex s_levelCommentRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
 
 	private readonly ITRXLineService _lineService;
 
@@ -64,7 +64,7 @@ public sealed class TRXNodesProvider : ContentNodesProviderBase
 
 		// The fallback runs against the raw line text so that a level-name comment is still
 		// discoverable when the line also matches the title property (malformed mixed input).
-		Match regexMatch = LevelCommentRegex.Match(lineText);
+		Match regexMatch = s_levelCommentRegex.Match(lineText);
 
 		if (regexMatch.Success)
 		{

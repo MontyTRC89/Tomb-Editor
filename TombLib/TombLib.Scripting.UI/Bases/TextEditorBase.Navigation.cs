@@ -1,4 +1,3 @@
-using Nickelony.LanguageServer.Abstractions.Diagnostics;
 using Nickelony.LanguageServer.Abstractions.Hover;
 using System;
 using System.Threading;
@@ -135,7 +134,7 @@ public abstract partial class TextEditorBase
 	/// <param name="definitionProvider">The provider used to resolve the definition.</param>
 	/// <param name="objectName">The name of the object to navigate to.</param>
 	/// <param name="identifyingObject">An optional discriminator used to disambiguate the target.</param>
-	/// <returns>True if a definition was found and navigated to; otherwise false.</returns>
+	/// <returns><see langword="true"/> if a definition was found and navigated to; otherwise <see langword="false"/>.</returns>
 	protected bool GoToDefinition(ITextDefinitionProvider definitionProvider, string objectName, TextDefinitionDiscriminator? identifyingObject = null)
 		=> _definitionNavigationService.TryGoToObject(this, definitionProvider, objectName, identifyingObject);
 
@@ -145,7 +144,7 @@ public abstract partial class TextEditorBase
 	/// <param name="definitionProvider">The provider used to resolve the definition.</param>
 	/// <param name="hoverProvider">The provider used to identify the hovered symbol.</param>
 	/// <param name="offset">The document offset to inspect.</param>
-	/// <returns>True if a definition was found and navigated to; otherwise false.</returns>
+	/// <returns><see langword="true"/> if a definition was found and navigated to; otherwise <see langword="false"/>.</returns>
 	protected bool TryGoToDefinition(ITextDefinitionProvider definitionProvider, ITextHoverProvider hoverProvider, int offset)
 		=> _definitionNavigationService.TryGoToDefinition(this, definitionProvider, hoverProvider, offset);
 }

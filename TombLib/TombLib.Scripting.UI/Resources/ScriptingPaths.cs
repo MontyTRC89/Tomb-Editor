@@ -13,7 +13,7 @@ public sealed class ScriptingPaths
 	/// <summary>
 	/// Gets the default path layout rooted at the application base directory.
 	/// </summary>
-	public static ScriptingPaths Default { get; } = new ScriptingPaths(AppContext.BaseDirectory);
+	public static ScriptingPaths Default { get; } = new(AppContext.BaseDirectory);
 
 	private readonly string _programDirectory;
 

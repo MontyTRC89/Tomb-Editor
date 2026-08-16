@@ -13,6 +13,5 @@ public sealed class ClassicScriptColorSchemeProvider : FileSystemColorSchemeProv
 	/// </summary>
 	public ClassicScriptColorSchemeProvider()
 		: base(ScriptingPaths.Default.ClassicScriptColorConfigsDirectory)
-	{
-	}
+	{ }
 }

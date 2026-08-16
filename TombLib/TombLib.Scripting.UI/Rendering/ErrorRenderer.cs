@@ -24,15 +24,15 @@ public sealed class ErrorRenderer : IBackgroundRenderer
 	private static readonly Pen InformationPen = CreatePen(InformationBrush, new double[] { 2.0, 2.0 });
 	private static readonly Pen HintPen = CreatePen(HintBrush, new double[] { 1.0, 3.0 });
 
-	private TextEditorBase _editor;
+	private readonly TextEditorBase _editor;
 
 	// Construction
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="ErrorRenderer"/> class.
 	/// </summary>
-	/// <param name="e">The editor whose diagnostics are rendered.</param>
-	public ErrorRenderer(TextEditorBase e) => _editor = e;
+	/// <param name="editor">The editor whose diagnostics are rendered.</param>
+	public ErrorRenderer(TextEditorBase editor) => _editor = editor;
 
 	/// <summary>
 	/// Gets the layer in which the underlines are drawn.

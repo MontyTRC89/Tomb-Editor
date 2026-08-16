@@ -82,7 +82,8 @@ internal sealed class TextMateColorizingTransformer : DocumentColorizingTransfor
 			return;
 
 		// Always defer to avoid reentrancy during visual line construction.
-		_textView.Dispatcher.BeginInvoke(new Action(() => {
+		_textView.Dispatcher.BeginInvoke(new Action(() =>
+		{
 			if (!_isDisposed)
 				_textView.Redraw();
 		}));

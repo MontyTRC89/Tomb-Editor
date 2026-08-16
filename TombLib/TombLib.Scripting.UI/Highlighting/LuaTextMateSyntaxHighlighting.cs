@@ -15,7 +15,7 @@ namespace TombLib.Scripting.UI.Highlighting;
 /// </summary>
 public static class LuaTextMateSyntaxHighlighting
 {
-	private static readonly Lazy<IGrammar?> GrammarState = new Lazy<IGrammar?>(LoadGrammarState);
+	private static readonly Lazy<IGrammar?> GrammarState = new(LoadGrammarState);
 	private static readonly TextMateTokenTheme DefaultTheme = LuaBuiltInTextMateThemeDefaults.CreateDefaultTextMateTheme();
 
 	/// <summary>

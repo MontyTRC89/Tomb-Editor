@@ -14,9 +14,9 @@ namespace TombLib.Scripting.TRX.Hover;
 /// </summary>
 public sealed class TRXGameFlowHoverService : ITextHoverProvider
 {
-	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+	private static readonly Logger s_log = LogManager.GetCurrentClassLogger();
 
-	private static readonly Regex PropertyNamePattern = new(@"""([^""]+)""(?=\s*:)", RegexOptions.Compiled);
+	private static readonly Regex s_propertyNamePattern = new(@"""([^""]+)""(?=\s*:)", RegexOptions.Compiled);
 
 	private readonly ITRXGameFlowSchemaService _schemaService;
 
@@ -50,7 +50,7 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 		}
 		catch (Exception exception)
 		{
-			Log.Warn(exception, "Failed to resolve GameFlow hover information.");
+			s_log.Warn(exception, "Failed to resolve GameFlow hover information.");
 			return null;
 		}
 	}
@@ -73,7 +73,7 @@ public sealed class TRXGameFlowHoverService : ITextHoverProvider
 
 		// The character immediately after a matched property (the colon) is outside the property
 		// range, so hovering the colon yields no information.
-		foreach (Match match in PropertyNamePattern.Matches(lineText))
+		foreach (Match match in s_propertyNamePattern.Matches(lineText))
 		{
 			if (relativeOffset >= match.Index && relativeOffset < match.Index + match.Length)
 				return match.Groups[1].Value;

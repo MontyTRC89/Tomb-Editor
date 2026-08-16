@@ -64,14 +64,6 @@ public class TextRangeTests
     }
 
     [TestMethod]
-    public void GetText_NullSource_Throws()
-    {
-        var range = new TextRange(0, 1);
-
-        Assert.ThrowsException<ArgumentNullException>(() => range.GetText(null!));
-    }
-
-    [TestMethod]
     public void Equals_SameValues_ReturnsTrue()
     {
         var a = new TextRange(1, 2);

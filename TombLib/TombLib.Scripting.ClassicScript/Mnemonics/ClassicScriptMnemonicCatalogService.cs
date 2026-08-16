@@ -22,8 +22,8 @@ public sealed class ClassicScriptMnemonicCatalogService
 {
 	private static readonly object SyncRoot = new();
 	private static readonly MnemonicDefinitionsLoader Loader = new();
-	private static volatile ClassicScriptMnemonicCatalogSnapshot _snapshot = LoadSnapshot(ClassicScriptCompilerPaths.Default.InternalNGCDirectory);
-	private static int _snapshotVersion;
+	private static volatile ClassicScriptMnemonicCatalogSnapshot s_snapshot = LoadSnapshot(ClassicScriptCompilerPaths.Default.InternalNGCDirectory);
+	private static int s_snapshotVersion;
 	private Regex? _cachedMnemonicRegex;
 	private int _cachedSnapshotVersion = -1;
 
@@ -31,12 +31,12 @@ public sealed class ClassicScriptMnemonicCatalogService
 	/// Gets the current catalog snapshot version. Callers that cache derived data (for example
 	/// highlighting rule sets) can invalidate that cache when the version changes.
 	/// </summary>
-	internal static int CurrentSnapshotVersion => Volatile.Read(ref _snapshotVersion);
+	internal static int CurrentSnapshotVersion => Volatile.Read(ref s_snapshotVersion);
 
 	/// <summary>
 	/// Gets all known mnemonic flags.
 	/// </summary>
-	public IReadOnlyList<string> GetAllFlags() => _snapshot.AllFlags;
+	public IReadOnlyList<string> GetAllFlags() => s_snapshot.AllFlags;
 
 	/// <summary>
 	/// Builds a word-boundary regex that matches any known mnemonic flag, with every flag name
@@ -49,7 +49,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 
 		if (_cachedMnemonicRegex is null || _cachedSnapshotVersion != snapshotVersion)
 		{
-			_cachedMnemonicRegex = new Regex(@"\b(" + string.Join("|", _snapshot.AllFlags.Select(Regex.Escape)) + @")\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+			_cachedMnemonicRegex = new Regex(@"\b(" + string.Join("|", s_snapshot.AllFlags.Select(Regex.Escape)) + @")\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 			_cachedSnapshotVersion = snapshotVersion;
 		}
 
@@ -60,7 +60,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	/// Returns whether the given name is a known mnemonic flag.
 	/// </summary>
 	public bool ContainsFlag(string? flag)
-		=> !string.IsNullOrWhiteSpace(flag) && _snapshot.EntriesByFlag.ContainsKey(flag);
+		=> !string.IsNullOrWhiteSpace(flag) && s_snapshot.EntriesByFlag.ContainsKey(flag);
 
 	/// <summary>
 	/// Attempts to resolve a flag to its decimal value.
@@ -69,7 +69,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	{
 		decimalValue = 0;
 
-		if (!_snapshot.EntriesByFlag.TryGetValue(flag, out ClassicScriptMnemonicEntry entry))
+		if (!s_snapshot.EntriesByFlag.TryGetValue(flag, out ClassicScriptMnemonicEntry entry))
 			return false;
 
 		return int.TryParse(entry.DecimalValue, out decimalValue);
@@ -86,7 +86,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 		if (string.IsNullOrWhiteSpace(value))
 			return false;
 
-		foreach (ClassicScriptMnemonicEntry entry in _snapshot.Entries)
+		foreach (ClassicScriptMnemonicEntry entry in s_snapshot.Entries)
 		{
 			string candidateValue = isHexValue ? entry.HexValue : entry.DecimalValue;
 
@@ -113,7 +113,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	{
 		description = string.Empty;
 
-		if (!_snapshot.EntriesByFlag.TryGetValue(flag, out ClassicScriptMnemonicEntry entry))
+		if (!s_snapshot.EntriesByFlag.TryGetValue(flag, out ClassicScriptMnemonicEntry entry))
 			return false;
 
 		description = entry.Description;
@@ -121,7 +121,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	}
 
 	internal bool TryGetEntry(string flag, out ClassicScriptMnemonicEntry entry)
-		=> _snapshot.EntriesByFlag.TryGetValue(flag, out entry);
+		=> s_snapshot.EntriesByFlag.TryGetValue(flag, out entry);
 
 	/// <summary>
 	/// Attempts to extract the plugin syntax for a plugin-defined flag.
@@ -130,7 +130,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	{
 		syntax = string.Empty;
 
-		if (!_snapshot.EntriesByFlag.TryGetValue(key, out ClassicScriptMnemonicEntry entry) || !entry.IsPlugin)
+		if (!s_snapshot.EntriesByFlag.TryGetValue(key, out ClassicScriptMnemonicEntry entry) || !entry.IsPlugin)
 			return false;
 
 		string? extractedSyntax = ExtractSyntax(entry.Description);
@@ -146,7 +146,7 @@ public sealed class ClassicScriptMnemonicCatalogService
 	/// Creates a copy of the mnemonic data table used for display.
 	/// </summary>
 	public DataTable CreateMnemonicTable()
-		=> _snapshot.DataTable.Copy();
+		=> s_snapshot.DataTable.Copy();
 
 	/// <summary>
 	/// Reloads the catalog from the default NG-C directory.
@@ -161,8 +161,8 @@ public sealed class ClassicScriptMnemonicCatalogService
 	{
 		lock (SyncRoot)
 		{
-			_snapshot = LoadSnapshot(pluginScriptsDirectoryPath);
-			Volatile.Write(ref _snapshotVersion, _snapshotVersion + 1);
+			s_snapshot = LoadSnapshot(pluginScriptsDirectoryPath);
+			Volatile.Write(ref s_snapshotVersion, s_snapshotVersion + 1);
 		}
 	}
 

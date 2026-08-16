@@ -12,7 +12,7 @@ namespace TombLib.Scripting.UI.Highlighting;
 /// </summary>
 public static class LuaFallbackHighlightingLoader
 {
-	private static readonly Lazy<IHighlightingDefinition?> FallbackHighlightingState = new Lazy<IHighlightingDefinition?>(LoadFallbackHighlightingCore);
+	private static readonly Lazy<IHighlightingDefinition?> FallbackHighlightingState = new(LoadFallbackHighlightingCore);
 
 	/// <summary>
 	/// Gets the cached Lua highlighting definition, or <see langword="null"/> if the definition file is missing.

@@ -34,10 +34,6 @@ public class TextCompletionContextTests
     }
 
     [TestMethod]
-    public void Constructor_NullDocumentText_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextCompletionContext(null!, 0));
-
-    [TestMethod]
     public void Constructor_NegativeCaretOffset_Throws()
         => Assert.ThrowsException<ArgumentOutOfRangeException>(() => new TextCompletionContext("text", -1));
 

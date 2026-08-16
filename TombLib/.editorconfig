@@ -24,6 +24,10 @@ tab_width = 4
 indent_style = tab
 tab_width = 4
 
+[TombLib.Scripting*/*.cs]
+indent_style = tab
+tab_width = 4
+
 # ---------------------------------------------------------------------------
 # .NET / C# style rules
 # ---------------------------------------------------------------------------
@@ -32,7 +36,7 @@ tab_width = 4
 dotnet_sort_system_directives_first = false
 dotnet_separate_import_directive_groups = false
 
-# Braces go on the next line for all supported block forms (AGENTS.md).
+# Expanded block braces go on the next line (AGENTS.md); compact one-line blocks are preserved.
 csharp_new_line_before_open_brace = accessors,anonymous_methods,anonymous_types,control_blocks,event_declarations,indexers,lambdas,local_functions,methods,object_collection_array_initializers,properties,types
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
@@ -40,7 +44,8 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
-csharp_preserve_single_line_blocks = false
+# Preserve compact auto-properties such as { get; } on one line.
+csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = false
 csharp_space_after_comma = true
 csharp_space_after_keywords_in_control_flow_statements = true
@@ -54,8 +59,8 @@ csharp_style_var_for_built_in_types = false:suggestion
 
 # Expression-bodied members for single-line implementations (AGENTS.md).
 csharp_style_expression_bodied_methods = when_on_single_line:suggestion
-csharp_style_expression_bodied_constructors = false:suggestion
-csharp_style_expression_bodied_operators = false:suggestion
+csharp_style_expression_bodied_constructors = true:suggestion
+csharp_style_expression_bodied_operators = true:suggestion
 csharp_style_expression_bodied_properties = when_on_single_line:suggestion
 csharp_style_expression_bodied_indexers = when_on_single_line:suggestion
 csharp_style_expression_bodied_accessors = when_on_single_line:suggestion

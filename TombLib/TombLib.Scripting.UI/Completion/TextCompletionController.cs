@@ -619,7 +619,8 @@ public sealed class TextCompletionController : IDisposable
 
 	private void MakeWindowNonActivatable(CompletionWindow completionWindow)
 	{
-		completionWindow.SourceInitialized += (s, e) => {
+		completionWindow.SourceInitialized += (s, e) =>
+		{
 			if (s is Window window && PresentationSource.FromVisual(window) is HwndSource source)
 				source.AddHook(CompletionWindowWndProc);
 		};

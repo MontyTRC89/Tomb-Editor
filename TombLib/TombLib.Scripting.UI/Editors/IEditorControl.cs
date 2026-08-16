@@ -119,9 +119,9 @@ public interface IEditorControl : IDisposable
 	/// <summary>
 	/// Loads the file at the given path into the editor.
 	/// </summary>
-	/// <param name="fileName">The path of the file to load.</param>
+	/// <param name="filePath">The path of the file to load.</param>
 	/// <param name="silentSession">Whether the load runs as a silent session.</param>
-	void Load(string fileName, bool silentSession);
+	void Load(string filePath, bool silentSession);
 
 	/// <summary>
 	/// Saves the editor content to the current file path.
@@ -131,8 +131,8 @@ public interface IEditorControl : IDisposable
 	/// <summary>
 	/// Saves the editor content to the given file path.
 	/// </summary>
-	/// <param name="fileName">The path of the file to save to.</param>
-	void Save(string fileName);
+	/// <param name="filePath">The path of the file to save to.</param>
+	void Save(string filePath);
 
 	/// <summary>
 	/// Reverts the most recent document edit.
@@ -168,7 +168,7 @@ public interface IEditorControl : IDisposable
 	/// Applies the given configuration to the editor.
 	/// </summary>
 	/// <param name="configuration">The configuration to apply.</param>
-	void UpdateSettings(TombLib.Scripting.UI.Bases.ConfigurationBase configuration);
+	void UpdateSettings(Bases.ConfigurationBase configuration);
 
 	/// <summary>
 	/// Runs the content-changed worker if the editor has pending content changes.

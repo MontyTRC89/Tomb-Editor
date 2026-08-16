@@ -259,7 +259,7 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 		}
 	}
 
-	private Version _engineVersion = new Version(0, 0);
+	private Version _engineVersion = new(0, 0);
 
 	/// <summary>
 	/// Gets or sets the engine version targeted by this editor.
@@ -470,7 +470,7 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 
 		FontSize = config.FontSize;
 		DefaultFontSize = config.FontSize;
-		FontFamily = new FontFamily(config.FontFamily);
+		FontFamily = new(config.FontFamily);
 
 		Document.UndoStack.SizeLimit = config.UndoStackSize;
 
@@ -536,14 +536,10 @@ public abstract partial class TextEditorBase : TextEditor, IEditorControl
 	/// Disposes resources owned by the concrete editor type before the shared base resources are released.
 	/// </summary>
 	protected virtual void DisposeEditorResources()
-	{
-	}
+	{ }
 
 	private void EnsureNotDisposed()
-	{
-		if (_isDisposed)
-			throw new ObjectDisposedException(nameof(TextEditorBase));
-	}
+		=> ObjectDisposedException.ThrowIf(_isDisposed, this);
 
 	private void UnbindEventMethods()
 	{

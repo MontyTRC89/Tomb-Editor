@@ -6,8 +6,8 @@ using TombLib.Scripting.Signatures;
 namespace TombLib.Tests.Requests;
 
 /// <summary>
-/// Tests that the public request constructors reject invalid input consistently
-/// and expose the supplied values.
+/// Tests that the public request constructors validate offsets and expose the
+/// supplied values.
 /// </summary>
 [TestClass]
 public class TextRequestValidationTests
@@ -15,10 +15,6 @@ public class TextRequestValidationTests
     // ---------------------------------------------------------------------------
     // TextHoverRequest
     // ---------------------------------------------------------------------------
-
-    [TestMethod]
-    public void HoverRequest_NullDocumentText_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextHoverRequest(null!, 0));
 
     [TestMethod]
     public void HoverRequest_NegativeOffset_Throws()
@@ -61,10 +57,6 @@ public class TextRequestValidationTests
     // ---------------------------------------------------------------------------
 
     [TestMethod]
-    public void SignatureHelpRequest_NullDocumentText_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextSignatureHelpRequest(null!, 0));
-
-    [TestMethod]
     public void SignatureHelpRequest_NegativeOffset_Throws()
         => Assert.ThrowsException<ArgumentOutOfRangeException>(() => new TextSignatureHelpRequest("text", -1));
 
@@ -85,14 +77,6 @@ public class TextRequestValidationTests
     // ---------------------------------------------------------------------------
 
     [TestMethod]
-    public void DiagnosticsRequest_NullDocumentText_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextDiagnosticsRequest(null!, new Version(1, 0)));
-
-    [TestMethod]
-    public void DiagnosticsRequest_NullEngineVersion_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextDiagnosticsRequest("text", null!));
-
-    [TestMethod]
     public void DiagnosticsRequest_ValidConstruction_ExposesValues()
     {
         var version = new Version(1, 2, 3);
@@ -105,14 +89,6 @@ public class TextRequestValidationTests
     // ---------------------------------------------------------------------------
     // TextDefinitionRequest
     // ---------------------------------------------------------------------------
-
-    [TestMethod]
-    public void DefinitionRequest_NullDocumentText_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextDefinitionRequest(null!, "Level"));
-
-    [TestMethod]
-    public void DefinitionRequest_NullSymbolName_Throws()
-        => Assert.ThrowsException<ArgumentNullException>(() => new TextDefinitionRequest("text", null!));
 
     [TestMethod]
     public void DefinitionRequest_DefaultIdentifier_IsNull()

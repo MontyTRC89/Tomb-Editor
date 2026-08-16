@@ -111,7 +111,8 @@ internal sealed class TextEditorServiceComposition
 			autoClosingService: new TextAutoClosingService(),
 			bookmarkCoordinator: new BookmarkCoordinator(
 				() => editor.Document,
-				onBookmarksChanged: () => {
+				onBookmarksChanged: () =>
+				{
 					editor.TextArea.TextView.InvalidateLayer(ICSharpCode.AvalonEdit.Rendering.KnownLayer.Background);
 					editor.SaveBookmarks();
 				}),

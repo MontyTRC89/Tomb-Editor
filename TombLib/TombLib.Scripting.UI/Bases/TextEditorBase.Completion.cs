@@ -7,8 +7,6 @@ namespace TombLib.Scripting.UI.Bases;
 
 public abstract partial class TextEditorBase
 {
-	// CompletionWindow
-
 	/// <summary>
 	/// Initializes the completion window with the given size.
 	/// </summary>
@@ -38,7 +36,7 @@ public abstract partial class TextEditorBase
 	/// </summary>
 	/// <param name="e">The text composition event to inspect.</param>
 	/// <param name="onTriggered">The action invoked when completion should be triggered.</param>
-	/// <returns>True if the input was handled as a completion trigger; otherwise false.</returns>
+	/// <returns><see langword="true"/> if the input was handled as a completion trigger; otherwise <see langword="false"/>.</returns>
 	protected bool TryHandleCtrlSpaceCompletion(TextCompositionEventArgs e, Action onTriggered)
 	{
 		if (!CompletionEnabled || !EditorCompletionTriggerHelper.IsCtrlSpaceInput(e.Text, Keyboard.Modifiers))

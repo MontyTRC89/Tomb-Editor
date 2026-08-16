@@ -48,11 +48,9 @@ public static class ScriptingColorParser
 			}
 		}
 		catch (FormatException)
-		{
-		}
+		{ }
 		catch (NotSupportedException)
-		{
-		}
+		{ }
 
 		return false;
 	}

@@ -196,7 +196,8 @@ public sealed class ContentChangedWorker : IDisposable
 
 		_ = SynchronizeBackupStateAsync(filePath, _persistedContent, false, stateVersion, requestId)
 			.ContinueWith(
-				task => {
+				task =>
+				{
 					if (task.Exception is not null)
 						Log.Warn(task.Exception, "Failed to synchronize the backup state for '{Path}'.", filePath);
 				},
@@ -287,7 +288,8 @@ public sealed class ContentChangedWorker : IDisposable
 			if (!IsLatestRequest(requestId, stateVersion))
 				continue;
 
-			await _dispatcher.InvokeAsync(() => {
+			await _dispatcher.InvokeAsync(() =>
+			{
 				if (!IsLatestRequest(requestId, stateVersion))
 					return;
 

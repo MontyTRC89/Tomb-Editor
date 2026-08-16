@@ -22,7 +22,7 @@ internal static class LuaCompletionIconFactory
 {
 	private static readonly ConcurrentDictionary<LuaCompletionIconCacheKey, ImageSource> Cache = new();
 
-	private static volatile string? _cachedThemeName;
+	private static volatile string? s_cachedThemeName;
 
 	/// <summary>
 	/// Gets the themed icon image for the supplied completion kind.
@@ -34,10 +34,10 @@ internal static class LuaCompletionIconFactory
 	{
 		// Icons are themed per active theme; when the theme changes, drop the stale entries so the
 		// cache stays bounded to the currently active theme.
-		if (!string.Equals(_cachedThemeName, brushSet.ThemeName, StringComparison.Ordinal))
+		if (!string.Equals(s_cachedThemeName, brushSet.ThemeName, StringComparison.Ordinal))
 		{
 			Cache.Clear();
-			_cachedThemeName = brushSet.ThemeName;
+			s_cachedThemeName = brushSet.ThemeName;
 		}
 
 		return Cache.GetOrAdd(new LuaCompletionIconCacheKey(brushSet.ThemeName, kind), _ => CreateIcon(kind, brushSet));

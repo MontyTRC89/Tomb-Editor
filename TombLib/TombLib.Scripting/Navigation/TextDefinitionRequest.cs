@@ -1,5 +1,3 @@
-using System;
-
 namespace TombLib.Scripting.Navigation;
 
 /// <summary>
@@ -15,9 +13,6 @@ public sealed record TextDefinitionRequest
 	/// <param name="identifier">An optional language-specific discriminator that disambiguates the target.</param>
 	public TextDefinitionRequest(string documentText, string symbolName, TextDefinitionDiscriminator? identifier = null)
 	{
-		ArgumentNullException.ThrowIfNull(documentText);
-		ArgumentNullException.ThrowIfNull(symbolName);
-
 		DocumentText = documentText;
 		SymbolName = symbolName;
 		Identifier = identifier;

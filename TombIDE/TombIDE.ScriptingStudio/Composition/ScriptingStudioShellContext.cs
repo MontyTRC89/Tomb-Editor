@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using TombIDE.ScriptingStudio.Settings;
 using TombIDE.Shared.Messaging.Scripting;
 
 namespace TombIDE.ScriptingStudio.Composition;
@@ -14,7 +13,6 @@ namespace TombIDE.ScriptingStudio.Composition;
 internal sealed class ScriptingStudioShellContext
 {
 	private IScriptingProjectContext? _projectContext;
-	private ScriptingStudioLegacySettingsSnapshot? _legacySettingsSnapshot;
 	private bool _isInitialized;
 
 	/// <summary>
@@ -37,34 +35,12 @@ internal sealed class ScriptingStudioShellContext
 	}
 
 	/// <summary>
-	/// Gets the legacy settings snapshot for the current shell scope.
-	/// Throws <see cref="InvalidOperationException"/> if the context has not been initialized.
-	/// </summary>
-	public ScriptingStudioLegacySettingsSnapshot LegacySettingsSnapshot
-	{
-		get
-		{
-			if (!_isInitialized || _legacySettingsSnapshot is null)
-			{
-				throw new InvalidOperationException(
-					"ScriptingStudioShellContext has not been initialized. " +
-					"The shell factory must initialize the context before any scoped service resolves it.");
-			}
-
-			return _legacySettingsSnapshot;
-		}
-	}
-
-	/// <summary>
-	/// Initializes the context exactly once with the given project context and legacy settings.
+	/// Initializes the context exactly once with the given project context.
 	/// Throws <see cref="InvalidOperationException"/> if already initialized.
 	/// </summary>
-	public void Initialize(
-		IScriptingProjectContext projectContext,
-		ScriptingStudioLegacySettingsSnapshot legacySettingsSnapshot)
+	public void Initialize(IScriptingProjectContext projectContext)
 	{
 		ArgumentNullException.ThrowIfNull(projectContext);
-		ArgumentNullException.ThrowIfNull(legacySettingsSnapshot);
 
 		if (_isInitialized)
 		{
@@ -74,7 +50,6 @@ internal sealed class ScriptingStudioShellContext
 		}
 
 		_projectContext = projectContext;
-		_legacySettingsSnapshot = legacySettingsSnapshot;
 		_isInitialized = true;
 	}
 }

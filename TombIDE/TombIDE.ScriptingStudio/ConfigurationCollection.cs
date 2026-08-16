@@ -11,7 +11,7 @@ public class ConfigurationCollection
 	public ClassicScriptEditorConfiguration ClassicScript = ConfigurationBase.Load<ClassicScriptEditorConfiguration>();
 	public LuaEditorConfiguration Lua = ConfigurationBase.Load<LuaEditorConfiguration>();
 	public GameFlowEditorConfiguration GameFlowScript = ConfigurationBase.Load<GameFlowEditorConfiguration>();
-	public TRXEditorConfiguration TRX = TRXEditorConfiguration.LoadWithLegacyFallback();
+	public TRXEditorConfiguration TRX = ConfigurationBase.Load<TRXEditorConfiguration>();
 
 	public void SaveAllConfigs()
 	{

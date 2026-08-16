@@ -15,7 +15,7 @@ public sealed class TRXDocumentService : ITRXDocumentService
 	private readonly ITRXLineService _lineService;
 
 	// Regex pattern matching the TRX level-name comment syntax (for example, "// Level 1: Caves").
-	private static readonly Regex LevelCommentNameRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
+	private static readonly Regex s_levelCommentNameRegex = new(Patterns.LevelCommentName, RegexOptions.IgnoreCase);
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TRXDocumentService"/> class.
@@ -65,7 +65,7 @@ public sealed class TRXDocumentService : ITRXDocumentService
 				return line.LineNumber;
 
 			// Second check: comment name match (e.g. "// Level 1: Caves").
-			Match commentMatch = LevelCommentNameRegex.Match(lineText);
+			Match commentMatch = s_levelCommentNameRegex.Match(lineText);
 
 			if (commentMatch.Success)
 			{

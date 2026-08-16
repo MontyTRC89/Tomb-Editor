@@ -37,7 +37,7 @@ public static class MarkdownToolTipRenderer
 		RegexOptions.Compiled);
 
 	private static readonly FontFamily BodyFontFamily = SystemFonts.MessageFontFamily;
-	private static readonly FontFamily CodeFontFamily = new FontFamily(TextEditorBaseDefaults.FontFamily);
+	private static readonly FontFamily CodeFontFamily = new(TextEditorBaseDefaults.FontFamily);
 	private static readonly double BodyFontSize = ToolTipDefaults.TextFontSize;
 	private static readonly double CodeFontSize = Math.Max(BodyFontSize - 1.0, 13.0);
 	private static readonly Brush DefaultForeground = TextEditorColorPalette.ToolTipForeground;
@@ -246,7 +246,8 @@ public static class MarkdownToolTipRenderer
 		var codeBlocks = new List<CodeBlockInfo>();
 		int index = 0;
 
-		content = FencedCodeBlockPattern.Replace(content, match => {
+		content = FencedCodeBlockPattern.Replace(content, match =>
+		{
 			string placeholder = $"__TOMBIDE_MD_CODE_BLOCK_{index++}__";
 			codeBlocks.Add(new CodeBlockInfo(placeholder, match.Groups["lang"].Value.Trim(), match.Groups["code"].Value));
 			return match.Groups[1].Value + placeholder;

@@ -166,7 +166,7 @@ public sealed class ErrorDetectionWorker : IDisposable
 	private async Task RunErrorCheckCoreAsync(string editorContent, int requestId, CancellationToken cancellationToken)
 	{
 		Exception? error = null;
-		object result = Array.Empty<TextEditorDiagnostic>();
+		IReadOnlyList<TextEditorDiagnostic> result = [];
 
 		try
 		{
@@ -174,7 +174,7 @@ public sealed class ErrorDetectionWorker : IDisposable
 			// (ITextDiagnosticsProvider) explicitly permits background execution, so the provider
 			// runs on the thread pool. Cancellation is cooperative at the run boundary: the token
 			// prevents a superseded run from starting and marks a run superseded while in flight.
-			result = await Task.Run(() => (object)GetDiagnostics(editorContent), cancellationToken).ConfigureAwait(false);
+			result = await Task.Run(() => GetDiagnostics(editorContent), cancellationToken).ConfigureAwait(false);
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{

@@ -184,7 +184,6 @@ public sealed partial class RootShellViewModel : ObservableObject, IDisposable
 		DockPanelState = _settings.DockPanelState,
 		InfoBoxAlwaysOnTop = _settings.InfoBoxAlwaysOnTop,
 		InfoBoxCloseTabsOnClose = _settings.InfoBoxCloseTabsOnClose,
-		IsLegacyImported = _settings.IsLegacyImported,
 		LuaEnabled = _settings.LuaEnabled,
 		IsStatusStripVisible = IsStatusStripVisible,
 		IsToolStripVisible = IsToolStripVisible,

@@ -35,20 +35,20 @@ public abstract class ColorSchemeConfigBase<TColorScheme> : TextEditorConfigBase
 	/// <summary>
 	/// Resolves the file path of the color scheme file for the given scheme name.
 	/// </summary>
-	protected abstract string GetSchemeFilePath(string schemeName);
+	protected abstract string GetColorSchemeFilePath(string colorSchemeName);
 
 	/// <summary>
-	/// Reads a color scheme from the file at <paramref name="schemeFilePath"/>.
+	/// Reads a color scheme from the file at <paramref name="colorSchemeFilePath"/>.
 	/// </summary>
-	protected abstract TColorScheme ReadSchemeFile(string schemeFilePath);
+	protected abstract TColorScheme ReadColorSchemeFile(string colorSchemeFilePath);
 
-	private TColorScheme LoadColorScheme(string schemeName)
+	private TColorScheme LoadColorScheme(string colorSchemeName)
 	{
-		string schemeFilePath = GetSchemeFilePath(schemeName);
+		string colorSchemeFilePath = GetColorSchemeFilePath(colorSchemeName);
 
-		if (!File.Exists(schemeFilePath))
+		if (!File.Exists(colorSchemeFilePath))
 			return new TColorScheme();
 
-		return ReadSchemeFile(schemeFilePath);
+		return ReadColorSchemeFile(colorSchemeFilePath);
 	}
 }

@@ -13,27 +13,27 @@ public static class GameFlowDefinitionCatalog
 {
 	private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-	private static readonly Lazy<GameFlowDefinitionSet> _definitions = new(LoadDefinitions);
+	private static readonly Lazy<GameFlowDefinitionSet> s_definitions = new(LoadDefinitions);
 
 	/// <summary>
 	/// Gets the special property names.
 	/// </summary>
-	public static IReadOnlyList<string> SpecialProperties => _definitions.Value.SpecialProperties;
+	public static IReadOnlyList<string> SpecialProperties => s_definitions.Value.SpecialProperties;
 
 	/// <summary>
 	/// Gets the section names.
 	/// </summary>
-	public static IReadOnlyList<string> Sections => _definitions.Value.Sections;
+	public static IReadOnlyList<string> Sections => s_definitions.Value.Sections;
 
 	/// <summary>
 	/// Gets the constant names.
 	/// </summary>
-	public static IReadOnlyList<string> Constants => _definitions.Value.Constants;
+	public static IReadOnlyList<string> Constants => s_definitions.Value.Constants;
 
 	/// <summary>
 	/// Gets the property names.
 	/// </summary>
-	public static IReadOnlyList<string> Properties => _definitions.Value.Properties;
+	public static IReadOnlyList<string> Properties => s_definitions.Value.Properties;
 
 	private static GameFlowDefinitionSet LoadDefinitions()
 	{

@@ -15,12 +15,11 @@ internal sealed class TextMateThemeStyleResolver
 	private static readonly TextDecorationCollection StrikethroughDecorations = CreateTextDecorations(TextDecorations.Strikethrough);
 
 	private readonly List<ParsedThemeRule> _rules;
-	private readonly Dictionary<string, TextMateHighlightingStyle> _cache = new Dictionary<string, TextMateHighlightingStyle>(StringComparer.Ordinal);
+	private readonly Dictionary<string, TextMateHighlightingStyle> _cache = new(StringComparer.Ordinal);
 
 	public TextMateThemeStyleResolver(TextMateTokenTheme theme)
 	{
-		if (theme is null)
-			throw new ArgumentNullException(nameof(theme));
+		ArgumentNullException.ThrowIfNull(theme);
 
 		_rules = CreateRules(theme);
 	}
@@ -84,7 +83,7 @@ internal sealed class TextMateThemeStyleResolver
 
 		TextDecorationCollection? textDecorations = CreateTextDecorations(isUnderline ?? false, isStrikethrough ?? false);
 
-		TextMateHighlightingStyle style = new TextMateHighlightingStyle(
+		TextMateHighlightingStyle style = new(
 			foreground,
 			isBold ?? false,
 			isItalic ?? false,

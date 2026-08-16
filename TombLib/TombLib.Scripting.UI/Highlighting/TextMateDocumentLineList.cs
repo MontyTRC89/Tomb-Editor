@@ -10,8 +10,8 @@ namespace TombLib.Scripting.UI.Highlighting;
 internal sealed class TextMateDocumentLineList : AbstractLineList
 {
 	private readonly TextDocument _document;
-	private readonly object _syncRoot = new object();
-	private readonly List<string> _lineTexts = new List<string>();
+	private readonly object _syncRoot = new();
+	private readonly List<string> _lineTexts = [];
 
 	public TextMateDocumentLineList(TextDocument document)
 	{
@@ -88,11 +88,8 @@ internal sealed class TextMateDocumentLineList : AbstractLineList
 
 	internal static (int StartLineIndex, int RemovedLineCount, int InsertedLineCount) GetChangeInfo(TextDocument document, DocumentChangeEventArgs change)
 	{
-		if (document is null)
-			throw new ArgumentNullException(nameof(document));
-
-		if (change is null)
-			throw new ArgumentNullException(nameof(change));
+		ArgumentNullException.ThrowIfNull(document);
+		ArgumentNullException.ThrowIfNull(change);
 
 		return (
 			GetStartLineIndex(document, change.Offset),

@@ -13,11 +13,10 @@ public abstract class ColorSchemeBase
 	/// <summary>
 	/// Gets or sets the display name of the color scheme.
 	/// </summary>
-	public string Name { get; set; } = string.Empty;
+	public string Name { get; set; } = "Untitled Color Scheme";
 
 	/// <summary>
 	/// Gets or sets additional names that can be used to resolve this color scheme.
-	/// The assigned collection is copied into owned read-only storage; later caller mutations cannot leak in.
 	/// </summary>
 	public IReadOnlyList<string> Aliases
 	{

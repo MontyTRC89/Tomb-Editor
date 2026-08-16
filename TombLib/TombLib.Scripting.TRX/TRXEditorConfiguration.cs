@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using TombLib.Scripting.TRX.Highlighting;
 using TombLib.Scripting.TRX.Resources;
@@ -28,16 +27,12 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 	// Color scheme
 
 	/// <inheritdoc />
-	protected override string GetSchemeFilePath(string schemeName)
-		=> GetExistingColorSchemeFilePath(schemeName);
+	protected override string GetColorSchemeFilePath(string colorSchemeName)
+		=> Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, colorSchemeName + ScriptingDefaults.ColorSchemeFileExtension);
 
 	/// <inheritdoc />
-	protected override ColorScheme ReadSchemeFile(string schemeFilePath)
-	{
-		return Path.GetExtension(schemeFilePath).Equals(ScriptingDefaults.ColorSchemeFileExtension, StringComparison.OrdinalIgnoreCase)
-			? JsonUtils.ReadJsonFile<ColorScheme>(schemeFilePath)
-			: XmlUtils.ReadXmlFile<ColorScheme>(schemeFilePath);
-	}
+	protected override ColorScheme ReadColorSchemeFile(string colorSchemeFilePath)
+		=> JsonUtils.ReadJsonFile<ColorScheme>(colorSchemeFilePath);
 
 	// Construction
 
@@ -51,57 +46,5 @@ public sealed class TRXEditorConfiguration : ColorSchemeConfigBase<ColorScheme>
 		AutoCloseParentheses = false;
 
 		SelectedColorSchemeName = ScriptingDefaults.SelectedColorSchemeName;
-	}
-
-	/// <summary>
-	/// Loads the configuration from the current or legacy path, falling back to defaults.
-	/// </summary>
-	/// <returns>The loaded configuration.</returns>
-	public static TRXEditorConfiguration LoadWithLegacyFallback()
-	{
-		var configuration = new TRXEditorConfiguration();
-		string legacyPath = Path.Combine(ScriptingPaths.Default.TextEditorConfigsDirectory, ConfigurationDefaults.LegacyConfigurationFileName);
-
-		if (File.Exists(configuration.DefaultPath))
-			return TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TRXEditorConfiguration>();
-
-		if (File.Exists(legacyPath))
-			return TombLib.Scripting.UI.Bases.ConfigurationBase.Load<TRXEditorConfiguration>(legacyPath);
-
-		return configuration;
-	}
-
-	/// <summary>
-	/// Gets the preferred (current) color scheme file path for the given scheme name.
-	/// </summary>
-	/// <param name="schemeName">The name of the color scheme.</param>
-	/// <returns>The preferred color scheme file path.</returns>
-	public static string GetPreferredColorSchemeFilePath(string schemeName)
-	{
-		ArgumentNullException.ThrowIfNull(schemeName);
-
-		return Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ScriptingDefaults.ColorSchemeFileExtension);
-	}
-
-	/// <summary>
-	/// Gets an existing color scheme file path for the given scheme name, preferring newer formats.
-	/// </summary>
-	/// <param name="schemeName">The name of the color scheme.</param>
-	/// <returns>The first existing color scheme file path, falling back to the oldest legacy path.</returns>
-	public static string GetExistingColorSchemeFilePath(string schemeName)
-	{
-		ArgumentNullException.ThrowIfNull(schemeName);
-
-		string preferredPath = GetPreferredColorSchemeFilePath(schemeName);
-
-		if (File.Exists(preferredPath))
-			return preferredPath;
-
-		string legacyPath = Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.LegacyColorSchemeFileExtension);
-
-		if (File.Exists(legacyPath))
-			return legacyPath;
-
-		return Path.Combine(ScriptingPaths.Default.TRXColorConfigsDirectory, schemeName + ConfigurationDefaults.OldLegacyColorSchemeFileExtension);
 	}
 }

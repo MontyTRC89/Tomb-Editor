@@ -80,8 +80,7 @@ internal sealed class ProcessCompilerProcessFactory : ICompilerProcessFactory
 	public static ICompilerProcessFactory Instance { get; } = new ProcessCompilerProcessFactory();
 
 	private ProcessCompilerProcessFactory()
-	{
-	}
+	{ }
 
 	public ICompilerProcess? Start(ProcessStartInfo startInfo)
 	{

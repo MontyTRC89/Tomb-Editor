@@ -70,7 +70,8 @@ public static class TextEditorLineOperations
 		ArgumentNullException.ThrowIfNull(oldName);
 		ArgumentNullException.ThrowIfNull(newName);
 
-		return TryReplaceFirstMatchingLine(textEditor, lineText => {
+		return TryReplaceFirstMatchingLine(textEditor, lineText =>
+		{
 			if (!lineRegex.IsMatch(lineText))
 				return null;
 

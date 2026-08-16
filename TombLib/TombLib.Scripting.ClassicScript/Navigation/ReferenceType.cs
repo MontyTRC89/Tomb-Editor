@@ -1,4 +1,4 @@
-﻿namespace TombLib.Scripting.ClassicScript.Navigation;
+namespace TombLib.Scripting.ClassicScript.Navigation;
 
 /// <summary>
 /// Identifies the kind of a ClassicScript reference.

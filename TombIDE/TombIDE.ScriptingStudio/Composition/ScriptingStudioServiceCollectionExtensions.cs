@@ -246,13 +246,8 @@ public static class ScriptingStudioServiceCollectionExtensions
 			return new DocumentControllerTextEditorHost(documentController);
 		});
 
-		// Settings store (needs legacy snapshot from context).
-		services.AddScoped<IScriptingStudioShellSettingsStore>(sp =>
-		{
-			ScriptingStudioLegacySettingsSnapshot legacySnapshot =
-				sp.GetRequiredService<ScriptingStudioShellContext>().LegacySettingsSnapshot;
-			return new XmlScriptingStudioShellSettingsStore(legacySnapshot);
-		});
+		// Settings store.
+		services.AddScoped<IScriptingStudioShellSettingsStore>(_ => new XmlScriptingStudioShellSettingsStore());
 
 		// Workspace profile (depends on project context, settings store, and language services).
 		services.AddScoped<ScriptingWorkspaceProfile>(sp =>
