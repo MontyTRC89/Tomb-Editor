@@ -131,6 +131,12 @@ public class WhiteSpaceConverterTests
         Assert.AreEqual("\tA\r\n\tB\n\tC", WhiteSpaceConverter.ConvertSpacesToTabs("    A\r\n    B\n    C", 4));
     }
 
+    [TestMethod]
+    public void ConvertSpacesToTabs_StandaloneCRLineEndings_Preserved()
+    {
+        Assert.AreEqual("\tA\r\tB\r", WhiteSpaceConverter.ConvertSpacesToTabs("    A\r    B\r", 4));
+    }
+
     // ---------------------------------------------------------------------------
     // ConvertTabsToSpaces — expansion
     // ---------------------------------------------------------------------------
@@ -202,5 +208,11 @@ public class WhiteSpaceConverterTests
     public void ConvertTabsToSpaces_MixedLineEndings_Preserved()
     {
         Assert.AreEqual("    A\r\n    B\n    C", WhiteSpaceConverter.ConvertTabsToSpaces("\tA\r\n\tB\n\tC", 4));
+    }
+
+    [TestMethod]
+    public void ConvertTabsToSpaces_StandaloneCRLineEndings_Preserved()
+    {
+        Assert.AreEqual("    A\r    B\r", WhiteSpaceConverter.ConvertTabsToSpaces("\tA\r\tB\r", 4));
     }
 }

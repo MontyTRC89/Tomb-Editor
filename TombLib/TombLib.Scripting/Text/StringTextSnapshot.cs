@@ -17,7 +17,7 @@ public sealed class StringTextSnapshot : ITextSnapshot
 	/// <summary>
 	/// Initializes a new instance of the <see cref="StringTextSnapshot"/> class.
 	/// </summary>
-	/// <param name="text">The source text. A null value is treated as an empty string.</param>
+	/// <param name="text">The source text. A <see langword="null"/> value is treated as an empty string.</param>
 	/// <param name="fileName">An optional file name associated with this text.</param>
 	public StringTextSnapshot(string? text, string? fileName = null)
 	{
@@ -37,12 +37,8 @@ public sealed class StringTextSnapshot : ITextSnapshot
 	/// <inheritdoc />
 	public int LineCount => _lines.Length;
 
-	/// <summary>
-	/// Gets the underlying string for use by Core lexer code.
-	/// This member is not part of <see cref="ITextSnapshot"/> because only
-	/// string-backed implementations can expose their raw text directly.
-	/// </summary>
-	internal string Text => _text;
+	/// <inheritdoc />
+	public IEnumerable<ITextLine> Lines => _lines;
 
 	/// <inheritdoc />
 	public char GetCharAt(int offset)
@@ -107,9 +103,6 @@ public sealed class StringTextSnapshot : ITextSnapshot
 		return _lines[lineNumber - 1];
 	}
 
-	/// <inheritdoc />
-	public IEnumerable<ITextLine> Lines => _lines;
-
 	/// <summary>
 	/// Builds the line index by scanning the text for LF, CRLF, and CR line endings.
 	/// Returns the line objects and their start offsets for binary search.
@@ -143,6 +136,7 @@ public sealed class StringTextSnapshot : ITextSnapshot
 
 				lineNumber++;
 				i += delimiterLength;
+
 				lineStart = i;
 			}
 			else if (ch == '\n')
@@ -155,6 +149,7 @@ public sealed class StringTextSnapshot : ITextSnapshot
 
 				lineNumber++;
 				i++;
+
 				lineStart = i;
 			}
 			else

@@ -48,19 +48,27 @@ public static class WhiteSpaceConverter
 
 		while (lineStart < input.Length)
 		{
-			int newlineIndex = input.IndexOf('\n', lineStart);
-			int contentEnd = newlineIndex < 0 ? input.Length : newlineIndex;
-			bool hasCarriageReturn = contentEnd > lineStart && input[contentEnd - 1] == '\r';
-			int pureContentEnd = hasCarriageReturn ? contentEnd - 1 : contentEnd;
+			// Find the next line terminator without treating a standalone CR as content.
+			int lineEndingOffset = input.AsSpan(lineStart).IndexOfAny('\r', '\n');
+			int lineEndingIndex = lineEndingOffset < 0 ? -1 : lineStart + lineEndingOffset;
 
-			builder.Append(lineTransform(input.Substring(lineStart, pureContentEnd - lineStart)));
-
-			if (newlineIndex < 0)
+			if (lineEndingIndex < 0)
+			{
+				builder.Append(lineTransform(input[lineStart..]));
 				break;
+			}
 
-			int endingStart = hasCarriageReturn ? contentEnd - 1 : contentEnd;
-			builder.Append(input, endingStart, newlineIndex - endingStart + 1);
-			lineStart = newlineIndex + 1;
+			builder.Append(lineTransform(input[lineStart..lineEndingIndex]));
+
+			// Treat CRLF as one line ending while preserving standalone CR and LF.
+			int lineEndingLength = input[lineEndingIndex] == '\r'
+				&& lineEndingIndex + 1 < input.Length
+				&& input[lineEndingIndex + 1] == '\n'
+				? 2
+				: 1;
+
+			builder.Append(input, lineEndingIndex, lineEndingLength);
+			lineStart = lineEndingIndex + lineEndingLength;
 		}
 
 		return builder.ToString();
@@ -84,6 +92,8 @@ public static class WhiteSpaceConverter
 			if (line[i] == '\t')
 			{
 				builder.Append('\t');
+
+				// An existing tab advances to the next tab stop rather than by tabSize columns.
 				column = ((column / tabSize) + 1) * tabSize;
 				i++;
 
@@ -134,6 +144,7 @@ public static class WhiteSpaceConverter
 		{
 			if (c == '\t')
 			{
+				// Expand each tab only as far as the next tab stop for this line.
 				int spaces = tabSize - (column % tabSize);
 				builder.Append(' ', spaces);
 				column += spaces;
