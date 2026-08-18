@@ -140,7 +140,7 @@ LevelFuncs.Engine.Node.EmitAirBubbleMoveable = function(mov, size, osc)
 	local origin = moveable:GetPosition()
 
 	if (moveableRoom:GetFlag(TEN.Objects.RoomFlagID.WATER) == false) then
-		print("Moveable must be placed underwater to emit air bubble")
+		print("Moveable '" .. mov .. "' must be placed underwater to emit air bubbles.")
 		return
 	end
 
