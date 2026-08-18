@@ -144,7 +144,7 @@ LevelFuncs.Engine.Node.EmitAirBubbleMoveable = function(mov, size, osc)
 		return
 	end
 
-	TEN.Effects.EmitAirBubble(origin,size,osc)
+	TEN.Effects.EmitAirBubble(origin, size, osc)
 end
 
 -- !Name "Emit blood from moveable"
