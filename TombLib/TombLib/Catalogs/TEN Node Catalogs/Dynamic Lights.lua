@@ -66,7 +66,7 @@ end
 -- !Arguments "Numerical, 25, [ 0 | 100 | 0 ], { 20 }, Light distance (in clicks of 256 world units)."
 -- !Arguments "Numerical, 25, [ 0 | 100 | 0 ], { 10 }, Light radius (in clicks of 256 world units)."
 -- !Arguments "String, 25, [ NoMultiline ], A unique name for the light.\nTo enable interpolation in high framerate mode the light must have a unique name.\nIf the source moveable does not move significantly this field is not required." 
--- !Arguments "NewLine, 50, Vector3 , [ -1000000 | 1000000 |  | 1 | 32 ], { TEN.Vec3(.1,.1,.1) }, Position offset (x y z)"
+-- !Arguments "NewLine, Vector3 , 50, [ -1000000 | 1000000 |  | 1 | 32 ], { TEN.Vec3(.1,.1,.1) }, Position offset (x y z)"
 -- !Arguments "Vector3, 50, [ -360 | 360 | 0 | 5 | 45 ], { TEN.Vec3(0,0,0) }, Rotation (x y z)"
 
 LevelFuncs.Engine.Node.MoveableSpotLight = function(moveable, meshnumber, color, shadow, falloff, distance, radius, name, effectOffset, rotation)
@@ -140,7 +140,8 @@ end
 LevelFuncs.Engine.Node.StaticFogBulb = function(static, lightcolor, radius, density, effectOffset, name)
 
 	local entityPos = TEN.Objects.GetStaticByName(static):GetPosition()
-	local offset = (entityPos) + (effectOffset)
+	effectOffset = effectOffset or Vec3(0, 0, 0)
+	local offset = entityPos + effectOffset
 	TEN.Effects.EmitFogBulb(offset, radius, density, lightcolor, name)
 end
 
