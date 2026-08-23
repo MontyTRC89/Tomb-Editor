@@ -20,6 +20,7 @@ namespace TombEditor.Forms
         private bool _loading = false;
         private bool _undoSaved = false;
         private bool _lightingUpdatePending = false;
+        private bool _dataRestored = false;
 
         public FormTransform(PositionBasedObjectInstance instance)
         {
@@ -50,7 +51,7 @@ namespace TombEditor.Forms
 
         private void RestoreData()
         {
-            if (_instance == null)
+            if (_instance == null || _dataRestored)
                 return;
 
             bool changed = HasTransformChangedFromBackup();
@@ -68,6 +69,9 @@ namespace TombEditor.Forms
 
             if (changed && _editor.ShouldRelight)
                 EditorActions.RebuildLightsForObject(_instance);
+
+            _lightingUpdatePending = false;
+            _dataRestored = true;
         }
 
         private bool HasPendingChanges()
@@ -207,6 +211,17 @@ namespace TombEditor.Forms
             nudScaleZ.Value = nudScaleX.Value;
 
             ValidateInstance(sender, e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            if (DialogResult != DialogResult.OK)
+            {
+                DialogResult = DialogResult.Cancel;
+                RestoreData();
+            }
+
+            base.OnFormClosing(e);
         }
 
         private void butCancel_Click(object sender, EventArgs e)

@@ -638,8 +638,19 @@ namespace TombEditor
 
             SynchronizationContext.Send(_ =>
             {
+                if (!ShouldRelight)
+                {
+                    foreach (var room in distinctRooms)
+                        room.InvalidateLighting();
+
+                    return;
+                }
+
+                Parallel.ForEach(distinctRooms,
+                    room => room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview));
+
                 foreach (var room in distinctRooms)
-                    UpdateRoomLightingCore(room);
+                    RoomLightingChange(room);
             }, null);
         }
 

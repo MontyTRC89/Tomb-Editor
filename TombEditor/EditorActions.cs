@@ -397,12 +397,30 @@ namespace TombEditor
         public static void ApplyObjectColor(IColorable obj, Vector3 color)
         {
             obj.Color = color;
+            NotifyObjectColorChanged(obj);
+        }
 
+        private static void NotifyObjectColorChanged(IColorable obj)
+        {
             if (obj is ObjectInstance instance)
             {
                 RebuildLightsForObject(instance);
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
+        }
+
+        private static List<(IColorable Colorable, Vector3 Color)> CaptureObjectColors(IColorable obj)
+        {
+            if (obj is ObjectGroup group)
+                return [.. group.OfType<IColorable>().Select(colorable => (colorable, colorable.Color))];
+
+            return [(obj, obj.Color)];
+        }
+
+        private static void RestoreObjectColors(IEnumerable<(IColorable Colorable, Vector3 Color)> colors)
+        {
+            foreach (var originalColor in colors)
+                originalColor.Colorable.Color = originalColor.Color;
         }
 
         public static void EditColor(IWin32Window owner, IColorable obj, Action<Vector3> newColorCallback = null)
@@ -415,23 +433,29 @@ namespace TombEditor
             {
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
+                var originalColors = CaptureObjectColors(obj);
 
                 // Temporarily hide selection
                 _editor.ToggleHiddenSelection(true);
 
                 // Rollback to previous color if dialog is canceled or push undo if confirmed
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                {
                     colorDialog.Color = oldLightColor;
+                    RestoreObjectColors(originalColors);
+                    NotifyObjectColorChanged(obj);
+                }
                 else if (obj is PositionBasedObjectInstance)
                 {
-                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
+                    RestoreObjectColors(originalColors);
                     _editor.UndoManager.PushObjectPropertyChanged(obj as PositionBasedObjectInstance);
+                    ApplyObjectColor(obj, colorDialog.Color.ToFloat3Color() * 2.0f);
                 }
+                else
+                    ApplyObjectColor(obj, colorDialog.Color.ToFloat3Color() * 2.0f);
 
                 // Unhide selection
                 _editor.ToggleHiddenSelection(false);
-
-                ApplyObjectColor(obj, colorDialog.Color.ToFloat3Color() * 2.0f);
 
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
                 newColorCallback?.Invoke(colorDialog.Color.ToFloat3Color());
