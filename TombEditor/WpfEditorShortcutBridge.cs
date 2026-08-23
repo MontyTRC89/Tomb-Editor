@@ -28,8 +28,12 @@ namespace TombEditor
         private void OnPostProcessInput(object sender, ProcessInputEventArgs e)
         {
             if (e.StagingItem.Input is not System.Windows.Input.KeyEventArgs keyEventArgs ||
-                keyEventArgs.RoutedEvent != Keyboard.KeyDownEvent ||
                 !_form.ContainsFocus)
+                return;
+
+            bool isPreviewKeyDown = keyEventArgs.RoutedEvent == Keyboard.PreviewKeyDownEvent;
+
+            if (!isPreviewKeyDown && keyEventArgs.RoutedEvent != Keyboard.KeyDownEvent)
                 return;
 
             Keys keyData = GetKeyData(keyEventArgs);
@@ -53,9 +57,15 @@ namespace TombEditor
                 }
             }
 
-            if (keyEventArgs.Handled ||
-                WinFormsUtils.DirectionalCameraKeys.Contains(keyData) ||
-                WinFormsUtils.CurrentControlSupportsInput(_form, keyData))
+            bool isUnhandledPreviewKeyDown = isPreviewKeyDown && !keyEventArgs.Handled;
+            bool isHandledKeyDown = !isPreviewKeyDown && keyEventArgs.Handled;
+            bool isDirectionalCameraKey = WinFormsUtils.DirectionalCameraKeys.Contains(keyData);
+            bool focusedControlSupportsInput = WinFormsUtils.CurrentControlSupportsInput(_form, keyData);
+
+            if (isUnhandledPreviewKeyDown ||
+                isHandledKeyDown ||
+                isDirectionalCameraKey ||
+                focusedControlSupportsInput)
                 return;
 
             bool commandExecuted = CommandHandler.ExecuteHotkey(new CommandArgs
@@ -65,7 +75,8 @@ namespace TombEditor
                 Window = _form
             });
 
-            keyEventArgs.Handled = commandExecuted;
+            if (commandExecuted)
+                keyEventArgs.Handled = true;
         }
 
         private static Keys GetKeyData(System.Windows.Input.KeyEventArgs keyEventArgs)
