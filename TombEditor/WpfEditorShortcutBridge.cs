@@ -30,13 +30,33 @@ namespace TombEditor
         {
             if (e.StagingItem.Input is not System.Windows.Input.KeyEventArgs keyEventArgs ||
                 keyEventArgs.RoutedEvent != Keyboard.KeyDownEvent ||
-                keyEventArgs.Handled ||
                 !_form.ContainsFocus)
                 return;
 
             Keys keyData = GetKeyData(keyEventArgs);
 
-            if (WinFormsUtils.CurrentControlSupportsInput(_form, keyData) ||
+            if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
+                return;
+
+            if (_editor.CameraPreviewMode != CameraPreviewType.None)
+            {
+                if (keyData == Keys.Escape)
+                {
+                    _editor.ToggleCameraPreview(false);
+                    keyEventArgs.Handled = true;
+                    return;
+                }
+
+                if (!_editor.Configuration.UI_Hotkeys["PreviewCamera"].Contains(keyData))
+                {
+                    keyEventArgs.Handled = true;
+                    return;
+                }
+            }
+
+            if (keyEventArgs.Handled ||
+                WinFormsUtils.DirectionalCameraKeys.Contains(keyData) ||
+                WinFormsUtils.CurrentControlSupportsInput(_form, keyData) ||
                 !_editor.Configuration.UI_Hotkeys.Any(set => set.Value.Contains(keyData)))
                 return;
 
