@@ -130,14 +130,16 @@ end
 -- !Section "Particles"
 -- !Description "Emit an air bubble effect from a chosen moveable. Moveable must be placed underwater"
 -- !Arguments "NewLine, Moveables, 50, Moveable to emit air bubble from."
+-- !Arguments "Numerical, 50, [ 0 | 1024 | 0 ], {0}, joint number (optional)"
+-- !Arguments "NewLine, Vector3, 50, [ -32000 | 32000 ], { TEN.Vec3(.1,.1,.1) }, offset from joint position (in world units)"
 -- !Arguments "Numerical, 25, [ 0 | 1024 | 0 ], {32}, size"
 -- !Arguments "Numerical, 25, [ 0 | 1024 | 0 ], {32}, oscillation amplitude"
 
-LevelFuncs.Engine.Node.EmitAirBubbleMoveable = function(mov, size, osc)
+LevelFuncs.Engine.Node.EmitAirBubbleMoveable = function(mov, joint, offset, size, osc)
 	
 	local moveable = TEN.Objects.GetMoveableByName(mov)
 	local moveableRoom = moveable:GetRoom()	
-	local origin = moveable:GetPosition()
+	local origin = moveable:GetJointPosition(joint, offset) 
 
 	if (moveableRoom:GetFlag(TEN.Objects.RoomFlagID.WATER) == false) then
 		PrintLog("Moveable '" .. mov .. "' must be placed underwater to emit air bubbles.", TEN.Util.LogLevel.WARNING, false)
@@ -151,12 +153,14 @@ end
 -- !Section "Particles"
 -- !Description "Emit a blood effect from a chosen moveable."
 -- !Arguments "NewLine, Moveables, 75, Moveable to emit blood from."
--- !Arguments "Numerical, 25, [ 0 | 1024 | 0 ], {1}, sprite count"
+-- !Arguments "Numerical, 25, [ 0 | 1024 | 0 ], {0}, joint number (optional)"
+-- !Arguments "NewLine, Vector3, 75, [ -32000 | 32000 ], { TEN.Vec3(.1,.1,.1) }, offset from joint position (in world units)"
+-- !Arguments "Numerical, 25, [ 0 | 1024 | 0 ], {1}, sprite count per game tick"
 
-LevelFuncs.Engine.Node.EmitBloodMoveable = function(mov, spriteCount)
+LevelFuncs.Engine.Node.EmitBloodMoveable = function(mov, joint, offset, spriteCount)
 	
 	local moveable = TEN.Objects.GetMoveableByName(mov)
-	local origin = moveable:GetPosition()
+	local origin = moveable:GetJointPosition(joint, offset) 
 
 	TEN.Effects.EmitBlood(origin,spriteCount)
 end
@@ -164,18 +168,16 @@ end
 -- !Name "Emit weather from volume"
 -- !Section "Particles"
 -- !Description "Emit a weather effect from a chosen volume."
--- !Arguments "NewLine, Volumes, 50,  Volume to emit weather from."
+-- !Arguments "NewLine, Volumes, 50,  Volume to emit weather from.\nAutomatically adjusts to the width of the assigned volume."
 -- !Arguments "Enumeration, 50, [ Rain | Snow ], Weather type"
--- !Arguments "NewLine, Color, 50, Color of weather effect"
--- !Arguments "Vector3, 50, [ 0 | 64 ], {2}, initial velocity"
--- !Arguments "NewLine, Numerical, 25, [ 0 | 20 | 1 | 1 | 5 ], {8}, random horizontal range (in blocks) around position where particles will be spawned"
--- !Arguments "Numerical, 25, [ 0 | 20 | 1 | 1 | 5 ], {1}, random vertical range (in blocks) around position where particles will be spawned"
--- !Arguments "Numerical, 25, [ 0 | 5 | 1 | 0.1 | 0.5 ], {1.0}, lifetime in seconds"
+-- !Arguments "NewLine, Color, 50, { TEN.Color(255,255,255) }, Color of weather effect"
+-- !Arguments "Vector3, 50, [ 0 | 64 ], { TEN.Vec3(.1,.1,.1) }, initial velocity"
+-- !Arguments "NewLine, Numerical, 25, [ 0 | 5 | 1 | 0.1 | 0.5 ], {1.0}, lifetime in seconds"
 -- !Arguments "Numerical, 25, [ 0 | 2 | 1 | 0.1 | 0.5 ], {1.0}, weather strength"
 -- !Arguments "NewLine, Boolean, 50, Enable clustering"
 -- !Arguments "Boolean, 50, Check wind flag"
 
-LevelFuncs.Engine.Node.EmitWeatherVolume = function(vol, weatherType, color, velocity, horizontalRange, verticalRange, life, strength, enableClustering, checkWindFlag)
+LevelFuncs.Engine.Node.EmitWeatherVolume = function(vol, weatherType, color, velocity, life, strength, enableClustering, checkWindFlag)
 
 	if weatherType == 0 then
 		weatherType = TEN.Flow.WeatherType.RAIN
@@ -183,15 +185,20 @@ LevelFuncs.Engine.Node.EmitWeatherVolume = function(vol, weatherType, color, vel
 		weatherType = TEN.Flow.WeatherType.SNOW
 	end
 
-	local block = 1024
+	local volume = TEN.Objects.GetVolumeByName(vol)
+	local scale = volume:GetScale()
 
-	local weatherData = 
+	-- Use the volume's scale so the effect automatically matches its footprint.
+	local rangeXZ = math.max(scale.x, scale.z)
+	local rangeY = scale.y
+
+	local weatherData =
 	{
-		position = TEN.Objects.GetVolumeByName(vol):GetPosition(),
+		position = volume:GetPosition(),
 		initialVelocity = velocity,
 		type = weatherType,
-		randomRange = horizontalRange * block,
-		randomHeight = verticalRange * block,
+		randomRange = rangeXZ,
+		randomHeight = rangeY,
 		life = life,
 		strength = strength,
 		enableClustering = enableClustering,
