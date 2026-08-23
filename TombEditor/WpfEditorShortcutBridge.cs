@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using TombLib.Utils;
@@ -56,18 +55,17 @@ namespace TombEditor
 
             if (keyEventArgs.Handled ||
                 WinFormsUtils.DirectionalCameraKeys.Contains(keyData) ||
-                WinFormsUtils.CurrentControlSupportsInput(_form, keyData) ||
-                !_editor.Configuration.UI_Hotkeys.Any(set => set.Value.Contains(keyData)))
+                WinFormsUtils.CurrentControlSupportsInput(_form, keyData))
                 return;
 
-            CommandHandler.ExecuteHotkey(new CommandArgs
+            bool commandExecuted = CommandHandler.ExecuteHotkey(new CommandArgs
             {
                 Editor = _editor,
                 KeyData = keyData,
                 Window = _form
             });
 
-            keyEventArgs.Handled = true;
+            keyEventArgs.Handled = commandExecuted;
         }
 
         private static Keys GetKeyData(System.Windows.Input.KeyEventArgs keyEventArgs)
