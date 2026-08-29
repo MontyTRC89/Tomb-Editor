@@ -1240,6 +1240,8 @@ namespace TombLib.LevelData.Compilers
                         newLight.Length = light.Intensity; // Store float intensity as length
                         break;
                     case LightType.Effect:
+                    case LightType.Glow:
+                    case LightType.Move:
                         continue;
                     default:
                         throw new Exception("Unknown light type '" + light.Type + "' encountered.");

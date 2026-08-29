@@ -55,6 +55,7 @@ namespace TombEditor.ToolWindows
                 bool CanCastShadows = false;
                 bool CanCastDynamicShadows = false;
                 bool CanIlluminateGeometry = false;
+                bool CanImportedGeometry = false;
 
                 cmbLightQuality.Enabled = false;
 
@@ -79,6 +80,14 @@ namespace TombEditor.ToolWindows
                         case LightType.Effect:
                             HasInRange = true;
                             HasOutRange = true;
+                            break;
+
+                        case LightType.Glow:
+                        case LightType.Move:
+                            HasInRange = true;
+                            HasOutRange = true;
+                            CanCastShadows = true;
+                            CanImportedGeometry = true;
                             break;
 
                         case LightType.FogBulb:
@@ -111,7 +120,7 @@ namespace TombEditor.ToolWindows
                 cbLightCastsShadow.Enabled = CanCastDynamicShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateGeometry;
-                cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry;
+                cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry || CanImportedGeometry;
                 numIntensity.Enabled = light != null;
                 numInnerRange.Enabled = HasInRange;
                 numOuterRange.Enabled = HasOutRange;
@@ -136,7 +145,7 @@ namespace TombEditor.ToolWindows
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
                 cbLightIsUsedForImportedGeometry.Checked = light?.IsUsedForImportedGeometry ?? false;
                 cbLightCastsShadow.Checked = light?.CastDynamicShadows ?? false;
-                cmbLightQuality.Enabled = light != null;
+                cmbLightQuality.Enabled = light != null && light.Type != LightType.Glow && light.Type != LightType.Move;
                 cmbLightQuality.SelectedIndex = (int)(light?.Quality ?? 0);
                 cmbLightTypes.SelectedIndex = (int)(light?.Type ?? (LightType)cmbLightTypes.SelectedIndex);
             }

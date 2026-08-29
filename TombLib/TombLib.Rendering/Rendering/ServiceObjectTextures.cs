@@ -23,6 +23,8 @@ namespace TombLib.Rendering
         memo,
         light_effect,
         light_fog,
+        light_glow,
+        light_move,
         light_point,
         light_shadow,
         light_spot,
@@ -109,6 +111,12 @@ namespace TombLib.Rendering
                         break;
                     case LightType.FogBulb:
                         type = ServiceObjectTexture.light_fog;
+                        break;
+                    case LightType.Glow:
+                        type = ServiceObjectTexture.light_glow;
+                        break;
+                    case LightType.Move:
+                        type = ServiceObjectTexture.light_move;
                         break;
                     case LightType.Point:
                         type = ServiceObjectTexture.light_point;
