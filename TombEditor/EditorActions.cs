@@ -4244,6 +4244,14 @@ namespace TombEditor
         {
             Level level = _editor.Level;
 
+            if (LaraObjectCount() > 1)
+            {
+                if (!silent)
+                    _editor.SendMessage("Multiple Lara objects detected.\n" +
+                                        "Remove the extra Lara objects before compiling.", PopupType.Error);
+                return false;
+            }
+
             if (!level.Settings.Wads.All(wad => wad.Wad != null))
             {
                 if (!silent)
@@ -4433,8 +4441,13 @@ namespace TombEditor
         public static bool IsLaraInLevel()
         {
             return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
-                   _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
-                                              .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
+                   LaraObjectCount() > 0;
+        }
+
+        private static int LaraObjectCount()
+        {
+            return _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
+                    .Count(obj => obj is ItemInstance item && item.ItemType == new ItemType(WadMoveableId.Lara));
         }
 
         public static bool AddAndPlaceImportedGeometry(IWin32Window owner, VectorInt2 position, string file)
