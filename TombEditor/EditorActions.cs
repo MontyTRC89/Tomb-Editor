@@ -4244,14 +4244,6 @@ namespace TombEditor
         {
             Level level = _editor.Level;
 
-            if (LaraObjectCount() > 1)
-            {
-                if (!silent)
-                    _editor.SendMessage("Multiple Lara objects detected.\n" +
-                                        "Remove the extra Lara objects before compiling.", PopupType.Error);
-                return false;
-            }
-
             if (!level.Settings.Wads.All(wad => wad.Wad != null))
             {
                 if (!silent)
@@ -4443,12 +4435,6 @@ namespace TombEditor
             return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
                    _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
                                               .Any(IsLaraObject);
-        }
-
-        private static int LaraObjectCount()
-        {
-            return _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
-                                              .Count(IsLaraObject);
         }
 
         private static bool IsLaraObject(ObjectInstance obj)
