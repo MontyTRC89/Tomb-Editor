@@ -4441,13 +4441,19 @@ namespace TombEditor
         public static bool IsLaraInLevel()
         {
             return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
-                   LaraObjectCount() > 0;
+                   _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
+                                              .Any(IsLaraObject);
         }
 
         private static int LaraObjectCount()
         {
             return _editor.Level.ExistingRooms.SelectMany(room => room.Objects)
-                    .Count(obj => obj is ItemInstance item && item.ItemType == new ItemType(WadMoveableId.Lara));
+                                              .Count(IsLaraObject);
+        }
+
+        private static bool IsLaraObject(ObjectInstance obj)
+        {
+            return obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara);
         }
 
         public static bool AddAndPlaceImportedGeometry(IWin32Window owner, VectorInt2 position, string file)
