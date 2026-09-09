@@ -27,10 +27,12 @@ namespace TombEditor
 
     public interface IEditorEventCausesUnsavedChanges : IEditorEvent { }
 
-    public interface IEditorRoomChangedEvent : IEditorEventCausesUnsavedChanges
+    public interface IEditorRoomEvent : IEditorEvent
     {
         Room Room { get; }
     }
+
+    public interface IEditorRoomChangedEvent : IEditorEventCausesUnsavedChanges, IEditorRoomEvent { }
 
     public enum ObjectChangeType
     {
@@ -611,6 +613,15 @@ namespace TombEditor
             RaiseEvent(new RoomGeometryChangedEvent { Room = room });
         }
 
+        public class RoomLightingChangedEvent : IEditorRoomEvent
+        {
+            public Room Room { get; internal set; }
+        }
+        public void RoomLightingChange(Room room)
+        {
+            RaiseEvent(new RoomLightingChangedEvent { Room = room });
+        }
+
         // This is invoked when room pos is changed.
         public class RoomPositionChangedEvent : IEditorRoomChangedEvent
         {
@@ -847,6 +858,17 @@ namespace TombEditor
         public void ToggleToolWindow(Type contentType)
         {
             RaiseEvent(new ToolWindowToggleEvent() { ContentType = contentType });
+        }
+
+        // Layout switch events
+        public class LayoutSwitchedEvent : IEditorEvent { }
+        public class SwitchLayoutEvent : IEditorEvent
+        {
+            public int LayoutIndex { get; internal set; }
+        }
+        public void SwitchLayout(int layoutIndex)
+        {
+            RaiseEvent(new SwitchLayoutEvent() { LayoutIndex = layoutIndex });
         }
 
         // Default control engage event
@@ -1157,8 +1179,13 @@ namespace TombEditor
                 // If the mode switched to lighting mode, relight all rooms which have `PendingRelight` set to true
                 if (@event.Current == EditorMode.Lighting)
                 {
-                    Parallel.ForEach(Level.Rooms.Where(room => room?.PendingRelight == true),
+                    var pendingRooms = Level.Rooms.Where(room => room?.PendingRelight == true).ToList();
+
+                    Parallel.ForEach(pendingRooms,
                         room => room.RebuildLighting(Configuration.Rendering3D_HighQualityLightPreview));
+
+                    foreach (var room in pendingRooms)
+                        RoomLightingChange(room);
                 }
             }
 
@@ -1254,7 +1281,7 @@ namespace TombEditor
         {
             // Don't update stats if option is unset or there is no level
 
-            if (!Configuration.UI_ShowStats || Level == null)
+            if (!Configuration.Window_Layout.ShowStats || Level == null)
                 return;
 
             // Don't update stats if already updating

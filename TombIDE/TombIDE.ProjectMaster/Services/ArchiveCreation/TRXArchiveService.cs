@@ -11,13 +11,15 @@ namespace TombIDE.ProjectMaster.Services.ArchiveCreation;
 public sealed class TRXArchiveService : GameArchiveServiceBase
 {
 	public override bool SupportsGameVersion(IGameProject project)
-		=> project.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR1X or TRVersion.Game.TR2X;
+		=> project.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR1X or TRVersion.Game.TR2X or TRVersion.Game.TR3X;
 
 	protected override IReadOnlyList<string> GetImportantFolders(string engineDirectory) => [
+		Path.Combine(engineDirectory, "audio"),
 		Path.Combine(engineDirectory, "music"),
 		Path.Combine(engineDirectory, "cfg"),
 		Path.Combine(engineDirectory, "data"),
-		Path.Combine(engineDirectory, "shaders")
+		Path.Combine(engineDirectory, "shaders"),
+		Path.Combine(engineDirectory, "game"),
 	];
 
 	protected override IReadOnlyList<string> GetImportantFiles(string engineDirectory) => [
