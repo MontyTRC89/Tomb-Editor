@@ -1,3 +1,6 @@
+#nullable enable
+
+using CommunityToolkit.Mvvm.Messaging;
 using DarkUI.Forms;
 using System;
 using System.ComponentModel;
@@ -7,22 +10,26 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.ProjectMaster;
-using TombIDE.ScriptingStudio.Bases;
+using TombIDE.ScriptingStudio.Composition;
+using TombIDE.ScriptingStudio.Host;
 using TombIDE.Shared;
+using TombIDE.Shared.Messaging.Scripting;
 using TombIDE.Shared.NewStructure;
 using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
 using TombLib.LevelData;
+using TombLib.WPF.Services;
 
 namespace TombIDE
 {
 	public partial class FormMain : DarkForm
 	{
 		private IDE _ide;
+		private readonly IMessenger? _messenger;
+		private readonly IScriptingStudioShell _scriptingStudioShell;
 
 		private LevelManager levelManager;
-		private StudioBase scriptingStudio;
-		private PluginManager pluginManager;
+		private PluginManager? pluginManager;
 		private Miscellaneous miscellaneous;
 
 		private WinEventDelegate eventDelegate;
@@ -30,15 +37,18 @@ namespace TombIDE
 
 		#region Initialization
 
-		public FormMain(IDE ide, IGameProject project)
+		public FormMain(IDE ide, IGameProject project, IScriptingStudioShellFactory scriptingStudioShellFactory)
 		{
 			InitializeComponent();
 			Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
 			_ide = ide;
 			_ide.Project = project;
+			_messenger = ServiceLocator.GetService<IMessenger>();
+			_scriptingStudioShell = scriptingStudioShellFactory.Create(ide);
 
 			_ide.IDEEventRaised += OnIDEEventRaised;
+			_messenger?.Register<FormMain, ScriptingRequestCloseMessage>(this, static (recipient, _) => recipient.Close());
 
 			levelManager = new LevelManager { Dock = DockStyle.Fill };
 			tabPage_LevelManager.Controls.Add(levelManager);
@@ -52,17 +62,7 @@ namespace TombIDE
 				tabPage_Plugins.Controls.Add(pluginManager);
 			}
 
-			if (_ide.Project.GameVersion is TRVersion.Game.TR4 or TRVersion.Game.TRNG)
-				scriptingStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TR2 or TRVersion.Game.TR3)
-				scriptingStudio = new ScriptingStudio.GameFlowScriptStudio { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TR1 or TRVersion.Game.TR2X or TRVersion.Game.TR3X)
-				scriptingStudio = new ScriptingStudio.Tomb1MainStudio(_ide.Project.GameVersion) { Parent = this };
-			else if (_ide.Project.GameVersion is TRVersion.Game.TombEngine)
-				scriptingStudio = new ScriptingStudio.LuaStudio { Parent = this };
-
-			scriptingStudio.Dock = DockStyle.Fill;
-			tabPage_ScriptingStudio.Controls.Add(scriptingStudio);
+			_scriptingStudioShell.Mount(tabPage_ScriptingStudio, this);
 
 			Text = "TombIDE - " + _ide.Project.Name;
 
@@ -77,13 +77,10 @@ namespace TombIDE
 		public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
 		{
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
-			{
-				scriptingStudio.IsMainWindowFocued = true;
-				scriptingStudio.EditorTabControl.TryRunFileReloadQueue();
-			}
+				_scriptingStudioShell.NotifyMainWindowFocusChanged(true);
 
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
-				scriptingStudio.IsMainWindowFocued = false;
+				_scriptingStudioShell.NotifyMainWindowFocusChanged(false);
 
 			if (IsDisposed)
 				NativeMethods.UnhookWinEvent(eventHook);
@@ -110,7 +107,7 @@ namespace TombIDE
 				miscellaneous.Initialize(_ide);
 
 				if (_ide.Project.GameVersion == TRVersion.Game.TRNG)
-					pluginManager.Initialize(_ide);
+					pluginManager?.Initialize(_ide);
 
 				sideBar.SelectedIDETabChanged += SideBar_SelectedIDETabChanged;
 				sideBar.SelectIDETab(IDETab.LevelManager);
@@ -138,6 +135,11 @@ namespace TombIDE
 		{
 			if (!_ide.CanClose())
 				e.Cancel = true;
+
+			if (e.Cancel)
+				return;
+
+			_scriptingStudioShell.Dispose();
 
 			_ide.Project.Save();
 			SaveSettings();
@@ -225,11 +227,11 @@ namespace TombIDE
 
 		#region Other events
 
-		private void SideBar_SelectedIDETabChanged(object sender, IDETab e) => SelectIDETab(e);
+		private void SideBar_SelectedIDETabChanged(object? sender, IDETab e) => SelectIDETab(e);
 
 		private void SelectIDETab(IDETab tab)
 		{
-			scriptingStudio.EditorTabControl.EnsureTabFileSynchronization();
+			_scriptingStudioShell.NotifyHostTabActivated();
 
 			switch (tab)
 			{

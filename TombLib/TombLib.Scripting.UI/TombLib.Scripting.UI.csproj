@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Explicit usings (repository standard; implicit usings are not used). -->
+  <PropertyGroup>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsAsErrors>CS1591</WarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="MdXaml" Version="1.27.0" />
+    <PackageReference Include="TextMateSharp" Version="2.0.3" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="2.0.3" />
+  </ItemGroup>
+  <!-- Checked-in preview binary (0.1.0-preview) under Libs/; not a NuGet package. Version and
+       build provenance are documented in Libs/README.md. -->
+  <ItemGroup>
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DarkUI\DarkUI.WPF\DarkUI.WPF.csproj" />
+    <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj" />
+    <ProjectReference Include="..\TombLib\TombLib.csproj" />
+    <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj" />
+    <ProjectReference Include="..\TombLib.WPF\TombLib.WPF.csproj" />
+  </ItemGroup>
+</Project>

@@ -17,6 +17,10 @@ A big thank you to all the authors for making their work publicly available and 
 | CH.SipHash             | NuGet                      | 1.0.2      | Public Domain | https://github.com/tanglebones/ch-siphash |
 | FastColoredTextBox     | NuGet                      | 2.16.21    | LGPLv3        | https://www.codeproject.com/Articles/161871/Fast-Colored-TextBox-for-syntax-highlighting |
 | System.Drawing.PSD     | NuGet                      | 1.1        | BSD 3-clause  | https://github.com/bizzehdee/System.Drawing.PSD |
+| Lua Language Server    | Bundled zip (`TIDE/LuaLS`) | 3.18.1     | MIT           | https://github.com/LuaLS/lua-language-server |
+| Nickelony.LanguageServer.Abstractions | *.dll file (`Libs/`) | 0.1.0-preview | Custom (in-repo integration) | - |
+| Nickelony.LanguageServer.Lua          | *.dll file (`Libs/`) | 0.1.0-preview | Custom (in-repo integration) | - |
+| Nickelony.LanguageServer.Client       | *.dll file (`Libs/`) | 0.1.0-preview | Custom (in-repo integration) | - |
 
 ### Main Software Documentation
   
@@ -25,3 +29,4 @@ A big thank you to all the authors for making their work publicly available and 
 ### Icons
 
   Icons and graphics used under CC-BY ND 3.0 license from http://icons8.com
+  A subset of Codicons icon geometry used for Lua completion symbols is vendored from https://github.com/microsoft/vscode-codicons under the MIT license.

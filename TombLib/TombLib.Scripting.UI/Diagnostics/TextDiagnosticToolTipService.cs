@@ -1,0 +1,113 @@
+using ICSharpCode.AvalonEdit.Document;
+using Nickelony.LanguageServer.Abstractions.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using TombLib.Scripting.Diagnostics;
+
+namespace TombLib.Scripting.UI.Diagnostics;
+
+internal sealed class TextDiagnosticToolTipService
+{
+	private readonly Action? _onDiagnosticsChanged;
+	private IReadOnlyList<TextEditorDiagnostic> _diagnostics = [];
+
+	public TextDiagnosticToolTipService(Action? onDiagnosticsChanged = null) => _onDiagnosticsChanged = onDiagnosticsChanged;
+
+	public IReadOnlyList<TextEditorDiagnostic> Diagnostics => _diagnostics;
+
+	public void SetDiagnostics(IReadOnlyList<TextEditorDiagnostic>? diagnostics)
+	{
+		_diagnostics = diagnostics ?? [];
+		_onDiagnosticsChanged?.Invoke();
+	}
+
+	public bool ClearDiagnostics()
+	{
+		if (_diagnostics.Count == 0)
+			return false;
+
+		_diagnostics = [];
+		_onDiagnosticsChanged?.Invoke();
+		return true;
+	}
+
+	public bool TryGetDiagnosticInfo(
+		TextDocument document,
+		int hoveredOffset,
+		bool liveErrorUnderlining,
+		bool allowLineFallback,
+		[NotNullWhen(true)] out TextEditorDiagnosticInfo? info)
+	{
+		ArgumentNullException.ThrowIfNull(document);
+
+		info = null;
+
+		if (!liveErrorUnderlining || _diagnostics.Count == 0)
+			return false;
+
+		List<TextEditorDiagnostic> hoveredDiagnostics = GetDiagnosticsAtOffset(hoveredOffset);
+
+		if (hoveredDiagnostics.Count == 0 && allowLineFallback)
+			hoveredDiagnostics = GetDiagnosticsForLine(document, document.GetLineByOffset(hoveredOffset));
+
+		if (hoveredDiagnostics.Count == 0)
+			return false;
+
+		TextEditorDiagnosticSeverity severity = hoveredDiagnostics.Min(diagnostic => diagnostic.Severity);
+
+		string message = string.Join(Environment.NewLine + Environment.NewLine,
+			hoveredDiagnostics
+				.OrderBy(diagnostic => diagnostic.Severity)
+				.ThenBy(diagnostic => diagnostic.StartOffset)
+				.Select(FormatDiagnosticMessage)
+				.Distinct(StringComparer.Ordinal));
+
+		if (string.IsNullOrWhiteSpace(message))
+			return false;
+
+		info = new TextEditorDiagnosticInfo(message, severity);
+		return true;
+	}
+
+	private List<TextEditorDiagnostic> GetDiagnosticsAtOffset(int offset)
+	{
+		return _diagnostics
+			.Where(diagnostic => diagnostic.ContainsOffset(offset))
+			.ToList();
+	}
+
+	private List<TextEditorDiagnostic> GetDiagnosticsForLine(TextDocument document, DocumentLine? line)
+	{
+		if (line is null || _diagnostics.Count == 0)
+			return [];
+
+		int endOffset = Math.Max(line.EndOffset, line.Offset + 1);
+
+		return _diagnostics
+			.Where(diagnostic => diagnostic.Intersects(line.Offset, endOffset))
+			.ToList();
+	}
+
+	private static string FormatDiagnosticMessage(TextEditorDiagnostic diagnostic)
+	{
+		if (string.IsNullOrWhiteSpace(diagnostic.Message))
+			return string.Empty;
+
+		if (IsSeverityPrefixed(diagnostic.Message))
+			return diagnostic.Message;
+
+		return diagnostic.Severity.GetLabel() + ":\n" + diagnostic.Message;
+	}
+
+	private static bool IsSeverityPrefixed(string message)
+	{
+		return !string.IsNullOrWhiteSpace(message)
+			&& (message.StartsWith("Error:", StringComparison.OrdinalIgnoreCase)
+				|| message.StartsWith("Warning:", StringComparison.OrdinalIgnoreCase)
+				|| message.StartsWith("Information:", StringComparison.OrdinalIgnoreCase)
+				|| message.StartsWith("Hint:", StringComparison.OrdinalIgnoreCase)
+				|| message.StartsWith("Diagnostic:", StringComparison.OrdinalIgnoreCase));
+	}
+}

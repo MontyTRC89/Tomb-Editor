@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="coverlet.collector" Version="3.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+    <PackageReference Include="Moq" Version="4.20.69" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TombIDE\TombIDE.Shared\TombIDE.Shared.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.GameFlowScript\TombLib.Scripting.GameFlowScript.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.TRX\TombLib.Scripting.TRX.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.UI\TombLib.Scripting.UI.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj" />
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Nickelony.LanguageServer.Abstractions">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Client">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Nickelony.LanguageServer.Lua">
+      <HintPath>..\..\Libs\Nickelony.LanguageServer.Lua.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>
